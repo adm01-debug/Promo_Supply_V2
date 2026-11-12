@@ -2,11 +2,56 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
+  "commit": "b6e0427f4ae544e1da0c73675ca99d01dc0209cb",
   "branch": "main",
-  "data_commit": "2026-11-12T13:04:27-03:00",
+  "data_commit": "2026-11-12T16:43:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b6e0427f",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): vencimento das urgências aparecia um dia antes (#59)"
+   },
+   {
+    "sha": "284eef46",
+    "data": "2026-11-12",
+    "assunto": "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)"
+   },
+   {
+    "sha": "d429cef0",
+    "data": "2026-11-12",
+    "assunto": "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)"
+   },
+   {
+    "sha": "c3f4dcf7",
+    "data": "2026-11-12",
+    "assunto": "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)"
+   },
+   {
+    "sha": "5efb1134",
+    "data": "2026-11-12",
+    "assunto": "security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)"
+   },
+   {
+    "sha": "7db0e1c0",
+    "data": "2026-11-12",
+    "assunto": "security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)"
+   },
+   {
+    "sha": "cdc9eee5",
+    "data": "2026-11-12",
+    "assunto": "ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)"
+   },
+   {
+    "sha": "9bd9b15f",
+    "data": "2026-11-12",
+    "assunto": "security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)"
+   },
+   {
+    "sha": "63a0e0c5",
+    "data": "2026-11-12",
+    "assunto": "fix(deploy): rotas da spa deixam de dar 404 ao abrir link direto (#50)"
+   },
    {
     "sha": "5507e433",
     "data": "2026-11-12",
@@ -86,61 +131,24 @@
     "sha": "491c6cfc",
     "data": "2026-11-11",
     "assunto": "fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)"
-   },
-   {
-    "sha": "90c35fb5",
-    "data": "2026-11-11",
-    "assunto": "fix(tipos): corrige contratos do painel de saúde e relatório (#33)"
-   },
-   {
-    "sha": "7ad9425f",
-    "data": "2026-11-11",
-    "assunto": "fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)"
-   },
-   {
-    "sha": "dc3d95d1",
-    "data": "2026-11-09",
-    "assunto": "Merge pull request #4 from adm01-debug/fix/ui-render-and-math"
-   },
-   {
-    "sha": "1a7756c8",
-    "data": "2026-11-08",
-    "assunto": "ci: porta os guards offline e a auditoria semanal autônoma do Zapp_Web_V2"
-   },
-   {
-    "sha": "908b045f",
-    "data": "2026-11-08",
-    "assunto": "fix(ci): remove --depth 1 do fetch da branch contexto no job de publicação"
-   },
-   {
-    "sha": "7e181fcf",
-    "data": "2026-11-08",
-    "assunto": "fix(tests): corrige timer infinito no Vitest logger fuzz test"
-   },
-   {
-    "sha": "8e8f9cbf",
-    "data": "2026-11-08",
-    "assunto": "fix(edge): corrige asserção de truncamento no teste Deno logger"
-   },
-   {
-    "sha": "0bdcd6fb",
-    "data": "2026-11-08",
-    "assunto": "ci(quality-gate): liga unit tests de CI e guard de integridade do AGENTS.md (#22)"
-   },
-   {
-    "sha": "7e7efb63",
-    "data": "2026-11-08",
-    "assunto": "chore(agentes): adota o padrão CLAUDE.md + AGENTS.md + docs/agentes do Zapp"
    }
   ],
-  "arquivos_mudados_7d": 182,
+  "arquivos_mudados_7d": 194,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
     "mudancas": 12
    },
    {
+    "pasta": ".github/workflows/contexto.yml",
+    "mudancas": 4
+   },
+   {
     "pasta": ".github/workflows/main.yml",
+    "mudancas": 4
+   },
+   {
+    "pasta": "AGENTS.md",
     "mudancas": 4
    },
    {
@@ -148,19 +156,31 @@
     "mudancas": 4
    },
    {
-    "pasta": ".github/workflows/contexto.yml",
-    "mudancas": 3
-   },
-   {
-    "pasta": "AGENTS.md",
-    "mudancas": 3
-   },
-   {
     "pasta": "src/lib/__tests__",
+    "mudancas": 4
+   },
+   {
+    "pasta": "docs/agentes/contexto-ia.md",
+    "mudancas": 3
+   },
+   {
+    "pasta": "docs/agentes/github-ci.md",
+    "mudancas": 3
+   },
+   {
+    "pasta": "docs/agentes/mapa-repo.md",
+    "mudancas": 3
+   },
+   {
+    "pasta": "docs/ci/README.md",
     "mudancas": 3
    },
    {
     "pasta": "src/pages/admin",
+    "mudancas": 3
+   },
+   {
+    "pasta": "src/pages/dashboard",
     "mudancas": 3
    },
    {
@@ -172,37 +192,21 @@
     "mudancas": 2
    },
    {
-    "pasta": ".gitignore",
-    "mudancas": 2
-   },
-   {
-    "pasta": "docs/agentes/contexto-ia.md",
-    "mudancas": 2
-   },
-   {
-    "pasta": "docs/agentes/github-ci.md",
-    "mudancas": 2
-   },
-   {
-    "pasta": "docs/agentes/mapa-repo.md",
-    "mudancas": 2
-   },
-   {
-    "pasta": "docs/ci/README.md",
-    "mudancas": 2
-   },
-   {
-    "pasta": "docs/contexto/regras",
+    "pasta": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 2
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": ".github/workflows/main.yml",
+    "arquivo": "AGENTS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": ".github/workflows/contexto.yml",
     "mudancas": 4
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": ".github/workflows/main.yml",
     "mudancas": 4
    },
    {
@@ -210,12 +214,32 @@
     "mudancas": 4
    },
    {
-    "arquivo": ".github/workflows/contexto.yml",
+    "arquivo": "ESTADO_ATUAL.md",
     "mudancas": 3
    },
    {
-    "arquivo": "ESTADO_ATUAL.md",
+    "arquivo": "docs/agentes/contexto-ia.md",
     "mudancas": 3
+   },
+   {
+    "arquivo": "docs/agentes/github-ci.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/agentes/mapa-repo.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/ci/README.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": ".github/workflows/notifica-falha-main.yml",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/types-sync.yml",
+    "mudancas": 2
    },
    {
     "arquivo": "DOCS/ESTADO/00_INDICE.md",
@@ -238,19 +262,23 @@
     "mudancas": 2
    },
    {
-    "arquivo": "docs/agentes/contexto-ia.md",
+    "arquivo": "ai-context.config.json",
     "mudancas": 2
    },
    {
-    "arquivo": "docs/agentes/github-ci.md",
+    "arquivo": "scripts/ai-context/README.md",
     "mudancas": 2
    },
    {
-    "arquivo": "docs/agentes/mapa-repo.md",
+    "arquivo": "scripts/ci/branch-podaveis.mjs",
     "mudancas": 2
    },
    {
-    "arquivo": "docs/ci/README.md",
+    "arquivo": "scripts/supabase_snapshot/README.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "scripts/supabase_snapshot/snapshot.py",
     "mudancas": 2
    },
    {
@@ -262,46 +290,18 @@
     "mudancas": 2
    },
    {
-    "arquivo": "src/pages/relatorios/Relatorios.tsx",
+    "arquivo": "src/lib/exportData.ts",
     "mudancas": 2
    },
    {
-    "arquivo": "supabase/config.toml",
+    "arquivo": "src/pages/dashboard/ComprasDashboard.tsx",
     "mudancas": 2
-   },
-   {
-    "arquivo": ".claude/skills/promo-supply-v2/SKILL.md",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/toolchain.json",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/automation-local.yml",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/branch-hygiene-audit.yml",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/guards.yml",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
-    "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/notifica-falha-main.yml",
-    "mudancas": 1
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 29
+    "commits": 38
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1155,
-  "arquivos_codigo": 735,
-  "linhas_codigo": 151121,
+  "arquivos_total": 1166,
+  "arquivos_codigo": 739,
+  "linhas_codigo": 151457,
   "rotas": 55,
   "rotas_http_backend": 12,
   "vistas_por_id": 0,
@@ -322,12 +322,12 @@
   "hooks": 90,
   "edge_functions": 38,
   "tabelas": 164,
-  "migrations": 283,
+  "migrations": 288,
   "cron_jobs": 68,
-  "testes": 145,
+  "testes": 149,
   "workflows": 8,
   "scripts": 43,
-  "docs_md": 70
+  "docs_md": 71
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -423,8 +423,8 @@
    "linhas": 8376
   },
   "src/hooks": {
-   "arquivos": 71,
-   "linhas": 12132
+   "arquivos": 72,
+   "linhas": 12210
   },
   "src/i18n": {
    "arquivos": 1,
@@ -435,16 +435,16 @@
    "linhas": 10153
   },
   "src/lib": {
-   "arquivos": 44,
-   "linhas": 5578
+   "arquivos": 45,
+   "linhas": 5669
   },
   "src/main.tsx": {
    "arquivos": 1,
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 119,
-   "linhas": 27708
+   "arquivos": 120,
+   "linhas": 27793
   },
   "src/routes": {
    "arquivos": 1,
@@ -467,8 +467,8 @@
    "linhas": 16
   },
   "src/tests": {
-   "arquivos": 10,
-   "linhas": 756
+   "arquivos": 11,
+   "linhas": 838
   },
   "src/types": {
    "arquivos": 3,
@@ -689,7 +689,6 @@
    "process-outbox",
    "run-audit",
    "send-push-notification",
-   "spot-api",
    "tests",
    "workflow-engine",
    "xbz-proxy"

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
+  "sha": "b6e0427f4ae544e1da0c73675ca99d01dc0209cb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-12 19:04 UTC",
-  "files_total": 1157,
-  "code_files": 1021,
-  "code_lines": 172915
+  "generated_at": "2026-11-12 21:38 UTC",
+  "files_total": 1168,
+  "code_files": 1030,
+  "code_lines": 174022
  },
  "version": "1.3.2",
- "facts_hash": "5fb121d2028e7d06",
+ "facts_hash": "4c7508afe46b028c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -147,6 +147,10 @@
     "role": "Template de variáveis (.env.example)"
    },
    {
+    "file": "vercel.json",
+    "role": "Vercel"
+   },
+   {
     "file": "supabase/config.toml",
     "role": "Supabase CLI"
    }
@@ -171,7 +175,7 @@
    },
    {
     "file": ".github/workflows/contexto.yml",
-    "name": "Contexto para agentes de IA (10 min)",
+    "name": "Contexto para agentes de IA (1h)",
     "triggers": [
      "push",
      "schedule",
@@ -220,9 +224,9 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".tsx": 342,
-   ".ts": 340,
-   ".sql": 284,
+   ".tsx": 344,
+   ".ts": 342,
+   ".sql": 289,
    ".mjs": 48,
    ".py": 5,
    ".js": 2
@@ -17222,26 +17226,6 @@
     "src": "supabase/migrations/20260522202740_6521e169-0e00-4dba-a144-aad68c528a8e.sql"
    },
    {
-    "name": "tenant_isolation_licitacoes",
-    "table": "licitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
-   },
-   {
-    "name": "tenant_isolation_licitacao_propostas",
-    "table": "licitacao_propostas",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
-   },
-   {
     "name": "tenant_isolation_fornecedor_categorias",
     "table": "fornecedor_categorias",
     "cmd": "ALL",
@@ -17294,26 +17278,6 @@
    {
     "name": "tenant_isolation_solicitacoes",
     "table": "solicitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_cotacoes",
-    "table": "cotacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_fornecedores",
-    "table": "fornecedores",
     "cmd": "ALL",
     "roles": "authenticated",
     "mode": "permissive",
@@ -17802,16 +17766,6 @@
     "src": "supabase/migrations/20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql"
    },
    {
-    "name": "tenant_isolation_audit_logs",
-    "table": "audit_logs",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_in_my_group(tenant_id)",
-    "check": "tenant_in_my_group(tenant_id)",
-    "src": "supabase/migrations/20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql"
-   },
-   {
     "name": "Admins can view all audit logs",
     "table": "audit_logs",
     "cmd": "SELECT",
@@ -18200,6 +18154,356 @@
     "using": "has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "name": "tenant_isolation_active_sessions",
+    "table": "active_sessions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_delegations",
+    "table": "approval_delegations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_history",
+    "table": "approval_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_rules",
+    "table": "approval_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_workflows",
+    "table": "approval_workflows",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs",
+    "table": "audit_logs",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_budget_transactions",
+    "table": "budget_transactions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_categorias",
+    "table": "categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_category_strategies",
+    "table": "category_strategies",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contact_notes",
+    "table": "contact_notes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_documents",
+    "table": "contract_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_history",
+    "table": "contract_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_items",
+    "table": "contract_items",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_penalties",
+    "table": "contract_penalties",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contracts",
+    "table": "contracts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_cotacoes",
+    "table": "cotacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_creditos_fornecedor",
+    "table": "creditos_fornecedor",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_department_budgets",
+    "table": "department_budgets",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_devolucao_itens",
+    "table": "devolucao_itens",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_devolucoes",
+    "table": "devolucoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_fiscal_documents",
+    "table": "fiscal_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_fornecedores",
+    "table": "fornecedores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacao_propostas",
+    "table": "licitacao_propostas",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacoes",
+    "table": "licitacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_order_contracts",
+    "table": "order_contracts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pagamentos",
+    "table": "pagamentos",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_payment_history",
+    "table": "payment_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pedido_itens",
+    "table": "pedido_itens",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pedidos",
+    "table": "pedidos",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_penalty_escalation_config",
+    "table": "penalty_escalation_config",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_receiving_checklists",
+    "table": "receiving_checklists",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_spend_forecasts",
+    "table": "spend_forecasts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_bonifications",
+    "table": "supplier_bonifications",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_documents",
+    "table": "supplier_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_qualification_scores",
+    "table": "supplier_qualification_scores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
    }
   ],
   "triggers": [
@@ -20108,19 +20412,23 @@
     ]
    },
    "get_compras_dashboard_metrics": {
-    "args": "p_organization_id UUID, p_period TEXT DEFAULT '6m', p_category_id UUID DEFAULT NULL, p_supplier_id UUID DEFAULT NULL",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114020_1546616d-be8d-4565-92a6-fb1303688550.sql",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF p_period = '1m' THEN v_start_date := v_now - INTERVAL '1 month'; ELSIF p_period = '3m' THEN v_start_date := v_now - INTERVAL '3 months'; ELSIF p_period = '1y' THEN v_start_date := v_now - INTERVAL '1 year'; ELSE v_ …",
-    "raises": [],
+    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501' …",
+    "raises": [
+     "not authenticated",
+     "forbidden"
+    ],
     "tables": [
      "categorias",
      "cotacoes",
      "current_period",
      "generate_series",
+     "get_user_grupo_id",
      "pagamentos",
      "pedidos",
      "solicitacoes",
@@ -20303,16 +20611,18 @@
     ]
    },
    "_invoke_edge_function": {
-    "args": "_name TEXT",
-    "returns": "BIGINT",
+    "args": "_name text",
+    "returns": "bigint",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_req_id BIGINT; v_url TEXT := 'https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1/' || _name; v_anon TEXT := '[REDACTED].duCmV9VwETKxO6dI35u5cm9tDN1760EP3OoOjM3Iatg'; BEGIN SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'Authorization', 'Bearer ' || v_anon, 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true' ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 30000 ) INTO v_req_id; RETURN v_req_id; END;",
+    "body": "DECLARE v_req_id BIGINT; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/' || _name; v_key TEXT; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'edge_invoke_service_key ausente no Vault; edge % nao chamada', _name; RETURN NULL; END IF; SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'Authorization', 'Bearer ' || v_key, 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true' ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 30000 ) INTO v_req_id; …",
     "raises": [],
     "tables": [
-     "v_req_id"
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "cleanup_old_webhook_events": {
@@ -21616,13 +21926,16 @@
     "args": "",
     "returns": "bigint",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_req_id BIGINT; v_key TEXT := public.xbz_cron_key_get(); v_url TEXT := 'https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1/xbz-sync-pedidos'; BEGIN IF v_key IS NULL THEN RAISE WARNING 'xbz_cron_key ausente no Vault; sync XBZ nao executado'; RETURN NULL; END IF; SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true', 'x-cron-key', v_key ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 60000 ) INTO v_req_id; RETURN v_req_id; END;",
+    "body": "DECLARE v_req_id BIGINT; v_key TEXT; v_auth TEXT; v_headers JSONB; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/xbz-sync-pedidos'; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'xbz_cron_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'xbz_cron_key ausente no Vault; sync XBZ nao executado'; RETURN NULL; END IF; SELECT decrypted_secret INTO v_auth FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; v_headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true', 'x-cron-key', v_key ); IF v_auth IS NOT NULL AND v_auth <> …",
     "raises": [],
     "tables": [
-     "v_req_id"
+     "v_auth",
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "xbz_sync_watchdog": {
@@ -21656,6 +21969,22 @@
     ],
     "tables": [
      "v_plan"
+    ]
+   },
+   "_invoke_spot_sync": {
+    "args": "_action text",
+    "returns": "bigint",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_req_id BIGINT; v_key TEXT; v_auth TEXT; v_headers JSONB; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/spot-api'; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'spot_cron_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'spot_cron_key ausente no Vault; spot-api % nao chamada', _action; RETURN NULL; END IF; SELECT decrypted_secret INTO v_auth FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; v_headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-spot-cron-key', v_key ); IF v_auth IS NOT NULL AND v_auth <> '' THEN v_headers := …",
+    "raises": [],
+    "tables": [
+     "v_auth",
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "Returns": {
@@ -25491,6 +25820,11 @@
    "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql",
    "supabase/migrations/20261112135000_views_security_invoker.sql",
    "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql",
+   "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql",
+   "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql",
+   "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
+   "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
+   "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -29069,6 +29403,142 @@
     "objkind": "table",
     "roles": "anon",
     "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "xbz_cron_key_get",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "xbz_cron_key_get",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "verify_xbz_cron_key",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "verify_xbz_cron_key",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "mv_dashboard_kpis",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "supplier_compliance_summary",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "v_system_health_overview",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_xbz_sync",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_spot_sync",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_xbz_sync",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_spot_sync",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
    }
   ],
   "raises": [
@@ -29136,6 +29606,16 @@
     "function": "execute_read_query",
     "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
    }
   ],
   "seed": [
@@ -30956,7 +31436,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "3-59/10 * * * *",
+    "detail": "3 * * * *",
     "file": ".github/workflows/contexto.yml"
    },
    {
@@ -30966,7 +31446,7 @@
    },
    {
     "kind": "GitHub Actions cron",
-    "detail": "7-59/10 * * * *",
+    "detail": "7 * * * *",
     "file": ".github/workflows/types-sync.yml"
    }
   ],
@@ -32234,8 +32714,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 71,
-   "lines": 12132,
+   "files": 72,
+   "lines": 12210,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -32430,6 +32910,7 @@
     "src/hooks/__tests__/keyboardShortcutsData.test.ts",
     "src/hooks/__tests__/permissionsConstants.test.ts",
     "src/hooks/__tests__/useApprovalHistory.test.ts",
+    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/usePermissions.test.tsx",
@@ -32485,8 +32966,8 @@
   },
   {
    "module": "src/lib",
-   "files": 45,
-   "lines": 5598,
+   "files": 46,
+   "lines": 5689,
    "tables": [],
    "exports": [
     "clearFiltersShortcut.ts: ShortcutCombo, DEFAULT_CLEAR_FILTERS_SHORTCUT, RESERVED_SHORTCUTS, isSameCombo, findReservedConflict, isInvalidCombo",
@@ -32562,6 +33043,7 @@
     "src/lib/utils.ts",
     "src/lib/__tests__/clearFiltersShortcut.test.ts",
     "src/lib/__tests__/dbMapping.test.ts",
+    "src/lib/__tests__/exportData.csv.test.ts",
     "src/lib/__tests__/exportData.test.ts",
     "src/lib/__tests__/feedbackToast.test.ts",
     "src/lib/__tests__/filterClearReporter.test.ts",
@@ -32588,8 +33070,8 @@
   },
   {
    "module": "src/pages",
-   "files": 119,
-   "lines": 27708,
+   "files": 120,
+   "lines": 27793,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -32780,6 +33262,7 @@
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
     "src/pages/dashboard/ComprasDashboard.tsx",
     "src/pages/dashboard/DashboardExecutivo.tsx",
+    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     "src/pages/dev/XbzNetworkPanelHarness.tsx",
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx",
@@ -32796,8 +33279,7 @@
     "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
     "src/pages/historico/HistoricoCompras.tsx",
-    "src/pages/historico/HistoricoDrilldownModal.tsx",
-    "src/pages/historico/HistoricoFornecedoresTab.tsx"
+    "src/pages/historico/HistoricoDrilldownModal.tsx"
    ]
   },
   {
@@ -32923,8 +33405,8 @@
   },
   {
    "module": "src/tests",
-   "files": 10,
-   "lines": 756,
+   "files": 11,
+   "lines": 838,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -32936,10 +33418,13 @@
     "shared-schemas.ts: NegotiationSchema, WorkflowSchema, ApprovalDecisionSchema"
    ],
    "docs": [
-    "supabase-db.test.ts: F-051: Real Supabase integration tests. These tests connect to a live Supabase instance and verify the actual schema, RLS policies, and stored functions. PREREQUISITES Set the following env vars (use a staging/test project, never production): VITE_SUPABASE_URL – Supabase project URL SUPABASE_SERVICE …"
+    "supabase-db.test.ts: F-051: Real Supabase integration tests. These tests connect to a live Supabase instance and verify the actual schema, RLS policies, and stored functions. PREREQUISITES Set the following env vars (use a staging/test project, never production): VITE_SUPABASE_URL – Supabase project URL SUPABASE_SERVICE …",
+    "rls-tenant-isolation-restrictive.test.ts: Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono. Como PERMISSIVE, o Postgres junta a policy de tenant com as de papel por OR, e qualquer logado do tenant (mesmo sem papel em user_roles) lia e escrevia fornecedores, contratos, cotações etc. Migration: …"
    ],
    "deps": [
     "@supabase/supabase-js",
+    "node:fs",
+    "node:path",
     "vitest",
     "zod"
    ],
@@ -32956,6 +33441,7 @@
     "src/tests/integration/core-integrity.test.ts",
     "src/tests/integration/shared-schemas.ts",
     "src/tests/integration/supabase-db.test.ts",
+    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
     "src/tests/spot/spotApi.test.ts"
    ]
   },
@@ -33148,8 +33634,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 283,
-   "lines": 21599,
+   "files": 288,
+   "lines": 22370,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -57198,6 +57684,18 @@
     "name": "fetchAllHistory keeps allHistory empty on error"
    },
    {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "useDashboardKPIs — parâmetro da organização"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "envia organizationId (grupo) como p_organization_id, nunca o tenantId"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "não chama a RPC sem organização no perfil"
+   },
+   {
     "file": "src/hooks/__tests__/useFuseSearch.test.ts",
     "name": "normalizeText"
    },
@@ -57900,6 +58398,42 @@
    {
     "file": "src/lib/__tests__/dbMapping.test.ts",
     "name": "is the inverse of nullsToUndefined for null/undefined fields"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "exportToCSV — números sem formatter"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "inteiro sai sem casas decimais"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "inteiro grande usa separador de milhar pt-BR"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418)"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "negativo sai com vírgula e continua neutralizado contra fórmula (prefixo de tab)"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "null e undefined viram célula vazia"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "string que começa com "
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "formatter explícito tem precedência sobre a formatação numérica"
+   },
+   {
+    "file": "src/lib/__tests__/exportData.csv.test.ts",
+    "name": "cabeçalho e separador "
    },
    {
     "file": "src/lib/__tests__/exportData.test.ts",
@@ -60718,6 +61252,18 @@
     "name": "maps multiple rows"
    },
    {
+    "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    "name": "ComprasDashboard — vencimento das urgências"
+   },
+   {
+    "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    "name": "roda no fuso do Brasil (pré-condição do teste)"
+   },
+   {
+    "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    "name": "data_necessidade "
+   },
+   {
     "file": "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
     "name": "STATUS_MAP"
    },
@@ -63004,6 +63550,14 @@
    {
     "file": "src/tests/integration/supabase-db.test.ts",
     "name": "no approval_steps reference a non-existent workflow"
+   },
+   {
+    "file": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+    "name": "RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR)"
+   },
+   {
+    "file": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+    "name": "tenant_isolation_%s: última definição é AS RESTRICTIVE"
    },
    {
     "file": "src/tests/spot/spotApi.test.ts",
@@ -65440,26 +65994,6 @@
     "src": "supabase/migrations/20260522202740_6521e169-0e00-4dba-a144-aad68c528a8e.sql"
    },
    {
-    "name": "tenant_isolation_licitacoes",
-    "table": "licitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
-   },
-   {
-    "name": "tenant_isolation_licitacao_propostas",
-    "table": "licitacao_propostas",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
-   },
-   {
     "name": "tenant_isolation_fornecedor_categorias",
     "table": "fornecedor_categorias",
     "cmd": "ALL",
@@ -65512,26 +66046,6 @@
    {
     "name": "tenant_isolation_solicitacoes",
     "table": "solicitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_cotacoes",
-    "table": "cotacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_fornecedores",
-    "table": "fornecedores",
     "cmd": "ALL",
     "roles": "authenticated",
     "mode": "permissive",
@@ -66020,16 +66534,6 @@
     "src": "supabase/migrations/20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql"
    },
    {
-    "name": "tenant_isolation_audit_logs",
-    "table": "audit_logs",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_in_my_group(tenant_id)",
-    "check": "tenant_in_my_group(tenant_id)",
-    "src": "supabase/migrations/20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql"
-   },
-   {
     "name": "Admins can view all audit logs",
     "table": "audit_logs",
     "cmd": "SELECT",
@@ -66418,6 +66922,356 @@
     "using": "has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "name": "tenant_isolation_active_sessions",
+    "table": "active_sessions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_delegations",
+    "table": "approval_delegations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_history",
+    "table": "approval_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_rules",
+    "table": "approval_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_workflows",
+    "table": "approval_workflows",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_audit_logs",
+    "table": "audit_logs",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_budget_transactions",
+    "table": "budget_transactions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_categorias",
+    "table": "categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_category_strategies",
+    "table": "category_strategies",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contact_notes",
+    "table": "contact_notes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_documents",
+    "table": "contract_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_history",
+    "table": "contract_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_items",
+    "table": "contract_items",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contract_penalties",
+    "table": "contract_penalties",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_contracts",
+    "table": "contracts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_cotacoes",
+    "table": "cotacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_creditos_fornecedor",
+    "table": "creditos_fornecedor",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_department_budgets",
+    "table": "department_budgets",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_devolucao_itens",
+    "table": "devolucao_itens",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_devolucoes",
+    "table": "devolucoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_fiscal_documents",
+    "table": "fiscal_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_fornecedores",
+    "table": "fornecedores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacao_propostas",
+    "table": "licitacao_propostas",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacoes",
+    "table": "licitacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_order_contracts",
+    "table": "order_contracts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pagamentos",
+    "table": "pagamentos",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_payment_history",
+    "table": "payment_history",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pedido_itens",
+    "table": "pedido_itens",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_pedidos",
+    "table": "pedidos",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_penalty_escalation_config",
+    "table": "penalty_escalation_config",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_receiving_checklists",
+    "table": "receiving_checklists",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_spend_forecasts",
+    "table": "spend_forecasts",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_bonifications",
+    "table": "supplier_bonifications",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_documents",
+    "table": "supplier_documents",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "tenant_isolation_supplier_qualification_scores",
+    "table": "supplier_qualification_scores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
    }
   ],
   "db_triggers": [
@@ -68326,19 +69180,23 @@
     ]
    },
    "get_compras_dashboard_metrics": {
-    "args": "p_organization_id UUID, p_period TEXT DEFAULT '6m', p_category_id UUID DEFAULT NULL, p_supplier_id UUID DEFAULT NULL",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114020_1546616d-be8d-4565-92a6-fb1303688550.sql",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF p_period = '1m' THEN v_start_date := v_now - INTERVAL '1 month'; ELSIF p_period = '3m' THEN v_start_date := v_now - INTERVAL '3 months'; ELSIF p_period = '1y' THEN v_start_date := v_now - INTERVAL '1 year'; ELSE v_ …",
-    "raises": [],
+    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501' …",
+    "raises": [
+     "not authenticated",
+     "forbidden"
+    ],
     "tables": [
      "categorias",
      "cotacoes",
      "current_period",
      "generate_series",
+     "get_user_grupo_id",
      "pagamentos",
      "pedidos",
      "solicitacoes",
@@ -68521,16 +69379,18 @@
     ]
    },
    "_invoke_edge_function": {
-    "args": "_name TEXT",
-    "returns": "BIGINT",
+    "args": "_name text",
+    "returns": "bigint",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_req_id BIGINT; v_url TEXT := 'https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1/' || _name; v_anon TEXT := '[REDACTED].duCmV9VwETKxO6dI35u5cm9tDN1760EP3OoOjM3Iatg'; BEGIN SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'Authorization', 'Bearer ' || v_anon, 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true' ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 30000 ) INTO v_req_id; RETURN v_req_id; END;",
+    "body": "DECLARE v_req_id BIGINT; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/' || _name; v_key TEXT; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'edge_invoke_service_key ausente no Vault; edge % nao chamada', _name; RETURN NULL; END IF; SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'Authorization', 'Bearer ' || v_key, 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true' ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 30000 ) INTO v_req_id; …",
     "raises": [],
     "tables": [
-     "v_req_id"
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "cleanup_old_webhook_events": {
@@ -69834,13 +70694,16 @@
     "args": "",
     "returns": "bigint",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_req_id BIGINT; v_key TEXT := public.xbz_cron_key_get(); v_url TEXT := 'https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1/xbz-sync-pedidos'; BEGIN IF v_key IS NULL THEN RAISE WARNING 'xbz_cron_key ausente no Vault; sync XBZ nao executado'; RETURN NULL; END IF; SELECT net.http_post( url := v_url, headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true', 'x-cron-key', v_key ), body := jsonb_build_object('cron', true, 'invoked_at', now()), timeout_milliseconds := 60000 ) INTO v_req_id; RETURN v_req_id; END;",
+    "body": "DECLARE v_req_id BIGINT; v_key TEXT; v_auth TEXT; v_headers JSONB; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/xbz-sync-pedidos'; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'xbz_cron_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'xbz_cron_key ausente no Vault; sync XBZ nao executado'; RETURN NULL; END IF; SELECT decrypted_secret INTO v_auth FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; v_headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-cron-invocation', 'true', 'x-cron-key', v_key ); IF v_auth IS NOT NULL AND v_auth <> …",
     "raises": [],
     "tables": [
-     "v_req_id"
+     "v_auth",
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "xbz_sync_watchdog": {
@@ -69874,6 +70737,22 @@
     ],
     "tables": [
      "v_plan"
+    ]
+   },
+   "_invoke_spot_sync": {
+    "args": "_action text",
+    "returns": "bigint",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_req_id BIGINT; v_key TEXT; v_auth TEXT; v_headers JSONB; v_url TEXT := 'https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/spot-api'; BEGIN SELECT decrypted_secret INTO v_key FROM vault.decrypted_secrets WHERE name = 'spot_cron_key' LIMIT 1; IF v_key IS NULL OR v_key = '' THEN RAISE WARNING 'spot_cron_key ausente no Vault; spot-api % nao chamada', _action; RETURN NULL; END IF; SELECT decrypted_secret INTO v_auth FROM vault.decrypted_secrets WHERE name = 'edge_invoke_service_key' LIMIT 1; v_headers := jsonb_build_object( 'Content-Type', 'application/json', 'x-request-id', gen_random_uuid()::text, 'x-spot-cron-key', v_key ); IF v_auth IS NOT NULL AND v_auth <> '' THEN v_headers := …",
+    "raises": [],
+    "tables": [
+     "v_auth",
+     "v_key",
+     "v_req_id",
+     "vault"
     ]
    },
    "Returns": {
@@ -70144,6 +71023,16 @@
     "function": "execute_read_query",
     "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
    }
   ],
   "db_generated": [
@@ -72164,17 +73053,21 @@
     "rls": "enabled",
     "SELECT": [
      "public: auth.uid() = user_id",
-     "public: has_role(auth.uid(), 'admin')"
+     "public: has_role(auth.uid(), 'admin')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "public: auth.uid() = user_id"
+     "public: auth.uid() = user_id",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: auth.uid() = user_id"
+     "public: auth.uid() = user_id",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "public: auth.uid() = user_id",
-     "public: has_role(auth.uid(), 'admin')"
+     "public: has_role(auth.uid(), 'admin')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "alert_subscriptions": {
@@ -72227,16 +73120,20 @@
    "approval_delegations": {
     "rls": "enabled",
     "SELECT": [
-     "public: auth.uid() = delegante_id OR auth.uid() = delegado_id OR has_role(auth.uid(), 'admin'::app_role)"
+     "public: auth.uid() = delegante_id OR auth.uid() = delegado_id OR has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)"
+     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)"
+     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)"
+     "public: auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "approval_hierarchy": {
@@ -72249,29 +73146,39 @@
    "approval_history": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: auth.uid() = usuario_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')"
+     "authenticated: auth.uid() = usuario_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: auth.uid() = usuario_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')"
+     "authenticated: auth.uid() = usuario_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "UPDATE": [],
-    "DELETE": []
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "approval_rules": {
     "rls": "enabled",
     "SELECT": [
      "public: auth.uid() IS NOT NULL",
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "approval_steps": {
@@ -72290,15 +73197,20 @@
    "approval_workflows": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "DELETE": []
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "auction_bids": {
     "rls": "enabled",
@@ -72318,18 +73230,18 @@
    "audit_logs": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_in_my_group(tenant_id)",
-     "authenticated: has_role(auth.uid(), 'admin'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id)",
-     "authenticated: tenant_in_my_group(tenant_id) AND auth.uid() IS NOT NULL"
+     "authenticated: tenant_in_my_group(tenant_id) AND auth.uid() IS NOT NULL",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "audit_logs_202605": {
@@ -72413,36 +73325,54 @@
    "budget_transactions": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = current_tenant_id() AND ( has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR"
+     "authenticated: tenant_id = current_tenant_id() AND ( has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "categorias": {
     "rls": "enabled",
     "SELECT": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: tenant_in_my_group(tenant_id)"
+     "authenticated: tenant_in_my_group(tenant_id)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "public: has_role(auth.uid(), 'admin'::app_role)"
+     "public: has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "category_strategies": {
     "rls": "enabled",
     "SELECT": [
-     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())"
+     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "checkpoint_snapshots": {
     "rls": "enabled",
@@ -72456,92 +73386,118 @@
    "contact_notes": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: auth.uid() = author_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')"
+     "authenticated: auth.uid() = author_id OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "public: auth.uid() IS NOT NULL AND auth.uid() = author_id"
+     "public: auth.uid() IS NOT NULL AND auth.uid() = author_id",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: auth.uid() = author_id"
+     "public: auth.uid() = author_id",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "public: auth.uid() = author_id OR has_role(auth.uid(), 'admin'::app_role)"
+     "public: auth.uid() = author_id OR has_role(auth.uid(), 'admin'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "contract_documents": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "contract_history": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: (auth.uid() IS NOT NULL) AND (performed_by IS NULL OR performed_by = auth.uid())"
+     "authenticated: (auth.uid() IS NOT NULL) AND (performed_by IS NULL OR performed_by = auth.uid())",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "UPDATE": [],
-    "DELETE": []
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "contract_items": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "contract_penalties": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "contracts": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "cost_centers": {
@@ -72563,36 +73519,40 @@
    "cotacoes": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "creditos_fornecedor": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "cron_heartbeats": {
@@ -72663,19 +73623,23 @@
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
      "authenticated: has_role(auth.uid(), 'finance'::app_role)",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: has_role(auth.uid(), 'finance'::app_role)"
+     "authenticated: has_role(auth.uid(), 'finance'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: has_role(auth.uid(), 'finance'::app_role)"
+     "authenticated: has_role(auth.uid(), 'finance'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: has_role(auth.uid(), 'finance'::app_role)"
+     "authenticated: has_role(auth.uid(), 'finance'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "dependency_health": {
@@ -72709,32 +73673,40 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
-     "authenticated: has_role(auth.uid(), 'finance'::app_role)"
+     "authenticated: has_role(auth.uid(), 'finance'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "devolucoes": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
-     "authenticated: has_role(auth.uid(), 'finance'::app_role)"
+     "authenticated: has_role(auth.uid(), 'finance'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "entity_versions": {
@@ -72841,16 +73813,20 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "fiscal_events": {
@@ -72886,21 +73862,21 @@
    "fornecedores": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "geo_access_logs": {
@@ -72988,38 +73964,38 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "licitacoes": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "login_attempts": {
@@ -73102,16 +74078,20 @@
    "order_contracts": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "organizations": {
@@ -73127,16 +74107,20 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role) OR has_",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "password_reset_requests": {
@@ -73156,48 +74140,60 @@
    "payment_history": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::a",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "pedido_itens": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "pedidos": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "penalty_escalation_config": {
@@ -73205,16 +74201,20 @@
     "SELECT": [
      "public: auth.uid() IS NOT NULL",
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "permissions": {
@@ -73389,16 +74389,20 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR"
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "repurchase_suggestions": {
@@ -73678,11 +74682,18 @@
    "spend_forecasts": {
     "rls": "enabled",
     "SELECT": [
-     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())"
+     "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "INSERT": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "UPDATE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ],
+    "DELETE": [
+     "authenticated: public.tenant_in_my_group(tenant_id)"
+    ]
    },
    "spot_api_sync_log": {
     "rls": "enabled",
@@ -73779,16 +74790,20 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance') "
+     "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance') ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "supplier_compliance_summary": {
@@ -73802,32 +74817,40 @@
     "rls": "não encontrado",
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "supplier_qualification_scores": {
     "rls": "não encontrado",
     "SELECT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer') OR",
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))"
+     "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "system_alerts": {
@@ -74505,10 +75528,15 @@
    "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql",
    "supabase/migrations/20261107150000_execute_read_query.sql",
    "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql",
-   "supabase/migrations/20261112135000_views_security_invoker.sql"
+   "supabase/migrations/20261112135000_views_security_invoker.sql",
+   "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql",
+   "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
+   "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
+   "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
   ],
   "security_definer_fns": [
    "_invoke_edge_function",
+   "_invoke_spot_sync",
    "_invoke_xbz_sync",
    "admin_scan_runs_sla_status",
    "alert_on_outbox_dead",
@@ -78082,6 +79110,142 @@
     "objkind": "table",
     "roles": "anon",
     "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "xbz_cron_key_get",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "xbz_cron_key_get",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "verify_xbz_cron_key",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "verify_xbz_cron_key",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "mv_dashboard_kpis",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "supplier_compliance_summary",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "v_system_health_overview",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_xbz_sync",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "_invoke_spot_sync",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_xbz_sync",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_spot_sync",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
    }
   ],
   "guards": [
@@ -93607,6 +94771,19 @@
     "fetchAllHistory keeps allHistory empty on error"
    ]
   },
+  "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
+   "path": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+   "lines": 78,
+   "is_test": true,
+   "rule_comments": [
+    "passou a responder 'forbidden' para organização que não é a do chamador."
+   ],
+   "tests": [
+    "useDashboardKPIs — parâmetro da organização",
+    "envia organizationId (grupo) como p_organization_id, nunca o tenantId",
+    "não chama a RPC sem organização no perfil"
+   ]
+  },
   "src/hooks/__tests__/useFuseSearch.test.ts": {
    "path": "src/hooks/__tests__/useFuseSearch.test.ts",
    "lines": 112,
@@ -93827,7 +95004,7 @@
   },
   "src/lib/exportData.ts": {
    "path": "src/lib/exportData.ts",
-   "lines": 139,
+   "lines": 144,
    "exports": [
     "function exportToCSV",
     "const pedidoColumns",
@@ -94329,6 +95506,32 @@
     "converts all undefined fields",
     "does not mutate the original object",
     "is the inverse of nullsToUndefined for null/undefined fields"
+   ]
+  },
+  "src/lib/__tests__/exportData.csv.test.ts": {
+   "path": "src/lib/__tests__/exportData.csv.test.ts",
+   "lines": 86,
+   "is_test": true,
+   "rule_comments": [
+    "lia a célula como texto. Agora sai com vírgula decimal e no máximo 2 casas."
+   ],
+   "calc_fns": [
+    {
+     "name": "gerarCSV",
+     "params": "rows: Record<string, unknown>[], columns: Parameters<typeof exportToCSV>[1]",
+     "body": "let blob: Blob | undefined; const createObjectURL = vi.fn((b: Blob) => { blob = b; return 'blob:teste'; }); const revokeObjectURL = vi.fn(); Object.defineProperty(URL, 'createObjectURL', { value: createObjectURL, configurable: true, writable: true }); Object.defineProperty(URL, 'revokeObjectURL', { value: revokeObjectURL, configurable: true, writable: true }); const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {}); exportToCSV(rows, columns, 'teste'); expect(cl …"
+    }
+   ],
+   "tests": [
+    "exportToCSV — números sem formatter",
+    "inteiro sai sem casas decimais",
+    "inteiro grande usa separador de milhar pt-BR",
+    "decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418)",
+    "negativo sai com vírgula e continua neutralizado contra fórmula (prefixo de tab)",
+    "null e undefined viram célula vazia",
+    "string que começa com ",
+    "formatter explícito tem precedência sobre a formatação numérica",
+    "cabeçalho e separador "
    ]
   },
   "src/lib/__tests__/exportData.test.ts": {
@@ -96929,7 +98132,7 @@
   },
   "src/pages/dashboard/ComprasDashboard.tsx": {
    "path": "src/pages/dashboard/ComprasDashboard.tsx",
-   "lines": 378,
+   "lines": 379,
    "exports": [
     "default memo"
    ],
@@ -96970,6 +98173,19 @@
    "lines": 24,
    "exports": [
     "default withModuleErrorBoundary"
+   ]
+  },
+  "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx": {
+   "path": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+   "lines": 84,
+   "is_test": true,
+   "rule_comments": [
+    "e, no fuso do Brasil, exibia \"28/02/2026\" — o vencimento aparecia um dia antes."
+   ],
+   "tests": [
+    "ComprasDashboard — vencimento das urgências",
+    "roda no fuso do Brasil (pré-condição do teste)",
+    "data_necessidade "
    ]
   },
   "src/pages/dev/XbzNetworkPanelHarness.tsx": {
@@ -100328,6 +101544,20 @@
     "50"
    ],
    "uses_service_role": true
+  },
+  "src/tests/security/rls-tenant-isolation-restrictive.test.ts": {
+   "path": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+   "lines": 82,
+   "is_test": true,
+   "rule_comments": [
+    "* Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono.",
+    "é RESTRICTIVE (papel não pode ser furado por OR)\", () => {"
+   ],
+   "doc": "Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono. Como PERMISSIVE, o Postgres junta a policy de tenant com as de papel por OR, e qualquer logado do tenant (mesmo sem papel em user_roles) lia e escrevia fornecedores, contratos, cotações etc. Migration: …",
+   "tests": [
+    "RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR)",
+    "tenant_isolation_%s: última definição é AS RESTRICTIVE"
+   ]
   },
   "src/tests/spot/spotApi.test.ts": {
    "path": "src/tests/spot/spotApi.test.ts",
@@ -105476,6 +106706,30 @@
    "path": "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql",
    "lines": 21
   },
+  "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql": {
+   "path": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql",
+   "lines": 31,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql": {
+   "path": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql",
+   "lines": 165
+  },
+  "supabase/migrations/20261112171300_secdef_revoga_anon.sql": {
+   "path": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
+   "lines": 216,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql": {
+   "path": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
+   "lines": 175,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql": {
+   "path": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
+   "lines": 184,
+   "uses_service_role": true
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -105696,10 +106950,109 @@
   }
  },
  "git": {
-  "sha": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
+  "sha": "b6e0427f4ae544e1da0c73675ca99d01dc0209cb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b6e0427",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): vencimento das urgências aparecia um dia antes (#59)",
+    "files": [
+     "src/pages/dashboard/ComprasDashboard.tsx",
+     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
+    ]
+   },
+   {
+    "sha": "284eef4",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)",
+    "files": [
+     "src/lib/__tests__/exportData.csv.test.ts",
+     "src/lib/exportData.ts"
+    ]
+   },
+   {
+    "sha": "d429cef",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)",
+    "files": [
+     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+     "src/hooks/useDashboardKPIs.ts",
+     "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+    ]
+   },
+   {
+    "sha": "c3f4dcf",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)",
+    "files": [
+     "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
+    ]
+   },
+   {
+    "sha": "5efb113",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)",
+    "files": [
+     "docs/agentes/secdef-classificacao.md",
+     "supabase/migrations/20261112171300_secdef_revoga_anon.sql"
+    ]
+   },
+   {
+    "sha": "7db0e1c",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)",
+    "files": [
+     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+     "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+    ]
+   },
+   {
+    "sha": "cdc9eee",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)",
+    "files": [
+     ".github/workflows/contexto.yml",
+     ".github/workflows/notifica-falha-main.yml",
+     ".github/workflows/types-sync.yml",
+     "AGENTS.md",
+     "ai-context.config.json",
+     "docs/agentes/contexto-ia.md",
+     "docs/agentes/github-ci.md",
+     "docs/agentes/mapa-repo.md",
+     "docs/ci/README.md",
+     "scripts/ai-context/README.md",
+     "scripts/ci/branch-podaveis.mjs",
+     "scripts/supabase_snapshot/README.md",
+     "scripts/supabase_snapshot/snapshot.py"
+    ]
+   },
+   {
+    "sha": "9bd9b15",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)",
+    "files": [
+     "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
+    ]
+   },
+   {
+    "sha": "63a0e0c",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(deploy): rotas da spa deixam de dar 404 ao abrir link direto (#50)",
+    "files": [
+     "vercel.json"
+    ]
+   },
    {
     "sha": "5507e43",
     "date": "2026-11-12",
@@ -105993,183 +107346,35 @@
     "files": [
      ".github/workflows/contexto.yml"
     ]
-   },
-   {
-    "sha": "7e181fc",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(tests): corrige timer infinito no Vitest logger fuzz test",
-    "files": [
-     "src/lib/__tests__/logger.fuzz.test.ts"
-    ]
-   },
-   {
-    "sha": "8e8f9cb",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(edge): corrige asserção de truncamento no teste Deno logger",
-    "files": [
-     "supabase/functions/_shared/logger.fuzz.test.ts"
-    ]
-   },
-   {
-    "sha": "0bdcd6f",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "ci(quality-gate): liga unit tests de CI e guard de integridade do AGENTS.md (#22)",
-    "files": [
-     ".github/workflows/main.yml"
-    ]
-   },
-   {
-    "sha": "7e7efb6",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore(agentes): adota o padrão CLAUDE.md + AGENTS.md + docs/agentes do Zapp",
-    "files": [
-     ".agents/skills/promo-supply-v2/SKILL.md",
-     ".agents/skills/promo-supply-v2/agents/openai.yaml",
-     ".claude/skills/promo-supply-v2/SKILL.md",
-     ".hermes.md",
-     "AGENTS.md",
-     "CLAUDE.md",
-     "docs/agentes/banco.md",
-     "docs/agentes/contexto-ia.md",
-     "docs/agentes/deploy.md",
-     "docs/agentes/github-ci.md",
-     "docs/agentes/mapa-repo.md",
-     "docs/agentes/regras-dominio.md",
-     "docs/agentes/servicos-externos.md",
-     "scripts/ci/agents-docs-baseline.unit.mjs",
-     "scripts/ci/check-agents-md-integrity.mjs"
-    ]
-   },
-   {
-    "sha": "d44bb8f",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)",
-    "files": [
-     ".github/workflows/contexto.yml",
-     ".github/workflows/inventario-estado-semanal.yml",
-     ".github/workflows/types-sync.yml",
-     ".gitignore",
-     "AGENTS.md",
-     "ai-context.config.json",
-     "docs/agentes/contexto-ia.md",
-     "docs/contexto/regras/manual/README.md",
-     "docs/contexto/regras/manual/TEMPLATE-regras-de-negocio.md",
-     "inventario/README.md",
-     "inventario/estado/edges.json",
-     "inventario/estado/rotas.json",
-     "package.json",
-     "scripts/ai-context/README.md",
-     "scripts/ai-context/cenarios.mjs",
-     "scripts/ai-context/gerar.mjs",
-     "scripts/ai-context/gerar.unit.mjs",
-     "scripts/ci/ai-context-generator.unit.mjs",
-     "scripts/ci/regras-negocio.unit.mjs",
-     "scripts/ci/supabase-snapshot.unit.mjs",
-     "scripts/inventario/banco.sql",
-     "scripts/inventario/gerar-banco.mjs",
-     "scripts/inventario/gerar-repo.mjs",
-     "scripts/inventario/gerar-rotas.mjs",
-     "scripts/inventario/mudou-conteudo.mjs",
-     "scripts/regras_negocio/README.md",
-     "scripts/regras_negocio/generate.py",
-     "scripts/regras_negocio/indice.py",
-     "scripts/regras_negocio/publish.sh",
-     "scripts/regras_negocio/test_generate.py",
-     "scripts/supabase_snapshot/README.md",
-     "scripts/supabase_snapshot/requirements.txt",
-     "scripts/supabase_snapshot/snapshot.py",
-     "scripts/supabase_snapshot/test_snapshot.py",
-     "scripts/types-sync/README.md",
-     "scripts/types-sync/certs/supabase-prod-ca-2021.crt",
-     "scripts/types-sync/check-remocoes-destrutivas.mjs",
-     "scripts/types-sync/gen-types.sh",
-     "scripts/types-sync/identidade-banco.mjs",
-     "scripts/types-sync/install-pgbouncer.sh",
-     "scripts/types-sync/install-postgresql-client.sh",
-     "scripts/types-sync/local-pg-proxy.mjs",
-     "scripts/types-sync/typecheck-ratchet.mjs"
-    ]
-   },
-   {
-    "sha": "0bdc3cb",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(supabase): aponta todo o código ativo para o projeto Supabase oficial",
-    "files": [
-     "ESTADO_ATUAL.md",
-     "index.html",
-     "src/pages/admin/SSOConfig.tsx",
-     "src/tests/load/backend-stress.yml",
-     "supabase/config.toml",
-     "tests-rls/rls-isolation.test.ts",
-     "vite.config.ts"
-    ]
-   },
-   {
-    "sha": "32c06b2",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)",
-    "files": [
-     ".github/workflows/ci.yml"
-    ]
-   },
-   {
-    "sha": "153e02d",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)",
-    "files": [
-     ".github/workflows/main.yml",
-     "src/hooks/__tests__/useToastReducer.test.ts",
-     "src/lib/__tests__/logger.fuzz.test.ts",
-     "src/lib/__tests__/performance.test.ts"
-    ]
-   },
-   {
-    "sha": "8ed0f37",
-    "date": "2026-11-08",
-    "author": "copilot-swe-agent[bot]",
-    "subject": "Merge remote-tracking branch 'refs/remotes/origin/main' into fix/ui-render-and-math",
-    "files": []
    }
   ],
   "hot_files": [
-   [
-    ".github/workflows/main.yml",
-    4
-   ],
-   [
-    "package.json",
-    4
-   ],
    [
     ".github/workflows/contexto.yml",
     3
    ],
    [
-    "AGENTS.md",
+    "docs/ci/README.md",
     3
    ],
    [
-    "src/components/compras/ExecutiveDashboard.tsx",
+    "package.json",
+    3
+   ],
+   [
+    "src/pages/dashboard/ComprasDashboard.tsx",
     2
    ],
    [
-    "src/pages/relatorios/Relatorios.tsx",
+    "src/lib/exportData.ts",
     2
    ],
    [
-    ".gitignore",
+    ".github/workflows/notifica-falha-main.yml",
     2
    ],
    [
-    "docs/ci/README.md",
+    "AGENTS.md",
     2
    ],
    [
@@ -106181,43 +107386,47 @@
     2
    ],
    [
-    "src/lib/__tests__/logger.fuzz.test.ts",
+    "scripts/ci/branch-podaveis.mjs",
     2
    ],
    [
-    "docs/agentes/contexto-ia.md",
+    "src/components/compras/ExecutiveDashboard.tsx",
     2
    ],
    [
-    "src/components/compras/UrgentItemsList.tsx",
+    "src/pages/relatorios/Relatorios.tsx",
+    2
+   ],
+   [
+    ".github/workflows/main.yml",
+    2
+   ],
+   [
+    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     1
    ],
    [
-    "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
+    "src/lib/__tests__/exportData.csv.test.ts",
     1
    ],
    [
-    "src/lib/utils.ts",
+    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     1
    ],
    [
-    "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
+    "src/hooks/useDashboardKPIs.ts",
     1
    ],
    [
-    "src/schemas/solicitacao.schema.ts",
+    "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
     1
    ],
    [
-    "vitest.config.ts",
+    "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
     1
    ],
    [
-    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-    1
-   ],
-   [
-    "src/components/compras/CostCenterPerformanceAnalysis.tsx",
+    "docs/agentes/secdef-classificacao.md",
     1
    ]
   ]

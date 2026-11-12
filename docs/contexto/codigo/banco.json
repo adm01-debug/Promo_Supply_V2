@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 283,
+ "migrations": 288,
  "seeds": [],
  "avisos": [
-  "43 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "45 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "btree_gist",
@@ -162,6 +162,7 @@
  ],
  "funcoes": [
   "_invoke_edge_function",
+  "_invoke_spot_sync",
   "_invoke_xbz_sync",
   "admin_scan_runs_sla_status",
   "alert_on_outbox_dead",
@@ -1687,6 +1688,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "tenant_isolation_active_sessions",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can create their own sessions",
      "comando": "insert",
      "para": "public",
@@ -2244,6 +2251,12 @@
    "rls": true,
    "policies": [
     {
+     "nome": "tenant_isolation_approval_delegations",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can create delegations from themselves",
      "comando": "insert",
      "para": "public",
@@ -2479,6 +2492,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_approval_history",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -2685,6 +2704,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_approval_rules",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     },
     {
      "nome": "Users can manage their organization rules",
@@ -3061,6 +3086,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "tenant_isolation_approval_workflows",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can manage their organization workflows",
      "comando": "all",
      "para": "public",
@@ -3409,7 +3440,7 @@
      "nome": "tenant_isolation_audit_logs",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -3997,6 +4028,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_budget_transactions",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -4121,6 +4158,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_categorias",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     },
     {
      "nome": "Users can manage their organization categories",
@@ -4270,6 +4313,12 @@
      "comando": "select",
      "para": "public",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_category_strategies",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -4511,6 +4560,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "tenant_isolation_contact_notes",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can delete their own notes or admins",
      "comando": "delete",
      "para": "public",
@@ -4641,6 +4696,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_contract_documents",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -4743,6 +4804,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_contract_history",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     },
     {
      "nome": "Users can create own contract history entries",
@@ -4864,6 +4931,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_contract_items",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -5010,6 +5083,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_contract_penalties",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -5300,6 +5379,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_contracts",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -5773,7 +5858,7 @@
      "nome": "tenant_isolation_cotacoes",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -6010,6 +6095,12 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_creditos_fornecedor",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -6675,6 +6766,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "tenant_isolation_department_budgets",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can manage their organization budgets",
      "comando": "all",
      "para": "public",
@@ -7021,6 +7118,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_devolucao_itens",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -7237,6 +7340,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_devolucoes",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -8454,6 +8563,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_fiscal_documents",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -9013,7 +9128,7 @@
      "nome": "tenant_isolation_fornecedores",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -9921,7 +10036,7 @@
      "nome": "tenant_isolation_licitacao_propostas",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -10173,7 +10288,7 @@
      "nome": "tenant_isolation_licitacoes",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -10967,6 +11082,12 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_order_contracts",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -11268,6 +11389,12 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_pagamentos",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -11642,6 +11769,12 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_payment_history",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -11785,6 +11918,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_pedido_itens",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -12037,6 +12176,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_pedidos",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -12278,6 +12423,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_penalty_escalation_config",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -13928,6 +14079,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_receiving_checklists",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -17039,6 +17196,12 @@
      "comando": "select",
      "para": "public",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_spend_forecasts",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -18489,6 +18652,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_supplier_bonifications",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -18553,6 +18722,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_supplier_documents",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -18606,6 +18781,12 @@
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_supplier_qualification_scores",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [],

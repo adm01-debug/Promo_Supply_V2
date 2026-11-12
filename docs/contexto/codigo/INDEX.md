@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5507e4330da9097dcc81fb92f224ff44edd8bd27` (2026-11-12T13:04:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b6e0427f4ae544e1da0c73675ca99d01dc0209cb` (2026-11-12T16:43:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (682), SQL (284), Markdown (70), JavaScript (50), JSON (21), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (686), SQL (289), Markdown (71), JavaScript (50), JSON (22), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -27,16 +27,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - gerenciador_pacotes: bun
 - node: n/d
 - python: n/d
-- deploy: n/d
+- deploy: vercel
 - monorepo: n/d
 - pastas_fonte: src
 
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1155 |
-| arquivos_codigo | 735 |
-| linhas_codigo | 151121 |
+| arquivos_total | 1166 |
+| arquivos_codigo | 739 |
+| linhas_codigo | 151457 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -46,19 +46,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 38 |
 | tabelas | 164 |
-| migrations | 283 |
+| migrations | 288 |
 | cron_jobs | 68 |
-| testes | 145 |
+| testes | 149 |
 | workflows | 8 |
 | scripts | 43 |
-| docs_md | 70 |
+| docs_md | 71 |
 
 ## Onde ficam as coisas
 - telas: src/pages (52), src/features (1)
 - componentes: src/components (214), src/pages (76), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (95), co-localizado (*.test) (25), outro (25)
+- testes: co-localizado (__tests__) (98), co-localizado (*.test) (26), outro (25)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (12), scripts/types-sync (7), scripts/inventario (5)
@@ -220,7 +220,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `run-audit` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `scim-v2` — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: notifications, push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
@@ -319,7 +319,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 14 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_orfas: 13 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
 - edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 2 — ex.: comprovantes, documentos
@@ -336,31 +336,31 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
+- AGENTS.md (5)
+- .github/workflows/contexto.yml (4)
 - .github/workflows/main.yml (4)
-- AGENTS.md (4)
 - package.json (4)
-- .github/workflows/contexto.yml (3)
 - ESTADO_ATUAL.md (3)
+- docs/agentes/contexto-ia.md (3)
+- docs/agentes/github-ci.md (3)
+- docs/agentes/mapa-repo.md (3)
+- docs/ci/README.md (3)
+- .github/workflows/notifica-falha-main.yml (2)
+- .github/workflows/types-sync.yml (2)
 - DOCS/ESTADO/00_INDICE.md (2)
 - DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md (2)
 - DOCS/ESTADO/L07_HOOKS.md (2)
 - DOCS/ESTADO/L12_BANCO_E_RUNTIME.md (2)
-- DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md (2)
-- docs/agentes/contexto-ia.md (2)
-- docs/agentes/github-ci.md (2)
-- docs/agentes/mapa-repo.md (2)
-- docs/ci/README.md (2)
-- src/components/compras/ExecutiveDashboard.tsx (2)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
 - `branch-hygiene-audit.yml` — Branch Hygiene Audit (schedule, workflow_dispatch; cron 34 9 * * 1)
-- `contexto.yml` — Contexto para agentes de IA (10 min) (push, schedule, workflow_dispatch; cron 3-59/10 * * * *)
+- `contexto.yml` — Contexto para agentes de IA (1h) (push, schedule, workflow_dispatch; cron 3 * * * *)
 - `guards.yml` — Guards offline do repositorio (pull_request, push, workflow_dispatch)
 - `inventario-estado-semanal.yml` — Inventário do estado real (semanal) (schedule, workflow_dispatch; cron 41 10 * * 1)
 - `main.yml` — Freight Quest CI/CD (pull_request, push)
 - `notifica-falha-main.yml` — Notifica falha na main (workflow_run)
-- `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7-59/10 * * * *)
+- `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7 * * * *)
 
 ## Scripts npm
 - `maintenance:doctor`: `sh scripts/maintenance/run.sh doctor --root .`
@@ -407,25 +407,25 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
-- subpastas de docs/: docs/agentes (7), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
+- 2026-11-12 `284eef46` fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)
+- 2026-11-12 `d429cef0` fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)
+- 2026-11-12 `c3f4dcf7` fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)
+- 2026-11-12 `5efb1134` security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)
+- 2026-11-12 `7db0e1c0` security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)
+- 2026-11-12 `cdc9eee5` ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)
+- 2026-11-12 `9bd9b15f` security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)
+- 2026-11-12 `63a0e0c5` fix(deploy): rotas da spa deixam de dar 404 ao abrir link direto (#50)
 - 2026-11-12 `5507e433` fix(ui): citar agora abre a cotacao da solicitacao certa (#48)
 - 2026-11-12 `ffcc71ad` fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)
 - 2026-11-12 `dd8f1fd8` fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)
 - 2026-11-12 `5cdeeaca` fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)
 - 2026-11-12 `257a4c44` fix(ui): corrige acentuacao corrompida em 12 telas (#44)
 - 2026-11-12 `e897b429` fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)
-- 2026-11-12 `aca8fbd9` chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)
-- 2026-11-12 `5001fc3a` security(banco): views com security_invoker e sem leitura anonima (#41)
-- 2026-11-12 `c9488d5d` security(banco): revoga execute_read_query de anon e authenticated (#40)
-- 2026-11-12 `4cc1a7a9` fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)
-- 2026-11-11 `75c0e960` fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)
-- 2026-11-11 `b7db2755` fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)
-- 2026-11-11 `6ea00349` fix(edge): require JWT and validate identity/tenant across edge functions (#36)
-- 2026-11-11 `a2eadc4d` fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)
-- 2026-11-11 `3f0aa49a` chore(automacao): conecta testes, grafo e manutenção aos gatilhos (#32)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

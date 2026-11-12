@@ -5,20 +5,20 @@
   "vitest",
   "playwright"
  ],
- "total": 145,
+ "total": 149,
  "por_tipo": {
   "contrato": 4,
   "pytest": 2,
-  "unit": 139
+  "unit": 143
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 95
+   "arquivos": 98
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 25
+   "arquivos": 26
   },
   {
    "padrao": "outro",
@@ -541,6 +541,15 @@
    "casos": 4
   },
   {
+   "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+   "tipo": "unit",
+   "linhas": 78,
+   "testa": [
+    "src/hooks/useDashboardKPIs.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",
    "tipo": "unit",
    "linhas": 112,
@@ -613,6 +622,15 @@
     "src/lib/dbMapping.ts"
    ],
    "casos": 50
+  },
+  {
+   "arquivo": "src/lib/__tests__/exportData.csv.test.ts",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/lib/exportData.ts"
+   ],
+   "casos": 8
   },
   {
    "arquivo": "src/lib/__tests__/exportData.test.ts",
@@ -902,6 +920,15 @@
    "casos": 28
   },
   {
+   "arquivo": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+   "tipo": "unit",
+   "linhas": 84,
+   "testa": [
+    "src/pages/dashboard/ComprasDashboard.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
    "tipo": "unit",
    "linhas": 189,
@@ -1139,6 +1166,13 @@
    "casos": 12
   },
   {
+   "arquivo": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+   "tipo": "unit",
+   "linhas": 82,
+   "testa": [],
+   "casos": 1
+  },
+  {
    "arquivo": "src/tests/spot/spotApi.test.ts",
    "tipo": "unit",
    "linhas": 150,
@@ -1343,6 +1377,7 @@
   "src/hooks/use-toast.ts": 1,
   "src/hooks/useApprovalHistory.ts": 1,
   "src/hooks/useBulkOperations.ts": 1,
+  "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useFeedback.ts": 1,
   "src/hooks/useFornecedores.ts": 1,
   "src/hooks/useFuseSearch.ts": 1,
@@ -1356,7 +1391,7 @@
   "src/integrations/supabase/client.ts": 4,
   "src/lib/clearFiltersShortcut.ts": 1,
   "src/lib/dbMapping.ts": 1,
-  "src/lib/exportData.ts": 1,
+  "src/lib/exportData.ts": 2,
   "src/lib/feedbackToast.ts": 2,
   "src/lib/filterClearReporter.ts": 1,
   "src/lib/haptics.ts": 1,
@@ -1385,6 +1420,7 @@
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,
   "src/pages/cotacao/cotacaoHelpers.ts": 1,
+  "src/pages/dashboard/ComprasDashboard.tsx": 1,
   "src/pages/devolucoes/DevolucoesModals.tsx": 1,
   "src/pages/devolucoes/devolucoesData.ts": 1,
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
@@ -1438,7 +1474,6 @@
    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
    "src/pages/contratos/Contratos.tsx",
    "src/pages/cotacao/Cotacao.tsx",
-   "src/pages/dashboard/ComprasDashboard.tsx",
    "src/pages/dashboard/DashboardExecutivo.tsx",
    "src/pages/dev/XbzNetworkPanelHarness.tsx",
    "src/pages/devolucoes/Devolucoes.tsx",
@@ -1497,7 +1532,6 @@
    "src/hooks/useCooldown.ts",
    "src/hooks/useCriticalAlertsBadge.ts",
    "src/hooks/useDashboardFilters.ts",
-   "src/hooks/useDashboardKPIs.ts",
    "src/hooks/useDevolucoes.ts",
    "src/hooks/useEstoque.ts",
    "src/hooks/useExecutiveDashboardData.ts",

@@ -22,8 +22,8 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (95)",
-   "co-localizado (*.test) (25)",
+   "co-localizado (__tests__) (98)",
+   "co-localizado (*.test) (26)",
    "outro (25)"
   ],
   "edge_functions": "supabase/functions",
@@ -58,11 +58,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(ui): citar agora abre a cotacao da solicitacao certa (#48)",
-   "fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)",
-   "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)",
-   "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)",
-   "fix(ui): corrige acentuacao corrompida em 12 telas (#44)"
+   "fix(ui): vencimento das urgências aparecia um dia antes (#59)",
+   "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)",
+   "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)",
+   "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)",
+   "security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)"
   ]
  },
  "pr_template": null,

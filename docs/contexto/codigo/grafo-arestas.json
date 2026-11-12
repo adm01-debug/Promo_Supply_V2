@@ -2673,6 +2673,7 @@
    "src/hooks/useDashboardKPIs.ts",
    "src/hooks/useRealtimeSubscription.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/dateUtils.ts",
    "src/lib/performance.ts",
    "src/lib/utils.ts",
    "src/stores/dashboardLayoutStore.ts"

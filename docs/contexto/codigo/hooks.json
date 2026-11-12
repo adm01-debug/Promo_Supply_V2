@@ -1033,7 +1033,7 @@
     "src/components/compras/DashboardInsights.tsx",
     "src/pages/dashboard/ComprasDashboard.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useDevolucoes.ts",

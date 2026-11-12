@@ -3,11 +3,11 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (682)",
-   "SQL (284)",
-   "Markdown (70)",
+   "TypeScript (686)",
+   "SQL (289)",
+   "Markdown (71)",
    "JavaScript (50)",
-   "JSON (21)",
+   "JSON (22)",
    "YAML (9)",
    "Shell (7)",
    "CSS (6)"
@@ -33,7 +33,9 @@
   "gerenciador_pacotes": "bun",
   "node": null,
   "python": null,
-  "deploy": [],
+  "deploy": [
+   "vercel"
+  ],
   "monorepo": null,
   "pastas_fonte": [
    "src"
@@ -129,6 +131,7 @@
   "tsconfig.app.json",
   "tsconfig.json",
   "tsconfig.node.json",
+  "vercel.json",
   "vite.config.ts",
   "vitest.config.ts"
  ],
@@ -194,14 +197,14 @@
   },
   {
    "arquivo": ".github/workflows/contexto.yml",
-   "nome": "Contexto para agentes de IA (10 min)",
+   "nome": "Contexto para agentes de IA (1h)",
    "gatilhos": [
     "push",
     "schedule",
     "workflow_dispatch"
    ],
    "crons": [
-    "3-59/10 * * * *"
+    "3 * * * *"
    ],
    "branches": [
     "main"
@@ -385,7 +388,7 @@
     "workflow_dispatch"
    ],
    "crons": [
-    "7-59/10 * * * *"
+    "7 * * * *"
    ],
    "branches": [
     "main"
@@ -456,7 +459,7 @@
  "docs_em_subpastas": [
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 7
+   "arquivos_md": 8
   },
   {
    "pasta": "docs/contexto",
@@ -579,10 +582,20 @@
   ]
  },
  "deploy": {
-  "alvos": [],
+  "alvos": [
+   "vercel"
+  ],
   "dockerfiles": [],
   "compose": [],
-  "vercel": null
+  "vercel": {
+   "framework": null,
+   "build": null,
+   "rewrites": 1,
+   "redirects": 0,
+   "headers": 0,
+   "ignore_command": null,
+   "crons": []
+  }
  },
  "integracoes": {
   "sdks": [

@@ -423,10 +423,11 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_modulos": [
     "components/compras",
-    "lib"
+    "lib",
+    "pages/dashboard"
    ],
    "coberto_por_testes": 0,
    "orfao": false
@@ -480,7 +481,7 @@
     "solicitacaoColumns"
    ],
    "export_default": null,
-   "linhas": 139,
+   "linhas": 144,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -498,7 +499,7 @@
     "pages/relatorio-negociacoes",
     "pages/relatorios"
    ],
-   "coberto_por_testes": 1,
+   "coberto_por_testes": 2,
    "orfao": false
   },
   {

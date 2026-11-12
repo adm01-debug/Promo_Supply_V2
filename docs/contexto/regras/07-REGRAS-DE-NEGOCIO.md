@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5507e4330d` · branch `main` · 2026-11-12 19:04 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b6e0427f4a` · branch `main` · 2026-11-12 21:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -193,16 +193,12 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | Public Access | SELECT | public | permissive | `bucket_id = 'product-images' AND (auth.role() = 'anon' OR auth.role() = 'authenticated')` |  |
 | `currencies` | currencies_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | exchange_rates_authenticated_read | SELECT | authenticated | permissive | `true` |  |
-| `licitacoes` | tenant_isolation_licitacoes | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `licitacao_propostas` | tenant_isolation_licitacao_propostas | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `fornecedor_categorias` | tenant_isolation_fornecedor_categorias | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `telemetry_logs_legacy_20260712` | authenticated_insert_telemetry_logs | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `budget_audit_logs` | admin_view_budget_audit_logs | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `dependency_health` | authenticated_read_dependency_health | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `dependency_health_history` | authenticated_read_dependency_health_history | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `solicitacoes` | tenant_isolation_solicitacoes | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
-| `cotacoes` | tenant_isolation_cotacoes | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
-| `fornecedores` | tenant_isolation_fornecedores | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
 | `cost_centers` | tenant_isolation_cost_centers | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
 | `profiles` | profiles_tenant_isolation | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
 | `produtos` | tenant_isolation_produtos | SELECT | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |  |
@@ -251,7 +247,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `telemetry_logs` | authenticated_insert_telemetry_logs | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `telemetry_logs_legacy_20260712` | admins_read_legacy_telemetry | SELECT | public | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `audit_logs_legacy_20260712` | audit_logs_legacy_admin_read | SELECT | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
-| `audit_logs` | tenant_isolation_audit_logs | ALL | authenticated | permissive | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
 | `audit_logs` | Admins can view all audit logs | SELECT | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | `audit_logs` | authenticated_insert_audit_logs | INSERT | authenticated | permissive |  | `tenant_in_my_group(tenant_id) AND auth.uid() IS NOT NULL` |
 | `table_size_snapshots` | admins_read_table_size_snapshots | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
@@ -291,6 +286,32 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `spot_customization_options` | Allowed roles can view spot customization | SELECT | authenticated | permissive | `has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role)` |  |
 | `spot_estoque` | Allowed roles can view spot estoque | SELECT | authenticated | permissive | `has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role)` |  |
 | `spot_api_sync_log` | Allowed roles can view spot sync log | SELECT | authenticated | permissive | `has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role)` |  |
+| `active_sessions` | tenant_isolation_active_sessions | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_delegations` | tenant_isolation_approval_delegations | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_history` | tenant_isolation_approval_history | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_rules` | tenant_isolation_approval_rules | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_workflows` | tenant_isolation_approval_workflows | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `audit_logs` | tenant_isolation_audit_logs | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `budget_transactions` | tenant_isolation_budget_transactions | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `categorias` | tenant_isolation_categorias | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `category_strategies` | tenant_isolation_category_strategies | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contact_notes` | tenant_isolation_contact_notes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contract_documents` | tenant_isolation_contract_documents | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contract_history` | tenant_isolation_contract_history | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contract_items` | tenant_isolation_contract_items | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contract_penalties` | tenant_isolation_contract_penalties | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contracts` | tenant_isolation_contracts | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `cotacoes` | tenant_isolation_cotacoes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `creditos_fornecedor` | tenant_isolation_creditos_fornecedor | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `department_budgets` | tenant_isolation_department_budgets | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `devolucao_itens` | tenant_isolation_devolucao_itens | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `devolucoes` | tenant_isolation_devolucoes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `fiscal_documents` | tenant_isolation_fiscal_documents | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `fornecedores` | tenant_isolation_fornecedores | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `licitacao_propostas` | tenant_isolation_licitacao_propostas | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `licitacoes` | tenant_isolation_licitacoes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `order_contracts` | tenant_isolation_order_contracts | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| … +10 linhas — lista completa em `context.json` | | | | | | |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -726,6 +747,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `get_db_health_snapshot` | access denied: admin role required | `supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql` |
 | `execute_read_query` | Somente EXPLAIN é permitido | `supabase/migrations/20261107150000_execute_read_query.sql` |
 | `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/migrations/20261107150000_execute_read_query.sql` |
+| `get_compras_dashboard_metrics` | not authenticated | `supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql` |
+| `get_compras_dashboard_metrics` | forbidden | `supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2243,7 +2266,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2594 testes em 116 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2611 testes em 120 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2334,6 +2357,7 @@ _nenhum item encontrado_
 | `scripts/lib/seguranca-processo.test.mjs` | 10 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · estaDentro aceita a raiz e subpastas · estaDentro recusa  … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
+| `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `tests-rls/rls-isolation.test.ts` | 9 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
@@ -2355,13 +2379,16 @@ _nenhum item encontrado_
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
+| `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 3 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
+| `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `src/tests/contracts.test.ts` | 3 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes |
 | `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
+| `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
