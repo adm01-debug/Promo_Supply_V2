@@ -43,8 +43,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+<<<<<<< HEAD
       // Redirect Deno-style HTTPS zod import used in edge function shared contracts
       "https://esm.sh/zod@3.22.4": path.resolve(__dirname, "node_modules/zod/lib/index.mjs"),
+=======
+      // Edge Functions (Deno) importam zod via URL remota. No vitest (Node)
+      // o loader ESM não resolve `https:`, então mapeamos para o pacote npm.
+      "https://esm.sh/zod@3.22.4": "zod",
+>>>>>>> b261b613 (fix: corrige bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos)
     },
   },
 });

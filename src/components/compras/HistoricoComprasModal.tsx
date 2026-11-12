@@ -4,7 +4,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Package, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+<<<<<<< HEAD
 import { formatCurrency } from "@/lib/utils";
+=======
+>>>>>>> b261b613 (fix: corrige bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos)
 import { formatDateBR } from "@/lib/dateUtils";
 
 interface HistoricoComprasModalProps {
