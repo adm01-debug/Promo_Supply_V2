@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { logger } from '@/lib/logger';
 import { 
   Sheet, 
@@ -46,6 +47,7 @@ export const UrgencyDetailsSheet = ({
   onClose,
   onStatusUpdate 
 }: UrgencyDetailsSheetProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'details' | 'history'>('details');
 
   const { data: item, isLoading } = useQuery({
@@ -252,7 +254,7 @@ export const UrgencyDetailsSheet = ({
                 <div className="grid grid-cols-1 gap-2">
                   <Button 
                     className="w-full h-11 bg-primary hover:bg-primary/90 font-black tracking-wider uppercase text-xs gap-2"
-                    onClick={() => toast.info("Funcionalidade de cotação direta em desenvolvimento")}
+                    onClick={() => { onClose(); navigate(`/cotacao?id=${item.id}`); }}
                   >
                     <Zap className="w-4 h-4 fill-current" />
                     Iniciar Cotação Imediata
