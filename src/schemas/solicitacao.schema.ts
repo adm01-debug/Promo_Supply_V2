@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseDateValue } from "@/lib/utils";
 
 export const solicitacaoSchema = z.object({
   empresa: z.string().min(1, "Selecione a empresa"),
@@ -8,7 +9,7 @@ export const solicitacaoSchema = z.object({
   quantidade: z.number().int().positive("A quantidade deve ser maior que zero"),
   tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']),
   prazoEntrega: z.string().min(1, "Informe o prazo de entrega").refine((val) => {
-    const date = new Date(val);
+    const date = parseDateValue(val);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return !isNaN(date.getTime()) && date >= today;
