@@ -390,6 +390,118 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-4ac713ad03b4961a",
+      "kind": "legacy",
+      "files": ["scripts/lib/psql-leitura.mjs"],
+      "manual": ["node", "scripts/lib/psql-leitura.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-9418c2c3be3da9ce",
+      "kind": "legacy",
+      "files": ["scripts/lib/psql-leitura.test.mjs"],
+      "manual": ["node", "--test", "scripts/lib/psql-leitura.test.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-abff43daa0725412",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-77c966128715ca86",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/banco.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/banco.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-75ccb4f73f7bfe65",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/gates.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/gates.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-657dace138163067",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/gentypes.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/gentypes.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-7454700adf01ed8e",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/identidade.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/identidade.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-aba208ea55211607",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/lib.mjs"],
+      "manual": ["node", "scripts/ci/inventario-types/lib.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-218b930265ad781e",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/pg.mjs"],
+      "manual": ["node", "scripts/ci/inventario-types/pg.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-616715be33e9a5bd",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/repo.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/repo.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-e90c3384fbb4367b",
+      "kind": "legacy",
+      "files": ["scripts/ci/inventario-types/rotas.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/inventario-types/rotas.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-cffd73a1a71fab5e",
+      "kind": "legacy",
+      "files": ["scripts/ci/scripts-operacionais.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/scripts-operacionais.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-930d8ebb92208d91",
+      "kind": "legacy",
+      "files": ["scripts/ci/workflow-yaml-guard.mjs"],
+      "manual": ["node", "scripts/ci/workflow-yaml-guard.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
+      "id": "legacy-4b6abf337064eafb",
+      "kind": "legacy",
+      "files": ["scripts/ci/workflow-yaml-guard.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/workflow-yaml-guard.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado de scripts registrados apenas nos workflows; refer?ncias literais: .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher n?o executa esta opera??o."
+    },
+    {
       "id": "legacy-696a607c048e1e9a",
       "kind": "legacy",
       "files": ["scripts/realtime-audit.ts"],
