@@ -1,22 +1,23 @@
 # Prontidão para produção — Promo Supply V2
 
-> Auditoria de 2026-11-12 sobre a `main` em `4cc1a7a` (deploy Vercel `dpl_3PGp8bQVi6VSdWBB8yTK48fb9RKB`, READY).
+> Auditoria de 2026-11-12. Linha de base: `main` em `4cc1a7a`. Estado final: `main` em `b6e0427` (deploy de produção READY após #50: `dpl_EYjKiASE1eiagykXutA5UBnbEAfg`).
 > Banco auditado: Supabase `lmypcdfsrgfftzhxawao` (confirmado por `supabase_functions_list` → `project_ref`).
 > Toda prova abaixo foi obtida nesta sessão (saída de comando, query ou request). Status: **OK** (com prova) ou **BLOQUEADO** (erro exato + o que falta).
 
 ## 0. Resumo
 
-| Área | Situação |
+| Área | Situação final |
 |---|---|
-| Build / typecheck / lint / testes (local, `main`) | OK — ver §1 |
-| GitHub Actions na `main` | orçamento liberado pelo dono; runs #367/#36/#18 re-executados → SUCCESS — ver §2 |
-| Banco: RLS | OK — após #42: **156/156 tabelas com RLS, 0 sem policy** |
-| Banco: advisors nível ERROR | OK — após #41: 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
-| **Segurança crítica** | OK — após #40 (aplicada com aprovação do dono): `anon` → `permission denied for function execute_read_query` |
-| Produção front | OK — SPA 200, 0 erro de runtime em 24h |
-| Edges | 27 no ar; 5 não publicadas + 1 inexistente; 5 com 500 — ver §4 |
-| Código pela metade | 0 TODO/FIXME/WIP; 8 botões ligados (#43, #46); restam 65 elementos clicáveis sem ação + mocks no dashboard executivo e card fictício — BLOQUEADO por definição de negócio, ver §5 |
-
+| Qualidade na `main` final `b6e0427` | OK — typecheck exit 0; `eslint .` exit 0 (0 erros); `vitest run` exit 0: **2297 passed / 12 skipped (2309)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (196/196); Deno 36/36 e E2E 30/30 (§1) |
+| GitHub Actions | ver §2 (re-execução pós-merge conferida) |
+| Banco: RLS | OK — 156/156 tabelas com RLS, 0 sem policy (6 tabelas-lixo removidas, #42) |
+| Banco: lints ERROR | OK — 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
+| **Segurança crítica** | OK — `execute_read_query` (#40) e `exec_sql` (#52) fechadas para visitante (`permission denied`); SECURITY DEFINER executáveis por anon **150 → 9** (#54); papéis voltaram a valer em 35 tabelas (#56) |
+| Produção front | OK — link direto/F5 voltaram a funcionar (#50: `/pedidos` 200; antes 404); 0 erro de runtime Vercel |
+| Dashboard de Compras | OK — `get_compras_dashboard_metrics` volta a responder (4 urgências) e fica restrito ao grupo (#55) |
+| Crons do banco | OK no código — apontam para o projeto certo, sem chave literal (#53); **BLOQUEADO** para rodar: falta `edge_invoke_service_key` no Vault e deploy das edges |
+| Edges | 27 no ar; 5 não publicadas + 1 inexistente; 4 de IA com 500; `migrate-helper` sem segredo — BLOQUEADO (token `sbp_`) |
+| Código pela metade | 0 TODO/FIXME/WIP; 10 botões ligados (#43/#46/#47) e 1 link corrigido (#48); 67 itens triados como decisão de negócio (§5.1) |
 ## 1. Linha de base de qualidade (antes de qualquer mudança)
 
 | Verificação | Comando | Resultado |
@@ -52,19 +53,21 @@ Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run →
 ## 3. Banco (`lmypcdfsrgfftzhxawao`)
 
 ### 3.1 Advisors (lints nível ERROR, por SQL — o MCP deste projeto não expõe `get_advisors`)
-| Lint | Resultado | Status |
+| Lint / risco | Estado final (prova) | Status |
 |---|---|---|
-| `rls_disabled_in_public` | 0 (162/162 com RLS) | OK |
-| `policy_exists_rls_disabled` | 0 | OK |
-| `auth_users_exposed` | 0 | OK |
-| `rls_references_user_metadata` | 0 | OK |
-| `security_definer_view` | antes: `supplier_compliance_summary`, `v_system_health_overview` (anon lia 10 linhas). **Depois da #41 aplicada**: lint → `[]`; anon → `permission denied for view supplier_compliance_summary`; admin logado → compliance 10, saúde 2 | OK |
-| (WARN) `materialized_view_in_api` | `mv_dashboard_kpis`: anon_sel `false` após #41 | OK |
-| **Função `execute_read_query`** | antes: executável por `anon` e permitia escrita como `postgres` (1 linha inserida em teste revertido). **Depois da #40 aplicada**: `anon_exec=false`, `auth_exec=false`, `service_exec=true`; chamada como anon → `permission denied for function execute_read_query` | OK |
-| SECURITY DEFINER com SQL dinâmico executável por `anon` | `[]` | OK |
+| `rls_disabled_in_public` | 0 (156/156 com RLS) | OK |
+| `policy_exists_rls_disabled` / `rls_references_user_metadata` / `auth_users_exposed` | 0 / 0 / 0 | OK |
+| `security_definer_view` | antes: `supplier_compliance_summary`, `v_system_health_overview` (anon lia 10 linhas). Após #41: lint `[]`; anon → `permission denied for view`; admin lê 10/2 | OK |
+| `mv_dashboard_kpis` exposta | após #41/#52: `anon` e `authenticated` sem SELECT | OK |
+| `execute_read_query` (anon escrevia como postgres) | após #40: anon → `permission denied for function execute_read_query` | OK |
+| `exec_sql` (anon lia `auth.users` = 12 linhas) | após #52: anon → `permission denied for function exec_sql`; service_role mantém (run-audit) | OK |
+| `xbz_cron_key_get` (devolvia segredo do Vault) | após #52: só service_role | OK |
+| SECURITY DEFINER executáveis por anon | **150 → 9** após #54 (ficam 6 usadas em policy + 3 do login; login sem sessão testado: `is_account_locked` → `{"locked":false}`); exploit `run_all_health_scans` como anon → `permission denied` | OK |
+| Policies por papel anuladas por `tenant_isolation_*` PERMISSIVE | após #56: 35 tabelas com `tenant_isolation_*` RESTRICTIVE; admin lê pedidos 34/fornecedores 10/cotações 61; usuário sem papel: fornecedores 10 → 0 | OK |
+| `has_role(uuid, role)` executável por anon (revela papel de qualquer usuário) | mantida porque é usada em policy | BLOQUEADO — exige reescrever policies para não depender de função exposta (decisão de arquitetura) |
 
 ### 3.2 Migrations × banco
-BLOQUEADO — não existe ledger: `supabase_db_migrations` → "Tabela supabase_migrations.schema_migrations não encontrada neste projeto". 280 arquivos em `supabase/migrations/` sem registro do que rodou. Amostra: a migration mais recente (`20261107150000_execute_read_query.sql`) está aplicada (função existe, corpo com o filtro `EXPLAIN`), **mas** o `REVOKE … FROM PUBLIC` dela não tirou `anon`/`authenticated` (ver 3.1). Comparar os 280 exige decidir com o dono o caminho de apply/baseline.
+BLOQUEADO — não existe ledger: `supabase_db_migrations` → "Tabela supabase_migrations.schema_migrations não encontrada neste projeto". 283 arquivos sem registro do que rodou antes desta sessão; comparar exige decidir com o dono o caminho de baseline. **O que foi aplicado nesta sessão está rastreado** (arquivo → PR mergeada → apply com aprovação do dono → prova): `20261112134500` (#40), `20261112135000` (#41), `20261112135500` (#42), `20261112165500` (#52), `20261112170347` (#56), `20261112171300` (#54), `20261112171742` (#53), `20261112171900` (#55).
 
 ### 3.3 Tabelas (162 na linha de base; 156 após remover as 6 tabelas-lixo na #42) — RLS e policies
 | Tabela | Linhas (est.) | Policies | Status |
@@ -441,25 +444,34 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 
 | PR | O quê | Evidência | Estado |
 |---|---|---|---|
-| [#40](https://github.com/adm01-debug/Promo_Supply_V2/pull/40) | revoga `execute_read_query` de `anon`/`authenticated` | aplicada em produção com aprovação do dono; anon → `permission denied` | **mergeada** (`c9488d5`), CI verde |
-| [#41](https://github.com/adm01-debug/Promo_Supply_V2/pull/41) | views com `security_invoker` + revoga SELECT de `anon` | aplicada; anon → `permission denied`; admin ainda lê 10/2 | **mergeada** (`5001fc3`), CI verde |
-| [#42](https://github.com/adm01-debug/Promo_Supply_V2/pull/42) | remove 6 tabelas-lixo `v_*` | aplicada; 156/156 com RLS, 0 sem policy | **mergeada** (`aca8fbd`), CI verde |
-| [#43](https://github.com/adm01-debug/Promo_Supply_V2/pull/43) | liga CSV, EXPORT REPORT e VER TUDO | CI verde; deploy Vercel `dpl_7XG4VrRHuztHknoQLcj6rJ284j4o` READY (`e897b42`) | **mergeada** |
-| [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | liga Novo Evento, Ver Pedido, Rastrear Entrega e 2× Exportar | typecheck OK, eslint 0 erros, vitest 395/395 nas áreas tocadas | **mergeada** (`5cdeeac`), CI verde incl. E2E |
-| [#47](https://github.com/adm01-debug/Promo_Supply_V2/pull/47) | Iniciar Cotação Imediata abre a cotação; VER MATRIZ KRALJIC rola até a matriz | typecheck OK, eslint 0, vitest 368/368 | ver estado final no PR |
-| [#48](https://github.com/adm01-debug/Promo_Supply_V2/pull/48) | "Citar Agora" usava o número de exibição como id → cotação vazia | produção: 11/11 solicitações com `numero` (ex.: `SOL-2026-1000`), busca do número como id → 0; vitest 368/368 | ver estado final no PR |
-| [#50](https://github.com/adm01-debug/Promo_Supply_V2/pull/50) | `vercel.json` com rewrite da SPA (link direto/F5 em qualquer tela dava 404) | produção `/compras` → 404; preview da PR → 200 | aberta, aguardando CI (Actions sem orçamento) |
-| [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | corrige acentuação corrompida em 12 telas | CI verde; `main`+#44+#46 local: typecheck OK, 2250/2262 (= linha de base), build OK | **mergeada** (`257a4c4`) |
+| [#40](https://github.com/adm01-debug/Promo_Supply_V2/pull/40) | fecha `execute_read_query` para anon/authenticated | anon → `permission denied` | mergeada + aplicada |
+| [#41](https://github.com/adm01-debug/Promo_Supply_V2/pull/41) | views com `security_invoker`, sem leitura anônima | anon → `permission denied`; admin 10/2 | mergeada + aplicada |
+| [#42](https://github.com/adm01-debug/Promo_Supply_V2/pull/42) | remove 6 tabelas-lixo `v_*` | 156/156 com RLS, 0 sem policy | mergeada + aplicada |
+| [#43](https://github.com/adm01-debug/Promo_Supply_V2/pull/43) | CSV, EXPORT REPORT, VER TUDO | CI verde; deploy READY | mergeada |
+| [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | acentuação corrompida em 12 telas | CI verde; deploy READY | mergeada |
+| [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | Novo Evento, Ver Pedido, Rastrear, 2× Exportar | CI verde incl. E2E; deploy READY | mergeada |
+| [#47](https://github.com/adm01-debug/Promo_Supply_V2/pull/47) | Iniciar Cotação Imediata, VER MATRIZ KRALJIC | CI verde (8 checks) | mergeada |
+| [#48](https://github.com/adm01-debug/Promo_Supply_V2/pull/48) | "Citar Agora" usava número de exibição como id | 11/11 com `numero`; busca por número → 0; CI verde | mergeada |
+| [#50](https://github.com/adm01-debug/Promo_Supply_V2/pull/50) | `vercel.json` rewrite da SPA | produção `/pedidos` 404 → 200; deploy `dpl_EYjKiASE1eiagykXutA5UBnbEAfg` READY | mergeada |
+| [#51](https://github.com/adm01-debug/Promo_Supply_V2/pull/51) | crons `types-sync`/`contexto` 10 min → 1 h (aprovado pelo dono) | guards OK; CI verde | mergeada |
+| [#52](https://github.com/adm01-debug/Promo_Supply_V2/pull/52) | fecha `exec_sql` e chaves XBZ para anon | anon lia 12 usuários → `permission denied` | mergeada + aplicada |
+| [#53](https://github.com/adm01-debug/Promo_Supply_V2/pull/53) | crons/chamadas de edge para o projeto certo, chaves do Vault | 0 funções/jobs com ref errado ou JWT; 3 funções em `lmypcdfsrgfftzhxawao` | mergeada + aplicada |
+| [#54](https://github.com/adm01-debug/Promo_Supply_V2/pull/54) | revoga 141 SECURITY DEFINER de anon | 150 → 9; login sem sessão OK | mergeada + aplicada |
+| [#55](https://github.com/adm01-debug/Promo_Supply_V2/pull/55) | dashboard de compras volta a carregar, restrito ao grupo | admin: KPIs + 4 urgências; anon → `permission denied` | mergeada + aplicada |
+| [#56](https://github.com/adm01-debug/Promo_Supply_V2/pull/56) | `tenant_isolation_*` RESTRICTIVE em 35 tabelas | admin vê tudo; sem papel: fornecedores 10 → 0 | mergeada + aplicada |
+| [#57](https://github.com/adm01-debug/Promo_Supply_V2/pull/57) | seta do tour corrompida + guard de encoding | local: guards 198/198, vitest onboarding 59/59 | ver estado no PR |
+| [#58](https://github.com/adm01-debug/Promo_Supply_V2/pull/58) | números do CSV em formato pt-BR | CI verde | mergeada |
+| [#59](https://github.com/adm01-debug/Promo_Supply_V2/pull/59) | vencimento das urgências um dia antes | `main`+#59: typecheck OK, 1011/1011 | mergeada |
 
-## 9. Aguardando decisão do dono
-Decididos e executados nesta sessão: aplicar #40/#41/#42 em produção (feito e verificado) e liberar o orçamento do Actions (feito; CI voltou a rodar).
+Dados alterados em produção com aprovação do dono: `vault.create_secret` de `xbz_cron_key` e `spot_cron_key` (64 caracteres, aleatórios, nunca exibidos; `verify_xbz_cron_key` aceita a certa e recusa a errada); papel `buyer` para 6 usuários `@promo.local` (Ana Silva passou a ver fornecedores 0 → 10 e cotações 61).
 
-Ainda pendentes (BLOQUEADO):
-0. **Orçamento do Actions esgotado de novo** (US$ 215,33): sem ele, o CI pós-merge da `main` e o das PRs #45, #47, #48 e #50 não rodam, e elas não podem ser mergeadas com CI verde.
-1. **Edge functions** — publicar `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos`; republicar as 4 `ai-*`; cadastrar o segredo `MIGRATE_HELPER_ACCESS_KEY`. Exige `SUPABASE_ACCESS_TOKEN` (PAT `sbp_…`): o dono recusou fornecê-lo nesta sessão; o MCP Promo Supply V2 e o gateway `supabase-supply-mcp` não publicam edge (`supabase_functions_list` → "Listagem requer SUPABASE_ACCESS_TOKEN"); os MCPs que publicam ("GESTÃO DE CLIENTES/PRODUTOS") estão presos a outros projetos.
-2. **`process-solicitacao-neural`** — criar a edge ou remover a chamada do front (decisão de produto).
-3. **Elementos clicáveis sem ação triados como "negócio" (§5.1), card fictício `AISupplierSuggestion` e métricas fixas do dashboard executivo** — exigem definição de negócio (o que cada ação faz; metas reais).
-4. **Ledger de migrations** — o banco não tem `supabase_migrations.schema_migrations`; decidir se cria baseline (a partir de agora os arquivos `20261112*` documentam exatamente o que foi aplicado hoje).
-5. **Inventário semanal** — habilitar "Allow GitHub Actions to create and approve pull requests" (Settings → Actions).
-6. **Segurança** — o repositório está **público** (`"visibility":"public"`) embora o `AGENTS.md` diga privado; um token Vercel (`vcp_…`) foi colado no chat desta sessão e deve ser revogado.
-7. **Custo de Actions** — `types-sync` e `contexto` rodam a cada 10 min e são o maior gasto recorrente deste repo.
+## 9. Aguardando decisão do dono (BLOQUEADO)
+1. **`edge_invoke_service_key` no Vault** — é a chave `service_role` do projeto; só o dono cola pelo painel. Sem ela, o outbox (`process-outbox`) e as chamadas do banco às edges ficam parados (#53 aplicada, fail-closed).
+2. **Deploy de edges** — `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos` sem deploy (404); 4 `ai-*` com 500 na versão publicada (o código da `main` carrega: `deno check` OK); `migrate-helper` sem `MIGRATE_HELPER_ACCESS_KEY`; `SPOT_CRON_KEY` da `spot-api` deve receber o valor de `spot_cron_key` do Vault. Exige token `sbp_` (o dono recusou nesta sessão; nenhum MCP disponível publica edge neste projeto).
+3. **`comprador1@promo.local`** — o perfil tem `tenant_id` = id da organização (`df60b900…`, não existe em `tenants`), o que quebra o gatilho de auditoria ao dar papel. A correção (`profiles.tenant_id` → `39838251…`, único tenant da organização) foi barrada pelo controle de permissões da sessão: precisa de aval explícito.
+4. **`CRON_SECRET` ausente** — `verifyCronSecret` (`supabase/functions/_shared/security.ts:196`) é fail-open: qualquer um com a chave anon dispara alert-dispatcher, check-* e weekly-report.
+5. **67 elementos clicáveis sem ação, card fictício `AISupplierSuggestion`, métricas fixas do dashboard executivo, `DeliveryCalendar` nunca renderizado** — exigem definição de negócio (§5.1).
+6. **Ledger de migrations** — decidir baseline (§3.2).
+7. **Dados com mojibake** — `sourcing_event_lots.nome` (6 linhas); correção é DML em produção.
+8. **Segurança da conta** — o repositório está **público**; um token Vercel (`vcp_…`) foi colado no chat e deve ser revogado; `x-spot-cron-key` antigo ficou gravado em 6.037 linhas de `cron.job_run_details` (substituído por chave nova no Vault).
+9. **Inventário semanal** — habilitar "Allow GitHub Actions to create and approve pull requests".
