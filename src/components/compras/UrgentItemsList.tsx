@@ -167,7 +167,7 @@ export const UrgentItemsList = memo(({ items }: UrgentItemsListProps) => {
                   className="h-8 gap-1 text-xs font-bold shadow-sm"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Link to={`/cotacao?id=${item.id}&action=quote`}>
+                  <Link to={`/cotacao?id=${item.dbId || item.id}&action=quote`}>
                     <span className="inline-flex items-center gap-1">
                       <Zap className="w-3.5 h-3.5 fill-current" />
                       Citar Agora
