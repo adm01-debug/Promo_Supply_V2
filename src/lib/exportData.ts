@@ -52,7 +52,12 @@ export function exportToCSV<T extends Record<string, unknown>>(
   const rows = data.map(row =>
     columns.map(col => {
       const raw = row[col.key];
-      const formatted = col.formatter ? col.formatter(raw) : (raw == null ? '' : String(raw));
+      // Número sem formatter sai com vírgula decimal: o Excel pt-BR lê "67.46" como texto.
+      const formatted = col.formatter
+        ? col.formatter(raw)
+        : typeof raw === 'number'
+          ? raw.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
+          : (raw == null ? '' : String(raw));
       return escapeCSV(formatted);
     }).join(';')
   );

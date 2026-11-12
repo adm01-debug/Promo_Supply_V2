@@ -36,7 +36,7 @@ export const DIAS_MINIMOS = 7;
 // `master` e `contexto` entram aqui porque a segunda perna da regra (a lista de branches
 // protegidas da API) esta VAZIA neste repo -- medido: GET /branches?protected=true nao
 // devolve nada. Sem isto, `master` (patch-equivalente a main) virava comando de delete, e
-// `contexto` (branch gerada a cada 10 min, que o AGENTS.md proibe mexer) escapava so por
+// `contexto` (branch gerada a cada hora, que o AGENTS.md proibe mexer) escapava so por
 // ter sempre commit recente.
 export const SEMPRE_FORA = new Set(['main', 'HEAD', 'master', 'contexto']);
 

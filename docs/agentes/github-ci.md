@@ -53,8 +53,8 @@ aquele README à mão: mude o bloco no YAML e regere.
 | Workflow | Gatilho | O que faz |
 |---|---|---|
 | `main.yml` (nome interno **"Freight Quest CI/CD"**, herdado de outro projeto) | push em `main`/`develop`, PR para `main` | `quality-gate` (`bun run lint`, `bun run typecheck`, `bun run scripts/rls-audit.ts` se o arquivo existir e, **só em PR**, `node scripts/ci/check-agents-md-integrity.mjs` com `AGENTS_MD_BASE=origin/<base>`) · `unit-integration-tests` (`bun run test` + `deno test --allow-net --allow-env --allow-read supabase/functions/`) · `e2e-tests` (Playwright chromium, depende do gate) |
-| `contexto.yml` | push em `main` nos paths de código/banco/scripts/`manual/`; `schedule` a cada 10 min (minuto 3); dispatch | gera `docs/contexto/{codigo,supabase,regras}` + `00-INDEX.md` e publica na branch **`contexto`**. Detalhe em `docs/agentes/contexto-ia.md` |
-| `types-sync.yml` | a cada 10 min (minuto 7), push em `supabase/migrations/` ou `scripts/types-sync/`, dispatch | gera `src/integrations/supabase/types.ts` do banco oficial, compara com o commitado e abre PR `automation/types-sync` ou issue `[types-sync]`; nunca faz push direto em `main` |
+| `contexto.yml` | push em `main` nos paths de código/banco/scripts/`manual/`; `schedule` a cada hora (minuto 3); dispatch | gera `docs/contexto/{codigo,supabase,regras}` + `00-INDEX.md` e publica na branch **`contexto`**. Detalhe em `docs/agentes/contexto-ia.md` |
+| `types-sync.yml` | a cada hora (minuto 7), push em `supabase/migrations/` ou `scripts/types-sync/`, dispatch | gera `src/integrations/supabase/types.ts` do banco oficial, compara com o commitado e abre PR `automation/types-sync` ou issue `[types-sync]`; nunca faz push direto em `main` |
 | `inventario-estado-semanal.yml` | segunda 10:41 UTC, dispatch | regenera `inventario/estado/` e abre PR em `automation/inventario-estado`; sem `SUPABASE_ACCESS_TOKEN` pula o `banco.json` com `::warning::` |
 | `guards.yml` | PR e push em `main`; job do bundle só em push/dispatch | guards offline portados do Zapp: suítes de `scripts/`, inventário de testes, `--check` das duas docs geradas, mensagem de commit de cada commit da PR, `bun audit` em dependência de produção e varredura de `service_role` no bundle |
 | `branch-hygiene-audit.yml` | segunda 09:34 UTC, dispatch | somente leitura: branches patch-equivalentes a `main`, branches paradas >30 d, PRs paradas >7 d, versões novas da toolchain, SLA de code scanning. Publica nas issues `[branch-hygiene]` e `[kpi-actions]`; **nunca apaga branch** |
@@ -75,7 +75,7 @@ Fatos que já custaram retrabalho:
   oficial; os comentários ficaram para trás. Fonte de verdade do ref: `docs/agentes/banco.md`.
 - **`main.yml` não tem passo de migration nem de deploy de edge function** — nenhum workflow publica edge;
   ver `docs/agentes/deploy.md`.
-- **Custo:** o repo é privado e o `contexto.yml` roda a cada 10 min. Antes de propor outro agendamento,
+- **Custo:** o repo é privado e o `contexto.yml` roda a cada hora. Antes de propor outro agendamento,
   confira se um dos sete workflows já cobre o que você quer. A issue `[kpi-actions]`, atualizada toda
   segunda pelo `branch-hygiene-audit.yml`, diz quantos minutos cada workflow consumiu nos últimos 7 dias —
   consulte ela antes de discutir custo de chute.

@@ -6,7 +6,7 @@ Ler quando precisar saber onde fica algo antes de buscar por texto.
 
 | Precisa de | Leia |
 |---|---|
-| **Contexto gerado para agentes — antes de qualquer tarefa ou planejamento** | **`docs/contexto/00-INDEX.md` na branch `contexto`** (`git show origin/contexto:docs/contexto/00-INDEX.md`): diz qual fonte é dona de cada fato e a ordem de leitura. Regerado a cada 10 min — não editar. Como funciona: `docs/agentes/contexto-ia.md` |
+| **Contexto gerado para agentes — antes de qualquer tarefa ou planejamento** | **`docs/contexto/00-INDEX.md` na branch `contexto`** (`git show origin/contexto:docs/contexto/00-INDEX.md`): diz qual fonte é dona de cada fato e a ordem de leitura. Regerado a cada 1 h — não editar. Como funciona: `docs/agentes/contexto-ia.md` |
 | O que está quebrado, o que nunca entrou em operação e qual a prioridade | `ESTADO_ATUAL.md` (executivo, auditoria de 2026-08-16) e as provas em `DOCS/ESTADO/00_INDICE.md` (`L01`…`L15`, toda linha com `arquivo:linha`) |
 | Onde fica o código de cada fluxo (tela → hook → edge → tabela) | `inventario/estado/rotas.json` (gerado) e `DOCS/CODEBASE_ATLAS/` (escrito à mão, números defasados) |
 | Qual banco, migration, GitHub/CI, deploy | `AGENTS.md` + `docs/agentes/*.md` |

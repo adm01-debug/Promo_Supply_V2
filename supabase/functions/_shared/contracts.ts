@@ -3,15 +3,7 @@ import { z } from "https://esm.sh/zod@3.22.4";
 
 // Contract definitions for core Edge Functions
 export const NegotiationContract = z.object({
-<<<<<<< HEAD
   cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
-=======
-  cotacoes: z.array(z.object({
-    id: z.string().uuid(),
-    fornecedor: z.string(),
-    total: z.number().positive()
-  })).min(1),
->>>>>>> b261b613 (fix: corrige bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos)
   solicitacao: z.object({
     id: z.string().uuid(),
     titulo: z.string(),
@@ -60,7 +52,6 @@ export const ERPSyncContract = z.object({
   entity: z.string(),
   po_number: z.string().optional(),
   external_id: z.string().optional(),
-<<<<<<< HEAD
   source: z.string().optional()
 });
 
@@ -112,9 +103,6 @@ export const SpotProxyContract = z.object({
   action: ciEnum(["create_session", "sync_pedidos", "verify_callback"]),
   session_id: z.string().uuid().optional(),
   payload: z.any().optional()
-=======
-  source: z.enum(['sap', 'oracle', 'totvs', 'protheus', 'senior', 'sankhya'])
->>>>>>> b261b613 (fix: corrige bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos)
 });
 
 export class ContractValidator {
