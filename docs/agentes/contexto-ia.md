@@ -20,7 +20,7 @@ Se duas fontes discordarem, vale o dono. Item marcado **NÃO VERIFICADO** precis
 
 Branch gerada **`contexto`** — nunca na `main`, nunca por PR.
 
-- A Vercel está ligada ao repo: um commit em `main` a cada 10 min seria um deploy de produção a cada 10 min.
+- A Vercel está ligada ao repo: um commit em `main` a cada execução agendada seria um deploy de produção a cada hora.
 - O push é feito com `GITHUB_TOKEN`, que por política do GitHub **não dispara outros workflows** (anti-loop).
 - O job escreve um `vercel.json` com `ignoreCommand: exit 0` na própria branch, então a Vercel não faz nem preview dela.
 - Só há commit quando alguma fonte mudou de verdade. Métricas voláteis do banco (`stats.*`, `cron-runs.md`) esperam 60 min para não gerar commit a cada coleta.
@@ -37,7 +37,7 @@ git show origin/contexto:docs/contexto/supabase/lints.md
 ## Gatilhos e custo
 
 - `push` em `main` nos paths de código/banco/scripts/`manual/` → regera `codigo/` e `regras/` (não coleta banco).
-- `schedule` a cada 10 min, no minuto 3 → só coleta o que mudou; o banco sempre coleta.
+- `schedule` a cada hora, no minuto 3 → só coleta o que mudou; o banco sempre coleta.
 - `workflow_dispatch` → tem `force` para ignorar o estado anterior.
 
 O repo é **privado**, então minuto de Actions é cobrado. O `gate` compara o HEAD da `main` com o `commit` dos

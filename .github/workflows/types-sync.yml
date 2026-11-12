@@ -1,12 +1,12 @@
 # docs:
-#   gatilho: push na main que toque supabase/migrations ou scripts/types-sync; a cada 10 min (minuto 7); dispatch
+#   gatilho: push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch
 #   prova: src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2)
 #   falha: PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente
 #   avisa: PR de types e issue de gate
 # nao-e-bug:
 #   - banco-pulado: sem o secret SUPABASE_DB_URL o job sai VERDE com aviso no agendamento e no push; no workflow_dispatch falha de proposito, para a pessoa ver
 #   - sem-pr-novo: "nada mudou" quando o PR de sync ja esta aberto com o mesmo types.ts — create-pull-request nao cria commit identico
-#   - debounce: se o PR de sync tem commit com menos de 20 min, o run e pulado (cadencia de 10 min nao deve empilhar commit)
+#   - debounce: se o PR de sync tem commit com menos de 20 min, o run e pulado (cadencia horaria + push nao deve empilhar commit)
 #   - TYPES_SYNC_PR_TOKEN ausente: esperado — o workflow usa GITHUB_TOKEN; o passo "Destravar os checks" aprova os runs com actions:write
 # ==================================================================
 # PROMO SUPPLY · Sincronizacao assistida do types.ts do banco
@@ -46,9 +46,10 @@ on:
       - 'scripts/types-sync/**'
       - '.github/workflows/types-sync.yml'
   schedule:
-    # Minuto 7 de 10 em 10: fora do minuto 0 (onde o GitHub concentra a fila de
-    # agendamentos) e fora do minuto 3, usado pelo contexto.yml.
-    - cron: '7-59/10 * * * *'
+    # Minuto 7 de cada hora: fora do minuto 0 (onde o GitHub concentra a fila de
+    # agendamentos) e fora do minuto 3, usado pelo contexto.yml. Era de 10 em 10 min
+    # e estourou o orçamento de Actions da conta em 2026-11 (decisão do dono).
+    - cron: '7 * * * *'
   workflow_dispatch:
 
 defaults:
@@ -69,7 +70,7 @@ env:
 jobs:
   # Debounce — se existe PR de sync cujo head tem < 20 min, pula o run para nao
   # empilhar commit no PR. No original isso valia so para push (agendamento
-  # semanal); aqui o agendamento e de 10 em 10 minutos, entao schedule tambem
+  # semanal); aqui o agendamento e de hora em hora, entao schedule tambem
   # entra no debounce. Somente workflow_dispatch ignora.
   preflight:
     name: Debounce — verificar PR de sync recente
@@ -422,7 +423,7 @@ jobs:
             const existing = issues.find(issue => issue.title === title);
             if (existing) {
               // Sem este dedupe, cada run com o mesmo gate vermelho comentaria
-              // de novo (o job roda a cada 10 min) e a issue viraria ruido que
+              // de novo (o job roda a cada hora) e a issue viraria ruido que
               // ninguem le. So comenta quando a causa MUDA ou o ultimo
               // comentario passou de 6h. O ultimo comentario vem pelo header
               // Link com per_page: 1 — ler so a 1a pagina daria a causa errada.

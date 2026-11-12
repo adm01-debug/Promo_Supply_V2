@@ -122,6 +122,6 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 ## Contexto gerado
 Antes de qualquer tarefa ou planejamento: `git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md`
 — diz qual fonte é dona de cada fato (banco ao vivo, código, regras de negócio) e a ordem de leitura.
-Regerado a cada 10 min pelo `contexto.yml` na branch **`contexto`**; nunca editar, nunca abrir PR dela.
+Regerado a cada hora pelo `contexto.yml` na branch **`contexto`**; nunca editar, nunca abrir PR dela.
 Regra que só o negócio sabe → `docs/contexto/regras/manual/*.md` na `main`. Como funciona, secrets e
 diagnóstico: `docs/agentes/contexto-ia.md`.

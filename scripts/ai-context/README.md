@@ -15,7 +15,7 @@ O job `codigo` do `contexto.yml` executa a mesma suíte; `npm run test:scripts` 
 onde o contexto é publicado neste repo; env `AI_CONTEXT_PUBLICACAO` tem precedência).
 
 **Neste repo:** o workflow `.github/workflows/contexto.yml` roda o gerador a cada push em `main` e a cada
-10 min e publica em `docs/contexto/codigo/` na branch `contexto` (índice único em `docs/contexto/00-INDEX.md`).
+hora e publica em `docs/contexto/codigo/` na branch `contexto` (índice único em `docs/contexto/00-INDEX.md`).
 
 **Secrets:** nenhum (lê só arquivos do repo e `git log`).
 
