@@ -24,16 +24,16 @@ Chamadas entre funções `SECURITY DEFINER` rodam como o dono (`postgres`) e nã
 
 ## Resultado
 
-### Ficam com anon + authenticated (sem mudança) — 9
+### Ficam com anon + authenticated (sem mudança) — 9 (8 desde `20261112223649_security_papel_empresa_kpis.sql`)
 
 | Função | Motivo |
 |---|---|
 | `current_tenant_id()` | (a) policies + default de coluna; front `src/features/auth/hooks/useAuth.tsx:55` |
 | `get_my_organization()` | (a) policies |
 | `get_user_grupo_id()` | (a) policies |
-| `has_role(uuid,app_role)` | (a) policies; front `src/lib/supabaseRpc.ts:211` |
+| `has_role(uuid,app_role)` | (a) policies; front `src/lib/supabaseRpc.ts:211`. Uuid diferente de `auth.uid()` só responde a service_role/postgres (anon/authenticated recebem `false`) desde `20261112223649` |
 | `tenant_in_my_group(uuid)` | (a) policies |
-| `user_belongs_to_tenant(uuid,uuid)` | (a) policies |
+| `user_belongs_to_tenant(uuid,uuid)` | (a) policy só `TO authenticated`: PUBLIC/anon revogados e uuid alheio → `false` em `20261112223649` |
 | `is_account_locked(text)` | (b) tela `/auth` antes do login — `src/hooks/useAccountLockout.ts:46` |
 | `record_failed_login(text)` | (b) login falhou, sem sessão — `src/hooks/useAccountLockout.ts:76` |
 | `log_login_attempt(text,text,text,boolean,text)` | (b) login falhou, sem sessão — `src/pages/auth/Auth.tsx:112` |
