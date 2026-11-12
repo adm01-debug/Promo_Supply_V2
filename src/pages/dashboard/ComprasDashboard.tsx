@@ -42,6 +42,7 @@ import { performanceMonitor } from "@/lib/performance";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { formatCurrency } from "@/lib/utils";
+import { formatDateBR } from "@/lib/dateUtils";
 
 // Lazy load heavy panels
 const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
@@ -224,7 +225,7 @@ const ComprasDashboard = () => {
                 dbId: item.id,
                 produto: item.titulo || "Item sem título",
                 fornecedor: item.status || "Análise Pendente",
-                vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
+                vencimento: item.data_necessidade ? formatDateBR(item.data_necessidade) : 'TBD',
                 urgencia: (item.urgencia || 'alto') as 'alto' | 'critico' | 'medio',
                 comprador: item.comprador ?? undefined
               }))} />
