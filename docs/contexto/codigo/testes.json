@@ -5,24 +5,24 @@
   "vitest",
   "playwright"
  ],
- "total": 127,
+ "total": 145,
  "por_tipo": {
   "contrato": 4,
   "pytest": 2,
-  "unit": 121
+  "unit": 139
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 93
+   "arquivos": 95
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 24
+   "arquivos": 25
   },
   {
    "padrao": "outro",
-   "arquivos": 10
+   "arquivos": 25
   }
  ],
  "arquivos": [
@@ -36,7 +36,95 @@
    "casos": 18
   },
   {
+   "arquivo": "scripts/automation.unit.mjs",
+   "tipo": "unit",
+   "linhas": 689,
+   "testa": [
+    "scripts/automation.mjs"
+   ],
+   "casos": 32
+  },
+  {
+   "arquivo": "scripts/ci/actions-kpi.unit.mjs",
+   "tipo": "unit",
+   "linhas": 195,
+   "testa": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/workflow-test-support.mjs"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "scripts/ci/agents-docs-baseline.unit.mjs",
+   "tipo": "unit",
+   "linhas": 69,
+   "testa": [],
+   "casos": 5
+  },
+  {
    "arquivo": "scripts/ci/ai-context-generator.unit.mjs",
+   "tipo": "unit",
+   "linhas": 3,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/ci/audit-prod.unit.mjs",
+   "tipo": "unit",
+   "linhas": 201,
+   "testa": [
+    "scripts/ci/audit-prod.mjs"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "scripts/ci/branch-podaveis.unit.mjs",
+   "tipo": "unit",
+   "linhas": 181,
+   "testa": [
+    "scripts/ci/branch-podaveis.mjs",
+    "scripts/ci/workflow-test-support.mjs"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "scripts/ci/check-bundle-secrets.unit.mjs",
+   "tipo": "unit",
+   "linhas": 294,
+   "testa": [
+    "scripts/ci/check-bundle-secrets.mjs"
+   ],
+   "casos": 27
+  },
+  {
+   "arquivo": "scripts/ci/check-test-inventory.unit.mjs",
+   "tipo": "unit",
+   "linhas": 176,
+   "testa": [
+    "scripts/ci/check-test-inventory.mjs"
+   ],
+   "casos": 11
+  },
+  {
+   "arquivo": "scripts/ci/commit-msg-lint.unit.mjs",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "scripts/ci/commit-msg-lint.mjs"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "scripts/ci/gerar-matriz-edge-tabela.mjs"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "scripts/ci/maintenance.unit.mjs",
    "tipo": "unit",
    "linhas": 3,
    "testa": [],
@@ -50,11 +138,63 @@
    "casos": 5
   },
   {
+   "arquivo": "scripts/ci/render-workflow-docs.unit.mjs",
+   "tipo": "unit",
+   "linhas": 154,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "scripts/ci/sla-code-scanning.unit.mjs",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "scripts/ci/sla-code-scanning.mjs",
+    "scripts/ci/workflow-test-support.mjs"
+   ],
+   "casos": 7
+  },
+  {
    "arquivo": "scripts/ci/supabase-snapshot.unit.mjs",
    "tipo": "unit",
    "linhas": 19,
    "testa": [],
    "casos": 1
+  },
+  {
+   "arquivo": "scripts/ci/toolchain-schedule.unit.mjs",
+   "tipo": "unit",
+   "linhas": 14,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "scripts/graphify-local.unit.mjs",
+   "tipo": "unit",
+   "linhas": 577,
+   "testa": [
+    "scripts/graphify-local.mjs"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "scripts/lib/seguranca-processo.test.mjs",
+   "tipo": "unit",
+   "linhas": 125,
+   "testa": [
+    "scripts/lib/seguranca-processo.mjs"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "scripts/maintenance/maintenance.unit.mjs",
+   "tipo": "unit",
+   "linhas": 1098,
+   "testa": [
+    "scripts/maintenance/lib.mjs",
+    "scripts/maintenance/run.mjs"
+   ],
+   "casos": 44
   },
   {
    "arquivo": "scripts/regras_negocio/test_generate.py",
@@ -529,7 +669,7 @@
   {
    "arquivo": "src/lib/__tests__/logger.fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 283,
+   "linhas": 284,
    "testa": [
     "src/lib/logger.ts"
    ],
@@ -689,6 +829,15 @@
    "casos": 18
   },
   {
+   "arquivo": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+   "tipo": "unit",
+   "linhas": 96,
+   "testa": [
+    "src/pages/admin/HealthDashboard.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
    "tipo": "unit",
    "linhas": 211,
@@ -833,6 +982,15 @@
     "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts"
    ],
    "casos": 25
+  },
+  {
+   "arquivo": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
@@ -1001,7 +1159,7 @@
   {
    "arquivo": "supabase/functions/_shared/logger.fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 267,
+   "linhas": 270,
    "testa": [
     "supabase/functions/_shared/fuzzSeed.ts",
     "supabase/functions/_shared/logger.ts"
@@ -1030,7 +1188,7 @@
   {
    "arquivo": "supabase/functions/dependency-health/index.test.ts",
    "tipo": "unit",
-   "linhas": 180,
+   "linhas": 227,
    "testa": [],
    "casos": 6
   },
@@ -1044,7 +1202,7 @@
   {
    "arquivo": "supabase/functions/telemetry/index.test.ts",
    "tipo": "unit",
-   "linhas": 82,
+   "linhas": 121,
    "testa": [],
    "casos": 4
   },
@@ -1068,7 +1226,7 @@
   {
    "arquivo": "supabase/functions/workflow-engine/fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 74,
+   "linhas": 105,
    "testa": [
     "supabase/functions/_shared/contracts.ts",
     "supabase/functions/_shared/fuzzer.ts"
@@ -1085,7 +1243,7 @@
   {
    "arquivo": "tests-e2e/critical-flows.spec.ts",
    "tipo": "unit",
-   "linhas": 51,
+   "linhas": 43,
    "testa": [],
    "casos": 3
   },
@@ -1099,21 +1257,21 @@
   {
    "arquivo": "tests-e2e/elite-validation.spec.ts",
    "tipo": "unit",
-   "linhas": 55,
+   "linhas": 54,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "tests-e2e/production-ready.spec.ts",
    "tipo": "unit",
-   "linhas": 61,
+   "linhas": 60,
    "testa": [],
    "casos": 5
   },
   {
    "arquivo": "tests-e2e/workflow-advanced.spec.ts",
    "tipo": "unit",
-   "linhas": 51,
+   "linhas": 53,
    "testa": [],
    "casos": 3
   },
@@ -1134,6 +1292,20 @@
  ],
  "sql": [],
  "cobertura_por_arquivo": {
+  "scripts/automation.mjs": 1,
+  "scripts/ci/actions-kpi.mjs": 1,
+  "scripts/ci/audit-prod.mjs": 1,
+  "scripts/ci/branch-podaveis.mjs": 1,
+  "scripts/ci/check-bundle-secrets.mjs": 1,
+  "scripts/ci/check-test-inventory.mjs": 1,
+  "scripts/ci/commit-msg-lint.mjs": 1,
+  "scripts/ci/gerar-matriz-edge-tabela.mjs": 1,
+  "scripts/ci/sla-code-scanning.mjs": 1,
+  "scripts/ci/workflow-test-support.mjs": 3,
+  "scripts/graphify-local.mjs": 1,
+  "scripts/lib/seguranca-processo.mjs": 1,
+  "scripts/maintenance/lib.mjs": 1,
+  "scripts/maintenance/run.mjs": 1,
   "src/components/accessibility/accessibilityHelpers.ts": 1,
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/KanbanBoard.tsx": 1,
@@ -1204,6 +1376,7 @@
   "src/lib/utils.ts": 1,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 1,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
+  "src/pages/admin/HealthDashboard.tsx": 1,
   "src/pages/admin/alertRunbooks.ts": 1,
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
@@ -1220,6 +1393,7 @@
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
   "src/pages/recebimento/recebimentoHelpers.ts": 1,
   "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts": 1,
+  "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts": 1,
   "src/pages/solicitacoes/solicitacoesHelpers.ts": 1,
   "src/routes/AppRoutes.tsx": 1,
   "src/schemas/solicitacao.schema.ts": 1,
@@ -1249,7 +1423,6 @@
    "src/pages/admin/DeveloperDocs.tsx",
    "src/pages/admin/ERPConnections.tsx",
    "src/pages/admin/FiscalDashboard.tsx",
-   "src/pages/admin/HealthDashboard.tsx",
    "src/pages/admin/PunchOutCatalogs.tsx",
    "src/pages/admin/SSOConfig.tsx",
    "src/pages/admin/SourcingPipeline.tsx",
@@ -1358,8 +1531,7 @@
    "src/hooks/useTourPreferences.ts",
    "src/hooks/useUnsavedChangesWarning.ts",
    "src/hooks/useWebAuthn.ts",
-   "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
+   "src/pages/catalogo-spot/useSpotCatalog.ts"
   ],
   "edges": [
    "ai-demand-prediction",

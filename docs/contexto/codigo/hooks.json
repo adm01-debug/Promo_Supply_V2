@@ -1270,7 +1270,7 @@
    "hooks_exportados": [
     "useGeoRestriction"
    ],
-   "linhas": 162,
+   "linhas": 163,
    "dominio": "hooks",
    "tabelas": [
     "allowed_countries",
@@ -2259,7 +2259,7 @@
    "usado_por_arquivos": [
     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/stores/buyerAlertsStore.ts",

@@ -17,24 +17,25 @@
    "src/components (10)"
   ],
   "servicos_logica": [
-   "src/lib (20)",
+   "src/lib (21)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (93)",
-   "co-localizado (*.test) (24)",
-   "outro (10)"
+   "co-localizado (__tests__) (95)",
+   "co-localizado (*.test) (25)",
+   "outro (25)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
   "scripts": [
+   "scripts/ci (12)",
    "scripts/types-sync (7)",
-   "scripts/inventario (5)",
-   "scripts/regras_negocio (3)"
+   "scripts/inventario (5)"
   ],
   "docs": [
-   "(raiz) (3)"
+   "(raiz) (4)",
+   "docs (1)"
   ]
  },
  "nomenclatura": {
@@ -55,20 +56,21 @@
   }
  },
  "commits": {
-  "convencao": "livre",
+  "convencao": "conventional commits (observado)",
   "exemplos": [
-   "feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)",
-   "fix(supabase): aponta todo o código ativo para o projeto Supabase oficial",
-   "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)",
-   "fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)",
-   "Visual edit in Lovable"
+   "fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)",
+   "fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)",
+   "fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)",
+   "fix(edge): require JWT and validate identity/tenant across edge functions (#36)",
+   "fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)"
   ]
  },
  "pr_template": null,
  "codeowners": null,
  "contributing": null,
  "instrucoes_agentes": [
-  "AGENTS.md"
+  "AGENTS.md",
+  "CLAUDE.md"
  ],
  "typescript": {
   "strict": true,

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d44bb8fa9b` · branch `main` · 2026-11-08 18:40 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4cc1a7a96b` · branch `main` · 2026-11-12 12:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -182,10 +182,12 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 150 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 153 arquivo(s)
 
 - `scripts/ai-context/cenarios.mjs`
 - `scripts/ai-context/gerar.unit.mjs`
+- `scripts/ci/check-bundle-secrets.mjs`
+- `scripts/ci/check-bundle-secrets.unit.mjs`
 - `scripts/db-explain-analyze.ts`
 - `scripts/inventario/gerar-banco.mjs`
 - `scripts/regras_negocio/generate.py`
@@ -332,8 +334,7 @@
 - `supabase/migrations/20260726144435_a37d5b86-9ad7-4c72-abcb-fe538eaed177.sql`
 - `supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql`
 - `supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql`
-- `supabase/migrations/20260726151350_0ea0eb79-cca6-494d-8e97-faa5c5945f2c.sql`
-- `supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql`
+- … +3 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -388,6 +389,7 @@
 - `ensure_audit_logs_partition`
 - `ensure_telemetry_logs_partition`
 - `exec_sql`
+- `execute_read_query`
 - `find_approval_rule`
 - `fx_convert`
 - `generate_sequential_number`
@@ -524,11 +526,11 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated, service_role | select | `cron_job_staleness` |
 | grant | postgres | select | `mv_dashboard_kpis` |
 | grant | service_role | all | `telemetry_logs`, `system_alerts`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `webhook_events`, `integration_outbox`, `wal_rate_snapshots`, `checkpoint_snapshots` … +25 |
-| grant | service_role | execute | `update_estoque_saldo`, `exec_sql`, `exec_sql`, `log_security_event`, `log_audit_event`, `count_legacy_storage_urls`, `cleanup_expired_challenges`, `cleanup_old_telemetry`, `grant_tenant_access_on_insert`, `grant_tenant_access_on_insert`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +77 |
+| grant | service_role | execute | `update_estoque_saldo`, `exec_sql`, `exec_sql`, `log_security_event`, `log_audit_event`, `count_legacy_storage_urls`, `cleanup_expired_challenges`, `cleanup_old_telemetry`, `grant_tenant_access_on_insert`, `grant_tenant_access_on_insert`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +78 |
 | grant | service_role | select | `v_system_health_overview` |
 | grant | service_role | usage, select | `wal_rate_snapshots_id_seq`, `checkpoint_snapshots_id_seq` |
 | grant | service_role, authenticated | execute | `check_rate_limit` |
-| revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +1 |
+| revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +2 |
 | revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +29 |
 | revoke | PUBLIC, anon | all | `cron_job_staleness` |
 | revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis` |

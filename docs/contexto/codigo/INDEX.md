@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d44bb8fa9bc24ed6aa0ae40e84b9e5db54f4082d` (2026-11-08T15:40:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4cc1a7a96bc4160e5b1102577e41d6b84aee12fc` (2026-11-12T08:02:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (679), SQL (280), Markdown (56), JSON (16), JavaScript (16), CSS (6), Shell (6), Python (5)
+- linguagens: TypeScript (682), SQL (281), Markdown (70), JavaScript (50), JSON (21), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1090 |
-| arquivos_codigo | 698 |
-| linhas_codigo | 139610 |
+| arquivos_total | 1152 |
+| arquivos_codigo | 735 |
+| linhas_codigo | 151031 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -46,25 +46,25 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 38 |
 | tabelas | 164 |
-| migrations | 279 |
+| migrations | 280 |
 | cron_jobs | 68 |
-| testes | 127 |
-| workflows | 4 |
-| scripts | 24 |
-| docs_md | 56 |
+| testes | 145 |
+| workflows | 8 |
+| scripts | 43 |
+| docs_md | 70 |
 
 ## Onde ficam as coisas
 - telas: src/pages (52), src/features (1)
 - componentes: src/components (214), src/pages (76), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
-- servicos_logica: src/lib (20), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (93), co-localizado (*.test) (24), outro (10)
+- servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (95), co-localizado (*.test) (25), outro (25)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/types-sync (7), scripts/inventario (5), scripts/regras_negocio (3)
-- docs: (raiz) (3)
+- scripts: scripts/ci (12), scripts/types-sync (7), scripts/inventario (5)
+- docs: (raiz) (4), docs (1)
 - nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (94%)","edge_functions":"kebab-case (95%)","tabelas":"snake_case (88%)"}
-- instruções para agentes no repo: AGENTS.md
+- instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
 ## Módulos (menu → domínio)
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
@@ -79,7 +79,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
 | features/layout | 0 | 1 | 32 | 77 | 5 | 56 |
 | hooks | 0 | 0 | 61 | 56 | 4 | 60 |
-| lib | 0 | 0 | 20 | 53 | 5 | 48 |
+| lib | 0 | 0 | 21 | 53 | 5 | 48 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 4 |
 | pages/admin | 10 | 11 | 14 | 4 | 8 | 16 |
@@ -305,12 +305,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, wa.me, x.supabase.co, ai.gateway.lovable.dev, api.pwnedpasswords.com, api.supabase.com, api.x.com, example.okta.com, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, raw.githubusercontent.com, spotgifts.com.br
+- hosts mais citados: api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, wa.me, x.supabase.co, ai.gateway.lovable.dev, api.pwnedpasswords.com, api.supabase.com, api.x.com, example.okta.com, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, maintenance.invalid, production.invalid
 - webhooks recebidos: migrate-helper
-- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, LOVABLE_API_KEY, RESEND_API_KEY, SCIM_TEST_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
+- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, LOVABLE_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SCIM_TEST_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: admin (9), user (6), system (4), alert (3), status (3), dialog (2), group (2), agent (1), assistant (1), button (1), buyer (1), combobox (1), link (1), main (1), navigation (1), presentation (1), separator (1), sup (1)
+- papéis no código: admin (9), user (6), system (4), alert (3), status (3), anon (2), dialog (2), group (2), service_role (2), agent (1), assistant (1), ausente (1), authenticated (1), button (1), buyer (1), combobox (1), link (1), main (1), navigation (1), presentation (1), separator (1), sup (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 14 · públicas: /__dev/xbz-network-panel, /*, /acompanhamento, /aprovacoes, /auditoria, /buyer-performance, /catalogo-produtos, /catalogo-spot, /catalogo-xbz, /compliance, /compras, /configuracoes-centro-custo, /contratos, /cotacao, /cotacao/:id, /dashboard-executivo, /devolucoes, /documentos-fiscais, /estoque, /fornecedores, /gerar-ordem, /historico-compras, /kanban, /licitacoes, /negociacao-ia, /orcamentos, /pagamentos, /pedidos, /qualificacao-fornecedores, /recebimento, /recompra-inteligente, /relatorios, /relatorios/negociacoes, /seguranca, /solicitacoes, /sourcing, /sourcing/:id, /sourcing/:id/auction, /sourcing/novo, /supplier-performance
 - feature flags: FEATURE_X, nova-tela, novo-inbox
@@ -336,29 +336,37 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
+- .github/workflows/main.yml (4)
+- AGENTS.md (4)
+- package.json (4)
+- .github/workflows/contexto.yml (3)
 - ESTADO_ATUAL.md (3)
-- supabase/config.toml (3)
-- AGENTS.md (2)
 - DOCS/ESTADO/00_INDICE.md (2)
 - DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md (2)
 - DOCS/ESTADO/L07_HOOKS.md (2)
 - DOCS/ESTADO/L12_BANCO_E_RUNTIME.md (2)
 - DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md (2)
-- supabase/functions/migrate-helper/index.ts (2)
-- .github/workflows/contexto.yml (1)
-- .github/workflows/inventario-estado-semanal.yml (1)
-- .github/workflows/main.yml (1)
-- .github/workflows/types-sync.yml (1)
-- DOCS/ESTADO/L02_PAGINAS_FLUXO_COMPRAS.md (1)
-- DOCS/ESTADO/L03_PAGINAS_CATALOGO_IA_RELATORIOS.md (1)
+- docs/agentes/contexto-ia.md (2)
+- docs/agentes/github-ci.md (2)
+- docs/agentes/mapa-repo.md (2)
+- docs/ci/README.md (2)
+- src/lib/__tests__/logger.fuzz.test.ts (2)
 
 ## Workflows
+- `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
+- `branch-hygiene-audit.yml` — Branch Hygiene Audit (schedule, workflow_dispatch; cron 34 9 * * 1)
 - `contexto.yml` — Contexto para agentes de IA (10 min) (push, schedule, workflow_dispatch; cron 3-59/10 * * * *)
+- `guards.yml` — Guards offline do repositorio (pull_request, push, workflow_dispatch)
 - `inventario-estado-semanal.yml` — Inventário do estado real (semanal) (schedule, workflow_dispatch; cron 41 10 * * 1)
 - `main.yml` — Freight Quest CI/CD (pull_request, push)
+- `notifica-falha-main.yml` — Notifica falha na main (workflow_run)
 - `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7-59/10 * * * *)
 
 ## Scripts npm
+- `maintenance:doctor`: `sh scripts/maintenance/run.sh doctor --root .`
+- `maintenance:check`: `sh scripts/maintenance/run.sh check --root . --ref origin/main`
+- `maintenance:heal`: `sh scripts/maintenance/run.sh heal --root . --ref origin/main`
+- `test:maintenance`: `node --test scripts/maintenance/maintenance.unit.mjs`
 - `dev`: `vite`
 - `build`: `vite build`
 - `build:dev`: `vite build --mode development`
@@ -373,37 +381,51 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `test:coverage`: `vitest run --coverage`
 - `test:all`: `npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e`
 - `test:simulate`: `curl -X POST "$VITE_SUPABASE_URL/functions/v1/system-simulation" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H "Content-Type: application/json" -d '{"iterations": 50}'`
-- `typecheck`: `tsc --noEmit`
+- `typecheck`: `tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json`
 - `contexto:codigo`: `node scripts/ai-context/gerar.mjs --out docs/contexto/codigo`
 - `contexto:regras`: `python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer`
 - `contexto:banco`: `python3 scripts/supabase_snapshot/snapshot.py`
 - `contexto:indice`: `python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte "banco real=docs/contexto/supabase" --fonte "código=docs/contexto/codigo" --fonte "regras de negócio=docs/contexto/regras"`
-- `test:scripts`: `node --test scripts/ci/*.unit.mjs`
+- `test:scripts`: `node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs`
+- `docs:ci`: `node scripts/ci/render-workflow-docs.mjs`
+- `docs:matriz-edge`: `node scripts/ci/gerar-matriz-edge-tabela.mjs`
+- `guards`: `npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check`
 - `prepare`: ``
+- `automation:doctor`: `node scripts/automation.mjs doctor`
+- `automation:test`: `node scripts/automation.mjs test`
+- `automation:check`: `node scripts/automation.mjs check --ref HEAD`
+- `automation:heal`: `node scripts/automation.mjs heal --ref origin/main`
+- `automation:nightly`: `node scripts/automation.mjs nightly --ref origin/main`
+- `automation:graph`: `node scripts/automation.mjs graph`
+- `automation:status`: `node scripts/automation.mjs graph status`
+- `automation:install-hooks`: `node scripts/automation.mjs install-hooks`
+- `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo_Supply_V2 (96 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (128 linhas)
+- `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
-- subpastas de docs/: docs/contexto (2), docs/agentes (1), docs/conventions (1)
+- `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
+- subpastas de docs/: docs/agentes (7), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
-- 2026-11-08 `d44bb8f` feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)
-- 2026-11-08 `0bdc3cb` fix(supabase): aponta todo o código ativo para o projeto Supabase oficial
-- 2026-11-08 `32c06b2` chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)
-- 2026-11-08 `153e02d` fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)
-- 2026-08-28 `97b6efc` Visual edit in Lovable
-- 2026-08-18 `d56d214` chore(hermes): adiciona .hermes.md (regras da casa Hermes)
-- 2026-08-18 `d429b88` chore(agents): adiciona AGENTS.md padrao (contexto multi-agente)
-- 2026-08-18 `a7406f9` Merge pull request #13 from adm01-debug/claude/system-status-roadmap-ei4jyi
-- 2026-08-16 `f49b29c` docs(auditoria): meta-auditoria adversarial da propria auditoria (L15)
-- 2026-08-16 `d18393f` docs(auditoria): documento executivo ESTADO_ATUAL.md e lote 11
-- 2026-08-16 `3f91cb5` docs(auditoria): lote 10 (edge functions) e verificações da Fase D
-- 2026-08-16 `addf5e4` docs(auditoria): lotes 03, 06-09 e verificação independente (Fase D)
-- 2026-08-16 `1a591df` docs(auditoria): lotes de evidência 01-05, 07, 12-13 da auditoria de estado
-- 2026-08-11 `58f4fc8` security: remove migrate-helper edge function (exposes service_role key)
-- 2026-08-07 `686ef28` merge: master para main
+- 2026-11-12 `4cc1a7a9` fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)
+- 2026-11-11 `75c0e960` fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)
+- 2026-11-11 `b7db2755` fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)
+- 2026-11-11 `6ea00349` fix(edge): require JWT and validate identity/tenant across edge functions (#36)
+- 2026-11-11 `a2eadc4d` fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)
+- 2026-11-11 `3f0aa49a` chore(automacao): conecta testes, grafo e manutenção aos gatilhos (#32)
+- 2026-11-11 `491c6cfc` fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)
+- 2026-11-11 `90c35fb5` fix(tipos): corrige contratos do painel de saúde e relatório (#33)
+- 2026-11-11 `7ad9425f` fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)
+- 2026-11-09 `dc3d95d1` Merge pull request #4 from adm01-debug/fix/ui-render-and-math
+- 2026-11-08 `1a7756c8` ci: porta os guards offline e a auditoria semanal autônoma do Zapp_Web_V2
+- 2026-11-08 `908b045f` fix(ci): remove --depth 1 do fetch da branch contexto no job de publicação
+- 2026-11-08 `7e181fcf` fix(tests): corrige timer infinito no Vitest logger fuzz test
+- 2026-11-08 `8e8f9cbf` fix(edge): corrige asserção de truncamento no teste Deno logger
+- 2026-11-08 `0bdcd6fb` ci(quality-gate): liga unit tests de CI e guard de integridade do AGENTS.md (#22)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

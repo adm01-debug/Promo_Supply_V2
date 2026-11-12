@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d44bb8fa9b` · branch `main` · 2026-11-08 18:40 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4cc1a7a96b` · branch `main` · 2026-11-12 12:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -724,6 +724,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `resolve_alert` | admin role required | `supabase/migrations/20260712202749_bb709bc6-558f-4e7d-97d1-2e978797b632.sql` |
 | `resolve_alert` | alert not found or already resolved | `supabase/migrations/20260712202749_bb709bc6-558f-4e7d-97d1-2e978797b632.sql` |
 | `get_db_health_snapshot` | access denied: admin role required | `supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql` |
+| `execute_read_query` | Somente EXPLAIN é permitido | `supabase/migrations/20261107150000_execute_read_query.sql` |
+| `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/migrations/20261107150000_execute_read_query.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -814,7 +816,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **VALID_PAGAMENTO_TRANSITIONS** (`src/hooks/usePagamentos.ts`):
   ```ts
-  pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'cancelado'], agendado: ['pago', 'cancelado'], pago: ['parcial'], parcial: ['pago'], cancelado: [], atrasado: ['pago', 'cancelado'],
+  pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],
   ```
 - **transitions** (`src/pages/devolucoes/DevolucoesModals.tsx`):
   ```ts
@@ -992,6 +994,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `number` | compara | `src/hooks/useXbzIntegration.ts` |
 | `status` | `ok` | compara, escreve | `src/components/compras/SLADistributionChart.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/dependency-health/index.ts`<br>`supabase/functions/external-db-bridge/index.ts` |
 | `status` | `online` | compara, escreve | `src/components/ui/indicators/MiscIndicators.tsx` |
+| `status` | `open` | compara | `supabase/functions/punchout-receive/index.ts` |
 | `status` | `opened` | escreve, filtra | `supabase/functions/punchout-receive/index.ts`<br>`supabase/functions/punchout-setup/index.ts` |
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +3 |
@@ -1376,6 +1379,10 @@ _nenhum item encontrado_
   ```
   return supabase.rpc("is_account_locked", params) as unknown as RpcResult<AccountLockStatus>;
   ```
+- **generateUniqueKey()** — `src/lib/utils.ts`
+  ```
+  const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto; if (c?.randomUUID) { try { return c.randomUUID(); } catch { /* fall through */ } } return `k-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  ```
 - **formatCurrency(value: number | null | undefined)** — `src/lib/utils.ts`
   ```
   if (value === null || value === undefined) return 'R$ 0,00'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -1750,7 +1757,6 @@ _nenhum item encontrado_
 | `const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];` | `supabase/functions/check-sla-alerts/index.ts` |
 | `const twoDays = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];` | `supabase/functions/check-sla-alerts/index.ts` |
 | `.gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),` | `supabase/functions/health-dashboard/index.ts` |
-| `const isExpired = !Number.isFinite(createdAt) \|\| Date.now() - createdAt > 30 * 60 * 1000;` | `supabase/functions/punchout-receive/index.ts` |
 | `exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,` | `supabase/functions/send-push-notification/index.ts` |
 | `const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem` | `supabase/functions/spot-api/index.ts` |
 | `if (age < 30 * 60 * 1000) {` | `supabase/functions/spot-proxy/index.ts` |
@@ -1872,6 +1878,7 @@ _nenhum item encontrado_
 | 200 | `src/components/security/GeoAccessLogsPanel.tsx` |
 | 20 | `src/features/layout/components/AdvancedSearch.tsx` |
 | 100 | `src/hooks/useApprovalHistory.ts` |
+| 1 | `src/hooks/useGeoRestriction.ts` |
 | 100 | `src/hooks/usePasswordResetRequests.ts` |
 | 100 | `src/hooks/usePrefetch.ts` |
 | 50 | `src/hooks/usePrefetch.ts` |
@@ -1915,7 +1922,17 @@ _nenhum item encontrado_
 
 | Mensagem | Arquivo |
 |---|---|
+| falha fixture | `scripts/automation.unit.mjs` |
 | ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
+| ${metodo} ${caminho} -> ${r.status} | `scripts/ci/actions-kpi.mjs` |
+| --level invalido: ${args.level} | `scripts/ci/audit-prod.mjs` |
+| Argumento desconhecido: ${argv[index]} | `scripts/ci/audit-prod.mjs` |
+| PR sem headRefName | `scripts/ci/branch-podaveis.mjs` |
+| a lista de PRs abertas não é um array | `scripts/ci/branch-podaveis.mjs` |
+| a lista de PRs abertas veio cheia (${dados.length} >= limite ${limite}); pode haver PR que não veio | `scripts/ci/branch-podaveis.mjs` |
+| argumento inválido: ${chave} | `scripts/ci/branch-podaveis.mjs` |
+| falta --${obrigatorio} | `scripts/ci/branch-podaveis.mjs` |
+| Argumento desconhecido: ${argv[i]} | `scripts/ci/check-bundle-secrets.mjs` |
 | --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
 | Management API ${caminho} respondeu HTTP ${res.status} | `scripts/inventario/gerar-banco.mjs` |
 | a resposta nao parece ser do banco deste projeto: ${comuns} tabelas em comum com o manifesto  | `scripts/inventario/gerar-banco.mjs` |
@@ -1931,6 +1948,14 @@ _nenhum item encontrado_
 | ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado. | `scripts/inventario/gerar-repo.mjs` |
 | ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança. | `scripts/inventario/gerar-repo.mjs` |
 | ${arquivo}: nao achei o bloco <Routes>...</Routes> | `scripts/inventario/gerar-rotas.mjs` |
+| caminho de  | `scripts/lib/seguranca-processo.mjs` |
+| comando nao encontrado no PATH:  | `scripts/lib/seguranca-processo.mjs` |
+| failed | `scripts/maintenance/lib.mjs` |
+| missing_dependencies | `scripts/maintenance/lib.mjs` |
+| skipped_busy | `scripts/maintenance/lib.mjs` |
+| formatter fixture failed | `scripts/maintenance/maintenance.unit.mjs` |
+| blocked_network_sandbox | `scripts/maintenance/run.mjs` |
+| pending_patch | `scripts/maintenance/run.mjs` |
 | O teste offline não permite consultas ao banco | `scripts/supabase_snapshot/test_snapshot.py` |
 | banco indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | catálogo indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
@@ -1960,6 +1985,7 @@ _nenhum item encontrado_
 | Assinatura necessária | `src/components/compras/DigitalSignature.tsx` |
 | Campos obrigatórios | `src/components/compras/DigitalSignature.tsx` |
 | Preencha todos os campos obrigatórios | `src/components/compras/DynamicApprovalMatrix.tsx` |
+| Não foi possível salvar o fornecedor. Tente novamente. | `src/components/compras/FornecedorModal.tsx` |
 | Erro ao criar solicitação:  | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao processar solicitação via IA. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Você precisa estar logado em uma organização | `src/components/compras/NovaSolicitacaoModal.tsx` |
@@ -1968,6 +1994,7 @@ _nenhum item encontrado_
 | Erro ao rejeitar solicitação | `src/components/compras/PendingApprovalsList.tsx` |
 | Erro na comparação | `src/components/compras/PriceComparator.tsx` |
 | Produto necessário | `src/components/compras/PriceComparator.tsx` |
+| Quantidade inválida | `src/components/compras/PriceComparator.tsx` |
 | Erro ao registrar recebimento:  | `src/components/compras/ReceivingModal.tsx` |
 | ; import { cn } from  | `src/components/compras/SavingsGoalPanel.tsx` |
 | Request #${solicitacao.id} rejected | `src/components/compras/SolicitacaoCard.tsx` |
@@ -2179,7 +2206,6 @@ _nenhum item encontrado_
 | Dados insuficientes para gerar a ordem. | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Sem dados para exportar | `src/pages/historico/HistoricoCompras.tsx` |
 | Erro ao atualizar produÃ§Ã£o:  | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
-| Cache corrompido. Conecte-se à internet para recarregar. | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | Erro ao buscar pedidos | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | Sem conexão — modo offline ativo | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | Organização ativa não identificada | `src/pages/recompra/RecompraInteligente.tsx` |
@@ -2196,26 +2222,7 @@ _nenhum item encontrado_
 | Credencial cifrada corrompida | `supabase/functions/_shared/xbz_crypto.ts` |
 | Credencial cifrada em formato inválido | `supabase/functions/_shared/xbz_crypto.ts` |
 | Valor a cifrar deve ser uma string não vazia | `supabase/functions/_shared/xbz_crypto.ts` |
-| Versão de criptografia não suportada: ${version} | `supabase/functions/_shared/xbz_crypto.ts` |
-| XBZ_ENCRYPTION_KEY ausente ou muito curta (mín. 32 chars) | `supabase/functions/_shared/xbz_crypto.ts` |
-| AI Gateway error: ${response.status} | `supabase/functions/ai-demand-prediction/index.ts` |
-| LOVABLE_API_KEY is not configured | `supabase/functions/ai-demand-prediction/index.ts` |
-| No content in AI response | `supabase/functions/ai-demand-prediction/index.ts` |
-| Não autorizado: token ausente | `supabase/functions/ai-demand-prediction/index.ts` |
-| Não autorizado: token inválido | `supabase/functions/ai-demand-prediction/index.ts` |
-| AI gateway error: ${response.status} | `supabase/functions/ai-negotiation/index.ts` |
-| Critical: AI Gateway Credentials missing | `supabase/functions/ai-negotiation/index.ts` |
-| Validation error: Authorization header missing | `supabase/functions/ai-negotiation/index.ts` |
-| AI Gateway error: ${response.status} | `supabase/functions/ai-supplier-risk/index.ts` |
-| LOVABLE_API_KEY is not configured | `supabase/functions/ai-supplier-risk/index.ts` |
-| No content in AI response | `supabase/functions/ai-supplier-risk/index.ts` |
-| Não autorizado: token ausente | `supabase/functions/ai-supplier-risk/index.ts` |
-| Não autorizado: token inválido | `supabase/functions/ai-supplier-risk/index.ts` |
-| AI Gateway error: ${response.status} | `supabase/functions/ai-supplier-suggestion/index.ts` |
-| LOVABLE_API_KEY is not configured | `supabase/functions/ai-supplier-suggestion/index.ts` |
-| No content in AI response | `supabase/functions/ai-supplier-suggestion/index.ts` |
-| Não autorizado: token ausente | `supabase/functions/ai-supplier-suggestion/index.ts` |
-| … +100 linhas — lista completa em `context.json` | |
+| … +118 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2236,7 +2243,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2590 testes em 116 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2594 testes em 116 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2324,6 +2331,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/logLevel.test.ts` | 13 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `src/tests/integration/supabase-db.test.ts` | 12 | required tables exist · approval_workflows has required columns · approval_steps has required columns · cron_heartbeats table is queryable … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
+| `scripts/lib/seguranca-processo.test.mjs` | 10 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · estaDentro aceita a raiz e subpastas · estaDentro recusa  … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `tests-rls/rls-isolation.test.ts` | 9 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
@@ -2335,7 +2343,6 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 6 | mapProduto: normaliza campos principais · mapProduto: aceita chaves alternativas (Id / Descricao) · mapProduto: descarta itens sem produto_id válido · normalizeCatalogo: deduplica por produto_id e ignora lixo … |
-| `supabase/functions/dependency-health/index.test.ts` | 6 | GET dependency-health → 200 with valid snapshot shape · GET dependency-health?history=true → 200 with history array · POST dependency-health (no auth) → 403 · POST dependency-health (non-admin user) → 403 … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
@@ -2344,17 +2351,17 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
-| `supabase/functions/telemetry/index.test.ts` | 4 | telemetry rejects unauthenticated requests · telemetry accepts { batch: [...] } from the frontend logger · telemetry accepts single-entry payload · telemetry filtra entradas sem message em vez de retornar 400 |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
+| `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
+| `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `src/tests/contracts.test.ts` | 3 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes |
 | `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
-| `supabase/functions/workflow-engine/fuzz.test.ts` | 2 | Fuzzing: Workflow Engine rejects malformed payloads · Security: Workflow Engine rejects unauthenticated requests |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
@@ -2393,6 +2400,8 @@ _nenhum item encontrado_
 | Comentário | Arquivo |
 |---|---|
 | Forms & validation | `vite.config.ts` |
+| Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
+| Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
 | (weights.prazo / 100)) + | `src/components/compras/RankingCotacoes.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
@@ -2500,8 +2509,11 @@ _nenhum item encontrado_
 | Dry-run: passe { dryRun: true } no body para apenas simular. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Prevent path traversal: filePath must be a relative path without .. | `supabase/functions/process-invoice-idp/index.ts` |
 | M-05: rate limit por IP (webhooks anônimos). | `supabase/functions/punchout-receive/index.ts` |
+| Session must be open. Reject reused or expired cookies so a stolen one | `supabase/functions/punchout-receive/index.ts` |
 | The PunchOut shared secret must never be returned to the browser. | `supabase/functions/punchout-setup/index.ts` |
+| without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
+| Fail closed: the SCIM bearer token must match the configured secret before | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |

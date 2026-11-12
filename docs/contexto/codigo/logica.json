@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 34,
+ "total": 35,
  "por_camada": {
   "integrations": 3,
-  "lib": 20,
+  "lib": 21,
   "python": 3,
   "schemas": 1,
   "services": 2,
@@ -351,7 +351,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 17,
+   "usado_por": 18,
    "usado_por_modulos": [
     "components/admin",
     "features/cotacoes",
@@ -359,6 +359,7 @@
     "features/solicitacoes",
     "hooks",
     "integrations/supabase",
+    "pages/admin",
     "pages/documentos",
     "pages/negociacao-ia",
     "pages/pedidos",
@@ -401,6 +402,33 @@
     "hooks"
    ],
    "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/dateUtils.ts",
+   "camada": "lib",
+   "exports": [
+    "formatDateBR",
+    "parseLocalDate"
+   ],
+   "export_default": null,
+   "linhas": 36,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [
+    "date-fns"
+   ],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 4,
+   "usado_por_modulos": [
+    "components/compras",
+    "lib"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {
@@ -865,7 +893,7 @@
     "security"
    ],
    "export_default": null,
-   "linhas": 56,
+   "linhas": 71,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -983,10 +1011,11 @@
     "cn",
     "formatCurrency",
     "formatDate",
-    "formatDateTime"
+    "formatDateTime",
+    "generateUniqueKey"
    ],
    "export_default": null,
-   "linhas": 20,
+   "linhas": 34,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -999,7 +1028,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 219,
+   "usado_por": 220,
    "usado_por_modulos": [
     "components/accessibility",
     "components/admin",

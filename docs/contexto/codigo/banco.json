@@ -8,7 +8,7 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 279,
+ "migrations": 280,
  "seeds": [],
  "avisos": [
   "43 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -217,6 +217,7 @@
   "ensure_single_default_filter",
   "ensure_telemetry_logs_partition",
   "exec_sql",
+  "execute_read_query",
   "find_approval_rule",
   "fx_convert",
   "generate_sequential_number",
@@ -1459,6 +1460,16 @@
  ],
  "buckets": [
   {
+   "nome": "b1",
+   "criado_em_sql": false,
+   "usado_em": 1
+  },
+  {
+   "nome": "bucket",
+   "criado_em_sql": false,
+   "usado_em": 1
+  },
+  {
    "nome": "comprovantes",
    "criado_em_sql": true,
    "usado_em": 1
@@ -1477,6 +1488,11 @@
    "nome": "product-images",
    "criado_em_sql": true,
    "usado_em": 0
+  },
+  {
+   "nome": "storage_bucket",
+   "criado_em_sql": false,
+   "usado_em": 1
   }
  ],
  "tabelas": {

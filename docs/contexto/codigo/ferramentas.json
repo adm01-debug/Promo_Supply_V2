@@ -3,14 +3,14 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (679)",
-   "SQL (280)",
-   "Markdown (56)",
-   "JSON (16)",
-   "JavaScript (16)",
-   "CSS (6)",
-   "Shell (6)",
-   "Python (5)"
+   "TypeScript (682)",
+   "SQL (281)",
+   "Markdown (70)",
+   "JavaScript (50)",
+   "JSON (21)",
+   "YAML (9)",
+   "Shell (7)",
+   "CSS (6)"
   ],
   "linguagem_principal": "TypeScript",
   "framework": "React",
@@ -44,6 +44,15 @@
   "nome": "vite_react_shadcn_ts",
   "versao": "0.0.0",
   "scripts": {
+   "automation:check": "node scripts/automation.mjs check --ref HEAD",
+   "automation:doctor": "node scripts/automation.mjs doctor",
+   "automation:graph": "node scripts/automation.mjs graph",
+   "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+   "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+   "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+   "automation:status": "node scripts/automation.mjs graph status",
+   "automation:test": "node scripts/automation.mjs test",
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
    "build": "vite build",
    "build:dev": "vite build --mode development",
    "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
@@ -51,7 +60,13 @@
    "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
    "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
    "dev": "vite",
+   "docs:ci": "node scripts/ci/render-workflow-docs.mjs",
+   "docs:matriz-edge": "node scripts/ci/gerar-matriz-edge-tabela.mjs",
+   "guards": "npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check",
    "lint": "eslint .",
+   "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+   "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+   "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
    "prepare": "",
    "preview": "vite preview",
    "test": "vitest run",
@@ -60,11 +75,12 @@
    "test:coverage": "vitest run --coverage",
    "test:e2e": "playwright test",
    "test:load": "npx artillery run src/tests/load/backend-stress.yml",
+   "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
    "test:rls": "vitest run --config ./vitest.rls.config.ts",
-   "test:scripts": "node --test scripts/ci/*.unit.mjs",
+   "test:scripts": "node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs",
    "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
    "test:watch": "vitest",
-   "typecheck": "tsc --noEmit"
+   "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
   },
   "dependencias": 78,
   "dev_dependencias": 23,
@@ -118,6 +134,65 @@
  ],
  "workflows": [
   {
+   "arquivo": ".github/workflows/automation-local.yml",
+   "nome": "Automação local",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "contracts"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/automation.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/branch-hygiene-audit.yml",
+   "nome": "Branch Hygiene Audit",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "34 9 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "audit"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: read"
+   ],
+   "scripts_usados": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/branch-podaveis.mjs",
+    "scripts/ci/bump-toolchain.mjs",
+    "scripts/ci/sla-code-scanning.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
    "arquivo": ".github/workflows/contexto.yml",
    "nome": "Contexto para agentes de IA (10 min)",
    "gatilhos": [
@@ -158,6 +233,48 @@
     "actions/download-artifact",
     "actions/setup-node",
     "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/guards.yml",
+   "nome": "Guards offline do repositorio",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "suites",
+    "commits",
+    "dependencias",
+    "bundle"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ci/audit-prod.mjs",
+    "scripts/ci/check-bundle-secrets.mjs",
+    "scripts/ci/check-test-inventory.mjs",
+    "scripts/ci/commit-msg-lint.mjs",
+    "scripts/ci/gerar-matriz-edge-tabela.mjs",
+    "scripts/ci/render-workflow-docs.mjs"
+   ],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [
+    "X",
+    "mjs"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "oven-sh/setup-bun"
    ]
   },
   {
@@ -215,7 +332,9 @@
     "e2e-tests"
    ],
    "permissoes": [],
-   "scripts_usados": [],
+   "scripts_usados": [
+    "scripts/ci/check-agents-md-integrity.mjs"
+   ],
    "npm_scripts": [
     "lint",
     "test",
@@ -224,6 +343,8 @@
    "secrets": [
     "E2E_TEST_EMAIL",
     "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -232,6 +353,27 @@
     "actions/upload-artifact",
     "denoland/setup-deno",
     "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/notifica-falha-main.yml",
+   "nome": "Notifica falha na main",
+   "gatilhos": [
+    "workflow_run"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "notificar"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/github-script"
    ]
   },
   {
@@ -287,8 +429,13 @@
  "docs_raiz": [
   {
    "arquivo": "AGENTS.md",
-   "titulo": "AGENTS.md — Promo_Supply_V2",
-   "linhas": 96
+   "titulo": "AGENTS.md — Promo Supply V2",
+   "linhas": 128
+  },
+  {
+   "arquivo": "CLAUDE.md",
+   "titulo": null,
+   "linhas": 2
   },
   {
    "arquivo": "ESTADO_ATUAL.md",
@@ -299,19 +446,32 @@
    "arquivo": "README.md",
    "titulo": "Welcome to your Lovable project",
    "linhas": 59
+  },
+  {
+   "arquivo": "docs/AUTOMACAO_LOCAL.md",
+   "titulo": "Automação local — Promo_Supply_V2",
+   "linhas": 124
   }
  ],
  "docs_em_subpastas": [
+  {
+   "pasta": "docs/agentes",
+   "arquivos_md": 7
+  },
   {
    "pasta": "docs/contexto",
    "arquivos_md": 2
   },
   {
-   "pasta": "docs/agentes",
+   "pasta": "docs/ci",
    "arquivos_md": 1
   },
   {
    "pasta": "docs/conventions",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/mapa",
    "arquivos_md": 1
   }
  ],
@@ -353,6 +513,7 @@
    "QA_USER_EMAIL",
    "QA_USER_PASSWORD",
    "RESEND_API_KEY",
+   "SCIM_BEARER_TOKEN",
    "SCIM_TEST_BASE_URL",
    "SCIM_TEST_TOKEN",
    "SEFAZ_API_TOKEN",
@@ -407,10 +568,14 @@
    "GITHUB_TOKEN",
    "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
    "TYPES_SYNC_PR_TOKEN",
    "VITE_SUPABASE_PROJECT_ID",
    "VITE_SUPABASE_PUBLISHABLE_KEY",
-   "VITE_SUPABASE_URL"
+   "VITE_SUPABASE_URL",
+   "X",
+   "mjs"
   ]
  },
  "deploy": {
@@ -501,7 +666,23 @@
     "arquivos": 1
    },
    {
+    "host": "maintenance.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "production.invalid",
+    "arquivos": 1
+   },
+   {
+    "host": "production.supabase.co",
+    "arquivos": 1
+   },
+   {
     "host": "raw.githubusercontent.com",
+    "arquivos": 1
+   },
+   {
+    "host": "registry.npmjs.org",
     "arquivos": 1
    },
    {
@@ -522,6 +703,7 @@
    "GITHUB_DISPATCH_TOKEN",
    "LOVABLE_API_KEY",
    "RESEND_API_KEY",
+   "SCIM_BEARER_TOKEN",
    "SCIM_TEST_TOKEN",
    "SEFAZ_API_TOKEN",
    "SEFAZ_WEBHOOK_URL",
@@ -563,6 +745,10 @@
     "ocorrencias": 3
    },
    {
+    "papel": "anon",
+    "ocorrencias": 2
+   },
+   {
     "papel": "dialog",
     "ocorrencias": 2
    },
@@ -571,11 +757,23 @@
     "ocorrencias": 2
    },
    {
+    "papel": "service_role",
+    "ocorrencias": 2
+   },
+   {
     "papel": "agent",
     "ocorrencias": 1
    },
    {
     "papel": "assistant",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "ausente",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "authenticated",
     "ocorrencias": 1
    },
    {

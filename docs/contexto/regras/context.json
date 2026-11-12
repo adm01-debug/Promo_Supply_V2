@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "d44bb8fa9bc24ed6aa0ae40e84b9e5db54f4082d",
+  "sha": "4cc1a7a96bc4160e5b1102577e41d6b84aee12fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-08 18:40 UTC",
-  "files_total": 1090,
-  "code_files": 980,
-  "code_lines": 161293
+  "generated_at": "2026-11-12 12:26 UTC",
+  "files_total": 1154,
+  "code_files": 1018,
+  "code_lines": 172765
  },
  "version": "1.3.2",
- "facts_hash": "533e6af23a90a6e4",
+ "facts_hash": "9fbe6154d6686ffa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -103,6 +103,10 @@
    }
   },
   "scripts": {
+   "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+   "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+   "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
+   "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
    "dev": "vite",
    "build": "vite build",
    "build:dev": "vite build --mode development",
@@ -117,13 +121,25 @@
    "test:coverage": "vitest run --coverage",
    "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e",
    "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
-   "typecheck": "tsc --noEmit",
+   "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
    "contexto:codigo": "node scripts/ai-context/gerar.mjs --out docs/contexto/codigo",
    "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
    "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
    "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
-   "test:scripts": "node --test scripts/ci/*.unit.mjs",
-   "prepare": ""
+   "test:scripts": "node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs",
+   "docs:ci": "node scripts/ci/render-workflow-docs.mjs",
+   "docs:matriz-edge": "node scripts/ci/gerar-matriz-edge-tabela.mjs",
+   "guards": "npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check",
+   "prepare": "",
+   "automation:doctor": "node scripts/automation.mjs doctor",
+   "automation:test": "node scripts/automation.mjs test",
+   "automation:check": "node scripts/automation.mjs check --ref HEAD",
+   "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+   "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+   "automation:graph": "node scripts/automation.mjs graph",
+   "automation:status": "node scripts/automation.mjs graph status",
+   "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks"
   },
   "infra": [
    {
@@ -137,11 +153,37 @@
   ],
   "ci": [
    {
+    "file": ".github/workflows/automation-local.yml",
+    "name": "Automação local",
+    "triggers": [
+     "pull_request",
+     "push",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/branch-hygiene-audit.yml",
+    "name": "Branch Hygiene Audit",
+    "triggers": [
+     "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
     "file": ".github/workflows/contexto.yml",
     "name": "Contexto para agentes de IA (10 min)",
     "triggers": [
      "push",
      "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/guards.yml",
+    "name": "Guards offline do repositorio",
+    "triggers": [
+     "pull_request",
+     "push",
      "workflow_dispatch"
     ]
    },
@@ -162,6 +204,11 @@
     ]
    },
    {
+    "file": ".github/workflows/notifica-falha-main.yml",
+    "name": "Notifica falha na main",
+    "triggers": []
+   },
+   {
     "file": ".github/workflows/types-sync.yml",
     "name": "types-sync",
     "triggers": [
@@ -173,10 +220,10 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".tsx": 340,
-   ".ts": 339,
-   ".sql": 280,
-   ".mjs": 14,
+   ".tsx": 342,
+   ".ts": 340,
+   ".sql": 281,
+   ".mjs": 48,
    ".py": 5,
    ".js": 2
   },
@@ -21595,6 +21642,22 @@
      "v_open_alert"
     ]
    },
+   "execute_read_query": {
+    "args": "p_sql text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN é permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
+    "raises": [
+     "Somente EXPLAIN é permitido",
+     "EXPLAIN somente para SELECT/WITH (leitura)"
+    ],
+    "tables": [
+     "v_plan"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -25424,6 +25487,7 @@
    "supabase/migrations/20260805100000_promo_supply_v2_seed_and_fixes.sql",
    "supabase/migrations/20260805160000_fix_frontend_comms.sql",
    "supabase/migrations/20260806180000_seed_devolucoes_creditos.sql",
+   "supabase/migrations/20261107150000_execute_read_query.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -28946,6 +29010,22 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    }
   ],
   "raises": [
@@ -29003,6 +29083,16 @@
     "function": "get_db_health_snapshot",
     "msg": "access denied: admin role required",
     "src": "supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "Somente EXPLAIN é permitido",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    }
   ],
   "seed": [
@@ -29736,7 +29826,6 @@
      "Error creating solicitation: ",
      "Invalid PunchOut XML: ",
      "PunchOut cart has no items",
-     "Session expired",
      "Session not found"
     ],
     "side_effects": [],
@@ -29810,6 +29899,7 @@
      "user_tenants"
     ],
     "env": [
+     "SCIM_BEARER_TOKEN",
      "SUPABASE_SERVICE_ROLE_KEY",
      "SUPABASE_URL"
     ],
@@ -30818,6 +30908,11 @@
    },
    {
     "kind": "GitHub Actions cron",
+    "detail": "34 9 * * 1",
+    "file": ".github/workflows/branch-hygiene-audit.yml"
+   },
+   {
+    "kind": "GitHub Actions cron",
     "detail": "3-59/10 * * * *",
     "file": ".github/workflows/contexto.yml"
    },
@@ -31393,31 +31488,55 @@
   },
   {
    "module": "scripts",
-   "files": 25,
-   "lines": 8933,
+   "files": 59,
+   "lines": 19846,
    "tables": [
     "a",
+    "b2",
+    "b3",
+    "bucket_quebrado",
     "contacts",
     "dashboard_table",
     "emails",
     "fantasma",
     "fixture_table",
     "ghost_table",
+    "ignorada",
+    "messages",
     "payments",
+    "pg_class",
+    "pg_namespace",
     "pg_policies",
+    "profiles",
     "runtime_table",
+    "shared_nao_conta",
     "so_teste",
     "t",
     "t1",
     "tabela",
     "tools_runtime",
-    "tx"
+    "tx",
+    "x"
    ],
    "exports": [
+    "automation.mjs: parseArgs, validateConfig, execute, appendExclude, removeExclude, main",
+    "graphify-local.mjs: GraphError, run, acquire, validateConfig, fingerprint, validateGraph",
     "gerar.unit.mjs: AppRoutes, useContacts",
+    "actions-kpi.mjs: duracaoMinutos, runsNaJanela, agregar, paginaTemMais, maisLentos, tabela",
+    "audit-prod.mjs: parseAuditText, evaluate, validarRelatorio, lerStatusColetor, main",
+    "branch-podaveis.mjs: DIAS_MINIMOS, SEMPRE_FORA, motivoNomeInseguro, nomeVisivel, selecionarPodaveis, relatorio",
+    "check-bundle-secrets.mjs: extrairTokens, decodificarPayload, ehArquivoVarrido, listarArquivosVarridos, varrer, varrerEnv",
+    "check-test-inventory.mjs: RAIZ, ALLOWLIST_NODE, comandoExecutadoNoWorkflow, codigoExecutavelDeWorkflow, padroesNodeDeWorkflow, casaPadrao",
+    "commit-msg-lint.mjs: TIPOS, SUBJECT_MIN_LENGTH, cabecalhoDaMensagem, validarMensagem, main",
+    "gerar-matriz-edge-tabela.mjs: extrairTabelas, tabelasDeShared, montarMatriz, renderizar, main",
+    "sla-code-scanning.mjs: SLA_DIAS, nivel, avaliarSla, relatorio",
+    "workflow-test-support.mjs: jobsOf, jobOf, stepsOf, valueOf, nestedValue, permission",
     "gerar-banco.mjs: refDoProjeto, LIMIARES, PARECE_CREDENCIAL, extrairInventario, contarUsoNoCodigo, LEDGER_TOLERANCIA",
     "gerar-rotas.mjs: resolverImport, extrairImports, extrairChamadas, MAX_SALTOS_FEATURE, fechoDaTela, papeisDaTag",
     "mudou-conteudo.mjs: PADRAO, semCarimbos, mudou",
+    "seguranca-processo.mjs: RAIZ_REPO, RAIZES_PERMITIDAS, resolverExecutavel, estaDentro, resolverCaminhoPermitido",
+    "lib.mjs: MaintenanceError, fail, digest, exists, safeEnv, stopChildren",
+    "run.mjs: parseArgs, networkPrefix, allowedSourceFiles, prettierCandidates, main",
     "generate.py: is_app_code, log, read_text, redact, rel, is_archived_sql",
     "indice.py: git, parse_dt, read_manifest, producer_health, entry_file, main",
     "test_generate.py: CurrentSqlSourcesTests",
@@ -31426,36 +31545,39 @@
     "identidade-banco.mjs: SUPABASE_CA_PATH, SUPABASE_CA_FILE_SHA256, SUPABASE_CA_FINGERPRINT256, validarSupabaseCa, extrairProjectRef, validarDestino"
    ],
    "docs": [
-    "db-explain-analyze.ts: B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS). Uso: bun run scripts/db-explain-analyze.ts Requer: - SUPABASE_URL - SUPABASE_SERVICE_ROLE_KEY (só executa em CI/local com service role) Saída: - Imprime plano + tempo por query - Falha se qualquer query exceder LIMIT_MS - …",
-    "realtime-audit.ts: OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe. Regras: - Todo `supabase.channel(...)` deve ter `removeChannel` ou `unsubscribe` no cleanup do mesmo arquivo. - Falha o build se sobrar canal órfão.",
-    "rls-audit.ts: TEST-01 — RLS Policy Audit (refactored) Não depende de RPC exec_sql. Lê pg_policies via PostgREST (service-role). Falha o build se encontrar policy permissiva (USING true / WITH CHECK true) fora da allowlist de service_role.",
-    "cenarios.mjs: Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere: não trava, erros_do_gerador vazio, saída determinística e extração esperada. Rodar: node scripts/ai-context/cenarios …",
-    "gerar.mjs: !/usr/bin/env node Gera o contexto de projeto para agentes de IA (padrão: inventario/ia/*). Zero dependências. Node >= 18. Genérico: funciona em qualquer repositório. JS/TS (React, Next, Vue, Svelte, Nuxt, Remix, Astro, Express/Hono/Fastify/Nest), Python (FastAPI/Flask/Django), e qualquer outra ling …",
-    "gerar.unit.mjs: Teste do gerador de contexto (scripts/ai-context/gerar.mjs). Monta um repositório sintético em pasta temporária cobrindo os casos que o gerador precisa entender (rotas aninhadas, lazy, menu, hooks, edge functions, migrations em ordem, barrel re-export, backend HTTP, Python, nested tsconfig) e confer …"
+    "automation.mjs: !/usr/bin/env node",
+    "db-explain-analyze.ts: B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS). Uso: bun run scripts/db-explain-analyze.ts bun run scripts/db-explain-analyze.ts --json # saída JSON Requer: - SUPABASE_URL - SUPABASE_SERVICE_ROLE_KEY - RPC public.execute_read_query (migration 20261107150000_execute_read …",
+    "graphify-local.mjs: !/usr/bin/env node",
+    "realtime-audit.ts: OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe. Regras: - Todo `supabase.channel(...)` deve ter `removeChannel`, `removeAllChannels`, `supabase.removeChannel` ou `.unsubscribe` no cleanup do mesmo arquivo. - Ignora comentários e strings para evitar falsos positivos. - Falha …",
+    "rls-audit.ts: TEST-01 — RLS Policy Audit (refactorado) Lê pg_policies via PostgREST (service-role) com fallback permissivo. Detecta: - Policies permissivas (USING true / WITH CHECK true) fora da allowlist. - Tabelas com RLS desabilitado (relrowsecurity = false). Comportamento: - Sem credenciais → skip (exit 0) pa …",
+    "cenarios.mjs: Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere: não trava, erros_do_gerador vazio, saída determinística e extração esperada. Rodar: node scripts/ai-context/cenarios …"
    ],
    "deps": [
     "#",
     "@lib/y",
     "@supabase/supabase-js",
     "@tanstack/react-query",
+    "child_process",
     "drizzle-orm",
     "express",
+    "fs",
     "lib",
     "lodash",
     "node:assert",
     "node:child_process",
     "node:crypto",
+    "node:events",
     "node:fs",
+    "node:module",
     "node:net",
     "node:os",
     "node:path",
+    "node:string_decoder",
     "node:test",
     "node:url",
-    "npm:@supabase",
+    "path",
     "perf_hooks",
-    "react",
-    "react-router-dom",
-    "vue-router"
+    "react"
    ],
    "imports_modules": [
     "src/b",
@@ -31469,7 +31591,11 @@
     "src/views"
    ],
    "file_list": [
+    "scripts/automation.mjs",
+    "scripts/automation.unit.mjs",
     "scripts/db-explain-analyze.ts",
+    "scripts/graphify-local.mjs",
+    "scripts/graphify-local.unit.mjs",
     "scripts/realtime-audit.ts",
     "scripts/rls-audit.ts",
     "scripts/stress-test.ts",
@@ -31477,14 +31603,44 @@
     "scripts/ai-context/cenarios.mjs",
     "scripts/ai-context/gerar.mjs",
     "scripts/ai-context/gerar.unit.mjs",
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/actions-kpi.unit.mjs",
+    "scripts/ci/agents-docs-baseline.unit.mjs",
     "scripts/ci/ai-context-generator.unit.mjs",
+    "scripts/ci/audit-prod.mjs",
+    "scripts/ci/audit-prod.unit.mjs",
+    "scripts/ci/branch-podaveis.mjs",
+    "scripts/ci/branch-podaveis.unit.mjs",
+    "scripts/ci/bump-toolchain.mjs",
+    "scripts/ci/check-agents-md-integrity.mjs",
+    "scripts/ci/check-bundle-secrets.mjs",
+    "scripts/ci/check-bundle-secrets.unit.mjs",
+    "scripts/ci/check-test-inventory.mjs",
+    "scripts/ci/check-test-inventory.unit.mjs",
+    "scripts/ci/commit-msg-lint.mjs",
+    "scripts/ci/commit-msg-lint.unit.mjs",
+    "scripts/ci/gerar-matriz-edge-tabela.mjs",
+    "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
+    "scripts/ci/maintenance.unit.mjs",
     "scripts/ci/regras-negocio.unit.mjs",
+    "scripts/ci/render-workflow-docs.mjs",
+    "scripts/ci/render-workflow-docs.unit.mjs",
+    "scripts/ci/sla-code-scanning.mjs",
+    "scripts/ci/sla-code-scanning.unit.mjs",
     "scripts/ci/supabase-snapshot.unit.mjs",
+    "scripts/ci/toolchain-schedule.unit.mjs",
+    "scripts/ci/workflow-test-support.mjs",
     "scripts/inventario/banco.sql",
     "scripts/inventario/gerar-banco.mjs",
     "scripts/inventario/gerar-repo.mjs",
     "scripts/inventario/gerar-rotas.mjs",
     "scripts/inventario/mudou-conteudo.mjs",
+    "scripts/lib/seguranca-processo.mjs",
+    "scripts/lib/seguranca-processo.test.mjs",
+    "scripts/maintenance/lib.mjs",
+    "scripts/maintenance/maintenance.unit.mjs",
+    "scripts/maintenance/run.mjs",
+    "scripts/maintenance/typecheck.mjs",
     "scripts/regras_negocio/generate.py",
     "scripts/regras_negocio/indice.py",
     "scripts/regras_negocio/test_generate.py",
@@ -31535,7 +31691,7 @@
   {
    "module": "src/components",
    "files": 257,
-   "lines": 48392,
+   "lines": 48457,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -32036,7 +32192,7 @@
   {
    "module": "src/hooks",
    "files": 71,
-   "lines": 12131,
+   "lines": 12132,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -32286,11 +32442,12 @@
   },
   {
    "module": "src/lib",
-   "files": 44,
-   "lines": 5520,
+   "files": 45,
+   "lines": 5586,
    "tables": [],
    "exports": [
     "clearFiltersShortcut.ts: ShortcutCombo, DEFAULT_CLEAR_FILTERS_SHORTCUT, RESERVED_SHORTCUTS, isSameCombo, findReservedConflict, isInvalidCombo",
+    "dateUtils.ts: parseLocalDate, formatDateBR",
     "dbMapping.ts: nullToUndefined, undefinedToNull, nullishOr, nullishStr, nullishNum, nullishBool",
     "exportData.ts: exportToCSV, pedidoColumns, solicitacaoColumns, fornecedorColumns, cotacaoColumns, pagamentoColumns",
     "feedbackToast.ts: toast",
@@ -32309,7 +32466,7 @@
     "security.ts: security",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
-    "utils.ts: cn, formatCurrency, formatDate, formatDateTime",
+    "utils.ts: cn, generateUniqueKey, formatCurrency, formatDate, formatDateTime",
     "fuzzSeed.ts: mulberry32, FuzzRng, createFuzzRng"
    ],
    "docs": [
@@ -32340,6 +32497,7 @@
    ],
    "file_list": [
     "src/lib/clearFiltersShortcut.ts",
+    "src/lib/dateUtils.ts",
     "src/lib/dbMapping.ts",
     "src/lib/exportData.ts",
     "src/lib/feedbackToast.ts",
@@ -32387,8 +32545,8 @@
   },
   {
    "module": "src/pages",
-   "files": 117,
-   "lines": 27461,
+   "files": 119,
+   "lines": 27674,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -32483,6 +32641,7 @@
    "deps": [
     "@mui/icons-material",
     "@tanstack/react-query",
+    "@testing-library/react",
     "date-fns",
     "framer-motion",
     "lodash",
@@ -32534,6 +32693,7 @@
     "src/pages/admin/StorageMigration.tsx",
     "src/pages/admin/WorkflowAdmin.tsx",
     "src/pages/admin/alertRunbooks.ts",
+    "src/pages/admin/__tests__/HealthDashboard.test.tsx",
     "src/pages/admin/__tests__/alertRunbooks.test.ts",
     "src/pages/admin-telemetria/AdminTelemetria.tsx",
     "src/pages/admin-telemetria/telemetriaHelpers.ts",
@@ -32594,8 +32754,7 @@
     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
     "src/pages/historico/HistoricoCompras.tsx",
     "src/pages/historico/HistoricoDrilldownModal.tsx",
-    "src/pages/historico/HistoricoFornecedoresTab.tsx",
-    "src/pages/historico/HistoricoHelpers.tsx"
+    "src/pages/historico/HistoricoFornecedoresTab.tsx"
    ]
   },
   {
@@ -32781,7 +32940,7 @@
   {
    "module": "supabase/functions",
    "files": 70,
-   "lines": 12818,
+   "lines": 12989,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -32944,8 +33103,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 279,
-   "lines": 21488,
+   "files": 280,
+   "lines": 21539,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -33037,7 +33196,7 @@
   {
    "module": "tests-e2e",
    "files": 9,
-   "lines": 559,
+   "lines": 551,
    "tables": [],
    "exports": [
     "fixtures.ts: test",
@@ -33217,6 +33376,16 @@
      "supabase/functions/dependency-health/index.ts"
     ]
    },
+   "b2": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   "b3": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
    "blocked_countries": {
     "select": [
      "src/components/security/BlockedCountriesPanel.tsx"
@@ -33237,6 +33406,11 @@
     ],
     "delete": [
      "src/hooks/useSecurityLogs.ts"
+    ]
+   },
+   "bucket_quebrado": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    "categorias": {
@@ -33276,7 +33450,11 @@
    },
    "contacts": {
     "select": [
-     "scripts/ai-context/gerar.unit.mjs"
+     "scripts/ai-context/gerar.unit.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ],
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    "contract_documents": {
@@ -33612,6 +33790,11 @@
      "supabase/functions/health-dashboard/index.ts"
     ]
    },
+   "ignorada": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
    "integration_outbox": {
     "select": [
      "supabase/functions/process-outbox/index.ts"
@@ -33667,6 +33850,11 @@
    "login_attempts": {
     "select": [
      "src/hooks/useSecurityLogs.ts"
+    ]
+   },
+   "messages": {
+    "insert": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    "mfa_settings": {
@@ -33860,6 +34048,16 @@
      "src/hooks/usePermissions.ts"
     ]
    },
+   "pg_class": {
+    "select": [
+     "scripts/rls-audit.ts"
+    ]
+   },
+   "pg_namespace": {
+    "select": [
+     "scripts/rls-audit.ts"
+    ]
+   },
    "pg_policies": {
     "select": [
      "scripts/rls-audit.ts"
@@ -33898,6 +34096,9 @@
     ]
    },
    "profiles": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ],
     "select": [
      "src/features/auth/hooks/useAuth.tsx",
      "src/hooks/useBuyerPerformanceData.ts",
@@ -34000,6 +34201,11 @@
    "security_logs": {
     "select": [
      "src/hooks/useSecurityLogs.ts"
+    ]
+   },
+   "shared_nao_conta": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    "so_teste": {
@@ -34207,11 +34413,13 @@
    },
    "t1": {
     "ref": [
-     "scripts/ai-context/cenarios.mjs"
+     "scripts/ai-context/cenarios.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    "tabela": {
     "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.mjs",
      "scripts/inventario/gerar-banco.mjs",
      "scripts/inventario/gerar-repo.mjs"
     ]
@@ -34368,6 +34576,11 @@
    "workflow_templates": {
     "select": [
      "src/pages/admin/WorkflowAdmin.tsx"
+    ]
+   },
+   "x": {
+    "ref": [
+     "scripts/ci/gerar-matriz-edge-tabela.mjs"
     ]
    },
    "xbz_carrinho_log": {
@@ -34795,6 +35008,15 @@
    "penalty_escalation_config": [
     "id"
    ],
+   "pg_class": [
+    "relname",
+    "relnamespace",
+    "relrowsecurity"
+   ],
+   "pg_namespace": [
+    "nspname",
+    "oid"
+   ],
    "pg_policies": [
     "cmd",
     "policyname",
@@ -34839,7 +35061,6 @@
     "created_at",
     "current_organization_id",
     "department",
-    "display_name",
     "email",
     "full_name",
     "id",
@@ -35098,6 +35319,9 @@
    ]
   },
   "env": {
+   "AGENTS_MD_BASE": [
+    "scripts/ci/check-agents-md-integrity.mjs"
+   ],
    "AI_CONTEXT_DIR": [
     "scripts/ai-context/gerar.mjs"
    ],
@@ -35162,11 +35386,17 @@
    "EXPLAIN_LIMIT_MS": [
     "scripts/db-explain-analyze.ts"
    ],
+   "EXPLAIN_RUNS": [
+    "scripts/db-explain-analyze.ts"
+   ],
    "EXTERNAL_DB_KEY": [
     "supabase/functions/external-db-bridge/index.ts"
    ],
    "EXTERNAL_DB_URL": [
     "supabase/functions/external-db-bridge/index.ts"
+   ],
+   "FIXTURE_GRAPH_EXIT": [
+    "scripts/automation.unit.mjs"
    ],
    "FUZZ_SEED": [
     "src/lib/__tests__/fuzzSeed.ts",
@@ -35175,14 +35405,41 @@
    "GEN_TYPES": [
     "scripts/supabase_snapshot/snapshot.py"
    ],
+   "GH_TOKEN": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/bump-toolchain.mjs"
+   ],
+   "GITHUB_API_URL": [
+    "scripts/ci/actions-kpi.mjs"
+   ],
    "GITHUB_DISPATCH_TOKEN": [
     "supabase/functions/dependency-health/index.ts"
+   ],
+   "GITHUB_REPOSITORY": [
+    "scripts/ci/actions-kpi.mjs"
    ],
    "GITHUB_REPO_RAW_BASE": [
     "supabase/functions/dependency-health/index.ts"
    ],
+   "GITHUB_STEP_SUMMARY": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/bump-toolchain.mjs"
+   ],
+   "GITHUB_TOKEN": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/bump-toolchain.mjs"
+   ],
+   "GRAPHIFY_FIXTURE_": [
+    "scripts/graphify-local.unit.mjs"
+   ],
+   "GRAPHIFY_FIXTURE_SECRET": [
+    "scripts/graphify-local.unit.mjs"
+   ],
    "INTEGRATION_TESTS": [
     "src/tests/integration/supabase-db.test.ts"
+   ],
+   "JANELA_DIAS": [
+    "scripts/ci/actions-kpi.mjs"
    ],
    "LOVABLE_API_KEY": [
     "supabase/functions/ai-demand-prediction/index.ts",
@@ -35190,11 +35447,20 @@
     "supabase/functions/ai-supplier-risk/index.ts",
     "supabase/functions/ai-supplier-suggestion/index.ts"
    ],
+   "MAINTENANCE_TEST_": [
+    "scripts/maintenance/maintenance.unit.mjs"
+   ],
+   "MAINTENANCE_TEST_SECRET": [
+    "scripts/maintenance/maintenance.unit.mjs"
+   ],
    "NODE_ENV": [
-    "scripts/ai-context/cenarios.mjs"
+    "scripts/ai-context/cenarios.mjs",
+    "scripts/maintenance/maintenance.unit.mjs"
    ],
    "PATH": [
-    "scripts/ci/regras-negocio.unit.mjs"
+    "scripts/ci/regras-negocio.unit.mjs",
+    "scripts/graphify-local.unit.mjs",
+    "scripts/lib/seguranca-processo.mjs"
    ],
    "PGDUMP": [
     "scripts/supabase_snapshot/snapshot.py"
@@ -35223,6 +35489,12 @@
    "QA_USER_PASSWORD": [
     "supabase/functions/telemetry/index.test.ts"
    ],
+   "RENDER_WF_RAIZ": [
+    "scripts/ci/render-workflow-docs.mjs"
+   ],
+   "REPO_AUTOMATION_CHAINING": [
+    "scripts/automation.mjs"
+   ],
    "REPO_ROOT": [
     "scripts/supabase_snapshot/snapshot.py"
    ],
@@ -35237,6 +35509,9 @@
    "RLS_TEST_USER_B": [
     "tests-rls/rls-isolation.test.ts"
    ],
+   "SCIM_BEARER_TOKEN": [
+    "supabase/functions/scim-v2/index.ts"
+   ],
    "SCIM_TEST_BASE_URL": [
     "supabase/functions/scim-v2/conformance.test.ts"
    ],
@@ -35245,6 +35520,9 @@
    ],
    "SCRIPT_ONLY": [
     "scripts/ai-context/cenarios.mjs"
+   ],
+   "SECRET_KEY": [
+    "scripts/maintenance/maintenance.unit.mjs"
    ],
    "SEFAZ_API_TOKEN": [
     "supabase/functions/fiscal-orchestrator/index.ts"
@@ -35438,7 +35716,11 @@
    "VITE_SUPABASE_ANON_KEY": [
     "src/tests/integration/supabase-db.test.ts"
    ],
+   "VITE_SUPABASE_PROJECT_ID": [
+    "scripts/maintenance/maintenance.unit.mjs"
+   ],
    "VITE_SUPABASE_PUBLISHABLE_KEY": [
+    "scripts/maintenance/maintenance.unit.mjs",
     "scripts/stress-test.ts",
     "src/integrations/supabase/client.ts",
     "supabase/functions/dependency-health/index.test.ts",
@@ -35450,6 +35732,7 @@
    ],
    "VITE_SUPABASE_URL": [
     "scripts/ai-context/gerar.unit.mjs",
+    "scripts/maintenance/maintenance.unit.mjs",
     "scripts/stress-test.ts",
     "src/integrations/supabase/client.ts",
     "src/tests/integration/supabase-db.test.ts",
@@ -35463,6 +35746,9 @@
    ],
    "XBZ_ENCRYPTION_KEY": [
     "supabase/functions/_shared/xbz_crypto.ts"
+   ],
+   "XDG_STATE_HOME": [
+    "scripts/maintenance/run.mjs"
    ]
   },
   "rpc": {
@@ -35594,6 +35880,9 @@
    "is_admin": [
     "scripts/ai-context/gerar.unit.mjs"
    ],
+   "list_public_policies": [
+    "scripts/rls-audit.ts"
+   ],
    "log_login_attempt": [
     "src/lib/supabaseRpc.ts",
     "src/pages/auth/Auth.tsx"
@@ -35717,6 +36006,12 @@
    ]
   },
   "storage": {
+   "b1": [
+    "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+   ],
+   "bucket": [
+    "scripts/ci/gerar-matriz-edge-tabela.mjs"
+   ],
    "comprovantes": [
     "src/components/pagamentos/PagamentoDetailModal.tsx"
    ],
@@ -35730,6 +36025,9 @@
    ],
    "product-images": [
     "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
+   ],
+   "storage_bucket": [
+    "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
    ]
   },
   "realtime": {
@@ -35753,6 +36051,9 @@
    ]
   },
   "external": {
+   "http://192.0.2.1:9": [
+    "scripts/maintenance/maintenance.unit.mjs"
+   ],
    "https://api.github.com": [
     "supabase/functions/dependency-health/index.ts"
    ],
@@ -35942,6 +36243,9 @@
   },
   "tables_only_in_code": [
    "a",
+   "b2",
+   "b3",
+   "bucket_quebrado",
    "comprovantes",
    "contacts",
    "dashboard_table",
@@ -35950,15 +36254,21 @@
    "fantasma",
    "fixture_table",
    "ghost_table",
+   "ignorada",
+   "messages",
    "payments",
+   "pg_class",
+   "pg_namespace",
    "pg_policies",
    "runtime_table",
+   "shared_nao_conta",
    "so_teste",
    "t",
    "t1",
    "tabela",
    "tools_runtime",
-   "tx"
+   "tx",
+   "x"
   ],
   "tables_only_in_schema": [
    "account_lockouts",
@@ -36015,10 +36325,6 @@
    {
     "table": "fornecedores",
     "column": "categorias_atendidas"
-   },
-   {
-    "table": "profiles",
-    "column": "display_name"
    },
    {
     "table": "profiles",
@@ -36447,8 +36753,48 @@
   ],
   "error_messages": [
    {
+    "file": "scripts/automation.unit.mjs",
+    "msg": "falha fixture"
+   },
+   {
     "file": "scripts/ai-context/cenarios.mjs",
     "msg": "${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)}"
+   },
+   {
+    "file": "scripts/ci/actions-kpi.mjs",
+    "msg": "${metodo} ${caminho} -> ${r.status}"
+   },
+   {
+    "file": "scripts/ci/audit-prod.mjs",
+    "msg": "--level invalido: ${args.level}"
+   },
+   {
+    "file": "scripts/ci/audit-prod.mjs",
+    "msg": "Argumento desconhecido: ${argv[index]}"
+   },
+   {
+    "file": "scripts/ci/branch-podaveis.mjs",
+    "msg": "PR sem headRefName"
+   },
+   {
+    "file": "scripts/ci/branch-podaveis.mjs",
+    "msg": "a lista de PRs abertas não é um array"
+   },
+   {
+    "file": "scripts/ci/branch-podaveis.mjs",
+    "msg": "a lista de PRs abertas veio cheia (${dados.length} >= limite ${limite}); pode haver PR que não veio"
+   },
+   {
+    "file": "scripts/ci/branch-podaveis.mjs",
+    "msg": "argumento inválido: ${chave}"
+   },
+   {
+    "file": "scripts/ci/branch-podaveis.mjs",
+    "msg": "falta --${obrigatorio}"
+   },
+   {
+    "file": "scripts/ci/check-bundle-secrets.mjs",
+    "msg": "Argumento desconhecido: ${argv[i]}"
    },
    {
     "file": "scripts/inventario/gerar-banco.mjs",
@@ -36509,6 +36855,38 @@
    {
     "file": "scripts/inventario/gerar-rotas.mjs",
     "msg": "${arquivo}: nao achei o bloco <Routes>...</Routes>"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.mjs",
+    "msg": "caminho de "
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.mjs",
+    "msg": "comando nao encontrado no PATH: "
+   },
+   {
+    "file": "scripts/maintenance/lib.mjs",
+    "msg": "failed"
+   },
+   {
+    "file": "scripts/maintenance/lib.mjs",
+    "msg": "missing_dependencies"
+   },
+   {
+    "file": "scripts/maintenance/lib.mjs",
+    "msg": "skipped_busy"
+   },
+   {
+    "file": "scripts/maintenance/maintenance.unit.mjs",
+    "msg": "formatter fixture failed"
+   },
+   {
+    "file": "scripts/maintenance/run.mjs",
+    "msg": "blocked_network_sandbox"
+   },
+   {
+    "file": "scripts/maintenance/run.mjs",
+    "msg": "pending_patch"
    },
    {
     "file": "scripts/supabase_snapshot/test_snapshot.py",
@@ -36627,6 +37005,10 @@
     "msg": "Preencha todos os campos obrigatórios"
    },
    {
+    "file": "src/components/compras/FornecedorModal.tsx",
+    "msg": "Não foi possível salvar o fornecedor. Tente novamente."
+   },
+   {
     "file": "src/components/compras/NovaSolicitacaoModal.tsx",
     "msg": "Erro ao criar solicitação: "
    },
@@ -36657,6 +37039,10 @@
    {
     "file": "src/components/compras/PriceComparator.tsx",
     "msg": "Produto necessário"
+   },
+   {
+    "file": "src/components/compras/PriceComparator.tsx",
+    "msg": "Quantidade inválida"
    },
    {
     "file": "src/components/compras/ReceivingModal.tsx",
@@ -37504,10 +37890,6 @@
    },
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
-    "msg": "Cache corrompido. Conecte-se à internet para recarregar."
-   },
-   {
-    "file": "src/pages/recebimento/RecebimentoOffline.tsx",
     "msg": "Erro ao buscar pedidos"
    },
    {
@@ -37717,10 +38099,6 @@
    {
     "file": "supabase/functions/punchout-receive/index.ts",
     "msg": "PunchOut cart has no items"
-   },
-   {
-    "file": "supabase/functions/punchout-receive/index.ts",
-    "msg": "Session expired"
    },
    {
     "file": "supabase/functions/punchout-receive/index.ts",
@@ -38109,6 +38487,14 @@
    {
     "file": "vite.config.ts",
     "text": "Forms & validation"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "text": "Numeric validation: reject empty/NaN; reject decimals on integer fields"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "text": "Fornecedor must be selected; if \"novo\", a name must be provided."
    },
    {
     "file": "src/components/compras/CriticalAlertsBar.tsx",
@@ -38539,12 +38925,24 @@
     "text": "M-05: rate limit por IP (webhooks anônimos)."
    },
    {
+    "file": "supabase/functions/punchout-receive/index.ts",
+    "text": "Session must be open. Reject reused or expired cookies so a stolen one"
+   },
+   {
     "file": "supabase/functions/punchout-setup/index.ts",
     "text": "The PunchOut shared secret must never be returned to the browser."
    },
    {
+    "file": "supabase/functions/run-audit/rls_test.ts",
+    "text": "without those secrets it would crash with \"supabaseUrl is required\" or"
+   },
+   {
     "file": "supabase/functions/scim-v2/index.ts",
     "text": "M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id)."
+   },
+   {
+    "file": "supabase/functions/scim-v2/index.ts",
+    "text": "Fail closed: the SCIM bearer token must match the configured secret before"
    },
    {
     "file": "supabase/functions/scim-v2/index.ts",
@@ -45709,7 +46107,7 @@
    {
     "file": "src/hooks/usePagamentos.ts",
     "name": "VALID_PAGAMENTO_TRANSITIONS",
-    "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'cancelado'], agendado: ['pago', 'cancelado'], pago: ['parcial'], parcial: ['pago'], cancelado: [], atrasado: ['pago', 'cancelado'],"
+    "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],"
    },
    {
     "file": "src/pages/devolucoes/DevolucoesModals.tsx",
@@ -50904,6 +51302,12 @@
    {
     "file": "supabase/functions/punchout-receive/index.ts",
     "field": "status",
+    "value": "open",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/index.ts",
+    "field": "status",
     "value": "opened",
     "kind": "filtra"
    },
@@ -51397,6 +51801,12 @@
    },
    {
     "file": "src/lib/utils.ts",
+    "name": "generateUniqueKey",
+    "params": "",
+    "body": "const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto; if (c?.randomUUID) { try { return c.randomUUID(); } catch { /* fall through */ } } return `k-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;"
+   },
+   {
+    "file": "src/lib/utils.ts",
     "name": "formatCurrency",
     "params": "value: number | null | undefined",
     "body": "if (value === null || value === undefined) return 'R$ 0,00'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);"
@@ -51866,10 +52276,6 @@
    {
     "file": "supabase/functions/health-dashboard/index.ts",
     "line": ".gte(\"created_at\", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),"
-   },
-   {
-    "file": "supabase/functions/punchout-receive/index.ts",
-    "line": "const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;"
    },
    {
     "file": "supabase/functions/send-push-notification/index.ts",
@@ -52691,6 +53097,46 @@
    }
   ],
   "tests": [
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverExecutavel devolve caminho absoluto existente igual ao do shell"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverExecutavel lanca para comando inexistente"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "estaDentro aceita a raiz e subpastas"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "estaDentro recusa "
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverCaminhoPermitido aceita caminho do repositorio e do tmpdir"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverCaminhoPermitido recusa "
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverCaminhoPermitido respeita o array de raizes explicito do chamador"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverCaminhoPermitido recusa arquivo existente acessado por symlink que escapa da raiz"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "resolverCaminhoPermitido recusa alvo inexistente sob diretorio symlink que escapa da raiz"
+   },
+   {
+    "file": "scripts/lib/seguranca-processo.test.mjs",
+    "name": "RAIZ_REPO aponta para o pacote deste repositorio e esta entre as raizes permitidas"
+   },
    {
     "file": "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
     "name": "defaultSettings"
@@ -59356,6 +59802,18 @@
     "name": "handles unknown status gracefully (defaults to 0)"
    },
    {
+    "file": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+    "name": "contratos do dashboard de saude"
+   },
+   {
+    "file": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+    "name": "preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas"
+   },
+   {
+    "file": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+    "name": "mostra alerta sem data no periodo completo e o exclui de periodo recente"
+   },
+   {
     "file": "src/pages/admin/__tests__/alertRunbooks.test.ts",
     "name": "getRunbook"
    },
@@ -61054,6 +61512,18 @@
    {
     "file": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
     "name": "remaining colors are hsl() values"
+   },
+   {
+    "file": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+    "name": "contratos do relatorio de negociacoes"
+   },
+   {
+    "file": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+    "name": "consulta somente colunas existentes de profiles e inclui score_total na media"
+   },
+   {
+    "file": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+    "name": "usa email quando full_name e nulo e Usuario quando perfil nao existe"
    },
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
@@ -62780,30 +63250,6 @@
     "name": "normalizeCatalogo: preserva o payload bruto para auditoria"
    },
    {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "GET dependency-health → 200 with valid snapshot shape"
-   },
-   {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "GET dependency-health?history=true → 200 with history array"
-   },
-   {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "POST dependency-health (no auth) → 403"
-   },
-   {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "POST dependency-health (non-admin user) → 403"
-   },
-   {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "POST dependency-health (admin) → 200 or config-dependent error"
-   },
-   {
-    "file": "supabase/functions/dependency-health/index.test.ts",
-    "name": "OPTIONS dependency-health → 204 with CORS headers"
-   },
-   {
     "file": "supabase/functions/scim-v2/conformance.test.ts",
     "name": "SCIM POST /Users — 201 with SCIM schema and Location header"
    },
@@ -62836,32 +63282,8 @@
     "name": "SCIM unsupported method — returns 405"
    },
    {
-    "file": "supabase/functions/telemetry/index.test.ts",
-    "name": "telemetry rejects unauthenticated requests"
-   },
-   {
-    "file": "supabase/functions/telemetry/index.test.ts",
-    "name": "telemetry accepts { batch: [...] } from the frontend logger"
-   },
-   {
-    "file": "supabase/functions/telemetry/index.test.ts",
-    "name": "telemetry accepts single-entry payload"
-   },
-   {
-    "file": "supabase/functions/telemetry/index.test.ts",
-    "name": "telemetry filtra entradas sem message em vez de retornar 400"
-   },
-   {
     "file": "supabase/functions/tests/fuzzing_suite.ts",
     "name": "Fuzzing Suite: Global Edge Function Integrity"
-   },
-   {
-    "file": "supabase/functions/workflow-engine/fuzz.test.ts",
-    "name": "Fuzzing: Workflow Engine rejects malformed payloads"
-   },
-   {
-    "file": "supabase/functions/workflow-engine/fuzz.test.ts",
-    "name": "Security: Workflow Engine rejects unauthenticated requests"
    },
    {
     "file": "tests-e2e/auth-navigation.spec.ts",
@@ -69382,6 +69804,22 @@
      "v_open_alert"
     ]
    },
+   "execute_read_query": {
+    "args": "p_sql text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN é permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
+    "raises": [
+     "Somente EXPLAIN é permitido",
+     "EXPLAIN somente para SELECT/WITH (leitura)"
+    ],
+    "tables": [
+     "v_plan"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -69640,6 +70078,16 @@
     "function": "get_db_health_snapshot",
     "msg": "access denied: admin role required",
     "src": "supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "Somente EXPLAIN é permitido",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    }
   ],
   "db_generated": [
@@ -69707,6 +70155,10 @@
    {
     "file": "src/hooks/useApprovalHistory.ts",
     "limit": "100"
+   },
+   {
+    "file": "src/hooks/useGeoRestriction.ts",
+    "limit": "1"
    },
    {
     "file": "src/hooks/usePasswordResetRequests.ts",
@@ -71372,6 +71824,9 @@
      ],
      "slow": [
       "compara:supabase/functions/external-db-bridge/index.ts"
+     ],
+     "open": [
+      "compara:supabase/functions/punchout-receive/index.ts"
      ],
      "opened": [
       "escreve:supabase/functions/punchout-setup/index.ts",
@@ -73842,6 +74297,8 @@
   "service_role_files": [
    "scripts/ai-context/cenarios.mjs",
    "scripts/ai-context/gerar.unit.mjs",
+   "scripts/ci/check-bundle-secrets.mjs",
+   "scripts/ci/check-bundle-secrets.unit.mjs",
    "scripts/db-explain-analyze.ts",
    "scripts/inventario/gerar-banco.mjs",
    "scripts/regras_negocio/generate.py",
@@ -73989,7 +74446,8 @@
    "supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql",
    "supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql",
    "supabase/migrations/20260726151350_0ea0eb79-cca6-494d-8e97-faa5c5945f2c.sql",
-   "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql",
+   "supabase/migrations/20261107150000_execute_read_query.sql"
   ],
   "security_definer_fns": [
    "_invoke_edge_function",
@@ -74043,6 +74501,7 @@
    "ensure_audit_logs_partition",
    "ensure_telemetry_logs_partition",
    "exec_sql",
+   "execute_read_query",
    "find_approval_rule",
    "fx_convert",
    "generate_sequential_number",
@@ -77509,6 +77968,22 @@
     "objkind": "table",
     "roles": "service_role",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    }
   ],
   "guards": [
@@ -79445,6 +79920,13 @@
    },
    {
     "kind": "status",
+    "msg": "valor `open` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:supabase/functions/punchout-receive/index.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:supabase/functions/spot-api/index.ts"
@@ -79571,11 +80053,6 @@
    },
    {
     "kind": "coluna",
-    "msg": "coluna `display_name` usada no código não existe no schema de `profiles`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
     "msg": "coluna `organization_id` usada no código não existe no schema de `profiles`",
     "where": []
    },
@@ -79623,6 +80100,27 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `b2` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `b3` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `bucket_quebrado` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `comprovantes` usada no código não existe nas migrations/types do repo",
     "where": [
      "src/components/pagamentos/PagamentoDetailModal.tsx"
@@ -79632,7 +80130,8 @@
     "kind": "tabela",
     "msg": "tabela `contacts` usada no código não existe nas migrations/types do repo",
     "where": [
-     "scripts/ai-context/gerar.unit.mjs"
+     "scripts/ai-context/gerar.unit.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    {
@@ -79679,9 +80178,37 @@
    },
    {
     "kind": "tabela",
+    "msg": "tabela `ignorada` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `messages` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
     "msg": "tabela `payments` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `pg_class` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/rls-audit.ts"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `pg_namespace` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/rls-audit.ts"
     ]
    },
    {
@@ -79696,6 +80223,13 @@
     "msg": "tabela `runtime_table` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `shared_nao_conta` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    {
@@ -79716,13 +80250,15 @@
     "kind": "tabela",
     "msg": "tabela `t1` usada no código não existe nas migrations/types do repo",
     "where": [
-     "scripts/ai-context/cenarios.mjs"
+     "scripts/ai-context/cenarios.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ]
    },
    {
     "kind": "tabela",
     "msg": "tabela `tabela` usada no código não existe nas migrations/types do repo",
     "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.mjs",
      "scripts/inventario/gerar-banco.mjs",
      "scripts/inventario/gerar-repo.mjs"
     ]
@@ -79739,6 +80275,13 @@
     "msg": "tabela `tx` usada no código não existe nas migrations/types do repo",
     "where": [
      "scripts/ai-context/cenarios.mjs"
+    ]
+   },
+   {
+    "kind": "tabela",
+    "msg": "tabela `x` usada no código não existe nas migrations/types do repo",
+    "where": [
+     "scripts/ci/gerar-matriz-edge-tabela.mjs"
     ]
    },
    {
@@ -80178,13 +80721,6 @@
    },
    {
     "kind": "rpc",
-    "msg": "RPC `execute_read_query` chamada mas não definida nas migrations/types",
-    "where": [
-     "scripts/db-explain-analyze.ts"
-    ]
-   },
-   {
-    "kind": "rpc",
     "msg": "RPC `fixture_rpc` chamada mas não definida nas migrations/types",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
@@ -80209,6 +80745,13 @@
     "msg": "RPC `is_admin` chamada mas não definida nas migrations/types",
     "where": [
      "scripts/ai-context/gerar.unit.mjs"
+    ]
+   },
+   {
+    "kind": "rpc",
+    "msg": "RPC `list_public_policies` chamada mas não definida nas migrations/types",
+    "where": [
+     "scripts/rls-audit.ts"
     ]
    },
    {
@@ -80465,37 +81008,145 @@
    ],
    "doc": "Configuração dedicada dos testes de RLS — roda em Node (não jsdom) e sem setup de React, porque atinge o Supabase real via HTTP. Rodar: `bunx vitest run --config vitest.rls.config.ts`"
   },
+  "scripts/automation.mjs": {
+   "path": "scripts/automation.mjs",
+   "lines": 1170,
+   "exports": [
+    "function parseArgs",
+    "function validateConfig",
+    "function execute",
+    "function appendExclude",
+    "function removeExclude",
+    "function main"
+   ],
+   "env": [
+    "REPO_AUTOMATION_CHAINING"
+   ],
+   "rule_comments": [
+    "Não trunque: um append concorrente deve sobreviver à reversão.",
+    "Remove somente os arquivos conhecidos criados por esta instalação."
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validateConfig",
+     "params": "c",
+     "body": "onlyKeys( c, [ \"version\", \"name\", \"entrypoint\", \"testSuites\", \"motor\", \"graph\", \"graphConfig\", \"aliases\", \"registrations\", \"ci\", \"nightly\", \"timeoutMs\", \"toolingPatterns\", \"sourcePatterns\", \"requirements\", \"snapshot\", \"motorConfig\", \"motorSource\", ], \"config\", ); if (c.version !== 1 || typeof c.name !== \"string\" || !c.name) throw fail(\"config: version 1 e name obrigatórios\"); if (typeof c.entrypoint !== \"string\" || !c.entrypoint) throw fail(\"entrypoint obrigatório\"); if ( !Array.isArray(c.testSu …"
+    }
+   ],
+   "temporal": [
+    "timeout: 15000,",
+    "{ cwd, timeout = 300000, capture = false, env = process.env } = {},"
+   ]
+  },
+  "scripts/automation.unit.mjs": {
+   "path": "scripts/automation.unit.mjs",
+   "lines": 689,
+   "env": [
+    "FIXTURE_GRAPH_EXIT"
+   ],
+   "errors": [
+    "falha fixture"
+   ],
+   "temporal": [
+    "timeout: 15000,",
+    "{ timeout: 100, capture: true },"
+   ]
+  },
   "scripts/db-explain-analyze.ts": {
    "path": "scripts/db-explain-analyze.ts",
-   "lines": 81,
+   "lines": 123,
    "rpc": [
     "execute_read_query"
    ],
    "env": [
     "EXPLAIN_LIMIT_MS",
+    "EXPLAIN_RUNS",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
    "rule_comments": [
-    "# ${q.name}\\n- tempo: **${ms.toFixed(2)}ms**\\n- limite: ${LIMIT_MS}ms\\n- status: ${ok ? \"ok\" : \"REGRESSÃO\"}\\n`);"
+    "# ${q.name}\\n- média: **${avg.toFixed(2)}ms** (min ${min.toFixed(2)} / max ${max.toFixed(2)})\\n- limite: ${LIMIT_MS}ms\\n- status: ${ok ? \"ok\" : \"REGRESSÃO\"}\\n`);"
    ],
-   "doc": "B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS). Uso: bun run scripts/db-explain-analyze.ts Requer: - SUPABASE_URL - SUPABASE_SERVICE_ROLE_KEY (só executa em CI/local com service role) Saída: - Imprime plano + tempo por query - Falha se qualquer query exceder LIMIT_MS - …",
+   "doc": "B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS). Uso: bun run scripts/db-explain-analyze.ts bun run scripts/db-explain-analyze.ts --json # saída JSON Requer: - SUPABASE_URL - SUPABASE_SERVICE_ROLE_KEY - RPC public.execute_read_query (migration 20261107150000_execute_read …",
+   "calc_fns": [
+    {
+     "name": "extractTotalTime",
+     "params": "data: unknown",
+     "body": "const arr = Array.isArray(data) ? data : [data]; const first = arr[0] as { Plan?: { \"Actual Total Time\"?: number } } | undefined; const t = first?.Plan?.[\"Actual Total Time\"]; return typeof t === \"number\" ? t : null;"
+    }
+   ],
    "uses_service_role": true
+  },
+  "scripts/graphify-local.mjs": {
+   "path": "scripts/graphify-local.mjs",
+   "lines": 1247,
+   "exports": [
+    "class GraphError",
+    "function run",
+    "function acquire",
+    "function validateConfig",
+    "function fingerprint",
+    "function validateGraph",
+    "function assertResources",
+    "function adoptInitial",
+    "function main",
+    "function acquireGlobal"
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validateConfig",
+     "params": "c",
+     "body": "const keys = [ \"version\", \"project\", \"environment\", \"pin\", \"pythonVersion\", \"state\", \"output\", \"adapter\", \"scope\", \"partial\", \"timeoutMs\", \"minAvailableMb\", \"metadata\", ]; if ( !c || c.version !== 1 || Object.keys(c).some((k) => !keys.includes(k)) || !/^[A-Za-z0-9_.-]+$/.test(c.project || \"\") || !/^\\d+\\.\\d+\\.\\d+$/.test(c.pin || \"\") ) fail(\"Configuração Graphify inválida\"); for (const key of [\"environment\", \"state\", \"output\"]) if (!safeRelative(c[key])) fail(\"Caminho da configuração deve ser rela …"
+    },
+    {
+     "name": "validateGraph",
+     "params": "file, partial = false",
+     "body": "const descriptor = await open( file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK, ); try { const info = await descriptor.stat({ bigint: true }); if (!info.isFile() || info.size > 512n * 1024n * 1024n) fail(\"Artefato do grafo não é arquivo regular ou excede512MB\"); const bytes = await descriptor.readFile(), after = await descriptor.stat({ bigint: true }); if ( BigInt(bytes.length) !== info.size || after.size !== info.size || after.mtimeNs !== info.mtimeNs || after.ctimeNs !== …"
+    },
+    {
+     "name": "generate",
+     "params": "ctx, fp, expectedGraph",
+     "body": "await resources(ctx); const prefix = await offline(ctx); const job = path.join(ctx.state, \"runs\", `${Date.now()}-${randomUUID()}`); await mkdir(job, { recursive: true, mode: 0o700 }); let step = 0; const execute = async (argv, env = ctx.env) => { if (ctx.interrupted()) fail(\"Execução interrompida\"); const result = await run( [...prefix, ...argv], ctx.root, env, ctx.config.timeoutMs, ); const log = path.join(job, `${step++}.log`); await writeFile(log, redact(result.output), { mode: 0o600 }); if ( …"
+    }
+   ],
+   "temporal": [
+    "const timeout = setTimeout(() => { kill(); done(); }, 1500);",
+    "hard ||= setTimeout(() => { kill(\"SIGKILL\"); finish(1); }, 1000);"
+   ]
+  },
+  "scripts/graphify-local.unit.mjs": {
+   "path": "scripts/graphify-local.unit.mjs",
+   "lines": 577,
+   "env": [
+    "GRAPHIFY_FIXTURE_",
+    "GRAPHIFY_FIXTURE_SECRET",
+    "PATH"
+   ]
   },
   "scripts/realtime-audit.ts": {
    "path": "scripts/realtime-audit.ts",
-   "lines": 47,
+   "lines": 70,
    "rule_comments": [
-    "- Todo `supabase.channel(...)` deve ter `removeChannel` ou `unsubscribe`"
+    "- Todo `supabase.channel(...)` deve ter `removeChannel`, `removeAllChannels`,"
    ],
-   "doc": "OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe. Regras: - Todo `supabase.channel(...)` deve ter `removeChannel` ou `unsubscribe` no cleanup do mesmo arquivo. - Falha o build se sobrar canal órfão."
+   "doc": "OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe. Regras: - Todo `supabase.channel(...)` deve ter `removeChannel`, `removeAllChannels`, `supabase.removeChannel` ou `.unsubscribe` no cleanup do mesmo arquivo. - Ignora comentários e strings para evitar falsos positivos. - Falha …"
   },
   "scripts/rls-audit.ts": {
    "path": "scripts/rls-audit.ts",
-   "lines": 74,
+   "lines": 182,
    "tables": [
     {
      "table": "pg_policies",
+     "op": "select"
+    },
+    {
+     "table": "pg_namespace",
+     "op": "select"
+    },
+    {
+     "table": "pg_class",
      "op": "select"
     }
    ],
@@ -80507,40 +81158,38 @@
      "schemaname",
      "tablename",
      "with_check"
+    ],
+    "pg_namespace": [
+     "nspname",
+     "oid"
+    ],
+    "pg_class": [
+     "relname",
+     "relnamespace",
+     "relrowsecurity"
     ]
    },
+   "rpc": [
+    "list_public_policies"
+   ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
-   "doc": "TEST-01 — RLS Policy Audit (refactored) Não depende de RPC exec_sql. Lê pg_policies via PostgREST (service-role). Falha o build se encontrar policy permissiva (USING true / WITH CHECK true) fora da allowlist de service_role.",
+   "doc": "TEST-01 — RLS Policy Audit (refactorado) Lê pg_policies via PostgREST (service-role) com fallback permissivo. Detecta: - Policies permissivas (USING true / WITH CHECK true) fora da allowlist. - Tabelas com RLS desabilitado (relrowsecurity = false). Comportamento: - Sem credenciais → skip (exit 0) pa …",
    "uses_service_role": true
   },
   "scripts/stress-test.ts": {
    "path": "scripts/stress-test.ts",
-   "lines": 93,
+   "lines": 129,
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
-   ],
-   "params": [
-    {
-     "name": "CONCURRENCY",
-     "value": "50"
-    },
-    {
-     "name": "TOTAL_REQUESTS",
-     "value": "500"
-    }
-   ],
-   "percents": [
-    "const p95 = latencies[Math.floor(results.length * 0.95)];",
-    "const p99 = latencies[Math.floor(results.length * 0.99)];"
    ]
   },
   "scripts/validate-bridge.ts": {
    "path": "scripts/validate-bridge.ts",
-   "lines": 73,
+   "lines": 89,
    "invokes": [
     "external-db-bridge"
    ],
@@ -80555,7 +81204,7 @@
     {
      "name": "validateBridgeContract",
      "params": "",
-     "body": "console.log(\"🔍 Iniciando validação do contrato da Edge Function: external-db-bridge...\"); try { // 1. Testar operação inválida (Error Handling) console.log(\"\\nTesting invalid operation (Error 400)...\"); const { data: errData, error: errResponse } = await supabase.functions.invoke('external-db-bridge', { body: { operation: 'invalid_op' } }); if (errResponse || (errData && errData.error)) { console.log(\"✅ Erro tratado corretamente:\", errResponse?.message || errData?.error); } else { console.error( …"
+     "body": "console.log(\"🔍 Iniciando validação do contrato da Edge Function: external-db-bridge...\"); try { // 1. Testar operação inválida (Error Handling) console.log(\"\\nTesting invalid operation (Error 400)...\"); const { data: errData, error: errResponse } = await supabase.functions.invoke('external-db-bridge', { body: { operation: 'invalid_op' } }); check(!!(errResponse || (errData && errData.error)), \"Erro tratado para operação inválida\", errResponse?.message || errData?.error); // 2. Testar Select (Str …"
     }
    ],
    "side_effects": [
@@ -80969,10 +81618,403 @@
    ],
    "uses_service_role": true
   },
+  "scripts/ci/actions-kpi.mjs": {
+   "path": "scripts/ci/actions-kpi.mjs",
+   "lines": 265,
+   "exports": [
+    "function duracaoMinutos",
+    "function runsNaJanela",
+    "function agregar",
+    "function paginaTemMais",
+    "function maisLentos",
+    "function tabela",
+    "function tabelaLentos",
+    "function corpoDoKpi",
+    "function coletarRuns",
+    "function coletarJobs",
+    "function publicarIssue"
+   ],
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_API_URL",
+    "GITHUB_REPOSITORY",
+    "GITHUB_STEP_SUMMARY",
+    "GITHUB_TOKEN",
+    "JANELA_DIAS"
+   ],
+   "errors": [
+    "${metodo} ${caminho} -> ${r.status}"
+   ],
+   "params": [
+    {
+     "name": "UM_DIA",
+     "value": "24"
+    },
+    {
+     "name": "POR_PAGINA",
+     "value": "100"
+    },
+    {
+     "name": "AMOSTRA_RUNS",
+     "value": "50"
+    }
+   ],
+   "doc": "!/usr/bin/env node E79: KPI de uso do GitHub Actions, para o branch-hygiene-audit semanal. Medido antes de escrever (03/10/2026): a API devolve `run_started_at` e `updated_at` por run, e o `/timing` devolve `billable: {}` em repositorio publico -- por isso a duracao sai da diferenca entre os dois ca …",
+   "calc_fns": [
+    {
+     "name": "maisLentos",
+     "params": "jobs, { limite = 5 } = {}",
+     "body": "return (jobs ?? []) // Job ainda em andamento (`completed_at` nulo) media 0 min e caia para o fim do // ranking: o job mais caro da janela podia ser exatamente o que lia zero. .filter((j) => j && j.completed_at) .map((j) => ({ job: j.name, workflow: j.workflow_name ?? '', minutos: Math.round(duracaoMinutos({ run_started_at: j.started_at, updated_at: j.completed_at }) * 10) / 10, })) .sort((a, b) => b.minutos - a.minutos) .slice(0, limite);"
+    }
+   ],
+   "temporal": [
+    "const UM_DIA = 24 * 60 * 60 * 1000;"
+   ]
+  },
+  "scripts/ci/actions-kpi.unit.mjs": {
+   "path": "scripts/ci/actions-kpi.unit.mjs",
+   "lines": 195
+  },
+  "scripts/ci/agents-docs-baseline.unit.mjs": {
+   "path": "scripts/ci/agents-docs-baseline.unit.mjs",
+   "lines": 69,
+   "rule_comments": [
+    "Baseline das instrucoes para agentes: frases que outra sessao nao pode apagar sem decidir apagar."
+   ],
+   "doc": "Baseline das instrucoes para agentes: frases que outra sessao nao pode apagar sem decidir apagar. Roda com `npm run test:scripts` (node --test scripts/ci/*.unit.mjs)."
+  },
   "scripts/ci/ai-context-generator.unit.mjs": {
    "path": "scripts/ci/ai-context-generator.unit.mjs",
    "lines": 3,
    "doc": "O CI obrigatório executa scripts/ci/*.unit.mjs; reutilize a suíte do produtor sem duplicá-la."
+  },
+  "scripts/ci/audit-prod.mjs": {
+   "path": "scripts/ci/audit-prod.mjs",
+   "lines": 221,
+   "exports": [
+    "function parseAuditText",
+    "function evaluate",
+    "function validarRelatorio",
+    "function lerStatusColetor",
+    "function main"
+   ],
+   "errors": [
+    "--level invalido: ${args.level}",
+    "Argumento desconhecido: ${argv[index]}"
+   ],
+   "doc": "!/usr/bin/env node Bloqueia o CI quando `bun audit` reporta advisory HIGH/CRITICAL alcancavel a partir de uma dependencia de PRODUCAO (package.json#dependencies). Advisories cujas cadeias comecam so em devDependencies (vite, vitest, eslint, babel...) seguem informativas: nao chegam ao bundle nem as …",
+   "calc_fns": [
+    {
+     "name": "validarRelatorio",
+     "params": "text",
+     "body": "const linhas = String(text ?? \"\") .replace(/\\r\\n?/gu, \"\\n\") .split(\"\\n\") .map((linha) => linha.trim()) .filter(Boolean); const erro = linhas.find((linha) => LINHA_ERRO.test(linha)); if (erro) return { ok: false, motivo: `erro operacional do coletor: ${erro.slice(0, 300)}` }; if (linhas.some((linha) => RESUMO_LIMPO.test(linha))) return { ok: true, total: 0 }; const resumo = linhas.map((linha) => linha.match(RESUMO_CONTADO)).find(Boolean); if (!resumo) return { ok: false, motivo: \"saida sem a linh …"
+    }
+   ]
+  },
+  "scripts/ci/audit-prod.unit.mjs": {
+   "path": "scripts/ci/audit-prod.unit.mjs",
+   "lines": 201,
+   "rule_comments": [
+    "R2-INF-009: o reconhecimento do relatorio nao pode aceitar qualquer texto que",
+    "chega pelo --status e crash/abort nao pode passar como verde."
+   ]
+  },
+  "scripts/ci/branch-podaveis.mjs": {
+   "path": "scripts/ci/branch-podaveis.mjs",
+   "lines": 201,
+   "exports": [
+    "const DIAS_MINIMOS",
+    "const SEMPRE_FORA",
+    "function motivoNomeInseguro",
+    "function nomeVisivel",
+    "function selecionarPodaveis",
+    "function relatorio",
+    "function relatorioIndisponivel",
+    "function lerEquivalentes",
+    "function lerPrsAbertas",
+    "function lerProtegidas",
+    "function executar"
+   ],
+   "errors": [
+    "PR sem headRefName",
+    "a lista de PRs abertas não é um array",
+    "a lista de PRs abertas veio cheia (${dados.length} >= limite ${limite}); pode haver PR que não veio",
+    "argumento inválido: ${chave}",
+    "falta --${obrigatorio}"
+   ],
+   "params": [
+    {
+     "name": "DIAS_MINIMOS",
+     "value": "7"
+    }
+   ],
+   "rule_comments": [
+    "pronto, um por linha, com a regra explicada.",
+    "// Regra de elegibilidade (todas ao mesmo tempo):",
+    "se a lista de PRs vier cheia até o limite (pode haver mais PRs que não vieram),",
+    "--protegidas <txt> [--limite-prs N]",
+    "`master` e `contexto` entram aqui porque a segunda perna da regra (a lista de branches",
+    "## Comando pronto para poda', '', REGRA, ''];",
+    "## Comando pronto para poda (W98)\\n\\n${REGRA}\\n\\nComando não gerado: ${motivo}. `"
+   ],
+   "doc": "!/usr/bin/env node W98 — comando pronto de poda de branches (usado pelo branch-hygiene-audit.yml). O plano oferecia duas saídas: apagar sozinho ou só gerar o comando. Apagar é decisão do dono, então este script NUNCA apaga nada: ele escreve no relatório (e, por ele, na issue [branch-hygiene]) um blo …"
+  },
+  "scripts/ci/branch-podaveis.unit.mjs": {
+   "path": "scripts/ci/branch-podaveis.unit.mjs",
+   "lines": 181,
+   "rule_comments": [
+    "relatório. Os testes cobrem a regra (elegível, com PR, recente, main, protegida),"
+   ],
+   "doc": "W98 — comando pronto de poda (scripts/ci/branch-podaveis.mjs). O script nunca apaga nada: só escreve o bloco `git push origin --delete` no relatório. Os testes cobrem a regra (elegível, com PR, recente, main, protegida), a recusa de nome perigoso e a falha fechada quando falta informação."
+  },
+  "scripts/ci/bump-toolchain.mjs": {
+   "path": "scripts/ci/bump-toolchain.mjs",
+   "lines": 180,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_STEP_SUMMARY",
+    "GITHUB_TOKEN"
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "maisNova",
+     "params": "local, remota",
+     "body": "const lp = semver(local).split('.').map((x) => parseInt(x, 10) || 0); const rp = semver(remota).split('.').map((x) => parseInt(x, 10) || 0); for (let i = 0; i < Math.max(lp.length, rp.length); i++) { const l = lp[i] ?? 0; const r = rp[i] ?? 0; if (r > l) return true; if (l > r) return false; } return false;"
+    }
+   ]
+  },
+  "scripts/ci/check-agents-md-integrity.mjs": {
+   "path": "scripts/ci/check-agents-md-integrity.mjs",
+   "lines": 122,
+   "env": [
+    "AGENTS_MD_BASE"
+   ],
+   "params": [
+    {
+     "name": "AGENTS",
+     "value": "'AGENTS.md'"
+    },
+    {
+     "name": "DOCS_DIR",
+     "value": "'docs/agentes'"
+    },
+    {
+     "name": "SHRINK_THRESHOLD",
+     "value": "0.30"
+    },
+    {
+     "name": "FILE_SHRINK_THRESHOLD",
+     "value": "0.50"
+    }
+   ],
+   "rule_comments": [
+    "100)}% vs ${BASE} (atual: ${agora} bytes, base: ${naBase} bytes); limite por arquivo e ${Math.round(FILE_SHRINK_THRESHOLD * 100)}%.`);"
+   ],
+   "doc": "!/usr/bin/env node",
+   "percents": [
+    "* AGENTS.md + CLAUDE.md + docs/agentes/*.md nao encolheu >30% em bytes vs a base, e cada arquivo",
+    "* vigiado (AGENTS.md e cada docs/agentes/*.md que exista na base) continua existindo com >=50% do",
+    "// com >= 50% do tamanho de la. CLAUDE.md fica de fora: e so `@AGENTS.md` por design."
+   ]
+  },
+  "scripts/ci/check-bundle-secrets.mjs": {
+   "path": "scripts/ci/check-bundle-secrets.mjs",
+   "lines": 184,
+   "exports": [
+    "function extrairTokens",
+    "function decodificarPayload",
+    "function ehArquivoVarrido",
+    "function listarArquivosVarridos",
+    "function varrer",
+    "function varrerEnv",
+    "function avaliar",
+    "function guarda",
+    "function main"
+   ],
+   "errors": [
+    "Argumento desconhecido: ${argv[i]}"
+   ],
+   "role_checks": [
+    "anon",
+    "service_role"
+   ],
+   "rule_comments": [
+    "nao leu arquivo nenhum nao pode se declarar OK).",
+    "* Varre dist/ e devolve os JWTs com role=service_role (o que nao pode publicar). */",
+    "Fail-closed, igual ao dist: `--env` apontando para arquivo inexistente nao pode sair OK"
+   ],
+   "doc": "!/usr/bin/env node Guarda que o bundle publicado (dist/) nao expoe o JWT service_role do Supabase. Incidente de 20/08 (porta da V3): a variavel de ambiente errada injetou a chave service_role no bundle e ela foi servida ao navegador. A V2 tem gitleaks (segredo em commit), check-supabase-url-import-m …",
+   "uses_service_role": true
+  },
+  "scripts/ci/check-bundle-secrets.unit.mjs": {
+   "path": "scripts/ci/check-bundle-secrets.unit.mjs",
+   "lines": 294,
+   "params": [
+    {
+     "name": "CHAVE_TRUNCADA",
+     "value": "'eyJhbG...knC0'"
+    }
+   ],
+   "uses_service_role": true
+  },
+  "scripts/ci/check-test-inventory.mjs": {
+   "path": "scripts/ci/check-test-inventory.mjs",
+   "lines": 264,
+   "exports": [
+    "const RAIZ",
+    "const ALLOWLIST_NODE",
+    "function comandoExecutadoNoWorkflow",
+    "function codigoExecutavelDeWorkflow",
+    "function padroesNodeDeWorkflow",
+    "function casaPadrao",
+    "function orfaosNode",
+    "function suitesCobertasPorImport",
+    "function suitesNodeNoDisco",
+    "function padroesNodeDosWorkflows",
+    "function suitesNodeOrfas",
+    "function orfaosDoInventario"
+   ],
+   "params": [
+    {
+     "name": "CI_TS_GLOB",
+     "value": "'deno test ... supabase/functions/'"
+    }
+   ],
+   "rule_comments": [
+    "preflight local dizia OK e o mesmo commit falhava apenas no checkout limpo do CI.",
+    "comentada — a mesma regra que `padroesNodeDeWorkflow` aplica às suites Node."
+   ],
+   "doc": "!/usr/bin/env node Portado do Zapp_Web_V2 (E48/E49/R2-INF-013) e adaptado a este repo: verifica que todo teste no disco tem um passo que o execute em ALGUM workflow — os .test.ts das edges (supabase/functions/) e as suites Node de scripts/ (.test.mjs, .unit.mjs, .integration.mjs). Aqui o workflow de …"
+  },
+  "scripts/ci/check-test-inventory.unit.mjs": {
+   "path": "scripts/ci/check-test-inventory.unit.mjs",
+   "lines": 176
+  },
+  "scripts/ci/commit-msg-lint.mjs": {
+   "path": "scripts/ci/commit-msg-lint.mjs",
+   "lines": 111,
+   "exports": [
+    "const TIPOS",
+    "const SUBJECT_MIN_LENGTH",
+    "function cabecalhoDaMensagem",
+    "function validarMensagem",
+    "function main"
+   ],
+   "params": [
+    {
+     "name": "SUBJECT_MIN_LENGTH",
+     "value": "10"
+    }
+   ],
+   "doc": "!/usr/bin/env node",
+   "calc_fns": [
+    {
+     "name": "validarMensagem",
+     "params": "mensagem",
+     "body": "const cabecalho = cabecalhoDaMensagem(mensagem); const problemas = []; // Sem cabecalho (arquivo so com comentarios) quem aborta o commit e o git, nao este gate. if (cabecalho === \"\" || IGNORADAS.test(cabecalho)) return { ok: true, cabecalho, problemas }; const partes = CABECALHO.exec(cabecalho); if (!partes) { return { ok: false, cabecalho, problemas: ['cabecalho fora do padrao \"<tipo>(<escopo>): <descricao>\"'], }; } const [, tipo, escopo, , assunto] = partes; const descricao = assunto.trim(); …"
+    }
+   ]
+  },
+  "scripts/ci/commit-msg-lint.unit.mjs": {
+   "path": "scripts/ci/commit-msg-lint.unit.mjs",
+   "lines": 150
+  },
+  "scripts/ci/gerar-matriz-edge-tabela.mjs": {
+   "path": "scripts/ci/gerar-matriz-edge-tabela.mjs",
+   "lines": 131,
+   "exports": [
+    "function extrairTabelas",
+    "function tabelasDeShared",
+    "function montarMatriz",
+    "function renderizar",
+    "function main"
+   ],
+   "tables": [
+    {
+     "table": "tabela",
+     "op": "ref"
+    },
+    {
+     "table": "x",
+     "op": "ref"
+    },
+    {
+     "table": "tabela",
+     "op": "ref"
+    }
+   ],
+   "storage": [
+    "bucket"
+   ],
+   "params": [
+    {
+     "name": "SAIDA",
+     "value": "\"docs/mapa/MATRIZ_EDGE_TABELA.md\""
+    }
+   ],
+   "doc": "!/usr/bin/env node Inventário 23: matriz edge function x tabela. Escaneia supabase/functions/<funcao>/**/*.ts (sem testes, sem _shared) e anota cada tabela citada em `.from('tabela')`. Uso: node scripts/ci/gerar-matriz-edge-tabela.mjs [--check]"
+  },
+  "scripts/ci/gerar-matriz-edge-tabela.unit.mjs": {
+   "path": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
+   "lines": 87,
+   "tables": [
+    {
+     "table": "contacts",
+     "op": "select"
+    },
+    {
+     "table": "messages",
+     "op": "insert"
+    },
+    {
+     "table": "bucket_quebrado",
+     "op": "ref"
+    },
+    {
+     "table": "ignorada",
+     "op": "ref"
+    },
+    {
+     "table": "contacts",
+     "op": "ref"
+    },
+    {
+     "table": "profiles",
+     "op": "ref"
+    },
+    {
+     "table": "shared_nao_conta",
+     "op": "ref"
+    },
+    {
+     "table": "b2",
+     "op": "ref"
+    },
+    {
+     "table": "b3",
+     "op": "ref"
+    },
+    {
+     "table": "t1",
+     "op": "ref"
+    }
+   ],
+   "storage": [
+    "b1",
+    "storage_bucket"
+   ],
+   "params": [
+    {
+     "name": "SAIDA_REL",
+     "value": "\"docs/mapa/MATRIZ_EDGE_TABELA.md\""
+    }
+   ]
+  },
+  "scripts/ci/maintenance.unit.mjs": {
+   "path": "scripts/ci/maintenance.unit.mjs",
+   "lines": 3,
+   "doc": "A suíte de manutenção integra o glob Node já executado pelo CI."
   },
   "scripts/ci/regras-negocio.unit.mjs": {
    "path": "scripts/ci/regras-negocio.unit.mjs",
@@ -80985,6 +82027,46 @@
     "timeout: 30_000,"
    ]
   },
+  "scripts/ci/render-workflow-docs.mjs": {
+   "path": "scripts/ci/render-workflow-docs.mjs",
+   "lines": 239,
+   "env": [
+    "RENDER_WF_RAIZ"
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/ci/render-workflow-docs.unit.mjs": {
+   "path": "scripts/ci/render-workflow-docs.unit.mjs",
+   "lines": 154,
+   "doc": "Suite do gerador de `docs/ci/README.md`. Por que existe: o unico gate do render-workflow-docs.mjs e o `--check`, que compara a saida do gerador com o arquivo que o PROPRIO gerador escreveu. Por construcao isso pega drift (alguem mexeu no YAML e nao regerou) e NUNCA pega um bug do gerador. Os casos a …",
+   "percents": [
+    "assert.match(lerReadme(raiz), /\\| 12\\.5 \\| 3% \\|/u);"
+   ]
+  },
+  "scripts/ci/sla-code-scanning.mjs": {
+   "path": "scripts/ci/sla-code-scanning.mjs",
+   "lines": 86,
+   "exports": [
+    "const SLA_DIAS",
+    "function nivel",
+    "function avaliarSla",
+    "function relatorio"
+   ],
+   "rule_comments": [
+    "JSON se perdia; e a severidade vinha de `rule.severity` (error/warning/note),",
+    "seguranca; regras sem ele (qualidade) usam rule.severity: error conta como alto.",
+    "created_at ausente, ilegível ou no futuro dava NaN/negativo: `NaN > prazo` é false e o",
+    "alerta entrava na contagem como se estivesse no prazo, escapando do SLA para sempre.",
+    "${a.number}: ${a.rule?.id ?? '?'} em ${local}`);",
+    "${a.number}: ${a.rule?.id ?? '?'} em ${local}`);",
+    "## ⚠️ Code Scanning — SLA\\n\\nNão foi possível consultar os alertas (code scanning desligado, permissão ou API).\\n');"
+   ],
+   "doc": "!/usr/bin/env node W83 — SLA dos alertas abertos de Code Scanning (usado pelo branch-hygiene-audit.yml). high/critical → 14 dias; medium/low → 30 dias. Violação → exit 1. Saiu do YAML em 15/10/2026: inline no workflow, o heredoc do Node estava menos indentado que o `run: |` e o arquivo inteiro virou …"
+  },
+  "scripts/ci/sla-code-scanning.unit.mjs": {
+   "path": "scripts/ci/sla-code-scanning.unit.mjs",
+   "lines": 73
+  },
   "scripts/ci/supabase-snapshot.unit.mjs": {
    "path": "scripts/ci/supabase-snapshot.unit.mjs",
    "lines": 19,
@@ -80992,6 +82074,33 @@
     "test('snapshot Supabase preserva SQL durante coletas parciais (offline)', { timeout: 30_000 }, () => {",
     "timeout: 25_000,"
    ]
+  },
+  "scripts/ci/toolchain-schedule.unit.mjs": {
+   "path": "scripts/ci/toolchain-schedule.unit.mjs",
+   "lines": 14
+  },
+  "scripts/ci/workflow-test-support.mjs": {
+   "path": "scripts/ci/workflow-test-support.mjs",
+   "lines": 134,
+   "exports": [
+    "function jobsOf",
+    "function jobOf",
+    "function stepsOf",
+    "function valueOf",
+    "const nestedValue",
+    "const permission",
+    "const runOf",
+    "const scriptOf",
+    "const shellCode",
+    "const conditionOf",
+    "function onlyStep",
+    "function assertBlocking",
+    "function conditionAllows"
+   ],
+   "rule_comments": [
+    "Avalia apenas o subconjunto booleano usado nos guards sob teste. Identificadores"
+   ],
+   "doc": "Leitores restritos ao formato em blocos dos workflows deste repositorio. Nao sao um parser YAML geral: formatos nao reconhecidos falham nos contratos. Isolar job/step evita que comentarios e passos vizinhos satisfaçam garantias."
   },
   "scripts/inventario/banco.sql": {
    "path": "scripts/inventario/banco.sql",
@@ -81143,6 +82252,135 @@
     "function semCarimbos",
     "function mudou"
    ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/lib/seguranca-processo.mjs": {
+   "path": "scripts/lib/seguranca-processo.mjs",
+   "lines": 101,
+   "exports": [
+    "const RAIZ_REPO",
+    "const RAIZES_PERMITIDAS",
+    "function resolverExecutavel",
+    "function estaDentro",
+    "function resolverCaminhoPermitido"
+   ],
+   "env": [
+    "PATH"
+   ],
+   "errors": [
+    "caminho de ",
+    "comando nao encontrado no PATH: "
+   ],
+   "rule_comments": [
+    "processo filho. A regra `javascript:S4036` e puramente sintatica: dispara",
+    "fazendo `git init` passar onde ele deve ser bloqueado).",
+    "inexistentes. Assim `tmp/link-para-fora/novo.json` nao passa apenas porque"
+   ]
+  },
+  "scripts/lib/seguranca-processo.test.mjs": {
+   "path": "scripts/lib/seguranca-processo.test.mjs",
+   "lines": 125,
+   "is_test": true,
+   "rule_comments": [
+    "E o MESMO binario que o shell resolveria: nao pode pegar outro shim do PATH."
+   ],
+   "tests": [
+    "resolverExecutavel devolve caminho absoluto existente igual ao do shell",
+    "resolverExecutavel lanca para comando inexistente",
+    "estaDentro aceita a raiz e subpastas",
+    "estaDentro recusa ",
+    "resolverCaminhoPermitido aceita caminho do repositorio e do tmpdir",
+    "resolverCaminhoPermitido recusa ",
+    "resolverCaminhoPermitido respeita o array de raizes explicito do chamador",
+    "resolverCaminhoPermitido recusa arquivo existente acessado por symlink que escapa da raiz",
+    "resolverCaminhoPermitido recusa alvo inexistente sob diretorio symlink que escapa da raiz",
+    "RAIZ_REPO aponta para o pacote deste repositorio e esta entre as raizes permitidas"
+   ]
+  },
+  "scripts/maintenance/lib.mjs": {
+   "path": "scripts/maintenance/lib.mjs",
+   "lines": 937,
+   "exports": [
+    "class MaintenanceError",
+    "const fail",
+    "const digest",
+    "const exists",
+    "const safeEnv",
+    "function stopChildren",
+    "function run",
+    "function checked",
+    "const git",
+    "function commitWithHooks",
+    "function readRegularDependency",
+    "function dependencyFingerprint",
+    "function reuseDependencies",
+    "const localRequire",
+    "function tool",
+    "function validateConfig",
+    "function inspect",
+    "function acquire",
+    "function writeJson"
+   ],
+   "errors": [
+    "failed",
+    "missing_dependencies",
+    "skipped_busy"
+   ],
+   "calc_fns": [
+    {
+     "name": "validateConfig",
+     "params": "c",
+     "body": "const keys = [ \"version\", \"manager\", \"tsconfigs\", \"gates\", \"fix\", \"timeoutMs\", \"maxFiles\", \"maxChangedLines\", ]; if ( !c || typeof c !== \"object\" || Object.keys(c).some((k) => !keys.includes(k)) || c.version !== 1 ) fail(\"Configuração inválida ou versão desconhecida\"); if (![\"npm\", \"bun\"].includes(c.manager)) fail(\"Gerenciador deve ser npm ou bun\"); const relative = (x) => typeof x === \"string\" && x.length && !path.isAbsolute(x) && !x.split(/[\\\\/]/).includes(\"..\") && !x.startsWith(\"-\"); if ( !Ar …"
+    }
+   ],
+   "webhook_events": [
+    "string"
+   ]
+  },
+  "scripts/maintenance/maintenance.unit.mjs": {
+   "path": "scripts/maintenance/maintenance.unit.mjs",
+   "lines": 1098,
+   "external_urls": [
+    "http://192.0.2.1:9"
+   ],
+   "env": [
+    "MAINTENANCE_TEST_",
+    "MAINTENANCE_TEST_SECRET",
+    "NODE_ENV",
+    "SECRET_KEY",
+    "VITE_SUPABASE_PROJECT_ID",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "errors": [
+    "formatter fixture failed"
+   ],
+   "temporal": [
+    "const gates = `import fs from 'node:fs';import {spawnSync} from 'node:child_process';\\nconst text=fs.readFileSync('src/value.ts','utf8'); const phase=process.ar …"
+   ]
+  },
+  "scripts/maintenance/run.mjs": {
+   "path": "scripts/maintenance/run.mjs",
+   "lines": 899,
+   "exports": [
+    "function parseArgs",
+    "function networkPrefix",
+    "function allowedSourceFiles",
+    "function prettierCandidates",
+    "function main"
+   ],
+   "env": [
+    "XDG_STATE_HOME"
+   ],
+   "errors": [
+    "blocked_network_sandbox",
+    "pending_patch"
+   ],
+   "doc": "!/usr/bin/env node"
+  },
+  "scripts/maintenance/typecheck.mjs": {
+   "path": "scripts/maintenance/typecheck.mjs",
+   "lines": 110,
    "doc": "!/usr/bin/env node"
   },
   "scripts/regras_negocio/generate.py": {
@@ -81974,7 +83212,7 @@
   },
   "src/components/compras/AdvancedProcurementKPIs.tsx": {
    "path": "src/components/compras/AdvancedProcurementKPIs.tsx",
-   "lines": 481,
+   "lines": 486,
    "exports": [
     "const AdvancedProcurementKPIs"
    ],
@@ -82094,7 +83332,7 @@
   },
   "src/components/compras/BuyerDrilldownModal.tsx": {
    "path": "src/components/compras/BuyerDrilldownModal.tsx",
-   "lines": 226,
+   "lines": 227,
    "exports": [
     "const BuyerDrilldownModal"
    ]
@@ -82270,7 +83508,7 @@
   },
   "src/components/compras/ContractModal.tsx": {
    "path": "src/components/compras/ContractModal.tsx",
-   "lines": 524,
+   "lines": 536,
    "exports": [
     "function ContractModal"
    ],
@@ -82350,10 +83588,14 @@
   },
   "src/components/compras/CotacaoManualModal.tsx": {
    "path": "src/components/compras/CotacaoManualModal.tsx",
-   "lines": 248,
+   "lines": 261,
    "exports": [
     "interface ManualCotacaoData",
     "const CotacaoManualModal"
+   ],
+   "rule_comments": [
+    "Numeric validation: reject empty/NaN; reject decimals on integer fields",
+    "Fornecedor must be selected; if \"novo\", a name must be provided."
    ]
   },
   "src/components/compras/CriticalAlertsBar.tsx": {
@@ -82672,7 +83914,7 @@
   },
   "src/components/compras/EnhancedPedidoTimeline.tsx": {
    "path": "src/components/compras/EnhancedPedidoTimeline.tsx",
-   "lines": 520,
+   "lines": 524,
    "exports": [
     "const EnhancedPedidoTimeline"
    ],
@@ -82839,9 +84081,12 @@
   },
   "src/components/compras/FornecedorModal.tsx": {
    "path": "src/components/compras/FornecedorModal.tsx",
-   "lines": 257,
+   "lines": 269,
    "exports": [
     "const FornecedorModal"
+   ],
+   "errors": [
+    "Não foi possível salvar o fornecedor. Tente novamente."
    ],
    "html_constraints": [
     {
@@ -82852,7 +84097,7 @@
   },
   "src/components/compras/HistoricoComprasModal.tsx": {
    "path": "src/components/compras/HistoricoComprasModal.tsx",
-   "lines": 149,
+   "lines": 150,
    "exports": [
     "const HistoricoComprasModal"
    ],
@@ -82956,7 +84201,7 @@
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
    "path": "src/components/compras/NovaSolicitacaoModal.tsx",
-   "lines": 445,
+   "lines": 449,
    "exports": [
     "function NovaSolicitacaoModal"
    ],
@@ -83011,7 +84256,7 @@
   },
   "src/components/compras/OrderPreviewModal.tsx": {
    "path": "src/components/compras/OrderPreviewModal.tsx",
-   "lines": 165,
+   "lines": 166,
    "exports": [
     "const OrderPreviewModal"
    ],
@@ -83203,7 +84448,7 @@
   },
   "src/components/compras/PriceComparator.tsx": {
    "path": "src/components/compras/PriceComparator.tsx",
-   "lines": 498,
+   "lines": 504,
    "exports": [
     "function PriceComparator"
    ],
@@ -83242,7 +84487,8 @@
    },
    "errors": [
     "Erro na comparação",
-    "Produto necessário"
+    "Produto necessário",
+    "Quantidade inválida"
    ],
    "html_constraints": [
     {
@@ -83682,7 +84928,7 @@
   },
   "src/components/compras/SolicitacaoCard.tsx": {
    "path": "src/components/compras/SolicitacaoCard.tsx",
-   "lines": 364,
+   "lines": 366,
    "exports": [
     "const SolicitacaoCard"
    ],
@@ -83980,7 +85226,7 @@
   },
   "src/components/compras/StrategicQuoteTable.tsx": {
    "path": "src/components/compras/StrategicQuoteTable.tsx",
-   "lines": 190,
+   "lines": 194,
    "exports": [
     "const StrategicQuoteTable"
    ],
@@ -90463,7 +91709,7 @@
   },
   "src/hooks/useGeoRestriction.ts": {
    "path": "src/hooks/useGeoRestriction.ts",
-   "lines": 162,
+   "lines": 163,
    "exports": [
     "interface AllowedCountry",
     "interface GeoSettings",
@@ -90509,6 +91755,9 @@
    ],
    "hooks": [
     "useGeoRestriction"
+   ],
+   "pagination": [
+    "1"
    ]
   },
   "src/hooks/useGlobalUndo.ts": {
@@ -90996,7 +92245,7 @@
    "transition_maps": [
     {
      "name": "VALID_PAGAMENTO_TRANSITIONS",
-     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'cancelado'], agendado: ['pago', 'cancelado'], pago: ['parcial'], parcial: ['pago'], cancelado: [], atrasado: ['pago', 'cancelado'],"
+     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],"
     }
    ],
    "status_values": [
@@ -92441,6 +93690,14 @@
    ],
    "doc": "User-configurable keyboard shortcut for \"Clear filters\". Persisted in localStorage (per browser, per request from the user). Other shortcuts in the app are fixed; this one can be overridden."
   },
+  "src/lib/dateUtils.ts": {
+   "path": "src/lib/dateUtils.ts",
+   "lines": 36,
+   "exports": [
+    "function parseLocalDate",
+    "function formatDateBR"
+   ]
+  },
   "src/lib/dbMapping.ts": {
    "path": "src/lib/dbMapping.ts",
    "lines": 104,
@@ -92722,7 +93979,7 @@
   },
   "src/lib/security.ts": {
    "path": "src/lib/security.ts",
-   "lines": 56,
+   "lines": 71,
    "exports": [
     "const security"
    ],
@@ -92810,14 +94067,20 @@
   },
   "src/lib/utils.ts": {
    "path": "src/lib/utils.ts",
-   "lines": 20,
+   "lines": 34,
    "exports": [
     "function cn",
+    "function generateUniqueKey",
     "const formatCurrency",
     "const formatDate",
     "const formatDateTime"
    ],
    "calc_fns": [
+    {
+     "name": "generateUniqueKey",
+     "params": "",
+     "body": "const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto; if (c?.randomUUID) { try { return c.randomUUID(); } catch { /* fall through */ } } return `k-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;"
+    },
     {
      "name": "formatCurrency",
      "params": "value: number | null | undefined",
@@ -93149,7 +94412,7 @@
   },
   "src/lib/__tests__/logger.fuzz.test.ts": {
    "path": "src/lib/__tests__/logger.fuzz.test.ts",
-   "lines": 283,
+   "lines": 284,
    "is_test": true,
    "params": [
     {
@@ -94124,7 +95387,7 @@
   },
   "src/pages/admin/HealthDashboard.tsx": {
    "path": "src/pages/admin/HealthDashboard.tsx",
-   "lines": 855,
+   "lines": 862,
    "exports": [
     "function HealthDashboard"
    ],
@@ -94220,7 +95483,7 @@
   },
   "src/pages/admin/SSOConfig.tsx": {
    "path": "src/pages/admin/SSOConfig.tsx",
-   "lines": 277,
+   "lines": 286,
    "exports": [
     "function SSOConfig"
    ],
@@ -94406,6 +95669,22 @@
     "function getRunbook"
    ],
    "doc": "Runbooks operacionais por alert_type. Cada entrada descreve: sintoma, impacto e passos sugeridos de remediação. Mantido como código para versionamento e revisão em PRs."
+  },
+  "src/pages/admin/__tests__/HealthDashboard.test.tsx": {
+   "path": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+   "lines": 96,
+   "is_test": true,
+   "errors": [
+    ", alert_type: ",
+    "Query do dashboard nao registrada",
+    "Rede bloqueada no teste",
+    "WebSocket bloqueado no teste"
+   ],
+   "tests": [
+    "contratos do dashboard de saude",
+    "preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas",
+    "mostra alerta sem data no periodo completo e o exclui de periodo recente"
+   ]
   },
   "src/pages/admin/__tests__/alertRunbooks.test.ts": {
    "path": "src/pages/admin/__tests__/alertRunbooks.test.ts",
@@ -95611,7 +96890,7 @@
   },
   "src/pages/devolucoes/DevolucoesModals.tsx": {
    "path": "src/pages/devolucoes/DevolucoesModals.tsx",
-   "lines": 303,
+   "lines": 302,
    "exports": [
     "const MOTIVO_LABELS",
     "const RESOLUCAO_LABELS",
@@ -96541,7 +97820,7 @@
   },
   "src/pages/pagamentos/Pagamentos.tsx": {
    "path": "src/pages/pagamentos/Pagamentos.tsx",
-   "lines": 294,
+   "lines": 298,
    "exports": [
     "default Pagamentos"
    ],
@@ -96819,7 +98098,7 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 398,
+   "lines": 391,
    "exports": [
     "function RecebimentoOffline"
    ],
@@ -96858,7 +98137,6 @@
     ]
    },
    "errors": [
-    "Cache corrompido. Conecte-se à internet para recarregar.",
     "Erro ao buscar pedidos",
     "Sem conexão — modo offline ativo"
    ],
@@ -96884,14 +98162,17 @@
   },
   "src/pages/recebimento/recebimentoHelpers.ts": {
    "path": "src/pages/recebimento/recebimentoHelpers.ts",
-   "lines": 42,
+   "lines": 57,
    "exports": [
     "interface PendingOrder",
     "interface OrderItem",
     "interface ReceivingEntry",
     "const OFFLINE_STORAGE_KEY",
     "function getOfflineEntries",
-    "function saveOfflineEntries"
+    "function saveOfflineEntries",
+    "const ORDERS_CACHE_KEY",
+    "function getCachedOrders",
+    "function saveCachedOrders"
    ]
   },
   "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts": {
@@ -97093,6 +98374,7 @@
      "id",
      "numero",
      "prazo_entrega",
+     "score_total",
      "selecionada",
      "solicitacao_id",
      "status",
@@ -97105,7 +98387,6 @@
      "razao_social"
     ],
     "profiles": [
-     "display_name",
      "email",
      "full_name",
      "id"
@@ -97175,6 +98456,20 @@
     "all values are non-empty strings",
     "first color uses CSS variable hsl(var(--primary))",
     "remaining colors are hsl() values"
+   ]
+  },
+  "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx": {
+   "path": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+   "lines": 73,
+   "is_test": true,
+   "errors": [
+    "Rede bloqueada no teste",
+    "WebSocket bloqueado no teste"
+   ],
+   "tests": [
+    "contratos do relatorio de negociacoes",
+    "consulta somente colunas existentes de profiles e inclui score_total na media",
+    "usa email quando full_name e nulo e Usuario quando perfil nao existe"
    ]
   },
   "src/pages/relatorios/Relatorios.tsx": {
@@ -97330,7 +98625,7 @@
   },
   "src/pages/sourcing/RFxCreate.tsx": {
    "path": "src/pages/sourcing/RFxCreate.tsx",
-   "lines": 505,
+   "lines": 522,
    "exports": [
     "default RFxCreate"
    ],
@@ -99420,7 +100715,7 @@
   },
   "supabase/functions/_shared/logger.fuzz.test.ts": {
    "path": "supabase/functions/_shared/logger.fuzz.test.ts",
-   "lines": 267,
+   "lines": 270,
    "is_test": true,
    "errors": [
     "falha reprodutível: seed=${rng.seed} iter=${i} lvl=${lvl}: ${err}"
@@ -99434,8 +100729,7 @@
    "rule_comments": [
     "DEVE ocorrer antes do import de ./logger.ts).",
     "JSON.parse deve ter sucesso — se a serialização quebrasse",
-    "Se um truncamento server-side for adicionado, deve respeitar fronteira",
-    "de codepoint. Validação até lá: o comprimento em codepoints é estável."
+    "de persistir — a mensagem resultante deve ser um prefixo limpo do"
    ],
    "doc": "Fuzz / property tests para EdgeLogger. Cobre: • message vazia / não-string / gigante • níveis inválidos, aliases • contextos com chaves sensíveis (case-insensitive) e valores exóticos • persistência silenciosa quando credenciais Supabase ausentes",
    "uses_service_role": true
@@ -100717,7 +102011,7 @@
   },
   "supabase/functions/dependency-health/index.test.ts": {
    "path": "supabase/functions/dependency-health/index.test.ts",
-   "lines": 180,
+   "lines": 227,
    "is_test": true,
    "env": [
     "QA_ADMIN_EMAIL",
@@ -100726,13 +102020,8 @@
     "VITE_SUPABASE_URL"
    ],
    "doc": "Deno tests for the dependency-health edge function. Coverage: • GET → 200 + valid snapshot shape • POST (no auth) → 401 • POST (non-admin user) → 403 • POST (admin user) → 200 + valid snapshot shape (best-effort: skipped if QA admin login or GITHUB_REPO_RAW_BASE secret is missing)",
-   "tests": [
-    "GET dependency-health → 200 with valid snapshot shape",
-    "GET dependency-health?history=true → 200 with history array",
-    "POST dependency-health (no auth) → 403",
-    "POST dependency-health (non-admin user) → 403",
-    "POST dependency-health (admin) → 200 or config-dependent error",
-    "OPTIONS dependency-health → 204 with CORS headers"
+   "temporal": [
+    "const timeoutId = setTimeout(() => controller.abort(), 3000);"
    ]
   },
   "supabase/functions/dependency-health/index.ts": {
@@ -101355,7 +102644,7 @@
   },
   "supabase/functions/punchout-receive/index.ts": {
    "path": "supabase/functions/punchout-receive/index.ts",
-   "lines": 182,
+   "lines": 193,
    "tables": [
     {
      "table": "punchout_sessions",
@@ -101387,7 +102676,6 @@
     "Error creating solicitation: ",
     "Invalid PunchOut XML: ",
     "PunchOut cart has no items",
-    "Session expired",
     "Session not found"
    ],
    "params": [
@@ -101414,15 +102702,18 @@
     },
     {
      "field": "status",
+     "value": "open",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "opened",
      "kind": "filtra"
     }
    ],
    "rule_comments": [
-    "M-05: rate limit por IP (webhooks anônimos)."
-   ],
-   "temporal": [
-    "const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;"
+    "M-05: rate limit por IP (webhooks anônimos).",
+    "Session must be open. Reject reused or expired cookies so a stolen one"
    ],
    "uses_service_role": true
   },
@@ -101491,13 +102782,16 @@
   },
   "supabase/functions/run-audit/rls_test.ts": {
    "path": "supabase/functions/run-audit/rls_test.ts",
-   "lines": 55,
+   "lines": 67,
    "rpc": [
     "exec_sql"
    ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
+   ],
+   "rule_comments": [
+    "without those secrets it would crash with \"supabaseUrl is required\" or"
    ],
    "uses_service_role": true
   },
@@ -101526,7 +102820,7 @@
   },
   "supabase/functions/scim-v2/index.ts": {
    "path": "supabase/functions/scim-v2/index.ts",
-   "lines": 241,
+   "lines": 269,
    "tables": [
     {
      "table": "sso_configurations",
@@ -101541,6 +102835,7 @@
     ]
    },
    "env": [
+    "SCIM_BEARER_TOKEN",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
@@ -101566,6 +102861,7 @@
    ],
    "rule_comments": [
     "M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id).",
+    "Fail closed: the SCIM bearer token must match the configured secret before",
     "RFC 7644 §3.3: 201 response MUST include a Location header",
     "RFC 7644 §3.12: all errors must use the SCIM Error schema"
    ],
@@ -101874,7 +103170,7 @@
   },
   "supabase/functions/telemetry/index.test.ts": {
    "path": "supabase/functions/telemetry/index.test.ts",
-   "lines": 82,
+   "lines": 121,
    "is_test": true,
    "env": [
     "QA_USER_EMAIL",
@@ -101883,11 +103179,8 @@
     "VITE_SUPABASE_URL"
    ],
    "doc": "Deno tests for the telemetry edge function. Coverage: • POST no auth → 401 • POST auth + { batch: [...] } → 200 + inserted count == batch.length • POST auth + single entry → 200 + inserted == 1 • POST auth + entry sem message → 200 + inserted == 0 (filtrado, sem 400)",
-   "tests": [
-    "telemetry rejects unauthenticated requests",
-    "telemetry accepts { batch: [...] } from the frontend logger",
-    "telemetry accepts single-entry payload",
-    "telemetry filtra entradas sem message em vez de retornar 400"
+   "temporal": [
+    "const timeoutId = setTimeout(() => controller.abort(), 3000);"
    ]
   },
   "supabase/functions/telemetry/index.ts": {
@@ -102318,7 +103611,7 @@
   },
   "supabase/functions/workflow-engine/fuzz.test.ts": {
    "path": "supabase/functions/workflow-engine/fuzz.test.ts",
-   "lines": 74,
+   "lines": 105,
    "is_test": true,
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -102328,9 +103621,8 @@
     "Devem falhar com 400 (Validation Error)",
     "M-02: sem JWT válido, o tenant não pode ser resolvido → 401."
    ],
-   "tests": [
-    "Fuzzing: Workflow Engine rejects malformed payloads",
-    "Security: Workflow Engine rejects unauthenticated requests"
+   "temporal": [
+    "const timeoutId = setTimeout(() => controller.abort(), 3000);"
    ]
   },
   "supabase/functions/workflow-engine/index.ts": {
@@ -104047,6 +105339,11 @@
     "now() - interval '7 days'"
    ]
   },
+  "supabase/migrations/20261107150000_execute_read_query.sql": {
+   "path": "supabase/migrations/20261107150000_execute_read_query.sql",
+   "lines": 51,
+   "uses_service_role": true
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -104065,7 +105362,7 @@
   },
   "tests-e2e/critical-flows.spec.ts": {
    "path": "tests-e2e/critical-flows.spec.ts",
-   "lines": 51,
+   "lines": 43,
    "is_test": true,
    "rule_comments": [
     "* Auditoria Técnica: Testes de Fluxo Crítico de Negócio",
@@ -104091,17 +105388,19 @@
   },
   "tests-e2e/elite-validation.spec.ts": {
    "path": "tests-e2e/elite-validation.spec.ts",
-   "lines": 55,
+   "lines": 54,
    "is_test": true,
    "errors": [
     "Console Error: ${msg.text()}"
    ],
    "rule_comments": [
     "* Playwright E2E Elite Validation",
-    "Simulates real user flows with deep validation and zero-tolerance for errors."
+    "Simulates real user flows with deep validation and zero-tolerance for errors.",
+    "Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)"
    ],
    "temporal": [
-    "await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 60000 });"
+    "await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 60000 });",
+    "await page.waitForURL(/\\/admin\\/telemetria|\\/auth/, { timeout: 3000 }).catch(() => {});"
    ],
    "tests": [
     "Freight Quest E2E Excellence",
@@ -104137,7 +105436,7 @@
   },
   "tests-e2e/production-ready.spec.ts": {
    "path": "tests-e2e/production-ready.spec.ts",
-   "lines": 61,
+   "lines": 60,
    "is_test": true,
    "tests": [
     "Freight Quest Production Readiness",
@@ -104150,8 +105449,11 @@
   },
   "tests-e2e/workflow-advanced.spec.ts": {
    "path": "tests-e2e/workflow-advanced.spec.ts",
-   "lines": 51,
+   "lines": 53,
    "is_test": true,
+   "temporal": [
+    "await page.waitForURL(/\\/dashboard|\\/auth/, { timeout: 3000 }).catch(() => {});"
+   ],
    "tests": [
     "Advanced Workflow & Security Tests",
     "Multi-step Solicitation Flow",
@@ -104262,10 +105564,252 @@
   }
  },
  "git": {
-  "sha": "d44bb8fa9bc24ed6aa0ae40e84b9e5db54f4082d",
+  "sha": "4cc1a7a96bc4160e5b1102577e41d6b84aee12fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4cc1a7a",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)",
+    "files": [
+     "deploy_edge_functions_promo_supply.sh",
+     "scripts/db-explain-analyze.ts",
+     "scripts/realtime-audit.ts",
+     "scripts/rls-audit.ts",
+     "scripts/squash-migrations.sh",
+     "scripts/stress-test.ts",
+     "scripts/validate-bridge.ts",
+     "supabase/migrations/20261107150000_execute_read_query.sql"
+    ]
+   },
+   {
+    "sha": "75c0e96",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)",
+    "files": [
+     ".github/workflows/main.yml"
+    ]
+   },
+   {
+    "sha": "b7db275",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)",
+    "files": [
+     ".github/workflows/contexto.yml"
+    ]
+   },
+   {
+    "sha": "6ea0034",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(edge): require JWT and validate identity/tenant across edge functions (#36)",
+    "files": [
+     "supabase/functions/punchout-receive/index.ts",
+     "supabase/functions/webauthn-register/index.ts"
+    ]
+   },
+   {
+    "sha": "a2eadc4",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)",
+    "files": [
+     "src/components/compras/BuyerDrilldownModal.tsx",
+     "src/components/compras/HistoricoComprasModal.tsx",
+     "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/compras/OrderPreviewModal.tsx",
+     "src/hooks/useDevolucoes.ts",
+     "src/hooks/useGeoRestriction.ts",
+     "src/hooks/usePagamentos.ts",
+     "src/lib/dateUtils.ts",
+     "src/lib/exportData.ts",
+     "src/lib/security.ts",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/recebimentoHelpers.ts",
+     "src/tests/contracts-elite.test.ts",
+     "supabase/functions/scim-v2/index.ts"
+    ]
+   },
+   {
+    "sha": "3f0aa49",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "chore(automacao): conecta testes, grafo e manutenção aos gatilhos (#32)",
+    "files": [
+     ".github/workflows/automation-local.yml",
+     ".gitignore",
+     "docs/AUTOMACAO_LOCAL.md",
+     "docs/ci/README.md",
+     "graphify.local.json",
+     "package.json",
+     "scripts/automation.config.json",
+     "scripts/automation.mjs",
+     "scripts/automation.unit.mjs",
+     "scripts/ci/maintenance.unit.mjs",
+     "scripts/graphify-local.mjs",
+     "scripts/graphify-local.unit.mjs",
+     "scripts/maintenance/README.md",
+     "scripts/maintenance/config.example.json",
+     "scripts/maintenance/config.json",
+     "scripts/maintenance/lib.mjs",
+     "scripts/maintenance/maintenance.unit.mjs",
+     "scripts/maintenance/run.mjs",
+     "scripts/maintenance/run.sh",
+     "scripts/maintenance/typecheck.mjs"
+    ]
+   },
+   {
+    "sha": "491c6cf",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)",
+    "files": [
+     "tests-e2e/auth-navigation.spec.ts",
+     "tests-e2e/critical-flows.spec.ts",
+     "tests-e2e/elite-validation.spec.ts",
+     "tests-e2e/production-ready.spec.ts",
+     "tests-e2e/workflow-advanced.spec.ts"
+    ]
+   },
+   {
+    "sha": "90c35fb",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(tipos): corrige contratos do painel de saúde e relatório (#33)",
+    "files": [
+     "package.json",
+     "src/pages/admin/HealthDashboard.tsx",
+     "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+     "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
+     "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
+    ]
+   },
+   {
+    "sha": "7ad9425",
+    "date": "2026-11-11",
+    "author": "adm01-debug",
+    "subject": "fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)",
+    "files": [
+     "supabase/functions/dependency-health/index.test.ts",
+     "supabase/functions/run-audit/rls_test.ts",
+     "supabase/functions/telemetry/index.test.ts",
+     "supabase/functions/workflow-engine/fuzz.test.ts"
+    ]
+   },
+   {
+    "sha": "dc3d95d",
+    "date": "2026-11-09",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #4 from adm01-debug/fix/ui-render-and-math",
+    "files": []
+   },
+   {
+    "sha": "1a7756c",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "ci: porta os guards offline e a auditoria semanal autônoma do Zapp_Web_V2",
+    "files": [
+     ".github/toolchain.json",
+     ".github/workflows/branch-hygiene-audit.yml",
+     ".github/workflows/guards.yml",
+     ".github/workflows/main.yml",
+     ".github/workflows/notifica-falha-main.yml",
+     "AGENTS.md",
+     "docs/agentes/github-ci.md",
+     "docs/agentes/mapa-repo.md",
+     "docs/ci/README.md",
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "package.json",
+     "scripts/ci/README.md",
+     "scripts/ci/actions-kpi.mjs",
+     "scripts/ci/actions-kpi.unit.mjs",
+     "scripts/ci/audit-prod.mjs",
+     "scripts/ci/audit-prod.unit.mjs",
+     "scripts/ci/branch-podaveis.mjs",
+     "scripts/ci/branch-podaveis.unit.mjs",
+     "scripts/ci/bump-toolchain.mjs",
+     "scripts/ci/check-bundle-secrets.mjs",
+     "scripts/ci/check-bundle-secrets.unit.mjs",
+     "scripts/ci/check-test-inventory.mjs",
+     "scripts/ci/check-test-inventory.unit.mjs",
+     "scripts/ci/commit-msg-lint.mjs",
+     "scripts/ci/commit-msg-lint.unit.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.mjs",
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
+     "scripts/ci/render-workflow-docs.mjs",
+     "scripts/ci/render-workflow-docs.unit.mjs",
+     "scripts/ci/sla-code-scanning.mjs",
+     "scripts/ci/sla-code-scanning.unit.mjs",
+     "scripts/ci/toolchain-schedule.unit.mjs",
+     "scripts/ci/workflow-test-support.mjs",
+     "scripts/lib/README.md",
+     "scripts/lib/seguranca-processo.mjs",
+     "scripts/lib/seguranca-processo.test.mjs"
+    ]
+   },
+   {
+    "sha": "908b045",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(ci): remove --depth 1 do fetch da branch contexto no job de publicação",
+    "files": [
+     ".github/workflows/contexto.yml"
+    ]
+   },
+   {
+    "sha": "7e181fc",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(tests): corrige timer infinito no Vitest logger fuzz test",
+    "files": [
+     "src/lib/__tests__/logger.fuzz.test.ts"
+    ]
+   },
+   {
+    "sha": "8e8f9cb",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "fix(edge): corrige asserção de truncamento no teste Deno logger",
+    "files": [
+     "supabase/functions/_shared/logger.fuzz.test.ts"
+    ]
+   },
+   {
+    "sha": "0bdcd6f",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "ci(quality-gate): liga unit tests de CI e guard de integridade do AGENTS.md (#22)",
+    "files": [
+     ".github/workflows/main.yml"
+    ]
+   },
+   {
+    "sha": "7e7efb6",
+    "date": "2026-11-08",
+    "author": "adm01-debug",
+    "subject": "chore(agentes): adota o padrão CLAUDE.md + AGENTS.md + docs/agentes do Zapp",
+    "files": [
+     ".agents/skills/promo-supply-v2/SKILL.md",
+     ".agents/skills/promo-supply-v2/agents/openai.yaml",
+     ".claude/skills/promo-supply-v2/SKILL.md",
+     ".hermes.md",
+     "AGENTS.md",
+     "CLAUDE.md",
+     "docs/agentes/banco.md",
+     "docs/agentes/contexto-ia.md",
+     "docs/agentes/deploy.md",
+     "docs/agentes/github-ci.md",
+     "docs/agentes/mapa-repo.md",
+     "docs/agentes/regras-dominio.md",
+     "docs/agentes/servicos-externos.md",
+     "scripts/ci/agents-docs-baseline.unit.mjs",
+     "scripts/ci/check-agents-md-integrity.mjs"
+    ]
+   },
    {
     "sha": "d44bb8f",
     "date": "2026-11-08",
@@ -104352,6 +105896,13 @@
      "src/lib/__tests__/logger.fuzz.test.ts",
      "src/lib/__tests__/performance.test.ts"
     ]
+   },
+   {
+    "sha": "8ed0f37",
+    "date": "2026-11-08",
+    "author": "copilot-swe-agent[bot]",
+    "subject": "Merge remote-tracking branch 'refs/remotes/origin/main' into fix/ui-render-and-math",
+    "files": []
    },
    {
     "sha": "97b6efc",
@@ -104450,1220 +106001,27 @@
      "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
      "DOCS/ESTADO/L13_MIGRATIONS.md"
     ]
-   },
-   {
-    "sha": "58f4fc8",
-    "date": "2026-08-11",
-    "author": "Joaquim (via Claude Code VPS)",
-    "subject": "security: remove migrate-helper edge function (exposes service_role key)",
-    "files": [
-     "supabase/config.toml",
-     "supabase/functions/migrate-helper/index.test.ts",
-     "supabase/functions/migrate-helper/index.ts"
-    ]
-   },
-   {
-    "sha": "686ef28",
-    "date": "2026-08-07",
-    "author": "adm01-debug",
-    "subject": "merge: master para main",
-    "files": []
-   },
-   {
-    "sha": "e8909e3",
-    "date": "2026-08-07",
-    "author": "adm01-debug",
-    "subject": "feat: Migração Banco Lovable para Supabase Promo Supply - V2",
-    "files": [
-     ".claude/scheduled_tasks.lock",
-     ".env",
-     ".env.example",
-     ".github/workflows/ci.yml",
-     ".github/workflows/main.yml",
-     ".gitignore",
-     ".lovable/plan.md",
-     "\"C\\357\\200\\272UsersTI-01AppDataLocalTempprofiles_now.txt\"",
-     "\"C\\357\\200\\272UsersTI-01AppDataLocalTempsols.txt\"",
-     "DOCS/ADR/0001-feature-based-architecture.md",
-     "DOCS/ADR/0002-auth-strategy.md",
-     "DOCS/ARCHITECTURE_GUIDE.md",
-     "DOCS/AUDIT-COMPREHENSIVE-SYSTEM-REPORT.md",
-     "DOCS/AUDITORIA_BACKEND.md",
-     "DOCS/AUDITORIA_BACKEND_V2.md",
-     "DOCS/AUDITORIA_BACKEND_V3.md",
-     "DOCS/AUDITORIA_CODIGO_2026Q3.md",
-     "DOCS/AUDITORIA_QA_2026Q3.md",
-     "DOCS/BACKUP_STRATEGY.md",
-     "DOCS/CODEBASE_ATLAS/00_INDEX.md",
-     "DOCS/CODEBASE_ATLAS/01_ARQUITETURA_GERAL.md",
-     "DOCS/CODEBASE_ATLAS/02_FLUXOS_CRITICOS.md",
-     "DOCS/CODEBASE_ATLAS/03_FRONTEND_MAP.md",
-     "DOCS/CODEBASE_ATLAS/04_BACKEND_MAP.md",
-     "DOCS/CODEBASE_ATLAS/05_EDGE_FUNCTIONS.md",
-     "DOCS/CODEBASE_ATLAS/06_UI_COMPONENTS.md",
-     "DOCS/CODEBASE_ATLAS/07_HOOKS_STORES.md",
-     "DOCS/CODEBASE_ATLAS/08_SEGURANCA_RLS.md",
-     "DOCS/CODEBASE_ATLAS/09_OBSERVABILIDADE.md",
-     "DOCS/CODEBASE_ATLAS/10_TESTES_CI.md",
-     "DOCS/CODEBASE_ATLAS/11_GLOSSARIO.md",
-     "DOCS/ENGINEERING_EXCELLENCE.md",
-     "DOCS/MELHORIAS_PENDENTES.md",
-     "DOCS/RUNBOOKS/rollback-template.md",
-     "DOCS/SECURITY.md",
-     "DOCS/conventions/pages-directory.md",
-     "DOCS/page-transitions.md",
-     "README.md",
-     "System.Drawing.Drawing2D.GraphicsPath",
-     "bun.lock",
-     "bun.lockb",
-     "components.json",
-     "deploy_edge_functions_promo_supply.sh",
-     "eslint.config.js",
-     "index.html",
-     "package-lock.json",
-     "package.json",
-     "playwright.config.ts",
-     "postcss.config.js",
-     "public/dependency-health.html",
-     "public/dependency-health.json",
-     "public/favicon.ico",
-     "public/favicon.png",
-     "public/locales/en/translation.json",
-     "public/locales/es/translation.json",
-     "public/locales/pt/translation.json",
-     "public/manifest.webmanifest",
-     "public/noise.svg",
-     "public/og-image.jpg",
-     "public/placeholder.svg",
-     "public/pwa-192x192.png",
-     "public/pwa-512x512.png",
-     "public/robots.txt",
-     "scripts/db-explain-analyze.ts",
-     "scripts/realtime-audit.ts",
-     "scripts/rls-audit.ts",
-     "scripts/squash-migrations.sh",
-     "scripts/stress-test.ts",
-     "scripts/validate-bridge.ts",
-     "src/App.tsx",
-     "src/components/PrefetchLink.tsx",
-     "src/components/accessibility/AccessibilityStyles.tsx",
-     "src/components/accessibility/AdvancedAccessibility.tsx",
-     "src/components/accessibility/SkipLinks.tsx",
-     "src/components/accessibility/VisuallyHidden.tsx",
-     "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
-     "src/components/accessibility/accessibilityHelpers.ts",
-     "src/components/admin/DateFnsUsagePanel.tsx",
-     "src/components/admin/DependencyHealthBadge.tsx",
-     "src/components/admin/InstallReportHelp.tsx",
-     "src/components/admin/InstallReportPanel.tsx",
-     "src/components/admin/RefreshNowHelp.tsx",
-     "src/components/admin/TenantSwitcher.tsx",
-     "src/components/admin/telemetry/AppLogsView.tsx",
-     "src/components/admin/telemetry/SystemAlertsView.tsx",
-     "src/components/admin/telemetry/TelemetryCharts.tsx",
-     "src/components/animations/MotionComponents.tsx",
-     "src/components/animations/__tests__/motionVariants.test.ts",
-     "src/components/animations/motionVariants.ts",
-     "src/components/atoms/Atom.tsx",
-     "src/components/atoms/EliteButton.tsx",
-     "src/components/atoms/EliteImage.tsx",
-     "src/components/atoms/PreloadLink.tsx",
-     "src/components/compras/AISupplierSuggestion.tsx",
-     "src/components/compras/ActiveSourcingWidget.tsx",
-     "src/components/compras/AdvancedProcurementKPIs.tsx",
-     "src/components/compras/BulkOperationsPreview.tsx",
-     "src/components/compras/BulkPlanningConsole.tsx",
-     "src/components/compras/BuscaAutomatica.tsx",
-     "src/components/compras/BuyerDrilldownModal.tsx",
-     "src/components/compras/BuyerPerformanceAlerts.tsx",
-     "src/components/compras/BuyerPerformancePanel.tsx",
-     "src/components/compras/ComparadorCotacoes.tsx",
-     "src/components/compras/ContractDetailsModal.tsx",
-     "src/components/compras/ContractModal.tsx",
-     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-     "src/components/compras/CotacaoManualModal.tsx",
-     "src/components/compras/CriticalAlertsBar.tsx",
-     "src/components/compras/DashboardInsights.tsx",
-     "src/components/compras/DeliveryCalendar.tsx",
-     "src/components/compras/DemandPredictionPanel.tsx",
-     "src/components/compras/DigitalSignature.tsx",
-     "src/components/compras/DraggableDashboard.tsx",
-     "src/components/compras/DynamicApprovalMatrix.tsx",
-     "src/components/compras/EnhancedBulkActionsBar.tsx",
-     "src/components/compras/EnhancedKpiCard.tsx",
-     "src/components/compras/EnhancedPedidoTimeline.tsx",
-     "src/components/compras/ExecutiveDashboard.tsx",
-     "src/components/compras/FilterFavoritesManager.tsx",
-     "src/components/compras/FiltrosAvancados.tsx",
-     "src/components/compras/FornecedorModal.tsx",
-     "src/components/compras/HistoricoComprasModal.tsx",
-     "src/components/compras/IAAdvisor.tsx",
-     "src/components/compras/KPITargetsConfig.tsx",
-     "src/components/compras/KanbanBoard.tsx",
-     "src/components/compras/MainLayout.tsx",
-     "src/components/compras/NeuralFollowUpMonitor.tsx",
-     "src/components/compras/NovaSolicitacaoModal.tsx",
-     "src/components/compras/OrderPreviewModal.tsx",
-     "src/components/compras/PedidoTimeline.tsx",
-     "src/components/compras/PenaltyEscalationConfigPanel.tsx",
-     "src/components/compras/PendingApprovalsList.tsx",
-     "src/components/compras/PipelineChart.tsx",
-     "src/components/compras/PriceComparator.tsx",
-     "src/components/compras/PriceHistoryModal.tsx",
-     "src/components/compras/ProductSupplierManager.tsx",
-     "src/components/compras/ProductionRoutingEngine.tsx",
-     "src/components/compras/PurchaseClimateWidget.tsx",
-     "src/components/compras/QualificationHistoryTimeline.tsx",
-     "src/components/compras/RankingCotacoes.tsx",
-     "src/components/compras/ReceivingModal.tsx",
-     "src/components/compras/RiskHeatMap.tsx",
-     "src/components/compras/SLABySupplierAnalysis.tsx",
-     "src/components/compras/SLADistributionChart.tsx",
-     "src/components/compras/SavingsGoalPanel.tsx",
-     "src/components/compras/SolicitacaoCard.tsx",
-     "src/components/compras/SolicitacaoKanban.tsx",
-     "src/components/compras/SourcingHistoryConsole.tsx",
-     "src/components/compras/SourcingIntelligenceWidget.tsx",
-     "src/components/compras/SpendAnalytics.tsx",
-     "src/components/compras/StatusTimeline.tsx",
-     "src/components/compras/StrategicQuoteTable.tsx",
-     "src/components/compras/SupplierAlertsPanel.tsx",
-     "src/components/compras/SupplierBonificationsPanel.tsx",
-     "src/components/compras/SupplierEcosystemSection.tsx",
-     "src/components/compras/SupplierIntelligenceConsole.tsx",
-     "src/components/compras/SupplierInteractionLog.tsx",
-     "src/components/compras/SupplierRankingPanel.tsx",
-     "src/components/compras/SupplierRiskAnalysis.tsx",
-     "src/components/compras/SupplierScorecard.tsx",
-     "src/components/compras/TrendAnalysisCharts.tsx",
-     "src/components/compras/UrgentItemsList.tsx",
-     "src/components/compras/VisualComparadorCotacoes.tsx",
-     "src/components/compras/__tests__/PipelineChart.test.tsx",
-     "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
-     "src/components/compras/approval/ApprovalDelegationModal.tsx",
-     "src/components/compras/approval/ApprovalRuleModal.tsx",
-     "src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts",
-     "src/components/compras/bulk-operations/bulkOperationsTypes.ts",
-     "src/components/compras/contract/ContractDetailsTabs.tsx",
-     "src/components/compras/contract/ContractItemsEditor.tsx",
-     "src/components/compras/contract/ContractSLASection.tsx",
-     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-     "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
-     "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
-     "src/components/compras/digital-signature/__tests__/signatureHelpers.test.ts",
-     "src/components/compras/digital-signature/signatureHelpers.ts",
-     "src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx",
-     "src/components/compras/enhanced-kpi/__tests__/colorClasses.test.ts",
-     "src/components/compras/executive/ExecutiveAIInsights.tsx",
-     "src/components/compras/executive/ExecutiveChartsRow.tsx",
-     "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
-     "src/components/compras/executive/ExecutiveFiltersBar.tsx",
-     "src/components/compras/executive/ExecutiveMetricCard.tsx",
-     "src/components/compras/executive/ExecutivePendingActions.tsx",
-     "src/components/compras/executive/ExecutiveTablesRow.tsx",
-     "src/components/compras/executive/KraljicMatrix.tsx",
-     "src/components/compras/executive/PriceVarianceAnalysis.tsx",
-     "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-     "src/components/compras/executive/executiveDashboardData.ts",
-     "src/components/compras/pending-approvals/ApprovalModals.tsx",
-     "src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts",
-     "src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts",
-     "src/components/compras/pending-approvals/deadlineFallback.ts",
-     "src/components/compras/pending-approvals/pendingApprovalsData.ts",
-     "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-     "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-     "src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts",
-     "src/components/compras/price-history/priceHistoryHelpers.ts",
-     "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-     "src/components/compras/procurement-kpis/kpiMockData.ts",
-     "src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts",
-     "src/components/compras/scorecard/supplierScorecardData.ts",
-     "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-     "src/components/compras/sla-analysis/slaAnalysisData.ts",
-     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-     "src/components/compras/solicitacao/SolicitacaoReviewStep.tsx",
-     "src/components/compras/timeline/__tests__/timelineConfig.test.ts",
-     "src/components/compras/timeline/timelineConfig.ts",
-     "src/components/compras/visual-comparador/ComparadorCharts.tsx",
-     "src/components/feedback/GlobalErrorBoundary.tsx",
-     "src/components/filters/ConfirmClearFiltersDialog.tsx",
-     "src/components/fornecedores/FornecedorMobileCard.tsx",
-     "src/components/layout/EliteBackground.tsx",
-     "src/components/licitacoes/ReverseAuctionRoom.tsx",
-     "src/components/mobile/BottomNavigation.tsx",
-     "src/components/mobile/MobileRefreshWrapper.tsx",
-     "src/components/mobile/SwipeableListItem.tsx",
-     "src/components/molecules/EliteFormField.tsx",
-     "src/components/molecules/Molecule.tsx",
-     "src/components/navigation/BackToTop.tsx",
-     "src/components/navigation/ModernBreadcrumbs.tsx",
-     "src/components/navigation/NavigationProgressBar.tsx",
-     "src/components/navigation/RouteSkeleton.tsx",
-     "src/components/navigation/SmartBackButton.tsx",
-     "src/components/notifications/NotificationSettingsPanel.tsx",
-     "src/components/onboarding/OnboardingTour.tsx",
-     "src/components/onboarding/TourVisualComponents.tsx",
-     "src/components/onboarding/__tests__/tourStepDefinitions.test.ts",
-     "src/components/onboarding/tourStepDefinitions.ts",
-     "src/components/organisms/EliteCardGrid.tsx",
-     "src/components/organisms/ElitePageWrapper.tsx",
-     "src/components/organisms/Organism.tsx",
-     "src/components/pagamentos/PagamentoAdvancedFilters.tsx",
-     "src/components/pagamentos/PagamentoAdvancedKPIs.tsx",
-     "src/components/pagamentos/PagamentoDetailModal.tsx",
-     "src/components/pagamentos/PagamentoExportPanel.tsx",
-     "src/components/pagamentos/PagamentoFinancialDashboard.tsx",
-     "src/components/pagamentos/PagamentoMobileCard.tsx",
-     "src/components/pagamentos/PagamentoNotificationsWidget.tsx",
-     "src/components/pagamentos/PagamentoScheduleModal.tsx",
-     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
-     "src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts",
-     "src/components/pedidos/PedidoMobileCard.tsx",
-     "src/components/pwa/PWAInstallPrompt.tsx",
-     "src/components/security/ActiveSessionsPanel.tsx",
-     "src/components/security/BlockedCountriesPanel.tsx",
-     "src/components/security/BlockedIPsPanel.tsx",
-     "src/components/security/GeoAccessLogsPanel.tsx",
-     "src/components/security/GeoWhitelistPanel.tsx",
-     "src/components/security/IPWhitelistPanel.tsx",
-     "src/components/security/LoginAttemptsPanel.tsx",
-     "src/components/security/MFASettings.tsx",
-     "src/components/security/PasskeyManager.tsx",
-     "src/components/security/PasswordResetRequestsPanel.tsx",
-     "src/components/security/PasswordStrengthIndicator.tsx",
-     "src/components/security/PermissionGate.tsx",
-     "src/components/security/PermissionMatrix.tsx",
-     "src/components/security/RateLimitDashboard.tsx",
-     "src/components/security/SecurityLogsPanel.tsx",
-     "src/components/settings/FeedbackSettingsPanel.tsx",
-     "src/components/settings/TourSettingsPanel.tsx",
-     "src/components/ui/__tests__/celebrationConfigs.test.ts",
-     "src/components/ui/__tests__/chartColors.test.ts",
-     "src/components/ui/__tests__/enhanced-search-helpers.test.ts",
-     "src/components/ui/accordion.tsx",
-     "src/components/ui/alert-dialog.tsx",
-     "src/components/ui/alert.tsx",
-     "src/components/ui/avatar.tsx",
-     "src/components/ui/badge.tsx",
-     "src/components/ui/breadcrumb.tsx",
-     "src/components/ui/button.tsx",
-     "src/components/ui/calendar.tsx",
-     "src/components/ui/card.tsx",
-     "src/components/ui/celebration-particles.tsx",
-     "src/components/ui/celebration.tsx",
-     "src/components/ui/chart.tsx",
-     "src/components/ui/checkbox.tsx",
-     "src/components/ui/collapsible.tsx",
-     "src/components/ui/command.tsx",
-     "src/components/ui/contextual-skeletons.tsx",
-     "src/components/ui/dialog.tsx",
-     "src/components/ui/drawer.tsx",
-     "src/components/ui/dropdown-menu.tsx",
-     "src/components/ui/empty-state-illustrations.tsx",
-     "src/components/ui/enhanced-search-helpers.ts",
-     "src/components/ui/enhanced-search.tsx",
-     "src/components/ui/error-boundary.tsx",
-     "src/components/ui/floating-input.tsx",
-     "src/components/ui/form.tsx",
-     "src/components/ui/illustrated-empty-state.tsx",
-     "src/components/ui/indicators/MiscIndicators.tsx",
-     "src/components/ui/indicators/PriorityIndicator.tsx",
-     "src/components/ui/indicators/ProgressAndTrend.tsx",
-     "src/components/ui/indicators/StatusIndicator.tsx",
-     "src/components/ui/indicators/StepAndHealth.tsx",
-     "src/components/ui/indicators/__tests__/statusConfigs.test.ts",
-     "src/components/ui/input-otp.tsx",
-     "src/components/ui/input.tsx",
-     "src/components/ui/interactive-card.tsx",
-     "src/components/ui/kbd.tsx",
-     "src/components/ui/label.tsx",
-     "src/components/ui/page-header-extras.tsx",
-     "src/components/ui/page-header.tsx",
-     "src/components/ui/popover.tsx",
-     "src/components/ui/progress.tsx",
-     "src/components/ui/scroll-area.tsx",
-     "src/components/ui/select.tsx",
-     "src/components/ui/separator.tsx",
-     "src/components/ui/sheet.tsx",
-     "src/components/ui/sidebar.tsx",
-     "src/components/ui/skeleton.tsx",
-     "src/components/ui/skeletons/DomainSkeletons.tsx",
-     "src/components/ui/skeletons/LayoutSkeletons.tsx",
-     "src/components/ui/skeletons/SkeletonPrimitives.tsx",
-     "src/components/ui/slider.tsx",
-     "src/components/ui/sonner.tsx",
-     "src/components/ui/sparkline.tsx",
-     "src/components/ui/status-indicators.tsx",
-     "src/components/ui/switch.tsx",
-     "src/components/ui/table.tsx",
-     "src/components/ui/tabs.tsx",
-     "src/components/ui/textarea.tsx",
-     "src/components/ui/toast.tsx",
-     "src/components/ui/toaster.tsx",
-     "src/components/ui/tooltip.tsx",
-     "src/components/ui/undo-toast.tsx",
-     "src/features/aprovacoes/components/ApprovalCharts.tsx",
-     "src/features/aprovacoes/components/ApprovalStats.tsx",
-     "src/features/aprovacoes/index.ts",
-     "src/features/aprovacoes/types/approval.types.ts",
-     "src/features/auth/__tests__/useAuth.test.tsx",
-     "src/features/auth/components/ProtectedRoute.tsx",
-     "src/features/auth/hooks/AuthContext.ts",
-     "src/features/auth/hooks/useAuth.tsx",
-     "src/features/auth/hooks/useAuthContext.ts",
-     "src/features/auth/index.ts",
-     "src/features/auth/schemas/__tests__/auth.schemas.test.ts",
-     "src/features/auth/schemas/auth.schemas.ts",
-     "src/features/auth/types/__tests__/authRoles.test.ts",
-     "src/features/auth/types/authRoles.ts",
-     "src/features/cotacoes/hooks/useCotacoes.ts",
-     "src/features/cotacoes/index.ts",
-     "src/features/empresas/components/EmpresaBadge.tsx",
-     "src/features/empresas/components/EmpresaSelector.tsx",
-     "src/features/empresas/hooks/useEmpresaFilter.ts",
-     "src/features/empresas/index.ts",
-     "src/features/layout/components/AdvancedSearch.tsx",
-     "src/features/layout/components/AppSidebar.tsx",
-     "src/features/layout/components/Breadcrumbs.tsx",
-     "src/features/layout/components/ClearFiltersShortcutEditor.tsx",
-     "src/features/layout/components/CommandPalette.tsx",
-     "src/features/layout/components/GuidedBuyingAssistant.tsx",
-     "src/features/layout/components/HeaderActions.tsx",
-     "src/features/layout/components/KeyboardShortcutsDialog.tsx",
-     "src/features/layout/components/LanguageSwitcher.tsx",
-     "src/features/layout/components/MainLayout.tsx",
-     "src/features/layout/components/ModuleErrorBoundary.tsx",
-     "src/features/layout/components/OfflineIndicator.tsx",
-     "src/features/layout/components/PageLoader.tsx",
-     "src/features/layout/components/QuickActionsFAB.tsx",
-     "src/features/layout/components/RealNotificationCenter.tsx",
-     "src/features/layout/components/SLASettingsPanel.tsx",
-     "src/features/layout/components/Shell.tsx",
-     "src/features/layout/components/SupplierChat.tsx",
-     "src/features/layout/components/ThemeToggle.tsx",
-     "src/features/layout/components/UserMenu.tsx",
-     "src/features/layout/components/chat/ChatArea.tsx",
-     "src/features/layout/components/chat/MessageBubble.tsx",
-     "src/features/layout/components/search/HighlightedText.tsx",
-     "src/features/layout/components/search/SearchEmptyState.tsx",
-     "src/features/layout/components/search/SearchResultsList.tsx",
-     "src/features/layout/components/search/__tests__/searchConfig.test.ts",
-     "src/features/layout/components/search/searchConfig.ts",
-     "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx",
-     "src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts",
-     "src/features/layout/transitions/PageTransition.tsx",
-     "src/features/layout/transitions/__tests__/config.test.ts",
-     "src/features/layout/transitions/__tests__/presets.test.ts",
-     "src/features/layout/transitions/config.ts",
-     "src/features/layout/transitions/index.ts",
-     "src/features/layout/transitions/presets.ts",
-     "src/features/layout/transitions/usePageTransition.ts",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/features/pedidos/index.ts",
-     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/features/solicitacoes/index.ts",
-     "src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts",
-     "src/features/solicitacoes/schemas/solicitacao.schemas.ts",
-     "src/hooks/__tests__/hookConstants.test.ts",
-     "src/hooks/__tests__/keyboardShortcutsData.test.ts",
-     "src/hooks/__tests__/permissionsConstants.test.ts",
-     "src/hooks/__tests__/useApprovalHistory.test.ts",
-     "src/hooks/__tests__/useFuseSearch.test.ts",
-     "src/hooks/__tests__/useImageCompression.test.ts",
-     "src/hooks/__tests__/usePermissions.test.tsx",
-     "src/hooks/__tests__/useToastReducer.test.ts",
-     "src/hooks/__tests__/useWorkflowDLQ.test.ts",
-     "src/hooks/__tests__/useXbzIntegration.cache.test.tsx",
-     "src/hooks/approvalWorkflowTypes.ts",
-     "src/hooks/use-mobile.tsx",
-     "src/hooks/use-toast.ts",
-     "src/hooks/useAccountFilters.ts",
-     "src/hooks/useAccountLockout.ts",
-     "src/hooks/useApprovalHistory.ts",
-     "src/hooks/useApprovalNotifications.ts",
-     "src/hooks/useApprovalRules.ts",
-     "src/hooks/useApprovalWorkflow.ts",
-     "src/hooks/useBudgetManagement.ts",
-     "src/hooks/useBulkOperations.ts",
-     "src/hooks/useBuyerPerformanceData.ts",
-     "src/hooks/useClearFiltersFlow.tsx",
-     "src/hooks/useContactNotes.ts",
-     "src/hooks/useCooldown.ts",
-     "src/hooks/useCriticalAlertsBadge.ts",
-     "src/hooks/useDashboardFilters.ts",
-     "src/hooks/useDashboardKPIs.ts",
-     "src/hooks/useDevolucoes.ts",
-     "src/hooks/useEstoque.ts",
-     "src/hooks/useExecutiveDashboardData.ts",
-     "src/hooks/useFeedback.ts",
-     "src/hooks/useFlashHighlight.ts",
-     "src/hooks/useFormDataProtection.ts",
-     "src/hooks/useFormDirty.ts",
-     "src/hooks/useFornecedores.ts",
-     "src/hooks/useFuseSearch.ts",
-     "src/hooks/useGeoRestriction.ts",
-     "src/hooks/useGlobalUndo.ts",
-     "src/hooks/useGuidedBuying.ts",
-     "src/hooks/useImageCompression.ts",
-     "src/hooks/useKeyboardShortcuts.ts",
-     "src/hooks/useLicitacoes.ts",
-     "src/hooks/useMFA.ts",
-     "src/hooks/useMobileGestures.ts",
-     "src/hooks/useNProgress.ts",
-     "src/hooks/useNavigation.tsx",
-     "src/hooks/useOfflineSync.ts",
-     "src/hooks/usePagamentos.ts",
-     "src/hooks/usePasswordResetRequests.ts",
-     "src/hooks/usePerformanceMonitor.ts",
-     "src/hooks/usePermissions.ts",
-     "src/hooks/usePrefetch.ts",
-     "src/hooks/useProdutoFornecedores.ts",
-     "src/hooks/useProdutos.ts",
-     "src/hooks/usePurchaseHistory.ts",
-     "src/hooks/useRealPushNotifications.ts",
-     "src/hooks/useRealtimeSubscription.ts",
-     "src/hooks/useRecentlyViewed.ts",
-     "src/hooks/useRenderProfiler.ts",
-     "src/hooks/useScrollRestoration.ts",
-     "src/hooks/useSecurityLogs.ts",
-     "src/hooks/useSessionIdleTimeout.ts",
-     "src/hooks/useSidebarBadges.ts",
-     "src/hooks/useSpotIntegration.ts",
-     "src/hooks/useSupplierQualification.ts",
-     "src/hooks/useTourPreferences.ts",
-     "src/hooks/useUnsavedChangesWarning.ts",
-     "src/hooks/useWebAuthn.ts",
-     "src/hooks/useWorkflowDLQ.ts",
-     "src/hooks/useXbzIntegration.ts",
-     "src/i18n/config.ts",
-     "src/index.css",
-     "src/integrations/lovable/index.ts",
-     "src/integrations/supabase/client.ts",
-     "src/integrations/supabase/types.ts",
-     "src/lib/__tests__/clearFiltersShortcut.test.ts",
-     "src/lib/__tests__/dbMapping.test.ts",
-     "src/lib/__tests__/exportData.test.ts",
-     "src/lib/__tests__/feedbackToast.test.ts",
-     "src/lib/__tests__/filterClearReporter.test.ts",
-     "src/lib/__tests__/fuzzSeed.ts",
-     "src/lib/__tests__/haptics.test.ts",
-     "src/lib/__tests__/imageCompression.test.ts",
-     "src/lib/__tests__/logger.fuzz.test.ts",
-     "src/lib/__tests__/logger.test.ts",
-     "src/lib/__tests__/paginatedFetch.test.ts",
-     "src/lib/__tests__/pdfGenerator.test.ts",
-     "src/lib/__tests__/performance.test.ts",
-     "src/lib/__tests__/queryClient.test.ts",
-     "src/lib/__tests__/queryClientConstants.test.ts",
-     "src/lib/__tests__/routePrefetch.test.ts",
-     "src/lib/__tests__/safeDisplay.test.ts",
-     "src/lib/__tests__/safeTruncate.test.ts",
-     "src/lib/__tests__/secureStorage.test.ts",
-     "src/lib/__tests__/security.test.ts",
-     "src/lib/__tests__/supabaseQuery.test.ts",
-     "src/lib/__tests__/supabaseRpc.test.ts",
-     "src/lib/__tests__/utils.test.ts",
-     "src/lib/clearFiltersShortcut.ts",
-     "src/lib/dbMapping.ts",
-     "src/lib/exportData.ts",
-     "src/lib/feedbackToast.ts",
-     "src/lib/filterClearReporter.ts",
-     "src/lib/haptics.ts",
-     "src/lib/imageCompression.ts",
-     "src/lib/logger.ts",
-     "src/lib/paginatedFetch.ts",
-     "src/lib/pdfGenerator.ts",
-     "src/lib/performance.ts",
-     "src/lib/query-client.ts",
-     "src/lib/routePrefetch.ts",
-     "src/lib/safeDisplay.ts",
-     "src/lib/safeTruncate.ts",
-     "src/lib/secureStorage.ts",
-     "src/lib/security.ts",
-     "src/lib/supabaseQuery.ts",
-     "src/lib/supabaseRpc.ts",
-     "src/lib/types/browser-extensions.d.ts",
-     "src/lib/utils.ts",
-     "src/locales/en/translation.json",
-     "src/locales/es/translation.json",
-     "src/locales/pt/translation.json",
-     "src/main.tsx",
-     "src/pages/NotFound.tsx",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
-     "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
-     "src/pages/admin-telemetria/AdminTelemetria.tsx",
-     "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
-     "src/pages/admin-telemetria/telemetriaHelpers.ts",
-     "src/pages/admin/AlertDetail.tsx",
-     "src/pages/admin/AlertSubscriptionsPanel.tsx",
-     "src/pages/admin/DependencyHealth.tsx",
-     "src/pages/admin/DeveloperDocs.tsx",
-     "src/pages/admin/ERPConnections.tsx",
-     "src/pages/admin/FiscalDashboard.tsx",
-     "src/pages/admin/HealthDashboard.tsx",
-     "src/pages/admin/PunchOutCatalogs.tsx",
-     "src/pages/admin/SSOConfig.tsx",
-     "src/pages/admin/ScanRunsSlaCard.tsx",
-     "src/pages/admin/SourcingPipeline.tsx",
-     "src/pages/admin/StorageMigration.tsx",
-     "src/pages/admin/WorkflowAdmin.tsx",
-     "src/pages/admin/__tests__/alertRunbooks.test.ts",
-     "src/pages/admin/alertRunbooks.ts",
-     "src/pages/aprovacoes/Aprovacoes.tsx",
-     "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-     "src/pages/aprovacoes/aprovacoesData.ts",
-     "src/pages/auditoria/Auditoria.tsx",
-     "src/pages/auth/Auth.tsx",
-     "src/pages/auth/AuthBranding.tsx",
-     "src/pages/buyer/BuyerComparisonView.tsx",
-     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
-     "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
-     "src/pages/buyer/buyerDashboardHelpers.tsx",
-     "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-     "src/pages/catalogo-spot/CatalogoSpot.tsx",
-     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
-     "src/pages/catalogo-spot/SpotFinancialTab.tsx",
-     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
-     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
-     "src/pages/catalogo-spot/spotHelpers.ts",
-     "src/pages/catalogo-spot/useSpotCatalog.ts",
-     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
-     "src/pages/catalogo-xbz/XbzCarrinhoTab.tsx",
-     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
-     "src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx",
-     "src/pages/catalogo-xbz/XbzNetworkPanel.tsx",
-     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
-     "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
-     "src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts",
-     "src/pages/catalogo-xbz/xbzHelpers.ts",
-     "src/pages/catalogo-xbz/xbzNetworkHealth.ts",
-     "src/pages/catalogo-xbz/xbzNetworkTrend.ts",
-     "src/pages/compliance/ComplianceDashboard.tsx",
-     "src/pages/compliance/__tests__/complianceHelpers.test.ts",
-     "src/pages/compliance/complianceHelpers.ts",
-     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-     "src/pages/contratos/Contratos.tsx",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
-     "src/pages/cotacao/cotacaoHelpers.ts",
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/dashboard/DashboardExecutivo.tsx",
-     "src/pages/dev/XbzNetworkPanelHarness.tsx",
-     "src/pages/devolucoes/Devolucoes.tsx",
-     "src/pages/devolucoes/DevolucoesModals.tsx",
-     "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
-     "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
-     "src/pages/devolucoes/devolucoesData.ts",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "src/pages/estoque/GestaoEstoque.tsx",
-     "src/pages/fornecedores/Fornecedores.tsx",
-     "src/pages/fornecedores/SupplierPerformance.tsx",
-     "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
-     "src/pages/fornecedores/fornecedorHelpers.ts",
-     "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-     "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
-     "src/pages/historico/HistoricoCompras.tsx",
-     "src/pages/historico/HistoricoDrilldownModal.tsx",
-     "src/pages/historico/HistoricoFornecedoresTab.tsx",
-     "src/pages/historico/HistoricoHelpers.tsx",
-     "src/pages/historico/HistoricoProdutosTab.tsx",
-     "src/pages/historico/HistoricoRegistrosTab.tsx",
-     "src/pages/historico/HistoricoSourcingTab.tsx",
-     "src/pages/historico/__tests__/historicoColors.test.ts",
-     "src/pages/historico/__tests__/historicoHelpers.test.ts",
-     "src/pages/kanban/KanbanWorkflow.tsx",
-     "src/pages/licitacoes/LicitacaoDetailDialog.tsx",
-     "src/pages/licitacoes/Licitacoes.tsx",
-     "src/pages/negociacao-ia/NegociacaoIA.tsx",
-     "src/pages/orcamentos/Orcamentos.tsx",
-     "src/pages/pagamentos/Pagamentos.tsx",
-     "src/pages/pedidos/PedidoDetailsDialog.tsx",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/pedidos/PedidosKPIs.tsx",
-     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
-     "src/pages/portal-fornecedor/__tests__/portalFornecedorData.test.ts",
-     "src/pages/portal-fornecedor/portalFornecedorData.ts",
-     "src/pages/qualificacao/QualificacaoFornecedores.tsx",
-     "src/pages/recebimento/RecebimentoOffline.tsx",
-     "src/pages/recebimento/ReceivingFormView.tsx",
-     "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-     "src/pages/recebimento/recebimentoHelpers.ts",
-     "src/pages/recompra/RecompraInteligente.tsx",
-     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-     "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
-     "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts",
-     "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
-     "src/pages/relatorios/Relatorios.tsx",
-     "src/pages/relatorios/RelatoriosCharts.tsx",
-     "src/pages/seguranca/Seguranca.tsx",
-     "src/pages/solicitacoes/Solicitacoes.tsx",
-     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-     "src/pages/solicitacoes/solicitacoesHelpers.ts",
-     "src/pages/sourcing/AuctionRoom.tsx",
-     "src/pages/sourcing/RFxCreate.tsx",
-     "src/pages/sourcing/RFxDetails.tsx",
-     "src/pages/sourcing/Sourcing.tsx",
-     "src/routes/AppRoutes.tsx",
-     "src/schemas/__tests__/solicitacao.schema.test.ts",
-     "src/schemas/solicitacao.schema.ts",
-     "src/services/__tests__/auditServiceConstants.test.ts",
-     "src/services/auditService.ts",
-     "src/services/auditTypes.ts",
-     "src/stores/__tests__/buyerAlertsStore.test.ts",
-     "src/stores/__tests__/dashboardLayoutStore.test.ts",
-     "src/stores/__tests__/kpiTargetsStore.test.ts",
-     "src/stores/__tests__/slaSettingsStore.test.ts",
-     "src/stores/__tests__/undoStore.test.ts",
-     "src/stores/buyerAlertsStore.ts",
-     "src/stores/dashboardLayoutStore.ts",
-     "src/stores/kpiTargetsStore.ts",
-     "src/stores/slaSettingsStore.ts",
-     "src/stores/undoStore.ts",
-     "src/styles/animations.css",
-     "src/styles/base.css",
-     "src/styles/components.css",
-     "src/styles/tokens.css",
-     "src/styles/utilities.css",
-     "src/test/setup.ts",
-     "src/tests/contracts-elite.test.ts",
-     "src/tests/contracts.test.ts",
-     "src/tests/fuzzing/edge-functions.test.ts",
-     "src/tests/fuzzing/payload-integrity.test.ts",
-     "src/tests/integration/contract-testing.test.ts",
-     "src/tests/integration/contract-validation.test.ts",
-     "src/tests/integration/core-integrity.test.ts",
-     "src/tests/integration/shared-schemas.ts",
-     "src/tests/integration/supabase-db.test.ts",
-     "src/tests/load/backend-stress.yml",
-     "src/tests/spot/spotApi.test.ts",
-     "src/types/__tests__/legacyTypes.test.ts",
-     "src/types/contract.ts",
-     "src/types/legacyTypes.ts",
-     "src/vite-env.d.ts",
-     "supabase/.temp/gotrue-version",
-     "supabase/.temp/linked-project.json",
-     "supabase/.temp/pooler-url",
-     "supabase/.temp/postgres-version",
-     "supabase/.temp/project-ref",
-     "supabase/.temp/rest-version",
-     "supabase/.temp/storage-migration",
-     "supabase/.temp/storage-version",
-     "supabase/config.toml",
-     "supabase/functions/_shared/ai_gateway.ts",
-     "supabase/functions/_shared/circuit_breaker.ts",
-     "supabase/functions/_shared/contracts.ts",
-     "supabase/functions/_shared/cronHealth.ts",
-     "supabase/functions/_shared/external-bridge-allowlist.ts",
-     "supabase/functions/_shared/fuzzSeed.ts",
-     "supabase/functions/_shared/fuzzer.ts",
-     "supabase/functions/_shared/http.ts",
-     "supabase/functions/_shared/idempotency.ts",
-     "supabase/functions/_shared/integrity_test.ts",
-     "supabase/functions/_shared/logLevel.test.ts",
-     "supabase/functions/_shared/logLevel.ts",
-     "supabase/functions/_shared/logger.fuzz.test.ts",
-     "supabase/functions/_shared/logger.ts",
-     "supabase/functions/_shared/rate_limit.ts",
-     "supabase/functions/_shared/retry.ts",
-     "supabase/functions/_shared/security.ts",
-     "supabase/functions/_shared/simulation-engine.ts",
-     "supabase/functions/_shared/spot_api.ts",
-     "supabase/functions/_shared/telemetry.ts",
-     "supabase/functions/_shared/validation.ts",
-     "supabase/functions/_shared/xbz_auth.ts",
-     "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-     "supabase/functions/_shared/xbz_catalog_cache.ts",
-     "supabase/functions/_shared/xbz_client.ts",
-     "supabase/functions/_shared/xbz_crypto.ts",
-     "supabase/functions/ai-demand-prediction/index.ts",
-     "supabase/functions/ai-negotiation/index.ts",
-     "supabase/functions/ai-supplier-risk/index.ts",
-     "supabase/functions/ai-supplier-suggestion/index.ts",
-     "supabase/functions/alert-dispatcher/index.ts",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/check-expiry-alerts/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts",
-     "supabase/functions/dependency-health/index.test.ts",
-     "supabase/functions/dependency-health/index.ts",
-     "supabase/functions/erp-sync/index.ts",
-     "supabase/functions/external-db-bridge/index.ts",
-     "supabase/functions/fiscal-orchestrator/index.ts",
-     "supabase/functions/generate-contract-pdf/index.ts",
-     "supabase/functions/guided-buying-ai/index.ts",
-     "supabase/functions/health-dashboard/index.ts",
-     "supabase/functions/maintain-partitions/index.ts",
-     "supabase/functions/migrate-helper/index.test.ts",
-     "supabase/functions/migrate-helper/index.ts",
-     "supabase/functions/migrate-storage-paths/index.ts",
-     "supabase/functions/process-invoice-idp/index.ts",
-     "supabase/functions/process-outbox/index.ts",
-     "supabase/functions/punchout-receive/index.ts",
-     "supabase/functions/punchout-setup/index.ts",
-     "supabase/functions/run-audit/index.ts",
-     "supabase/functions/run-audit/rls_test.ts",
-     "supabase/functions/scim-v2/conformance.test.ts",
-     "supabase/functions/scim-v2/index.ts",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/spot-api/index.ts",
-     "supabase/functions/spot-proxy/index.ts",
-     "supabase/functions/system-simulation/index.ts",
-     "supabase/functions/telemetry/index.test.ts",
-     "supabase/functions/telemetry/index.ts",
-     "supabase/functions/tests/fuzzing_suite.ts",
-     "supabase/functions/tests/integration_suite.ts",
-     "supabase/functions/webauthn-authenticate/index.ts",
-     "supabase/functions/webauthn-register/index.ts",
-     "supabase/functions/weekly-report/index.ts",
-     "supabase/functions/weekly-summary-report/index.ts",
-     "supabase/functions/workflow-engine/fuzz.test.ts",
-     "supabase/functions/workflow-engine/index.ts",
-     "supabase/functions/xbz-proxy/index.ts",
-     "supabase/functions/xbz-sync-pedidos/index.ts",
-     "supabase/migrations/20241231000000_saved_filters.sql",
-     "supabase/migrations/20241231000001_entity_versions.sql",
-     "supabase/migrations/20250102000000_compras_production.sql",
-     "supabase/migrations/20251216162747_c7d5b816-cc67-4a20-8eac-aeda17c1db98.sql",
-     "supabase/migrations/20251216163227_7109e99a-58a4-48de-8bce-f05daa6d8de3.sql",
-     "supabase/migrations/20251216163235_f88e3e2e-dbcc-4c94-825f-ba624bdf9699.sql",
-     "supabase/migrations/20251216175601_09bef357-a53c-430f-a804-87ffa2032908.sql",
-     "supabase/migrations/20251220142204_16a9bb4a-ce42-4aaf-9de3-10f0ad0e2343.sql",
-     "supabase/migrations/20251220145628_690ef073-d843-45ed-95d3-7b3158d2a0e9.sql",
-     "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql",
-     "supabase/migrations/20251231120356_3ae6d121-b315-421d-a18c-f2155c8f692f.sql",
-     "supabase/migrations/20251231124623_0e87b288-4dd1-4c9f-a749-9521063fc8e9.sql",
-     "supabase/migrations/20251231124632_ea8bac6c-d56e-4396-8c99-c1eb772c63c6.sql",
-     "supabase/migrations/20251231131007_37368865-d1b2-49cf-b292-2d7eefd5842f.sql",
-     "supabase/migrations/20251231131344_91120ebc-5790-48f7-8136-586a54120751.sql",
-     "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
-     "supabase/migrations/20260107172217_de06dea9-cebf-4340-afb0-58240cc1305f.sql",
-     "supabase/migrations/20260108121914_c65220f2-3087-4c98-8977-516da335701e.sql",
-     "supabase/migrations/20260108121940_53728049-5423-4b02-bbf0-c7933111258a.sql",
-     "supabase/migrations/20260108200215_37789714-fc43-4f82-bf80-ec23f5221216.sql",
-     "supabase/migrations/20260111025047_ef19eb03-bc15-4917-87a8-f230df328ef2.sql",
-     "supabase/migrations/20260305235141_fb0a94fe-0f86-4435-b5ef-211b31315d40.sql",
-     "supabase/migrations/20260305235259_6352128a-66c0-4236-b4ef-0533ffe26b4a.sql",
-     "supabase/migrations/20260306002711_53c14912-5d65-4bbb-bc3e-d9bca734770b.sql",
-     "supabase/migrations/20260314200210_522a5d31-0ebd-4623-a88a-386d4b76b4df.sql",
-     "supabase/migrations/20260314200709_bea0cf6c-6af4-4936-a667-9edc8d986d7b.sql",
-     "supabase/migrations/20260314201406_4a72b2f1-149a-4a09-a5f5-1f29b5ac9eb4.sql",
-     "supabase/migrations/20260314201641_3ab6905f-02a0-4547-8557-94be6328f16e.sql",
-     "supabase/migrations/20260315143051_bc8cf5e2-b51a-4c11-8f01-e3a59649063e.sql",
-     "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql",
-     "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
-     "supabase/migrations/20260315151013_dfff8719-f695-4626-98f6-1380350d5d9a.sql",
-     "supabase/migrations/20260315151408_8ffa629b-ebf8-41cd-a770-8b0d78746e04.sql",
-     "supabase/migrations/20260315151901_0b81998e-797d-4956-96dd-95829ea06c24.sql",
-     "supabase/migrations/20260315164635_39bb111c-4995-4b60-ab28-3f83a84b78e2.sql",
-     "supabase/migrations/20260315173730_7339fd92-4c67-404b-8051-3157db7a50bc.sql",
-     "supabase/migrations/20260315223230_eeba531f-0b98-4764-b2a4-213d214e6494.sql",
-     "supabase/migrations/20260315223242_169684f3-beec-4caa-9566-70e5fadf7676.sql",
-     "supabase/migrations/20260317185335_36f3a1e4-58fc-4edd-9d74-2716b579b366.sql",
-     "supabase/migrations/20260317192813_fdf8b9ee-e383-42f2-9b2c-ed0b62e83734.sql",
-     "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql",
-     "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql",
-     "supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
-     "supabase/migrations/20260317204838_15b0f235-e22e-45b4-ac0e-311a32d9e58b.sql",
-     "supabase/migrations/20260317204905_c74bbedc-a522-4b3c-9bfd-afb6bba08004.sql",
-     "supabase/migrations/20260317204914_1d6902be-d26e-4711-8282-9d9258da9364.sql",
-     "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
-     "supabase/migrations/20260317221930_6ff9ef15-fd95-46cf-a510-b191668eeadb.sql",
-     "supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql",
-     "supabase/migrations/20260317223217_2be30d4f-a4a1-4d3e-96b6-39c505b2d293.sql",
-     "supabase/migrations/20260317225209_5fe1695f-34b6-4ef9-8e7f-f90782749d72.sql",
-     "supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql",
-     "supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql",
-     "supabase/migrations/20260321004207_7804c1ec-1e9d-4651-85ea-6fdf82dd01ec.sql",
-     "supabase/migrations/20260321005134_bafead0e-8616-4b7f-81a3-b6688d79a7fb.sql",
-     "supabase/migrations/20260322181916_73698fc6-0011-4684-8f39-15d076f12193.sql",
-     "supabase/migrations/20260323120656_8f201ce2-2e5e-4351-8598-f677f245ede8.sql",
-     "supabase/migrations/20260323124653_a17c752f-2db7-4701-9261-2c8fef3405ab.sql",
-     "supabase/migrations/20260402112838_4be4ac6b-26f1-456a-bcef-440be6bd6565.sql",
-     "supabase/migrations/20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql",
-     "supabase/migrations/20260402113615_635bc5b6-1d4b-4db9-8225-037a807b2c82.sql",
-     "supabase/migrations/20260402113645_4002b984-1bcb-4fd7-a3f5-d305dfded8b3.sql",
-     "supabase/migrations/20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
-     "supabase/migrations/20260403110938_5782b462-c82a-496a-aba2-991583f20442.sql",
-     "supabase/migrations/20260403111210_7999bdb1-dae5-4c74-aa00-3858bbc45d17.sql",
-     "supabase/migrations/20260403111349_889d2532-b2db-420f-b99b-bafc5ed23323.sql",
-     "supabase/migrations/20260421160810_7f1de1f2-e63f-48b4-926a-0e5834584e6d.sql",
-     "supabase/migrations/20260421163010_8e70fa6e-0bdc-4a31-8e1d-e89452f0dc45.sql",
-     "supabase/migrations/20260422191619_9240a0f1-728d-427a-a76f-44cf2be7c87d.sql",
-     "supabase/migrations/20260507194122_b32edeb5-a032-4132-8ee2-1fc234103852.sql",
-     "supabase/migrations/20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql",
-     "supabase/migrations/20260507204452_130ec336-13e2-498e-8c1c-fd03ea038e07.sql",
-     "supabase/migrations/20260507204531_ef94a910-2bbe-499f-a57a-21185af571e5.sql",
-     "supabase/migrations/20260507204629_613f960b-b35e-4038-be10-871affc0a828.sql",
-     "supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql",
-     "supabase/migrations/20260507205217_c1daf575-4225-464d-98fa-da42f4a035ce.sql",
-     "supabase/migrations/20260507205950_2c5935a1-33c9-4058-a56f-1c2fad76969f.sql",
-     "supabase/migrations/20260507210200_2020b604-1f12-4648-a313-b5b75176bdb8.sql",
-     "supabase/migrations/20260511204847_6f957b62-bead-4b7a-88ba-8fc7f324e673.sql",
-     "supabase/migrations/20260512134300_9bc27bcd-84ba-46ee-8d21-50516ab9937f.sql",
-     "supabase/migrations/20260512134422_ddf91078-5cb3-46c2-9d91-064bc1c6ef88.sql",
-     "supabase/migrations/20260512135056_8dbe68fe-cb94-40a3-a8d1-8de6a89be017.sql",
-     "supabase/migrations/20260512135304_c8c6cfdb-8578-47cb-abdf-2534451a006f.sql",
-     "supabase/migrations/20260512140107_a7e1431e-e927-4569-aee5-b741111f27b1.sql",
-     "supabase/migrations/20260512140201_daa2cb1f-14a9-498c-85c7-1154b8c2a52a.sql",
-     "supabase/migrations/20260512140447_e400c3b4-3bd7-46e3-927b-7002ba410886.sql",
-     "supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql",
-     "supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-     "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql",
-     "supabase/migrations/20260512143023_a7d5144d-ca29-4e85-ab25-ffc636aeeebf.sql",
-     "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql",
-     "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql",
-     "supabase/migrations/20260512161439_6976a625-9baf-4336-ba08-1c3a43994384.sql",
-     "supabase/migrations/20260512175236_89c0a31c-3450-4494-8421-51b9299a6247.sql",
-     "supabase/migrations/20260512181740_68334adc-cb4f-445a-bf22-9a402dc1e758.sql",
-     "supabase/migrations/20260512181757_85893a2f-8ac1-498f-8b0b-fe0b8022083e.sql",
-     "supabase/migrations/20260512183840_05bf1a09-db78-43e7-8be3-d3aa452a3b9e.sql",
-     "supabase/migrations/20260512191322_3fb3cd30-d068-44fc-a3df-efcbda8de408.sql",
-     "supabase/migrations/20260512191725_886f1f1b-2960-4b94-8879-2a00183c438d.sql",
-     "supabase/migrations/20260512213055_36202e2f-536b-40e5-b250-c55988e1f3f6.sql",
-     "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql",
-     "supabase/migrations/20260512213555_f76282b1-3f3a-4b2d-a0f7-5e22efb9180c.sql",
-     "supabase/migrations/20260512213701_ac0cbaa5-8764-4dbb-b95f-e6d7226345b1.sql",
-     "supabase/migrations/20260513135802_c940fbf6-e3eb-494f-bddd-e3785494a5ed.sql",
-     "supabase/migrations/20260513165228_ce24b3df-6ba5-4047-b7c9-009bf31eaef1.sql",
-     "supabase/migrations/20260513165506_fb142a48-5f59-4910-aef8-e6e0ec4656f2.sql",
-     "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql",
-     "supabase/migrations/20260513170110_a07ce0c9-a5ee-4ef8-b14e-40d5f2cfd446.sql",
-     "supabase/migrations/20260513175034_c4470b61-387d-4981-9579-a5c48d489ec0.sql",
-     "supabase/migrations/20260513175129_654ecb58-11cc-4fcc-9edb-1dd53443f7a2.sql",
-     "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql",
-     "supabase/migrations/20260513175257_6b8b4baf-fe4e-416d-b20d-607fa2ef944c.sql",
-     "supabase/migrations/20260513175349_55a359a1-5530-4b7e-871c-5c853f1e29a2.sql",
-     "supabase/migrations/20260513175852_1a519f80-6495-479d-b1e3-db2533aa2b4b.sql",
-     "supabase/migrations/20260513180103_6594fc62-2b28-4adf-b34d-07c17d33f430.sql",
-     "supabase/migrations/20260513182736_ef4a16ea-2f80-4bd5-8f3e-65f6b9b69170.sql",
-     "supabase/migrations/20260513183822_e2d05f87-9e62-4ae9-8c2c-dba4017edca1.sql",
-     "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql",
-     "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql",
-     "supabase/migrations/20260513191304_f777d7e2-3bc7-42c3-b3a7-69a9e25a6a61.sql",
-     "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql",
-     "supabase/migrations/20260514211518_fb82654a-c28c-421d-9421-8044e4397f39.sql",
-     "supabase/migrations/20260514211742_3b400e1b-5a7e-4c5b-8326-3f4a7ab9e309.sql",
-     "supabase/migrations/20260514211800_648e4d06-4b0d-4ca2-b3e3-5c682f7b6079.sql",
-     "supabase/migrations/20260516112846_a9e3ae85-1ab1-429c-a95f-890f7c110846.sql",
-     "supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql",
-     "supabase/migrations/20260517122231_1506de3b-70b5-4922-9a44-64376e8087eb.sql",
-     "supabase/migrations/20260517123005_23dd31d1-6cda-4234-9f92-7307db517b26.sql",
-     "supabase/migrations/20260517131213_1f938e79-528c-40a9-bab0-190c9066cc2b.sql",
-     "supabase/migrations/20260517185423_66949339-509d-4cca-9b98-7a37cc39d11b.sql",
-     "supabase/migrations/20260517185548_61b0689c-f08c-42a6-bbb2-c36a188ac536.sql",
-     "supabase/migrations/20260517191414_1e4aaa29-68ed-4bff-aadc-8fb3604bbe40.sql",
-     "supabase/migrations/20260517194952_f4eef05d-f0e0-49fe-9ac3-55a96255612c.sql",
-     "supabase/migrations/20260519113828_695e1995-1455-40b1-a23e-ea80aa91e7db.sql",
-     "supabase/migrations/20260519113851_9c068ab2-2912-4ddb-b723-f5020502b9c2.sql",
-     "supabase/migrations/20260519114020_1546616d-be8d-4565-92a6-fb1303688550.sql",
-     "supabase/migrations/20260519114341_5c605c1c-3e11-476f-bf17-93055d515e77.sql",
-     "supabase/migrations/20260519164652_18fe7bbd-76ae-408f-9612-4dd1a3bebec9.sql",
-     "supabase/migrations/20260519164823_50032a10-9293-4477-97ff-ef206b3c290e.sql",
-     "supabase/migrations/20260519180721_8c46848d-565e-457c-8101-dee78dfb6c11.sql",
-     "supabase/migrations/20260521142029_security_hardening.sql",
-     "supabase/migrations/20260522142837_4f603e8f-e052-4752-af7f-a0f12fa8d05e.sql",
-     "supabase/migrations/20260522202740_6521e169-0e00-4dba-a144-aad68c528a8e.sql",
-     "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql",
-     "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql",
-     "supabase/migrations/20260523172611_af1bdfd9-5517-42da-a418-341ebd3cc94e.sql",
-     "supabase/migrations/20260529192540_87382966-9b4e-41cf-851a-a359e114d03b.sql",
-     "supabase/migrations/20260529192650_fc849ba0-cdfa-4a50-8c04-23fcee8f864d.sql",
-     "supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql",
-     "supabase/migrations/20260531125027_8ce8e485-e1fa-4ff6-99d5-57dad22363eb.sql",
-     "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql",
-     "supabase/migrations/20260619145916_3be1d46e-fc58-4610-8bff-153a08a6e753.sql",
-     "supabase/migrations/20260619145946_74f608de-1d81-4356-aa44-2cc92e4c2f57.sql",
-     "supabase/migrations/20260619150041_7b38db62-4cf6-49b4-8d22-a736a3b785e2.sql",
-     "supabase/migrations/20260619150136_235c0606-737b-4472-b055-81d20360287f.sql",
-     "supabase/migrations/20260619153140_875e108b-9c27-4174-b791-831a0d83ad70.sql",
-     "supabase/migrations/20260619160553_4cd7818e-be67-4cba-a04b-10708fd47805.sql",
-     "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql",
-     "supabase/migrations/20260619161625_28e6d3ec-95d1-4637-801f-b1c79b8423fa.sql",
-     "supabase/migrations/20260619162046_3cbed543-933a-4566-aea6-651897e6162a.sql",
-     "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql",
-     "supabase/migrations/20260619192533_d21a4e4f-4249-4d39-9182-edb3f6ed11ce.sql",
-     "supabase/migrations/20260619194754_f1a59f1a-7413-46ad-86f5-3e325c85da41.sql",
-     "supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql",
-     "supabase/migrations/20260627190431_970735c8-5102-4ae8-a453-587c145a56e9.sql",
-     "supabase/migrations/20260711150417_cfbf98b4-0b2f-44cd-8366-85275e841d38.sql",
-     "supabase/migrations/20260711152814_5d801562-46af-4a92-8ffc-e32926159cc0.sql",
-     "supabase/migrations/20260711152841_6256e9f6-eac5-4ac3-a112-6213e9af0962.sql",
-     "supabase/migrations/20260711153129_a4440396-30a3-4ed9-ba97-23a2768e59b5.sql",
-     "supabase/migrations/20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql",
-     "supabase/migrations/20260711183148_8694a780-0861-49f9-a337-d565e5e15ef4.sql",
-     "supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql",
-     "supabase/migrations/20260711183647_cb1ddb07-f7db-40d3-bb0e-d42adfb914a0.sql",
-     "supabase/migrations/20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql",
-     "supabase/migrations/20260711184927_97a53154-11f7-413b-94f9-1c197b00da03.sql",
-     "supabase/migrations/20260711191620_306c4cc6-83a9-48ba-a536-7ffe884e4a1b.sql",
-     "supabase/migrations/20260711191946_872a6814-ab1c-4596-b6d7-c3e5c8379396.sql",
-     "supabase/migrations/20260711192231_419bfc67-3a43-4857-b3f1-7301b8be6793.sql",
-     "supabase/migrations/20260711192326_2436defe-a226-44fc-8966-5ba2ecdce7dc.sql",
-     "supabase/migrations/20260711192530_71f3acda-5589-472d-8c39-ad29bb1bf9ce.sql",
-     "supabase/migrations/20260711192812_449d919a-1ecd-429f-be4d-e30686bd5a94.sql",
-     "supabase/migrations/20260711194343_57e8cfe2-7029-44a2-92c0-9ecdd09c5b4e.sql",
-     "supabase/migrations/20260711194627_205a170b-bb7f-4917-bdf9-338d1894770d.sql",
-     "supabase/migrations/20260712110143_e51c0b00-e688-4f8e-971f-74952f32cac7.sql",
-     "supabase/migrations/20260712110815_762ad29c-b3f7-4e44-a0ec-f6b624174ca3.sql",
-     "supabase/migrations/20260712112516_ce81b42a-3fba-4624-a9e4-984ccb2a5040.sql",
-     "supabase/migrations/20260712112712_c0effbe6-98f7-4dc4-b115-df87582257b4.sql",
-     "supabase/migrations/20260712113011_18d493c9-b253-4988-abcd-8884e8753460.sql",
-     "supabase/migrations/20260712113545_f0a64396-6f67-437e-bd31-255c48edac4d.sql",
-     "supabase/migrations/20260712113809_4893d687-0207-4f7e-bec3-07d06dea7e7a.sql",
-     "supabase/migrations/20260712115449_57e52849-ed52-4d53-b76d-0e9975e755d1.sql",
-     "supabase/migrations/20260712141935_8b9bcc8b-e10f-4daf-9fff-34edf503ca62.sql",
-     "supabase/migrations/20260712142817_cb94f248-eabf-4053-bdd7-aa03f4bf09f1.sql",
-     "supabase/migrations/20260712161258_b21ccf6f-0300-4b08-a5a2-c4259aabcb90.sql",
-     "supabase/migrations/20260712183533_c0604f62-7e1f-4720-a626-52317c79c454.sql",
-     "supabase/migrations/20260712184038_15ff4851-c1da-4274-bd6f-e50369c9ffe9.sql",
-     "supabase/migrations/20260712184218_e45b548a-db1a-4050-9ba4-2dd1a490f896.sql",
-     "supabase/migrations/20260712192008_74f174de-700f-4c1e-93fe-f8cea3ca8355.sql",
-     "supabase/migrations/20260712192153_2a9b74d6-8ba5-4308-ba55-87b4b9396331.sql",
-     "supabase/migrations/20260712193607_e90c84a9-d4eb-42b3-8564-899bacc01fa2.sql",
-     "supabase/migrations/20260712193915_b284d70d-8be1-40ea-bc27-9960670c2653.sql",
-     "supabase/migrations/20260712194040_3b7d19ab-d3dd-42ee-933b-4340975fe077.sql",
-     "supabase/migrations/20260712194304_ad9d9443-9507-4e9f-8751-193ff290401e.sql",
-     "supabase/migrations/20260712194423_2774c8d2-c16b-490e-baec-5530d857a2d8.sql",
-     "supabase/migrations/20260712194543_ce151ace-bcd7-41ef-a90a-45b137ebd495.sql",
-     "supabase/migrations/20260712194659_702ebacc-eef1-4a7a-a2fc-2a58f8ea316e.sql",
-     "supabase/migrations/20260712194806_16758af1-f0a3-4343-a5a2-e9a9dbde8234.sql",
-     "supabase/migrations/20260712194927_357b0d5b-8b64-42dd-8df1-0dcedef79735.sql",
-     "supabase/migrations/20260712195030_ff90d369-cac2-4bc6-949e-efc30b3cb9f9.sql",
-     "supabase/migrations/20260712195141_7ca09192-718b-4750-8fc4-0c2f7e582404.sql",
-     "supabase/migrations/20260712195253_10a16ba3-8b4a-424c-ba4b-2c3af454030a.sql",
-     "supabase/migrations/20260712195408_36fb0763-69fd-42de-8270-201660eb8fe7.sql",
-     "supabase/migrations/20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql",
-     "supabase/migrations/20260712195624_e846749d-d114-4e3b-9515-25f8ea847d6e.sql",
-     "supabase/migrations/20260712195709_f1641ac1-29fb-48cf-af64-04bc38fcc7ca.sql",
-     "supabase/migrations/20260712200134_0821e431-e312-4e6a-b267-2bfed023fc71.sql",
-     "supabase/migrations/20260712202305_7ead624d-983e-4fe3-80c8-ca36fd0a3f8d.sql",
-     "supabase/migrations/20260712202451_2e39197f-4a28-4a0d-9cc8-6b27a0491d6a.sql",
-     "supabase/migrations/20260712202749_bb709bc6-558f-4e7d-97d1-2e978797b632.sql",
-     "supabase/migrations/20260712203402_8caedee0-72c7-46f6-a9de-d05ff1d8446b.sql",
-     "supabase/migrations/20260712212439_404b97e1-f9e2-43cd-8e71-1f2a8b0a3adf.sql",
-     "supabase/migrations/20260712212629_45959fd5-cf7e-40d8-812a-31d376153f29.sql",
-     "supabase/migrations/20260712212852_a41e3a17-0990-4bb9-9c19-2bf3ac217e5e.sql",
-     "supabase/migrations/20260712215017_2d413493-59cd-4813-8469-837902fe74b1.sql",
-     "supabase/migrations/20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql",
-     "supabase/migrations/20260712215445_fa61d650-a4b6-47dd-a6f9-ae51dec592ad.sql",
-     "supabase/migrations/20260712215549_fcc6489a-009e-4050-8955-9ac162d4f3dd.sql",
-     "supabase/migrations/20260712215640_2e033e53-9cc2-4714-b6df-e8f9c8031a0f.sql",
-     "supabase/migrations/20260712220900_0acbb93f-a555-4029-b872-43931abde9e3.sql",
-     "supabase/migrations/20260712221049_be67ff27-0f0f-4271-9017-6ebe0acafe1b.sql",
-     "supabase/migrations/20260712221545_8154e7d9-83f7-4b82-b8d8-d3a6bca15333.sql",
-     "supabase/migrations/20260712222142_a253a878-d059-471c-bcd0-7a8f1ce178b9.sql",
-     "supabase/migrations/20260712222207_ec8b6fba-2a46-417a-ad13-26580b85fcd7.sql",
-     "supabase/migrations/20260712222242_aba70476-937d-4012-9211-3ae2d08dee19.sql",
-     "supabase/migrations/20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql",
-     "supabase/migrations/20260712222422_44054d27-6fe9-447b-a558-caa63a595592.sql",
-     "supabase/migrations/20260712222529_454030f1-7948-4f0d-a0ab-d56a46e1f994.sql",
-     "supabase/migrations/20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql",
-     "supabase/migrations/20260712222645_719eb41d-0abd-43d2-82e9-8e0b30a01087.sql",
-     "supabase/migrations/20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql",
-     "supabase/migrations/20260712222955_b4a5410b-e095-4d45-860d-f754418c4d4f.sql",
-     "supabase/migrations/20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql",
-     "supabase/migrations/20260712223354_e00522cc-ebe6-4957-bfef-dd6d115c4f5b.sql",
-     "supabase/migrations/20260712223444_2608de7b-4f9c-4f50-a31a-d8f8834233e9.sql",
-     "supabase/migrations/20260712223608_27e977bb-634d-42c4-b07d-23cb5f25956a.sql",
-     "supabase/migrations/20260712223752_fd6e126e-ba1a-41f4-8f3f-051290babd9b.sql",
-     "supabase/migrations/20260712224134_ca41be74-9d7b-4676-9337-9ebbdecedab3.sql",
-     "supabase/migrations/20260712224333_79b486b5-2a6e-4128-add0-5ce69d615025.sql",
-     "supabase/migrations/20260712224444_48edc4e1-eb08-4768-957b-b95768be79bb.sql",
-     "supabase/migrations/20260712224724_25a38d4a-f36d-4b4d-b415-3b34c3189edf.sql",
-     "supabase/migrations/20260712224754_6020dc9d-0915-4d1a-980e-701183be1cb0.sql",
-     "supabase/migrations/20260713104708_ab7115f1-5aec-49b0-be5f-144818e192f0.sql",
-     "supabase/migrations/20260713104844_2b93e809-e50c-42b3-8e4d-116073563946.sql",
-     "supabase/migrations/20260713105021_ef02f040-6e49-4cd8-b68f-8a9c06e9abdb.sql",
-     "supabase/migrations/20260713105146_e80e0d55-eec6-4fb9-a279-49501a05bb70.sql",
-     "supabase/migrations/20260713105330_daf01ebf-ca7d-477b-b37a-d968d74afc67.sql",
-     "supabase/migrations/20260713105504_34c5b9f6-89bd-47ed-956a-449faeb0d993.sql",
-     "supabase/migrations/20260713105624_e9839757-2d20-4362-9acb-6a4c4e20a482.sql",
-     "supabase/migrations/20260713105738_d761e68c-1321-43bc-b757-9ede7dc86517.sql",
-     "supabase/migrations/20260713105907_4b197a0e-74a0-4812-9175-87b9ca7c56ba.sql",
-     "supabase/migrations/20260713110028_8ada5be7-193d-41f7-be83-9cd839c1ea56.sql",
-     "supabase/migrations/20260713110159_94ff935c-b0ce-41ae-8d40-bda6ca91f908.sql",
-     "supabase/migrations/20260713110314_5a4d642f-daaa-45c3-903b-93a46d92bfa6.sql",
-     "supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql",
-     "supabase/migrations/20260715175240_11392519-5518-48fd-b75e-a60802301ff3.sql",
-     "supabase/migrations/20260719000001_rls_using_true_cleanup.sql",
-     "supabase/migrations/20260719000002_cron_heartbeats.sql",
-     "supabase/migrations/20260719000003_realtime_replica_identity.sql",
-     "supabase/migrations/20260719000004_partition_maintenance.sql",
-     "supabase/migrations/20260719000005_supplier_role.sql",
-     "supabase/migrations/20260723131233_93fe8645-8354-464c-83ac-79d8b50ebbec.sql",
-     "supabase/migrations/20260726144435_a37d5b86-9ad7-4c72-abcb-fe538eaed177.sql",
-     "supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql",
-     "supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql",
-     "supabase/migrations/20260726151350_0ea0eb79-cca6-494d-8e97-faa5c5945f2c.sql",
-     "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql",
-     "supabase/migrations/20260805100000_promo_supply_v2_seed_and_fixes.sql",
-     "supabase/migrations/20260805160000_fix_frontend_comms.sql",
-     "supabase/migrations/20260806180000_seed_devolucoes_creditos.sql",
-     "tailwind.config.ts",
-     "tests-e2e/auth-navigation.spec.ts",
-     "tests-e2e/critical-flows.spec.ts",
-     "tests-e2e/dashboard-ui.spec.ts",
-     "tests-e2e/elite-validation.spec.ts",
-     "tests-e2e/fixtures.ts",
-     "tests-e2e/global-setup.ts",
-     "tests-e2e/production-ready.spec.ts",
-     "tests-e2e/workflow-advanced.spec.ts",
-     "tests-e2e/xbz-network-panel.spec.ts",
-     "tests-rls/rls-isolation.test.ts",
-     "tsconfig.app.json",
-     "tsconfig.json",
-     "tsconfig.node.json",
-     "vite.config.ts",
-     "vitest.config.ts",
-     "vitest.rls.config.ts"
-    ]
-   },
-   {
-    "sha": "8db6fe0",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Migrou schema e API SPOT",
-    "files": []
-   },
-   {
-    "sha": "d4125ed",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "supabase/functions/spot-api/index.ts"
-    ]
-   },
-   {
-    "sha": "1439f2d",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/CatalogoSpot.tsx"
-    ]
-   },
-   {
-    "sha": "588e3f0",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/CatalogoSpot.tsx"
-    ]
-   },
-   {
-    "sha": "c6bdde1",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/CatalogoSpot.tsx"
-    ]
-   },
-   {
-    "sha": "cb097e2",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/spotHelpers.ts"
-    ]
-   },
-   {
-    "sha": "bd3080c",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/SpotCatalogTab.tsx"
-    ]
-   },
-   {
-    "sha": "394a8f7",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/SpotSyncPanel.tsx"
-    ]
-   },
-   {
-    "sha": "ae5d5f0",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
-    ]
-   },
-   {
-    "sha": "d643cbd",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/tests/spot/spotApi.test.ts"
-    ]
-   },
-   {
-    "sha": "edf85ee",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "supabase/functions/spot-api/index.ts"
-    ]
-   },
-   {
-    "sha": "292ff4c",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "supabase/functions/_shared/spot_api.ts"
-    ]
-   },
-   {
-    "sha": "f9e3811",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Changes",
-    "files": [
-     "src/integrations/supabase/types.ts",
-     "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
-    ]
-   },
-   {
-    "sha": "4ef91a8",
-    "date": "2026-07-26",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Adicionou seq e testes E2E",
-    "files": []
    }
   ],
   "hot_files": [
    [
-    "supabase/config.toml",
+    ".github/workflows/main.yml",
     4
    ],
    [
-    "src/pages/catalogo-spot/CatalogoSpot.tsx",
+    "package.json",
     4
+   ],
+   [
+    "AGENTS.md",
+    4
+   ],
+   [
+    ".github/workflows/contexto.yml",
+    3
    ],
    [
     "ESTADO_ATUAL.md",
-    3
-   ],
-   [
-    "supabase/functions/migrate-helper/index.ts",
-    3
-   ],
-   [
-    "supabase/functions/spot-api/index.ts",
     3
    ],
    [
@@ -105671,43 +106029,15 @@
     2
    ],
    [
-    "AGENTS.md",
+    "docs/ci/README.md",
     2
    ],
    [
-    "package.json",
+    "docs/agentes/github-ci.md",
     2
    ],
    [
-    "index.html",
-    2
-   ],
-   [
-    "src/pages/admin/SSOConfig.tsx",
-    2
-   ],
-   [
-    "src/tests/load/backend-stress.yml",
-    2
-   ],
-   [
-    "tests-rls/rls-isolation.test.ts",
-    2
-   ],
-   [
-    "vite.config.ts",
-    2
-   ],
-   [
-    ".github/workflows/ci.yml",
-    2
-   ],
-   [
-    ".github/workflows/main.yml",
-    2
-   ],
-   [
-    "src/hooks/__tests__/useToastReducer.test.ts",
+    "docs/agentes/mapa-repo.md",
     2
    ],
    [
@@ -105715,7 +106045,15 @@
     2
    ],
    [
-    "src/lib/__tests__/performance.test.ts",
+    ".hermes.md",
+    2
+   ],
+   [
+    "docs/agentes/contexto-ia.md",
+    2
+   ],
+   [
+    "supabase/config.toml",
     2
    ],
    [
@@ -105725,6 +106063,26 @@
    [
     "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
     2
+   ],
+   [
+    "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
+    2
+   ],
+   [
+    "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md",
+    2
+   ],
+   [
+    "DOCS/ESTADO/L07_HOOKS.md",
+    2
+   ],
+   [
+    "deploy_edge_functions_promo_supply.sh",
+    1
+   ],
+   [
+    "scripts/db-explain-analyze.ts",
+    1
    ]
   ]
  }

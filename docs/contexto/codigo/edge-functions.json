@@ -781,7 +781,7 @@
    "nome": "punchout-receive",
    "entrada": "supabase/functions/punchout-receive/index.ts",
    "arquivos": 1,
-   "linhas": 182,
+   "linhas": 193,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -858,7 +858,7 @@
    "nome": "run-audit",
    "entrada": "supabase/functions/run-audit/index.ts",
    "arquivos": 2,
-   "linhas": 155,
+   "linhas": 167,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -888,7 +888,7 @@
    "nome": "scim-v2",
    "entrada": "supabase/functions/scim-v2/index.ts",
    "arquivos": 1,
-   "linhas": 241,
+   "linhas": 269,
    "verify_jwt": true,
    "metodos": [
     "DELETE",
@@ -902,6 +902,7 @@
    ],
    "rpcs": [],
    "env": [
+    "SCIM_BEARER_TOKEN",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],

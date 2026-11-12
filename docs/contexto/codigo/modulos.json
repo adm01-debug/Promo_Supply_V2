@@ -377,7 +377,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 15,
-   "linhas": 24695,
+   "linhas": 24760,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2368,7 +2368,7 @@
    "modulo": "hooks",
    "arquivos": 61,
    "testes": 0,
-   "linhas": 10710,
+   "linhas": 10711,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2933,9 +2933,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 20,
+   "arquivos": 21,
    "testes": 0,
-   "linhas": 1909,
+   "linhas": 1974,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3367,8 +3367,8 @@
   {
    "modulo": "pages/admin",
    "arquivos": 14,
-   "testes": 1,
-   "linhas": 5059,
+   "testes": 2,
+   "linhas": 5075,
    "itens_menu": [
     "Dep. Health",
     "Documentação",
@@ -5049,7 +5049,7 @@
    "modulo": "pages/devolucoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 546,
+   "linhas": 545,
    "itens_menu": [
     "Devoluções"
    ],
@@ -6064,7 +6064,7 @@
    "modulo": "pages/pagamentos",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 294,
+   "linhas": 298,
    "itens_menu": [
     "Pagamentos"
    ],
@@ -6696,7 +6696,7 @@
    "modulo": "pages/recebimento",
    "arquivos": 3,
    "testes": 1,
-   "linhas": 621,
+   "linhas": 629,
    "itens_menu": [
     "Recebimento"
    ],
@@ -6829,7 +6829,7 @@
   {
    "modulo": "pages/relatorio-negociacoes",
    "arquivos": 3,
-   "testes": 1,
+   "testes": 2,
    "linhas": 741,
    "itens_menu": [
     "Negociações"
@@ -7330,7 +7330,7 @@
    "modulo": "pages/sourcing",
    "arquivos": 4,
    "testes": 0,
-   "linhas": 1263,
+   "linhas": 1280,
    "itens_menu": [
     "Sourcing (RFx)"
    ],

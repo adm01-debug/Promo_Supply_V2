@@ -372,7 +372,7 @@
     "AdvancedProcurementKPIs"
    ],
    "export_default": null,
-   "linhas": 481,
+   "linhas": 486,
    "dominio": "components/compras",
    "hooks_locais": [
     "useKPITargetsStore",
@@ -475,7 +475,7 @@
     "BuyerDrilldownModal"
    ],
    "export_default": null,
-   "linhas": 226,
+   "linhas": 227,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -607,7 +607,7 @@
     "ContractModal"
    ],
    "export_default": null,
-   "linhas": 524,
+   "linhas": 536,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -640,7 +640,7 @@
     "ManualCotacaoData"
    ],
    "export_default": null,
-   "linhas": 248,
+   "linhas": 261,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -836,7 +836,7 @@
     "EnhancedPedidoTimeline"
    ],
    "export_default": null,
-   "linhas": 520,
+   "linhas": 524,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1026,7 +1026,7 @@
     "FornecedorModal"
    ],
    "export_default": null,
-   "linhas": 257,
+   "linhas": 269,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1040,7 +1040,7 @@
     "HistoricoComprasModal"
    ],
    "export_default": null,
-   "linhas": 149,
+   "linhas": 150,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -1118,7 +1118,7 @@
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 445,
+   "linhas": 449,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",
@@ -1140,7 +1140,7 @@
     "OrderPreviewModal"
    ],
    "export_default": null,
-   "linhas": 165,
+   "linhas": 166,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1233,7 +1233,7 @@
     "PriceComparator"
    ],
    "export_default": null,
-   "linhas": 498,
+   "linhas": 504,
    "dominio": "components/compras",
    "hooks_locais": [
     "useToast"
@@ -1465,7 +1465,7 @@
     "SolicitacaoCard"
    ],
    "export_default": null,
-   "linhas": 364,
+   "linhas": 366,
    "dominio": "components/compras",
    "hooks_locais": [
     "useHapticFeedback"
@@ -1559,7 +1559,7 @@
     "StrategicQuoteTable"
    ],
    "export_default": null,
-   "linhas": 190,
+   "linhas": 194,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -4253,7 +4253,7 @@
     "HealthDashboard"
    ],
    "export_default": "HealthDashboard",
-   "linhas": 855,
+   "linhas": 862,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -4323,7 +4323,7 @@
     "SSOConfig"
    ],
    "export_default": "SSOConfig",
-   "linhas": 277,
+   "linhas": 286,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
@@ -4772,7 +4772,7 @@
     "RESOLUCAO_LABELS"
    ],
    "export_default": null,
-   "linhas": 303,
+   "linhas": 302,
    "dominio": "pages/devolucoes",
    "hooks_locais": [
     "useDevolucoes",
@@ -5083,7 +5083,7 @@
     "Pagamentos"
    ],
    "export_default": "Pagamentos",
-   "linhas": 294,
+   "linhas": 298,
    "dominio": "pages/pagamentos",
    "hooks_locais": [
     "useIsMobile",
@@ -5187,7 +5187,7 @@
     "RecebimentoOffline"
    ],
    "export_default": "RecebimentoOffline",
-   "linhas": 398,
+   "linhas": 391,
    "dominio": "pages/recebimento",
    "hooks_locais": [
     "useAuth"
@@ -5345,7 +5345,7 @@
     "RFxCreate"
    ],
    "export_default": "RFxCreate",
-   "linhas": 505,
+   "linhas": 522,
    "dominio": "pages/sourcing",
    "hooks_locais": [
     "useSourcingEvents"

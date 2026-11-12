@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 24,
+ "total": 43,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -41,14 +41,200 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/automation.mjs",
+   "descricao": null,
+   "linhas": 1170,
+   "env": [
+    "REPO_AUTOMATION_CHAINING"
+   ],
+   "npm_scripts": [
+    "automation:doctor",
+    "automation:test",
+    "automation:check",
+    "automation:heal",
+    "automation:nightly",
+    "automation:graph",
+    "automation:status",
+    "automation:install-hooks",
+    "automation:uninstall-hooks"
+   ],
+   "workflows": [
+    "automation-local.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/actions-kpi.mjs",
+   "descricao": "E79: KPI de uso do GitHub Actions, para o branch-hygiene-audit semanal. Medido antes de escrever (03/10/2026): a API devolve `run_started_at` e",
+   "linhas": 265,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_API_URL",
+    "GITHUB_REPOSITORY",
+    "GITHUB_STEP_SUMMARY",
+    "GITHUB_TOKEN",
+    "JANELA_DIAS"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-hygiene-audit.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/audit-prod.mjs",
+   "descricao": "Bloqueia o CI quando `bun audit` reporta advisory HIGH/CRITICAL alcancavel a partir de uma dependencia de PRODUCAO (package.json#dependencies). Advisories",
+   "linhas": 221,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/branch-podaveis.mjs",
+   "descricao": "W98 — comando pronto de poda de branches (usado pelo branch-hygiene-audit.yml). O plano oferecia duas saídas: apagar sozinho ou só gerar o comando. Apagar é",
+   "linhas": 201,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-hygiene-audit.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/bump-toolchain.mjs",
+   "descricao": "* W40: Verifica se há versão mais nova das ferramentas em .github/toolchain.json.",
+   "linhas": 180,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_STEP_SUMMARY",
+    "GITHUB_TOKEN"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-hygiene-audit.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-agents-md-integrity.mjs",
+   "descricao": "* GA02: garante que as instrucoes para agentes nao foram apagadas ou esvaziadas por outra sessao.",
+   "linhas": 122,
+   "env": [
+    "AGENTS_MD_BASE"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "main.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-bundle-secrets.mjs",
+   "descricao": "Guarda que o bundle publicado (dist/) nao expoe o JWT service_role do Supabase. Incidente de 20/08 (porta da V3): a variavel de ambiente errada",
+   "linhas": 184,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-test-inventory.mjs",
+   "descricao": "Portado do Zapp_Web_V2 (E48/E49/R2-INF-013) e adaptado a este repo: verifica que todo teste no disco tem um passo que o execute em ALGUM workflow — os .test.ts das edges",
+   "linhas": 264,
+   "env": [],
+   "npm_scripts": [
+    "guards"
+   ],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/commit-msg-lint.mjs",
+   "descricao": "Gate de mensagem de commit: a funcao do commitlint sem dependencia nova. Quem chama: o job `commits` do .github/workflows/guards.yml, uma vez por commit do",
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/gerar-matriz-edge-tabela.mjs",
+   "descricao": "Inventário 23: matriz edge function x tabela. Escaneia supabase/functions/<funcao>/**/*.ts (sem testes, sem _shared) e anota cada tabela citada em `.from('tabela')`.",
+   "linhas": 131,
+   "env": [],
+   "npm_scripts": [
+    "docs:matriz-edge",
+    "guards"
+   ],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/render-workflow-docs.mjs",
+   "descricao": "* W96: gera `docs/ci/README.md` a partir dos blocos `# docs:` e `# nao-e-bug:` de cada workflow.",
+   "linhas": 239,
+   "env": [
+    "RENDER_WF_RAIZ"
+   ],
+   "npm_scripts": [
+    "docs:ci",
+    "guards"
+   ],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/sla-code-scanning.mjs",
+   "descricao": "W83 — SLA dos alertas abertos de Code Scanning (usado pelo branch-hygiene-audit.yml). high/critical → 14 dias; medium/low → 30 dias. Violação → exit 1.",
+   "linhas": 86,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-hygiene-audit.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/workflow-test-support.mjs",
+   "descricao": "Leitores restritos ao formato em blocos dos workflows deste repositorio. Nao sao um parser YAML geral: formatos nao reconhecidos falham nos contratos.",
+   "linhas": 134,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/db-explain-analyze.ts",
    "descricao": "* B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS).",
-   "linhas": 81,
+   "linhas": 123,
    "env": [
     "EXPLAIN_LIMIT_MS",
+    "EXPLAIN_RUNS",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify-local.mjs",
+   "descricao": null,
+   "linhas": 1247,
+   "env": [],
    "npm_scripts": [],
    "workflows": [],
    "orfao": false
@@ -110,9 +296,62 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/lib/seguranca-processo.mjs",
+   "descricao": "* Utilidades compartilhadas pelos scripts de auditoria/CI.",
+   "linhas": 101,
+   "env": [
+    "PATH"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/lib.mjs",
+   "descricao": null,
+   "linhas": 937,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.mjs",
+   "descricao": null,
+   "linhas": 899,
+   "env": [
+    "XDG_STATE_HOME"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/run.sh",
+   "descricao": null,
+   "linhas": 16,
+   "env": [],
+   "npm_scripts": [
+    "maintenance:doctor",
+    "maintenance:check",
+    "maintenance:heal"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/maintenance/typecheck.mjs",
+   "descricao": null,
+   "linhas": 110,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/realtime-audit.ts",
    "descricao": "* OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe.",
-   "linhas": 47,
+   "linhas": 70,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -155,8 +394,8 @@
   },
   {
    "arquivo": "scripts/rls-audit.ts",
-   "descricao": "* TEST-01 — RLS Policy Audit (refactored)",
-   "linhas": 74,
+   "descricao": "* TEST-01 — RLS Policy Audit (refactorado)",
+   "linhas": 182,
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -168,7 +407,7 @@
   {
    "arquivo": "scripts/squash-migrations.sh",
    "descricao": "scripts/squash-migrations.sh F-031: Migration squash tooling",
-   "linhas": 170,
+   "linhas": 164,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -177,7 +416,7 @@
   {
    "arquivo": "scripts/stress-test.ts",
    "descricao": "* Stress Test Script for Freight Quest Edge Functions",
-   "linhas": 93,
+   "linhas": 129,
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
@@ -279,7 +518,7 @@
   {
    "arquivo": "scripts/validate-bridge.ts",
    "descricao": null,
-   "linhas": 73,
+   "linhas": 89,
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_URL"

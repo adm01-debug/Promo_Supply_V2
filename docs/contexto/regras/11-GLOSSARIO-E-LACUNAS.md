@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d44bb8fa9b` · branch `main` · 2026-11-08 18:40 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4cc1a7a96b` · branch `main` · 2026-11-12 12:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -295,6 +295,7 @@
 | status | valor `aceito` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/recompra/RecompraInteligente.tsx` |
 | status | valor `PENDENTE` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/types/legacyTypes.ts` |
 | status | valor `expirado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-approval-escalations/index.ts` |
+| status | valor `open` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/punchout-receive/index.ts` |
 | status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
@@ -313,7 +314,6 @@
 | status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
 | status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
 | coluna | coluna `categorias_atendidas` usada no código não existe no schema de `fornecedores` |  |
-| coluna | coluna `display_name` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `organization_id` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `role` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `organization_id` usada no código não existe no schema de `cost_centers` |  |
@@ -323,23 +323,32 @@
 | coluna | coluna `resource_id` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `resource_type` usada no código não existe no schema de `audit_logs` |  |
 | tabela | tabela `a` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
+| tabela | tabela `b2` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
+| tabela | tabela `b3` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
+| tabela | tabela `bucket_quebrado` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
 | tabela | tabela `comprovantes` usada no código não existe nas migrations/types do repo | `src/components/pagamentos/PagamentoDetailModal.tsx` |
-| tabela | tabela `contacts` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `contacts` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs`<br>`scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
 | tabela | tabela `dashboard_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `documentos` usada no código não existe nas migrations/types do repo | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | tabela | tabela `emails` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `fantasma` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `fixture_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `ghost_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `ignorada` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
+| tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
 | tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
+| tabela | tabela `pg_namespace` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
 | tabela | tabela `pg_policies` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
 | tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
+| tabela | tabela `shared_nao_conta` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
 | tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
 | tabela | tabela `t` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `t1` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `tabela` usada no código não existe nas migrations/types do repo | `scripts/inventario/gerar-banco.mjs`<br>`scripts/inventario/gerar-repo.mjs` |
+| tabela | tabela `t1` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs`<br>`scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
+| tabela | tabela `tabela` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.mjs`<br>`scripts/inventario/gerar-banco.mjs`<br>`scripts/inventario/gerar-repo.mjs` |
 | tabela | tabela `tools_runtime` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
 | tabela | tabela `tx` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
+| tabela | tabela `x` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.mjs` |
 | rls | `blocked_countries`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/components/security/BlockedCountriesPanel.tsx` |
 | rls | `geo_access_logs`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/components/security/GeoAccessLogsPanel.tsx` |
 | rls | `licitacao_lances`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/useLicitacoes.ts` |
@@ -416,11 +425,11 @@
 | edge | edge function `tools-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
 | rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
 | rpc | RPC `demo` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/test_snapshot.py` |
-| rpc | RPC `execute_read_query` chamada mas não definida nas migrations/types | `scripts/db-explain-analyze.ts` |
 | rpc | RPC `fixture_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
 | rpc | RPC `fn` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/snapshot.py` |
 | rpc | RPC `ghost_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
 | rpc | RPC `is_admin` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
+| rpc | RPC `list_public_policies` chamada mas não definida nas migrations/types | `scripts/rls-audit.ts` |
 | rpc | RPC `nome` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/snapshot.py` |
 | rpc | RPC `r1` chamada mas não definida nas migrations/types | `scripts/ai-context/cenarios.mjs` |
 | rpc | RPC `runtime_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |

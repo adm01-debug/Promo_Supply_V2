@@ -2,6 +2,18 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "arestas": {
+  "scripts/ci/audit-prod.mjs": [
+   "scripts/lib/seguranca-processo.mjs"
+  ],
+  "scripts/ci/check-test-inventory.mjs": [
+   "scripts/lib/seguranca-processo.mjs"
+  ],
+  "scripts/maintenance/run.mjs": [
+   "scripts/maintenance/lib.mjs"
+  ],
+  "scripts/maintenance/typecheck.mjs": [
+   "scripts/maintenance/lib.mjs"
+  ],
   "scripts/types-sync/local-pg-proxy.mjs": [
    "scripts/types-sync/identidade-banco.mjs"
   ],
@@ -170,7 +182,8 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/skeleton.tsx",
    "src/components/ui/tabs.tsx",
-   "src/hooks/useBuyerPerformanceData.ts"
+   "src/hooks/useBuyerPerformanceData.ts",
+   "src/lib/dateUtils.ts"
   ],
   "src/components/compras/BuyerPerformanceAlerts.tsx": [
    "src/components/ui/badge.tsx",
@@ -414,6 +427,7 @@
    "src/components/ui/dialog.tsx",
    "src/components/ui/table.tsx",
    "src/integrations/supabase/client.ts",
+   "src/lib/dateUtils.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/IAAdvisor.tsx": [
@@ -474,6 +488,7 @@
    "src/components/ui/dialog.tsx",
    "src/components/ui/separator.tsx",
    "src/features/pedidos/index.ts",
+   "src/lib/dateUtils.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/PedidoTimeline.tsx": [
@@ -2110,6 +2125,9 @@
   "src/integrations/supabase/client.ts": [
    "src/integrations/supabase/types.ts"
   ],
+  "src/lib/exportData.ts": [
+   "src/lib/dateUtils.ts"
+  ],
   "src/lib/feedbackToast.ts": [
    "src/hooks/useFeedback.ts"
   ],
@@ -2276,6 +2294,7 @@
    "src/components/ui/skeleton.tsx",
    "src/components/ui/textarea.tsx",
    "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts",
    "src/pages/admin/AlertSubscriptionsPanel.tsx",
    "src/pages/admin/ScanRunsSlaCard.tsx"
   ],
@@ -3190,7 +3209,8 @@
    "src/hooks/useLicitacoes.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
-   "src/lib/logger.ts"
+   "src/lib/logger.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/sourcing/RFxDetails.tsx": [
    "src/components/ui/badge.tsx",
