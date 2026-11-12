@@ -170,7 +170,7 @@ const Sourcing = () => {
                     <h3 className="font-semibold text-lg">Nenhum evento encontrado</h3>
                     <p className="text-sm text-muted-foreground">Comece criando um novo Request for Proposal ou Quote para seus fornecedores.</p>
                   </div>
-                  <Button className="gap-2">
+                  <Button className="gap-2" onClick={() => navigate("/sourcing/novo")}>
                     <Plus className="w-4 h-4" />
                     Novo Evento
                   </Button>
