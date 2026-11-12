@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { exportToCSV, pedidoColumns } from "@/lib/exportData";
 import { subMonths } from "date-fns/subMonths";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
@@ -93,6 +94,17 @@ const Relatorios = () => {
       return data || [];
     },
   });
+
+  const handleExportCSV = () => {
+    if (!pedidos || pedidos.length === 0) {
+      toast.info("Nenhum pedido no período para exportar.");
+      return;
+    }
+    const nomes = new Map((fornecedores || []).map((f) => [f.id, f.nome_fantasia || f.razao_social]));
+    const linhas = pedidos.map((p) => ({ ...p, fornecedor: nomes.get(p.fornecedor_id) ?? "" }));
+    const colunas = pedidoColumns.filter((c) => c.key !== "condicao_pagamento" && c.key !== "observacoes");
+    exportToCSV(linhas, colunas, `relatorio-pedidos-${periodo}`);
+  };
 
   const stats = useMemo(() => {
     const peds = pedidos || [];
@@ -173,7 +185,7 @@ const Relatorios = () => {
                   <SelectItem value="12m">12 Meses</SelectItem>
                 </SelectContent>
               </Select>
-              <EliteButton variant="outline" onClick={() => {}} className="h-11 px-4">
+              <EliteButton variant="outline" onClick={handleExportCSV} disabled={loadingPedidos} className="h-11 px-4">
                 <Download className="w-4 h-4 mr-2" /> CSV
               </EliteButton>
             </div>

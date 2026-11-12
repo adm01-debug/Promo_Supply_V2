@@ -9,7 +9,7 @@ import {
   X,
   Calendar
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { InteractiveCard } from "@/components/ui/interactive-card";
@@ -89,6 +89,7 @@ const ComprasDashboard = () => {
     loading: accountFiltersLoading
   } = useAccountFilters('compras-dashboard', filterDefaults);
 
+  const navigate = useNavigate();
   const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters) as { kpis: DashboardKPIsExtended; pipeline: PipelineData; urgentItems: UrgentDashboardItem[]; loading: boolean };
   const loading = kpisLoading || accountFiltersLoading;
 
@@ -213,7 +214,7 @@ const ComprasDashboard = () => {
                 <Clock className="w-5 h-5 text-destructive" />
                 Urgências Detectadas ({urgentItems.length})
               </h2>
-              <EliteButton variant="ghost" size="sm" onClick={() => {}}>
+              <EliteButton variant="ghost" size="sm" onClick={() => navigate("/solicitacoes")}>
                 VER TUDO
               </EliteButton>
             </div>
@@ -254,7 +255,7 @@ const ComprasDashboard = () => {
       case 'sourcing-intelligence': return <LazyPanel><SourcingIntelligenceWidget /></LazyPanel>;
       default: return null;
     }
-  }, [loading, kpis, pipeline, urgentItems, t]);
+  }, [loading, kpis, pipeline, urgentItems, t, navigate]);
 
   return (
     <ModuleErrorBoundary module="dashboard">

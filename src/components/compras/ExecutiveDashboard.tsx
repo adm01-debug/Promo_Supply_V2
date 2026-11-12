@@ -18,6 +18,7 @@ import { EliteButton } from '@/components/atoms/EliteButton';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { exportToCSV } from '@/lib/exportData';
 
 import {
   executiveMetrics, calculateChange, 
@@ -48,6 +49,22 @@ export const ExecutiveDashboard = () => {
     topSuppliers: realTopSuppliers,
     loading: realDataLoading 
   } = useExecutiveDashboardData();
+
+  const handleExportReport = () => {
+    const rm = realMetrics;
+    const linhas = [
+      { indicador: 'Gasto total', valor: rm.totalSpend.value },
+      { indicador: 'Economia', valor: rm.savings.value },
+      { indicador: 'Economia (%)', valor: rm.savingsPercent },
+      { indicador: 'Pedidos no mês', valor: rm.ordersThisMonth.value },
+      { indicador: 'Aprovações pendentes', valor: rm.pendingApprovals.value },
+      { indicador: 'Aprovações urgentes', valor: rm.pendingApprovals.urgent },
+      { indicador: 'Pedidos atrasados', valor: rm.overdueOrders.value },
+      { indicador: 'Pedidos atrasados críticos', valor: rm.overdueOrders.critical },
+      { indicador: 'Conformidade de contratos (%)', valor: rm.contractCompliance.value },
+    ];
+    exportToCSV(linhas, [{ key: 'indicador', label: 'Indicador' }, { key: 'valor', label: 'Valor' }], 'relatorio-executivo');
+  };
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
@@ -196,7 +213,7 @@ export const ExecutiveDashboard = () => {
                  </Button>
                ))}
             </div>
-            <EliteButton variant="default" size="sm" onClick={() => {}} className="h-11 px-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20">
+            <EliteButton variant="default" size="sm" onClick={handleExportReport} disabled={realDataLoading} className="h-11 px-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20">
               <Download className="w-4 h-4 mr-2" /> EXPORT REPORT
             </EliteButton>
           </div>
