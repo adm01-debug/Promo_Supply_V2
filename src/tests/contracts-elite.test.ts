@@ -53,7 +53,7 @@ const WorkflowContract = z.discriminatedUnion("action", [
 const ERPSyncContract = z.object({
   action: ciEnum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
   entity_id: z.string().uuid().optional(),
-  payload: z.record(z.unknown()).optional(),
+  payload: z.record(z.string(), z.unknown()).optional(),
 });
 
 test('NegotiationContract: deve validar payloads reais', () => {

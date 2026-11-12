@@ -121,7 +121,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     
     const validated = CreateSolicitacaoSchema.safeParse(input);
     if (!validated.success) {
-      const errorMsg = validated.error.errors[0]?.message || 'Dados inválidos';
+      const errorMsg = validated.error.issues[0]?.message || 'Dados inválidos';
       toast.error(errorMsg);
       return null;
     }

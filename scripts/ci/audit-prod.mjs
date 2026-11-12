@@ -6,11 +6,24 @@
 //
 // `bun audit` nao tem --prod e o --json devolve o bulk de advisories sem filtrar
 // pela versao instalada; por isso o parse e feito na saida de texto, que ja vem
-// filtrada e traz a cadeia de dependencia de cada ocorrencia:
+// filtrada e traz a cadeia de dependencia de cada ocorrencia. Formato MEDIDO com o
+// bun 1.4.0 (a versao pinada no CI) -- `pacote@versao`, cadeia com ` > ` e
+// `(direct dependency)` quando o pacote esta no proprio package.json:
 //
-//   picomatch  <2.3.2
-//     vite › tinyglobby › fdir › picomatch
-//     high: Picomatch has a ReDoS ... - https://github.com/advisories/GHSA-...
+//   bun audit v1.4.0 (34cbb9a40)
+//
+//   minimist@1.2.5
+//     mkdirp > minimist
+//     rc > minimist
+//     critical: Prototype Pollution in minimist (>=1.0.0 <1.2.6) - https://github.com/advisories/GHSA-...
+//
+//   lodash@4.17.20
+//     (direct dependency)
+//     high: Command Injection in lodash (<4.17.21) - https://github.com/advisories/GHSA-...
+//
+//   2 vulnerabilities (1 critical, 1 high)
+//
+// O formato antigo (`picomatch  <2.3.2` + cadeia com ` › `) continua aceito.
 //
 // R2-INF-009: `bun audit` sai com 1 tanto para advisory quanto para falha de
 // registry, e o passo do CI neutraliza esse status. Por isso o gate NAO aceita
@@ -23,10 +36,10 @@
 //
 // Uso: node scripts/ci/audit-prod.mjs [--level high|critical] [--input arquivo] [--status arquivo]
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { resolverExecutavel } from "../lib/seguranca-processo.mjs";
 
 const SEVERITIES = ["low", "moderate", "high", "critical"];
@@ -36,13 +49,24 @@ const SEVERITIES = ["low", "moderate", "high", "critical"];
 const STATUS_COLETOR_VALIDOS = new Set([0, 1]);
 
 // Resumo que o bun 1.4.0 (versao pinada no CI) imprime — nada mais e' relatorio.
-const RESUMO_LIMPO = /^No vulnerabilities found(?: \(checked \d+ packages?\))?\.?$/iu;
+// Medido: a linha limpa vem com o tempo no fim, mesmo redirecionada para arquivo
+// (`No vulnerabilities found (checked 1 package) [101.00ms]`). Sem o sufixo opcional o
+// gate saia 2 justamente no repositorio SEM advisory.
+const RESUMO_LIMPO = /^No vulnerabilities found(?: \(checked \d+ packages?\))?\.?(?: \[[\d.]+\s*m?s\])?$/iu;
 const RESUMO_CONTADO = /^(\d+)\s+vulnerabilit(?:y|ies)\s*\(([^)]*)\)\.?$/iu;
 // Erro operacional do coletor: o bun escreve "error: ..." no proprio fluxo.
 // A forma reconhecida como erro operacional e' exatamente uma linha iniciada
 // por "error:". O  anterior casava antes do hifen e confundia cabecalhos de
 // pacote como error-ex@1.2.3 (dados validos do relatorio) com erro operacional.
 const LINHA_ERRO = /^error:/iu;
+// Primeira linha da saida (`bun audit v1.4.0 (34cbb9a40)`): nao e pacote.
+const FAIXA_DO_BUN = /^bun audit v\d/iu;
+// Cabecalho de pacote do bun atual: `nome@versao[, versao...]` (com ou sem escopo).
+const CABECALHO_VERSAO = /^((?:@[^\s@/]+\/)?[^\s@]+)@(\S.*)$/u;
+// Cabecalho do formato antigo: `nome  faixa`.
+const CABECALHO_FAIXA = /^(@?[a-z][^\s]*)\s+(.+)$/u;
+// Pacote que esta no proprio package.json: o bun nao imprime cadeia, imprime este marcador.
+const DEPENDENCIA_DIRETA = /^\(direct dependency\)$/iu;
 
 export function parseAuditText(text) {
   const findings = [];
@@ -51,9 +75,15 @@ export function parseAuditText(text) {
     const line = rawLine.trimEnd();
     if (!line.trim()) continue;
     if (!/^\s/u.test(line)) {
-      // Cabecalho de pacote: "nome  faixa". Ignora o rodape "N vulnerabilities (...)".
-      const match = line.match(/^(@?[a-z][^\s]*)\s+(.+)$/u);
-      if (!match) continue;
+      // Linha sem recuo que nao e cabecalho (faixa do bun, resumo "N vulnerabilities (...)")
+      // FECHA o pacote corrente. Medido no bun 1.4.0: a faixa virava o pacote "bun", nenhum
+      // `nome@versao` casava o cabecalho antigo e TODO advisory do relatorio ia para esse
+      // pacote fantasma -- a contagem fechava e o gate saia 0 com HIGH em producao.
+      const match = FAIXA_DO_BUN.test(line) ? null : (line.match(CABECALHO_VERSAO) ?? line.match(CABECALHO_FAIXA));
+      if (!match) {
+        current = null;
+        continue;
+      }
       current = { package: match[1], range: match[2], chains: [], advisories: [] };
       findings.push(current);
       continue;
@@ -65,7 +95,13 @@ export function parseAuditText(text) {
       current.advisories.push({ severity: severity[1], title: severity[2] });
       continue;
     }
-    const chain = trimmed.split("›").map((part) => part.trim()).filter(Boolean);
+    // Dependencia direta: a cadeia e o proprio pacote (e ele que esta, ou nao, em `dependencies`).
+    if (DEPENDENCIA_DIRETA.test(trimmed)) {
+      current.chains.push([current.package]);
+      continue;
+    }
+    // Separador ` > ` (bun atual) ou ` › ` (formato antigo), sempre entre espacos.
+    const chain = trimmed.split(/\s+[›>]\s+/u).map((part) => part.trim()).filter(Boolean);
     if (chain.length) current.chains.push(chain);
   }
   return findings;
@@ -138,6 +174,9 @@ function parseArgs(argv) {
     else if (argv[index] === "--package-json") args.packageJson = argv[++index];
     else if (argv[index] === "--status") args.status = argv[++index];
     else throw new Error(`Argumento desconhecido: ${argv[index]}`);
+    // Flag no fim da linha, sem valor: `--status` sozinho deixava `args.status` vazio e a
+    // conferencia do status do coletor era pulada em silencio.
+    if (argv[index] === undefined) throw new Error(`${argv[index - 1]} exige um valor`);
   }
   if (!SEVERITIES.includes(args.level)) throw new Error(`--level invalido: ${args.level}`);
   return args;
@@ -147,9 +186,18 @@ function parseArgs(argv) {
 // processo pai (scripts/lib/seguranca-processo.mjs), para que o filho nao faca
 // busca por PATH.
 export function main(argv = process.argv.slice(2), root = process.cwd()) {
-  const args = parseArgs(argv);
-  const pkg = JSON.parse(readFileSync(path.resolve(root, args.packageJson), "utf8"));
-  const prodDeps = Object.keys(pkg.dependencies ?? {});
+  // Argumento invalido e package.json ausente/ilegivel sao falha operacional (2), nao
+  // "advisory encontrado" (1): sem o try/catch saiam com stack trace e status 1.
+  let args;
+  let prodDeps;
+  try {
+    args = parseArgs(argv);
+    const pkg = JSON.parse(readFileSync(path.resolve(root, args.packageJson), "utf8"));
+    prodDeps = Object.keys(pkg.dependencies ?? {});
+  } catch (error) {
+    console.error(`ERRO: ${error.message}`);
+    return 2;
+  }
 
   if (args.status) {
     const status = lerStatusColetor(args.status, root);
@@ -166,7 +214,12 @@ export function main(argv = process.argv.slice(2), root = process.cwd()) {
       console.error(`ERRO: relatorio de audit ausente: ${args.input}`);
       return 2;
     }
-    text = readFileSync(caminho, "utf8");
+    try {
+      text = readFileSync(caminho, "utf8");
+    } catch (error) {
+      console.error(`ERRO: relatorio de audit ilegivel: ${args.input} (${error.code ?? error.message})`);
+      return 2;
+    }
   } else {
     let bunBin;
     try {
@@ -215,6 +268,17 @@ export function main(argv = process.argv.slice(2), root = process.cwd()) {
   return 1;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+// Comparacao por caminho real: chamado por link simbolico, `argv[1]` e o caminho do link e
+// `import.meta.url` o do arquivo -- a igualdade textual falhava, `main` nao rodava e o gate
+// saia 0 sem ter lido relatorio nenhum.
+function chamadoDireto() {
+  try {
+    return realpathSync(path.resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && chamadoDireto()) {
   process.exit(main());
 }
