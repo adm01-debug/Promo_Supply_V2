@@ -1673,7 +1673,7 @@
    "hooks_exportados": [
     "useProdutoFornecedores"
    ],
-   "linhas": 95,
+   "linhas": 99,
    "dominio": "hooks",
    "tabelas": [
     "produto_fornecedores"
@@ -2236,7 +2236,7 @@
    "hooks_exportados": [
     "useBuyerAlertsStore"
    ],
-   "linhas": 203,
+   "linhas": 202,
    "dominio": "stores",
    "tabelas": [
     "profiles"

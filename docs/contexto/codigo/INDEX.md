@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `975d0f9582d4a73f2d87e3cc10356fd6968a7634` (2026-11-13T09:35:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c4a54e7540fcb05f8ed5985998a6790a105685e5` (2026-11-13T11:31:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1190 |
 | arquivos_codigo | 756 |
-| linhas_codigo | 159947 |
+| linhas_codigo | 159929 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -402,6 +402,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-13 `c4a54e75` fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)
 - 2026-11-13 `975d0f95` chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)
 - 2026-11-13 `e7ff5fb4` fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)
 - 2026-11-13 `fa24df57` docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)
@@ -416,7 +417,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `62016b23` chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)
 - 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
 - 2026-11-12 `284eef46` fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)
-- 2026-11-12 `d429cef0` fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

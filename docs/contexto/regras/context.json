@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
+  "sha": "c4a54e7540fcb05f8ed5985998a6790a105685e5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 13:20 UTC",
+  "generated_at": "2026-11-13 15:23 UTC",
   "files_total": 1192,
   "code_files": 1052,
-  "code_lines": 183147,
+  "code_lines": 183129,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a0373ce9a6172784",
+ "facts_hash": "73c77bd3c6260bcd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33819,7 +33819,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12210,
+   "lines": 12214,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34457,7 +34457,7 @@
   {
    "module": "src/stores",
    "files": 10,
-   "lines": 2366,
+   "lines": 2344,
    "tables": [
     "dashboard_layouts",
     "profiles"
@@ -36480,7 +36480,6 @@
     "is_active",
     "manager_id",
     "name",
-    "organization_id",
     "parent_id",
     "tenant_id",
     "total_budget",
@@ -36796,8 +36795,6 @@
     "email",
     "full_name",
     "id",
-    "organization_id",
-    "role",
     "tenant_id",
     "user_id"
    ],
@@ -38192,18 +38189,6 @@
    {
     "table": "fornecedores",
     "column": "categorias_atendidas"
-   },
-   {
-    "table": "profiles",
-    "column": "organization_id"
-   },
-   {
-    "table": "profiles",
-    "column": "role"
-   },
-   {
-    "table": "cost_centers",
-    "column": "organization_id"
    },
    {
     "table": "audit_logs",
@@ -52647,12 +52632,6 @@
     "field": "status",
     "value": "success",
     "kind": "escreve"
-   },
-   {
-    "file": "src/stores/buyerAlertsStore.ts",
-    "field": "role",
-    "value": "buyer",
-    "kind": "filtra"
    },
    {
     "file": "src/stores/dashboardLayoutStore.ts",
@@ -74691,9 +74670,6 @@
      "assistant": [
       "escreve:src/hooks/useGuidedBuying.ts"
      ],
-     "buyer": [
-      "filtra:src/stores/buyerAlertsStore.ts"
-     ],
      "system": [
       "escreve:supabase/functions/ai-demand-prediction/index.ts",
       "escreve:supabase/functions/ai-negotiation/index.ts",
@@ -83109,21 +83085,6 @@
    {
     "kind": "coluna",
     "msg": "coluna `categorias_atendidas` usada no código não existe no schema de `fornecedores`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `organization_id` usada no código não existe no schema de `profiles`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `role` usada no código não existe no schema de `profiles`",
-    "where": []
-   },
-   {
-    "kind": "coluna",
-    "msg": "coluna `organization_id` usada no código não existe no schema de `cost_centers`",
     "where": []
    },
    {
@@ -96114,7 +96075,7 @@
   },
   "src/hooks/useProdutoFornecedores.ts": {
    "path": "src/hooks/useProdutoFornecedores.ts",
-   "lines": 95,
+   "lines": 99,
    "exports": [
     "interface ProdutoFornecedor",
     "function useProdutoFornecedores"
@@ -96316,7 +96277,7 @@
      "code",
      "id",
      "name",
-     "organization_id"
+     "tenant_id"
     ]
    },
    "status_values": [
@@ -103009,7 +102970,7 @@
   },
   "src/stores/buyerAlertsStore.ts": {
    "path": "src/stores/buyerAlertsStore.ts",
-   "lines": 203,
+   "lines": 202,
    "exports": [
     "interface BuyerTarget",
     "interface BuyerAlert",
@@ -103026,10 +102987,9 @@
    ],
    "table_cols": {
     "profiles": [
+     "current_organization_id",
      "full_name",
-     "id",
-     "organization_id",
-     "role"
+     "id"
     ]
    },
    "status_values": [
@@ -103062,11 +103022,6 @@
      "field": "status",
      "value": "success",
      "kind": "escreve"
-    },
-    {
-     "field": "role",
-     "value": "buyer",
-     "kind": "filtra"
     }
    ],
    "hooks": [
@@ -103278,7 +103233,7 @@
   },
   "src/stores/__tests__/buyerAlertsStore.test.ts": {
    "path": "src/stores/__tests__/buyerAlertsStore.test.ts",
-   "lines": 400,
+   "lines": 379,
    "is_test": true,
    "tests": [
     "buyerAlertsStore",
@@ -109169,10 +109124,28 @@
   }
  },
  "git": {
-  "sha": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
+  "sha": "c4a54e7540fcb05f8ed5985998a6790a105685e5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c4a54e7",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)",
+    "files": [
+     "src/features/cotacoes/hooks/useCotacoes.ts",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/hooks/useDevolucoes.ts",
+     "src/hooks/useLicitacoes.ts",
+     "src/hooks/usePagamentos.ts",
+     "src/hooks/useProdutoFornecedores.ts",
+     "src/hooks/usePurchaseHistory.ts",
+     "src/stores/__tests__/buyerAlertsStore.test.ts",
+     "src/stores/buyerAlertsStore.ts"
+    ]
+   },
    {
     "sha": "975d0f9",
     "date": "2026-11-13",
@@ -109556,18 +109529,13 @@
     "files": [
      "supabase/migrations/20261112135000_views_security_invoker.sql"
     ]
-   },
-   {
-    "sha": "c9488d5",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "security(banco): revoga execute_read_query de anon e authenticated (#40)",
-    "files": [
-     "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    2
+   ],
    [
     "bun.lock",
     2
@@ -109625,27 +109593,23 @@
     2
    ],
    [
-    "supabase/migrations/20261112223906_comprador_le_contratos.sql",
+    "src/features/cotacoes/hooks/useCotacoes.ts",
     1
    ],
    [
-    "docs/prod-readiness.md",
+    "src/features/pedidos/hooks/usePedidos.ts",
     1
    ],
    [
-    "deploy_edge_functions_promo_supply.sh",
+    "src/hooks/useDevolucoes.ts",
     1
    ],
    [
-    "docs/agentes/banco.md",
+    "src/hooks/useLicitacoes.ts",
     1
    ],
    [
-    "docs/agentes/deploy.md",
-    1
-   ],
-   [
-    "scripts/ai-context/cenarios.mjs",
+    "src/hooks/usePagamentos.ts",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
+  "commit": "c4a54e7540fcb05f8ed5985998a6790a105685e5",
   "branch": "main",
-  "data_commit": "2026-11-13T09:35:48-03:00",
+  "data_commit": "2026-11-13T11:31:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "c4a54e75",
+    "data": "2026-11-13",
+    "assunto": "fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)"
+   },
    {
     "sha": "975d0f95",
     "data": "2026-11-13",
@@ -126,14 +131,9 @@
     "sha": "dd8f1fd8",
     "data": "2026-11-12",
     "assunto": "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)"
-   },
-   {
-    "sha": "5cdeeaca",
-    "data": "2026-11-12",
-    "assunto": "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)"
    }
   ],
-  "arquivos_mudados_7d": 223,
+  "arquivos_mudados_7d": 230,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 50
+    "commits": 51
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 1190,
   "arquivos_codigo": 756,
-  "linhas_codigo": 159947,
+  "linhas_codigo": 159929,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -424,7 +424,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12210
+   "linhas": 12214
   },
   "src/i18n": {
    "arquivos": 1,
@@ -460,7 +460,7 @@
   },
   "src/stores": {
    "arquivos": 10,
-   "linhas": 2366
+   "linhas": 2344
   },
   "src/test": {
    "arquivos": 1,

@@ -1171,7 +1171,7 @@
   {
    "arquivo": "src/stores/__tests__/buyerAlertsStore.test.ts",
    "tipo": "unit",
-   "linhas": 400,
+   "linhas": 379,
    "testa": [
     "src/integrations/supabase/client.ts",
     "src/stores/buyerAlertsStore.ts"

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `975d0f9582` · branch `main` · 2026-11-13 13:20 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c4a54e7540` · branch `main` · 2026-11-13 15:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1115,7 +1115,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
 | `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`src/hooks/usePermissions.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>… +2 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
-| `role` | `buyer` | filtra | `src/stores/buyerAlertsStore.ts` |
 | `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts` |
 | `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +1 |
 | `state` | `collapsed` | compara | `src/components/ui/sidebar.tsx` |

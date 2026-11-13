@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `975d0f9582` · branch `main` · 2026-11-13 13:20 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c4a54e7540` · branch `main` · 2026-11-13 15:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -311,9 +311,6 @@
 | status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
 | status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
 | coluna | coluna `categorias_atendidas` usada no código não existe no schema de `fornecedores` |  |
-| coluna | coluna `organization_id` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `role` usada no código não existe no schema de `profiles` |  |
-| coluna | coluna `organization_id` usada no código não existe no schema de `cost_centers` |  |
 | coluna | coluna `action` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `actor_id` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `resource_id` usada no código não existe no schema de `audit_logs` |  |
