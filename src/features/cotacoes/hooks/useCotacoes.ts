@@ -127,7 +127,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
     }
   }, [user, invalidate, organizationId]);
 
-  const updateCotacao = useCallback(async (id: string, updates: Partial<Cotacao>) => {
+  const updateCotacao = useCallback(async (id: string, updates: Database['public']['Tables']['cotacoes']['Update']) => {
     try {
       const { error } = await supabase.from('cotacoes').update(updates).eq('id', id);
       if (error) throw error;
