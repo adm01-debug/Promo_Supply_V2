@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process';
 import http from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   agregar,
   coletarJobs,
@@ -292,7 +293,7 @@ test('publicarIssue cria quando nao ha issue aberta, e PR com o mesmo titulo nao
 });
 
 // --- CLI de verdade contra uma API falsa local (nenhuma chamada sai de 127.0.0.1)
-const SCRIPT = new URL('./actions-kpi.mjs', import.meta.url).pathname;
+const SCRIPT = fileURLToPath(new URL('./actions-kpi.mjs', import.meta.url));
 
 function apiFalsa(responder) {
   const pedidos = [];

@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { assertBlocking, conditionOf, jobOf, onlyStep, permission, shellCode, stepsOf } from './workflow-test-support.mjs';
 import { avaliarSla, nivel, relatorio } from './sla-code-scanning.mjs';
 
@@ -38,7 +39,7 @@ test('relatório: sem violação diz isso; com violação lista em bloco', () =>
   assert.match(relatorio({ total: 1, violacoes: ['HIGH x'] }), /Violações de SLA[\s\S]*HIGH x/);
 });
 
-const SCRIPT = new URL('./sla-code-scanning.mjs', import.meta.url).pathname;
+const SCRIPT = fileURLToPath(new URL('./sla-code-scanning.mjs', import.meta.url));
 const cli = (entrada, script = SCRIPT) => spawnSync(process.execPath, [script], { encoding: 'utf8', input: entrada });
 
 test('CLI: lê o JSON do stdin, sai 1 com violação e 0 sem', () => {
