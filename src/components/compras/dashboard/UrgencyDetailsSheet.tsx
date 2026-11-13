@@ -95,13 +95,19 @@ export const UrgencyDetailsSheet = ({
     if (!itemId) return;
     
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('solicitacoes')
         .update({ status: newStatus })
-        .eq('id', itemId);
-        
+        .eq('id', itemId)
+        .select('id');
+
       if (error) throw error;
-      
+      // RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la.
+      if (!data?.length) {
+        toast.error("Sem permissão para alterar esta solicitação.");
+        return;
+      }
+
       toast.success("Status atualizado com sucesso!");
       onStatusUpdate?.(itemId, newStatus);
     } catch (error) {
