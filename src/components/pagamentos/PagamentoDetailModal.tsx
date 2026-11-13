@@ -72,11 +72,13 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
 
   // comprovante_url guarda o caminho (ou a URL pública antiga): abre por URL assinada.
   const comprovanteRef = pagamento?.comprovante_url ?? null;
-  const { data: comprovanteHref } = useQuery({
+  const { data: comprovanteHref, isError: comprovanteErro } = useQuery({
     queryKey: ['comprovante-url', comprovanteRef],
     queryFn: () => resolveStoredFileUrl('comprovantes', comprovanteRef as string),
     enabled: !!comprovanteRef && open,
     staleTime: 30 * 60 * 1000,
+    // Sem isso o default keepPreviousData mostraria o link do pagamento anterior enquanto assina o novo.
+    placeholderData: undefined,
   });
 
   const totalCreditos = creditos.reduce((s: number, c) => s + (c.saldo || 0), 0);
@@ -369,6 +371,11 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                   </span>
                 </a>
               </Button>
+            )}
+            {pagamento.comprovante_url && comprovanteErro && (
+              <p className="text-xs text-destructive">
+                Não foi possível abrir o comprovante (arquivo ausente ou sem permissão).
+              </p>
             )}
             {/* Three-Way Match */}
             {(pagamento.pedido_id || pagamento.numero_nf) && (
