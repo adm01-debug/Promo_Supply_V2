@@ -160,7 +160,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     }
 
     try {
-      const updates: Record<string, unknown> = { status: newStatus };
+      const updates: Database['public']['Tables']['devolucoes']['Update'] = { status: newStatus };
       if (newStatus === 'aprovada') updates["data_aprovacao"] = new Date().toISOString();
       if (newStatus === 'em_transito') updates["data_envio"] = new Date().toISOString();
       if (newStatus === 'recebida_fornecedor') updates["data_recebimento_fornecedor"] = new Date().toISOString();

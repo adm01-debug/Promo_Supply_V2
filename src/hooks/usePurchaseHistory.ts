@@ -176,7 +176,7 @@ export function usePurchaseHistory() {
       const { data, error } = await supabase
         .from("cost_centers")
         .select("id, name, code")
-        .eq("organization_id", organizationId!);
+        .eq("tenant_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
