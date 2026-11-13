@@ -5,6 +5,7 @@ import http from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { maisNova, partes } from './bump-toolchain.mjs';
 
 const workflow = readFileSync(
@@ -56,7 +57,7 @@ test('maisNova: pre-release é menor que a final de mesmo número; build não é
   assert.equal(maisNova('1.4.0', 'bun-v1.4.0+build.5'), false, 'antes: true');
 });
 
-const BUMP = new URL('./bump-toolchain.mjs', import.meta.url).pathname;
+const BUMP = fileURLToPath(new URL('./bump-toolchain.mjs', import.meta.url));
 
 function apiDeReleases(tags) {
   const pedidos = [];

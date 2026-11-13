@@ -6,9 +6,10 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
-const GERADOR = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'gerar.mjs');
+const GERADOR = fileURLToPath(new URL('gerar.mjs', import.meta.url));
 const ONLY = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : null;
 if (process.argv.includes('--only') && !ONLY) { console.error('--only exige um trecho do nome do cenário'); process.exit(2); }
 const KEEP = process.argv.includes('--keep');

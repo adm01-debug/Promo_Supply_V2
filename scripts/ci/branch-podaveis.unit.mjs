@@ -9,6 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { assertBlocking, conditionOf, jobOf, onlyStep, permission, shellCode, stepsOf } from './workflow-test-support.mjs';
 import {
   executar,
@@ -152,7 +153,7 @@ test('arquivo de protegidas ausente (API falhou): nenhum comando gerado', () => 
   assert.doesNotMatch(r.saida, /git push origin --delete/);
 });
 
-const SCRIPT = new URL('./branch-podaveis.mjs', import.meta.url).pathname;
+const SCRIPT = fileURLToPath(new URL('./branch-podaveis.mjs', import.meta.url));
 
 test('CLI: sempre exit 0; aviso ::warning:: quando não gera comando', () => {
   const r = spawnSync(process.execPath, [SCRIPT, '--equivalentes', '/nao/existe'], { encoding: 'utf8' });
