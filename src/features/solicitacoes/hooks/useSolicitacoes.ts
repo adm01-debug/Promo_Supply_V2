@@ -11,6 +11,8 @@ import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/features/solicitacoes';
 
+const SEM_PERMISSAO = 'sem permissão para alterar esta(s) solicitação(ões)';
+
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
   manager?: { full_name: string | null } | null;
 };
@@ -209,8 +211,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const updateSolicitacao = useCallback(async (id: string, updates: Database['public']['Tables']['solicitacoes']['Update']) => {
     try {
-      const { error } = await supabase.from('solicitacoes').update(updates).eq('id', id);
+      const { data, error } = await supabase.from('solicitacoes').update(updates).eq('id', id).select('id');
       if (error) throw error;
+      // RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la.
+      if (!data?.length) throw new Error(SEM_PERMISSAO);
       toast.success('Solicitação atualizada!');
       invalidate();
       return true;
@@ -235,8 +239,9 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const deleteSolicitacao = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase.from('solicitacoes').delete().eq('id', id);
+      const { data, error } = await supabase.from('solicitacoes').delete().eq('id', id).select('id');
       if (error) throw error;
+      if (!data?.length) throw new Error(SEM_PERMISSAO);
       toast.success('Solicitação excluída!');
       invalidate();
       return true;
@@ -249,9 +254,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const bulkDelete = useCallback(async (ids: string[]) => {
     try {
-      const { error } = await supabase.from('solicitacoes').delete().in('id', ids);
+      const { data, error } = await supabase.from('solicitacoes').delete().in('id', ids).select('id');
       if (error) throw error;
-      toast.success(`${ids.length} solicitação(ões) excluída(s)!`);
+      if (!data?.length) throw new Error(SEM_PERMISSAO);
+      toast.success(`${data.length} de ${ids.length} solicitação(ões) excluída(s)!`);
       invalidate();
       return true;
     } catch (err: unknown) {
@@ -263,9 +269,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Solicitacao['status']) => {
     try {
-      const { error } = await supabase.from('solicitacoes').update({ status: newStatus }).in('id', ids);
+      const { data, error } = await supabase.from('solicitacoes').update({ status: newStatus }).in('id', ids).select('id');
       if (error) throw error;
-      toast.success(`${ids.length} solicitação(ões) atualizada(s)!`);
+      if (!data?.length) throw new Error(SEM_PERMISSAO);
+      toast.success(`${data.length} de ${ids.length} solicitação(ões) atualizada(s)!`);
       invalidate();
       return true;
     } catch (err: unknown) {
