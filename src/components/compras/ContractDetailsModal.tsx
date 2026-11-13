@@ -44,6 +44,7 @@ import { toast } from "@/lib/feedbackToast";
 import { useAuth } from "@/features/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
+import { getStorageTenantId, privateStoragePath } from "@/lib/storageFiles";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, ContractHistory, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
 import { ContractSLAReadonlyTab, ContractPenaltiesTab } from "./contract/ContractDetailsTabs";
@@ -112,21 +113,23 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!user || !tenantId) {
-      toast.error('Organização não identificada. Faça login novamente.');
-      return;
-    }
+    if (!user) return;
     setUploading(true);
     try {
+      const storageTenantId = await getStorageTenantId(user.id, tenantId);
+      if (!storageTenantId) {
+        toast.error('Organização não identificada. Faça login novamente.');
+        return;
+      }
       // Path convention enforced by storage RLS: {tenantId}/{userId}/...
-      const filePath = `${tenantId}/${user.id}/contracts/${contract.id}/${Date.now()}_${file.name}`;
+      const filePath = privateStoragePath(storageTenantId, user.id, 'contracts', contract.id, `${Date.now()}_${file.name}`);
       const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);
+      // Bucket privado: grava o caminho; a leitura gera URL assinada (resolveStoredFileUrl).
       await supabase.from('contract_documents').insert({
         contract_id: contract.id,
         file_name: file.name,
-        file_url: urlData.publicUrl,
+        file_url: filePath,
         file_type: file.type,
         file_size: file.size,
       });

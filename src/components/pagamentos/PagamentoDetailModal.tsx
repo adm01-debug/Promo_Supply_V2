@@ -20,6 +20,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 import { formatCurrency } from "@/lib/utils";
+import { getStorageTenantId, privateStoragePath, resolveStoredFileUrl } from "@/lib/storageFiles";
 
 interface Props {
   pagamento: Pagamento | null;
@@ -69,6 +70,19 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     enabled: !!pagamento?.id && open,
   });
 
+  // comprovante_url guarda o caminho (ou a URL pública antiga): abre por URL assinada.
+  const comprovanteRef = pagamento?.comprovante_url ?? null;
+  const { data: comprovanteHref, isError: comprovanteErro } = useQuery({
+    queryKey: ['comprovante-url', comprovanteRef],
+    queryFn: () => resolveStoredFileUrl('comprovantes', comprovanteRef as string),
+    enabled: !!comprovanteRef && open,
+    staleTime: 30 * 60 * 1000,
+    // A URL assinada vale 1 h: renova antes de expirar enquanto o modal estiver aberto.
+    refetchInterval: 50 * 60 * 1000,
+    // Sem isso o default keepPreviousData mostraria o link do pagamento anterior enquanto assina o novo.
+    placeholderData: undefined,
+  });
+
   const totalCreditos = creditos.reduce((s: number, c) => s + (c.saldo || 0), 0);
   const saldoRestante = pagamento ? pagamento.valor - (pagamento.valor_pago || 0) : 0;
   const percentPago = pagamento ? ((pagamento.valor_pago || 0) / pagamento.valor) * 100 : 0;
@@ -77,29 +91,29 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
 
   const handleUploadComprovante = useCallback(async (file: File) => {
     if (!pagamento || !user) return;
-    if (!tenantId) {
-      toast({ title: 'Organização não identificada', description: 'Faça login novamente.', variant: 'destructive' });
-      return;
-    }
     setUploading(true);
     try {
+      const storageTenantId = await getStorageTenantId(user.id, tenantId);
+      if (!storageTenantId) {
+        toast({ title: 'Organização não identificada', description: 'Faça login novamente.', variant: 'destructive' });
+        return;
+      }
       const ext = file.name.split('.').pop();
       // Path convention enforced by storage RLS: {tenantId}/{userId}/...
-      const path = `${tenantId}/${user.id}/${pagamento.id}/${Date.now()}.${ext}`;
+      const path = privateStoragePath(storageTenantId, user.id, pagamento.id, `${Date.now()}.${ext}`);
       const { error: uploadError } = await supabase.storage
         .from('comprovantes')
         .upload(path, file, { cacheControl: '3600' });
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage.from('comprovantes').getPublicUrl(path);
-      
-      await supabase.from('pagamentos').update({ comprovante_url: urlData.publicUrl }).eq('id', pagamento.id);
+      // Bucket privado: grava o caminho; a leitura gera URL assinada (resolveStoredFileUrl).
+      await supabase.from('pagamentos').update({ comprovante_url: path }).eq('id', pagamento.id);
       
       // Log in payment history
       await supabase.from('payment_history').insert({
         pagamento_id: pagamento.id,
         valor_parcela: 0,
-        comprovante_url: urlData.publicUrl,
+        comprovante_url: path,
         observacoes: 'Comprovante anexado',
         registrado_por: user.id,
       });
@@ -350,15 +364,20 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 <p>{pagamento.observacoes}</p>
               </div>
             )}
-            {pagamento.comprovante_url && (
+            {pagamento.comprovante_url && comprovanteHref && (
               <Button variant="outline" className="w-full gap-2" asChild>
-                <a href={pagamento.comprovante_url} target="_blank" rel="noopener noreferrer">
+                <a href={comprovanteHref} target="_blank" rel="noopener noreferrer">
                   <span className="inline-flex items-center gap-2">
                     <Image className="h-4 w-4" />
                     Ver Comprovante
                   </span>
                 </a>
               </Button>
+            )}
+            {pagamento.comprovante_url && comprovanteErro && (
+              <p className="text-xs text-destructive">
+                Não foi possível abrir o comprovante (arquivo ausente ou sem permissão).
+              </p>
             )}
             {/* Three-Way Match */}
             {(pagamento.pedido_id || pagamento.numero_nf) && (

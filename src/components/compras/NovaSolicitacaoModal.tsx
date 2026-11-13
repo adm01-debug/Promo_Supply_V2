@@ -11,6 +11,7 @@ import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
+import { getStorageTenantId, privateStoragePath } from "@/lib/storageFiles";
 import DOMPurify from "dompurify";
 import { solicitacaoSchema, type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
 import {
@@ -65,7 +66,7 @@ const STEPS = [
 ];
 
 export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) {
-  const { user, organizationId } = useAuth();
+  const { user, organizationId, tenantId } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
@@ -241,8 +242,13 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       if (error) throw error;
 
       if (formData.anexos && formData.anexos.length > 0 && data?.id) {
-        for (const file of formData.anexos) {
-          const filePath = `solicitacoes/${data.id}/${Date.now()}-${file.name}`;
+        const storageTenantId = (await getStorageTenantId(user.id, tenantId).catch(() => null)) ?? '';
+        if (!storageTenantId) {
+          toast.error('Anexos não enviados: organização não identificada. Faça login novamente.');
+        }
+        for (const file of storageTenantId ? formData.anexos : []) {
+          // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+          const filePath = privateStoragePath(storageTenantId, user.id, 'solicitacoes', data.id, `${Date.now()}-${file.name}`);
           const { error: uploadError } = await supabase.storage
             .from('documentos')
             .upload(filePath, file);
