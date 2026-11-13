@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)",
    "fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)",
    "fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)",
    "fix(banco): corrige crons de retencao LGPD e refresh da mv_dashboard_kpis (#83)",
-   "docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)",
-   "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)"
+   "docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)"
   ]
  },
  "pr_template": null,

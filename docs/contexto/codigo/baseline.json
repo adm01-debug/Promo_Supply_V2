@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
+  "commit": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
   "branch": "main",
-  "data_commit": "2026-11-13T18:17:45-03:00",
+  "data_commit": "2026-11-13T19:42:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "772cf0ae",
+    "data": "2026-11-13",
+    "assunto": "docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)"
+   },
    {
     "sha": "96039040",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "27032009",
     "data": "2026-11-12",
     "assunto": "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)"
-   },
-   {
-    "sha": "db1dfe5c",
-    "data": "2026-11-12",
-    "assunto": "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)"
    }
   ],
   "arquivos_mudados_7d": 258,
@@ -156,6 +156,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "docs/prod-readiness.md",
+    "mudancas": 5
+   },
+   {
     "pasta": "src/lib/__tests__",
     "mudancas": 5
    },
@@ -165,10 +169,6 @@
    },
    {
     "pasta": ".github/workflows/contexto.yml",
-    "mudancas": 4
-   },
-   {
-    "pasta": "docs/prod-readiness.md",
     "mudancas": 4
    },
    {
@@ -210,11 +210,11 @@
     "mudancas": 5
    },
    {
-    "arquivo": ".github/workflows/contexto.yml",
-    "mudancas": 4
+    "arquivo": "docs/prod-readiness.md",
+    "mudancas": 5
    },
    {
-    "arquivo": "docs/prod-readiness.md",
+    "arquivo": ".github/workflows/contexto.yml",
     "mudancas": 4
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 65
+    "commits": 66
    },
    {
     "autor": "copilot-swe-agent[bot]",

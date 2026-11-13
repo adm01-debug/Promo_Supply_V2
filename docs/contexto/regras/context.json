@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
+  "sha": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 22:02 UTC",
+  "generated_at": "2026-11-13 23:33 UTC",
   "files_total": 1205,
   "code_files": 1065,
   "code_lines": 185184,
@@ -109806,10 +109806,19 @@
   }
  },
  "git": {
-  "sha": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
+  "sha": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "772cf0a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "9603904",
     "date": "2026-11-13",
@@ -110190,23 +110199,12 @@
      "src/lib/__tests__/exportData.csv.test.ts",
      "src/lib/exportData.ts"
     ]
-   },
-   {
-    "sha": "d429cef",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)",
-    "files": [
-     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-     "src/hooks/useDashboardKPIs.ts",
-     "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/prod-readiness.md",
-    4
+    5
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -110215,14 +110213,6 @@
    [
     "scripts/ci/encoding-src.unit.mjs",
     3
-   ],
-   [
-    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-    2
-   ],
-   [
-    "src/hooks/useDashboardKPIs.ts",
-    2
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
@@ -110282,6 +110272,14 @@
    ],
    [
     "src/components/compras/DashboardInsights.tsx",
+    1
+   ],
+   [
+    "src/components/compras/TrendAnalysisCharts.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     1
    ]
   ]
