@@ -69,7 +69,7 @@ export function useLicitacoes() {
     }
   }, [user, tenantId, invalidate, organizationId]);
 
-  const updateLicitacao = useCallback(async (id: string, updates: Partial<Licitacao>) => {
+  const updateLicitacao = useCallback(async (id: string, updates: Database['public']['Tables']['licitacoes']['Update']) => {
     try {
       const { error } = await supabase.from('licitacoes').update(updates).eq('id', id);
       if (error) throw error;

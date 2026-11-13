@@ -70,8 +70,7 @@ export const useBuyerAlertsStore = create<BuyerAlertsState>()(
           const { data, error } = await supabase
             .from('profiles')
             .select('id, full_name')
-            .eq('organization_id', organizationId)
-            .eq('role', 'buyer');
+            .eq('current_organization_id', organizationId);
           if (error) throw error;
           if (!data?.length) return;
 
