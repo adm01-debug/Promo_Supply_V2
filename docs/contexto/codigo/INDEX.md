@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06` (2026-11-12T19:43:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6c530a0630ca2c73c17b3d51e2bca90ff8c1da16` (2026-11-12T20:54:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (686), SQL (289), Markdown (71), JavaScript (51), JSON (22), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (688), SQL (293), Markdown (71), JavaScript (51), JSON (22), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1167 |
-| arquivos_codigo | 740 |
-| linhas_codigo | 151575 |
+| arquivos_total | 1173 |
+| arquivos_codigo | 742 |
+| linhas_codigo | 151680 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -46,9 +46,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 38 |
 | tabelas | 164 |
-| migrations | 288 |
+| migrations | 292 |
 | cron_jobs | 68 |
-| testes | 150 |
+| testes | 151 |
 | workflows | 8 |
 | scripts | 43 |
 | docs_md | 71 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (76), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (98), co-localizado (*.test) (26), outro (26)
+- testes: co-localizado (__tests__) (99), co-localizado (*.test) (26), outro (26)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (12), scripts/types-sync (7), scripts/inventario (5)
@@ -71,7 +71,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 5 | 1 | 7 |
-| components/compras | 0 | 0 | 102 | 80 | 5 | 60 |
+| components/compras | 0 | 0 | 103 | 80 | 5 | 60 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 10 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
@@ -411,6 +411,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-12 `6c530a06` security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)
+- 2026-11-12 `f6c2d75b` fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)
+- 2026-11-12 `9eefca6e` fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)
+- 2026-11-12 `27032009` fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)
 - 2026-11-12 `db1dfe5c` fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)
 - 2026-11-12 `e06e53b1` fix(ui): seta do tour de onboarding aparecia corrompida (#57)
 - 2026-11-12 `62016b23` chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)
@@ -422,10 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `7db0e1c0` security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)
 - 2026-11-12 `cdc9eee5` ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)
 - 2026-11-12 `9bd9b15f` security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)
-- 2026-11-12 `63a0e0c5` fix(deploy): rotas da spa deixam de dar 404 ao abrir link direto (#50)
-- 2026-11-12 `5507e433` fix(ui): citar agora abre a cotacao da solicitacao certa (#48)
-- 2026-11-12 `ffcc71ad` fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)
-- 2026-11-12 `dd8f1fd8` fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

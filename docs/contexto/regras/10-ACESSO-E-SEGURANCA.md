@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `db1dfe5c72` · branch `main` · 2026-11-13 00:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6c530a0630` · branch `main` · 2026-11-13 01:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -182,7 +182,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 159 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 162 arquivo(s)
 
 - `scripts/ai-context/cenarios.mjs`
 - `scripts/ai-context/gerar.unit.mjs`
@@ -334,7 +334,7 @@
 - `supabase/migrations/20260726144435_a37d5b86-9ad7-4c72-abcb-fe538eaed177.sql`
 - `supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql`
 - `supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql`
-- … +9 (lista completa em `context.json`)
+- … +12 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -391,6 +391,7 @@
 - `ensure_telemetry_logs_partition`
 - `exec_sql`
 - `execute_read_query`
+- `fill_tenant_id_from_profile`
 - `find_approval_rule`
 - `fx_convert`
 - `generate_sequential_number`
@@ -523,7 +524,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | select, insert | `audit_logs`, `audit_logs`, `telemetry_logs`, `audit_logs` |
 | grant | authenticated | select, insert, update | `integration_outbox` |
 | grant | authenticated | select, insert, update, delete | `produto_fornecedores`, `repurchase_suggestions`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `alert_subscriptions`, `secret_rotation_schedule`, `xbz_credentials` |
-| grant | authenticated, service_role | execute | `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group` … +8 |
+| grant | authenticated, service_role | execute | `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group` … +10 |
 | grant | authenticated, service_role | select | `cron_job_staleness` |
 | grant | postgres | select | `mv_dashboard_kpis` |
 | grant | service_role | all | `telemetry_logs`, `system_alerts`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `webhook_events`, `integration_outbox`, `wal_rate_snapshots`, `checkpoint_snapshots` … +25 |
@@ -534,7 +535,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +2 |
 | revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +29 |
 | revoke | PUBLIC, anon | all | `cron_job_staleness` |
-| revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis`, `get_compras_dashboard_metrics` |
+| revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis`, `get_compras_dashboard_metrics`, `get_compras_dashboard_metrics`, `user_belongs_to_tenant` |
 | revoke | PUBLIC, anon, authenticated | all | `exec_sql`, `scan_stale_statistics`, `scan_cache_hit_ratio`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_xbz_sync`, `xbz_sync_watchdog`, `exec_sql`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_edge_function`, `_invoke_xbz_sync`, `_invoke_spot_sync` |
 | revoke | PUBLIC, anon, authenticated | execute | `apply_penalty_escalation`, `calc_checklist_overall_score`, `check_telemetry_alerts`, `cleanup_old_telemetry`, `mask_sensitive_data`, `cleanup_expired_challenges`, `cleanup_old_query_telemetry`, `audit_user_roles_changes`, `scan_dangerous_statements`, `pg_activity_watchdog`, `scan_unused_indexes`, `scan_table_bloat`, `scan_sequence_exhaustion`, `scan_fk_without_cascade`, `scan_duplicate_indexes` … +22 |
 | revoke | anon | all | `exec_sql`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `supplier_compliance_summary`, `v_system_health_overview` |
@@ -550,6 +551,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | public | execute | `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics`, `get_pedidos_kpis`, `get_solicitacoes_kpis`, `log_security_event`, `log_audit_event` |
 | revoke | public | insert | `audit_logs` |
 | revoke | public, anon | execute | `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics`, `get_pedidos_kpis`, `get_solicitacoes_kpis`, `update_estoque_saldo` |
+| revoke | public, anon, authenticated | all | `fill_tenant_id_from_profile` |
 | revoke | public, anon, authenticated | execute | `scan_rollback_rate`, `scan_connection_saturation`, `scan_cache_hit_ratio`, `scan_long_running_queries`, `scan_unindexed_fks` |
 
 ## Riscos de acesso detectados

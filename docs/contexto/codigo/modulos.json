@@ -375,9 +375,9 @@
   },
   {
    "modulo": "components/compras",
-   "arquivos": 102,
-   "testes": 15,
-   "linhas": 24797,
+   "arquivos": 103,
+   "testes": 16,
+   "linhas": 24822,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

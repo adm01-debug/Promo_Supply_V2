@@ -8,10 +8,10 @@
   "supabase/migrations",
   "typeorm"
  ],
- "migrations": 288,
+ "migrations": 292,
  "seeds": [],
  "avisos": [
-  "45 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "47 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "btree_gist",
@@ -219,6 +219,7 @@
   "ensure_telemetry_logs_partition",
   "exec_sql",
   "execute_read_query",
+  "fill_tenant_id_from_profile",
   "find_approval_rule",
   "fx_convert",
   "generate_sequential_number",
@@ -661,13 +662,6 @@
    "funcao": "audit_pagamento_changes"
   },
   {
-   "nome": "sync_budget_payment_trigger",
-   "quando": "after",
-   "evento": "insert or update of status",
-   "tabela": "pagamentos",
-   "funcao": "sync_budget_on_payment"
-  },
-  {
    "nome": "trg_update_pagamentos_updated_at",
    "quando": "before",
    "evento": "update",
@@ -806,6 +800,13 @@
    "evento": "update",
    "tabela": "profiles",
    "funcao": "update_updated_at_column"
+  },
+  {
+   "nome": "a_fill_tenant_id",
+   "quando": "before",
+   "evento": "insert",
+   "tabela": "public",
+   "funcao": "fill_tenant_id_from_profile"
   },
   {
    "nome": "update_punchout_catalogs_updated_at",
@@ -4968,7 +4969,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "generate-contract-pdf"
    ],
@@ -11502,7 +11503,6 @@
    ],
    "triggers": [
     "audit_pagamentos_trigger",
-    "sync_budget_payment_trigger",
     "trg_update_pagamentos_updated_at",
     "trg_update_saldo_on_pagamento",
     "trg_validate_pagamento_status"

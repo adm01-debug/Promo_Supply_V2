@@ -22,7 +22,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (98)",
+   "co-localizado (__tests__) (99)",
    "co-localizado (*.test) (26)",
    "outro (26)"
   ],
@@ -58,11 +58,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)",
-   "fix(ui): seta do tour de onboarding aparecia corrompida (#57)",
-   "chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)",
-   "fix(ui): vencimento das urgências aparecia um dia antes (#59)",
-   "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)"
+   "security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)",
+   "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)",
+   "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)",
+   "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)",
+   "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)"
   ]
  },
  "pr_template": null,

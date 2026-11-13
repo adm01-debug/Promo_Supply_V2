@@ -5,16 +5,16 @@
   "vitest",
   "playwright"
  ],
- "total": 150,
+ "total": 151,
  "por_tipo": {
-  "contrato": 4,
+  "contrato": 5,
   "pytest": 2,
   "unit": 144
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 98
+   "arquivos": 99
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -262,6 +262,16 @@
     "src/components/compras/bulk-operations/bulkOperationsTypes.ts"
    ],
    "casos": 18
+  },
+  {
+   "arquivo": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+   "tipo": "contrato",
+   "linhas": 80,
+   "testa": [
+    "src/components/compras/contract/replaceContractItems.ts",
+    "src/types/contract.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
@@ -1352,6 +1362,7 @@
   "src/components/compras/KanbanBoard.tsx": 1,
   "src/components/compras/PipelineChart.tsx": 1,
   "src/components/compras/bulk-operations/bulkOperationsTypes.ts": 1,
+  "src/components/compras/contract/replaceContractItems.ts": 1,
   "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts": 1,
   "src/components/compras/digital-signature/signatureHelpers.ts": 1,
   "src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx": 1,
@@ -1446,6 +1457,7 @@
   "src/stores/kpiTargetsStore.ts": 1,
   "src/stores/slaSettingsStore.ts": 1,
   "src/stores/undoStore.ts": 1,
+  "src/types/contract.ts": 1,
   "src/types/legacyTypes.ts": 1,
   "supabase/functions/_shared/contracts.ts": 2,
   "supabase/functions/_shared/fuzzSeed.ts": 2,

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06",
+  "sha": "6c530a0630ca2c73c17b3d51e2bca90ff8c1da16",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 00:19 UTC",
-  "files_total": 1169,
-  "code_files": 1031,
-  "code_lines": 174140
+  "generated_at": "2026-11-13 01:55 UTC",
+  "files_total": 1175,
+  "code_files": 1037,
+  "code_lines": 174843
  },
  "version": "1.3.2",
- "facts_hash": "118018c9897d9bce",
+ "facts_hash": "c742a7084dd918bf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -224,9 +224,9 @@
   ],
   "package_manager": "bun",
   "languages": {
+   ".ts": 344,
    ".tsx": 344,
-   ".ts": 342,
-   ".sql": 289,
+   ".sql": 293,
    ".mjs": 49,
    ".py": 5,
    ".js": 2
@@ -772,7 +772,7 @@
      },
      {
       "name": "currency",
-      "type": "CHAR(3) NOT NULL DEFAULT 'BRL' REFERENCES public.currencies(code)",
+      "type": "CHAR(3) NOT NULL REFERENCES public.currencies(code) SET DEFAULT 'BRL'",
       "fk": "currencies.code",
       "generated": "",
       "src": "supabase/migrations/20260513191304_f777d7e2-3bc7-42c3-b3a7-69a9e25a6a61.sql"
@@ -2479,7 +2479,7 @@
      },
      {
       "name": "currency",
-      "type": "CHAR(3) NOT NULL DEFAULT 'BRL' REFERENCES public.currencies(code)",
+      "type": "CHAR(3) NOT NULL REFERENCES public.currencies(code) SET DEFAULT 'BRL'",
       "fk": "currencies.code",
       "generated": "",
       "src": "supabase/migrations/20260513191304_f777d7e2-3bc7-42c3-b3a7-69a9e25a6a61.sql"
@@ -9569,7 +9569,7 @@
      },
      {
       "name": "currency",
-      "type": "CHAR(3) DEFAULT 'BRL'",
+      "type": "CHAR(3) SET DEFAULT 'BRL'",
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql"
@@ -19093,15 +19093,6 @@
     "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
    },
    {
-    "name": "sync_budget_payment_trigger",
-    "when": "AFTER INSERT OR UPDATE OF STATUS",
-    "table": "pagamentos",
-    "function": "sync_budget_on_payment",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
-   },
-   {
     "name": "tr_budget_transaction_update",
     "when": "AFTER INSERT",
     "table": "budget_transactions",
@@ -19501,15 +19492,15 @@
    "has_role": {
     "args": "_user_id uuid, _role app_role",
     "returns": "boolean",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260805160000_fix_frontend_comms.sql",
+    "lang": "sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_has boolean; BEGIN IF _user_id IS NULL THEN RETURN false; END IF; BEGIN SELECT EXISTS(SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role) INTO v_has; EXCEPTION WHEN OTHERS THEN v_has := false; END; RETURN COALESCE(v_has, false); END;",
+    "body": "SELECT CASE WHEN _user_id IS DISTINCT FROM auth.uid() AND COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('none', 'postgres', 'service_role', 'supabase_admin') THEN false ELSE EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role ) END",
     "raises": [],
     "tables": [
-     "user_roles",
-     "v_has"
+     "auth",
+     "user_roles"
     ]
    },
    "handle_new_user": {
@@ -20160,17 +20151,18 @@
    },
    "sync_budget_on_payment": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE(NEW.cost_center_id, (SELECT cost_center_id FROM public.pedidos WHERE id = NEW.pedido_id LIMIT 1)); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
+    "search_path": true,
+    "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE( NEW.cost_center_id, (SELECT s.cost_center_id FROM public.pedidos pe JOIN public.solicitacoes s ON s.id = pe.solicitacao_id WHERE pe.id = NEW.pedido_id LIMIT 1) ); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
      "department_budgets",
-     "pedidos"
+     "pedidos",
+     "solicitacoes"
     ]
    },
    "update_cost_center_budget_totals": {
@@ -20305,15 +20297,16 @@
     ]
    },
    "user_belongs_to_tenant": {
-    "args": "_user_id UUID, _tenant_id UUID",
-    "returns": "BOOLEAN",
+    "args": "_user_id uuid, _tenant_id uuid",
+    "returns": "boolean",
     "lang": "sql",
-    "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "SELECT EXISTS ( SELECT 1 FROM public.user_tenants WHERE user_id = _user_id AND tenant_id = _tenant_id );",
+    "body": "SELECT CASE WHEN _user_id IS DISTINCT FROM auth.uid() AND COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('none', 'postgres', 'service_role', 'supabase_admin') THEN false ELSE EXISTS ( SELECT 1 FROM public.user_tenants WHERE user_id = _user_id AND tenant_id = _tenant_id ) END",
     "raises": [],
     "tables": [
+     "auth",
      "user_tenants"
     ]
    },
@@ -20384,30 +20377,36 @@
     ]
    },
    "get_pagamentos_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519113828_695e1995-1455-40b1-a23e-ea80aa91e7db.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; v_hoje DATE := CURRENT_DATE; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado', 'agendado')), 'atrasados', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado') AND data_vencimento < v_hoje), 'pagos', COUNT(*) FILTER (WHERE status = 'pago'), 'valorPendente', COALESCE(SUM(valor - COALESCE(valor_pago, 0)) FILTER (WHERE status NOT IN ('pago', 'cancelado')), 0), 'valorPago', COALESCE(SUM(valor) FILTER (WHERE status = 'pago'), 0) ) INTO result FROM pagamentos WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; v_hoje DATE := CURRENT_DATE; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado', 'agendado')), 'atrasados', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado') AND data_vencimento < v_hoje), 'pagos', COUNT(*) FILTER (WHERE status = 'pago'), 'valorPendente', COALESCE(SUM(valor - COALESCE(valor_pago, 0)) FILTER (WHERE status NOT IN ('pago', 'cancelado')), 0), 'valorPago', COALESCE(SUM(valor) FILTER (WHERE status = 'pago'), 0) ) INTO result FROM pagamentos WHERE organi …",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "pagamentos",
      "result"
     ]
    },
    "get_fornecedores_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519113828_695e1995-1455-40b1-a23e-ea80aa91e7db.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'ativos', COUNT(*) FILTER (WHERE status = 'ativo'), 'integradosApi', COUNT(*) FILTER (WHERE integrado_api = true), 'mediaAvaliacao', COALESCE(AVG(avaliacao), 0) ) INTO result FROM fornecedores WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'ativos', COUNT(*) FILTER (WHERE status = 'ativo'), 'integradosApi', COUNT(*) FILTER (WHERE integrado_api = true), 'mediaAvaliacao', COALESCE(AVG(avaliacao), 0) ) INTO result FROM fornecedores WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
      "fornecedores",
+     "get_user_grupo_id",
      "result"
     ]
    },
@@ -20415,10 +20414,10 @@
     "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501' …",
+    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_interval INTERVAL; v_start_date TIMESTAMP WITH TIME ZONE; v_prev_start TIMESTAMP WITH TIME ZONE; v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) …",
     "raises": [
      "not authenticated",
      "forbidden"
@@ -20426,11 +20425,13 @@
     "tables": [
      "categorias",
      "cotacoes",
-     "current_period",
      "generate_series",
      "get_user_grupo_id",
      "pagamentos",
+     "ped",
      "pedidos",
+     "sol",
+     "sol_agg",
      "solicitacoes",
      "v_cotacao_status",
      "v_kpis",
@@ -20441,29 +20442,35 @@
     ]
    },
    "get_pedidos_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114341_5c605c1c-3e11-476f-bf17-93055d515e77.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado')), 'emTransito', COUNT(*) FILTER (WHERE status IN ('em_transito', 'enviado')), 'entregues', COUNT(*) FILTER (WHERE status = 'entregue'), 'valorTotal', COALESCE(SUM(valor_total), 0) ) INTO result FROM pedidos WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado')), 'emTransito', COUNT(*) FILTER (WHERE status IN ('em_transito', 'enviado')), 'entregues', COUNT(*) FILTER (WHERE status = 'entregue'), 'valorTotal', COALESCE(SUM(valor_total), 0) ) INTO result FROM pedidos WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "pedidos",
      "result"
     ]
    },
    "get_solicitacoes_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114341_5c605c1c-3e11-476f-bf17-93055d515e77.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status = 'pendente'), 'emCotacao', COUNT(*) FILTER (WHERE status = 'em_cotacao'), 'aprovadas', COUNT(*) FILTER (WHERE status = 'aprovada'), 'concluidas', COUNT(*) FILTER (WHERE status = 'concluida'), 'valorTotal', COALESCE(SUM(valor_estimado), 0) ) INTO result FROM solicitacoes WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status = 'pendente'), 'emCotacao', COUNT(*) FILTER (WHERE status = 'em_cotacao'), 'aprovadas', COUNT(*) FILTER (WHERE status = 'aprovada'), 'concluidas', COUNT(*) FILTER (WHERE status = 'concluida'), 'valorTotal', COALESCE(SUM(valor_estimado), 0) ) INTO result FROM solicitacoes WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "result",
      "solicitacoes"
     ]
@@ -21985,6 +21992,22 @@
      "v_key",
      "v_req_id",
      "vault"
+    ]
+   },
+   "fill_tenant_id_from_profile": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "declare v_uid uuid := auth.uid(); v_tenant uuid; begin if v_uid is null then return new; end if; if new.tenant_id is not null and exists (select 1 from public.tenants t where t.id = new.tenant_id) and not exists (select 1 from public.tenants t where t.organization_id = new.tenant_id) then return new; end if; select ut.tenant_id into v_tenant from public.user_tenants ut where ut.user_id = v_uid and ut.is_default order by ut.joined_at limit 1; if v_tenant is null then select p.tenant_id into v_tenant from public.profiles p where p.user_id = v_uid or p.id = v_uid order by (p.user_id = v_uid) desc nulls last limit 1; end if; if v_tenant is not null then new.tenant_id := v_tenant; end if; return …",
+    "raises": [],
+    "tables": [
+     "profiles",
+     "tenants",
+     "user_tenants",
+     "v_tenant"
     ]
    },
    "Returns": {
@@ -25825,6 +25848,10 @@
    "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
    "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
    "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
+   "supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql",
+   "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+   "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+   "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -29539,6 +29566,46 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fill_tenant_id_from_profile",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "user_belongs_to_tenant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "user_belongs_to_tenant",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
    }
   ],
   "raises": [
@@ -29610,12 +29677,32 @@
    {
     "function": "get_compras_dashboard_metrics",
     "msg": "not authenticated",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
    },
    {
     "function": "get_compras_dashboard_metrics",
     "msg": "forbidden",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "function": "get_fornecedores_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_pagamentos_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_pedidos_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_solicitacoes_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
    }
   ],
   "seed": [
@@ -31450,7 +31537,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 291,
+  "components_count": 293,
   "hooks": [
    {
     "name": "useContacts",
@@ -32214,8 +32301,8 @@
   },
   {
    "module": "src/components",
-   "files": 257,
-   "lines": 48494,
+   "files": 259,
+   "lines": 48599,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -33635,8 +33722,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 288,
-   "lines": 22370,
+   "files": 292,
+   "lines": 22968,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -34011,11 +34098,14 @@
      "src/components/compras/ContractModal.tsx",
      "supabase/functions/generate-contract-pdf/index.ts"
     ],
-    "delete": [
-     "src/components/compras/ContractModal.tsx"
-    ],
     "insert": [
      "src/components/compras/ContractModal.tsx"
+    ],
+    "ref": [
+     "src/components/compras/contract/replaceContractItems.ts"
+    ],
+    "delete": [
+     "src/components/compras/contract/replaceContractItems.ts"
     ]
    },
    "contract_penalties": {
@@ -52163,6 +52253,12 @@
     "field": "status",
     "value": "succeeded",
     "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+    "field": "status",
+    "value": "pago",
+    "kind": "compara"
    }
   ],
   "calc_fns": [
@@ -54287,6 +54383,22 @@
    {
     "file": "src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts",
     "name": "all colors use text- prefix"
+   },
+   {
+    "file": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+    "name": "replaceContractItems"
+   },
+   {
+    "file": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+    "name": "insere os novos antes de apagar e preserva os recém-inseridos"
+   },
+   {
+    "file": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+    "name": "não apaga os itens antigos quando o insert falha"
+   },
+   {
+    "file": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+    "name": "sem itens novos apaga todos os itens do contrato"
    },
    {
     "file": "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
@@ -67866,15 +67978,6 @@
     "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
    },
    {
-    "name": "sync_budget_payment_trigger",
-    "when": "AFTER INSERT OR UPDATE OF STATUS",
-    "table": "pagamentos",
-    "function": "sync_budget_on_payment",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
-   },
-   {
     "name": "tr_budget_transaction_update",
     "when": "AFTER INSERT",
     "table": "budget_transactions",
@@ -68274,15 +68377,15 @@
    "has_role": {
     "args": "_user_id uuid, _role app_role",
     "returns": "boolean",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260805160000_fix_frontend_comms.sql",
+    "lang": "sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_has boolean; BEGIN IF _user_id IS NULL THEN RETURN false; END IF; BEGIN SELECT EXISTS(SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role) INTO v_has; EXCEPTION WHEN OTHERS THEN v_has := false; END; RETURN COALESCE(v_has, false); END;",
+    "body": "SELECT CASE WHEN _user_id IS DISTINCT FROM auth.uid() AND COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('none', 'postgres', 'service_role', 'supabase_admin') THEN false ELSE EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role ) END",
     "raises": [],
     "tables": [
-     "user_roles",
-     "v_has"
+     "auth",
+     "user_roles"
     ]
    },
    "handle_new_user": {
@@ -68933,17 +69036,18 @@
    },
    "sync_budget_on_payment": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE(NEW.cost_center_id, (SELECT cost_center_id FROM public.pedidos WHERE id = NEW.pedido_id LIMIT 1)); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
+    "search_path": true,
+    "body": "DECLARE v_cost_center_id UUID; BEGIN v_cost_center_id := COALESCE( NEW.cost_center_id, (SELECT s.cost_center_id FROM public.pedidos pe JOIN public.solicitacoes s ON s.id = pe.solicitacao_id WHERE pe.id = NEW.pedido_id LIMIT 1) ); IF v_cost_center_id IS NOT NULL THEN IF (NEW.status = 'pago' AND (OLD.status IS NULL OR OLD.status != 'pago')) THEN UPDATE public.department_budgets SET valor_utilizado = valor_utilizado + NEW.valor, valor_comprometido = GREATEST(0, valor_comprometido - NEW.valor) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM NEW.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM NEW.created_at)); END IF; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
      "department_budgets",
-     "pedidos"
+     "pedidos",
+     "solicitacoes"
     ]
    },
    "update_cost_center_budget_totals": {
@@ -69078,15 +69182,16 @@
     ]
    },
    "user_belongs_to_tenant": {
-    "args": "_user_id UUID, _tenant_id UUID",
-    "returns": "BOOLEAN",
+    "args": "_user_id uuid, _tenant_id uuid",
+    "returns": "boolean",
     "lang": "sql",
-    "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "SELECT EXISTS ( SELECT 1 FROM public.user_tenants WHERE user_id = _user_id AND tenant_id = _tenant_id );",
+    "body": "SELECT CASE WHEN _user_id IS DISTINCT FROM auth.uid() AND COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('none', 'postgres', 'service_role', 'supabase_admin') THEN false ELSE EXISTS ( SELECT 1 FROM public.user_tenants WHERE user_id = _user_id AND tenant_id = _tenant_id ) END",
     "raises": [],
     "tables": [
+     "auth",
      "user_tenants"
     ]
    },
@@ -69157,30 +69262,36 @@
     ]
    },
    "get_pagamentos_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519113828_695e1995-1455-40b1-a23e-ea80aa91e7db.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; v_hoje DATE := CURRENT_DATE; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado', 'agendado')), 'atrasados', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado') AND data_vencimento < v_hoje), 'pagos', COUNT(*) FILTER (WHERE status = 'pago'), 'valorPendente', COALESCE(SUM(valor - COALESCE(valor_pago, 0)) FILTER (WHERE status NOT IN ('pago', 'cancelado')), 0), 'valorPago', COALESCE(SUM(valor) FILTER (WHERE status = 'pago'), 0) ) INTO result FROM pagamentos WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; v_hoje DATE := CURRENT_DATE; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado', 'agendado')), 'atrasados', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado') AND data_vencimento < v_hoje), 'pagos', COUNT(*) FILTER (WHERE status = 'pago'), 'valorPendente', COALESCE(SUM(valor - COALESCE(valor_pago, 0)) FILTER (WHERE status NOT IN ('pago', 'cancelado')), 0), 'valorPago', COALESCE(SUM(valor) FILTER (WHERE status = 'pago'), 0) ) INTO result FROM pagamentos WHERE organi …",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "pagamentos",
      "result"
     ]
    },
    "get_fornecedores_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519113828_695e1995-1455-40b1-a23e-ea80aa91e7db.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'ativos', COUNT(*) FILTER (WHERE status = 'ativo'), 'integradosApi', COUNT(*) FILTER (WHERE integrado_api = true), 'mediaAvaliacao', COALESCE(AVG(avaliacao), 0) ) INTO result FROM fornecedores WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'ativos', COUNT(*) FILTER (WHERE status = 'ativo'), 'integradosApi', COUNT(*) FILTER (WHERE integrado_api = true), 'mediaAvaliacao', COALESCE(AVG(avaliacao), 0) ) INTO result FROM fornecedores WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
      "fornecedores",
+     "get_user_grupo_id",
      "result"
     ]
    },
@@ -69188,10 +69299,10 @@
     "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_start_date TIMESTAMP WITH TIME ZONE; v_current_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW()); v_prev_month_start TIMESTAMP WITH TIME ZONE := date_trunc('month', NOW() - INTERVAL '1 month'); v_prev_month_end TIMESTAMP WITH TIME ZONE := (date_trunc('month', NOW()) - INTERVAL '1 second'); v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501' …",
+    "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_interval INTERVAL; v_start_date TIMESTAMP WITH TIME ZONE; v_prev_start TIMESTAMP WITH TIME ZONE; v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) …",
     "raises": [
      "not authenticated",
      "forbidden"
@@ -69199,11 +69310,13 @@
     "tables": [
      "categorias",
      "cotacoes",
-     "current_period",
      "generate_series",
      "get_user_grupo_id",
      "pagamentos",
+     "ped",
      "pedidos",
+     "sol",
+     "sol_agg",
      "solicitacoes",
      "v_cotacao_status",
      "v_kpis",
@@ -69214,29 +69327,35 @@
     ]
    },
    "get_pedidos_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114341_5c605c1c-3e11-476f-bf17-93055d515e77.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado')), 'emTransito', COUNT(*) FILTER (WHERE status IN ('em_transito', 'enviado')), 'entregues', COUNT(*) FILTER (WHERE status = 'entregue'), 'valorTotal', COALESCE(SUM(valor_total), 0) ) INTO result FROM pedidos WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status IN ('pendente', 'aprovado')), 'emTransito', COUNT(*) FILTER (WHERE status IN ('em_transito', 'enviado')), 'entregues', COUNT(*) FILTER (WHERE status = 'entregue'), 'valorTotal', COALESCE(SUM(valor_total), 0) ) INTO result FROM pedidos WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "pedidos",
      "result"
     ]
    },
    "get_solicitacoes_kpis": {
-    "args": "p_organization_id UUID",
-    "returns": "JSONB",
+    "args": "p_organization_id uuid",
+    "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260519114341_5c605c1c-3e11-476f-bf17-93055d515e77.sql",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE result JSONB; BEGIN SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status = 'pendente'), 'emCotacao', COUNT(*) FILTER (WHERE status = 'em_cotacao'), 'aprovadas', COUNT(*) FILTER (WHERE status = 'aprovada'), 'concluidas', COUNT(*) FILTER (WHERE status = 'concluida'), 'valorTotal', COALESCE(SUM(valor_estimado), 0) ) INTO result FROM solicitacoes WHERE organization_id = p_organization_id; RETURN result; END;",
-    "raises": [],
+    "body": "DECLARE result JSONB; BEGIN IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; SELECT jsonb_build_object( 'total', COUNT(*), 'pendentes', COUNT(*) FILTER (WHERE status = 'pendente'), 'emCotacao', COUNT(*) FILTER (WHERE status = 'em_cotacao'), 'aprovadas', COUNT(*) FILTER (WHERE status = 'aprovada'), 'concluidas', COUNT(*) FILTER (WHERE status = 'concluida'), 'valorTotal', COALESCE(SUM(valor_estimado), 0) ) INTO result FROM solicitacoes WHERE organization_id = p_organization_id; RETURN result; END;",
+    "raises": [
+     "forbidden"
+    ],
     "tables": [
+     "get_user_grupo_id",
      "result",
      "solicitacoes"
     ]
@@ -70760,6 +70879,22 @@
      "vault"
     ]
    },
+   "fill_tenant_id_from_profile": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "declare v_uid uuid := auth.uid(); v_tenant uuid; begin if v_uid is null then return new; end if; if new.tenant_id is not null and exists (select 1 from public.tenants t where t.id = new.tenant_id) and not exists (select 1 from public.tenants t where t.organization_id = new.tenant_id) then return new; end if; select ut.tenant_id into v_tenant from public.user_tenants ut where ut.user_id = v_uid and ut.is_default order by ut.joined_at limit 1; if v_tenant is null then select p.tenant_id into v_tenant from public.profiles p where p.user_id = v_uid or p.id = v_uid order by (p.user_id = v_uid) desc nulls last limit 1; end if; if v_tenant is not null then new.tenant_id := v_tenant; end if; return …",
+    "raises": [],
+    "tables": [
+     "profiles",
+     "tenants",
+     "user_tenants",
+     "v_tenant"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -71032,12 +71167,32 @@
    {
     "function": "get_compras_dashboard_metrics",
     "msg": "not authenticated",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
    },
    {
     "function": "get_compras_dashboard_metrics",
     "msg": "forbidden",
-    "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "function": "get_fornecedores_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_pagamentos_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_pedidos_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "get_solicitacoes_kpis",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
    }
   ],
   "db_generated": [
@@ -72543,7 +72698,8 @@
       "compara:src/pages/catalogo-xbz/XbzPedidosTab.tsx",
       "compara:src/pages/pagamentos/Pagamentos.tsx",
       "compara:supabase/functions/weekly-report/index.ts",
-      "compara:supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
+      "compara:supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql",
+      "compara:supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
      ],
      "cancelado": [
       "compara:src/components/pagamentos/PagamentoFinancialDashboard.tsx",
@@ -75537,7 +75693,10 @@
    "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql",
    "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
    "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
-   "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
+   "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+   "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+   "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
   ],
   "security_definer_fns": [
    "_invoke_edge_function",
@@ -75593,6 +75752,7 @@
    "ensure_telemetry_logs_partition",
    "exec_sql",
    "execute_read_query",
+   "fill_tenant_id_from_profile",
    "find_approval_rule",
    "fx_convert",
    "generate_sequential_number",
@@ -79251,6 +79411,46 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "fill_tenant_id_from_profile",
+    "objkind": "function",
+    "roles": "public, anon, authenticated",
+    "src": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "user_belongs_to_tenant",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "user_belongs_to_tenant",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
    }
   ],
   "guards": [
@@ -82149,13 +82349,6 @@
    },
    {
     "kind": "segurança",
-    "msg": "função `sync_budget_on_payment` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
-    "where": [
-     "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
-    ]
-   },
-   {
-    "kind": "segurança",
     "msg": "função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
     "where": [
      "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql"
@@ -84787,7 +84980,7 @@
   },
   "src/components/compras/ContractModal.tsx": {
    "path": "src/components/compras/ContractModal.tsx",
-   "lines": 536,
+   "lines": 519,
    "exports": [
     "function ContractModal"
    ],
@@ -84799,14 +84992,6 @@
     {
      "table": "contracts",
      "op": "update"
-    },
-    {
-     "table": "contract_items",
-     "op": "delete"
-    },
-    {
-     "table": "contract_items",
-     "op": "insert"
     },
     {
      "table": "contract_history",
@@ -87029,6 +87214,39 @@
    "lines": 118,
    "exports": [
     "const ContractSLASection"
+   ]
+  },
+  "src/components/compras/contract/replaceContractItems.ts": {
+   "path": "src/components/compras/contract/replaceContractItems.ts",
+   "lines": 42,
+   "exports": [
+    "function replaceContractItems"
+   ],
+   "tables": [
+    {
+     "table": "contract_items",
+     "op": "ref"
+    },
+    {
+     "table": "contract_items",
+     "op": "delete"
+    }
+   ],
+   "table_cols": {
+    "contract_items": [
+     "contract_id"
+    ]
+   }
+  },
+  "src/components/compras/contract/__tests__/replaceContractItems.test.ts": {
+   "path": "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+   "lines": 80,
+   "is_test": true,
+   "tests": [
+    "replaceContractItems",
+    "insere os novos antes de apagar e preserva os recém-inseridos",
+    "não apaga os itens antigos quando o insert falha",
+    "sem itens novos apaga todos os itens do contrato"
    ]
   },
   "src/components/compras/dashboard/UrgencyDetailsSheet.tsx": {
@@ -106741,6 +106959,32 @@
    "lines": 184,
    "uses_service_role": true
   },
+  "supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql": {
+   "path": "supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql",
+   "lines": 39
+  },
+  "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql": {
+   "path": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+   "lines": 241,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql": {
+   "path": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+   "lines": 83,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql": {
+   "path": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+   "lines": 235,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "pago",
+     "kind": "compara"
+    }
+   ],
+   "uses_service_role": true
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -106961,10 +107205,50 @@
   }
  },
  "git": {
-  "sha": "db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06",
+  "sha": "6c530a0630ca2c73c17b3d51e2bca90ff8c1da16",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6c530a0",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)",
+    "files": [
+     "docs/agentes/secdef-classificacao.md",
+     "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+    ]
+   },
+   {
+    "sha": "f6c2d75",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)",
+    "files": [
+     "src/components/compras/ContractModal.tsx",
+     "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+     "src/components/compras/contract/replaceContractItems.ts",
+     "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql"
+    ]
+   },
+   {
+    "sha": "9eefca6",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)",
+    "files": [
+     "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
+    ]
+   },
+   {
+    "sha": "2703200",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)",
+    "files": [
+     "supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql"
+    ]
+   },
    {
     "sha": "db1dfe5",
     "date": "2026-11-12",
@@ -107266,85 +107550,15 @@
      "src/tests/contracts-elite.test.ts",
      "supabase/functions/scim-v2/index.ts"
     ]
-   },
-   {
-    "sha": "3f0aa49",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "chore(automacao): conecta testes, grafo e manutenção aos gatilhos (#32)",
-    "files": [
-     ".github/workflows/automation-local.yml",
-     ".gitignore",
-     "docs/AUTOMACAO_LOCAL.md",
-     "docs/ci/README.md",
-     "graphify.local.json",
-     "package.json",
-     "scripts/automation.config.json",
-     "scripts/automation.mjs",
-     "scripts/automation.unit.mjs",
-     "scripts/ci/maintenance.unit.mjs",
-     "scripts/graphify-local.mjs",
-     "scripts/graphify-local.unit.mjs",
-     "scripts/maintenance/README.md",
-     "scripts/maintenance/config.example.json",
-     "scripts/maintenance/config.json",
-     "scripts/maintenance/lib.mjs",
-     "scripts/maintenance/maintenance.unit.mjs",
-     "scripts/maintenance/run.mjs",
-     "scripts/maintenance/run.sh",
-     "scripts/maintenance/typecheck.mjs"
-    ]
-   },
-   {
-    "sha": "491c6cf",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)",
-    "files": [
-     "tests-e2e/auth-navigation.spec.ts",
-     "tests-e2e/critical-flows.spec.ts",
-     "tests-e2e/elite-validation.spec.ts",
-     "tests-e2e/production-ready.spec.ts",
-     "tests-e2e/workflow-advanced.spec.ts"
-    ]
-   },
-   {
-    "sha": "90c35fb",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(tipos): corrige contratos do painel de saúde e relatório (#33)",
-    "files": [
-     "package.json",
-     "src/pages/admin/HealthDashboard.tsx",
-     "src/pages/admin/__tests__/HealthDashboard.test.tsx",
-     "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
-     "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
-    ]
-   },
-   {
-    "sha": "7ad9425",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)",
-    "files": [
-     "supabase/functions/dependency-health/index.test.ts",
-     "supabase/functions/run-audit/rls_test.ts",
-     "supabase/functions/telemetry/index.test.ts",
-     "supabase/functions/workflow-engine/fuzz.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "package.json",
-    3
-   ],
-   [
-    "src/tests/contracts-elite.test.ts",
+    "docs/agentes/secdef-classificacao.md",
     2
    ],
    [
-    "scripts/automation.config.json",
+    "src/tests/contracts-elite.test.ts",
     2
    ],
    [
@@ -107364,10 +107578,6 @@
     2
    ],
    [
-    "docs/ci/README.md",
-    2
-   ],
-   [
     "src/components/compras/ExecutiveDashboard.tsx",
     2
    ],
@@ -107376,7 +107586,39 @@
     2
    ],
    [
+    "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+    1
+   ],
+   [
+    "src/components/compras/ContractModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/contract/__tests__/replaceContractItems.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/contract/replaceContractItems.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql",
+    1
+   ],
+   [
     "bun.lock",
+    1
+   ],
+   [
+    "package.json",
     1
    ],
    [
@@ -107389,30 +107631,6 @@
    ],
    [
     "src/pages/auth/Auth.tsx",
-    1
-   ],
-   [
-    "scripts/ci/encoding-src.unit.mjs",
-    1
-   ],
-   [
-    "inventario/estado/edges.json",
-    1
-   ],
-   [
-    "supabase/functions/_shared/logger.ts",
-    1
-   ],
-   [
-    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
-    1
-   ],
-   [
-    "src/lib/__tests__/exportData.csv.test.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     1
    ]
   ]

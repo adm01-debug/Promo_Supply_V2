@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `db1dfe5c72` · branch `main` · 2026-11-13 00:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6c530a0630` · branch `main` · 2026-11-13 01:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -688,7 +688,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_solicitacao_budget_sync | AFTER INSERT OR UPDATE OR DELETE | `solicitacoes` | `handle_solicitacao_budget_change` |  |
 | trg_pedido_budget_sync | AFTER INSERT OR UPDATE | `pedidos` | `handle_pedido_budget_realization` |  |
 | audit_pagamentos_trigger | AFTER INSERT OR UPDATE OR DELETE | `pagamentos` | `audit_pagamento_changes` |  |
-| sync_budget_payment_trigger | AFTER INSERT OR UPDATE OF STATUS | `pagamentos` | `sync_budget_on_payment` |  |
 | tr_budget_transaction_update | AFTER INSERT | `budget_transactions` | `update_cost_center_budget_totals` |  |
 | update_dashboard_layouts_updated_at | BEFORE UPDATE | `dashboard_layouts` | `update_updated_at_column` |  |
 | trg_dashboard_filter_favorites_updated_at | BEFORE UPDATE | `dashboard_filter_favorites` | `update_updated_at_column` |  |
@@ -747,8 +746,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `get_db_health_snapshot` | access denied: admin role required | `supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql` |
 | `execute_read_query` | Somente EXPLAIN é permitido | `supabase/migrations/20261107150000_execute_read_query.sql` |
 | `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/migrations/20261107150000_execute_read_query.sql` |
-| `get_compras_dashboard_metrics` | not authenticated | `supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql` |
-| `get_compras_dashboard_metrics` | forbidden | `supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql` |
+| `get_compras_dashboard_metrics` | not authenticated | `supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql` |
+| `get_compras_dashboard_metrics` | forbidden | `supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql` |
+| `get_fornecedores_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
+| `get_pagamentos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
+| `get_pedidos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
+| `get_solicitacoes_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -1020,7 +1023,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `open` | compara | `supabase/functions/punchout-receive/index.ts` |
 | `status` | `opened` | escreve, filtra | `supabase/functions/punchout-receive/index.ts`<br>`supabase/functions/punchout-setup/index.ts` |
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
-| `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +3 |
+| `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +8 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +13 |
@@ -2266,7 +2269,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2611 testes em 120 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2615 testes em 121 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2372,6 +2375,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
+| `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |

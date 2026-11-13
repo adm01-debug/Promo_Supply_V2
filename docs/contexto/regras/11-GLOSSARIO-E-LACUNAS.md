@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `db1dfe5c72` · branch `main` · 2026-11-13 00:19 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6c530a0630` · branch `main` · 2026-11-13 01:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -448,7 +448,6 @@
 | segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
 | segurança | função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
 | segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
-| segurança | função `sync_budget_on_payment` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
 | segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
 | segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
 | segurança | função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql` |
