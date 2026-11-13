@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, safeErrorMessage } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { safeTruncate } from "../_shared/logLevel.ts";
 
@@ -700,7 +700,7 @@ Deno.serve(async (req) => {
     if (req.method === "POST") return await handlePost(req);
     return json({ error: "Method not allowed" }, 405);
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = safeErrorMessage(error);
     console.error(`[${requestId}] Dependency health error:`, msg);
     return json({ error: msg }, 500);
   }

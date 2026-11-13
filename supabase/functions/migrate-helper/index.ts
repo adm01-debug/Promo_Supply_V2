@@ -30,6 +30,7 @@ Deno.serve(async (req) => {
     }
     return new Response(JSON.stringify({ error: "unknown_action" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
   } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    const safeError = (e instanceof Error ? e.message : String(e)).split("\n")[0];
+    return new Response(JSON.stringify({ error: safeError }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });

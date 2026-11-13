@@ -115,6 +115,66 @@ export const responses = {
 };
 
 /**
+ * Remove HTML tags de uma string, inclusive "<" / ">" remanescentes que sobraram
+ * de tag quebrada (ex.: "<script" sem ">" de fechamento). Implementacao por
+ * estado (sem regex) para ser reconhecida como sanitizacao completa pela query
+ * CodeQL js/incomplete-multi-character-sanitization: tudo que comeca em "<" e
+ * descartado ate o ">" de fechamento; "<"/">" avulsos sao removidos.
+ */
+export function stripHtml(input: string): string {
+  let out = "";
+  let inTag = false;
+  for (const ch of input) {
+    if (ch === "<") {
+      inTag = true;
+      continue;
+    }
+    if (ch === ">") {
+      // Fecha tag pendente; ">" avulso também é descartado (mesmo comportamento
+      // do antigo remove final de "<"/">").
+      inTag = false;
+      continue;
+    }
+    if (inTag) continue;
+    out += ch;
+  }
+  return out.trim();
+}
+
+/**
+ * Converte um erro desconhecido em mensagem segura para devolver ao cliente,
+ * sem stack trace nem caminhos internos (previne js/stack-trace-exposure).
+ */
+export function safeErrorMessage(err: unknown): string {
+  let raw: string;
+  if (err instanceof Error) {
+    raw = err.message;
+  } else if (typeof err === "object" && err !== null) {
+    raw = safeSerialize(err);
+  } else {
+    raw = String(err);
+  }
+  const firstLine = raw.split("\n")[0].trim();
+  return firstLine ? firstLine : "Internal error";
+}
+
+/** Serializa objeto sem expor stack trace nem falhar em referência circular. */
+function safeSerialize(value: object): string {
+  try {
+    const seen = new WeakSet<object>();
+    return JSON.stringify(value, (_key, v) => {
+      if (typeof v === "object" && v !== null) {
+        if (seen.has(v)) return "[Circular]";
+        seen.add(v);
+      }
+      return v;
+    });
+  } catch {
+    return "Internal error";
+  }
+}
+
+/**
  * @deprecated M-02: use `getAuthUser` + `getTenantId` (que resolvem tenant a partir do usuário).
  * Mantido apenas para não quebrar callers legados durante a migração.
  * A partir desta versão, o header `x-tenant-id` é ignorado — sempre lança se
