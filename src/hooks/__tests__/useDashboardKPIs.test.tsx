@@ -75,3 +75,41 @@ describe('useDashboardKPIs — parâmetro da organização', () => {
     expect(rpc).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * Regressão: economiaPercentual passava por Math.round antes de o card formatar
+ * com 1 casa → R$ 873,60 de economia sobre R$ 296.205 de volume (grupo real,
+ * período '1y') aparecia "0.0%".
+ */
+describe('useDashboardKPIs — economia percentual sem arredondar', () => {
+  beforeEach(() => {
+    rpc.mockReset();
+    auth.organizationId = 'org-grupo';
+  });
+
+  it.each([
+    [296205, '0.3'],
+    [176035, '0.5'],
+  ])('R$ 873,60 sobre volume %d → %s%%', async (volume, esperado) => {
+    rpc.mockResolvedValue({
+      data: {
+        ...rpcPayload,
+        kpis: { ...rpcPayload.kpis, volume: { current: volume, previous: 0 }, economia: { current: 873.6, previous: 0 } },
+      },
+      error: null,
+    });
+    const { result } = renderHook(() => useDashboardKPIs(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.kpis.economiaPercentual).toBeGreaterThan(0);
+    expect(result.current.kpis.economiaPercentual.toFixed(1)).toBe(esperado);
+  });
+
+  it('volume zero → 0 (sem divisão por zero)', async () => {
+    rpc.mockResolvedValue({ data: { ...rpcPayload, kpis: { ...rpcPayload.kpis, economia: { current: 873.6, previous: 0 } } }, error: null });
+    const { result } = renderHook(() => useDashboardKPIs(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.kpis.economiaPercentual).toBe(0);
+  });
+});

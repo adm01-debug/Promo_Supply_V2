@@ -51,12 +51,12 @@
       "pending_approval": "Pendiente Aprobación",
       "active_quotes": "Cotizaciones Activas",
       "completed_orders": "Pedidos Completados",
-      "total_spend": "Gasto Total",
+      "total_spend": "Volumen en el Período",
       "saving": "Ahorro Total",
       "sla": "Tasa SLA",
       "subtitles": {
         "pending": "Solicitudes pendientes",
-        "volume": "Total facturado",
+        "volume": "Pedidos emitidos en el período",
         "economy": "del volumen total",
         "sla": "Nivel de servicio"
       }

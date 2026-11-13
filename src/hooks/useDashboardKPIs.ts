@@ -110,8 +110,9 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         totalPedidos: rpcData.pipeline.pedido + rpcData.pipeline.entregue,
         pendingApprovals: 0,
         economiaGerada: rpcData.kpis.economia.current,
-        economiaPercentual: rpcData.kpis.volume.current > 0 
-          ? Math.round((rpcData.kpis.economia.current / rpcData.kpis.volume.current) * 100) 
+        // Sem arredondar aqui: o card formata com 1 casa (R$ 873,60 / R$ 296.205 = 0,3%, não 0%)
+        economiaPercentual: rpcData.kpis.volume.current > 0
+          ? (rpcData.kpis.economia.current / rpcData.kpis.volume.current) * 100
           : 0,
         avgSla: 1.8,
         taxaSlaReal: 85,

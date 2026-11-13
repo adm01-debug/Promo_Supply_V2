@@ -68,6 +68,14 @@ interface UrgentDashboardItem {
   comprador?: string | null;
 }
 
+// Mesmos valores do filtro "Período" (get_compras_dashboard_metrics p_period)
+const PERIOD_LABELS: Record<string, string> = {
+  '1m': 'último mês',
+  '3m': 'últimos 3 meses',
+  '6m': 'últimos 6 meses',
+  '1y': 'último ano',
+};
+
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton variant="card" />}>
     {children}
@@ -171,7 +179,9 @@ const ComprasDashboard = () => {
             <EnhancedKpiCard
               title={t('dashboard.kpis.saving')}
               value={kpis.economiaPercentual}
-              previousValue={((kpis.comparisons.economia.previous / kpis.comparisons.volume.previous) * 100) || 0}
+              previousValue={kpis.comparisons.volume.previous > 0
+                ? (kpis.comparisons.economia.previous / kpis.comparisons.volume.previous) * 100
+                : 0}
               sparklineData={kpis.comparisons.economia.sparkline}
               icon={PiggyBank}
               color="emerald"
@@ -241,6 +251,7 @@ const ComprasDashboard = () => {
               monthlyTrends={kpis.charts.monthlyTrends}
               cotacaoStatus={kpis.charts.cotacaoStatus}
               topCategories={kpis.charts.topCategories}
+              periodLabel={PERIOD_LABELS[currentFilters.period]}
             />
           </LazyPanel>
         );
@@ -256,7 +267,7 @@ const ComprasDashboard = () => {
       case 'sourcing-intelligence': return <LazyPanel><SourcingIntelligenceWidget /></LazyPanel>;
       default: return null;
     }
-  }, [loading, kpis, pipeline, urgentItems, t, navigate]);
+  }, [loading, kpis, pipeline, urgentItems, t, navigate, currentFilters.period]);
 
   return (
     <ModuleErrorBoundary module="dashboard">
