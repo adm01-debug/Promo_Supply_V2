@@ -1621,7 +1621,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
             ["site_url", cfg.get("site_url")], ["providers habilitados", providers], ["jwt_exp (s)", cfg.get("jwt_exp")],
             ["signup desabilitado", cfg.get("disable_signup")], ["confirmação de e-mail", cfg.get("mailer_autoconfirm") is False],
             ["MFA TOTP", cfg.get("mfa_totp_enroll_enabled")], ["hooks", [k for k, v in hooks.items() if k.endswith("_enabled") and v]]]))
-        md.append("\n## Configuração completa (segredos redigidos)\n\n```json\n" + dumps(cfg) + "\n```\n")
+        md.append("\n## Configuração completa (segredos redigidos)\n\n```json\n" + dumps(redact(cfg)) + "\n```\n")
     else:
         md.append("\n_Configuração indisponível (Management API desabilitada)._\n")
     write(OUT / "auth.md", "\n".join(md))
@@ -1649,7 +1649,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
             ["projeto", (api_.get("project") or {}).get("name")], ["região", (api_.get("project") or {}).get("region")], ["URL", api_["url"]],
             ["schemas expostos (PostgREST)", pr.get("db_schema")], ["max_rows (PostgREST)", pr.get("max_rows")],
             ["extra_search_path", pr.get("db_extra_search_path")], ["PITR", (api_.get("backups_config") or {}).get("pitr_enabled")],
-            ["branches", len(api_.get("branches") or [])]]) + "\n```json\n" + dumps(cfg) + "\n```\n")
+            ["branches", len(api_.get("branches") or [])]]) + "\n```json\n" + dumps(redact(cfg)) + "\n```\n")
     else:
         write(OUT / "edge-functions.md", "# Edge Functions\n\n_Management API desabilitada: defina SUPABASE_PROJECT_REF e SUPABASE_ACCESS_TOKEN._\n")
         write(OUT / "project-config.md", "# Configuração do projeto\n\n_Management API desabilitada._\n")
