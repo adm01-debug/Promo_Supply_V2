@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9c73ed63b9` · branch `main` · 2026-11-13 17:22 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53f69f3081` · branch `main` · 2026-11-13 18:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -295,7 +295,7 @@
 | status | valor `open` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/punchout-receive/index.ts` |
 | status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
-| status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
+| status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | status | valor `succeeded` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql` |
 | status | valor `blocked` para `qualification_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/scorecard/supplierScorecardData.ts`<br>`compara:src/pages/portal-fornecedor/PortalFornecedor.tsx` |
 | status | valor `qualified` para `qualification_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/qualificacao/QualificacaoFornecedores.tsx` |
@@ -308,8 +308,8 @@
 | status | valor `unmatched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/alert-dispatcher/index.ts` |
 | status | valor `dispatch_error` para `sefaz_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/fiscal-orchestrator/index.ts`<br>`escreve:supabase/functions/fiscal-orchestrator/index.ts` |
-| status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
-| status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
+| status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | coluna | coluna `categorias_atendidas` usada no código não existe no schema de `fornecedores` |  |
 | coluna | coluna `action` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `actor_id` usada no código não existe no schema de `audit_logs` |  |
@@ -393,7 +393,6 @@
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'ALTER TABLE public.%I ALTER COLUMN %I TYPE character(3) USING (CASE WHEN %I = %L THEN %L ELSE %I END)::character(3)', r.table_name, r.column_name, r.column_name, 'B', 'BRL', r.column_name);` | `supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql` |
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `execute format( 'create trigger a_fill_tenant_id before insert on public.%I ' 'for each row execute function public.fill_tenant_id_from_profile()', t);` | `supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql` |
 | segurança | função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql` |
-| segurança | função `handle_solicitacao_budget_change` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
 | segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
 | segurança | função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
 | segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |

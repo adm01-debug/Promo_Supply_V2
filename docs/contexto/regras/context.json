@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9c73ed63b983afdb413c304789d43420f9434821",
+  "sha": "53f69f3081dce1536f7b0992712325a813695632",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 17:22 UTC",
-  "files_total": 1192,
-  "code_files": 1052,
-  "code_lines": 183129,
+  "generated_at": "2026-11-13 18:45 UTC",
+  "files_total": 1200,
+  "code_files": 1060,
+  "code_lines": 184596,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "73c77bd3c6260bcd",
+ "facts_hash": "f6a0388a0493b362",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -225,9 +225,9 @@
   ],
   "package_manager": "bun",
   "languages": {
+   ".tsx": 346,
    ".ts": 344,
-   ".tsx": 344,
-   ".sql": 294,
+   ".sql": 300,
    ".mjs": 63,
    ".py": 5,
    ".js": 2
@@ -1019,7 +1019,6 @@
      }
     ],
     "constraints": [
-     "constraint fornecedores_cnpj_valid CHECK (cnpj IS NULL OR public.is_valid_cnpj(cnpj)) NOT VALID",
      "constraint fornecedores_telefone_e164_chk CHECK (telefone IS NULL OR telefone ~ '^\\+[1-9]\\d{9,14}$') NOT VALID"
     ],
     "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql",
@@ -15464,16 +15463,6 @@
     "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
    },
    {
-    "name": "Users can update their own pending requests",
-    "table": "solicitacoes",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(auth.uid() = solicitante_id AND status = 'pendente') OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
     "name": "Only admins can delete requests",
     "table": "solicitacoes",
     "cmd": "DELETE",
@@ -16494,16 +16483,6 @@
     "src": "supabase/migrations/20260323120656_8f201ce2-2e5e-4351-8598-f677f245ede8.sql"
    },
    {
-    "name": "Buyers can insert produtos",
-    "table": "produtos",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "public.has_role(auth.uid(), 'buyer')",
-    "src": "supabase/migrations/20260402112838_4be4ac6b-26f1-456a-bcef-440be6bd6565.sql"
-   },
-   {
     "name": "Users can upload documents",
     "table": "storage.objects",
     "cmd": "INSERT",
@@ -16714,16 +16693,6 @@
     "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
    },
    {
-    "name": "Users can manage their organization rules",
-    "table": "approval_rules",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
-   },
-   {
     "name": "Users can view their organization delegations",
     "table": "approval_delegations",
     "cmd": "SELECT",
@@ -16764,29 +16733,9 @@
     "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
    },
    {
-    "name": "Users can manage their organization categories",
-    "table": "categorias",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
-   },
-   {
     "name": "Users can view their organization budgets",
     "table": "department_budgets",
     "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213555_f76282b1-3f3a-4b2d-a0f7-5e22efb9180c.sql"
-   },
-   {
-    "name": "Users can manage their organization budgets",
-    "table": "department_budgets",
-    "cmd": "ALL",
     "roles": "public",
     "mode": "permissive",
     "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
@@ -16906,16 +16855,6 @@
    {
     "name": "tenant_isolation_licitacao_lances",
     "table": "licitacao_lances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_approval_steps",
-    "table": "approval_steps",
     "cmd": "ALL",
     "roles": "authenticated",
     "mode": "permissive",
@@ -17304,36 +17243,6 @@
     "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
    },
    {
-    "name": "tenant_isolation_solicitacoes",
-    "table": "solicitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_cost_centers",
-    "table": "cost_centers",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "profiles_tenant_isolation",
-    "table": "profiles",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172611_af1bdfd9-5517-42da-a418-341ebd3cc94e.sql"
-   },
-   {
     "name": "tenant_isolation_produtos",
     "table": "produtos",
     "cmd": "SELECT",
@@ -17361,16 +17270,6 @@
     "mode": "permissive",
     "using": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Estoque: gerenciar da própria organização",
-    "table": "estoque",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
@@ -17441,16 +17340,6 @@
     "mode": "permissive",
     "using": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
     "check": "",
-    "src": "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql"
-   },
-   {
-    "name": "Users can manage product suppliers within tenant",
-    "table": "produto_fornecedores",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
-    "check": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
     "src": "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql"
    },
    {
@@ -18602,6 +18491,226 @@
     "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "profiles_tenant_isolation",
+    "table": "profiles",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_solicitacoes",
+    "table": "solicitacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_select_grupo",
+    "table": "solicitacoes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_proprias_nao_aprovadas",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "solicitante_id = auth.uid() AND status IN ('pendente', 'rejeitada')",
+    "check": "solicitante_id = auth.uid() AND status IN ('pendente', 'cancelada')",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_admin_coord",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_comprador_gera_ordem",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'aprovada'",
+    "check": "public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'em_andamento'",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_insert_papeis",
+    "table": "estoque",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_update_papeis",
+    "table": "estoque",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "check": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_delete_admin_coord",
+    "table": "estoque",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "categorias_escrita_admin_coord",
+    "table": "categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_rules_escrita_admin_coord",
+    "table": "approval_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_steps",
+    "table": "approval_steps",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_select_grupo",
+    "table": "approval_steps",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_escrita_admin_coord",
+    "table": "approval_steps",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_insert_workflow_proprio",
+    "table": "approval_steps",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.approval_workflows w JOIN public.solicitacoes s ON s.id = w.solicitacao_id WHERE w.id = approval_steps.workflow_id AND s.solicitante_id = auth.uid() )",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_skip_workflow_rejeitado",
+    "table": "approval_steps",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.status = 'rejected' )",
+    "check": "status = 'skipped'",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_cost_centers",
+    "table": "cost_centers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "cost_centers_select_grupo",
+    "table": "cost_centers",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "cost_centers_escrita_admin_coord",
+    "table": "cost_centers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "produto_fornecedores_escrita_papeis",
+    "table": "produto_fornecedores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "check": "public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "licitacoes_select_comprador",
+    "table": "licitacoes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "pagamentos_select_comprador",
+    "table": "pagamentos",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "triggers": [
@@ -18795,15 +18904,6 @@
     "src": "supabase/migrations/20260315151013_dfff8719-f695-4626-98f6-1380350d5d9a.sql"
    },
    {
-    "name": "auto_approve_low_value",
-    "when": "BEFORE INSERT",
-    "table": "solicitacoes",
-    "function": "auto_approve_low_value_solicitacao",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260315151901_0b81998e-797d-4956-96dd-95829ea06c24.sql"
-   },
-   {
     "name": "update_department_budgets_updated_at",
     "when": "BEFORE UPDATE",
     "table": "department_budgets",
@@ -18844,15 +18944,6 @@
     "when": "AFTER UPDATE",
     "table": "cotacoes",
     "function": "auto_transition_solicitacao_on_cotacao_approval",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
-    "name": "trg_auto_transition_on_pedido_delivery",
-    "when": "AFTER UPDATE",
-    "table": "pedidos",
-    "function": "auto_transition_solicitacao_on_pedido_delivery",
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
@@ -19056,15 +19147,6 @@
     "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql"
    },
    {
-    "name": "trg_solicitacao_approved_auto",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "trg_solicitacao_approved_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql"
-   },
-   {
     "name": "set_devolucoes_updated_at",
     "when": "BEFORE UPDATE",
     "table": "devolucoes",
@@ -19155,15 +19237,6 @@
     "src": "supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
    },
    {
-    "name": "trg_solicitacao_budget_sync",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "solicitacoes",
-    "function": "handle_solicitacao_budget_change",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
-   },
-   {
     "name": "trg_pedido_budget_sync",
     "when": "AFTER INSERT OR UPDATE",
     "table": "pedidos",
@@ -19171,15 +19244,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
-   },
-   {
-    "name": "audit_pagamentos_trigger",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "pagamentos",
-    "function": "audit_pagamento_changes",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
    },
    {
     "name": "tr_budget_transaction_update",
@@ -19585,6 +19649,42 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "name": "trg_pedido_created_status",
+    "when": "AFTER INSERT",
+    "table": "pedidos",
+    "function": "auto_transition_solicitacao_on_pedido_created",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "name": "trg_validate_cnpj",
+    "when": "BEFORE INSERT OR UPDATE OF CNPJ",
+    "table": "fornecedores",
+    "function": "tg_fornecedores_validate_cnpj",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql"
+   },
+   {
+    "name": "a0_guard_profile_org_change",
+    "when": "BEFORE INSERT OR UPDATE OF TENANT_ID, CURRENT_ORGANIZATION_ID",
+    "table": "profiles",
+    "function": "guard_profile_org_change",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "a0_guard_solicitacao_escrita",
+    "when": "BEFORE INSERT OR UPDATE",
+    "table": "solicitacoes",
+    "function": "guard_solicitacao_escrita",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "functions": {
@@ -19928,23 +20028,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status != 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao', 'aprovada'); END IF; RETURN NEW; END;",
-    "raises": [],
-    "tables": [
-     "solicitacoes"
-    ]
-   },
-   "auto_transition_solicitacao_on_pedido_delivery": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'concluida', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('em_andamento', 'aprovada'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "solicitacoes"
@@ -19954,14 +20041,13 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_numero TEXT; v_existing INT; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' THEN SELECT COUNT(*) INTO v_existing FROM public.pagamentos WHERE pedido_id = NEW.id; IF v_existing = 0 THEN SELECT COALESCE(MAX(CAST(SUBSTRING(numero FROM 'PAG-(\\d+)') AS INTEGER)), 0) + 1 INTO v_existing FROM public.pagamentos; v_numero := 'PAG-' || LPAD(v_existing::TEXT, 6, '0'); INSERT INTO public.pagamentos ( numero, pedido_id, fornecedor_id, valor, data_vencimento, status ) VALUES ( v_numero, NEW.id, NEW.fornecedor_id, NEW.valor_total, (CURRENT_DATE + INTERVAL '30 days')::date, 'pendente' ); END IF; END IF; RETURN NEW; END;",
+    "body": "DECLARE v_numero TEXT; BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' AND NEW.fornecedor_id IS NOT NULL AND COALESCE(NEW.valor_total, 0) > 0 AND NOT EXISTS (SELECT 1 FROM public.pagamentos WHERE pedido_id = NEW.id) THEN v_numero := public.generate_sequential_number('PAG', 'pagamentos'); INSERT INTO public.pagamentos ( numero, pedido_id, fornecedor_id, valor, data_vencimento, status, organization_id, tenant_id ) VALUES ( v_numero, NEW.id, NEW.fornecedor_id, NEW.valor_total, (CURRENT_DATE + INTERVAL '30 days')::date, 'pendente', NEW.organization_id, NEW.tenant_id ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
-     "pagamentos",
-     "v_existing"
+     "pagamentos"
     ]
    },
    "recalculate_saldo_comprometido": {
@@ -20022,13 +20108,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315151901_0b81998e-797d-4956-96dd-95829ea06c24.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; INSERT INTO public.notifications (user_id, title, message, type, priority) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal' WHERE NEW.solicitante_id IS NOT NULL; END IF; RETURN NEW; END;",
+    "body": "DECLARE v_tenant uuid; BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; v_tenant := COALESCE( (SELECT t.id FROM public.tenants t WHERE t.id = NEW.tenant_id), (SELECT t.id FROM public.tenants t WHERE t.organization_id = COALESCE(NEW.organization_id, NEW.tenant_id) ORDER BY t.created_at LIMIT 1) ); INSERT INTO public.notifications (user_id, title, message, type, priority, tenant_id) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal', v_tenant WHERE NEW.solicitante_id IS NOT NULL AND v_tenant IS NOT NULL; …",
     "raises": [],
     "tables": [
-     "notifications"
+     "notifications",
+     "tenants"
     ]
    },
    "validate_cotacao_status_transition": {
@@ -20048,7 +20135,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; v_days_late integer; v_penalty_pct numeric; v_penalty_val numeric; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.data_entrega IS NOT NULL AND NEW.data_previsao IS NOT NULL AND NEW.data_entrega > NEW.data_previsao THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.fornecedor_id::text AND c.status = 'active' AND c.sla_delivery_days IS NOT NULL ORDER BY c.created_at DESC LIMIT 1 LOOP v_days_late := (NEW.data_entrega - NEW.data_previsao); v_penalty_pct := LEAST( v_days_late * COALESCE(v_contract.penalty_rate_per_day, 0.5), COALESCE(v_contract.penalty_cap_percent, 20) ); v_penalty_val := ROUND(NEW.valor_total * v_penalty …",
@@ -20064,10 +20151,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mínimo contrat …",
+    "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority, tenant_id) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mín …",
     "raises": [],
     "tables": [
      "contracts",
@@ -20110,10 +20197,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'aprovada', 'cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
@@ -20124,27 +20211,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_solicitacao_id uuid; v_fornecedor_id uuid; v_valor numeric; v_next_num text; BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' THEN v_solicitacao_id := NEW.solicitacao_id; IF v_solicitacao_id IS NOT NULL THEN UPDATE solicitacoes SET status = 'concluida', data_conclusao = now(), updated_at = now() WHERE id = v_solicitacao_id; END IF; IF NEW.fornecedor_id IS NOT NULL AND NEW.valor_total > 0 THEN SELECT 'PAG-' || LPAD((COUNT(*) + 1)::text, 6, '0') INTO v_next_num FROM pagamentos; INSERT INTO pagamentos ( numero, fornecedor_id, pedido_id, valor, data_vencimento, status ) VALUES ( v_next_num, NEW.fornecedor_id, NEW.id, NEW.valor_total, (CURRENT_DATE + INTERVAL …",
+    "body": "BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'concluida', data_conclusao = COALESCE(data_conclusao, now()), updated_at = now() WHERE id = NEW.solicitacao_id AND status = 'em_andamento'; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
-     "pagamentos",
-     "solicitacoes",
-     "v_next_num"
+     "solicitacoes"
     ]
-   },
-   "trg_solicitacao_approved_transition": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' THEN NEW.status := 'cotacao'; END IF; RETURN NEW; END;",
-    "raises": [],
-    "tables": []
    },
    "sanitize_audit_metadata": {
     "args": "",
@@ -20194,21 +20268,6 @@
      "profiles"
     ]
    },
-   "handle_solicitacao_budget_change": {
-    "args": "",
-    "returns": "TRIGGER",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql",
-    "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_diff NUMERIC := 0; BEGIN IF (TG_OP = 'UPDATE' AND OLD.cost_center_id IS DISTINCT FROM NEW.cost_center_id) THEN IF OLD.cost_center_id IS NOT NULL THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); END IF; IF NEW.cost_center_id IS NOT NULL THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido + COALESCE(NEW.valor_estimado, 0) WHERE cost_center_id = NEW.cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); END IF; ELSIF (TG_OP = 'UPDATE' AND NEW.cost_center_id IS NOT NULL) THEN v_diff := COALESCE(NEW.valor …",
-    "raises": [],
-    "tables": [
-     "CURRENT_DATE",
-     "NEW",
-     "department_budgets"
-    ]
-   },
    "log_budget_changes": {
     "args": "",
     "returns": "TRIGGER",
@@ -20239,15 +20298,14 @@
    },
    "update_budget_on_solicitacao_change": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-    "security_definer": false,
-    "search_path": false,
-    "body": "DECLARE v_diff_valor NUMERIC := 0; v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET …",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM OLD.created_at)); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UP …",
     "raises": [],
     "tables": [
-     "CURRENT_DATE",
      "NEW",
      "OLD",
      "department_budgets",
@@ -20328,14 +20386,15 @@
    },
    "calculate_cotacao_scores": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512191322_3fb3cd30-d068-44fc-a3df-efcbda8de408.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_min_total NUMERIC; v_max_total NUMERIC; v_min_prazo INT; v_max_prazo INT; v_weights_preco NUMERIC := 0.6; v_weights_prazo NUMERIC := 0.2; v_weights_qualidade NUMERIC := 0.2; BEGIN SELECT MIN(valor_total), MAX(valor_total), MIN(prazo_entrega), MAX(prazo_entrega) INTO v_min_total, v_max_total, v_min_prazo, v_max_prazo FROM public.cotacoes WHERE solicitacao_id = NEW.solicitacao_id; IF v_max_total = v_min_total THEN v_max_total := v_min_total + 1; END IF; IF v_max_prazo = v_min_prazo THEN v_max_prazo := v_min_prazo + 1; END IF; NEW.score_preco := (1 - (NEW.valor_total - v_min_total) / (v_max_total - v_min_total)) * 100; NEW.score_prazo := (1 - (NEW.prazo_entrega - v_min_prazo) / (v_max …",
+    "body": "DECLARE v_min_total NUMERIC; v_max_total NUMERIC; v_min_prazo NUMERIC; v_max_prazo NUMERIC; v_weights_preco NUMERIC := 0.6; v_weights_prazo NUMERIC := 0.2; v_weights_qualidade NUMERIC := 0.2; BEGIN SELECT MIN(x.valor_total), MAX(x.valor_total), MIN(x.prazo_entrega), MAX(x.prazo_entrega) INTO v_min_total, v_max_total, v_min_prazo, v_max_prazo FROM ( SELECT c.valor_total, c.prazo_entrega::numeric AS prazo_entrega FROM public.cotacoes c WHERE c.solicitacao_id = NEW.solicitacao_id AND c.id IS DISTINCT FROM NEW.id UNION ALL SELECT NEW.valor_total, NEW.prazo_entrega::numeric ) x; NEW.score_preco := CASE WHEN NEW.valor_total IS NULL THEN NULL WHEN v_max_total = v_min_total THEN 100 ELSE ROUND((1 - …",
     "raises": [],
     "tables": [
+     "NEW",
      "cotacoes",
      "v_min_total"
     ]
@@ -20548,7 +20607,7 @@
     "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_interval INTERVAL; v_start_date TIMESTAMP WITH TIME ZONE; v_prev_start TIMESTAMP WITH TIME ZONE; v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) …",
@@ -20561,6 +20620,7 @@
      "cotacoes",
      "generate_series",
      "get_user_grupo_id",
+     "m",
      "pagamentos",
      "ped",
      "pedidos",
@@ -21661,15 +21721,18 @@
     "args": "",
     "returns": "TABLE(notified_count integer)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE r record; v_days int; v_bucket text; v_count int := 0; v_start timestamptz := clock_timestamp(); BEGIN FOR r IN SELECT * FROM public.secret_rotation_schedule WHERE next_due_at <= now() + interval '30 days' LOOP v_days := GREATEST(0, EXTRACT(DAY FROM (r.next_due_at - now()))::int); v_bucket := CASE WHEN v_days <= 0 THEN 'overdue' WHEN v_days <= 1 THEN 'due_1d' WHEN v_days <= 7 THEN 'due_7d' ELSE 'due_30d' END; IF (r.last_notified_bucket IS DISTINCT FROM v_bucket OR r.last_notified_at IS NULL OR r.last_notified_at::date < now()::date) AND r.owner_user_id IS NOT NULL THEN INSERT INTO public.notifications (user_id, type, title, message, priority, metadata) VALUES ( r.owner_user_id, 'secr …",
+    "body": "DECLARE r record; v_days int; v_bucket text; v_count int := 0; v_start timestamptz := clock_timestamp(); v_tenant uuid; BEGIN FOR r IN SELECT * FROM public.secret_rotation_schedule WHERE next_due_at <= now() + interval '30 days' LOOP v_days := GREATEST(0, EXTRACT(DAY FROM (r.next_due_at - now()))::int); v_bucket := CASE WHEN v_days <= 0 THEN 'overdue' WHEN v_days <= 1 THEN 'due_1d' WHEN v_days <= 7 THEN 'due_7d' ELSE 'due_30d' END; v_tenant := COALESCE( (SELECT ut.tenant_id FROM public.user_tenants ut WHERE ut.user_id = r.owner_user_id AND ut.is_default ORDER BY ut.joined_at LIMIT 1), (SELECT p.tenant_id FROM public.profiles p WHERE p.user_id = r.owner_user_id AND p.tenant_id IN (SELECT t.id …",
     "raises": [],
     "tables": [
      "health_scan_runs",
      "notifications",
+     "profiles",
      "secret_rotation_schedule",
+     "tenants",
+     "user_tenants",
      "v_bucket"
     ]
    },
@@ -22175,6 +22238,69 @@
      "tenants",
      "user_tenants",
      "v_tenant"
+    ]
+   },
+   "auto_transition_solicitacao_on_pedido_created": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status = 'aprovada'; END IF; RETURN NEW; END;",
+    "raises": [],
+    "tables": [
+     "solicitacoes"
+    ]
+   },
+   "tg_fornecedores_validate_cnpj": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "BEGIN IF NEW.cnpj IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.cnpj IS DISTINCT FROM OLD.cnpj) AND NOT public.is_valid_cnpj(NEW.cnpj) THEN RAISE EXCEPTION 'new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\"' USING ERRCODE = 'check_violation', SCHEMA = 'public', TABLE = 'fornecedores', CONSTRAINT = 'fornecedores_cnpj_valid'; END IF; RETURN NEW; END;",
+    "raises": [
+     "new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\""
+    ],
+    "tables": [
+     "OLD"
+    ]
+   },
+   "guard_profile_org_change": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('authenticated', 'anon') THEN RETURN NEW; END IF; IF NEW.tenant_id IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.tenant_id IS DISTINCT FROM OLD.tenant_id) AND NOT EXISTS ( SELECT 1 FROM public.user_tenants ut WHERE ut.user_id = NEW.user_id AND ut.tenant_id = NEW.tenant_id ) THEN RAISE EXCEPTION 'Usuário sem vínculo com o tenant %', NEW.tenant_id USING ERRCODE = '42501'; END IF; IF NEW.current_organization_id IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.current_organization_id IS DISTINCT FROM OLD.current_organization_id) AND NOT EXISTS ( SELECT 1 FROM public.user_tenants ut JOIN public.tenants t ON t.id = ut.tenant_id WHERE …",
+    "raises": [
+     "Usuário sem vínculo com o tenant %",
+     "Usuário sem vínculo com a organização %"
+    ],
+    "tables": [
+     "OLD",
+     "tenants",
+     "user_tenants"
+    ]
+   },
+   "guard_solicitacao_escrita": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "BEGIN IF current_user NOT IN ('authenticated', 'anon') OR public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) THEN RETURN NEW; END IF; IF TG_OP = 'INSERT' THEN IF NEW.status IS DISTINCT FROM 'pendente' THEN RAISE EXCEPTION 'Solicitação deve ser criada como pendente (recebido: %)', NEW.status USING ERRCODE = '42501'; END IF; IF NEW.organization_id IS NOT NULL AND NEW.organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'Organização da solicitação não é a do usuário' USING ERRCODE = '42501'; END IF; RETURN NEW; END IF; IF NOT (OLD.solicitante_id = auth.uid() AND OLD.status IN ('pendente', 'rejeitada')) AND (to_jsonb …",
+    "raises": [
+     "Solicitação deve ser criada como pendente (recebido: %)",
+     "Organização da solicitação não é a do usuário",
+     "Sem permissão para alterar esta solicitação"
+    ],
+    "tables": [
+     "get_user_grupo_id"
     ]
    },
    "Returns": {
@@ -26085,6 +26211,12 @@
     "schedule": "30 5 * * 1",
     "body": "SELECT public.scan_unindexed_fks();",
     "src": "supabase/migrations/20260713105146_e80e0d55-eec6-4fb9-a279-49501a05bb70.sql"
+   },
+   {
+    "job": "limpa-historico-cron-semanal",
+    "schedule": "17 4 * * 0",
+    "body": "delete from cron.job_run_details where end_time < now() - interval '7 days'",
+    "src": "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql"
    }
   ],
   "views": {
@@ -26395,6 +26527,12 @@
    "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
    "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
    "supabase/migrations/20261112223906_comprador_le_contratos.sql",
+   "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+   "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+   "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql",
+   "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql",
+   "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+   "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -30148,6 +30286,46 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "update_budget_on_solicitacao_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "auto_transition_solicitacao_on_pedido_created",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "auto_transition_solicitacao_on_pedido_created",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
    }
   ],
   "raises": [
@@ -30217,16 +30395,6 @@
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    },
    {
-    "function": "get_compras_dashboard_metrics",
-    "msg": "not authenticated",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
-   },
-   {
-    "function": "get_compras_dashboard_metrics",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
-   },
-   {
     "function": "get_fornecedores_kpis",
     "msg": "forbidden",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
@@ -30245,6 +30413,46 @@
     "function": "get_solicitacoes_kpis",
     "msg": "forbidden",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "tg_fornecedores_validate_cnpj",
+    "msg": "new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\"",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "function": "guard_profile_org_change",
+    "msg": "Usuário sem vínculo com o tenant %",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_profile_org_change",
+    "msg": "Usuário sem vínculo com a organização %",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Solicitação deve ser criada como pendente (recebido: %)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Organização da solicitação não é a do usuário",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Sem permissão para alterar esta solicitação",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "seed": [
@@ -32455,7 +32663,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 293,
+  "components_count": 294,
   "hooks": [
    {
     "name": "useContacts",
@@ -33065,7 +33273,7 @@
   {
    "module": "scripts",
    "files": 74,
-   "lines": 28240,
+   "lines": 28290,
    "tables": [
     "a",
     "a_tabela",
@@ -33319,8 +33527,8 @@
   },
   {
    "module": "src/components",
-   "files": 259,
-   "lines": 48599,
+   "files": 260,
+   "lines": 48642,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -33437,6 +33645,7 @@
     "src/hooks",
     "src/integrations",
     "src/lib",
+    "src/locales",
     "src/schemas",
     "src/stores",
     "src/types"
@@ -33783,8 +33992,8 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 5,
-   "lines": 648,
+   "files": 6,
+   "lines": 730,
    "tables": [
     "cost_centers",
     "solicitacoes"
@@ -33793,7 +34002,9 @@
     "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, useSolicitacoes, useSolicitacoesKPIs",
     "solicitacao.schemas.ts: SolicitacaoStatusSchema, SolicitacaoPrioridadeSchema, CreateSolicitacaoSchema, CreateSolicitacaoInput"
    ],
-   "docs": [],
+   "docs": [
+    "useSolicitacoes.rls.test.tsx: Regressão (migration 20261113123738): comprador não altera/exclui solicitação de outro. O RLS do Postgres filtra a linha em silêncio — o PostgREST devolve 0 linhas e nenhum erro. Antes o hook mostrava \"Solicitação atualizada!\" mesmo sem gravar nada; agora tem de falhar."
+   ],
    "deps": [
     "@tanstack/react-query",
     "@testing-library/react",
@@ -33811,6 +34022,7 @@
    "file_list": [
     "src/features/solicitacoes/index.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
     "src/features/solicitacoes/schemas/solicitacao.schemas.ts",
     "src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts"
@@ -33819,7 +34031,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12214,
+   "lines": 12253,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34175,7 +34387,7 @@
   {
    "module": "src/pages",
    "files": 120,
-   "lines": 27793,
+   "lines": 27804,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -34575,7 +34787,7 @@
   {
    "module": "supabase/functions",
    "files": 70,
-   "lines": 12989,
+   "lines": 13052,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -34641,7 +34853,7 @@
     "logger.ts: LogLevel, LogEntry, EdgeLogger",
     "rate_limit.ts: RateLimitResult, RateLimitOptions, checkRateLimit, rateLimitedResponse",
     "retry.ts: RetryOptions, retry",
-    "security.ts: buildCorsHeaders, corsHeaders, validateAuth, responses, validateTenant, getAuthUser",
+    "security.ts: buildCorsHeaders, corsHeaders, validateAuth, responses, stripHtml, safeErrorMessage",
     "simulation-engine.ts: SimulationEngine",
     "spot_api.ts: SPOT_DAILY_LIMITS, SPOT_QUOTA_RESERVE, QuotaVerdict, evaluateQuota, SpotErrorInfo, describeSpotError",
     "telemetry.ts: supabaseAdmin, logTelemetry, withTelemetry",
@@ -34738,8 +34950,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 293,
-   "lines": 22996,
+   "files": 299,
+   "lines": 24175,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -40589,6 +40801,10 @@
     "text": "Validação de orçamento"
    },
    {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
+   },
+   {
     "file": "src/hooks/useApprovalNotifications.ts",
     "text": "* F-023 fix: replaced setInterval deadline-polling with Realtime subscription"
    },
@@ -41358,11 +41574,6 @@
     "table": "fornecedores",
     "column": "tenant_id",
     "rule": "obrigatório; FK → tenants.id"
-   },
-   {
-    "table": "fornecedores",
-    "column": "(tabela)",
-    "rule": "constraint fornecedores_cnpj_valid CHECK (cnpj IS NULL OR public.is_valid_cnpj(cnpj)) NOT VALID"
    },
    {
     "table": "fornecedores",
@@ -47902,6 +48113,11 @@
     "value": "\"blur-scale\""
    },
    {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "name": "SEM_PERMISSAO",
+    "value": "'sem permissão para alterar esta(s) solicitação(ões)'"
+   },
+   {
     "file": "src/hooks/use-mobile.tsx",
     "name": "MOBILE_BREAKPOINT",
     "value": "768"
@@ -53760,6 +53976,84 @@
     "field": "status",
     "value": "pago",
     "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_old_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_old_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_new_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_new_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_old_status",
+    "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_old_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_new_status",
+    "value": "cancelada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "field": "v_new_status",
+    "value": "finalizada",
+    "kind": "compara"
    }
   ],
   "calc_fns": [
@@ -54838,6 +55132,14 @@
     "line": "now() - interval '7 days'"
    },
    {
+    "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "line": "WHERE next_due_at <= now() + interval '30 days'"
+   },
+   {
+    "file": "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
+    "line": "$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$"
+   },
+   {
     "file": "tests-e2e/global-setup.ts",
     "line": "await page.waitForSelector('input[type=\"email\"]', { timeout: 15_000 });"
    },
@@ -55548,6 +55850,22 @@
    {
     "file": "src/components/compras/__tests__/PipelineChart.test.tsx",
     "name": "should display narrative summary"
+   },
+   {
+    "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+    "name": "TrendAnalysisCharts — título acompanha o período"
+   },
+   {
+    "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+    "name": "usa o rótulo do período recebido"
+   },
+   {
+    "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+    "name": "sem período: "
+   },
+   {
+    "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+    "name": "Card de volume — textos batem com o período"
    },
    {
     "file": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
@@ -58542,6 +58860,22 @@
     "name": "does not add delay key when delay not in overrides"
    },
    {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+    "name": "useSolicitacoes — escrita negada pelo RLS"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+    "name": "updateSolicitacao com 0 linhas afetadas retorna false e mostra erro"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+    "name": "bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+    "name": "updateSolicitacao com linha afetada continua retornando true"
+   },
+   {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
     "name": "useSolicitacoes Hook"
    },
@@ -59144,6 +59478,18 @@
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "name": "não chama a RPC sem organização no perfil"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "useDashboardKPIs — economia percentual sem arredondar"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "R$ 873,60 sobre volume %d → %s%%"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "volume zero → 0 (sem divisão por zero)"
    },
    {
     "file": "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -65849,16 +66195,6 @@
     "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
    },
    {
-    "name": "Users can update their own pending requests",
-    "table": "solicitacoes",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "(auth.uid() = solicitante_id AND status = 'pendente') OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
     "name": "Only admins can delete requests",
     "table": "solicitacoes",
     "cmd": "DELETE",
@@ -66879,16 +67215,6 @@
     "src": "supabase/migrations/20260323120656_8f201ce2-2e5e-4351-8598-f677f245ede8.sql"
    },
    {
-    "name": "Buyers can insert produtos",
-    "table": "produtos",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "public.has_role(auth.uid(), 'buyer')",
-    "src": "supabase/migrations/20260402112838_4be4ac6b-26f1-456a-bcef-440be6bd6565.sql"
-   },
-   {
     "name": "Users can upload documents",
     "table": "storage.objects",
     "cmd": "INSERT",
@@ -67099,16 +67425,6 @@
     "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
    },
    {
-    "name": "Users can manage their organization rules",
-    "table": "approval_rules",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
-   },
-   {
     "name": "Users can view their organization delegations",
     "table": "approval_delegations",
     "cmd": "SELECT",
@@ -67149,29 +67465,9 @@
     "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
    },
    {
-    "name": "Users can manage their organization categories",
-    "table": "categorias",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213414_0607a750-ce7a-4453-bf59-25e2cbaf4f68.sql"
-   },
-   {
     "name": "Users can view their organization budgets",
     "table": "department_budgets",
     "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "",
-    "src": "supabase/migrations/20260512213555_f76282b1-3f3a-4b2d-a0f7-5e22efb9180c.sql"
-   },
-   {
-    "name": "Users can manage their organization budgets",
-    "table": "department_budgets",
-    "cmd": "ALL",
     "roles": "public",
     "mode": "permissive",
     "using": "organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
@@ -67291,16 +67587,6 @@
    {
     "name": "tenant_isolation_licitacao_lances",
     "table": "licitacao_lances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_approval_steps",
-    "table": "approval_steps",
     "cmd": "ALL",
     "roles": "authenticated",
     "mode": "permissive",
@@ -67689,36 +67975,6 @@
     "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
    },
    {
-    "name": "tenant_isolation_solicitacoes",
-    "table": "solicitacoes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "tenant_isolation_cost_centers",
-    "table": "cost_centers",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172546_56e915a3-098b-4310-b1f0-7ea3d1c96574.sql"
-   },
-   {
-    "name": "profiles_tenant_isolation",
-    "table": "profiles",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "check": "tenant_id = (auth.jwt() ->> 'tenant_id')::uuid",
-    "src": "supabase/migrations/20260523172611_af1bdfd9-5517-42da-a418-341ebd3cc94e.sql"
-   },
-   {
     "name": "tenant_isolation_produtos",
     "table": "produtos",
     "cmd": "SELECT",
@@ -67746,16 +68002,6 @@
     "mode": "permissive",
     "using": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Estoque: gerenciar da própria organização",
-    "table": "estoque",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
@@ -67826,16 +68072,6 @@
     "mode": "permissive",
     "using": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
     "check": "",
-    "src": "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql"
-   },
-   {
-    "name": "Users can manage product suppliers within tenant",
-    "table": "produto_fornecedores",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
-    "check": "EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
     "src": "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql"
    },
    {
@@ -68987,6 +69223,226 @@
     "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "profiles_tenant_isolation",
+    "table": "profiles",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_solicitacoes",
+    "table": "solicitacoes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_select_grupo",
+    "table": "solicitacoes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_proprias_nao_aprovadas",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "solicitante_id = auth.uid() AND status IN ('pendente', 'rejeitada')",
+    "check": "solicitante_id = auth.uid() AND status IN ('pendente', 'cancelada')",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_admin_coord",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "solicitacoes_update_comprador_gera_ordem",
+    "table": "solicitacoes",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'aprovada'",
+    "check": "public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'em_andamento'",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_insert_papeis",
+    "table": "estoque",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_update_papeis",
+    "table": "estoque",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "check": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "estoque_delete_admin_coord",
+    "table": "estoque",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "categorias_escrita_admin_coord",
+    "table": "categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_rules_escrita_admin_coord",
+    "table": "approval_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_steps",
+    "table": "approval_steps",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_select_grupo",
+    "table": "approval_steps",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_escrita_admin_coord",
+    "table": "approval_steps",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_insert_workflow_proprio",
+    "table": "approval_steps",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "EXISTS ( SELECT 1 FROM public.approval_workflows w JOIN public.solicitacoes s ON s.id = w.solicitacao_id WHERE w.id = approval_steps.workflow_id AND s.solicitante_id = auth.uid() )",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "approval_steps_skip_workflow_rejeitado",
+    "table": "approval_steps",
+    "cmd": "UPDATE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.status = 'rejected' )",
+    "check": "status = 'skipped'",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "tenant_isolation_cost_centers",
+    "table": "cost_centers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "restrictive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "cost_centers_select_grupo",
+    "table": "cost_centers",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "cost_centers_escrita_admin_coord",
+    "table": "cost_centers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "check": "public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "produto_fornecedores_escrita_papeis",
+    "table": "produto_fornecedores",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "check": "public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "licitacoes_select_comprador",
+    "table": "licitacoes",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "pagamentos_select_comprador",
+    "table": "pagamentos",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "db_triggers": [
@@ -69180,15 +69636,6 @@
     "src": "supabase/migrations/20260315151013_dfff8719-f695-4626-98f6-1380350d5d9a.sql"
    },
    {
-    "name": "auto_approve_low_value",
-    "when": "BEFORE INSERT",
-    "table": "solicitacoes",
-    "function": "auto_approve_low_value_solicitacao",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260315151901_0b81998e-797d-4956-96dd-95829ea06c24.sql"
-   },
-   {
     "name": "update_department_budgets_updated_at",
     "when": "BEFORE UPDATE",
     "table": "department_budgets",
@@ -69229,15 +69676,6 @@
     "when": "AFTER UPDATE",
     "table": "cotacoes",
     "function": "auto_transition_solicitacao_on_cotacao_approval",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
-    "name": "trg_auto_transition_on_pedido_delivery",
-    "when": "AFTER UPDATE",
-    "table": "pedidos",
-    "function": "auto_transition_solicitacao_on_pedido_delivery",
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
@@ -69441,15 +69879,6 @@
     "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql"
    },
    {
-    "name": "trg_solicitacao_approved_auto",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "trg_solicitacao_approved_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql"
-   },
-   {
     "name": "set_devolucoes_updated_at",
     "when": "BEFORE UPDATE",
     "table": "devolucoes",
@@ -69540,15 +69969,6 @@
     "src": "supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
    },
    {
-    "name": "trg_solicitacao_budget_sync",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "solicitacoes",
-    "function": "handle_solicitacao_budget_change",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
-   },
-   {
     "name": "trg_pedido_budget_sync",
     "when": "AFTER INSERT OR UPDATE",
     "table": "pedidos",
@@ -69556,15 +69976,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
-   },
-   {
-    "name": "audit_pagamentos_trigger",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "pagamentos",
-    "function": "audit_pagamento_changes",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
    },
    {
     "name": "tr_budget_transaction_update",
@@ -69970,6 +70381,42 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "name": "trg_pedido_created_status",
+    "when": "AFTER INSERT",
+    "table": "pedidos",
+    "function": "auto_transition_solicitacao_on_pedido_created",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "name": "trg_validate_cnpj",
+    "when": "BEFORE INSERT OR UPDATE OF CNPJ",
+    "table": "fornecedores",
+    "function": "tg_fornecedores_validate_cnpj",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql"
+   },
+   {
+    "name": "a0_guard_profile_org_change",
+    "when": "BEFORE INSERT OR UPDATE OF TENANT_ID, CURRENT_ORGANIZATION_ID",
+    "table": "profiles",
+    "function": "guard_profile_org_change",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "a0_guard_solicitacao_escrita",
+    "when": "BEFORE INSERT OR UPDATE",
+    "table": "solicitacoes",
+    "function": "guard_solicitacao_escrita",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "db_functions": {
@@ -70313,23 +70760,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status != 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao', 'aprovada'); END IF; RETURN NEW; END;",
-    "raises": [],
-    "tables": [
-     "solicitacoes"
-    ]
-   },
-   "auto_transition_solicitacao_on_pedido_delivery": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'concluida', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('em_andamento', 'aprovada'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "solicitacoes"
@@ -70339,14 +70773,13 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_numero TEXT; v_existing INT; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' THEN SELECT COUNT(*) INTO v_existing FROM public.pagamentos WHERE pedido_id = NEW.id; IF v_existing = 0 THEN SELECT COALESCE(MAX(CAST(SUBSTRING(numero FROM 'PAG-(\\d+)') AS INTEGER)), 0) + 1 INTO v_existing FROM public.pagamentos; v_numero := 'PAG-' || LPAD(v_existing::TEXT, 6, '0'); INSERT INTO public.pagamentos ( numero, pedido_id, fornecedor_id, valor, data_vencimento, status ) VALUES ( v_numero, NEW.id, NEW.fornecedor_id, NEW.valor_total, (CURRENT_DATE + INTERVAL '30 days')::date, 'pendente' ); END IF; END IF; RETURN NEW; END;",
+    "body": "DECLARE v_numero TEXT; BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' AND NEW.fornecedor_id IS NOT NULL AND COALESCE(NEW.valor_total, 0) > 0 AND NOT EXISTS (SELECT 1 FROM public.pagamentos WHERE pedido_id = NEW.id) THEN v_numero := public.generate_sequential_number('PAG', 'pagamentos'); INSERT INTO public.pagamentos ( numero, pedido_id, fornecedor_id, valor, data_vencimento, status, organization_id, tenant_id ) VALUES ( v_numero, NEW.id, NEW.fornecedor_id, NEW.valor_total, (CURRENT_DATE + INTERVAL '30 days')::date, 'pendente', NEW.organization_id, NEW.tenant_id ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
-     "pagamentos",
-     "v_existing"
+     "pagamentos"
     ]
    },
    "recalculate_saldo_comprometido": {
@@ -70407,13 +70840,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260315151901_0b81998e-797d-4956-96dd-95829ea06c24.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; INSERT INTO public.notifications (user_id, title, message, type, priority) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal' WHERE NEW.solicitante_id IS NOT NULL; END IF; RETURN NEW; END;",
+    "body": "DECLARE v_tenant uuid; BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; v_tenant := COALESCE( (SELECT t.id FROM public.tenants t WHERE t.id = NEW.tenant_id), (SELECT t.id FROM public.tenants t WHERE t.organization_id = COALESCE(NEW.organization_id, NEW.tenant_id) ORDER BY t.created_at LIMIT 1) ); INSERT INTO public.notifications (user_id, title, message, type, priority, tenant_id) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal', v_tenant WHERE NEW.solicitante_id IS NOT NULL AND v_tenant IS NOT NULL; …",
     "raises": [],
     "tables": [
-     "notifications"
+     "notifications",
+     "tenants"
     ]
    },
    "validate_cotacao_status_transition": {
@@ -70433,7 +70867,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; v_days_late integer; v_penalty_pct numeric; v_penalty_val numeric; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.data_entrega IS NOT NULL AND NEW.data_previsao IS NOT NULL AND NEW.data_entrega > NEW.data_previsao THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.fornecedor_id::text AND c.status = 'active' AND c.sla_delivery_days IS NOT NULL ORDER BY c.created_at DESC LIMIT 1 LOOP v_days_late := (NEW.data_entrega - NEW.data_previsao); v_penalty_pct := LEAST( v_days_late * COALESCE(v_contract.penalty_rate_per_day, 0.5), COALESCE(v_contract.penalty_cap_percent, 20) ); v_penalty_val := ROUND(NEW.valor_total * v_penalty …",
@@ -70449,10 +70883,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mínimo contrat …",
+    "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority, tenant_id) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mín …",
     "raises": [],
     "tables": [
      "contracts",
@@ -70495,10 +70929,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'aprovada', 'cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
@@ -70509,27 +70943,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_solicitacao_id uuid; v_fornecedor_id uuid; v_valor numeric; v_next_num text; BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' THEN v_solicitacao_id := NEW.solicitacao_id; IF v_solicitacao_id IS NOT NULL THEN UPDATE solicitacoes SET status = 'concluida', data_conclusao = now(), updated_at = now() WHERE id = v_solicitacao_id; END IF; IF NEW.fornecedor_id IS NOT NULL AND NEW.valor_total > 0 THEN SELECT 'PAG-' || LPAD((COUNT(*) + 1)::text, 6, '0') INTO v_next_num FROM pagamentos; INSERT INTO pagamentos ( numero, fornecedor_id, pedido_id, valor, data_vencimento, status ) VALUES ( v_next_num, NEW.fornecedor_id, NEW.id, NEW.valor_total, (CURRENT_DATE + INTERVAL …",
+    "body": "BEGIN IF NEW.status = 'entregue' AND OLD.status IS DISTINCT FROM 'entregue' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'concluida', data_conclusao = COALESCE(data_conclusao, now()), updated_at = now() WHERE id = NEW.solicitacao_id AND status = 'em_andamento'; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
-     "pagamentos",
-     "solicitacoes",
-     "v_next_num"
+     "solicitacoes"
     ]
-   },
-   "trg_solicitacao_approved_transition": {
-    "args": "",
-    "returns": "trigger",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260317213152_359c9d54-2f8b-4d82-a969-f8075e3fbd29.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' THEN NEW.status := 'cotacao'; END IF; RETURN NEW; END;",
-    "raises": [],
-    "tables": []
    },
    "sanitize_audit_metadata": {
     "args": "",
@@ -70579,21 +71000,6 @@
      "profiles"
     ]
    },
-   "handle_solicitacao_budget_change": {
-    "args": "",
-    "returns": "TRIGGER",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql",
-    "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_diff NUMERIC := 0; BEGIN IF (TG_OP = 'UPDATE' AND OLD.cost_center_id IS DISTINCT FROM NEW.cost_center_id) THEN IF OLD.cost_center_id IS NOT NULL THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); END IF; IF NEW.cost_center_id IS NOT NULL THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido + COALESCE(NEW.valor_estimado, 0) WHERE cost_center_id = NEW.cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); END IF; ELSIF (TG_OP = 'UPDATE' AND NEW.cost_center_id IS NOT NULL) THEN v_diff := COALESCE(NEW.valor …",
-    "raises": [],
-    "tables": [
-     "CURRENT_DATE",
-     "NEW",
-     "department_budgets"
-    ]
-   },
    "log_budget_changes": {
     "args": "",
     "returns": "TRIGGER",
@@ -70624,15 +71030,14 @@
    },
    "update_budget_on_solicitacao_change": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
-    "security_definer": false,
-    "search_path": false,
-    "body": "DECLARE v_diff_valor NUMERIC := 0; v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET …",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_old_status TEXT := NULL; v_new_status TEXT := NEW.status; v_cost_center_id UUID := NEW.cost_center_id; v_old_cost_center_id UUID := NULL; BEGIN IF (TG_OP = 'DELETE') THEN IF (OLD.status != 'cancelada' AND OLD.status != 'finalizada' AND OLD.cost_center_id IS NOT NULL) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(OLD.valor_estimado, 0) WHERE cost_center_id = OLD.cost_center_id AND ano = EXTRACT(YEAR FROM OLD.created_at) AND (mes IS NULL OR mes = EXTRACT(MONTH FROM OLD.created_at)); END IF; RETURN OLD; END IF; IF (TG_OP = 'INSERT') THEN IF (NEW.status != 'cancelada' AND NEW.status != 'finalizada' AND v_cost_center_id IS NOT NULL) THEN UP …",
     "raises": [],
     "tables": [
-     "CURRENT_DATE",
      "NEW",
      "OLD",
      "department_budgets",
@@ -70713,14 +71118,15 @@
    },
    "calculate_cotacao_scores": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512191322_3fb3cd30-d068-44fc-a3df-efcbda8de408.sql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_min_total NUMERIC; v_max_total NUMERIC; v_min_prazo INT; v_max_prazo INT; v_weights_preco NUMERIC := 0.6; v_weights_prazo NUMERIC := 0.2; v_weights_qualidade NUMERIC := 0.2; BEGIN SELECT MIN(valor_total), MAX(valor_total), MIN(prazo_entrega), MAX(prazo_entrega) INTO v_min_total, v_max_total, v_min_prazo, v_max_prazo FROM public.cotacoes WHERE solicitacao_id = NEW.solicitacao_id; IF v_max_total = v_min_total THEN v_max_total := v_min_total + 1; END IF; IF v_max_prazo = v_min_prazo THEN v_max_prazo := v_min_prazo + 1; END IF; NEW.score_preco := (1 - (NEW.valor_total - v_min_total) / (v_max_total - v_min_total)) * 100; NEW.score_prazo := (1 - (NEW.prazo_entrega - v_min_prazo) / (v_max …",
+    "body": "DECLARE v_min_total NUMERIC; v_max_total NUMERIC; v_min_prazo NUMERIC; v_max_prazo NUMERIC; v_weights_preco NUMERIC := 0.6; v_weights_prazo NUMERIC := 0.2; v_weights_qualidade NUMERIC := 0.2; BEGIN SELECT MIN(x.valor_total), MAX(x.valor_total), MIN(x.prazo_entrega), MAX(x.prazo_entrega) INTO v_min_total, v_max_total, v_min_prazo, v_max_prazo FROM ( SELECT c.valor_total, c.prazo_entrega::numeric AS prazo_entrega FROM public.cotacoes c WHERE c.solicitacao_id = NEW.solicitacao_id AND c.id IS DISTINCT FROM NEW.id UNION ALL SELECT NEW.valor_total, NEW.prazo_entrega::numeric ) x; NEW.score_preco := CASE WHEN NEW.valor_total IS NULL THEN NULL WHEN v_max_total = v_min_total THEN 100 ELSE ROUND((1 - …",
     "raises": [],
     "tables": [
+     "NEW",
      "cotacoes",
      "v_min_total"
     ]
@@ -70933,7 +71339,7 @@
     "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_now TIMESTAMP WITH TIME ZONE := NOW(); v_interval INTERVAL; v_start_date TIMESTAMP WITH TIME ZONE; v_prev_start TIMESTAMP WITH TIME ZONE; v_kpis JSONB; v_pipeline JSONB; v_trends JSONB; v_top_categories JSONB; v_urgent_items JSONB; v_cotacao_status JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) …",
@@ -70946,6 +71352,7 @@
      "cotacoes",
      "generate_series",
      "get_user_grupo_id",
+     "m",
      "pagamentos",
      "ped",
      "pedidos",
@@ -72046,15 +72453,18 @@
     "args": "",
     "returns": "TABLE(notified_count integer)",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE r record; v_days int; v_bucket text; v_count int := 0; v_start timestamptz := clock_timestamp(); BEGIN FOR r IN SELECT * FROM public.secret_rotation_schedule WHERE next_due_at <= now() + interval '30 days' LOOP v_days := GREATEST(0, EXTRACT(DAY FROM (r.next_due_at - now()))::int); v_bucket := CASE WHEN v_days <= 0 THEN 'overdue' WHEN v_days <= 1 THEN 'due_1d' WHEN v_days <= 7 THEN 'due_7d' ELSE 'due_30d' END; IF (r.last_notified_bucket IS DISTINCT FROM v_bucket OR r.last_notified_at IS NULL OR r.last_notified_at::date < now()::date) AND r.owner_user_id IS NOT NULL THEN INSERT INTO public.notifications (user_id, type, title, message, priority, metadata) VALUES ( r.owner_user_id, 'secr …",
+    "body": "DECLARE r record; v_days int; v_bucket text; v_count int := 0; v_start timestamptz := clock_timestamp(); v_tenant uuid; BEGIN FOR r IN SELECT * FROM public.secret_rotation_schedule WHERE next_due_at <= now() + interval '30 days' LOOP v_days := GREATEST(0, EXTRACT(DAY FROM (r.next_due_at - now()))::int); v_bucket := CASE WHEN v_days <= 0 THEN 'overdue' WHEN v_days <= 1 THEN 'due_1d' WHEN v_days <= 7 THEN 'due_7d' ELSE 'due_30d' END; v_tenant := COALESCE( (SELECT ut.tenant_id FROM public.user_tenants ut WHERE ut.user_id = r.owner_user_id AND ut.is_default ORDER BY ut.joined_at LIMIT 1), (SELECT p.tenant_id FROM public.profiles p WHERE p.user_id = r.owner_user_id AND p.tenant_id IN (SELECT t.id …",
     "raises": [],
     "tables": [
      "health_scan_runs",
      "notifications",
+     "profiles",
      "secret_rotation_schedule",
+     "tenants",
+     "user_tenants",
      "v_bucket"
     ]
    },
@@ -72562,6 +72972,69 @@
      "v_tenant"
     ]
    },
+   "auto_transition_solicitacao_on_pedido_created": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'em_andamento', updated_at = now() WHERE id = NEW.solicitacao_id AND status = 'aprovada'; END IF; RETURN NEW; END;",
+    "raises": [],
+    "tables": [
+     "solicitacoes"
+    ]
+   },
+   "tg_fornecedores_validate_cnpj": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "BEGIN IF NEW.cnpj IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.cnpj IS DISTINCT FROM OLD.cnpj) AND NOT public.is_valid_cnpj(NEW.cnpj) THEN RAISE EXCEPTION 'new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\"' USING ERRCODE = 'check_violation', SCHEMA = 'public', TABLE = 'fornecedores', CONSTRAINT = 'fornecedores_cnpj_valid'; END IF; RETURN NEW; END;",
+    "raises": [
+     "new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\""
+    ],
+    "tables": [
+     "OLD"
+    ]
+   },
+   "guard_profile_org_change": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF COALESCE(NULLIF(current_setting('role', true), ''), 'none') NOT IN ('authenticated', 'anon') THEN RETURN NEW; END IF; IF NEW.tenant_id IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.tenant_id IS DISTINCT FROM OLD.tenant_id) AND NOT EXISTS ( SELECT 1 FROM public.user_tenants ut WHERE ut.user_id = NEW.user_id AND ut.tenant_id = NEW.tenant_id ) THEN RAISE EXCEPTION 'Usuário sem vínculo com o tenant %', NEW.tenant_id USING ERRCODE = '42501'; END IF; IF NEW.current_organization_id IS NOT NULL AND (TG_OP = 'INSERT' OR NEW.current_organization_id IS DISTINCT FROM OLD.current_organization_id) AND NOT EXISTS ( SELECT 1 FROM public.user_tenants ut JOIN public.tenants t ON t.id = ut.tenant_id WHERE …",
+    "raises": [
+     "Usuário sem vínculo com o tenant %",
+     "Usuário sem vínculo com a organização %"
+    ],
+    "tables": [
+     "OLD",
+     "tenants",
+     "user_tenants"
+    ]
+   },
+   "guard_solicitacao_escrita": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+    "security_definer": false,
+    "search_path": true,
+    "body": "BEGIN IF current_user NOT IN ('authenticated', 'anon') OR public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) THEN RETURN NEW; END IF; IF TG_OP = 'INSERT' THEN IF NEW.status IS DISTINCT FROM 'pendente' THEN RAISE EXCEPTION 'Solicitação deve ser criada como pendente (recebido: %)', NEW.status USING ERRCODE = '42501'; END IF; IF NEW.organization_id IS NOT NULL AND NEW.organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'Organização da solicitação não é a do usuário' USING ERRCODE = '42501'; END IF; RETURN NEW; END IF; IF NOT (OLD.solicitante_id = auth.uid() AND OLD.status IN ('pendente', 'rejeitada')) AND (to_jsonb …",
+    "raises": [
+     "Solicitação deve ser criada como pendente (recebido: %)",
+     "Organização da solicitação não é a do usuário",
+     "Sem permissão para alterar esta solicitação"
+    ],
+    "tables": [
+     "get_user_grupo_id"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -72811,16 +73284,6 @@
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    },
    {
-    "function": "get_compras_dashboard_metrics",
-    "msg": "not authenticated",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
-   },
-   {
-    "function": "get_compras_dashboard_metrics",
-    "msg": "forbidden",
-    "src": "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql"
-   },
-   {
     "function": "get_fornecedores_kpis",
     "msg": "forbidden",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
@@ -72839,6 +73302,46 @@
     "function": "get_solicitacoes_kpis",
     "msg": "forbidden",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "function": "tg_fornecedores_validate_cnpj",
+    "msg": "new row for relation \"fornecedores\" violates check constraint \"fornecedores_cnpj_valid\"",
+    "src": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "function": "get_compras_dashboard_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "function": "guard_profile_org_change",
+    "msg": "Usuário sem vínculo com o tenant %",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_profile_org_change",
+    "msg": "Usuário sem vínculo com a organização %",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Solicitação deve ser criada como pendente (recebido: %)",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Organização da solicitação não é a do usuário",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "function": "guard_solicitacao_escrita",
+    "msg": "Sem permissão para alterar esta solicitação",
+    "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
    }
   ],
   "db_generated": [
@@ -74179,6 +74682,7 @@
       "compara:src/components/compras/PurchaseClimateWidget.tsx",
       "compara:src/pages/kanban/KanbanWorkflow.tsx",
       "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
       "escreve:src/pages/licitacoes/LicitacaoDetailDialog.tsx"
      ],
      "entregue": [
@@ -74195,6 +74699,7 @@
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
       "compara:supabase/migrations/20260315151408_8ffa629b-ebf8-41cd-a770-8b0d78746e04.sql",
       "compara:supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
       "escreve:src/pages/acompanhamento/AcompanhamentoHelpers.ts",
       "filtra:supabase/functions/weekly-summary-report/index.ts"
      ],
@@ -74555,7 +75060,8 @@
       "escreve:supabase/functions/workflow-engine/index.ts"
      ],
      "finalizada": [
-      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
      ],
      "succeeded": [
       "compara:supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql"
@@ -74731,18 +75237,22 @@
     },
     "v_old_status": {
      "cancelada": [
-      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
      ],
      "finalizada": [
-      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
      ]
     },
     "v_new_status": {
      "cancelada": [
-      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
      ],
      "finalizada": [
-      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+      "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+      "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
      ]
     }
    }
@@ -74947,41 +75457,48 @@
      "public: has_role(auth.uid(), 'admin'::app_role)",
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
      "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "INSERT": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "UPDATE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "DELETE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ]
    },
    "approval_steps": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.ui",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: EXISTS ( SELECT 1 FROM public.approval_workflows w JOIN public.solicitacoes s ON s.id = w.solicitacao_id WHERE w.id = approva"
     ],
     "UPDATE": [
      "public: auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.statu"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ]
    },
    "approval_workflows": {
@@ -75138,24 +75655,24 @@
     "SELECT": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
      "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: tenant_in_my_group(tenant_id)",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "INSERT": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "UPDATE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "DELETE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ]
    },
    "category_strategies": {
@@ -75310,17 +75827,22 @@
    "cost_centers": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)"
     ]
    },
    "cotacoes": {
@@ -75433,25 +75955,21 @@
      "authenticated: has_role(auth.uid(), 'finance'::app_role)",
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
      "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
      "authenticated: has_role(auth.uid(), 'finance'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
      "authenticated: has_role(auth.uid(), 'finance'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
      "authenticated: has_role(auth.uid(), 'finance'::app_role)",
-     "public: organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
@@ -75581,17 +76099,16 @@
    "estoque": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
      "authenticated: organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())"
     ],
     "INSERT": [
-     "authenticated: organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())"
+     "authenticated: organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid("
     ],
     "UPDATE": [
-     "authenticated: organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())"
+     "authenticated: organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid("
     ],
     "DELETE": [
-     "authenticated: organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())"
+     "authenticated: organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid("
     ]
    },
    "estoque_movimentacoes": {
@@ -75811,7 +76328,8 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role)"
     ],
     "INSERT": [
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')",
@@ -75938,7 +76456,8 @@
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role) OR has_",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role)"
     ],
     "INSERT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))",
@@ -76071,16 +76590,16 @@
     "rls": "enabled",
     "SELECT": [
      "authenticated: EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )",
-     "authenticated: EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )"
+     "authenticated: public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coor"
     ],
     "INSERT": [
-     "authenticated: EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )"
+     "authenticated: public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coor"
     ],
     "UPDATE": [
-     "authenticated: EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )"
+     "authenticated: public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coor"
     ],
     "DELETE": [
-     "authenticated: EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )"
+     "authenticated: public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coor"
     ]
    },
    "produtos": {
@@ -76091,7 +76610,6 @@
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
     ],
     "INSERT": [
-     "authenticated: public.has_role(auth.uid(), 'buyer')",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR "
     ],
@@ -76111,21 +76629,18 @@
      "authenticated: public.has_role(auth.uid(), 'admin')",
      "authenticated: auth.uid() = user_id OR has_role(auth.uid(), 'admin'::app_role)",
      "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: auth.uid() = user_id",
-     "authenticated: public.has_role(auth.uid(), 'admin')",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.has_role(auth.uid(), 'admin')"
     ],
     "UPDATE": [
      "authenticated: auth.uid() = user_id",
-     "authenticated: public.has_role(auth.uid(), 'admin')",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.has_role(auth.uid(), 'admin')"
     ],
     "DELETE": [
-     "authenticated: public.has_role(auth.uid(), 'admin')",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.has_role(auth.uid(), 'admin')"
     ]
    },
    "punchout_catalogs": {
@@ -76359,19 +76874,22 @@
     "SELECT": [
      "public: auth.uid() = solicitante_id OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)",
      "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "public: auth.uid() = solicitante_id",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "public: (auth.uid() = solicitante_id AND status = 'pendente') OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinato",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: solicitante_id = auth.uid() AND status IN ('pendente', 'rejeitada')",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'aprovada'"
     ],
     "DELETE": [
      "public: has_role(auth.uid(), 'admin'::app_role)",
-     "authenticated: tenant_id = (auth.jwt() ->> 'tenant_id')::uuid"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_awards": {
@@ -77250,7 +77768,7 @@
    "auto_calculate_delivery_penalty",
    "auto_create_pagamento_on_delivery",
    "auto_transition_solicitacao_on_cotacao_approval",
-   "auto_transition_solicitacao_on_pedido_delivery",
+   "auto_transition_solicitacao_on_pedido_created",
    "auto_update_supplier_score_on_delivery",
    "calculate_cotacao_scores",
    "check_budget_availability",
@@ -77302,9 +77820,9 @@
    "get_user_grupo_id",
    "get_user_role",
    "grant_tenant_access_on_insert",
+   "guard_profile_org_change",
    "handle_new_user",
    "handle_pedido_budget_realization",
-   "handle_solicitacao_budget_change",
    "has_permission",
    "has_role",
    "is_account_locked",
@@ -77369,9 +77887,9 @@
    "tenants_in_my_group",
    "trg_cotacao_approved_transition",
    "trg_pedido_entregue_transition",
-   "trg_solicitacao_approved_transition",
    "trigger_update_saldo_on_pagamento",
    "trigger_update_saldo_on_pedido",
+   "update_budget_on_solicitacao_change",
    "update_cost_center_budget_totals",
    "update_estoque_saldo",
    "update_licitacao_best_bid",
@@ -80985,6 +81503,46 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "update_budget_on_solicitacao_change",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "auto_transition_solicitacao_on_pedido_created",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "auto_transition_solicitacao_on_pedido_created",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_compras_dashboard_metrics",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
    }
   ],
   "guards": [
@@ -82979,7 +83537,8 @@
     "kind": "status",
     "msg": "valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
     ]
    },
    {
@@ -83072,14 +83631,16 @@
     "kind": "status",
     "msg": "valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
     ]
    },
    {
     "kind": "status",
     "msg": "valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql"
+     "compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql",
+     "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
     ]
    },
    {
@@ -83558,13 +84119,6 @@
     "msg": "função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
     "where": [
      "supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql"
-    ]
-   },
-   {
-    "kind": "segurança",
-    "msg": "função `handle_solicitacao_budget_change` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
-    "where": [
-     "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
     ]
    },
    {
@@ -84794,7 +85348,10 @@
   },
   "scripts/ci/encoding-src.unit.mjs": {
    "path": "scripts/ci/encoding-src.unit.mjs",
-   "lines": 78,
+   "lines": 128,
+   "rule_comments": [
+    "texto certo nao pode reprovar"
+   ],
    "doc": "Guard de encoding do front: texto com mojibake (UTF-8 lido como Windows-1252 e salvo de novo) chega ao usuario como lixo na tela. Caso real: a seta do tour de onboarding (src/components/onboarding/OnboardingTour.tsx) saiu como \"â†\" + U+0090 no lugar de \"←\". Varre src/, public/locales/ e index.html, …"
   },
   "scripts/ci/gerar-matriz-edge-tabela.mjs": {
@@ -89221,7 +89778,7 @@
   },
   "src/components/compras/TrendAnalysisCharts.tsx": {
    "path": "src/components/compras/TrendAnalysisCharts.tsx",
-   "lines": 215,
+   "lines": 217,
    "exports": [
     "const TrendAnalysisCharts"
    ]
@@ -89264,6 +89821,17 @@
     "should render correct values for each stage",
     "should calculate conversion rates correctly",
     "should display narrative summary"
+   ]
+  },
+  "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx": {
+   "path": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+   "lines": 41,
+   "is_test": true,
+   "tests": [
+    "TrendAnalysisCharts — título acompanha o período",
+    "usa o rótulo do período recebido",
+    "sem período: ",
+    "Card de volume — textos batem com o período"
    ]
   },
   "src/components/compras/__tests__/kanbanTypeGuards.test.ts": {
@@ -93734,7 +94302,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 358,
+   "lines": 365,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -93753,19 +94321,19 @@
     },
     {
      "table": "solicitacoes",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "solicitacoes",
-     "op": "delete"
+     "op": "delete,select"
     },
     {
      "table": "solicitacoes",
-     "op": "delete"
+     "op": "delete,select"
     },
     {
      "table": "solicitacoes",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "cost_centers",
@@ -93828,6 +94396,12 @@
     "Transição inválida: ${sol.status} → ${newStatus}",
     "Você precisa estar logado em uma organização"
    ],
+   "params": [
+    {
+     "name": "SEM_PERMISSAO",
+     "value": "'sem permissão para alterar esta(s) solicitação(ões)'"
+    }
+   ],
    "transition_maps": [
     {
      "name": "VALID_SOLICITACAO_TRANSITIONS",
@@ -93847,11 +94421,24 @@
     }
    ],
    "rule_comments": [
-    "Validação de orçamento"
+    "Validação de orçamento",
+    "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    ],
    "hooks": [
     "useSolicitacoes",
     "useSolicitacoesKPIs"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+   "lines": 75,
+   "is_test": true,
+   "doc": "Regressão (migration 20261113123738): comprador não altera/exclui solicitação de outro. O RLS do Postgres filtra a linha em silêncio — o PostgREST devolve 0 linhas e nenhum erro. Antes o hook mostrava \"Solicitação atualizada!\" mesmo sem gravar nada; agora tem de falhar.",
+   "tests": [
+    "useSolicitacoes — escrita negada pelo RLS",
+    "updateSolicitacao com 0 linhas afetadas retorna false e mostra erro",
+    "bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false",
+    "updateSolicitacao com linha afetada continua retornando true"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx": {
@@ -94801,7 +95388,7 @@
   },
   "src/hooks/useDashboardKPIs.ts": {
    "path": "src/hooks/useDashboardKPIs.ts",
-   "lines": 194,
+   "lines": 195,
    "exports": [
     "interface KPIComparison",
     "interface PipelineData",
@@ -97075,7 +97662,7 @@
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
    "path": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-   "lines": 78,
+   "lines": 116,
    "is_test": true,
    "rule_comments": [
     "passou a responder 'forbidden' para organização que não é a do chamador."
@@ -97083,7 +97670,10 @@
    "tests": [
     "useDashboardKPIs — parâmetro da organização",
     "envia organizationId (grupo) como p_organization_id, nunca o tenantId",
-    "não chama a RPC sem organização no perfil"
+    "não chama a RPC sem organização no perfil",
+    "useDashboardKPIs — economia percentual sem arredondar",
+    "R$ 873,60 sobre volume %d → %s%%",
+    "volume zero → 0 (sem divisão por zero)"
    ]
   },
   "src/hooks/__tests__/useFuseSearch.test.ts": {
@@ -100427,7 +101017,7 @@
   },
   "src/pages/dashboard/ComprasDashboard.tsx": {
    "path": "src/pages/dashboard/ComprasDashboard.tsx",
-   "lines": 379,
+   "lines": 390,
    "exports": [
     "default memo"
    ],
@@ -104165,7 +104755,7 @@
   },
   "supabase/functions/_shared/idempotency.ts": {
    "path": "supabase/functions/_shared/idempotency.ts",
-   "lines": 135,
+   "lines": 136,
    "exports": [
     "interface CachedResponse",
     "function getIdempotentResponse",
@@ -104421,12 +105011,14 @@
   },
   "supabase/functions/_shared/security.ts": {
    "path": "supabase/functions/_shared/security.ts",
-   "lines": 297,
+   "lines": 357,
    "exports": [
     "const buildCorsHeaders",
     "const corsHeaders",
     "const validateAuth",
     "const responses",
+    "function stripHtml",
+    "function safeErrorMessage",
     "const validateTenant",
     "const getAuthUser",
     "const getTenantId",
@@ -104596,7 +105188,7 @@
   },
   "supabase/functions/_shared/validation.ts": {
    "path": "supabase/functions/_shared/validation.ts",
-   "lines": 97,
+   "lines": 98,
    "exports": [
     "function validateBody",
     "function errorResponse",
@@ -106122,7 +106714,7 @@
   },
   "supabase/functions/migrate-helper/index.ts": {
    "path": "supabase/functions/migrate-helper/index.ts",
-   "lines": 35,
+   "lines": 36,
    "env": [
     "SUPABASE_DB_URL",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -108905,6 +109497,103 @@
    "path": "supabase/migrations/20261112223906_comprador_le_contratos.sql",
    "lines": 28
   },
+  "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql": {
+   "path": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+   "lines": 396,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "finalizada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_old_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "cancelada",
+     "kind": "compara"
+    },
+    {
+     "field": "v_new_status",
+     "value": "finalizada",
+     "kind": "compara"
+    }
+   ],
+   "temporal": [
+    "WHERE next_due_at <= now() + interval '30 days'"
+   ]
+  },
+  "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql": {
+   "path": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+   "lines": 173
+  },
+  "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql": {
+   "path": "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql",
+   "lines": 45
+  },
+  "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql": {
+   "path": "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql",
+   "lines": 268
+  },
+  "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql": {
+   "path": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
+   "lines": 276
+  },
+  "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql": {
+   "path": "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
+   "lines": 21,
+   "temporal": [
+    "$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$"
+   ]
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -109124,10 +109813,92 @@
   }
  },
  "git": {
-  "sha": "9c73ed63b983afdb413c304789d43420f9434821",
+  "sha": "53f69f3081dce1536f7b0992712325a813695632",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "53f69f3",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)",
+    "files": [
+     "src/components/compras/DashboardInsights.tsx",
+     "src/components/compras/TrendAnalysisCharts.tsx",
+     "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+     "src/hooks/useDashboardKPIs.ts",
+     "src/locales/en/translation.json",
+     "src/locales/es/translation.json",
+     "src/locales/pt/translation.json",
+     "src/pages/dashboard/ComprasDashboard.tsx",
+     "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql"
+    ]
+   },
+   {
+    "sha": "8a5540c",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "security(banco): comprador não altera dados de outros nem troca de organização (#75)",
+    "files": [
+     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+    ]
+   },
+   {
+    "sha": "83eab05",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)",
+    "files": [
+     "scripts/ci/encoding-src.unit.mjs",
+     "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql"
+    ]
+   },
+   {
+    "sha": "a726360",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(banco): pedido e pagamento voltam a funcionar para fornecedores com CNPJ antigo inválido (#72)",
+    "files": [
+     "supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql"
+    ]
+   },
+   {
+    "sha": "4c5128d",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(banco): solicitação pequena volta a ser criada, entrega gera 1 pagamento e orçamento deixa de multiplicar (#71)",
+    "files": [
+     "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql"
+    ]
+   },
+   {
+    "sha": "b157d5a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(banco): compra completa volta a funcionar (notas de cotação e sequência de status) (#70)",
+    "files": [
+     "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql"
+    ]
+   },
+   {
+    "sha": "a8c3847",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(sec): fecha 14 alerts CodeQL (XSS spot-proxy, permissions CI, stack-trace) (#69)",
+    "files": [
+     ".github/workflows/main.yml",
+     "supabase/functions/_shared/idempotency.ts",
+     "supabase/functions/_shared/security.ts",
+     "supabase/functions/_shared/validation.ts",
+     "supabase/functions/dependency-health/index.ts",
+     "supabase/functions/migrate-helper/index.ts",
+     "supabase/functions/migrate-storage-paths/index.ts",
+     "supabase/functions/spot-proxy/index.ts"
+    ]
+   },
    {
     "sha": "9c73ed6",
     "date": "2026-11-13",
@@ -109445,99 +110216,31 @@
     "files": [
      "vercel.json"
     ]
-   },
-   {
-    "sha": "5507e43",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): citar agora abre a cotacao da solicitacao certa (#48)",
-    "files": [
-     "src/components/compras/UrgentItemsList.tsx"
-    ]
-   },
-   {
-    "sha": "ffcc71a",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)",
-    "files": [
-     "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
-     "src/lib/utils.ts",
-     "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
-     "src/schemas/solicitacao.schema.ts",
-     "vitest.config.ts"
-    ]
-   },
-   {
-    "sha": "dd8f1fd",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)",
-    "files": [
-     "src/components/compras/ExecutiveDashboard.tsx",
-     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx"
-    ]
-   },
-   {
-    "sha": "5cdeeac",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)",
-    "files": [
-     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-     "src/components/compras/DeliveryCalendar.tsx",
-     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-     "src/pages/sourcing/Sourcing.tsx"
-    ]
-   },
-   {
-    "sha": "257a4c4",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): corrige acentuacao corrompida em 12 telas (#44)",
-    "files": [
-     "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
-     "src/components/onboarding/OnboardingTour.tsx",
-     "src/components/ui/enhanced-search.tsx",
-     "src/features/layout/components/QuickActionsFAB.tsx",
-     "src/features/layout/components/search/SearchResultsList.tsx",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/fornecedores/SupplierPerformance.tsx",
-     "src/pages/pagamentos/Pagamentos.tsx",
-     "src/pages/pedidos/PedidoDetailsDialog.tsx",
-     "src/pages/relatorios/Relatorios.tsx",
-     "src/pages/solicitacoes/Solicitacoes.tsx"
-    ]
-   },
-   {
-    "sha": "e897b42",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)",
-    "files": [
-     "src/components/compras/ExecutiveDashboard.tsx",
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/relatorios/Relatorios.tsx"
-    ]
-   },
-   {
-    "sha": "aca8fbd",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)",
-    "files": [
-     "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/prod-readiness.md",
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    3
+   ],
+   [
+    "scripts/ci/encoding-src.unit.mjs",
+    3
+   ],
+   [
+    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     2
    ],
    [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "src/hooks/useDashboardKPIs.ts",
+    2
+   ],
+   [
+    "src/pages/dashboard/ComprasDashboard.tsx",
+    2
+   ],
+   [
+    "docs/prod-readiness.md",
     2
    ],
    [
@@ -109546,10 +110249,6 @@
    ],
    [
     "package.json",
-    2
-   ],
-   [
-    "scripts/ci/encoding-src.unit.mjs",
     2
    ],
    [
@@ -109581,35 +110280,23 @@
     2
    ],
    [
-    "src/components/onboarding/OnboardingTour.tsx",
-    2
-   ],
-   [
-    "src/pages/dashboard/ComprasDashboard.tsx",
-    2
-   ],
-   [
-    "src/components/compras/ExecutiveDashboard.tsx",
-    2
-   ],
-   [
-    "src/pages/relatorios/Relatorios.tsx",
-    2
-   ],
-   [
-    "src/features/cotacoes/hooks/useCotacoes.ts",
+    "src/components/compras/DashboardInsights.tsx",
     1
    ],
    [
-    "src/features/pedidos/hooks/usePedidos.ts",
+    "src/components/compras/TrendAnalysisCharts.tsx",
     1
    ],
    [
-    "src/hooks/useDevolucoes.ts",
+    "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     1
    ],
    [
-    "src/hooks/useLicitacoes.ts",
+    "src/locales/en/translation.json",
+    1
+   ],
+   [
+    "src/locales/es/translation.json",
     1
    ]
   ]

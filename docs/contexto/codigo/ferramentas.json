@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (688)",
-   "SQL (294)",
+   "TypeScript (690)",
+   "SQL (300)",
    "Markdown (72)",
    "JavaScript (65)",
    "JSON (23)",
@@ -329,7 +329,9 @@
     "unit-integration-tests",
     "e2e-tests"
    ],
-   "permissoes": [],
+   "permissoes": [
+    "contents: read"
+   ],
    "scripts_usados": [
     "scripts/ci/check-agents-md-integrity.mjs",
     "scripts/rls-audit.ts"

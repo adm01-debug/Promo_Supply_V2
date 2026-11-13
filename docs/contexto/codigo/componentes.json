@@ -1707,7 +1707,7 @@
     "TrendAnalysisCharts"
    ],
    "export_default": null,
-   "linhas": 215,
+   "linhas": 217,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -4736,7 +4736,7 @@
     "ComprasDashboard"
    ],
    "export_default": "ComprasDashboard",
-   "linhas": 379,
+   "linhas": 390,
    "dominio": "pages/dashboard",
    "hooks_locais": [
     "useAccountFilters",

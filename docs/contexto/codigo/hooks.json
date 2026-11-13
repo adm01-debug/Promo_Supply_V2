@@ -511,7 +511,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 358,
+   "linhas": 365,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "cost_centers",
@@ -536,7 +536,7 @@
    "usado_por_arquivos": [
     "src/features/solicitacoes/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",
@@ -982,7 +982,7 @@
    "hooks_exportados": [
     "useDashboardKPIs"
    ],
-   "linhas": 194,
+   "linhas": 195,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [

@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 293,
+ "migrations": 299,
  "seeds": [],
  "avisos": [
   "47 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -180,7 +180,7 @@
   "auto_calculate_delivery_penalty",
   "auto_create_pagamento_on_delivery",
   "auto_transition_solicitacao_on_cotacao_approval",
-  "auto_transition_solicitacao_on_pedido_delivery",
+  "auto_transition_solicitacao_on_pedido_created",
   "auto_update_supplier_score_on_delivery",
   "calc_checklist_overall_score",
   "calculate_cotacao_scores",
@@ -236,9 +236,10 @@
   "get_user_grupo_id",
   "get_user_role",
   "grant_tenant_access_on_insert",
+  "guard_profile_org_change",
+  "guard_solicitacao_escrita",
   "handle_new_user",
   "handle_pedido_budget_realization",
-  "handle_solicitacao_budget_change",
   "has_permission",
   "has_role",
   "is_account_locked",
@@ -304,11 +305,11 @@
   "sync_budget_on_payment",
   "tenant_in_my_group",
   "tenants_in_my_group",
+  "tg_fornecedores_validate_cnpj",
   "tg_normalize_phone",
   "tg_secret_rotation_maintain",
   "trg_cotacao_approved_transition",
   "trg_pedido_entregue_transition",
-  "trg_solicitacao_approved_transition",
   "trigger_update_saldo_on_pagamento",
   "trigger_update_saldo_on_pedido",
   "update_approval_updated_at",
@@ -597,6 +598,13 @@
    "funcao": "update_updated_at_column"
   },
   {
+   "nome": "trg_validate_cnpj",
+   "quando": "before",
+   "evento": "insert or update of cnpj",
+   "tabela": "fornecedores",
+   "funcao": "tg_fornecedores_validate_cnpj"
+  },
+  {
    "nome": "trg_alert_on_outbox_dead",
    "quando": "after",
    "evento": "update",
@@ -653,13 +661,6 @@
    "funcao": "update_updated_at_column"
   },
   {
-   "nome": "audit_pagamentos_trigger",
-   "quando": "after",
-   "evento": "insert or update or delete",
-   "tabela": "pagamentos",
-   "funcao": "audit_pagamento_changes"
-  },
-  {
    "nome": "trg_update_pagamentos_updated_at",
    "quando": "before",
    "evento": "update",
@@ -702,13 +703,6 @@
    "funcao": "auto_calculate_delivery_penalty"
   },
   {
-   "nome": "trg_auto_transition_on_pedido_delivery",
-   "quando": "after",
-   "evento": "update",
-   "tabela": "pedidos",
-   "funcao": "auto_transition_solicitacao_on_pedido_delivery"
-  },
-  {
    "nome": "trg_auto_update_supplier_score",
    "quando": "after",
    "evento": "update",
@@ -721,6 +715,13 @@
    "evento": "insert or update",
    "tabela": "pedidos",
    "funcao": "handle_pedido_budget_realization"
+  },
+  {
+   "nome": "trg_pedido_created_status",
+   "quando": "after",
+   "evento": "insert",
+   "tabela": "pedidos",
+   "funcao": "auto_transition_solicitacao_on_pedido_created"
   },
   {
    "nome": "trg_pedido_entregue_status",
@@ -863,11 +864,11 @@
    "funcao": "tg_secret_rotation_maintain"
   },
   {
-   "nome": "auto_approve_low_value",
+   "nome": "a0_guard_solicitacao_escrita",
    "quando": "before",
-   "evento": "insert",
+   "evento": "insert or update",
    "tabela": "solicitacoes",
-   "funcao": "auto_approve_low_value_solicitacao"
+   "funcao": "guard_solicitacao_escrita"
   },
   {
    "nome": "solicitacoes_updated_at",
@@ -882,20 +883,6 @@
    "evento": "insert",
    "tabela": "solicitacoes",
    "funcao": "auto_approve_low_value_solicitacao"
-  },
-  {
-   "nome": "trg_solicitacao_approved_auto",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "solicitacoes",
-   "funcao": "trg_solicitacao_approved_transition"
-  },
-  {
-   "nome": "trg_solicitacao_budget_sync",
-   "quando": "after",
-   "evento": "insert or update or delete",
-   "tabela": "solicitacoes",
-   "funcao": "handle_solicitacao_budget_change"
   },
   {
    "nome": "trg_update_budget_on_solicitacao",
@@ -1252,6 +1239,11 @@
    "nome": "lgpd_retention_daily",
    "agenda": "15 3 * * *",
    "migration": "20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql"
+  },
+  {
+   "nome": "limpa-historico-cron-semanal",
+   "agenda": "17 4 * * 0",
+   "migration": "20261113124508_cron_limpa_historico_semanal.sql"
   },
   {
    "nome": "outbox-worker-1min",
@@ -2678,6 +2670,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "approval_rules_escrita_admin_coord",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Authenticated users can view active approval rules",
      "comando": "select",
      "para": "public",
@@ -2694,12 +2692,6 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "restrictive"
-    },
-    {
-     "nome": "Users can manage their organization rules",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
     },
     {
      "nome": "Users can view their organization rules",
@@ -2877,10 +2869,40 @@
      "tipo": "permissive"
     },
     {
+     "nome": "approval_steps_escrita_admin_coord",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "approval_steps_insert_workflow_proprio",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "approval_steps_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "approval_steps_skip_workflow_rejeitado",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Approvers can update their steps",
      "comando": "update",
      "para": "public",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_approval_steps",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     },
     {
      "nome": "Users can view assigned steps or admin",
@@ -4138,6 +4160,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "categorias_escrita_admin_coord",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Tenant users can view categories",
      "comando": "select",
      "para": "authenticated",
@@ -4148,12 +4176,6 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "restrictive"
-    },
-    {
-     "nome": "Users can manage their organization categories",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
     },
     {
      "nome": "Users can view their organization categories",
@@ -5563,10 +5585,22 @@
      "tipo": "permissive"
     },
     {
-     "nome": "tenant_isolation_cost_centers",
+     "nome": "cost_centers_escrita_admin_coord",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "cost_centers_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_cost_centers",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -6774,12 +6808,6 @@
      "tipo": "restrictive"
     },
     {
-     "nome": "Users can manage their organization budgets",
-     "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
      "nome": "Users can view their organization budgets",
      "comando": "select",
      "para": "public",
@@ -7948,8 +7976,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Estoque: gerenciar da própria organização",
-     "comando": "all",
+     "nome": "estoque_delete_admin_coord",
+     "comando": "delete",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "estoque_insert_papeis",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "estoque_update_papeis",
+     "comando": "update",
      "para": "authenticated",
      "tipo": "permissive"
     },
@@ -9238,7 +9278,8 @@
     "trg_normalize_cnpj",
     "trg_normalize_email",
     "trg_normalize_phone_fornecedores",
-    "trg_update_fornecedores_updated_at"
+    "trg_update_fornecedores_updated_at",
+    "trg_validate_cnpj"
    ],
    "sem_rls": false,
    "nao_usada": false
@@ -10283,6 +10324,12 @@
     {
      "nome": "Admins and coordinators can manage licitacoes",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "licitacoes_select_comprador",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     },
@@ -11393,6 +11440,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "pagamentos_select_comprador",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_pagamentos",
      "comando": "all",
      "para": "authenticated",
@@ -11503,7 +11556,6 @@
     "weekly-report"
    ],
    "triggers": [
-    "audit_pagamentos_trigger",
     "trg_update_pagamentos_updated_at",
     "trg_update_saldo_on_pagamento",
     "trg_validate_pagamento_status"
@@ -12304,9 +12356,9 @@
    "triggers": [
     "trg_auto_create_pagamento_on_delivery",
     "trg_auto_penalty_on_late_delivery",
-    "trg_auto_transition_on_pedido_delivery",
     "trg_auto_update_supplier_score",
     "trg_pedido_budget_sync",
+    "trg_pedido_created_status",
     "trg_pedido_entregue_status",
     "trg_update_pedidos_updated_at",
     "trg_update_saldo_on_pedido",
@@ -12641,7 +12693,7 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Users can manage product suppliers within tenant",
+     "nome": "produto_fornecedores_escrita_papeis",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
@@ -12871,12 +12923,6 @@
      "tipo": "permissive"
     },
     {
-     "nome": "Buyers can insert produtos",
-     "comando": "insert",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
      "nome": "Buyers coordinators admins can manage products",
      "comando": "all",
      "para": "authenticated",
@@ -13080,7 +13126,7 @@
     },
     {
      "nome": "profiles_tenant_isolation",
-     "comando": "all",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     },
@@ -15417,6 +15463,30 @@
      "tipo": "permissive"
     },
     {
+     "nome": "solicitacoes_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "solicitacoes_update_admin_coord",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "solicitacoes_update_comprador_gera_ordem",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "solicitacoes_update_proprias_nao_aprovadas",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Tenant isolation for solicitacoes",
      "comando": "select",
      "para": "public",
@@ -15426,17 +15496,11 @@
      "nome": "tenant_isolation_solicitacoes",
      "comando": "all",
      "para": "authenticated",
-     "tipo": "permissive"
+     "tipo": "restrictive"
     },
     {
      "nome": "Users can create requests",
      "comando": "insert",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Users can update their own pending requests",
-     "comando": "update",
      "para": "public",
      "tipo": "permissive"
     },
@@ -15578,11 +15642,9 @@
     "weekly-summary-report"
    ],
    "triggers": [
-    "auto_approve_low_value",
+    "a0_guard_solicitacao_escrita",
     "solicitacoes_updated_at",
     "trg_auto_approve_low_value",
-    "trg_solicitacao_approved_auto",
-    "trg_solicitacao_budget_sync",
     "trg_update_budget_on_solicitacao",
     "trg_update_solicitacoes_updated_at",
     "trg_validate_solicitacao_status",

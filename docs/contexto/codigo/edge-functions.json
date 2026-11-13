@@ -663,7 +663,7 @@
    "nome": "migrate-helper",
    "entrada": "supabase/functions/migrate-helper/index.ts",
    "arquivos": 1,
-   "linhas": 35,
+   "linhas": 36,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS"

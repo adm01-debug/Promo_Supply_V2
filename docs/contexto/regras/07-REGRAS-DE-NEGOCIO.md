@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9c73ed63b9` · branch `main` · 2026-11-13 17:22 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53f69f3081` · branch `main` · 2026-11-13 18:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -36,7 +36,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `categorias` | Admins can manage categories | ALL | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | `solicitacoes` | Users can view their own requests | SELECT | public | permissive | `auth.uid() = solicitante_id OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)` |  |
 | `solicitacoes` | Users can create requests | INSERT | public | permissive |  | `auth.uid() = solicitante_id` |
-| `solicitacoes` | Users can update their own pending requests | UPDATE | public | permissive | `(auth.uid() = solicitante_id AND status = 'pendente') OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)` |  |
 | `solicitacoes` | Only admins can delete requests | DELETE | public | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | `permissions` | Admins can manage permissions | ALL | public | permissive | `has_role(auth.uid(), 'admin')` |  |
 | `role_permissions` | Admins can manage role permissions | ALL | public | permissive | `has_role(auth.uid(), 'admin')` |  |
@@ -139,7 +138,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `creditos_fornecedor` | Authorized roles can manage credits | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `payment_history` | Finance admin can manage payment history | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `query_telemetry` | Admins can manage telemetry | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` | `public.has_role(auth.uid(), 'admin')` |
-| `produtos` | Buyers can insert produtos | INSERT | authenticated | permissive |  | `public.has_role(auth.uid(), 'buyer')` |
 | `storage.objects` | Users can upload documents | INSERT | authenticated | permissive |  | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = auth.uid()::text` |
 | `licitacoes` | Admins and coordinators can manage licitacoes | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` |
 | `licitacao_propostas` | Admins coordinators buyers can manage propostas | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` |
@@ -161,14 +159,11 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `dashboard_layouts` | Users can insert their own dashboard layouts | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `dashboard_layouts` | Users can update their own dashboard layouts | UPDATE | public | permissive | `auth.uid() = user_id` |  |
 | `approval_rules` | Users can view their organization rules | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `approval_rules` | Users can manage their organization rules | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `approval_delegations` | Users can view their organization delegations | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `approval_workflows` | Users can view their organization workflows | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `approval_workflows` | Users can manage their organization workflows | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `categorias` | Users can view their organization categories | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `categorias` | Users can manage their organization categories | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `department_budgets` | Users can view their organization budgets | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `department_budgets` | Users can manage their organization budgets | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `sourcing_events` | tenant_isolation_sourcing_events | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `sourcing_responses` | tenant_isolation_sourcing_responses | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `sourcing_invitations` | tenant_isolation_sourcing_invitations | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
@@ -181,7 +176,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `sourcing_response_items` | tenant_isolation_sourcing_response_items | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `sourcing_response_answers` | tenant_isolation_sourcing_response_answers | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `licitacao_lances` | tenant_isolation_licitacao_lances | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `approval_steps` | tenant_isolation_approval_steps | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `approval_hierarchy` | tenant_isolation_approval_hierarchy | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `tenants` | tenants visible to members | SELECT | authenticated | permissive | `public.user_belongs_to_tenant(auth.uid(), id)` |  |
 | `user_tenants` | user_tenants own rows | SELECT | authenticated | permissive | `user_id = auth.uid()` |  |
@@ -220,13 +214,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `budget_audit_logs` | admin_view_budget_audit_logs | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `dependency_health` | authenticated_read_dependency_health | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `dependency_health_history` | authenticated_read_dependency_health_history | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
-| `solicitacoes` | tenant_isolation_solicitacoes | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
-| `cost_centers` | tenant_isolation_cost_centers | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
-| `profiles` | profiles_tenant_isolation | ALL | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |
 | `produtos` | tenant_isolation_produtos | SELECT | authenticated | permissive | `tenant_id = (auth.jwt() ->> 'tenant_id')::uuid` |  |
 | `unspsc_codes` | unspsc_codes_authenticated_read | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `estoque` | Estoque: ver da própria organização | SELECT | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `estoque` | Estoque: gerenciar da própria organização | ALL | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 | `estoque_movimentacoes` | Movimentações: ver da própria organização | SELECT | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 | `budget_transactions` | Budget transactions viewable by finance roles | SELECT | authenticated | permissive | `tenant_id = current_tenant_id() AND ( has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) )` |  |
@@ -234,7 +224,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | Fiscal docs: ver da própria pasta | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text` |  |
 | `storage.objects` | Fiscal docs: admin vê todos | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
 | `produto_fornecedores` | Users can view product suppliers within tenant | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )` |  |
-| `produto_fornecedores` | Users can manage product suppliers within tenant | ALL | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )` | `EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )` |
 | `repurchase_suggestions` | Users can view repurchase suggestions within tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `repurchase_suggestions` | Buyers coordinators admins can manage repurchase suggestions within tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role) )` | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role) )` |
 | `erp_connections` | Admins and coordinators manage ERP connections within tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` |
@@ -350,6 +339,28 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `contracts` | buyer_le_contracts | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 | `contract_items` | buyer_le_contract_items | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 | `contract_documents` | buyer_le_contract_documents | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
+| `profiles` | profiles_tenant_isolation | SELECT | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` |  |
+| `solicitacoes` | tenant_isolation_solicitacoes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `solicitacoes` | solicitacoes_select_grupo | SELECT | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` |  |
+| `solicitacoes` | solicitacoes_update_proprias_nao_aprovadas | UPDATE | authenticated | permissive | `solicitante_id = auth.uid() AND status IN ('pendente', 'rejeitada')` | `solicitante_id = auth.uid() AND status IN ('pendente', 'cancelada')` |
+| `solicitacoes` | solicitacoes_update_admin_coord | UPDATE | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` |
+| `solicitacoes` | solicitacoes_update_comprador_gera_ordem | UPDATE | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'aprovada'` | `public.has_role(auth.uid(), 'buyer'::app_role) AND status = 'em_andamento'` |
+| `estoque` | estoque_insert_papeis | INSERT | authenticated | permissive |  | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` |
+| `estoque` | estoque_update_papeis | UPDATE | authenticated | permissive | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` |
+| `estoque` | estoque_delete_admin_coord | DELETE | authenticated | permissive | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| `categorias` | categorias_escrita_admin_coord | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` |
+| `approval_rules` | approval_rules_escrita_admin_coord | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` |
+| `approval_steps` | tenant_isolation_approval_steps | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_steps` | approval_steps_select_grupo | SELECT | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` |  |
+| `approval_steps` | approval_steps_escrita_admin_coord | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` |
+| `approval_steps` | approval_steps_insert_workflow_proprio | INSERT | authenticated | permissive |  | `EXISTS ( SELECT 1 FROM public.approval_workflows w JOIN public.solicitacoes s ON s.id = w.solicitacao_id WHERE w.id = approval_steps.workflow_id AND s.solicitante_id = auth.uid() )` |
+| `approval_steps` | approval_steps_skip_workflow_rejeitado | UPDATE | authenticated | permissive | `status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.status = 'rejected' )` | `status = 'skipped'` |
+| `cost_centers` | tenant_isolation_cost_centers | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `cost_centers` | cost_centers_select_grupo | SELECT | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` |  |
+| `cost_centers` | cost_centers_escrita_admin_coord | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)` |
+| `produto_fornecedores` | produto_fornecedores_escrita_papeis | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` | `public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` |
+| `licitacoes` | licitacoes_select_comprador | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
+| `pagamentos` | pagamentos_select_comprador | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -432,7 +443,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `fornecedores` | `saldo_comprometido` | default 0 |
 | `fornecedores` | `organization_id` | FK → organizations.id |
 | `fornecedores` | `tenant_id` | obrigatório; FK → tenants.id |
-| `fornecedores` | `(tabela)` | constraint fornecedores_cnpj_valid CHECK (cnpj IS NULL OR public.is_valid_cnpj(cnpj)) NOT VALID |
 | `fornecedores` | `(tabela)` | constraint fornecedores_telefone_e164_chk CHECK (telefone IS NULL OR telefone ~ '^\+[1-9]\d{9,14}$') NOT VALID |
 | `historico_compras` | `id` | PK; default gen_random_uuid() |
 | `historico_compras` | `solicitacao_id` | FK → solicitacoes.id |
@@ -655,7 +665,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ip_whitelist` | `id` | PK; default gen_random_uuid() |
 | `ip_whitelist` | `ip_address` | obrigatório; único |
 | `ip_whitelist` | `created_by` | FK → users.id |
-| … +1077 linhas — lista completa em `context.json` | | |
+| `ip_whitelist` | `created_at` | default now() |
+| … +1076 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -682,13 +693,11 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | validate_solicitacao_status | BEFORE UPDATE OF STATUS | `solicitacoes` | `validate_solicitacao_status_transition` |  |
 | validate_pedido_status | BEFORE UPDATE OF STATUS | `pedidos` | `validate_pedido_status_transition` |  |
 | update_saldo_on_pedido_change | AFTER INSERT OR UPDATE OR DELETE | `pedidos` | `trigger_update_saldo_on_pedido` |  |
-| auto_approve_low_value | BEFORE INSERT | `solicitacoes` | `auto_approve_low_value_solicitacao` |  |
 | update_department_budgets_updated_at | BEFORE UPDATE | `department_budgets` | `update_updated_at_column` |  |
 | update_fiscal_documents_updated_at | BEFORE UPDATE | `fiscal_documents` | `update_updated_at_column` |  |
 | update_repurchase_suggestions_updated_at | BEFORE UPDATE | `repurchase_suggestions` | `update_updated_at_column` |  |
 | trg_auto_approve_low_value | BEFORE INSERT | `solicitacoes` | `auto_approve_low_value_solicitacao` |  |
 | trg_auto_transition_on_cotacao_approval | AFTER UPDATE | `cotacoes` | `auto_transition_solicitacao_on_cotacao_approval` |  |
-| trg_auto_transition_on_pedido_delivery | AFTER UPDATE | `pedidos` | `auto_transition_solicitacao_on_pedido_delivery` |  |
 | trg_auto_create_pagamento_on_delivery | AFTER UPDATE | `pedidos` | `auto_create_pagamento_on_delivery` |  |
 | trg_auto_update_supplier_score | AFTER UPDATE | `pedidos` | `auto_update_supplier_score_on_delivery` |  |
 | trg_update_saldo_on_pedido | AFTER INSERT OR UPDATE OR DELETE | `pedidos` | `trigger_update_saldo_on_pedido` |  |
@@ -711,7 +720,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_apply_penalty_escalation | BEFORE INSERT | `contract_penalties` | `apply_penalty_escalation` |  |
 | trg_cotacao_approved_status | AFTER UPDATE | `cotacoes` | `trg_cotacao_approved_transition` |  |
 | trg_pedido_entregue_status | AFTER UPDATE | `pedidos` | `trg_pedido_entregue_transition` |  |
-| trg_solicitacao_approved_auto | BEFORE UPDATE | `solicitacoes` | `trg_solicitacao_approved_transition` |  |
 | set_devolucoes_updated_at | BEFORE UPDATE | `devolucoes` | `update_updated_at_column` |  |
 | set_creditos_updated_at | BEFORE UPDATE | `creditos_fornecedor` | `update_updated_at_column` |  |
 | update_licitacoes_updated_at | BEFORE UPDATE | `licitacoes` | `update_updated_at_column` |  |
@@ -722,9 +730,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | tr_update_best_bid | AFTER INSERT | `licitacao_lances` | `update_licitacao_best_bid` |  |
 | trigger_log_budget_changes | AFTER INSERT OR UPDATE OR DELETE | `department_budgets` | `log_budget_changes` |  |
 | trg_update_budget_on_solicitacao | AFTER INSERT OR UPDATE OR DELETE | `solicitacoes` | `update_budget_on_solicitacao_change` |  |
-| trg_solicitacao_budget_sync | AFTER INSERT OR UPDATE OR DELETE | `solicitacoes` | `handle_solicitacao_budget_change` |  |
 | trg_pedido_budget_sync | AFTER INSERT OR UPDATE | `pedidos` | `handle_pedido_budget_realization` |  |
-| audit_pagamentos_trigger | AFTER INSERT OR UPDATE OR DELETE | `pagamentos` | `audit_pagamento_changes` |  |
 | tr_budget_transaction_update | AFTER INSERT | `budget_transactions` | `update_cost_center_budget_totals` |  |
 | update_dashboard_layouts_updated_at | BEFORE UPDATE | `dashboard_layouts` | `update_updated_at_column` |  |
 | trg_dashboard_filter_favorites_updated_at | BEFORE UPDATE | `dashboard_filter_favorites` | `update_updated_at_column` |  |
@@ -770,6 +776,10 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_spot_skus_updated | BEFORE UPDATE | `spot_skus` | `update_updated_at_column` |  |
 | trg_spot_custom_updated | BEFORE UPDATE | `spot_customization_options` | `update_updated_at_column` |  |
 | trg_spot_estoque_updated | BEFORE UPDATE | `spot_estoque` | `update_updated_at_column` |  |
+| trg_pedido_created_status | AFTER INSERT | `pedidos` | `auto_transition_solicitacao_on_pedido_created` |  |
+| trg_validate_cnpj | BEFORE INSERT OR UPDATE OF CNPJ | `fornecedores` | `tg_fornecedores_validate_cnpj` |  |
+| a0_guard_profile_org_change | BEFORE INSERT OR UPDATE OF TENANT_ID, CURRENT_ORGANIZATION_ID | `profiles` | `guard_profile_org_change` |  |
+| a0_guard_solicitacao_escrita | BEFORE INSERT OR UPDATE | `solicitacoes` | `guard_solicitacao_escrita` |  |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -788,12 +798,18 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `get_db_health_snapshot` | access denied: admin role required | `supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql` |
 | `execute_read_query` | Somente EXPLAIN é permitido | `supabase/migrations/20261107150000_execute_read_query.sql` |
 | `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/migrations/20261107150000_execute_read_query.sql` |
-| `get_compras_dashboard_metrics` | not authenticated | `supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql` |
-| `get_compras_dashboard_metrics` | forbidden | `supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql` |
 | `get_fornecedores_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 | `get_pagamentos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 | `get_pedidos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 | `get_solicitacoes_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
+| `tg_fornecedores_validate_cnpj` | new row for relation "fornecedores" violates check constraint "fornecedores_cnpj_valid" | `supabase/migrations/20261113123212_fornecedores_cnpj_valida_so_no_cadastro.sql` |
+| `get_compras_dashboard_metrics` | not authenticated | `supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql` |
+| `get_compras_dashboard_metrics` | forbidden | `supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql` |
+| `guard_profile_org_change` | Usuário sem vínculo com o tenant % | `supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql` |
+| `guard_profile_org_change` | Usuário sem vínculo com a organização % | `supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql` |
+| `guard_solicitacao_escrita` | Solicitação deve ser criada como pendente (recebido: %) | `supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql` |
+| `guard_solicitacao_escrita` | Organização da solicitação não é a do usuário | `supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql` |
+| `guard_solicitacao_escrita` | Sem permissão para alterar esta solicitação | `supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -999,7 +1015,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
 | `status` | `awarded` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `backlog` | compara | `src/pages/admin/SourcingPipeline.tsx` |
-| `status` | `cancelada` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
+| `status` | `cancelada` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `status` | `cancelado` | compara, filtra | `src/components/pagamentos/PagamentoFinancialDashboard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/pages/pedidos/PedidoDetailsDialog.tsx`<br>`supabase/functions/weekly-summary-report/index.ts` |
 | `status` | `cancelled` | compara | `src/pages/admin/SourcingPipeline.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `completed` | compara, escreve | `src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/StatusTimeline.tsx`<br>`src/components/settings/TourSettingsPanel.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx`<br>… +3 |
@@ -1024,7 +1040,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `empty` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `encerrada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `encontrado` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/pages/cotacao/cotacaoHelpers.ts` |
-| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +10 |
+| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +11 |
 | `status` | `enviado` | compara | `src/components/pedidos/PedidoMobileCard.tsx` |
 | `status` | `erro` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx` |
 | `status` | `error` | compara, escreve | `src/components/ui/indicators/StepAndHealth.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/FiscalDashboard.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/integrity_test.ts`<br>… +6 |
@@ -1036,7 +1052,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `expirado` | escreve | `supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `expired` | compara | `src/pages/portal-fornecedor/PortalFornecedor.tsx` |
 | `status` | `failed` | compara, escreve | `src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/punchout-receive/index.ts` |
-| `status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
+| `status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `status` | `healthy` | compara, escreve | `src/components/compras/SupplierRiskAnalysis.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `homologada` | compara, escreve | `src/hooks/useLicitacoes.ts`<br>`src/pages/licitacoes/Licitacoes.tsx` |
 | `status` | `idle` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/components/compras/NeuralFollowUpMonitor.tsx` |
@@ -1129,10 +1145,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `reconciliation_status` | `unmatched` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
 | `dispatch_status` | `suppressed_dedup` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
 | `sefaz_status` | `dispatch_error` | compara, escreve | `supabase/functions/fiscal-orchestrator/index.ts` |
-| `v_old_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
-| `v_old_status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
-| `v_new_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
-| `v_new_status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql` |
+| `v_old_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| `v_old_status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| `v_new_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| `v_new_status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 
 ### E.4 Enums e listas de valores
 
@@ -1610,6 +1626,7 @@ _nenhum item encontrado_
 | `CLEAR_FILTERS_DESCRIPTION` | `"Limpar filtros (tela atual)"` | `src/features/layout/components/KeyboardShortcutsDialog.tsx` |
 | `MAX_HISTORY_ITEMS` | `10` | `src/features/layout/components/search/searchConfig.ts` |
 | `DEFAULT_TRANSITION` | `"blur-scale"` | `src/features/layout/transitions/config.ts` |
+| `SEM_PERMISSAO` | `'sem permissão para alterar esta(s) solicitação(ões)'` | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | `MOBILE_BREAKPOINT` | `768` | `src/hooks/use-mobile.tsx` |
 | `TOAST_LIMIT` | `1` | `src/hooks/use-toast.ts` |
 | `TOAST_REMOVE_DELAY` | `1000000` | `src/hooks/use-toast.ts` |
@@ -1862,6 +1879,8 @@ _nenhum item encontrado_
 | `now() - interval '20 days',` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
 | `now() - interval '5 days',` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
 | `now() - interval '7 days'` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
+| `WHERE next_due_at <= now() + interval '30 days'` | `supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
+| `$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$` | `supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 
@@ -2241,7 +2260,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2625 testes em 122 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2636 testes em 124 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2338,6 +2357,7 @@ _nenhum item encontrado_
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
+| `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
@@ -2348,7 +2368,9 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
+| `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
+| `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
@@ -2356,7 +2378,6 @@ _nenhum item encontrado_
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
-| `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 3 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |
@@ -2422,6 +2443,7 @@ _nenhum item encontrado_
 | Subscribe to realtime rate limit alerts | `src/components/security/RateLimitDashboard.tsx` |
 | Update status with transition validation | `src/features/pedidos/hooks/usePedidos.ts` |
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
+| RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | * F-023 fix: replaced setInterval deadline-polling with Realtime subscription | `src/hooks/useApprovalNotifications.ts` |
 | Business logic lives in focused sub-hooks: | `src/hooks/useApprovalWorkflow.ts` |
 | Rule/delegation mutations | `src/hooks/useApprovalWorkflow.ts` |

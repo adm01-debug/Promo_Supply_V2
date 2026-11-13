@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 165,
+ "total": 167,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 149
+  "unit": 151
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 99
+   "arquivos": 101
   },
   {
    "padrao": "outro",
@@ -124,9 +124,9 @@
   {
    "arquivo": "scripts/ci/encoding-src.unit.mjs",
    "tipo": "unit",
-   "linhas": 78,
+   "linhas": 128,
    "testa": [],
-   "casos": 4
+   "casos": 8
   },
   {
    "arquivo": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
@@ -355,6 +355,18 @@
    "testa": [
     "src/components/compras/PipelineChart.tsx",
     "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [
+    "src/components/compras/TrendAnalysisCharts.tsx",
+    "src/locales/en/translation.json",
+    "src/locales/es/translation.json",
+    "src/locales/pt/translation.json"
    ],
    "casos": 3
   },
@@ -605,6 +617,15 @@
    "casos": 29
   },
   {
+   "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+   "tipo": "unit",
+   "linhas": 75,
+   "testa": [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
    "tipo": "unit",
    "linhas": 68,
@@ -664,11 +685,11 @@
   {
    "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
    "tipo": "unit",
-   "linhas": 78,
+   "linhas": 116,
    "testa": [
     "src/hooks/useDashboardKPIs.ts"
    ],
-   "casos": 2
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -1505,6 +1526,7 @@
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/KanbanBoard.tsx": 1,
   "src/components/compras/PipelineChart.tsx": 1,
+  "src/components/compras/TrendAnalysisCharts.tsx": 1,
   "src/components/compras/bulk-operations/bulkOperationsTypes.ts": 1,
   "src/components/compras/contract/replaceContractItems.ts": 1,
   "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts": 1,
@@ -1533,7 +1555,7 @@
   "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx": 1,
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
-  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 1,
+  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 2,
   "src/features/solicitacoes/index.ts": 1,
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
   "src/hooks/use-toast.ts": 1,
@@ -1571,6 +1593,9 @@
   "src/lib/supabaseQuery.ts": 1,
   "src/lib/supabaseRpc.ts": 1,
   "src/lib/utils.ts": 1,
+  "src/locales/en/translation.json": 1,
+  "src/locales/es/translation.json": 1,
+  "src/locales/pt/translation.json": 1,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 1,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
   "src/pages/admin/HealthDashboard.tsx": 1,

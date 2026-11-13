@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9c73ed63b983afdb413c304789d43420f9434821` (2026-11-13T13:06:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `53f69f3081dce1536f7b0992712325a813695632` (2026-11-13T14:11:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (688), SQL (294), Markdown (72), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (690), SQL (300), Markdown (72), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1190 |
-| arquivos_codigo | 756 |
-| linhas_codigo | 159929 |
+| arquivos_total | 1198 |
+| arquivos_codigo | 758 |
+| linhas_codigo | 160217 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,9 +46,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 37 |
 | tabelas | 163 |
-| migrations | 293 |
-| cron_jobs | 68 |
-| testes | 165 |
+| migrations | 299 |
+| cron_jobs | 69 |
+| testes | 167 |
 | workflows | 8 |
 | scripts | 47 |
 | docs_md | 72 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (99), outro (37), co-localizado (*.test) (19)
+- testes: co-localizado (__tests__) (101), outro (37), co-localizado (*.test) (19)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (15), scripts/types-sync (7), scripts/inventario (5)
@@ -251,6 +251,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ensure-telemetry-logs-next-partition` 0 4 25 * * (20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql)
 - `expiry-alerts-check` 0 10 * * * → edge check-expiry-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
 - `lgpd_retention_daily` 15 3 * * * (20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql)
+- `limpa-historico-cron-semanal` 17 4 * * 0 (20261113124508_cron_limpa_historico_semanal.sql)
 - `outbox-worker-1min` * * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
 - `pg-activity-watchdog` */2 * * * * (20260712110815_762ad29c-b3f7-4e44-a0ec-f6b624174ca3.sql)
 - `refresh-mv-dashboard-kpis` */15 * * * * (20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql)
@@ -328,8 +329,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - AGENTS.md (6)
 - package.json (6)
+- .github/workflows/main.yml (5)
 - .github/workflows/contexto.yml (4)
-- .github/workflows/main.yml (4)
 - ESTADO_ATUAL.md (3)
 - docs/agentes/contexto-ia.md (3)
 - docs/agentes/github-ci.md (3)
@@ -338,9 +339,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - scripts/ai-context/README.md (3)
 - scripts/automation.config.json (3)
 - scripts/ci/branch-podaveis.mjs (3)
+- scripts/ci/encoding-src.unit.mjs (3)
 - scripts/supabase_snapshot/README.md (3)
 - scripts/supabase_snapshot/snapshot.py (3)
-- .github/workflows/notifica-falha-main.yml (2)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -402,6 +403,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-13 `53f69f30` fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)
+- 2026-11-13 `8a5540cf` security(banco): comprador não altera dados de outros nem troca de organização (#75)
+- 2026-11-13 `83eab056` fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)
+- 2026-11-13 `a7263607` fix(banco): pedido e pagamento voltam a funcionar para fornecedores com CNPJ antigo inválido (#72)
+- 2026-11-13 `4c5128dc` fix(banco): solicitação pequena volta a ser criada, entrega gera 1 pagamento e orçamento deixa de multiplicar (#71)
+- 2026-11-13 `b157d5ae` fix(banco): compra completa volta a funcionar (notas de cotação e sequência de status) (#70)
+- 2026-11-13 `a8c38476` fix(sec): fecha 14 alerts CodeQL (XSS spot-proxy, permissions CI, stack-trace) (#69)
 - 2026-11-13 `9c73ed63` docs(prod): fecha relatório de prontidão com o estado de 2026-11-13 (#77)
 - 2026-11-13 `c4a54e75` fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)
 - 2026-11-13 `975d0f95` chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)
@@ -410,13 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `50817a04` fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)
 - 2026-11-12 `3118a1fd` fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)
 - 2026-11-12 `6c530a06` security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)
-- 2026-11-12 `f6c2d75b` fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)
-- 2026-11-12 `9eefca6e` fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)
-- 2026-11-12 `27032009` fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)
-- 2026-11-12 `db1dfe5c` fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)
-- 2026-11-12 `e06e53b1` fix(ui): seta do tour de onboarding aparecia corrompida (#57)
-- 2026-11-12 `62016b23` chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)
-- 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
