@@ -246,14 +246,8 @@ describe('buyerAlertsStore', () => {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
       };
-      // Second .eq() returns empty
-      let callCount = 0;
       mockChain.eq.mockImplementation(() => {
-        callCount++;
-        if (callCount >= 2) {
-          return Promise.resolve({ data: [], error: null });
-        }
-        return mockChain;
+        return Promise.resolve({ data: [], error: null });
       });
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockChain);
 
@@ -270,13 +264,8 @@ describe('buyerAlertsStore', () => {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
       };
-      let callCount = 0;
       mockChain.eq.mockImplementation(() => {
-        callCount++;
-        if (callCount >= 2) {
-          return Promise.resolve({ data: profiles, error: null });
-        }
-        return mockChain;
+        return Promise.resolve({ data: profiles, error: null });
       });
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockChain);
 
@@ -299,13 +288,8 @@ describe('buyerAlertsStore', () => {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
       };
-      let callCount = 0;
       mockChain.eq.mockImplementation(() => {
-        callCount++;
-        if (callCount >= 2) {
-          return Promise.resolve({ data: profiles, error: null });
-        }
-        return mockChain;
+        return Promise.resolve({ data: profiles, error: null });
       });
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockChain);
 
@@ -324,13 +308,8 @@ describe('buyerAlertsStore', () => {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
       };
-      let callCount = 0;
       mockChain.eq.mockImplementation(() => {
-        callCount++;
-        if (callCount >= 2) {
-          return Promise.resolve({ data: null, error: new Error('DB error') });
-        }
-        return mockChain;
+        return Promise.resolve({ data: null, error: new Error('DB error') });
       });
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockChain);
 

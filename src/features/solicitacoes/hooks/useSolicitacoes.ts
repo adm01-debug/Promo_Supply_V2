@@ -207,7 +207,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     }
   }, [user, organizationId, invalidate, createWorkflow]);
 
-  const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
+  const updateSolicitacao = useCallback(async (id: string, updates: Database['public']['Tables']['solicitacoes']['Update']) => {
     try {
       const { error } = await supabase.from('solicitacoes').update(updates).eq('id', id);
       if (error) throw error;
