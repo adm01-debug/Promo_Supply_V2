@@ -43,7 +43,7 @@ interface ContractModalProps {
 
 export function ContractModal({ open, onOpenChange, contract, onSuccess }: ContractModalProps) {
   const isEditing = !!contract;
-  
+
   const [formData, setFormData] = useState({
     contract_number: "",
     title: "",
@@ -109,7 +109,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
       .from('contract_items')
       .select('*')
       .eq('contract_id', contractId);
-    
+
     if (!error && data) {
       setItems(data);
     }
@@ -156,14 +156,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
   const updateItem = (index: number, field: keyof ContractItem, value: string | number) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
-    
+
     // Recalculate total price
     if (field === 'quantity' || field === 'unit_price') {
       newItems[index].total_price = newItems[index].quantity * newItems[index].unit_price;
     }
-    
+
     setItems(newItems);
-    
+
     // Update total contract value
     const totalValue = newItems.reduce((sum, item) => sum + item.total_price, 0);
     setFormData(prev => ({ ...prev, total_value: totalValue }));
@@ -172,7 +172,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
   const removeItem = (index: number) => {
     const newItems = items.filter((_, i) => i !== index);
     setItems(newItems);
-    
+
     const totalValue = newItems.reduce((sum, item) => sum + item.total_price, 0);
     setFormData(prev => ({ ...prev, total_value: totalValue }));
   };
@@ -261,7 +261,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
             unit_price: item.unit_price,
             total_price: item.total_price,
           }));
-          
+
           await supabase.from('contract_items').insert(itemsToInsert);
         }
 

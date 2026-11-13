@@ -43,8 +43,8 @@ export const BuyerPerformancePanel = () => {
     const totalEstimado = sols.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
     const totalAprovado = sols.reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
     const economiaGerada = totalEstimado > totalAprovado ? totalEstimado - totalAprovado : 0;
-    const economiaPercentual = totalEstimado > 0 
-      ? Math.round((economiaGerada / totalEstimado) * 1000) / 10 
+    const economiaPercentual = totalEstimado > 0
+      ? Math.round((economiaGerada / totalEstimado) * 1000) / 10
       : 0;
 
     const cotsComDesconto = cots.filter(c => c.desconto_percentual && Number(c.desconto_percentual) > 0);
@@ -54,8 +54,8 @@ export const BuyerPerformancePanel = () => {
 
     const selecionadas = cots.filter(c => c.selecionada);
     const comMelhorPreco = selecionadas.filter(c => (c.score_preco || 0) >= 80).length;
-    const melhorPrecoRate = selecionadas.length > 0 
-      ? Math.round((comMelhorPreco / selecionadas.length) * 100) 
+    const melhorPrecoRate = selecionadas.length > 0
+      ? Math.round((comMelhorPreco / selecionadas.length) * 100)
       : 0;
 
     // Top savings by solicitacao

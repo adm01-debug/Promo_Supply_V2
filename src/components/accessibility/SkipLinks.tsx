@@ -15,20 +15,20 @@ interface SkipLinksProps {
 }
 
 const defaultLinks: SkipLink[] = [
-  { 
-    href: "#main-content", 
+  {
+    href: "#main-content",
     label: "Pular para o conteúdo principal",
     icon: <FileText className="w-4 h-4" />,
     shortcut: "Alt+1"
   },
-  { 
-    href: "#main-navigation", 
+  {
+    href: "#main-navigation",
     label: "Pular para a navegação",
     icon: <Navigation className="w-4 h-4" />,
     shortcut: "Alt+2"
   },
-  { 
-    href: "#search", 
+  {
+    href: "#search",
     label: "Pular para a busca",
     icon: <Search className="w-4 h-4" />,
     shortcut: "Alt+3"
@@ -47,7 +47,7 @@ export const SkipLinks = ({ links = defaultLinks }: SkipLinksProps) => {
   }, []);
 
   return (
-    <nav 
+    <nav
       aria-label="Links de navegação rápida"
       className="skip-links-container"
     >
@@ -61,7 +61,7 @@ export const SkipLinks = ({ links = defaultLinks }: SkipLinksProps) => {
           />
         )}
       </AnimatePresence>
-      
+
       <ul className="skip-links flex flex-col gap-2">
         {links.map((link, index) => (
           <li key={index}>

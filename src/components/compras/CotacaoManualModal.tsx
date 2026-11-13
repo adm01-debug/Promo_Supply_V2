@@ -38,11 +38,11 @@ interface CotacaoManualModalProps {
   fornecedores: Fornecedor[];
 }
 
-export const CotacaoManualModal = ({ 
-  open, 
-  onOpenChange, 
-  onSave, 
-  fornecedores 
+export const CotacaoManualModal = ({
+  open,
+  onOpenChange,
+  onSave,
+  fornecedores
 }: CotacaoManualModalProps) => {
   const [formData, setFormData] = useState({
     fornecedor: '',
@@ -116,8 +116,8 @@ export const CotacaoManualModal = ({
           {/* Fornecedor */}
           <div className="space-y-2">
             <Label>Fornecedor *</Label>
-            <Select 
-              value={formData.fornecedor} 
+            <Select
+              value={formData.fornecedor}
               onValueChange={(v) => setFormData(prev => ({ ...prev, fornecedor: v }))}
             >
               <SelectTrigger className="bg-background">
@@ -130,7 +130,7 @@ export const CotacaoManualModal = ({
                 <SelectItem value="novo">+ Novo fornecedor</SelectItem>
               </SelectContent>
             </Select>
-            
+
             {formData.fornecedor === 'novo' && (
               <Input
                 placeholder="Nome do novo fornecedor"
@@ -196,8 +196,8 @@ export const CotacaoManualModal = ({
           {/* Condição de Pagamento */}
           <div className="space-y-2">
             <Label>Condição de Pagamento *</Label>
-            <Select 
-              value={formData.condicaoPagamento} 
+            <Select
+              value={formData.condicaoPagamento}
               onValueChange={(v) => setFormData(prev => ({ ...prev, condicaoPagamento: v }))}
             >
               <SelectTrigger className="bg-background">

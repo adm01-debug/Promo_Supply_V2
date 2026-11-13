@@ -116,7 +116,7 @@ export const BuyerPerformanceAlerts = () => {
             </div>
           )}
         </div>
-        
+
         <ScrollArea className="h-[400px]">
           {alerts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">

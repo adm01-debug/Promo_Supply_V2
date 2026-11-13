@@ -181,7 +181,7 @@ interface AnimatedCounterProps {
   formatFn?: (value: number) => string;
 }
 
-export const AnimatedCounter = ({ 
+export const AnimatedCounter = ({
   value, duration = 1, className,
   formatFn = (v) => v.toLocaleString("pt-BR")
 }: AnimatedCounterProps) => (
@@ -213,7 +213,7 @@ export const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(({
 PageTransition.displayName = 'PageTransition';
 
 // Floating animation for decorative elements
-export const FloatingElement = ({ children, className, amplitude = 10, duration = 3 }: { 
+export const FloatingElement = ({ children, className, amplitude = 10, duration = 3 }: {
   children: React.ReactNode; className?: string; amplitude?: number; duration?: number;
 }) => (
   <motion.div
@@ -279,7 +279,7 @@ export const HoverScale = forwardRef<HTMLDivElement, HoverScaleProps>(
 HoverScale.displayName = "HoverScale";
 
 // Attention animation for important elements
-export const AttentionPulse = ({ children, className, active = true }: { 
+export const AttentionPulse = ({ children, className, active = true }: {
   children: React.ReactNode; className?: string; active?: boolean;
 }) => (
   <motion.div
@@ -312,7 +312,7 @@ export const LoadingSpinner = ({ className, size = 24 }: { className?: string; s
 );
 
 // Entrance animation wrapper with direction
-export const EntranceAnimation = ({ children, className, direction = "up", delay = 0, duration = 0.4 }: { 
+export const EntranceAnimation = ({ children, className, direction = "up", delay = 0, duration = 0.4 }: {
   children: React.ReactNode; className?: string; direction?: "up" | "down" | "left" | "right"; delay?: number; duration?: number;
 }) => {
   const directionMap = {

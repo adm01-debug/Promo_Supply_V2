@@ -84,7 +84,7 @@ export function BulkOperationsPreview({
   const EntityIcon = config.icon;
 
   // Items that will be affected (not excluded)
-  const affectedItems = useMemo(() => 
+  const affectedItems = useMemo(() =>
     selectedItems.filter(item => !excludedItems.has(item.id)),
     [selectedItems, excludedItems]
   );
@@ -417,8 +417,8 @@ export function BulkOperationsPreview({
                                   key={item.id}
                                   className={cn(
                                     "flex items-center gap-2 p-2 rounded text-sm",
-                                    excludedItems.has(item.id) 
-                                      ? "bg-muted/30 opacity-50" 
+                                    excludedItems.has(item.id)
+                                      ? "bg-muted/30 opacity-50"
                                       : "bg-muted/50"
                                   )}
                                 >
@@ -456,7 +456,7 @@ export function BulkOperationsPreview({
                     <div className="text-sm">
                       <p className="font-medium text-destructive">Atenção!</p>
                       <p className="text-muted-foreground">
-                        Esta ação não pode ser desfeita. {affectedItems.length} item(ns) serão 
+                        Esta ação não pode ser desfeita. {affectedItems.length} item(ns) serão
                         permanentemente afetados.
                       </p>
                     </div>
@@ -487,7 +487,7 @@ export function BulkOperationsPreview({
             <Button
               onClick={handleExecute}
               disabled={
-                isExecuting || 
+                isExecuting ||
                 affectedItems.length === 0 ||
                 (selectedAction.id === 'change-status' && !targetStatus)
               }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const AISupplierSuggestion = () => {
-   
+
   const [isExpanding, setIsExpanding] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ export const AISupplierSuggestion = () => {
       <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
         <Brain className="h-16 w-16 text-violet-400" />
       </div>
-      
+
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -56,8 +56,8 @@ export const AISupplierSuggestion = () => {
             ))}
           </div>
 
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full h-10 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-violet-500/20 transition-all gap-2"
           >
             Open Sourcing Panel <ArrowRight className="w-3.5 h-3.5" />

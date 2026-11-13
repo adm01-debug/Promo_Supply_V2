@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Loader2, TrendingDown, TrendingUp, AlertTriangle, 
+import {
+  Loader2, TrendingDown, TrendingUp, AlertTriangle,
   Search, Download, BarChart3, PieChart as PieIcon,
   Building2, CheckCircle2, Wallet
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo } from "react";
-import { 
+import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell,
   PieChart, Pie
 } from 'recharts';
@@ -34,7 +34,7 @@ export const CostCenterPerformanceAnalysis = () => {
   });
 
   const filteredReport = useMemo(() => {
-    return report.filter(item => 
+    return report.filter(item =>
       item.cost_center_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.cost_center_code.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -120,7 +120,7 @@ export const CostCenterPerformanceAnalysis = () => {
                   <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="rgba(255,255,255,0.05)" />
                   <XAxis type="number" hide />
                   <YAxis dataKey="cost_center_name" type="category" fontSize={11} width={100} axisLine={false} tickLine={false} />
-                  <Tooltip 
+                  <Tooltip
                     cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                     contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
                     formatter={(val: number) => formatCurrency(val)}
@@ -174,9 +174,9 @@ export const CostCenterPerformanceAnalysis = () => {
           <div className="flex items-center gap-3">
             <div className="relative w-48 sm:w-64">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <Input 
-                className="pl-8 h-8 text-xs" 
-                placeholder="Filtrar centro de custo..." 
+              <Input
+                className="pl-8 h-8 text-xs"
+                placeholder="Filtrar centro de custo..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
@@ -241,9 +241,9 @@ export const CostCenterPerformanceAnalysis = () => {
                             </span>
                             {row.usage_percentage > 100 && <Badge variant="destructive" className="h-3.5 px-1 text-[8px] animate-pulse">OVER</Badge>}
                           </div>
-                          <Progress 
-                            value={Math.min(row.usage_percentage, 100)} 
-                            className={`h-1.5 ${row.usage_percentage > 90 ? '[&>div]:bg-destructive' : ''}`} 
+                          <Progress
+                            value={Math.min(row.usage_percentage, 100)}
+                            className={`h-1.5 ${row.usage_percentage > 90 ? '[&>div]:bg-destructive' : ''}`}
                           />
                         </div>
                       </TableCell>

@@ -57,7 +57,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
     let overdueCount = 0;
     let prodAuditCount = 0;
     const pendingApprovals = workflows?.length || 0;
-    
+
     const criticalItems: string[] = [];
     const overdueItems: string[] = [];
     const prodAuditItems: string[] = [];
@@ -85,7 +85,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
         overdueCount++;
         if (overdueItems.length < 3) overdueItems.push(ped.numero);
       }
-      
+
       // Check for first piece audit status
       if ((ped as { status_producao?: string }).status_producao === 'primeira_peca') {
         prodAuditCount++;
@@ -110,9 +110,9 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
           transition={{ duration: 0.3, ease: "easeOut" }}
           className="mb-6"
         >
-          <Alert 
+          <Alert
             ref={ref}
-            variant="destructive" 
+            variant="destructive"
             className="relative border-destructive/50 bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent shadow-lg p-5 rounded-2xl border-2 overflow-hidden group"
           >
             {/* Background pattern */}
@@ -129,7 +129,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                     <AlertTriangle className="h-6 w-6" />
                   )}
                 </div>
-                
+
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <AlertTitle className="text-destructive font-black uppercase tracking-tight text-sm mb-0">
@@ -137,11 +137,11 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                     </AlertTitle>
                     <Badge variant="outline" className="border-destructive text-destructive text-[9px] h-4 font-black uppercase tracking-wider">SLA CRÍTICO</Badge>
                   </div>
-                  
+
                   <div className="flex flex-wrap items-center gap-4 text-sm">
                     {alerts.overdueCount > 0 && (
                       <span className="flex items-center gap-1.5 text-destructive font-bold">
-                        {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}: 
+                        {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}:
                         <span className="text-xs font-mono opacity-80">{alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}</span>
                       </span>
                     )}
@@ -159,7 +159,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                         {alerts.pendingApprovals} Aprovações Pendentes
                       </span>
                     )}
-                    
+
                     {alerts.criticalCount > 0 && (
                       <span className="flex items-center gap-1.5 text-destructive/80 font-semibold">
                         {alerts.criticalCount} Próximo{alerts.criticalCount > 1 ? 's' : ''}:
@@ -184,7 +184,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                     </span>
                   </Link>
                 </Button>
-                
+
                 <Button
                   variant="ghost"
                   size="icon"

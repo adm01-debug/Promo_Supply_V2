@@ -1,9 +1,9 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Eye, 
-  EyeOff, 
-  Volume2, 
+import {
+  Eye,
+  EyeOff,
+  Volume2,
   ZoomIn,
   ZoomOut,
   Type,
@@ -334,8 +334,8 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
 // Skip to Content Link
 // ============================================
 
-export const SkipToContent: React.FC<{ targetId?: string }> = ({ 
-  targetId = 'main-content' 
+export const SkipToContent: React.FC<{ targetId?: string }> = ({
+  targetId = 'main-content'
 }) => (
   <a
     href={`#${targetId}`}
@@ -354,9 +354,9 @@ interface LiveRegionProps {
   politeness?: 'polite' | 'assertive';
 }
 
-export const LiveRegion: React.FC<LiveRegionProps> = ({ 
-  message, 
-  politeness = 'polite' 
+export const LiveRegion: React.FC<LiveRegionProps> = ({
+  message,
+  politeness = 'polite'
 }) => (
   <div
     role="status"
@@ -380,7 +380,7 @@ export const useFocusTrap = (active: boolean, containerRef: React.RefObject<HTML
     const focusableElements = container.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-    
+
     const firstElement = focusableElements[0] as HTMLElement;
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 

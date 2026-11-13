@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Sparkles, 
-  TrendingUp, 
-  Target, 
-  Zap, 
+import {
+  Sparkles,
+  TrendingUp,
+  Target,
+  Zap,
   ArrowRight,
   Brain,
   ShieldCheck,
@@ -21,9 +21,9 @@ import { cn, formatCurrency } from '@/lib/utils';
 
 
 const mockPlanningData = [
-    { 
-      id: '1', 
-      category: 'Brindes Premium', 
+    {
+      id: '1',
+      category: 'Brindes Premium',
       items: ['Mochila Executiva', 'Garrafa Térmica'],
       totalQty: 1200,
       avgMarketPrice: 85.50,
@@ -32,9 +32,9 @@ const mockPlanningData = [
       status: 'Aguardando Cotação',
       risk: 'Médio'
     },
-    { 
-      id: '2', 
-      category: 'Insumos TI', 
+    {
+      id: '2',
+      category: 'Insumos TI',
       items: ['Monitor 24"', 'Teclado Mecânico'],
       totalQty: 50,
       avgMarketPrice: 1250.00,
@@ -43,9 +43,9 @@ const mockPlanningData = [
       status: 'Em Análise IA',
       risk: 'Baixo'
     },
-    { 
-      id: '3', 
-      category: 'Logística', 
+    {
+      id: '3',
+      category: 'Logística',
       items: ['Caixas de Papelão', 'Fita Adesiva'],
       totalQty: 5000,
       avgMarketPrice: 2.15,
@@ -107,7 +107,7 @@ export const BulkPlanningConsole = () => {
                 Disparar Cotações ({selectedItems.size})
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
                 animate={{ left: ['-100%', '200%'] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
@@ -117,7 +117,7 @@ export const BulkPlanningConsole = () => {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-0">
         <div className="grid grid-cols-1 md:grid-cols-12 divide-x divide-white/5 h-[450px]">
           {/* Lado Esquerdo: Lista de Lotes */}
@@ -136,13 +136,13 @@ export const BulkPlanningConsole = () => {
                     onClick={() => toggleItem(plan.id)}
                     className={cn(
                       "p-4 rounded-2xl cursor-pointer transition-all border border-transparent relative overflow-hidden",
-                      selectedItems.has(plan.id) 
-                        ? "bg-violet-500/10 border-violet-500/20 shadow-[inset_0_0_20px_rgba(139,92,246,0.05)]" 
+                      selectedItems.has(plan.id)
+                        ? "bg-violet-500/10 border-violet-500/20 shadow-[inset_0_0_20px_rgba(139,92,246,0.05)]"
                         : "hover:bg-white/5"
                     )}
                   >
                     {selectedItems.has(plan.id) && (
-                      <motion.div 
+                      <motion.div
                         layoutId="active-indicator"
                         className="absolute left-0 top-0 bottom-0 w-1 bg-violet-500"
                       />
@@ -219,7 +219,7 @@ export const BulkPlanningConsole = () => {
                       <span>85% alcançado</span>
                    </div>
                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: '85%' }}
                         className="h-full bg-gradient-to-r from-violet-500 to-emerald-500"
