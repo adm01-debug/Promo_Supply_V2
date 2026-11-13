@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3118a1fd0b` · branch `main` · 2026-11-13 03:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `975d0f9582` · branch `main` · 2026-11-13 13:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -347,6 +347,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `supplier_bonifications` | tenant_isolation_supplier_bonifications | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `supplier_documents` | tenant_isolation_supplier_documents | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `supplier_qualification_scores` | tenant_isolation_supplier_qualification_scores | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `contracts` | buyer_le_contracts | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
+| `contract_items` | buyer_le_contract_items | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
+| `contract_documents` | buyer_le_contract_documents | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

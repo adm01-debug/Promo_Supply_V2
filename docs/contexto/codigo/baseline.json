@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3118a1fd0bc5be4db683c04e119768b1f85dda30",
+  "commit": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
   "branch": "main",
-  "data_commit": "2026-11-12T23:27:03-03:00",
+  "data_commit": "2026-11-13T09:35:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "975d0f95",
+    "data": "2026-11-13",
+    "assunto": "chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)"
+   },
+   {
+    "sha": "e7ff5fb4",
+    "data": "2026-11-13",
+    "assunto": "fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)"
+   },
+   {
+    "sha": "fa24df57",
+    "data": "2026-11-13",
+    "assunto": "docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)"
+   },
+   {
+    "sha": "50817a04",
+    "data": "2026-11-13",
+    "assunto": "fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)"
+   },
    {
     "sha": "3118a1fd",
     "data": "2026-11-12",
@@ -111,29 +131,9 @@
     "sha": "5cdeeaca",
     "data": "2026-11-12",
     "assunto": "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)"
-   },
-   {
-    "sha": "257a4c44",
-    "data": "2026-11-12",
-    "assunto": "fix(ui): corrige acentuacao corrompida em 12 telas (#44)"
-   },
-   {
-    "sha": "e897b429",
-    "data": "2026-11-12",
-    "assunto": "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)"
-   },
-   {
-    "sha": "aca8fbd9",
-    "data": "2026-11-12",
-    "assunto": "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)"
-   },
-   {
-    "sha": "5001fc3a",
-    "data": "2026-11-12",
-    "assunto": "security(banco): views com security_invoker e sem leitura anonima (#41)"
    }
   ],
-  "arquivos_mudados_7d": 221,
+  "arquivos_mudados_7d": 223,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -144,11 +144,11 @@
     "mudancas": 8
    },
    {
-    "pasta": "AGENTS.md",
-    "mudancas": 5
+    "pasta": "package.json",
+    "mudancas": 6
    },
    {
-    "pasta": "package.json",
+    "pasta": "AGENTS.md",
     "mudancas": 5
    },
    {
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/contexto.yml",
@@ -286,22 +286,22 @@
     "mudancas": 2
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 2
+   },
+   {
     "arquivo": "deploy_edge_functions_promo_supply.sh",
     "mudancas": 2
    },
    {
     "arquivo": "docs/agentes/banco.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "docs/agentes/deploy.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 46
+    "commits": 50
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1188,
+  "arquivos_total": 1190,
   "arquivos_codigo": 756,
-  "linhas_codigo": 159923,
+  "linhas_codigo": 159947,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -322,12 +322,12 @@
   "hooks": 89,
   "edge_functions": 37,
   "tabelas": 163,
-  "migrations": 292,
+  "migrations": 293,
   "cron_jobs": 68,
   "testes": 165,
   "workflows": 8,
   "scripts": 47,
-  "docs_md": 71
+  "docs_md": 72
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -356,7 +356,7 @@
   },
   "scripts/ci": {
    "arquivos": 40,
-   "linhas": 9408
+   "linhas": 9432
   },
   "scripts/db-explain-analyze.ts": {
    "arquivos": 1,

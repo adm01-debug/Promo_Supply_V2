@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3118a1fd0bc5be4db683c04e119768b1f85dda30` (2026-11-12T23:27:03-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `975d0f9582d4a73f2d87e3cc10356fd6968a7634` (2026-11-13T09:35:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (688), SQL (293), Markdown (71), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (688), SQL (294), Markdown (72), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1188 |
+| arquivos_total | 1190 |
 | arquivos_codigo | 756 |
-| linhas_codigo | 159923 |
+| linhas_codigo | 159947 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,12 +46,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 37 |
 | tabelas | 163 |
-| migrations | 292 |
+| migrations | 293 |
 | cron_jobs | 68 |
 | testes | 165 |
 | workflows | 8 |
 | scripts | 47 |
-| docs_md | 71 |
+| docs_md | 72 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -62,7 +62,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (15), scripts/types-sync (7), scripts/inventario (5)
-- docs: (raiz) (4), docs (1)
+- docs: (raiz) (4), docs (2)
 - nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (94%)","edge_functions":"kebab-case (97%)","tabelas":"snake_case (89%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
@@ -327,7 +327,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - AGENTS.md (6)
-- package.json (5)
+- package.json (6)
 - .github/workflows/contexto.yml (4)
 - .github/workflows/main.yml (4)
 - ESTADO_ATUAL.md (3)
@@ -397,10 +397,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (478 linhas)
 - subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-13 `975d0f95` chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)
+- 2026-11-13 `e7ff5fb4` fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)
+- 2026-11-13 `fa24df57` docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)
+- 2026-11-13 `50817a04` fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)
 - 2026-11-12 `3118a1fd` fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)
 - 2026-11-12 `6c530a06` security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)
 - 2026-11-12 `f6c2d75b` fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)
@@ -412,10 +417,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
 - 2026-11-12 `284eef46` fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)
 - 2026-11-12 `d429cef0` fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)
-- 2026-11-12 `c3f4dcf7` fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)
-- 2026-11-12 `5efb1134` security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)
-- 2026-11-12 `7db0e1c0` security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)
-- 2026-11-12 `cdc9eee5` ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

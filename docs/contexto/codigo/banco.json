@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 292,
+ "migrations": 293,
  "seeds": [],
  "avisos": [
   "47 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -4676,6 +4676,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "buyer_le_contract_documents",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Role-restricted contract documents select",
      "comando": "select",
      "para": "authenticated",
@@ -4907,6 +4913,12 @@
     {
      "nome": "Admin coordinator finance can manage contract items",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "buyer_le_contract_items",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     },
@@ -5356,6 +5368,12 @@
      "nome": "Admins can delete contracts",
      "comando": "delete",
      "para": "public",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "buyer_le_contracts",
+     "comando": "select",
+     "para": "authenticated",
      "tipo": "permissive"
     },
     {

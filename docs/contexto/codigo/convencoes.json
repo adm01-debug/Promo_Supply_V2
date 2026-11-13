@@ -34,7 +34,7 @@
   ],
   "docs": [
    "(raiz) (4)",
-   "docs (1)"
+   "docs (2)"
   ]
  },
  "nomenclatura": {
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)",
-   "security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)",
-   "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)",
-   "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)",
-   "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)"
+   "chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)",
+   "fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)",
+   "docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)",
+   "fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)",
+   "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)"
   ]
  },
  "pr_template": null,

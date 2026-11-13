@@ -124,9 +124,9 @@
   {
    "arquivo": "scripts/ci/encoding-src.unit.mjs",
    "tipo": "unit",
-   "linhas": 54,
+   "linhas": 78,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",

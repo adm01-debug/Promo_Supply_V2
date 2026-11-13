@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3118a1fd0bc5be4db683c04e119768b1f85dda30",
+  "sha": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 03:41 UTC",
-  "files_total": 1190,
-  "code_files": 1051,
-  "code_lines": 183095,
+  "generated_at": "2026-11-13 13:20 UTC",
+  "files_total": 1192,
+  "code_files": 1052,
+  "code_lines": 183147,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a6cec96a129030a7",
+ "facts_hash": "a0373ce9a6172784",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -18,17 +18,17 @@
   ],
   "deps": {
    "@radix-ui/react-dialog": {
-    "version": "^1.1.14",
+    "version": "^1.3.1",
     "role": "Radix UI / shadcn",
     "in": "package.json"
    },
    "@supabase/supabase-js": {
-    "version": "^2.87.3",
+    "version": "^2.119.0",
     "role": "Supabase (DB/Auth/Storage/Functions)",
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.83.0",
+    "version": "^5.107.1",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -38,7 +38,7 @@
     "in": "package.json"
    },
    "i18next": {
-    "version": "^26.0.10",
+    "version": "^26.7.2",
     "role": "i18n",
     "in": "package.json"
    },
@@ -58,7 +58,7 @@
     "in": "package.json"
    },
    "react-hook-form": {
-    "version": "^7.61.1",
+    "version": "^7.92.0",
     "role": "Forms (react-hook-form)",
     "in": "package.json"
    },
@@ -78,27 +78,27 @@
     "in": "package.json"
    },
    "zustand": {
-    "version": "^5.0.9",
+    "version": "^5.1.0",
     "role": "Estado Zustand",
     "in": "package.json"
    },
    "vitest": {
-    "version": "^3.2.4",
+    "version": "^3.2.7",
     "role": "Testes Vitest",
     "in": "package.json"
    },
    "tailwindcss": {
-    "version": "^3.4.17",
+    "version": "^3.4.19",
     "role": "Tailwind CSS",
     "in": "package.json"
    },
    "vite": {
-    "version": "^5.4.19",
+    "version": "^5.4.21",
     "role": "Bundler Vite",
     "in": "package.json"
    },
    "@playwright/test": {
-    "version": "^1.60.0",
+    "version": "^1.65.0",
     "role": "E2E Playwright",
     "in": "package.json"
    }
@@ -227,7 +227,7 @@
   "languages": {
    ".ts": 344,
    ".tsx": 344,
-   ".sql": 293,
+   ".sql": 294,
    ".mjs": 63,
    ".py": 5,
    ".js": 2
@@ -18572,6 +18572,36 @@
     "using": "public.tenant_in_my_group(tenant_id)",
     "check": "public.tenant_in_my_group(tenant_id)",
     "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "buyer_le_contracts",
+    "table": "contracts",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "buyer_le_contract_items",
+    "table": "contract_items",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "buyer_le_contract_documents",
+    "table": "contract_documents",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
    }
   ],
   "triggers": [
@@ -26364,6 +26394,7 @@
    "supabase/migrations/20261112222833_compras_dashboard_metrics_numeros.sql",
    "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
    "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql",
+   "supabase/migrations/20261112223906_comprador_le_contratos.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -33034,7 +33065,7 @@
   {
    "module": "scripts",
    "files": 74,
-   "lines": 28216,
+   "lines": 28240,
    "tables": [
     "a",
     "a_tabela",
@@ -34707,8 +34738,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 292,
-   "lines": 22968,
+   "files": 293,
+   "lines": 22996,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -68947,6 +68978,36 @@
     "using": "public.tenant_in_my_group(tenant_id)",
     "check": "public.tenant_in_my_group(tenant_id)",
     "src": "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
+   },
+   {
+    "name": "buyer_le_contracts",
+    "table": "contracts",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "buyer_le_contract_items",
+    "table": "contract_items",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+   },
+   {
+    "name": "buyer_le_contract_documents",
+    "table": "contract_documents",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
+    "check": "",
+    "src": "supabase/migrations/20261112223906_comprador_le_contratos.sql"
    }
   ],
   "db_triggers": [
@@ -75174,7 +75235,8 @@
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
@@ -75211,7 +75273,8 @@
     "SELECT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
      "authenticated: public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'finance')",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role)"
     ],
     "INSERT": [
      "authenticated: has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::a",
@@ -75251,7 +75314,8 @@
     "SELECT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: public.has_role(auth.uid(), 'buyer'::app_role)"
     ],
     "INSERT": [
      "authenticated: tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR ",
@@ -84769,8 +84833,8 @@
   },
   "scripts/ci/encoding-src.unit.mjs": {
    "path": "scripts/ci/encoding-src.unit.mjs",
-   "lines": 54,
-   "doc": "Guard de encoding do front: texto com mojibake (UTF-8 lido como Windows-1252 e salvo de novo) chega ao usuario como lixo na tela. Caso real: a seta do tour de onboarding (src/components/onboarding/OnboardingTour.tsx) saiu como \"â†\" + U+0090 no lugar de \"←\". Reprova qualquer arquivo de src/ (exceto _ …"
+   "lines": 78,
+   "doc": "Guard de encoding do front: texto com mojibake (UTF-8 lido como Windows-1252 e salvo de novo) chega ao usuario como lixo na tela. Caso real: a seta do tour de onboarding (src/components/onboarding/OnboardingTour.tsx) saiu como \"â†\" + U+0090 no lugar de \"←\". Varre src/, public/locales/ e index.html, …"
   },
   "scripts/ci/gerar-matriz-edge-tabela.mjs": {
    "path": "scripts/ci/gerar-matriz-edge-tabela.mjs",
@@ -108882,6 +108946,10 @@
     }
    ]
   },
+  "supabase/migrations/20261112223906_comprador_le_contratos.sql": {
+   "path": "supabase/migrations/20261112223906_comprador_le_contratos.sql",
+   "lines": 28
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -109101,10 +109169,47 @@
   }
  },
  "git": {
-  "sha": "3118a1fd0bc5be4db683c04e119768b1f85dda30",
+  "sha": "975d0f9582d4a73f2d87e3cc10356fd6968a7634",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "975d0f9",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "e7ff5fb",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)",
+    "files": [
+     "supabase/migrations/20261112223906_comprador_le_contratos.sql"
+    ]
+   },
+   {
+    "sha": "fa24df5",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
+   {
+    "sha": "50817a0",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)",
+    "files": [
+     "scripts/ci/encoding-src.unit.mjs"
+    ]
+   },
    {
     "sha": "3118a1f",
     "date": "2026-11-12",
@@ -109460,59 +109565,23 @@
     "files": [
      "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
     ]
-   },
-   {
-    "sha": "4cc1a7a",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)",
-    "files": [
-     "deploy_edge_functions_promo_supply.sh",
-     "scripts/db-explain-analyze.ts",
-     "scripts/realtime-audit.ts",
-     "scripts/rls-audit.ts",
-     "scripts/squash-migrations.sh",
-     "scripts/stress-test.ts",
-     "scripts/validate-bridge.ts",
-     "supabase/migrations/20261107150000_execute_read_query.sql"
-    ]
-   },
-   {
-    "sha": "75c0e96",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)",
-    "files": [
-     ".github/workflows/main.yml"
-    ]
-   },
-   {
-    "sha": "b7db275",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)",
-    "files": [
-     ".github/workflows/contexto.yml"
-    ]
-   },
-   {
-    "sha": "6ea0034",
-    "date": "2026-11-11",
-    "author": "adm01-debug",
-    "subject": "fix(edge): require JWT and validate identity/tenant across edge functions (#36)",
-    "files": [
-     "supabase/functions/punchout-receive/index.ts",
-     "supabase/functions/webauthn-register/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
-    "AGENTS.md",
+    "bun.lock",
     2
    ],
    [
-    "deploy_edge_functions_promo_supply.sh",
+    "package.json",
+    2
+   ],
+   [
+    "scripts/ci/encoding-src.unit.mjs",
+    2
+   ],
+   [
+    "AGENTS.md",
     2
    ],
    [
@@ -109528,35 +109597,11 @@
     2
    ],
    [
-    "scripts/db-explain-analyze.ts",
-    2
-   ],
-   [
-    "scripts/realtime-audit.ts",
-    2
-   ],
-   [
-    "scripts/rls-audit.ts",
-    2
-   ],
-   [
-    "scripts/squash-migrations.sh",
-    2
-   ],
-   [
-    "scripts/stress-test.ts",
-    2
-   ],
-   [
     "scripts/supabase_snapshot/README.md",
     2
    ],
    [
     "scripts/supabase_snapshot/snapshot.py",
-    2
-   ],
-   [
-    "scripts/validate-bridge.ts",
     2
    ],
    [
@@ -109572,10 +109617,6 @@
     2
    ],
    [
-    ".github/workflows/contexto.yml",
-    2
-   ],
-   [
     "src/components/compras/ExecutiveDashboard.tsx",
     2
    ],
@@ -109584,7 +109625,27 @@
     2
    ],
    [
+    "supabase/migrations/20261112223906_comprador_le_contratos.sql",
+    1
+   ],
+   [
+    "docs/prod-readiness.md",
+    1
+   ],
+   [
+    "deploy_edge_functions_promo_supply.sh",
+    1
+   ],
+   [
     "docs/agentes/banco.md",
+    1
+   ],
+   [
+    "docs/agentes/deploy.md",
+    1
+   ],
+   [
+    "scripts/ai-context/cenarios.mjs",
     1
    ]
   ]

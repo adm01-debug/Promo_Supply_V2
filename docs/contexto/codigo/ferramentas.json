@@ -4,8 +4,8 @@
  "stack": {
   "linguagens": [
    "TypeScript (688)",
-   "SQL (293)",
-   "Markdown (71)",
+   "SQL (294)",
+   "Markdown (72)",
    "JavaScript (65)",
    "JSON (23)",
    "YAML (9)",
@@ -87,27 +87,27 @@
   "dependencias": 67,
   "dev_dependencias": 34,
   "principais": {
-   "@supabase/supabase-js": "^2.87.3",
-   "@tanstack/query-sync-storage-persister": "^5.100.10",
-   "@tanstack/react-query": "^5.83.0",
-   "@tanstack/react-query-persist-client": "^5.100.10",
+   "@supabase/supabase-js": "^2.119.0",
+   "@tanstack/query-sync-storage-persister": "^5.107.1",
+   "@tanstack/react-query": "^5.107.1",
+   "@tanstack/react-query-persist-client": "^5.107.1",
    "date-fns": "3.6.0",
-   "framer-motion": "^12.24.7",
-   "i18next": "^26.0.10",
-   "i18next-browser-languagedetector": "^8.2.1",
+   "framer-motion": "^12.43.0",
+   "i18next": "^26.7.2",
+   "i18next-browser-languagedetector": "^8.3.0",
    "next-themes": "^0.3.0",
    "react": "^18.3.1",
-   "react-day-picker": "^8.10.1",
+   "react-day-picker": "^8.10.2",
    "react-dom": "^18.3.1",
-   "react-error-boundary": "^6.1.1",
-   "react-hook-form": "^7.61.1",
-   "react-i18next": "^17.0.7",
+   "react-error-boundary": "^6.1.6",
+   "react-hook-form": "^7.92.0",
+   "react-i18next": "^17.1.13",
    "react-markdown": "^10.1.0",
    "react-router-dom": "^6.30.6",
    "recharts": "^2.15.4",
    "tailwindcss-animate": "^1.0.7",
    "zod": "^4.6.7",
-   "zustand": "^5.0.9"
+   "zustand": "^5.1.0"
   },
   "engines": null,
   "packageManager": null
@@ -451,6 +451,11 @@
    "arquivo": "docs/AUTOMACAO_LOCAL.md",
    "titulo": "Automação local — Promo_Supply_V2",
    "linhas": 124
+  },
+  {
+   "arquivo": "docs/prod-readiness.md",
+   "titulo": "Prontidão para produção — Promo Supply V2",
+   "linhas": 478
   }
  ],
  "docs_em_subpastas": [
@@ -576,22 +581,22 @@
    {
     "pacote": "i18next",
     "servico": "i18next",
-    "versao": "^26.0.10"
+    "versao": "^26.7.2"
    },
    {
     "pacote": "react-i18next",
     "servico": "i18next",
-    "versao": "^17.0.7"
+    "versao": "^17.1.13"
    },
    {
     "pacote": "@tanstack/react-query",
     "servico": "react-query",
-    "versao": "^5.83.0"
+    "versao": "^5.107.1"
    },
    {
     "pacote": "@supabase/supabase-js",
     "servico": "Supabase",
-    "versao": "^2.87.3"
+    "versao": "^2.119.0"
    },
    {
     "pacote": "zod",
