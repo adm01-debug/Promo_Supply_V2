@@ -116,17 +116,29 @@ export const responses = {
 
 /**
  * Remove HTML tags de uma string, inclusive "<" / ">" remanescentes que sobraram
- * de tag quebrada (ex.: "<script" sem ">" de fechamento). Loop ate fixpoint para
- * pegar marcadores aninhados.
+ * de tag quebrada (ex.: "<script" sem ">" de fechamento). Implementacao por
+ * estado (sem regex) para ser reconhecida como sanitizacao completa pela query
+ * CodeQL js/incomplete-multi-character-sanitization: tudo que comeca em "<" e
+ * descartado ate o ">" de fechamento; "<"/">" avulsos sao removidos.
  */
 export function stripHtml(input: string): string {
-  let result = input;
-  for (let i = 0; i < 8; i++) {
-    const next = result.replace(/<[^>]*>?/g, "").trim();
-    if (next === result) break;
-    result = next;
+  let out = "";
+  let inTag = false;
+  for (const ch of input) {
+    if (ch === "<") {
+      inTag = true;
+      continue;
+    }
+    if (ch === ">") {
+      // Fecha tag pendente; ">" avulso também é descartado (mesmo comportamento
+      // do antigo remove final de "<"/">").
+      inTag = false;
+      continue;
+    }
+    if (inTag) continue;
+    out += ch;
   }
-  return result.replace(/<|>/g, "").trim();
+  return out.trim();
 }
 
 /**
