@@ -151,7 +151,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [user, organizationId, invalidate]);
 
-  const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
+  const updatePagamento = useCallback(async (id: string, updates: Database['public']['Tables']['pagamentos']['Update']) => {
     if (updates.status) {
       const current = pagamentos.find(p => p.id === id);
       logger.info('Atualizando pagamento', { id, currentStatus: current?.status, updates });
@@ -202,7 +202,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
 
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status']) => {
     try {
-      const updates: Partial<Pagamento> = { status: newStatus };
+      const updates: Database['public']['Tables']['pagamentos']['Update'] = { status: newStatus };
       if (newStatus === 'pago') updates.data_pagamento = new Date().toISOString().split('T')[0];
       if (newStatus === 'aprovado' && user) {
         updates.aprovador_id = user.id;
