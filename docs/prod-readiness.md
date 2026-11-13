@@ -18,7 +18,7 @@
 | Dashboard de Compras | OK — `get_compras_dashboard_metrics` volta a responder (4 urgências) e fica restrito ao grupo (#55) |
 | Crons do banco | OK — `edge_invoke_service_key` gravada no Vault (md5 igual ao da chave do projeto); `outbox-worker-1min` → `process-outbox` **200** `{"processed":0,"dead":0}`; `xbz-sync-pedidos-30min` 404 → **200** (15:00 UTC); `spot-api-sync-stock` 404 → 500 `SPOT_API_ACCESS_KEY não configurada` — BLOQUEADO (credencial Spot) |
 | Edges | **37 no ar** (Management API `GET /functions` → 37): as 5 que faltavam publicadas e as 4 `ai-*` republicadas da `main` em 2026-11-13; BLOQUEADO: `ai-*` sem `LOVABLE_API_KEY`, `spot-api` sem `SPOT_API_ACCESS_KEY`, `migrate-helper` sem `MIGRATE_HELPER_ACCESS_KEY`, `process-solicitacao-neural` inexistente (§4) |
-| Fluxo de compra completo | BLOQUEADO — 2ª cotação (`numeric field overflow`), aprovação de cotação (`Transição de status inválida`) e pagamento com CNPJ antigo falham em produção (bugs anteriores à auditoria); correções em PRs de migration #70–#75, **abertas aguardando o dono** (§8.1) |
+| Fluxo de compra completo | OK — PRs #70–#75 mergeadas pelo dono (17:04–17:11 UTC) e as 6 migrations **aplicadas em produção** com aval do dono (~17:50 UTC, 1 transação). Provado no banco vivo (roteiros em rollback): 2ª cotação grava (notas 60/20, antes `E22003`), aprovar cotação → `aprovada` (antes `EP0001`), entrega → **1** pagamento e solicitação `concluida` (antes trava/2 pagamentos), solicitação de R$100 → `aprovada` com orçamento +100 uma vez (antes `23502` e ×16), comprador não edita/apaga/aprova dado de outro nem cria em outra org (`0`/`E42501`, antes `1`) (§8.1) |
 | Banco: RLS (recheck 2026-11-13) | OK — 156 tabelas, 0 sem RLS, 0 com RLS sem policy, 0 policy com RLS desligada, 0 views sem `security_invoker`, 0 views com `auth.users` para anon |
 | Código pela metade | 0 TODO/FIXME/WIP; 10 botões ligados (#43/#46/#47) e 1 link corrigido (#48); 67 itens triados como decisão de negócio (§5.1) |
 ## 1. Linha de base de qualidade (antes de qualquer mudança)
@@ -477,24 +477,50 @@ Também mergeadas na `main` no período (escopo de outras frentes): #60, #61, #6
 
 Operações em produção de 2026-11-13 (aprovadas pelo dono, "APROVADO 1, 2 e 3"): `vault.create_secret` de `edge_invoke_service_key` (valor lido pela Management API e gravado sem exibir; md5 no Vault = md5 da chave do projeto); deploy de `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos` e redeploy das 4 `ai-*` a partir da `main`; secret `SPOT_CRON_KEY` (201). Papéis: 7 usuários com `buyer` (recheck).
 
-### 8.1 PRs abertas aguardando o dono (migration em produção — não mergear sem decisão)
+### 8.1 Fluxo de compra (#70–#75) — mergeado e aplicado
 
-| PR | O quê | Revisão independente | Pendência |
+Provas antes da aplicação (3 especialistas + verificador cético, cada um aplicando as 6 migrations em `begin … rollback` no banco de produção): fluxo de compra, matriz de permissões por papel e idempotência (3 passadas seguidas sem erro; hashes de 46 gatilhos, 58 policies e 363 funções idênticos entre passadas). Veredito do verificador: **APLICAR**. Ordem aplicada (timestamp): 122251 (#71) → 122616 (#70) → 123212 (#72) → 123531 (#73) → 123738 (#75) → 124508 (#74); a regra de entrega que #71 e #70 redefinem fica com a versão da #70 (guarda `status = 'em_andamento'`). Arquivos idênticos aos da `main` (`cmp`).
+
+| Prova no banco vivo (pós-aplicação, rollback) | Antes | Depois |
+|---|---|---|
+| 2ª cotação com valor diferente | `E22003 numeric field overflow` | grava; notas `4550: 100/0/60`, `4830: 0/100/20` |
+| Aprovar cotação (`selectCotacao`) | `EP0001 Transição de status inválida: pendente → em_andamento` | `aprovada`; pedido leva a `em_andamento` |
+| Entregar pedido | `EP0001 … pendente → concluida`; sem solicitação: 2 pagamentos | `1 PAG-002027 v=4550 o=df60b900`; solicitação `concluida` |
+| Solicitação de R$100 (payload do front) | `23502 tenant_id … notifications` | `aprovada`; orçamento +100,00 (soma das linhas) |
+| Pedido com fornecedor de CNPJ antigo inválido | `23514 fornecedores_cnpj_valid` | grava e paga; cadastro novo com CNPJ inválido segue recusado (`23514`) |
+| Comprador edita/apaga/aprova solicitação de outro | `1` / `1` / `EP0001` | `0` / `0` / `0` |
+| Comprador cria em outra org / troca a própria org | `ok` / `1` | `E42501` |
+| Job de limpeza do cron (#74) | job 40 | 1 job `limpa-historico-cron-semanal` (`17 4 * * 0`) |
+
+Efeito colateral corrigido na PR [#81](https://github.com/adm01-debug/Promo_Supply_V2/pull/81): Kanban e painel de urgências mostravam "Status atualizado!" quando a policy nova devolvia 0 linhas.
+
+Riscos aceitos e registrados pelo verificador: o comprador pode criar etapa de aprovação em que ele mesmo aprova (`approval_steps_insert_workflow_proprio` não restringe `aprovador_id`); `approval_workflows` continua editável por qualquer usuário da org; nada valida que o `cost_center_id` seja do mesmo tenant (há 1 org hoje); `score_qualidade` chega 0 (o padrão 80 nunca vale).
+
+### 8.2 PRs abertas
+
+| PR | Estado |
+|---|---|
+| [#81](https://github.com/adm01-debug/Promo_Supply_V2/pull/81) | front: aviso de "sem permissão" no Kanban/urgências — aguardando CI |
+| [#78](https://github.com/adm01-debug/Promo_Supply_V2/pull/78), [#79](https://github.com/adm01-debug/Promo_Supply_V2/pull/79), [#80](https://github.com/adm01-debug/Promo_Supply_V2/pull/80) | reabertas por outro processo a partir de branches já mergeadas (#64, #66, #77): duplicatas — fechar |
+
+## 10. Falhas encontradas no re-teste de 2026-11-13 (anteriores à auditoria; aguardando decisão — DDL em produção)
+
+Re-teste só leitura/rollback de todas as entregas #40–#67: todas seguem valendo (execute_read_query, exec_sql e chaves XBZ negadas a anon `42501`; 0 views sem `security_invoker`; 35 policies RESTRICTIVE; 8 SECURITY DEFINER executáveis por anon, todas intencionais — policies e pré-login; crons via Vault no projeto certo; moeda `character(3)`; 37 gatilhos `a_fill_tenant_id`; comprador lê 5 contratos e não escreve; 156/156 tabelas com RLS e policy; 7 compradores com papel e vínculo). Bateria na `main` `53f69f3`: typecheck 0, eslint 0 erros, **vitest 2311 passed / 12 skipped (2323)**, build 0, guards 530/0, Deno 36/0, **E2E 30 passed**.
+
+| # | Falha | Prova | Status |
 |---|---|---|---|
-| [#70](https://github.com/adm01-debug/Promo_Supply_V2/pull/70) | 2ª cotação e sequência de status (compra completa) | aprovada (provas em rollback em produção) | conflita com #71 em `trg_pedido_entregue_transition`: aplicar em ordem combinada; 51 de 61 cotações seguem com `score_total` NULL |
-| [#71](https://github.com/adm01-debug/Promo_Supply_V2/pull/71) | solicitação pequena, entrega gera 1 pagamento (hoje 2), orçamento sem multiplicar | sem revisão (`API Error: 500` do revisor) | revisar e combinar com #70 |
-| [#72](https://github.com/adm01-debug/Promo_Supply_V2/pull/72) | CNPJ antigo inválido deixa de travar pedido/pagamento | aprovada | — |
-| [#73](https://github.com/adm01-debug/Promo_Supply_V2/pull/73) | card "Aguardando" mostra o backlog; textos batem com o período | aprovada | CI vermelho era o TS2345 herdado, corrigido na `main` pela #76: precisa rebase |
-| [#74](https://github.com/adm01-debug/Promo_Supply_V2/pull/74) | guard de encoding (maiúsculas, escape JSON) + versiona o job 40 de limpeza do cron | parcial: banco não reproduzido (MCP do Supabase fora) | refazer prova; rebase |
-| [#75](https://github.com/adm01-debug/Promo_Supply_V2/pull/75) | comprador não altera dados de outras organizações | reprovada por falta de prova no banco; riscos em `approval_steps` sem `tenant_id` e licitações/pagamentos sem filtro de org | refazer prova e ajustar |
-| [#69](https://github.com/adm01-debug/Promo_Supply_V2/pull/69) | 14 alertas CodeQL (outra frente) | — | mexe em workflow (`permissions` de CI): decisão do dono |
-
-Dados alterados em produção com aprovação do dono: `vault.create_secret` de `xbz_cron_key` e `spot_cron_key` (64 caracteres, aleatórios, nunca exibidos; `verify_xbz_cron_key` aceita a certa e recusa a errada); papel `buyer` para 6 usuários `@promo.local` (Ana Silva passou a ver fornecedores 0 → 10 e cotações 61).
+| 1 | **Upload de arquivos quebrado para todos**: `storage.objects` com RLS e **0 policies** (buckets privados `comprovantes`, `documentos`, `fiscal-documents`) | admin: `ERR 42501 new row violates row-level security policy for table objects`; `PagamentoDetailModal.tsx:89-91` | PR [#84](https://github.com/adm01-debug/Promo_Supply_V2/pull/84) aberta, aguardando o dono — revisor reproduziu 46 casos; **ressalva**: `documentos`/`comprovantes` seguem bloqueados porque `current_tenant_id()` lê a claim `tenant_id` do JWT e nenhum usuário a tem (0/12, sem access-token hook) |
+| 2 | Cron `refresh-mv-dashboard-kpis` falha a cada 15 min desde 11/09 (6.064 falhas, 0 sucesso) | `cannot refresh materialized view public.mv_dashboard_kpis concurrently` (sem índice único) | PR [#83](https://github.com/adm01-debug/Promo_Supply_V2/pull/83) aberta, aguardando o dono — recria `idx_mv_dashboard_kpis_pk`; refresh `ok=true` em rollback |
+| 3 | Cron `lgpd_retention_daily` falha todo dia desde 12/09: a retenção LGPD de 12 tabelas não roda | `column created_at does not exist` em `wal_rate_snapshots` (coluna real `captured_at`) | PR [#83](https://github.com/adm01-debug/Promo_Supply_V2/pull/83) aberta, aguardando o dono — corrige 3 colunas inexistentes; em rollback roda e apagaria 3 linhas de `login_attempts` (>180 dias) — deleção real |
+| 4 | Gatilhos duplicados após a aplicação | `pedidos.trigger_update_saldo_on_pedido`×2 (saldo do fornecedor em dobro), `validate_pedido_status_transition`×2, `validate_solicitacao_status_transition`×2, `supplier_documents.trigger_recalculate_qualification_score`×2, `update_updated_at_column`×2 (pedidos, solicitacoes, tenants) | PR [#85](https://github.com/adm01-debug/Promo_Supply_V2/pull/85) aberta, aguardando o dono — remove só as cópias idênticas; saldo e auditoria passam a contar 1× |
+| 5 | Orçamento na **aprovação do pedido** multiplica (linha anual + 7 mensais) | `handle_pedido_budget_realization` filtra só `ano`; soma −7.200/+36.400 numa compra de 900/4.550 | PR [#85](https://github.com/adm01-debug/Promo_Supply_V2/pull/85) aberta, aguardando o dono — em rollback: comprometido −4.550 e utilizado +4.600, 1× |
+| 6 | Anônimo trava a conta de qualquer e-mail | `record_failed_login('x@…')` ×6 como `anon` → `is_account_locked = true` | BLOQUEADO — decisão de design do login |
+| 7 | CI da `main` após os merges #70–#75 | `Freight Quest CI/CD`, `Guards`, `types-sync` e `contexto` de `53f69f3` em `queued` desde 17:11 UTC | BLOQUEADO — fila de runners/orçamento do Actions |
 
 ## 9. Aguardando decisão do dono (BLOQUEADO)
 Resolvidos em 2026-11-13: `edge_invoke_service_key` no Vault, deploy das 5 edges, redeploy das 4 `ai-*`, `SPOT_CRON_KEY` e perfil do `comprador1` (§8).
 
-1. **Fluxo de compra completo** — PRs de migration #70–#75 (§8.1): decidir o caminho do apply (não há ledger) e a ordem #70 → #71 → #72 → #73.
+1. **Falhas da §10** — 5 correções de banco (upload, 2 crons, gatilhos duplicados, orçamento na aprovação do pedido) e a decisão sobre o travamento de conta por anônimo.
 2. **Credenciais de fornecedores** — `SPOT_API_ACCESS_KEY` (Spot Gifts: cron 500 `SPOT_API_ACCESS_KEY não configurada`) e `LOVABLE_API_KEY` (as 4 edges de IA). Só o dono tem os valores; entram como secrets das edges, nunca por PR.
 3. **`migrate-helper`** — `server_misconfigured: MIGRATE_HELPER_ACCESS_KEY ausente`. É uma função administrativa: definir se fica desligada (estado atual, fail-closed) ou recebe a chave.
 4. **`CRON_SECRET` ausente** — `verifyCronSecret` (`supabase/functions/_shared/security.ts:196`) é fail-open: qualquer um com a chave anon dispara alert-dispatcher, check-* e weekly-report. Ligar exige o mesmo valor nos crons do banco.
