@@ -260,7 +260,7 @@ test('proxy: raiz permitida inclui o tmp do sistema (como o gen-types.sh usa: mk
     const limpo = { ...process.env, SUPABASE_DB_URL: pooler('x1y2z3w4') };
     const r = rodar(process.execPath, [path.join(REPO, PROXY), dir], { cwd: REPO, env: limpo });
     assert.equal(r.status, 0, r.saida);
-    assert.match(lerIni(dir), new RegExp(`server_tls_ca_file = ${RegExp.escape(path.join(REPO, CA))}`));
+    assert.match(lerIni(dir), new RegExp(`server_tls_ca_file = ${path.join(REPO, CA).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')}`));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
