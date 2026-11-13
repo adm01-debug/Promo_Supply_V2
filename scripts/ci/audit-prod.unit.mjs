@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { evaluate, main, parseAuditText } from "./audit-prod.mjs";
 
@@ -197,4 +199,146 @@ test("main aceita relatorio completo com pacote error-ex (nao confunde cabecalho
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// ── Regressao: o formato que o bun 1.4.0 imprime DE VERDADE ───────────────────
+// Linhas reais do binario 1.4.0 (o pinado no guards.yml), capturadas em projetos sinteticos
+// com pacotes publicos e recortadas; so a linha de resumo foi recalculada para o recorte.
+// Medido antes da correcao: a faixa `bun audit v1.4.0 (...)` virava o
+// pacote "bun", nenhum cabecalho `nome@versao` casava, todo advisory ia para esse pacote
+// fantasma e o gate saia 0 -- inclusive com HIGH em dependencia direta de producao. No
+// run 42702120276 da main o relatorio tinha 178 advisories (zod direto, ws via
+// @supabase/supabase-js) e o passo imprimiu "OK".
+const capturaBun140 = [
+  "bun audit v1.4.0 (34cbb9a40)",
+  "",
+  "body-parser@1.19.0",
+  "  express > body-parser",
+  "  low: body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement (<1.20.6) - https://github.com/advisories/GHSA-v422-hmwv-36x6",
+  "  high: body-parser vulnerable to denial of service when url encoding is enabled (<1.20.3) - https://github.com/advisories/GHSA-qwcr-r2fm-qrc7",
+  "",
+  "lodash@4.17.20",
+  "  (direct dependency)",
+  "  high: Command Injection in lodash (<4.17.21) - https://github.com/advisories/GHSA-35jh-r3h4-6jhm",
+  "  moderate: Regular Expression Denial of Service (ReDoS) in lodash (>=4.0.0 <4.17.21) - https://github.com/advisories/GHSA-29mw-wpgm-hmr9",
+  "",
+  "minimist@1.2.5",
+  "  mkdirp > minimist",
+  "  rc > minimist",
+  "  critical: Prototype Pollution in minimist (>=1.0.0 <1.2.6) - https://github.com/advisories/GHSA-xvch-5gv4-984h",
+  "",
+  "@babel/traverse@7.23.0",
+  "  (direct dependency)",
+  "  critical: Babel vulnerable to arbitrary code execution when compiling specifically crafted malicious code (<7.23.2) - https://github.com/advisories/GHSA-67hx-6x53-jw92",
+  "",
+  "uuid@11.1.1, 8.3.2",
+  "  artillery > artillery-plugin-publish-metrics > uuid",
+  "  moderate: uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided (<11.1.1) - https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+  "",
+  "7 vulnerabilities (2 critical, 2 high, 2 moderate, 1 low)",
+  "",
+  "  bun audit fix           upgrade the vulnerable packages within their ranges",
+  "  bun audit fix --latest  also cross major versions",
+].join("\n");
+
+function comRelatorio(texto, deps, fn) {
+  const dir = mkdtempSync(path.join(tmpdir(), "audit-prod-"));
+  try {
+    writeFileSync(path.join(dir, "relatorio.txt"), texto);
+    writeFileSync(path.join(dir, "package.json"), JSON.stringify(deps));
+    return fn(dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test("parse do formato real do bun 1.4.0: pacote@versao, ` > `, (direct dependency), faixa e rodape", () => {
+  const findings = parseAuditText(capturaBun140);
+  assert.deepEqual(
+    findings.map((f) => f.package),
+    ["body-parser", "lodash", "minimist", "@babel/traverse", "uuid"],
+    "a faixa `bun audit v...` e o resumo nao sao pacotes",
+  );
+  const porNome = Object.fromEntries(findings.map((f) => [f.package, f]));
+  assert.deepEqual(porNome["body-parser"].chains, [["express", "body-parser"]]);
+  assert.deepEqual(porNome.lodash.chains, [["lodash"]], "(direct dependency) vira a cadeia do proprio pacote");
+  assert.deepEqual(porNome.minimist.chains, [["mkdirp", "minimist"], ["rc", "minimist"]]);
+  assert.equal(porNome["@babel/traverse"].range, "7.23.0");
+  assert.equal(porNome.uuid.range, "11.1.1, 8.3.2");
+  // O rodape recuado (`  bun audit fix ...`) vem depois do resumo e nao pertence a pacote nenhum.
+  assert.deepEqual(porNome.uuid.chains, [["artillery", "artillery-plugin-publish-metrics", "uuid"]]);
+  assert.equal(findings.reduce((n, f) => n + f.advisories.length, 0), 7);
+});
+
+test("main bloqueia HIGH/CRITICAL de producao no relatorio real do bun 1.4.0 (direta, transitiva e cadeia dupla)", () => {
+  const rodar = (deps) => comRelatorio(capturaBun140, deps, (dir) => main(["--level", "high", "--input", "relatorio.txt"], dir));
+  // Dependencia DIRETA de producao com HIGH: era o caso que mais importava e saia 0.
+  assert.equal(rodar({ dependencies: { lodash: "4.17.20" } }), 1);
+  // Transitiva alcancada por dependencia de producao (cadeia com ` > `).
+  assert.equal(rodar({ dependencies: { express: "4.17.1" } }), 1);
+  // Mesma vulnerabilidade por uma cadeia de dev (mkdirp) e uma de producao (rc): bloqueia.
+  assert.equal(rodar({ dependencies: { rc: "1.2.8" }, devDependencies: { mkdirp: "0.5.5" } }), 1);
+  // Tudo so em devDependencies: informativo, nao bloqueia.
+  assert.equal(
+    rodar({
+      dependencies: { "is-number": "7.0.0" },
+      devDependencies: { lodash: "1", express: "1", mkdirp: "1", rc: "1", "@babel/traverse": "1", artillery: "1" },
+    }),
+    0,
+  );
+});
+
+test("evaluate nao trata dependencia direta de dev como producao", () => {
+  const findings = parseAuditText(capturaBun140);
+  const bloqueios = evaluate(findings, ["@babel/traverse"], "critical");
+  assert.deepEqual(bloqueios.map((b) => b.package), ["@babel/traverse"]);
+  assert.deepEqual(evaluate(findings, ["uuid"], "high"), [], "uuid so tem advisory moderate");
+});
+
+test("main aceita a linha limpa real do bun 1.4.0, que vem com o tempo no fim", () => {
+  // Medido: `No vulnerabilities found (checked 1 package) [101.00ms]` -- sem aceitar o
+  // sufixo de tempo o gate saia 2 justamente no repositorio sem advisory.
+  const limpo = ["bun audit v1.4.0 (34cbb9a40)", "", "No vulnerabilities found (checked 1 package) [101.00ms]", ""].join("\n");
+  assert.equal(comRelatorio(limpo, { dependencies: { "is-number": "7.0.0" } }, (dir) => main(["--input", "relatorio.txt"], dir)), 0);
+  const crlf = limpo.replaceAll("\n", "\r\n");
+  assert.equal(comRelatorio(crlf, { dependencies: {} }, (dir) => main(["--input", "relatorio.txt"], dir)), 0);
+});
+
+test("main falha fechado para a saida real de falha do coletor (registry fora do ar, sem lockfile)", () => {
+  const semRegistry = ["bun audit v1.4.0 (34cbb9a40)", "", "error: POST http://127.0.0.1:9/-/npm/v1/security/advisories/bulk - ConnectionRefused"].join("\n");
+  const semLockfile = ["bun audit v1.4.0 (34cbb9a40)", "", "error: missing lockfile, nothing to audit", "note: run 'bun install' first"].join("\n");
+  for (const texto of [semRegistry, semLockfile, "", "bun audit v1.4.0 (34cbb9a40)\n"]) {
+    assert.equal(comRelatorio(texto, { dependencies: {} }, (dir) => main(["--input", "relatorio.txt"], dir)), 2);
+  }
+});
+
+test("main trata argumento invalido, package.json ilegivel e relatorio ilegivel como falha operacional (2)", () => {
+  // Medido: saiam com stack trace e status 1 -- o codigo de "advisory encontrado".
+  comRelatorio("No vulnerabilities found\n", { dependencies: {} }, (dir) => {
+    assert.equal(main(["--nao-existe"], dir), 2);
+    assert.equal(main(["--level"], dir), 2);
+    assert.equal(main(["--level", "urgente", "--input", "relatorio.txt"], dir), 2);
+    // `--status` sem valor nao pode pular a conferencia do status em silencio.
+    assert.equal(main(["--input", "relatorio.txt", "--status"], dir), 2);
+    assert.equal(main(["--input", "relatorio.txt", "--package-json", "nao-existe.json"], dir), 2);
+    writeFileSync(path.join(dir, "quebrado.json"), "{ nao e json");
+    assert.equal(main(["--input", "relatorio.txt", "--package-json", "quebrado.json"], dir), 2);
+    assert.equal(main(["--input", "."], dir), 2, "--input apontando para diretorio");
+    assert.equal(main(["--input", "relatorio.txt"], dir), 0);
+  });
+});
+
+test("CLI roda de verdade quando chamado por link simbolico", () => {
+  // Medido: a guarda de modulo principal comparava texto; por link `main` nao rodava e o
+  // processo saia 0 sem ler relatorio nenhum.
+  const cli = fileURLToPath(new URL("./audit-prod.mjs", import.meta.url));
+  comRelatorio(capturaBun140, { dependencies: { lodash: "4.17.20" } }, (dir) => {
+    const link = path.join(dir, "audit-por-link.mjs");
+    symlinkSync(cli, link);
+    const direto = spawnSync(process.execPath, [cli, "--input", "relatorio.txt"], { cwd: dir, encoding: "utf8" });
+    assert.equal(direto.status, 1, direto.stdout + direto.stderr);
+    assert.match(direto.stderr, /lodash 4\.17\.20 \[high\]/u);
+    const porLink = spawnSync(process.execPath, [link, "--input", "relatorio.txt"], { cwd: dir, encoding: "utf8" });
+    assert.equal(porLink.status, 1, `por link o CLI deveria sair com 1: ${porLink.stdout}${porLink.stderr}`);
+  });
 });

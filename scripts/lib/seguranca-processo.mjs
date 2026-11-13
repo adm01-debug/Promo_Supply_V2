@@ -41,12 +41,21 @@ export const RAIZES_PERMITIDAS = [RAIZ_REPO, path.resolve(os.tmpdir()), path.res
  * binario silenciosamente.
  */
 export function resolverExecutavel(comando) {
+  // Nome com separador de caminho nao passa pela busca no PATH (o shell tambem nao a faz):
+  // juntar `../x` a cada diretorio devolvia um binario FORA dos diretorios do PATH.
+  if (typeof comando !== 'string' || comando === '' || comando.includes('/') || comando.includes(path.sep)) {
+    throw new Error('nome de comando invalido para busca no PATH: ' + JSON.stringify(comando));
+  }
   const diretorios = (process.env.PATH || '').split(path.delimiter).filter(Boolean);
   for (const diretorio of diretorios) {
-    const candidato = path.join(diretorio, comando);
+    // `resolve`, nao `join`: entrada relativa no PATH (`bin`, `.`) devolvia caminho relativo,
+    // e o contrato daqui e caminho ABSOLUTO (o filho pode rodar com outro `cwd`).
+    const candidato = path.resolve(diretorio, comando);
     try {
       fs.accessSync(candidato, fs.constants.X_OK);
-      return candidato;
+      // Diretorio tambem passa em X_OK. O shell so executa arquivo e segue a busca; sem
+      // este teste um diretorio homonimo mais cedo no PATH era devolvido como "binario".
+      if (fs.statSync(candidato).isFile()) return candidato;
     } catch {
       // Nao esta neste diretorio: segue a busca, igual ao shell.
     }
@@ -61,6 +70,18 @@ export function estaDentro(raiz, candidato) {
     || (!path.isAbsolute(relativo) && relativo !== '..' && !relativo.startsWith('..' + path.sep));
 }
 
+// Mesmo teto do kernel Linux para resolucao de links (ELOOP): acima disso e ciclo.
+const LIMITE_DE_LINKS = 40;
+
+/** Alvo de `caminho` quando ele e um link simbolico; `null` quando nao e link (ou nao existe). */
+function alvoDeLinkPendurado(caminho) {
+  try {
+    return fs.lstatSync(caminho).isSymbolicLink() ? fs.readlinkSync(caminho) : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Resolve links simbolicos mesmo quando o alvo final ainda nao existe.
  *
@@ -68,13 +89,25 @@ export function estaDentro(raiz, candidato) {
  * esta guarda antes de criar um arquivo. Nesse caso subimos ate o ancestral
  * existente mais proximo, resolvemos os links dele e recolocamos os segmentos
  * inexistentes. Assim `tmp/link-para-fora/novo.json` nao passa apenas porque
- * `novo.json` ainda nao foi criado.
+ * `novo.json` ainda nao foi criado. Link pendurado (o proprio link existe, o alvo
+ * ainda nao) e seguido ate o alvo pelo mesmo motivo.
  */
 function caminhoRealMesmoSeAusente(caminho) {
   let existente = caminho;
   const ausentes = [];
+  let saltos = 0;
 
   while (!fs.existsSync(existente)) {
+    // Link pendurado: `existsSync` segue o link e responde "nao existe", mas o link existe
+    // e aponta para algum lugar. Sem seguir o alvo, `raiz/link -> /fora/novo.json` era
+    // aceito como "dentro da raiz" e a escrita seguinte criava o arquivo fora dela.
+    const alvo = alvoDeLinkPendurado(existente);
+    if (alvo !== null) {
+      saltos += 1;
+      if (saltos > LIMITE_DE_LINKS) throw new Error('links simbolicos em ciclo ou em cadeia longa demais: ' + caminho);
+      existente = path.resolve(fs.realpathSync.native(path.dirname(existente)), alvo);
+      continue;
+    }
     const pai = path.dirname(existente);
     if (pai === existente) break;
     ausentes.unshift(path.basename(existente));

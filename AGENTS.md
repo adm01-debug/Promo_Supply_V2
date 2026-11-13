@@ -91,7 +91,7 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 ## Serviços
 - **Deploy** — ler `docs/agentes/deploy.md` ao confirmar deploy ou mexer em env/domínio. Front na **Vercel**
   (projeto `promo-supply-v2`, team `juca1`): merge em `main` = produção. **Edge: deploy manual** por
-  `deploy_edge_functions_promo_supply.sh` (32 das 39); nenhum workflow publica edge. Nunca segredo de servidor
+  `deploy_edge_functions_promo_supply.sh` (31 das 39); nenhum workflow publica edge. Nunca segredo de servidor
   na Vercel; `VITE_*` é público.
 - **Serviços externos** — ler `docs/agentes/servicos-externos.md` ao mexer em edge que fale com fora (XBZ,
   Spot Gifts, AI Gateway da Lovable, SEFAZ, Resend/Slack, `external-db-bridge`, punchout, `erp-sync`, SCIM,

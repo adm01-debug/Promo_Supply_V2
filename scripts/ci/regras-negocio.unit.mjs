@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from 'node:child_process';
-import { chmodSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -281,6 +281,146 @@ exec "$REAL_GIT" "$@"
       'chore(ai-context): atualiza contexto para agentes [skip ci]');
     assert.equal(git(checkout, 'log', '-1', '--format=%s', 'origin/main^').trim(),
       'feat: segunda corrida concorrente');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// Remoto bare + checkout com uma saída gerada já publicada; `nome` entra no caminho do remoto.
+function novoCheckout(nome = 'regras-publish-') {
+  const root = mkdtempSync(join(tmpdir(), nome));
+  const remote = join(root, 'remote.git');
+  const checkout = join(root, 'checkout dir');
+  git(root, 'init', '--bare', '-q', remote);
+  git(root, 'init', '-q', '-b', 'main', checkout);
+  git(checkout, 'config', 'user.email', 'local@example.invalid');
+  git(checkout, 'config', 'user.name', 'Local');
+  mkdirSync(join(checkout, 'docs', 'ai-context'), { recursive: true });
+  writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'baseline\n');
+  writeFileSync(join(checkout, 'user.txt'), 'baseline\n');
+  git(checkout, 'add', '.');
+  git(checkout, 'commit', '-qm', 'baseline');
+  git(checkout, 'remote', 'add', 'origin', remote);
+  git(checkout, 'push', '-q', '-u', 'origin', 'main');
+  git(root, `--git-dir=${remote}`, 'symbolic-ref', 'HEAD', 'refs/heads/main');
+  return { root, remote, checkout };
+}
+
+function publicar(checkout, env) {
+  return spawnSync('bash', [publishScript], {
+    cwd: checkout, encoding: 'utf8', timeout: 30_000,
+    env: { ...process.env, OUT_DIR: 'docs/ai-context', ...env },
+  });
+}
+
+test('publicador recusa MODE desconhecido e HEAD destacado sem BRANCH antes de commitar', () => {
+  const { root, remote, checkout } = novoCheckout();
+  try {
+    writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'new\n');
+    const typo = publicar(checkout, { BRANCH: 'main', MODE: 'pusj' });
+    assert.equal(typo.status, 2, `${typo.stdout}\n${typo.stderr}`);
+    assert.match(typo.stderr, /MODE inválido: 'pusj'/);
+
+    git(checkout, 'checkout', '-q', '--detach');
+    const detached = spawnSync('bash', [publishScript], {
+      cwd: checkout, encoding: 'utf8', timeout: 30_000,
+      env: { ...process.env, OUT_DIR: 'docs/ai-context', MODE: 'push', BRANCH: '' },
+    });
+    assert.equal(detached.status, 2, `${detached.stdout}\n${detached.stderr}`);
+    assert.match(detached.stderr, /HEAD destacado e BRANCH não informado/);
+
+    // nada commitado, nenhuma branch nova no remoto, saída gerada continua só no working tree
+    assert.equal(git(checkout, 'log', '--format=%s').trim(), 'baseline');
+    assert.equal(git(root, `--git-dir=${remote}`, 'for-each-ref', '--format=%(refname)').trim(), 'refs/heads/main');
+    assert.match(git(checkout, 'status', '--short'), /^ M docs\/ai-context\/generated\.md$/m);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('publicador assina o commit como bot sem trocar a identidade git do checkout nem deixar temporário', () => {
+  const { root, remote, checkout } = novoCheckout();
+  const tmp = join(root, 'tmp');
+  try {
+    mkdirSync(tmp);
+    writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'new\n');
+    const result = publicar(checkout, { BRANCH: 'main', MODE: 'push', TMPDIR: tmp });
+    assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+    assert.equal(git(root, `--git-dir=${remote}`, 'log', '-1', '--format=%ae|%ce', 'main').trim(),
+      'ai-context-bot@users.noreply.github.com|ai-context-bot@users.noreply.github.com');
+    assert.equal(git(checkout, 'config', '--local', 'user.name').trim(), 'Local');
+    assert.equal(git(checkout, 'config', '--local', 'user.email').trim(), 'local@example.invalid');
+    assert.deepEqual(readdirSync(tmp), []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('publicador não confunde corrida comum com branch protegida quando a URL do remoto contém "review"', () => {
+  const { root, remote, checkout } = novoCheckout('regras-publish-code-review-');
+  const peer = join(root, 'peer');
+  try {
+    git(root, 'clone', '-q', remote, peer);
+    git(peer, 'config', 'user.email', 'peer@example.invalid');
+    git(peer, 'config', 'user.name', 'Peer');
+    writeFileSync(join(peer, 'peer.txt'), 'trabalho concorrente\n');
+    git(peer, 'add', '.');
+    git(peer, 'commit', '-qm', 'feat: origem andou');
+    git(peer, 'push', '-q', 'origin', 'main');
+
+    writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'new\n');
+    const generator = join(root, 'regenerate.sh');
+    writeFileSync(generator, '#!/usr/bin/env bash\nprintf \'regenerated\\n\' > docs/ai-context/generated.md\n');
+    chmodSync(generator, 0o700);
+    const bin = join(root, 'bin');   // gh que sempre falha: se a corrida virar "proteção", o modo PR quebra o teste
+    mkdirSync(bin);
+    writeFileSync(join(bin, 'gh'), '#!/usr/bin/env bash\nexit 1\n');
+    chmodSync(join(bin, 'gh'), 0o700);
+    const result = publicar(checkout, { BRANCH: 'main', MODE: 'push', GEN_CMD: generator, PATH: `${bin}:${process.env.PATH}` });
+    assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+    assert.doesNotMatch(result.stdout, /proteção de branch/);
+    assert.equal(git(root, `--git-dir=${remote}`, 'for-each-ref', '--format=%(refname)').trim(), 'refs/heads/main');
+    assert.equal(git(root, `--git-dir=${remote}`, 'show', 'main:docs/ai-context/generated.md'), 'regenerated\n');
+    assert.equal(git(root, `--git-dir=${remote}`, 'log', '-1', '--format=%s', 'main^').trim(), 'feat: origem andou');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('modo branch cria a branch derivada e, em falha no meio, devolve o checkout sem nada staged nem lock', () => {
+  const { root, remote, checkout } = novoCheckout();
+  try {
+    writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'new\n');
+    writeFileSync(join(checkout, 'user.txt'), 'TRABALHO LOCAL NÃO COMMITADO\n');
+
+    const failed = publicar(checkout, { MODE: 'branch', BRANCH_OUT: 'contexto', INDEX_CMD: 'exit 7' });
+    assert.equal(failed.status, 7, `${failed.stdout}\n${failed.stderr}`);
+    assert.equal(git(checkout, 'symbolic-ref', '--short', 'HEAD').trim(), 'main');
+    assert.equal(git(checkout, 'diff', '--cached', '--name-only'), '');
+    assert.equal(readFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'utf8'), 'new\n');
+    assert.equal(readFileSync(join(checkout, 'user.txt'), 'utf8'), 'TRABALHO LOCAL NÃO COMMITADO\n');
+    assert.equal(existsSync(join(checkout, '.git', 'index.lock')), false);
+    assert.equal(git(checkout, 'worktree', 'list').trim().split('\n').length, 1);
+    assert.equal(git(root, `--git-dir=${remote}`, 'for-each-ref', '--format=%(refname)').trim(), 'refs/heads/main');
+
+    // branch inexistente no remoto: é criada como main + 1 commit, sem tocar a main
+    const first = publicar(checkout, { MODE: 'branch', BRANCH_OUT: 'contexto' });
+    assert.equal(first.status, 0, `${first.stdout}\n${first.stderr}`);
+    assert.equal(git(root, `--git-dir=${remote}`, 'show', 'contexto:docs/ai-context/generated.md'), 'new\n');
+    assert.equal(git(root, `--git-dir=${remote}`, 'rev-parse', 'contexto^').trim(),
+      git(root, `--git-dir=${remote}`, 'rev-parse', 'main').trim());
+    assert.equal(git(root, `--git-dir=${remote}`, 'log', '--format=%s', 'main').trim(), 'baseline');
+    assert.equal(readFileSync(join(checkout, 'user.txt'), 'utf8'), 'TRABALHO LOCAL NÃO COMMITADO\n');
+
+    // nada a publicar: sai 0, não cria commit novo e não deixa a saída gerada staged na branch de origem
+    writeFileSync(join(checkout, 'docs', 'ai-context', 'generated.md'), 'new\n');
+    const before = git(root, `--git-dir=${remote}`, 'rev-parse', 'contexto').trim();
+    const again = publicar(checkout, { MODE: 'branch', BRANCH_OUT: 'contexto' });
+    assert.equal(again.status, 0, `${again.stdout}\n${again.stderr}`);
+    assert.match(again.stdout, /nada a publicar/);
+    assert.equal(git(root, `--git-dir=${remote}`, 'rev-parse', 'contexto').trim(), before);
+    assert.equal(git(checkout, 'diff', '--cached', '--name-only'), '');
+    assert.equal(git(checkout, 'symbolic-ref', '--short', 'HEAD').trim(), 'main');
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

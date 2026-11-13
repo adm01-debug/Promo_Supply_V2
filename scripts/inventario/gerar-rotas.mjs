@@ -163,7 +163,8 @@ export function fechoDaTela(raiz, arquivoTelaAbs) {
   }
   return {
     arquivos_lidos: saltosVistos.size,
-    hooks: [...hooks.entries()].map(([nome, arquivo]) => ({ nome, arquivo })).sort((a, b) => a.nome.localeCompare(b.nome)),
+    // 'en' fixo: sem locale, a ordem segue LC_ALL/LANG de quem roda (lt_LT, cs_CZ... ordenam diferente).
+    hooks: [...hooks.entries()].map(([nome, arquivo]) => ({ nome, arquivo })).sort((a, b) => a.nome.localeCompare(b.nome, 'en')),
     buckets: unico(chamadas.buckets),
     edges: unico(chamadas.edges),
     rpcs: unico(chamadas.rpcs),
@@ -207,7 +208,10 @@ export function lerUrls(raiz) {
   const abertura = texto.search(/<Routes[\s>]/);
   const fechamento = texto.indexOf('</Routes>');
   if (abertura < 0 || fechamento < 0) throw new Error(`${arquivo}: nao achei o bloco <Routes>...</Routes>`);
-  const corpo = texto.slice(abertura, fechamento);
+  // Sem os comentarios JSX `{/* ... */}`: rota comentada nao existe (e um pai comentado nao pode
+  // "proteger" as rotas seguintes). So essa forma; `/*` solto pode ser parte de `path="/app/*"`.
+  const corpo = texto.slice(abertura, fechamento).replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '');
+  const caminhoDaTag = (tag) => (tag.match(/path(?:=|:\s*)["']([^"']+)["']/) || [])[1];
 
   const urls = [];
   const pilha = []; // tags das rotas-pai ainda abertas
@@ -233,11 +237,15 @@ export function lerUrls(raiz) {
       else if (ch === '}') profundidade -= 1;
       else if (ch === '>' && profundidade === 0) { fimTag = j; break; }
     }
-    if (fimTag < 0) break;
+    // Chave desbalanceada: parar aqui devolvia o inventario pela metade, sem erro nenhum.
+    if (fimTag < 0) throw new Error(`${arquivo}: <Route> sem fim (chaves desbalanceadas?) em "${corpo.slice(aberto, aberto + 60).replace(/\s+/g, ' ')}"`);
     const tag = corpo.slice(aberto, fimTag + 1);
     const autoFechada = /\/\s*>$/.test(tag);
     const ancestrais = [...pilha];
-    const caminho = (tag.match(/path(?:=|:\s*)["']([^"']+)["']/) || [])[1];
+    const caminhoNaTag = caminhoDaTag(tag);
+    // Como no react-router: path sem "/" inicial e relativo ao da rota-pai (pai sem path nao muda nada).
+    const caminho = caminhoNaTag && [...ancestrais.map(caminhoDaTag).filter(Boolean), caminhoNaTag]
+      .reduce((base, p) => (p.startsWith('/') ? p : `${base.replace(/\/$/, '')}/${p}`));
     if (caminho) {
       const componente = [...tag.matchAll(/<([A-Z]\w*)/g)].map((m) => m[1])
         .find((n) => !ENVOLTORIOS.includes(n)) ?? null;
@@ -255,7 +263,7 @@ export function lerUrls(raiz) {
     if (!autoFechada) pilha.push(tag);
     i = fimTag + 1;
   }
-  return urls.sort((a, b) => a.caminho.localeCompare(b.caminho));
+  return urls.sort((a, b) => a.caminho.localeCompare(b.caminho, 'en'));
 }
 
 const FECHO_VAZIO = { arquivos_lidos: 0, hooks: [], buckets: [], edges: [], rpcs: [], tabelas: [], imports_quebrados: [] };

@@ -22,9 +22,13 @@ migration, não há banco local e o `.env` do repo aponta para produção.
    `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY` e aborta sem elas (o fallback hardcoded foi
    removido em `0bdc3cb`). A suíte é de leitura anônima (espera 0 linhas), mas com
    `RLS_TEST_USER_A`/`RLS_TEST_USER_B` (`:103-104`) ela **faz login real** no projeto oficial.
-3. **`scripts/rls-audit.ts` é no-op no CI.** Sem `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` ele faz
-   `process.exit(0)` com aviso (`scripts/rls-audit.ts:13-16`), e o `main.yml` não injeta esses secrets:
-   o passo "Security RLS Audit" do Quality Gate passa verde **sem auditar nada**. Não confie nele como prova.
+3. **`scripts/rls-audit.ts` é no-op no CI.** Sem `SUPABASE_DB_URL` ele avisa
+   (`::warning::RLS Audit NÃO EXECUTADA`) e sai 0 — com `--strict` sai 1 —, e o `main.yml` não injeta esse
+   secret: o passo "Security RLS Audit" do Quality Gate passa verde **sem auditar nada**. Não confie nele
+   como prova. A leitura é por `psql` em transação somente leitura (`scripts/lib/psql-leitura.mjs`): o
+   PostgREST deste projeto **não** expõe `pg_catalog` (`406 PGRST106`, medido em 2026-11-09), então
+   `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` não servem para isso. Exceção aceita pelo dono vai em
+   `scripts/rls-audit.allowlist.json`. `scripts/db-explain-analyze.ts` usa o mesmo caminho.
 4. **`.env.example:8` declara `VITE_SUPABASE_ANON_KEY`, um nome que o código não lê.** Quem copiar o
    exemplo sobe um front sem chave. O nome correto é `VITE_SUPABASE_PUBLISHABLE_KEY`.
 
@@ -78,8 +82,8 @@ migration, não há banco local e o `.env` do repo aponta para produção.
 5. `CREATE INDEX CONCURRENTLY` e `VACUUM` não rodam pelo MCP (o gateway envolve em transação) — use
    `CREATE INDEX` simples.
 6. **`scripts/squash-migrations.sh` é destrutivo e nunca foi executado:** concatena tudo antes de um
-   cutoff em `<CUTOFF>_squashed_baseline.sql` e **apaga os originais** (`:157-160`). Só com o dono, e só
-   depois de existir ledger.
+   cutoff em `<última migration consolidada>_squashed_baseline.sql` e **apaga os originais**. Só com o
+   dono, e só depois de existir ledger. `--dry-run` mostra o plano sem tocar em nada.
 7. Mexeu em RLS, função, trigger ou índice → leia antes
    `git show origin/contexto:docs/contexto/supabase/lints.md` (fonte dona do schema ao vivo) e rode
    `npm run test:rls` ciente de que ele fala com produção.

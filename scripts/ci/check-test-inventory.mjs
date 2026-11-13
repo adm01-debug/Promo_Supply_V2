@@ -13,7 +13,7 @@
 // conta: passo desligado por comentário não executa), e o que não aparece em nenhum bloco
 // `run:` precisa estar na ALLOWLIST_NODE com justificativa.
 
-import { readFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, readdirSync, realpathSync, statSync } from 'fs';
 import { spawnSync } from 'child_process';
 import { join, posix as pathPosix } from 'path';
 import { resolverExecutavel } from '../lib/seguranca-processo.mjs';
@@ -34,7 +34,10 @@ function listarArquivosNoDisco(relDir) {
     for (const nome of readdirSync(abs).sort()) {
       const filhoAbs = join(abs, nome);
       const filhoRel = rel ? `${rel}/${nome}` : nome;
-      const st = statSync(filhoAbs);
+      // Link simbólico pendurado não é arquivo nem pasta: sem `throwIfNoEntry` o `stat`
+      // lançava ENOENT e o inventário morria com stack trace em vez de inventariar.
+      const st = statSync(filhoAbs, { throwIfNoEntry: false });
+      if (!st) continue;
       if (st.isDirectory()) visitar(filhoAbs, filhoRel);
       else if (st.isFile()) out.push(filhoRel);
     }
@@ -76,8 +79,11 @@ export const ALLOWLIST_NODE = new Set();
 // que conta como cobertura. Sem este reconhecimento, os 7 testes Deno do repo apareceriam
 // como órfãos mesmo rodando no CI.
 
+// `*_test.ts` também: é a outra convenção que o `deno test` descobre, e este repo tem
+// arquivos nas duas (`run-audit/rls_test.ts`, `_shared/integrity_test.ts`).
+const SUFIXO_TESTE_DENO = /[._]test\.ts$/;
 const testTsOnDisk = gitLsFilesOuDisco('supabase/functions')
-  .filter(f => f.endsWith('.test.ts'));
+  .filter(f => SUFIXO_TESTE_DENO.test(f));
 
 const ciYaml = read('.github/workflows/main.yml');
 
@@ -112,7 +118,9 @@ const CAMINHO_SUITE_NODE = /scripts\/[A-Za-z0-9_./*-]+\.(?:test|unit|integration
  * separa registro de execução.
  */
 export function codigoExecutavelDeWorkflow(yaml) {
-  const linhas = String(yaml).split('\n');
+  // `\r?\n`: com CRLF o `\r` ficava no fim da linha, `(.*)$` não casava a abertura `run:` e
+  // todo passo do workflow sumia — as suites viravam órfãs com o passo no lugar.
+  const linhas = String(yaml).split(/\r?\n/);
   const blocos = [];
   for (let i = 0; i < linhas.length; i += 1) {
     // `- run: ...` (run como primeira chave do item) é YAML válido e tão executável quanto
@@ -122,17 +130,36 @@ export function codigoExecutavelDeWorkflow(yaml) {
     const recuo = abertura[1].length;
     // A primeira linha também passa pelo filtro de comentário: `run: # node --test ...`
     // é um passo desligado, não um passo que executa.
-    const bloco = abertura[2].trimStart().startsWith('#') ? [] : [abertura[2]];
+    const bloco = abertura[2].trimStart().startsWith('#') ? [] : [semComentarioDeShell(abertura[2])];
     for (let j = i + 1; j < linhas.length; j += 1) {
       const linha = linhas[j];
       if (linha.trim() === '') continue; // linha vazia não fecha o bloco
       if (linha.length - linha.trimStart().length <= recuo) break;
       if (linha.trimStart().startsWith('#')) continue; // passo comentado não executa nada
-      bloco.push(linha);
+      bloco.push(semComentarioDeShell(linha));
     }
     blocos.push(bloco.join('\n'));
   }
   return blocos.join('\n');
+}
+
+/**
+ * Corta o comentário de fim de linha (`comando # comentário`). Para o shell o `#` só abre
+ * comentário no início de uma palavra e fora de aspas; o resto da linha não executa, então
+ * `echo ok # node --test scripts/x.test.mjs` não pode contar como passo que roda a suite.
+ */
+export function semComentarioDeShell(linha) {
+  let aspas = null;
+  for (let i = 0; i < linha.length; i += 1) {
+    const c = linha[i];
+    if (aspas) {
+      if (c === '\\' && aspas === '"') i += 1;
+      else if (c === aspas) aspas = null;
+    } else if (c === '\\') i += 1;
+    else if (c === '"' || c === "'") aspas = c;
+    else if (c === '#' && (i === 0 || /\s/.test(linha[i - 1]))) return linha.slice(0, i);
+  }
+  return linha;
 }
 
 /** Caminhos e globos de suites Node citados nos blocos `run:` de um workflow. */
@@ -217,8 +244,10 @@ export function orfaosDoInventario() {
 
   if (!ciUsesGlob) {
     // Sem o comando por pasta: comparação individual de .test.ts contra a lista em main.yml.
+    // Só o que está em bloco `run:` conta (mesma regra do comando por pasta): com o YAML cru,
+    // um arquivo citado em comentário ou em nome de etapa passava por executado.
     const testTsInCi = new Set(
-      [...ciYaml.matchAll(/\bsupabase\/functions\/\S+\.test\.ts\b/g)].map(m => m[0])
+      [...codigoExecutavelDeWorkflow(ciYaml).matchAll(/\bsupabase\/functions\/\S+[._]test\.ts\b/g)].map(m => m[0])
     );
     for (const f of testTsOnDisk) {
       if (!testTsInCi.has(f)) {
@@ -258,6 +287,17 @@ function principal() {
   return 1;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Comparação por caminho real: `file://${process.argv[1]}` não batia quando o caminho do
+// repo tem espaço/acento (a URL vem codificada) nem quando o script é chamado por link
+// simbólico — nos dois casos o inventário não rodava e o processo saía 0 sem imprimir nada.
+function chamadoDireto() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (chamadoDireto()) {
   process.exit(principal());
 }

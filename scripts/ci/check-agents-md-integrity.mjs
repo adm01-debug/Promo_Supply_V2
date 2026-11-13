@@ -9,9 +9,11 @@
  * Base: AGENTS_MD_BASE (no CI, a main buscada; no checkout do CI o HEAD e o proprio arquivo
  * e a comparacao viraria no-op). Localmente, sem a variavel, compara com o HEAD.
  * Na base o conjunto e o que existir la.
+ * Fail-closed: AGENTS_MD_BASE informada que nao resolve para um commit (ref nao buscada,
+ * nome errado) reprova -- sem base nao ha comparacao, e o guard sairia OK sem ter comparado nada.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const AGENTS = 'AGENTS.md';
@@ -52,7 +54,9 @@ function bytesAtuais() {
     if (existsSync(f)) total += Buffer.byteLength(readFileSync(f, 'utf8'));
   }
   if (existsSync(DOCS_DIR)) {
-    for (const f of readdirSync(DOCS_DIR)) {
+    // Recursivo, como o `git ls-tree -r` da base: contando subpasta so de um lado, um
+    // arquivo intacto em docs/agentes/<sub>/ aparecia como "encolheu".
+    for (const f of readdirSync(DOCS_DIR, { recursive: true })) {
       if (f.endsWith('.md')) total += Buffer.byteLength(readFileSync(join(DOCS_DIR, f), 'utf8'));
     }
   }
@@ -61,11 +65,25 @@ function bytesAtuais() {
 
 // Tamanho na base de cada arquivo do conjunto: { total, porArquivo: Map(path -> bytes) } ou null
 // quando a base nao tem nenhum deles (ref inexistente, checkout raso sem a main).
+// Sem shell: `base` vem de variavel de ambiente e os caminhos vem do repositorio. Com o
+// comando montado em string, nome com espaco virava dois argumentos (o arquivo saia da
+// vigilancia em silencio) e `;`/`$()` na ref eram executados.
+const git = (...args) => execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+
+function baseResolve(base) {
+  try {
+    git('rev-parse', '--verify', '--quiet', `${base}^{commit}`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function bytesNaBase(base) {
   const porArquivo = new Map();
   const tamanho = (path) => {
     try {
-      const out = execSync(`git cat-file -s ${base}:${path}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+      const out = git('cat-file', '-s', `${base}:${path}`);
       porArquivo.set(path, Number.parseInt(out.trim(), 10) || 0);
     } catch {
       /* nao existe na base */
@@ -74,11 +92,13 @@ function bytesNaBase(base) {
   for (const f of CONJUNTO_RAIZ) tamanho(f);
   let lista = '';
   try {
-    lista = execSync(`git ls-tree -r --name-only ${base} -- ${DOCS_DIR}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    // `-z`: sem ele o git devolve nome com acento entre aspas e com escape octal
+    // ("docs/agentes/comunica\303\247\303\243o.md"), que nao termina em `.md`.
+    lista = git('ls-tree', '-r', '-z', '--name-only', base, '--', DOCS_DIR);
   } catch {
     lista = '';
   }
-  for (const path of lista.split('\n').map((l) => l.trim()).filter((l) => l.endsWith('.md'))) tamanho(path);
+  for (const path of lista.split('\0').filter((l) => l.endsWith('.md'))) tamanho(path);
   if (porArquivo.size === 0) return null;
   let total = 0;
   for (const n of porArquivo.values()) total += n;
@@ -86,6 +106,11 @@ function bytesNaBase(base) {
 }
 
 const BASE = process.env.AGENTS_MD_BASE || 'HEAD';
+if (process.env.AGENTS_MD_BASE && !baseResolve(BASE)) {
+  console.error(`::error::AGENTS_MD_BASE=${BASE} nao resolve para um commit deste repositorio (ref nao buscada ou nome errado). Sem base nao ha comparacao; o guard nao pode se declarar OK.`);
+  process.exitCode = 1;
+  process.exit();
+}
 const atual = bytesAtuais();
 const base = bytesNaBase(BASE);
 
@@ -118,4 +143,4 @@ if (base) {
   }
 }
 
-console.log(`${AGENTS} OK: ${REQUIRED_SECTIONS.length} secoes presentes; conjunto com ${DOCS_DIR}/: ${atual} bytes${base ? ` (base ${BASE}: ${base.total} bytes em ${base.porArquivo.size} arquivos, cada um >= ${Math.round(FILE_SHRINK_THRESHOLD * 100)}% do tamanho na base)` : ''}.`);
+console.log(`${AGENTS} OK: ${REQUIRED_SECTIONS.length} secoes presentes; conjunto com ${DOCS_DIR}/: ${atual} bytes${base ? ` (base ${BASE}: ${base.total} bytes em ${base.porArquivo.size} arquivos, cada um >= ${Math.round(FILE_SHRINK_THRESHOLD * 100)}% do tamanho na base)` : ` (SEM comparacao de tamanho: ${BASE} nao tem nenhum destes arquivos)`}.`);

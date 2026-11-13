@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -98,6 +98,48 @@ test("ignora as mensagens que o proprio git cria", () => {
   }
 });
 
+// So as formas que o git/GitHub geram passam direto. Medido: com o prefixo solto
+// (`Merge `, `Revert `) qualquer frase iniciada por essas palavras furava o gate.
+test("aceita as demais formas de merge geradas pelo git e pelo GitHub", () => {
+  const geradas = [
+    "Merge branch 'main' into claude/fix-x-261109-1010",
+    "Merge branches 'a' and 'b'",
+    "Merge remote-tracking branch 'origin/main' into claude/fix-x",
+    "Merge tag 'v1.2.0'",
+    "Merge commit '0a1b2c3'",
+    "Merge pull request #12 from adm01-debug/claude/fix-x",
+    "Merge 0a1b2c3d into 4d5e6f70",
+  ];
+  for (const mensagem of geradas) {
+    assert.equal(validarMensagem(mensagem).ok, true, `${mensagem} deveria passar`);
+  }
+});
+
+test('aceita o `Reapply "..."` que o git >= 2.43 escreve ao reverter um revert', () => {
+  assert.equal(validarMensagem('Reapply "fix(contatos): assunto com tamanho suficiente"').ok, true);
+});
+
+test("frase escrita a mao que so comeca com Merge/Revert/Reapply nao fura o gate", () => {
+  for (const mensagem of [
+    "Merge do codigo do login sem padrao",
+    "Merge login into main agora mesmo",
+    "Revert tudo que foi feito ontem",
+    "Reapply da correcao do login",
+  ]) {
+    const { ok, problemas } = validarMensagem(mensagem);
+    assert.equal(ok, false, `${mensagem} deveria ser recusada`);
+    assert.match(problemas.join("; "), /fora do padrao/u);
+  }
+});
+
+test("le a mensagem com CRLF, acento, escopo composto e corpo fora do padrao", () => {
+  assert.equal(validarMensagem("fix(cotação): corrige cálculo de preço\r\n\r\nCorpo livre.\r\n").ok, true);
+  assert.equal(validarMensagem("fix(ci/guards): corrige a leitura do yaml\n\nQualquer corpo.").ok, true);
+  assert.equal(validarMensagem("feat(api)!: remove o endpoint legado").ok, true);
+  assert.equal(validarMensagem("fix(): corrige a leitura do yaml").ok, false);
+  assert.equal(validarMensagem("fix(a b): corrige a leitura do yaml").ok, false);
+});
+
 test("usa a primeira linha util e ignora os comentarios do git", () => {
   const mensagem = [
     "",
@@ -133,6 +175,21 @@ test("o CLI recusa a mensagem fora do padrao e aceita a mensagem do padrao", () 
     assert.match(ruim.stderr, /fora do padrao/u);
     const bom = rodar("feat(cotacoes): adiciona a coluna origem no cartao\n");
     assert.equal(bom.status, 0, bom.stderr);
+    // A mensagem de erro aponta para um documento que existe neste repo.
+    assert.match(ruim.stderr, /AGENTS\.md > Fluxo Git/u);
+    assert.ok(existsSync(path.join(RAIZ, "AGENTS.md")));
+
+    // Chamado por link simbolico o CLI tem de rodar igual. Medido: a guarda de modulo
+    // principal comparava texto, `main` nao rodava e o gate saia 0 sem ler a mensagem.
+    const link = path.join(raiz, "lint-por-link.mjs");
+    symlinkSync(CLI, link);
+    const arquivo = path.join(raiz, "COMMIT_EDITMSG");
+    writeFileSync(arquivo, "mensagem fora do padrao\n");
+    const porLink = spawnSync(process.execPath, [link, arquivo], { cwd: RAIZ, encoding: "utf8" });
+    assert.equal(porLink.status, 1, `por link o CLI deveria sair com 1: ${porLink.stdout}${porLink.stderr}`);
+    // Sem argumento e com arquivo ilegivel: erro de uso (2), nunca 0.
+    assert.equal(spawnSync(process.execPath, [CLI], { cwd: RAIZ, encoding: "utf8" }).status, 2);
+    assert.equal(spawnSync(process.execPath, [CLI, path.join(raiz, "nao-existe")], { cwd: RAIZ, encoding: "utf8" }).status, 2);
   } finally {
     rmSync(raiz, { recursive: true, force: true });
   }

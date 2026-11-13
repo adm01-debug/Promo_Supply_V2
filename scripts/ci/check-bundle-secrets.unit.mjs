@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, copyFileSync, symlinkSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 
 import {
   extrairTokens,
+  extrairChavesSecretas,
   decodificarPayload,
   ehArquivoVarrido,
   listarArquivosVarridos,
@@ -290,4 +291,99 @@ test('check-bundle-secrets: importar o modulo nao executa a guarda', () => {
   );
   assert.equal(r.status, 0);
   assert.equal(r.stdout.trim(), '');
+});
+
+// --- Regressao: o que a varredura deixava passar ------------------------------
+// Chave secreta SINTETICA no formato novo do Supabase (`sb_secret_` + corpo base64url).
+// Nao e JWT: nao tem payload nem `role`, entao a varredura por JWT nunca a enxergou.
+const SB_SECRET = `sb_secret_${'SinteticaDeTeste0123456789_-ab'}`;
+const SB_PUBLISHABLE = `sb_publishable_${'SinteticaDeTeste0123456789_-ab'}`;
+
+test('extrairChavesSecretas: acha sb_secret_ e nao confunde com a publica nem com o prefixo solto', () => {
+  assert.deepEqual(extrairChavesSecretas(`const k="${SB_SECRET}";`), [SB_SECRET]);
+  assert.deepEqual(extrairChavesSecretas(`const k="${SB_PUBLISHABLE}";`), []);
+  // Biblioteca que so testa o prefixo (`startsWith("sb_secret_")`) nao e chave.
+  assert.deepEqual(extrairChavesSecretas('if(k.startsWith("sb_secret_"))throw 1'), []);
+});
+
+test('varrer: reprova chave secreta sb_secret_ no bundle e libera a sb_publishable_', () => {
+  const { dist } = novoCaso();
+  escrever(dist, 'assets/a.js', `var a=1;\nvar k="${SB_SECRET}";\n`);
+  escrever(dist, 'assets/b.js', `var k="${SB_PUBLISHABLE}";\n`);
+  const violacoes = varrer(dist);
+  assert.equal(violacoes.length, 1);
+  assert.equal(violacoes[0].linha, 2);
+  assert.equal(violacoes[0].role, 'sb_secret');
+  const [linha] = avaliar(violacoes);
+  assert.match(linha, /a\.js:2 — chave secreta sb_secret_ do Supabase no bundle publicado/u);
+  assert.ok(!linha.includes(SB_SECRET), 'a chave nao pode aparecer na saida');
+});
+
+test('varrerEnv: reprova sb_secret_ no arquivo de ambiente e aceita a publica', () => {
+  const { env } = novoCaso();
+  escrever(env, `VITE_SUPABASE_PUBLISHABLE_KEY=${SB_PUBLISHABLE}\r\nSUPABASE_SECRET_KEY="${SB_SECRET}"\r\n`);
+  const violacoes = varrerEnv(env);
+  assert.equal(violacoes.length, 1);
+  assert.equal(violacoes[0].linha, 2);
+  assert.match(avaliar(violacoes)[0], /chave secreta sb_secret_ do Supabase no arquivo de ambiente/u);
+});
+
+test('varrer: service_role no index.html publicado reprova (o Vite troca %VITE_X% dentro do HTML)', () => {
+  const { dist } = novoCaso();
+  escrever(dist, 'assets/index.js', 'var a=1;\n');
+  escrever(dist, 'index.html', `<!doctype html>\n<script>window.__K="${JWT_SERVICE}"</script>\n`);
+  const violacoes = varrer(dist);
+  assert.equal(violacoes.length, 1);
+  assert.match(violacoes[0].arquivo, /index\.html$/u);
+  assert.equal(violacoes[0].linha, 2);
+  // A chave anon no HTML continua liberada, como no JS.
+  const limpo = novoCaso();
+  escrever(limpo.dist, 'index.html', `<script>window.__K="${JWT_ANON}"</script>\n`);
+  assert.deepEqual(varrer(limpo.dist), []);
+});
+
+test('main: dist so com HTML continua fail-closed, mesmo com o HTML entrando na varredura', () => {
+  const { raiz, dist, env } = novoCaso();
+  escrever(dist, 'index.html', `<script>window.__K="${JWT_ANON}"</script>`);
+  escrever(env, `K=${JWT_ANON}\n`);
+  assert.equal(main([], raiz), 2);
+  assert.deepEqual(listarArquivosVarridos(dist), [], 'a contagem do fail-closed segue so com .js/.mjs/.cjs');
+});
+
+test('main: exit 1 para sb_secret_ no bundle, para service_role no HTML e com CRLF, binario e caminho com espaco', () => {
+  const comSegredo = (arquivos) => {
+    const { raiz, dist, env } = novoCaso();
+    escrever(env, `K=${JWT_ANON}\n`);
+    for (const [rel, conteudo] of Object.entries(arquivos)) escrever(dist, rel, conteudo);
+    return main(['--dist', 'dist', '--env', '.env.production'], raiz);
+  };
+  assert.equal(comSegredo({ 'a.js': `var k="${SB_SECRET}"` }), 1);
+  assert.equal(comSegredo({ 'a.js': 'var a=1', 'index.html': `<script>k="${JWT_SERVICE}"</script>` }), 1);
+  assert.equal(comSegredo({ 'a.js': `a\r\nvar k="${JWT_SERVICE}"\r\n` }), 1);
+  assert.equal(comSegredo({ 'pasta ação/a b.js': `var k="${JWT_SERVICE}"` }), 1);
+  const binario = Buffer.concat([Buffer.from([0, 255, 254]), Buffer.from(`"${JWT_SERVICE}"`), Buffer.from([0, 255])]);
+  assert.equal(comSegredo({ 'a.js': binario }), 1);
+  assert.equal(comSegredo({ 'a.js': Buffer.from([0, 255, 254, 0, 1]) }), 0, 'binario sem chave nao quebra a varredura');
+});
+
+test('main: fail-closed quando o arquivo de ambiente nao existe e erro de uso para flag sem valor', () => {
+  const { raiz, dist } = novoCaso();
+  escrever(dist, 'a.js', 'var a=1');
+  assert.equal(main(['--dist', 'dist', '--env', '.env.nao-existe'], raiz), 2);
+  // Medido: `--dist`/`--env` sem valor estouravam com stack trace e status 1.
+  assert.equal(main(['--dist'], raiz), 2);
+  assert.equal(main(['--dist', 'dist', '--env'], raiz), 2);
+});
+
+test('CLI: roda de verdade quando chamado por link simbolico', () => {
+  // Medido: a guarda de modulo principal comparava texto; por link `main` nao rodava e o
+  // processo saia 0 sem varrer nada -- inclusive com dist inexistente.
+  const { raiz, dist, env } = novoCaso();
+  escrever(dist, 'a.js', `var k="${JWT_SERVICE}"`);
+  escrever(env, `K=${JWT_ANON}\n`);
+  const link = join(raiz, 'guarda-por-link.mjs');
+  symlinkSync(CLI, link);
+  const r = spawnSync(process.execPath, [link, '--dist', 'dist', '--env', '.env.production'], { cwd: raiz, encoding: 'utf8' });
+  assert.equal(r.status, 1, `por link o CLI deveria sair com 1: ${r.stdout}${r.stderr}`);
+  assert.ok(!(r.stdout + r.stderr).includes(JWT_SERVICE), 'a saida nao pode conter o token');
 });

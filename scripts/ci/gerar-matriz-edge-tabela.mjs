@@ -2,7 +2,7 @@
 // Inventário 23: matriz edge function x tabela. Escaneia supabase/functions/<funcao>/**/*.ts
 // (sem testes, sem _shared) e anota cada tabela citada em `.from('tabela')`.
 // Uso: node scripts/ci/gerar-matriz-edge-tabela.mjs [--check]
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,7 +39,9 @@ function listarTs(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) return listarTs(p);
-    return e.name.endsWith(".ts") && !/\.(test|spec)\.ts$/.test(e.name) ? [p] : [];
+    // `[._]`: `rls_test.ts` (a outra convencao do `deno test`, usada neste repo) tambem e
+    // teste; so com `\.` as tabelas citadas nele entravam na matriz como se fossem da funcao.
+    return e.name.endsWith(".ts") && !/[._](test|spec)\.ts$/.test(e.name) ? [p] : [];
   });
 }
 
@@ -104,6 +106,14 @@ export function renderizar(matriz, shared = new Map()) {
 }
 
 export function main(argv = process.argv.slice(2)) {
+  // Argumento que nao e `--check` caia no modo de ESCRITA: um `--chek` digitado errado
+  // regerava o arquivo e saia 0 em vez de conferir.
+  const desconhecidos = argv.filter((a) => a !== "--check");
+  if (desconhecidos.length > 0) {
+    console.error(`argumento desconhecido: ${desconhecidos.join(" ")}`);
+    console.error("Uso: node scripts/ci/gerar-matriz-edge-tabela.mjs [--check]");
+    return 2;
+  }
   const dirFuncoes = path.join(RAIZ, "supabase/functions");
   const md = renderizar(montarMatriz(dirFuncoes), tabelasDeShared(dirFuncoes));
   const destino = path.join(RAIZ, SAIDA);
@@ -125,6 +135,17 @@ export function main(argv = process.argv.slice(2)) {
   return 0;
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// Comparacao por caminho real: chamado por link simbolico, `argv[1]` e o caminho do link e
+// `import.meta.url` o do arquivo -- a igualdade textual falhava, `main` nao rodava e o
+// `--check` saia 0 sem ter comparado nada.
+function chamadoDireto() {
+  try {
+    return realpathSync(path.resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && chamadoDireto()) {
   process.exitCode = main();
 }

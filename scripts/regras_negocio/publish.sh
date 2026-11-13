@@ -22,8 +22,19 @@ GEN_CMD="${GEN_CMD:-python3 scripts/ai_context/generate.py --repo . --out $OUT_D
 PR_BRANCH="ai-context/sync"
 MSG="chore(ai-context): atualiza contexto para agentes [skip ci]"
 
-git config user.name "${GIT_USER_NAME:-ai-context-bot}"
-git config user.email "${GIT_USER_EMAIL:-ai-context-bot@users.noreply.github.com}"
+case "$MODE" in
+  push|pr|branch) ;;
+  *) echo "ERRO: MODE inválido: '$MODE' (use push, pr ou branch). Nada foi publicado." >&2; exit 2 ;;
+esac
+if [ "$MODE" != "branch" ] && [ "$BRANCH" = "HEAD" ]; then
+  echo "ERRO: HEAD destacado e BRANCH não informado — defina BRANCH=<branch alvo>. Nada foi publicado." >&2; exit 2
+fi
+
+# Identidade só para os commits deste processo. Gravar em .git/config trocaria o autor de todo commit
+# futuro de quem roda o script fora de um runner efêmero.
+export GIT_AUTHOR_NAME="${GIT_USER_NAME:-ai-context-bot}"
+export GIT_AUTHOR_EMAIL="${GIT_USER_EMAIL:-ai-context-bot@users.noreply.github.com}"
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 
 stage() {
   git add -f -A "$OUT_DIR"   # -f: a saída gerada pode estar no .gitignore da branch padrão (versionada só na branch derivada)
@@ -52,7 +63,13 @@ if [ "$MODE" = "branch" ]; then
   BRANCH_OUT="${BRANCH_OUT:-contexto}"
   SRC=$(git rev-parse HEAD)
   SRC_REF=$(git symbolic-ref -q --short HEAD || echo "$SRC")
-  trap 'git checkout -q "$SRC_REF" 2>/dev/null || true' EXIT   # sempre volta para a branch de origem, mesmo em erro
+  # Sempre volta para a branch de origem, mesmo em erro, e tira do índice o que este script colocou lá
+  # (não havia nada alheio staged: assert_no_foreign_staged_changes). Os arquivos de trabalho ficam intactos.
+  restore_origin() {
+    git checkout -q "$SRC_REF" 2>/dev/null || true
+    git reset -q 2>/dev/null || true
+  }
+  trap restore_origin EXIT
   git checkout -q --detach "$SRC"
   stage
   git commit -q -m "$MSG" --allow-empty
@@ -129,13 +146,19 @@ discard_generated_output_commit() {
 
 remember_generated_head
 
+# Arquivo próprio por execução: um nome fixo em /tmp mistura a saída de dois publicadores na mesma máquina.
+PUSH_ERR=$(mktemp "${TMPDIR:-/tmp}/ai-context-push.XXXXXX")
+trap 'rm -f "$PUSH_ERR"' EXIT
+
 if [ "$MODE" = "push" ]; then
   for attempt in 1 2 3; do
-    if git push -q origin "HEAD:$BRANCH" 2>/tmp/push.err; then
+    if git push -q origin "HEAD:$BRANCH" 2>"$PUSH_ERR"; then
       echo "contexto publicado em $(git rev-parse --short HEAD) ($BRANCH)"; exit 0
     fi
-    if grep -qiE "protected|GH006|pre-receive|required status|review|rule" /tmp/push.err; then
-      echo "push rejeitado por proteção de branch:"; cat /tmp/push.err
+    # As linhas "To <url>" e "failed to push some refs to '<url>'" repetem a URL do remoto: um repositório
+    # chamado code-review ou business-rules não pode transformar uma corrida comum em "branch protegida".
+    if grep -vE "^To |failed to push some refs to " "$PUSH_ERR" | grep -qiE "protected|GH006|pre-receive|required status|review|rule"; then
+      echo "push rejeitado por proteção de branch:"; cat "$PUSH_ERR"
       MODE="pr"; break
     fi
     echo "push falhou (tentativa $attempt) — sincronizando com origin/$BRANCH e regenerando"
@@ -176,7 +199,7 @@ if [ "$MODE" = "push" ]; then
     fi
   done
   if [ "$MODE" != "pr" ]; then
-    echo "ERRO: não foi possível publicar após 3 tentativas"; cat /tmp/push.err; exit 1
+    echo "ERRO: não foi possível publicar após 3 tentativas"; cat "$PUSH_ERR"; exit 1
   fi
 fi
 

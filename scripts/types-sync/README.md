@@ -14,9 +14,9 @@ Leia este README antes de alterar qualquer arquivo desta pasta.
 | `VITE_SUPABASE_PROJECT_ID` | já existe | Project-ref esperado. Se divergir do ref embutido em `SUPABASE_DB_URL`, nada é proposto. |
 | `TYPES_SYNC_PR_TOKEN` | não | PAT fine-grained (`contents:write`, `pull_requests:write`). Sem ele o workflow usa `GITHUB_TOKEN` e aprova os próprios checks com `actions:write`. |
 
-Divergência conhecida de project-ref neste repo: `supabase/config.toml` diz `trwgmplubeqxrxpncdgf`,
-`.env` diz `lmypcdfsrgfftzhxawao`. A automação não escolhe — ela confia nos secrets e falha se
-os dois discordarem.
+Project-ref: até o commit `0bdc3cb` o repo divergia (`supabase/config.toml` dizia `trwgmplubeqxrxpncdgf`
+e o `.env`, `lmypcdfsrgfftzhxawao`); hoje os dois dizem `lmypcdfsrgfftzhxawao`. A automação segue sem
+ref escrito no código — ela confia nos secrets e falha se os dois discordarem.
 
 ## Arquivos
 
@@ -24,12 +24,12 @@ os dois discordarem.
 |---|---|
 | `identidade-banco.mjs` | Extrai o project-ref da connection string sem exibir a credencial, confere contra `VITE_SUPABASE_PROJECT_ID`, força `sslmode=verify-full` com a CA pinada e decompõe a URL para o pgbouncer. |
 | `certs/supabase-prod-ca-2021.crt` | CA raiz do Supabase Cloud, pinada por SHA-256 e por fingerprint em `identidade-banco.mjs`. Trocar o arquivo sem trocar o pin reprova a execução. |
-| `gen-types.sh` | `supabase gen types typescript` contra o banco, atrás de um pgbouncer local. Aceita `--local` para introspectar um `supabase db start`. |
+| `gen-types.sh` | `supabase gen types typescript` contra o banco, atrás de um pgbouncer local (o caminho do proxy exige `pg_isready`). Aceita `--local` para introspectar um `supabase db start`. Só grava a saída se ela tiver `export type Database = {`: CLI que sai 0 com saída vazia ou com texto de erro termina em exit 1 e o arquivo de destino fica como estava. `SIGINT`/`SIGTERM`/`SIGHUP` encerram o script (exit 130/143/129) em vez de cair na próxima tentativa. |
 | `local-pg-proxy.mjs` | Escreve a config do pgbouncer loopback. Existe porque a CLI entrega a `--db-url` em texto puro a um container Docker, onde a credencial ficaria visível via `/proc` a processos irmãos do mesmo job. |
 | `install-postgresql-client.sh` | Instala `psql`/`pg_isready` dos repositórios oficiais do Ubuntu (ignora espelhos de terceiros do runner). |
 | `install-pgbouncer.sh` | Idem para o `pgbouncer`. |
-| `typecheck-ratchet.mjs` | **Gate 1**: roda `tsc --noEmit -p tsconfig.app.json` com o `types.ts` commitado e com o candidato; reprova só se o candidato introduzir erro novo. Erro que a `main` já tem nunca bloqueia o sync. Para medir ele troca o conteúdo de `src/integrations/supabase/types.ts` em disco e **restaura o conteúdo que encontrou** em qualquer saída, inclusive interrupção. |
-| `check-remocoes-destrutivas.mjs` | **Gate 2**: compara o inventário de objetos (`Tables`, `Views`, `Functions`, `Enums`, `CompositeTypes`) dos dois `types.ts` e bloqueia a remoção de objeto que `src/` ainda consome (`.from()`, `.rpc()`, `Tables<'x'>`, acesso indexado). Remoção sem consumidor passa com aviso. |
+| `typecheck-ratchet.mjs` | **Gate 1**: roda `tsc --noEmit -p tsconfig.app.json` com o `types.ts` commitado e com o candidato; reprova só se o candidato introduzir erro novo. Erro que a `main` já tem nunca bloqueia o sync. Se o `tsc` não concluir a medição (morto por sinal/OOM, exit fora de 0–2, exit ≠ 0 sem nenhuma linha `error TS`) ou se o tsconfig/`types.ts` do repo não existir, sai com `2` — nunca aprova sem ter medido. Para medir ele troca o conteúdo de `src/integrations/supabase/types.ts` em disco e **restaura o conteúdo que encontrou** em qualquer saída, inclusive interrupção. |
+| `check-remocoes-destrutivas.mjs` | **Gate 2**: compara o inventário de objetos (`Tables`, `Views`, `Functions`, `Enums`, `CompositeTypes`) dos dois `types.ts` e bloqueia a remoção de objeto que `src/` ainda consome (`.from()`, `.rpc()`, `Tables<'x'>`, acesso indexado, realtime com `table: 'x'`). Remoção sem consumidor passa com aviso. Não olha coluna nem valor de enum (isso é do Gate 1) nem `supabase/functions/`. |
 
 ## Uso manual
 

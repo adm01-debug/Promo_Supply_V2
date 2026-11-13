@@ -9,7 +9,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import crypto from 'node:crypto';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const GERADOR = path.resolve(path.dirname(new URL(import.meta.url).pathname), 'gerar.mjs');
 const w = (root, rel, text) => { const p = path.join(root, rel); fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, text); };
@@ -357,4 +358,299 @@ supabase.rpc('dashboard_rpc'); supabase.functions.invoke('dashboard-edge');`);
   assert.equal(orphan.orfa, true);
   assert.deepEqual(orphan.chamada_pelo_front, []);
   assert.deepEqual(orphan.chamada_por_edges, []);
+});
+
+// ---------------------------------------------------------------------------------------------
+// Regressões de VERDADE da saída: cada caso abaixo reproduz uma afirmação falsa que o gerador
+// publicava sobre este repositório (padrões reais de src/routes/AppRoutes.tsx, supabase/functions,
+// .github/workflows e scripts/) e falha sem a correção correspondente em gerar.mjs.
+// ---------------------------------------------------------------------------------------------
+const rodar = (cwd, args = [], env = {}) => spawnSync(process.execPath, [GERADOR, ...args], { cwd, encoding: 'utf8', env: { ...process.env, ...env } });
+const repoMinimo = (t, arquivos = {}) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ctx-ia-min-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  w(dir, 'package.json', JSON.stringify({ name: 'minimo', dependencies: { react: '18', 'react-router-dom': '6' } }));
+  w(dir, 'src/a.ts', 'export const a = 1;');
+  for (const [rel, texto] of Object.entries(arquivos)) w(dir, rel, texto);
+  return dir;
+};
+const lerSaida = (dir, nome, pasta = 'inventario/ia') => JSON.parse(fs.readFileSync(path.join(dir, pasta, nome), 'utf8'));
+
+test('rotas: filhas de rota-layout sem path herdam a proteção; fallback/errorElement não viram a tela; página Auth/Admin não é guarda', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, 'src/routes/AppRoutes.tsx', `import { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { Shell } from '@/components/layout/Shell';
+import { PageLoader } from '@/components/layout/PageLoader';
+import { ErrorPage } from '@/components/layout/ErrorPage';
+const Auth = lazy(() => import('@/pages/auth/Auth'));
+const Compras = lazy(() => import('@/pages/Compras'));
+const AdminPainel = lazy(() => import('@/pages/AdminPainel'));
+export function AppRoutes() {
+  return (<Routes>
+    <Route path="/auth" element={
+      <Suspense fallback={<PageLoader />}>
+        <Auth />
+      </Suspense>
+    } />
+    <Route element={<ProtectedRoute><Shell /></ProtectedRoute>}>
+      <Route path="/" element={<Navigate to="/compras" replace />} />
+      <Route path="/compras" element={<Compras />} />
+      <Route path="/pedidos">
+        <Route path=":id" element={<Compras />} />
+      </Route>
+    </Route>
+    <Route path="/vitrine" element={<Compras />} errorElement={<ErrorPage />} />
+    <Route path="/admin-aberto" element={<AdminPainel />} />
+  </Routes>);
+}`);
+    w(dir, 'src/components/layout/PageLoader.tsx', 'export const PageLoader = () => <i/>;');
+    w(dir, 'src/components/layout/ErrorPage.tsx', 'export const ErrorPage = () => <i/>;');
+    w(dir, 'src/pages/auth/Auth.tsx', 'export default function Auth() { return <form/>; }');
+    w(dir, 'src/pages/Compras.tsx', 'export default function Compras() { return <div/>; }');
+    w(dir, 'src/pages/AdminPainel.tsx', 'export default function AdminPainel() { return <div/>; }');
+    w(dir, 'src/components/layout/sidebarNav.ts', `export const sidebarGroups = [{ title: 'Principal', items: [{ id: 'dash', label: 'Dashboard', path: '/' }, { id: 'c', label: 'Compras', path: '/compras' }] }];`);
+  });
+  const r = read('rotas.json'); const by = Object.fromEntries(r.urls.map((u) => [u.caminho, u]));
+  assert.equal(by['/compras'].protegida, true, 'filha de <Route element={<ProtectedRoute>…}> sem path');
+  assert.equal(by['/'].protegida, true, 'redirect dentro do layout protegido');
+  assert.equal(by['/pedidos/:id'].protegida, true, 'neta herda pela pilha');
+  assert.equal(by['/auth'].componente, 'Auth', 'o fallback do Suspense não é a tela');
+  assert.equal(by['/auth'].arquivo, 'src/pages/auth/Auth.tsx');
+  assert.equal(by['/auth'].protegida, false, 'a tela de login não é protegida só por se chamar Auth');
+  assert.deepEqual(by['/auth'].wrappers, ['Suspense']);
+  assert.equal(by['/vitrine'].arquivo, 'src/pages/Compras.tsx', 'errorElement não é a tela');
+  assert.equal(by['/vitrine'].protegida, false, 'fora do layout protegido');
+  assert.equal(by['/admin-aberto'].protegida, false, 'página AdminPainel sem guarda não é protegida');
+  assert.deepEqual(read('ferramentas.json').permissoes.rotas_publicas, ['/admin-aberto', '/auth', '/vitrine']);
+  const menu = Object.fromEntries(r.menu.map((x) => [x.rotulo, x]));
+  assert.equal(menu.Dashboard.resolve_para, 'src/pages/Compras.tsx', 'item de menu para rota de redirect resolve para a tela final');
+  assert.deepEqual(read('baseline.json').alertas.menu_sem_destino, []);
+});
+
+test('edge functions: invoke com genérico/query string/template conta como chamada; pasta sem entrada não é edge; _test.ts do Deno é teste', (t) => {
+  const nomes = ['fn-generico', 'fn-aninhado', 'fn-query', 'fn-template', 'fn-interp'];
+  const read = isolatedFixture(t, (dir) => {
+    for (const n of nomes) w(dir, `supabase/functions/${n}/index.ts`, `Deno.serve(() => new Response('ok'));`);
+    w(dir, 'src/lib/chamadas.ts', `supabase.functions.invoke<unknown>('fn-generico', { body: {} });
+supabase.functions.invoke<Envelope<T>>('fn-aninhado');
+supabase.functions.invoke("fn-query?history=true");
+supabase.functions.invoke<Payload>(
+  \`fn-template?alert_id=\${encodeURIComponent(id)}\`,
+  { method: 'GET' },
+);
+supabase.functions.invoke(\`fn-interp\${dispatch ? '?x=1' : ''}\`);`);
+    w(dir, 'supabase/functions/tests/integration_suite.ts', `Deno.test('x', () => {});`);
+    w(dir, 'supabase/functions/orphan-fn/rls_test.ts', `Deno.env.get('SO_DO_TESTE'); Deno.test('x', () => {});`);
+  });
+  const e = read('edge-functions.json'); const by = Object.fromEntries(e.edges.map((x) => [x.nome, x]));
+  for (const n of nomes) { assert.deepEqual(by[n].chamada_pelo_front, ['src/lib/chamadas.ts'], n); assert.equal(by[n].orfa, false, n); }
+  assert.deepEqual(read('baseline.json').alertas.edges_chamadas_sem_pasta, [], 'nome da função sem a query string');
+  assert.equal(by.tests, undefined, 'supabase/functions/tests/ só tem suíte: não é função publicável');
+  assert.equal(by['orphan-fn'].arquivos, 1, 'rls_test.ts não é código da função');
+  assert.equal(by['orphan-fn'].testes, 1);
+  assert.deepEqual(by['orphan-fn'].env, [], 'env lida só pelo teste não é env da função');
+  assert.ok(read('testes.json').arquivos.some((x) => x.arquivo === 'supabase/functions/orphan-fn/rls_test.ts'));
+  assert.ok(!read('ferramentas.json').env.usadas_nas_edges.includes('SO_DO_TESTE'));
+});
+
+test('fatos da aplicação não saem de ferramentas nem de testes: rotas HTTP, hooks, ORM, flags, hosts, papéis, buckets e env', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    // Script com trechos de código em string, como scripts/ai-context/cenarios.mjs deste repo.
+    w(dir, 'scripts/cenarios-ferramenta.mjs', `const A = "app.get('/rota-falsa', h); export const useFalso = () => 1; pgTable('tabela_falsa', { id: uuid('id') }); isFeatureEnabled('flag-falsa'); fetch('https://host-falso.ferramenta.io/x'); supabase.storage.from('bucket-falso'); supabase.channel('canal-falso'); if (role === 'papelfalso') {}";
+const B = "@Entity('entidade_falsa')\\nexport class E {}";`);
+    w(dir, 'scripts/modelos.py', 'class ModeloFalso(BaseModel):\n    pass\n');
+    w(dir, 'src/__tests__/so-teste.test.ts', `process.env.SO_DO_TESTE_FRONT; fetch('https://host-de-teste.invalido.io/x'); isFeatureEnabled('flag-de-teste'); if (role === 'papelteste') {} it('x', () => {});`);
+    w(dir, 'src/lib/vite.ts', 'export const dev = import.meta.env.DEV && import.meta.env.MODE;');
+  });
+  assert.ok(!read('rotas.json').rotas_http_backend.some((x) => x.caminho === '/rota-falsa'));
+  assert.deepEqual(read('rotas.json').rotas_http_backend.map((x) => x.arquivo).sort(), ['backend/app.py', 'server/api.ts', 'server/api.ts']);
+  assert.deepEqual(read('hooks.json').hooks.map((h) => h.arquivo), ['src/hooks/useContacts.ts']);
+  const banco = read('banco.json');
+  assert.deepEqual(banco.fonte, ['python-models', 'src/integrations/supabase/types.ts', 'supabase/migrations'], 'sem drizzle/typeorm inventados');
+  for (const falsa of ['tabela_falsa', 'entidade_falsa', 'ModeloFalso']) assert.equal(banco.tabelas[falsa], undefined, falsa);
+  assert.ok(!banco.buckets.some((b) => b.nome === 'bucket-falso'));
+  const f = read('ferramentas.json');
+  assert.deepEqual(f.feature_flags.flags, [{ flag: 'novo-inbox', arquivos: 1 }]);
+  assert.deepEqual(f.integracoes.hosts_externos.map((h) => h.host), ['api.resend.com']);
+  assert.deepEqual(f.integracoes.realtime, []);
+  assert.deepEqual(f.permissoes.papeis_no_codigo, [{ papel: 'admin', ocorrencias: 2 }]);
+  assert.deepEqual(f.env.usadas_no_front, ['VITE_ANON', 'VITE_SUPABASE_URL'], 'sem env de teste e sem embutidos do Vite (DEV/MODE)');
+  assert.deepEqual(f.env.usadas_mas_nao_declaradas, ['VITE_ANON']);
+  assert.ok(read('scripts.json').scripts.some((s) => s.arquivo === 'scripts/cenarios-ferramenta.mjs'), 'o script continua no inventário de scripts');
+});
+
+test('storage.from (também quebrado em duas linhas) é bucket, não tabela; role ARIA não é papel', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, 'src/components/upload/Upload.tsx', `export const Upload = () => {
+  supabase.storage.from('avatars').upload('a', f);
+  supabase.storage
+    .from('comprovantes')
+    .upload('a', f);
+  return <div role="alert"><span role='status' /><Gate role="gerente" /></div>;
+};`);
+  });
+  const b = read('banco.json');
+  assert.deepEqual(read('baseline.json').alertas.tabelas_usadas_sem_definicao, [], 'bucket não vira "tabela sem definição"');
+  assert.equal(b.tabelas.comprovantes, undefined);
+  assert.equal(b.buckets.find((x) => x.nome === 'comprovantes').usado_em, 1);
+  assert.equal(b.buckets.find((x) => x.nome === 'avatars').usado_em, 1);
+  assert.deepEqual(read('componentes.json').componentes.find((c) => c.arquivo === 'src/components/upload/Upload.tsx').tabelas, []);
+  assert.deepEqual(read('ferramentas.json').permissoes.papeis_no_codigo.map((p) => p.papel), ['admin', 'gerente']);
+});
+
+test('workflows: secrets só de expressão real, comentário ignorado, `bun run <script>` e import inline contam como uso', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, '.github/workflows/guards.yml', `name: Guards
+on:
+  push:
+    branches: [main]
+jobs:
+  j:
+    runs-on: ubuntu-latest
+    steps:
+      # \`\${{ secrets.COMENTADO }}\` aqui seria pior
+      # - run: node scripts/comentado.mjs
+      - run: bun run scripts/rls-audit.ts
+      - run: node scripts/check-bundle-secrets.mjs --dist dist
+      - run: |
+          node --input-type=module -e "import { i } from './scripts/identidade.mjs';"
+        env:
+          T: \${{ secrets.REAL_TOKEN }}
+`);
+    for (const s of ['rls-audit.ts', 'check-bundle-secrets.mjs', 'identidade.mjs', 'comentado.mjs']) w(dir, `scripts/${s}`, '// Faz algo.\n');
+  });
+  const wf = read('ferramentas.json').workflows.find((x) => x.nome === 'Guards');
+  assert.deepEqual(wf.secrets, ['REAL_TOKEN'], 'nem o nome do arquivo *-secrets.mjs nem o comentário viram secret');
+  assert.deepEqual(wf.scripts_usados, ['scripts/check-bundle-secrets.mjs', 'scripts/identidade.mjs', 'scripts/rls-audit.ts']);
+  const s = Object.fromEntries(read('scripts.json').scripts.map((x) => [x.arquivo, x.workflows]));
+  assert.deepEqual(s['scripts/rls-audit.ts'], ['guards.yml']);
+  assert.deepEqual(s['scripts/identidade.mjs'], ['guards.yml']);
+  assert.deepEqual(s['scripts/comentado.mjs'], []);
+  assert.ok(!read('ferramentas.json').env.secrets_em_workflows.includes('mjs'));
+});
+
+test('componentes: export default embrulhado em HOC (memo, withX) continua sendo componente com o nome real', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, 'src/pages/dashboard/Painel.tsx', `import { memo } from 'react';\nfunction Painel() { return <div/>; }\nexport default memo(Painel);`);
+    w(dir, 'src/pages/dashboard/Executivo.tsx', `function Executivo() { return <div/>; }\nexport default withModuleErrorBoundary(Executivo, 'dashboard');`);
+    w(dir, 'src/pages/dashboard/Anonimo.tsx', `export default memo(() => <div/>);`);
+    w(dir, 'src/hooks/useD.ts', `export default function useD(props) { return props; }`);
+  });
+  const by = Object.fromEntries(read('componentes.json').componentes.map((c) => [c.arquivo, c]));
+  assert.equal(by['src/pages/dashboard/Painel.tsx'].export_default, 'Painel');
+  assert.equal(by['src/pages/dashboard/Executivo.tsx'].export_default, 'Executivo');
+  assert.equal(by['src/pages/dashboard/Anonimo.tsx'], undefined, 'sem nome exportado não entra como componente nomeado');
+  assert.deepEqual(read('hooks.json').hooks.find((h) => h.arquivo === 'src/hooks/useD.ts').hooks_exportados, ['useD'], 'função default nomeada não captura o parâmetro');
+});
+
+test('testes: pasta tests-e2e/ na raiz é e2e, tem rótulo próprio e não aparece como órfã de produção', (t) => {
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, 'tests-e2e/login.spec.ts', `import { f } from './fixtures';\ntest('x', async () => {});`);
+    w(dir, 'tests-e2e/fixtures.ts', 'export const f = 1;');
+    w(dir, 'src/pages/test-drive/TestDrive.tsx', 'export const TestDrive = () => <div/>;');
+  });
+  const tst = read('testes.json'); const tipo = Object.fromEntries(tst.arquivos.map((x) => [x.arquivo, x.tipo]));
+  assert.equal(tipo['tests-e2e/login.spec.ts'], 'e2e');
+  assert.equal(tipo['tests-e2e/fixtures.ts'], 'e2e');
+  assert.equal(tst.por_tipo.e2e, 2);
+  assert.ok(tst.onde_ficam.some((x) => x.padrao === 'tests-e2e/' && x.arquivos === 2));
+  assert.ok(!read('grafo.json').orfaos.includes('tests-e2e/fixtures.ts'));
+  assert.ok(read('componentes.json').componentes.some((c) => c.arquivo === 'src/pages/test-drive/TestDrive.tsx'), 'pasta test-* fora da raiz continua sendo aplicação');
+});
+
+test('convenções: alias presumido só é publicado se algum import o usa; tsconfig JSONC (comentário + vírgula final) é lido', (t) => {
+  const read = isolatedFixture(t, () => {});
+  assert.deepEqual(read('convencoes.json').alias_imports, { '(raiz)': { '@/': 'src/' } }, '`~/` nunca foi declarado nem usado');
+  const dir = repoMinimo(t, {
+    'tsconfig.json': '{\n  // gerado pelo tsc --init\n  "compilerOptions": {\n    /* alias */\n    "paths": { "#app/*": ["./src/app/*"], },\n  },\n}\n',
+    'src/app/x.ts': 'export const x = 1;',
+    'src/y.ts': `import { x } from '#app/x';\nexport const y = x;`,
+  });
+  assert.equal(rodar(dir, ['--quiet']).status, 0);
+  assert.deepEqual(lerSaida(dir, 'grafo-arestas.json').arestas, { 'src/y.ts': ['src/app/x.ts'] });
+  assert.deepEqual(lerSaida(dir, 'convencoes.json').alias_imports, { '(raiz)': { '#app/': 'src/app/' } });
+  const semTsconfig = repoMinimo(t, { 'src/b.ts': `import { a } from '@/a';\nexport const b = a;` });
+  assert.equal(rodar(semTsconfig, ['--quiet']).status, 0);
+  assert.deepEqual(lerSaida(semTsconfig, 'convencoes.json').alias_imports, { '(raiz)': { '@/': 'src/' } }, 'presumido e usado: publicado');
+});
+
+test('CLI: argumento desconhecido, flag sem valor, raiz inexistente e --out na raiz saem com exit 2 sem escrever nada', (t) => {
+  const dir = repoMinimo(t);
+  const casos = [
+    [['--quiet', '--outt', 'saida'], /argumento desconhecido: --outt/],
+    [['--quiet', '--out'], /--out exige um valor/],
+    [['--quiet', '--out', ''], /--out exige um valor/],
+    [['--out', '--quiet'], /--out exige um valor/],
+    [['--quiet', '--root'], /--root exige um valor/],
+    [['--quiet', '--root', path.join(dir, 'nao-existe')], /não é um diretório/],
+    [['--quiet', '--root', path.join(dir, 'package.json')], /não é um diretório/],
+    [['--quiet', '--out', '.'], /não pode ser a raiz/],
+  ];
+  for (const [args, erro] of casos) {
+    const p = rodar(dir, args);
+    assert.equal(p.status, 2, args.join(' '));
+    assert.match(p.stderr, erro, args.join(' '));
+    assert.match(p.stderr, /Uso: node scripts\/ai-context\/gerar\.mjs/);
+    assert.deepEqual(fs.readdirSync(dir).sort(), ['package.json', 'src'], `nada escrito: ${args.join(' ')}`);
+  }
+  const ajuda = rodar(dir, ['--help']);
+  assert.equal(ajuda.status, 0); assert.match(ajuda.stdout, /^Uso: /);
+  const fora = path.join(dir, '..', `${path.basename(dir)}-fora`);
+  t.after(() => fs.rmSync(fora, { recursive: true, force: true }));
+  assert.equal(rodar(dir, ['--quiet', '--out', fora]).status, 0, '--out absoluto fora do repo');
+  assert.deepEqual(fs.readdirSync(dir).sort(), ['package.json', 'src'], 'saída fora do repo não suja o repo');
+  assert.equal(rodar(dir, ['--quiet', '--out', 'a/b/c']).status, 0, '--out aninhado inexistente é criado');
+  const m = lerSaida(dir, 'manifest.json', 'a/b/c');
+  assert.deepEqual(Object.keys(m.arquivos).sort(), fs.readdirSync(path.join(dir, 'a/b/c')).filter((f) => f !== 'manifest.json').sort(), 'manifest lista exatamente o que foi escrito');
+  for (const [nome, hash] of Object.entries(m.arquivos)) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(dir, 'a/b/c', nome))).digest('hex').slice(0, 16), hash, nome);
+});
+
+test('config inválida fica registrada em erros (não some em silêncio); arquivo acima de maxFileMB entra no alerta', (t) => {
+  const dir = repoMinimo(t, { 'ai-context.config.json': '{ "out": ' });
+  const p = rodar(dir, []);
+  assert.equal(p.status, 0, 'continua gerando com os padrões');
+  assert.match(p.stdout, /ai-context\.config\.json inválido/);
+  const erros = lerSaida(dir, 'manifest.json').erros;
+  assert.equal(erros.length, 1); assert.equal(erros[0].secao, 'config');
+  assert.match(fs.readFileSync(path.join(dir, 'inventario/ia/INDEX.md'), 'utf8'), /1 seção\(ões\) falharam/);
+  for (const invalido of ['null', '[]', '"texto"']) { w(dir, 'ai-context.config.json', invalido); assert.equal(rodar(dir, ['--quiet']).status, 0, invalido); assert.equal(lerSaida(dir, 'manifest.json').erros[0].secao, 'config', invalido); }
+  const grande = repoMinimo(t, { 'ai-context.config.json': JSON.stringify({ maxFileMB: 0.001 }), 'src/grande.ts': `export const g = '${'x'.repeat(5000)}';` });
+  assert.equal(rodar(grande, ['--quiet']).status, 0);
+  assert.deepEqual(lerSaida(grande, 'baseline.json').alertas.arquivos_nao_lidos_por_tamanho, ['src/grande.ts']);
+  assert.deepEqual(lerSaida(grande, 'manifest.json').erros, []);
+});
+
+test('determinismo: mesma saída em qualquer locale e em qualquer dia (janelas do git contam da data do HEAD)', (t) => {
+  const dir = repoMinimo(t);
+  for (const nome of ['aa', 'z', 'Ab', 'ab', 'B']) w(dir, `src/lib/${nome}.ts`, `export const v_${nome} = 1;`);
+  // HEAD de 400 dias atrás e um commit 3 dias antes dele: com a janela presa ao relógio nada "mudou em 7 dias".
+  const commit = (dias, msg) => { const d = new Date(Date.now() - dias * 86400e3).toISOString(); execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', msg], { cwd: dir, env: { ...process.env, GIT_AUTHOR_DATE: d, GIT_COMMITTER_DATE: d } }); };
+  execFileSync('git', ['init', '-q'], { cwd: dir });
+  execFileSync('git', ['add', 'package.json'], { cwd: dir }); commit(500, 'feat: fora da janela de 90 dias');
+  execFileSync('git', ['add', 'src/a.ts'], { cwd: dir }); commit(403, 'feat: três dias antes do HEAD');
+  execFileSync('git', ['add', '-A'], { cwd: dir }); commit(400, 'feat: HEAD antigo');
+  assert.equal(rodar(dir, ['--quiet'], { LC_ALL: 'C', LANG: 'C' }).status, 0);
+  const g = lerSaida(dir, 'baseline.json').git;
+  assert.equal(g.arquivos_mudados_7d, 6, 'src/a.ts + 5 de src/lib, contados a partir da data do HEAD');
+  assert.deepEqual(g.arquivos_mais_mudados_90d.map((x) => x.arquivo).sort(), ['src/a.ts', 'src/lib/Ab.ts', 'src/lib/B.ts', 'src/lib/aa.ts', 'src/lib/ab.ts', 'src/lib/z.ts'], 'package.json (100 dias antes do HEAD) fica fora');
+  const emC = lerSaida(dir, 'manifest.json').arquivos;
+  assert.deepEqual(lerSaida(dir, 'logica.json').arquivos.map((x) => path.basename(x.arquivo)), ['aa.ts', 'ab.ts', 'Ab.ts', 'B.ts', 'z.ts']);
+  const sonda = spawnSync(process.execPath, ['-e', 'console.log(new Intl.Collator().resolvedOptions().locale)'], { encoding: 'utf8', env: { ...process.env, LC_ALL: 'da_DK.UTF-8', LANG: 'da_DK.UTF-8' } });
+  if (!/^da/.test(sonda.stdout)) { t.diagnostic('Node sem ICU para da-DK: comparação entre locales pulada'); return; }
+  assert.equal(rodar(dir, ['--quiet'], { LC_ALL: 'da_DK.UTF-8', LANG: 'da_DK.UTF-8' }).status, 0);
+  assert.deepEqual(lerSaida(dir, 'manifest.json').arquivos, emC, 'bytes idênticos em LC_ALL=C e LC_ALL=da_DK.UTF-8 ("aa" depois de "z" em dinamarquês)');
+});
+
+test('alerta de segredos: credencial fixa sem prefixo conhecido é apontada por arquivo:linha, sem o valor; chave de cache e chave pública não', (t) => {
+  // Valor montado em runtime para este arquivo de teste não casar o próprio detector no repo real.
+  const valor = ['5f3a9c1e', '7b2d4e6f', '8a0b1c2d', '3e4f5a6b', '7c8d9e0f'].join('');
+  const read = isolatedFixture(t, (dir) => {
+    w(dir, 'supabase/functions/send-email/chave.ts', `// helper\nconst ACCESS_KEY = "${valor}";\nexport const STORAGE_KEY = 'app-dashboard-layout-settings-persisted-v2';\n`);
+    w(dir, 'src/lib/cache.ts', `export const CACHE_KEY = 'promo-supply-dashboard-layout-settings';\nexport const mockApiToken = "${valor}";\nconst vapidPublicKey = '${valor}';\n`);
+  });
+  const baseline = read('baseline.json');
+  assert.deepEqual(baseline.alertas.possiveis_segredos_no_codigo, ['supabase/functions/send-email/chave.ts:2']);
+  assert.ok(!JSON.stringify(baseline).includes(valor), 'o valor nunca entra na saída');
 });

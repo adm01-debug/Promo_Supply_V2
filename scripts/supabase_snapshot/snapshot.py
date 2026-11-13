@@ -7,7 +7,8 @@ completo, determinístico e sem dados pessoais em Markdown/JSON/SQL, pensado
 para ser lido por agentes de IA antes de planejar ou executar tarefas.
 
 Garantias:
-  * Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout).
+  * Somente leitura no banco: cada consulta roda em transação READ ONLY com
+    statement_timeout/lock_timeout locais (nada é configurado na sessão).
   * Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.
   * Saída estrutural determinística (ordenada, sem timestamps, sem métricas
     voláteis) -> o git só registra commit quando algo REAL mudou.
@@ -19,7 +20,8 @@ Garantias:
   * CHANGELOG.md recebe um diff semântico por categoria a cada mudança.
 
 Variáveis de ambiente:
-  SUPABASE_DB_URL            (obrigatório) postgres://... (pooler em SESSION mode, ou direta)
+  SUPABASE_DB_URL            (obrigatório) postgres://... (pooler em SESSION mode, ou direta);
+                             senha com @ : / % ? # precisa de percent-encoding
   SUPABASE_PROJECT_REF       (opcional)   ref do projeto -> habilita Management API
   SUPABASE_ACCESS_TOKEN      (opcional)   personal access token da Management API
   SNAPSHOT_DIR               (default docs/supabase)
@@ -178,8 +180,39 @@ def prepare_output_directory() -> None:
     (OUT / OUTPUT_MARKER).write_text(OUTPUT_MARKER_CONTENT, encoding="utf-8")
 
 
+def mask_dsn(text: str) -> str:
+    """Tira de uma mensagem a connection string e qualquer pedaço da credencial.
+
+    libpq/psycopg ecoam trechos da URL quando a senha tem @ / % sem percent-encoding, e
+    subprocess.TimeoutExpired carrega o comando inteiro (com a URL) na mensagem."""
+    url = DB_URL
+    if not url:
+        return text
+    text = text.replace(url, "[REDACTED_DSN]")
+    scheme = url.find("://")
+    if scheme >= 0:
+        lo, hi = url.find(":", scheme + 3) + 1, url.rfind("@")
+    else:  # formato chave=valor
+        found = re.search(r"(?i)\bpassword\s*=\s*('(?:[^'\\]|\\.)*'|\S*)", url)
+        lo, hi = found.span(1) if found else (0, 0)
+    if not 0 < lo < hi:
+        return text  # sem senha na URL
+    # Todo trecho da URL que encosta na senha: longo em qualquer lugar, curto só entre aspas.
+    for size in range(len(url) - 1, 0, -1):
+        for start in range(max(0, lo - size + 1), min(hi, len(url) - size + 1)):
+            piece = url[start:start + size]
+            if piece not in text:
+                continue
+            if size >= 4:
+                text = text.replace(piece, "[REDACTED]")
+            else:
+                for quote in "'\"":
+                    text = text.replace(f"{quote}{piece}{quote}", f"{quote}[REDACTED]{quote}")
+    return text
+
+
 def record_error(section: str, err: Exception | str) -> None:
-    text = str(err).strip().splitlines()[0] if str(err).strip() else repr(err)
+    text = mask_dsn(str(err).strip().splitlines()[0] if str(err).strip() else repr(err))
     ERRORS.append({"section": section, "error": text[:500]})
     log(f"ERRO em {section}: {text[:300]}")
 
@@ -256,7 +289,9 @@ def approx(n: Any) -> str:
 
 
 def slug(text: str) -> str:
-    return re.sub(r"[^A-Za-z0-9_.-]+", "_", text).strip("_") or "_"
+    # strip também de ".": nome começando por ponto viraria arquivo oculto (o upload do workflow o descarta)
+    # e um schema chamado ".." gravaria fora de tables/.
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", text).strip("_.") or "_"
 
 
 _SLUG_SEEN: dict[str, str] = {}
@@ -272,6 +307,7 @@ def uslug(text: str, scope: str = "") -> str:
 
 def write(path: pathlib.Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    content = scrub(content)
     path.write_text(content if content.endswith("\n") else content + "\n", encoding="utf-8")
 
 
@@ -304,16 +340,19 @@ def group(rows, keyfn):
 SCRUB_RULES: list[tuple[re.Pattern, str]] = [
     # JWT (3 partes) — anon/service_role keys do Supabase
     (re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{5,}"), "[REDACTED_JWT]"),
-    # chaves novas do Supabase
-    (re.compile(r"sb_(?:secret|publishable)_[A-Za-z0-9_-]{8,}"), "[REDACTED_KEY]"),
-    # Authorization: Bearer <token>  /  apikey: <token>
-    (re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]{16,}"), r"\1[REDACTED]"),
+    # chaves novas do Supabase — o prefixo sozinho também sai: o guard do contexto.yml aborta a
+    # publicação só de ver `sb_secret_`/`sb_publishable_` (ex.: `LIKE 'sb_secret_%'` num corpo de função)
+    (re.compile(r"sb_(?:secret|publishable)_[A-Za-z0-9_-]*"), "[REDACTED_KEY]"),
+    # Authorization: Bearer <token> / Basic <base64 de user:senha>  /  apikey: <token>
+    (re.compile(r"(?i)((?:bearer|basic)\s+)[A-Za-z0-9._~+/=-]{16,}"), r"\1[REDACTED]"),
     # valor precisa parecer token: >= 16 chars, sem espaço, com pelo menos um dígito (evita redigir prosa)
     (re.compile(r"""(?i)((?:apikey|api_key|x-api-key|authorization|token|secret|password|passwd|service_role_key|anon_key)\s*["']?\s*[:=]\s*["']?)(?=[^"'\s,;)}]*\d)[^"'\s,;)}]{16,}"""), r"\1[REDACTED]"),
-    # PASSWORD 'x' em DDL de role
-    (re.compile(r"(?i)(password\s+)'[^']*'"), r"\1'[REDACTED]'"),
-    # DSN com senha
-    (re.compile(r"(\w+://[^/\s:@]+:)[^@\s]+(@)"), r"\1[REDACTED]\2"),
+    # PASSWORD 'x' em DDL de role — também dentro de SQL dinâmico (EXECUTE '... PASSWORD ''x''')
+    (re.compile(r"(?i)(password\s+)''(?!')(?:[^']|'''')*''"), r"\1''[REDACTED]''"),
+    (re.compile(r"(?i)(password\s+)'(?!')(?:[^']|'')*'"), r"\1'[REDACTED]'"),
+    # DSN com senha. Usuário e senha saem juntos: `user:[REDACTED]@` ainda casaria com o guard de
+    # segredos do contexto.yml (`postgres://...:...@`) e abortaria toda publicação.
+    (re.compile(r"(\w+://)[^/\s:@]+:[^@\s]+(@)"), r"\1[REDACTED]\2"),
     # chaves de provedores comuns
     (re.compile(r"\b(?:sk-[A-Za-z0-9_-]{20,}|sk_live_[A-Za-z0-9]{10,}|sk_test_[A-Za-z0-9]{10,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,})\b"), "[REDACTED_KEY]"),
 ]
@@ -336,13 +375,21 @@ def scrub_value(v: Any) -> Any:
     return v
 
 
+# Somente leitura e prazos valem por transação, nunca por sessão: num pooler em transaction mode um
+# `SET` de sessão fica na conexão do servidor e passa a valer para o próximo cliente do pool
+# (as escritas do app falhariam com "cannot execute ... in a read-only transaction").
+TX_GUARD = "SET TRANSACTION READ ONLY; SET LOCAL statement_timeout = '90s'; SET LOCAL lock_timeout = '5s'"
+
+
 def q(conn: psycopg.Connection, sql: str, params: tuple | None = None) -> list[dict]:
     # params=None -> psycopg não interpreta '%' como placeholder (LIKE 'pg_%' funciona sem escapar).
     # Todo texto que sai do banco passa pelo scrub: pg_cron chamando edge function com service_role no
     # header, migration com senha, trigger http_request com apikey — tudo isso existe na prática.
-    with conn.cursor(row_factory=dict_row) as cur:
-        cur.execute(sql, params or None)
-        return [{k: scrub_value(v) for k, v in dict(r).items()} for r in cur.fetchall()]
+    with conn.transaction():
+        conn.execute(TX_GUARD)
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(sql, params or None)
+            return [{k: scrub_value(v) for k, v in dict(r).items()} for r in cur.fetchall()]
 
 
 def has_ext(conn, name: str) -> bool:
@@ -377,9 +424,12 @@ def section(name: str, volatile: bool = False):
 
 @section("server")
 def get_server(conn):
+    # lower(): o nome no catálogo é "TimeZone". reset_val: `setting` devolveria os 90s que o próprio
+    # coletor aplica em cada transação (TX_GUARD), não o statement_timeout configurado no banco.
     rows = q(conn, """
-        SELECT name, setting FROM pg_settings
-        WHERE name IN ('server_version','max_connections','timezone','statement_timeout','idle_in_transaction_session_timeout',
+        SELECT lower(name) AS name, CASE WHEN name = 'statement_timeout' THEN reset_val ELSE setting END AS setting
+        FROM pg_settings
+        WHERE lower(name) IN ('server_version','max_connections','timezone','statement_timeout','idle_in_transaction_session_timeout',
                        'shared_buffers','work_mem','maintenance_work_mem','max_wal_size','log_min_duration_statement',
                        'default_transaction_isolation','wal_level','max_worker_processes','max_parallel_workers')
         ORDER BY name""")
@@ -444,9 +494,13 @@ def get_constraints(conn):
                CASE con.contype WHEN 'p' THEN 'PRIMARY KEY' WHEN 'f' THEN 'FOREIGN KEY' WHEN 'u' THEN 'UNIQUE'
                     WHEN 'c' THEN 'CHECK' WHEN 'x' THEN 'EXCLUDE' ELSE con.contype::text END AS type,
                pg_get_constraintdef(con.oid, true) AS definition,
-               ARRAY(SELECT a.attname FROM unnest(con.conkey) k JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = k) AS columns,
+               -- ORDER BY k.ord: sem ele as colunas saem na ordem física da tabela e uma FK (c, a) -> (x, y)
+               -- aparece como (a, c) -> (x, y), pareando as colunas erradas.
+               ARRAY(SELECT a.attname FROM unnest(con.conkey) WITH ORDINALITY k(attnum, ord)
+                     JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = k.attnum ORDER BY k.ord) AS columns,
                fn.nspname AS ref_schema, fc.relname AS ref_table,
-               ARRAY(SELECT a.attname FROM unnest(con.confkey) k JOIN pg_attribute a ON a.attrelid = con.confrelid AND a.attnum = k) AS ref_columns,
+               ARRAY(SELECT a.attname FROM unnest(con.confkey) WITH ORDINALITY k(attnum, ord)
+                     JOIN pg_attribute a ON a.attrelid = con.confrelid AND a.attnum = k.attnum ORDER BY k.ord) AS ref_columns,
                CASE con.confdeltype WHEN 'a' THEN 'NO ACTION' WHEN 'r' THEN 'RESTRICT' WHEN 'c' THEN 'CASCADE'
                     WHEN 'n' THEN 'SET NULL' WHEN 'd' THEN 'SET DEFAULT' END AS on_delete,
                CASE con.confupdtype WHEN 'a' THEN 'NO ACTION' WHEN 'r' THEN 'RESTRICT' WHEN 'c' THEN 'CASCADE'
@@ -479,6 +533,12 @@ def get_indexes(conn):
         ORDER BY 1, 2, 3""")
 
 
+# reloptions guarda o booleano como foi escrito: `security_invoker = on` (forma da doc do Postgres),
+# `true`, `yes`, `1` e seus prefixos valem o mesmo. Comparar só com "true" acusava view correta.
+SECURITY_INVOKER_ON = ("EXISTS (SELECT 1 FROM unnest(c.reloptions) o "
+                       "WHERE o ~* '^security_invoker=(t|tr|tru|true|y|ye|yes|on|1)$')")
+
+
 @section("views")
 def get_views(conn):
     return q(conn, f"""
@@ -488,7 +548,7 @@ def get_views(conn):
                c.reloptions AS options, pg_get_userbyid(c.relowner) AS owner,
                obj_description(c.oid, 'pg_class') AS comment,
                CASE WHEN c.relkind = 'm' THEN c.relispopulated END AS populated,
-               (c.relkind = 'v' AND coalesce(array_to_string(c.reloptions, ','), '') ILIKE '%security_invoker=true%') AS security_invoker,
+               (c.relkind = 'v' AND {SECURITY_INVOKER_ON}) AS security_invoker,
                ARRAY(SELECT DISTINCT dn.nspname || '.' || dc.relname
                      FROM pg_depend d JOIN pg_rewrite r ON r.oid = d.objid
                      JOIN pg_class dc ON dc.oid = d.refobjid JOIN pg_namespace dn ON dn.oid = dc.relnamespace
@@ -602,20 +662,26 @@ def get_sequences(conn):
 @section("grants")
 def get_grants(conn):
     sys_roles = ", ".join("'" + r + "'" for r in sorted(SYSTEM_ROLES))
+    # ACL direto do catálogo. information_schema.role_table_grants só mostra grants em que quem consulta
+    # é membro do grantor/grantee: com o role de leitura do README a lista vinha vazia, sem erro.
+    grantee = "CASE WHEN a.grantee = 0 THEN 'PUBLIC' ELSE pg_get_userbyid(a.grantee) END"
+    table_acl = "aclexplode(COALESCE(c.relacl, acldefault('r', c.relowner)))"
     tables = q(conn, f"""
-        SELECT table_schema AS schema, table_name AS "table", grantee,
-               string_agg(privilege_type, ', ' ORDER BY privilege_type) AS privileges
-        FROM information_schema.role_table_grants
-        WHERE grantee NOT IN ({sys_roles}) AND ({excluded_sql('table_schema')} OR table_schema IN ('storage'))
+        SELECT n.nspname AS schema, c.relname AS "table", {grantee} AS grantee,
+               string_agg(DISTINCT a.privilege_type, ', ' ORDER BY a.privilege_type) AS privileges
+        FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace CROSS JOIN LATERAL {table_acl} a
+        WHERE c.relkind IN ('r','p','v','f') AND {grantee} NOT IN ({sys_roles})
+          AND ({excluded_sql()} OR n.nspname IN ('storage'))
         GROUP BY 1, 2, 3 ORDER BY 1, 2, 3""")
     columns = q(conn, f"""
-        SELECT table_schema AS schema, table_name AS "table", column_name AS "column", grantee,
-               string_agg(privilege_type, ', ' ORDER BY privilege_type) AS privileges
-        FROM information_schema.column_privileges cp
-        WHERE grantee NOT IN ({sys_roles}) AND {excluded_sql('table_schema')}
-          AND NOT EXISTS (SELECT 1 FROM information_schema.role_table_grants g
-                          WHERE g.table_schema = cp.table_schema AND g.table_name = cp.table_name
-                            AND g.grantee = cp.grantee AND g.privilege_type = cp.privilege_type)
+        SELECT n.nspname AS schema, c.relname AS "table", att.attname AS "column", {grantee} AS grantee,
+               string_agg(DISTINCT a.privilege_type, ', ' ORDER BY a.privilege_type) AS privileges
+        FROM pg_attribute att JOIN pg_class c ON c.oid = att.attrelid JOIN pg_namespace n ON n.oid = c.relnamespace
+        CROSS JOIN LATERAL aclexplode(att.attacl) a
+        WHERE att.attnum > 0 AND NOT att.attisdropped AND c.relkind IN ('r','p','v','f')
+          AND {grantee} NOT IN ({sys_roles}) AND {excluded_sql()}
+          AND NOT EXISTS (SELECT 1 FROM {table_acl} t
+                          WHERE t.grantee = a.grantee AND t.privilege_type = a.privilege_type)
         GROUP BY 1, 2, 3, 4 ORDER BY 1, 2, 3, 4""")
     sequences = q(conn, f"""
         SELECT n.nspname AS schema, c.relname AS sequence, r.rolname AS grantee,
@@ -710,7 +776,10 @@ def get_vault(conn):
 def get_foreign(conn):
     return q(conn, """
         SELECT s.srvname AS name, w.fdwname AS wrapper,
-               ARRAY(SELECT regexp_replace(o, '^(password|secret|token|key|api_key|service_key)=.*', '\\1=[REDACTED]', 'i')
+               -- Casa pelo trecho do nome: aws_secret_access_key, sa_key, api_token, client_secret e
+               -- conn_string também carregam credencial e não começam por uma das palavras.
+               ARRAY(SELECT regexp_replace(o, '^([^=]*(password|passwd|secret|token|key|credential|conn_string|connection_string|dsn)[^=]*)=.*',
+                                           '\\1=[REDACTED]', 'i')
                      FROM unnest(s.srvoptions) o) AS options
         FROM pg_foreign_server s JOIN pg_foreign_data_wrapper w ON w.oid = s.srvfdw ORDER BY 1""")
 
@@ -750,11 +819,14 @@ def get_lints(conn):
                     "detail": "Sem chave primária: Realtime/replicação e updates por linha ficam frágeis."})
     for r in q(conn, f"""
         SELECT n.nspname AS schema, c.relname AS "table", con.conname,
-               ARRAY(SELECT a.attname FROM unnest(con.conkey) k JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = k) AS cols
+               ARRAY(SELECT a.attname FROM unnest(con.conkey) WITH ORDINALITY k(attnum, ord)
+                     JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = k.attnum ORDER BY k.ord) AS cols
         FROM pg_constraint con JOIN pg_class c ON c.oid = con.conrelid JOIN pg_namespace n ON n.oid = c.relnamespace
         WHERE con.contype = 'f' AND {excluded_sql()}
-          AND NOT EXISTS (SELECT 1 FROM pg_index ix WHERE ix.indrelid = con.conrelid
-                          AND (ix.indkey::int2[])[0:array_length(con.conkey,1)-1] = con.conkey::int2[])"""):
+          -- Cobre a FK o índice válido, não parcial, cujas primeiras colunas são as da FK em qualquer ordem.
+          AND NOT EXISTS (SELECT 1 FROM pg_index ix WHERE ix.indrelid = con.conrelid AND ix.indisvalid AND ix.indpred IS NULL
+                          AND (ix.indkey::int2[])[0:array_length(con.conkey,1)-1] @> con.conkey::int2[]
+                          AND con.conkey::int2[] @> (ix.indkey::int2[])[0:array_length(con.conkey,1)-1])"""):
         out.append({"severity": "BAIXA", "code": "fk_without_index", "object": f"{r['schema']}.{r['table']}.{r['conname']}",
                     "detail": f"FK sem índice nas colunas {r['cols']}: joins e DELETE/UPDATE na tabela pai ficam lentos."})
     for r in q(conn, f"""
@@ -765,10 +837,10 @@ def get_lints(conn):
           AND NOT EXISTS (SELECT 1 FROM pg_depend d WHERE d.objid = p.oid AND d.deptype = 'e')"""):
         out.append({"severity": "ALTA", "code": "secdef_mutable_search_path", "object": f"{r['schema']}.{r['name']}({r['args']})",
                     "detail": "SECURITY DEFINER sem `SET search_path`: vulnerável a sequestro de search_path."})
-    for r in q(conn, """
+    for r in q(conn, f"""
         SELECT n.nspname AS schema, c.relname AS name FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
         WHERE c.relkind = 'v' AND n.nspname = 'public'
-          AND coalesce(array_to_string(c.reloptions, ','), '') NOT ILIKE '%security_invoker=true%'"""):
+          AND NOT {SECURITY_INVOKER_ON}"""):
         out.append({"severity": "ALTA", "code": "view_security_definer", "object": f"{r['schema']}.{r['name']}",
                     "detail": "View em public sem security_invoker: executa como owner e ignora RLS das tabelas base."})
     for r in q(conn, f"""
@@ -895,11 +967,9 @@ def introspect_db(previous_db: dict | None) -> tuple[dict[str, Any], dict[str, A
     db: dict[str, Any] = {}
     stats: dict[str, Any] = {}
     # prepare_threshold=None: compatível com pooler em transaction mode (sem prepared statements).
+    # autocommit=True: cada q() abre a própria transação READ ONLY (ver TX_GUARD); a sessão fica intacta.
     with psycopg.connect(DB_URL, connect_timeout=30, application_name="supabase-snapshot",
                          prepare_threshold=None, autocommit=True) as conn:
-        conn.execute("SET default_transaction_read_only = on")
-        conn.execute("SET statement_timeout = '90s'")
-        conn.execute("SET lock_timeout = '5s'")
         for fn in DB_SECTIONS:
             data = fn(conn)
             if getattr(fn, "volatile", False):
@@ -924,7 +994,7 @@ def api(path: str) -> Any:
         return json.loads(body.decode("utf-8")) if body else None
 
 
-def api_section(name: str, path: str, transform=lambda x: x, optional: bool = False):
+def api_section(name: str, path: str, transform=lambda x: x, optional: bool = False, previous: Any = None):
     try:
         data = transform(api(path))
         log(f"api {name}: ok")
@@ -936,7 +1006,11 @@ def api_section(name: str, path: str, transform=lambda x: x, optional: bool = Fa
         record_error(f"api.{name}", f"HTTP {e.code} em {path}")
     except Exception as e:  # noqa: BLE001
         record_error(f"api.{name}", e)
-    return None
+    # Mesma regra das seções do banco: falha reaproveita a coleta anterior, nunca vira "tudo removido".
+    if previous is not None:
+        CARRIED.append(f"api.{name}")
+        log(f"api {name}: reaproveitado da coleta anterior")
+    return previous
 
 
 def introspect_api(previous_api: dict | None) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -951,22 +1025,32 @@ def introspect_api(previous_api: dict | None) -> tuple[dict[str, Any], dict[str,
     def keep(d, keys):
         return {k: d.get(k) for k in keys} if isinstance(d, dict) else d
 
-    out["project"] = api_section("project", f"/projects/{ref}", lambda p: keep(p, ("id", "name", "region", "status", "created_at", "organization_id")))
+    # Só reaproveita a coleta anterior do mesmo projeto.
+    prev = previous_api if isinstance(previous_api, dict) and previous_api.get("ref") == ref else {}
+    out["project"] = api_section("project", f"/projects/{ref}", lambda p: keep(p, ("id", "name", "region", "status", "created_at", "organization_id")),
+                                 previous=prev.get("project"))
     out["edge_functions"] = api_section("edge_functions", f"/projects/{ref}/functions", lambda fs: sorted(
         [keep(f, ("slug", "name", "status", "version", "verify_jwt", "import_map", "entrypoint_path", "import_map_path", "created_at", "updated_at")) for f in fs],
-        key=lambda f: f["slug"] or "")) or []
-    out["secrets_names"] = api_section("secrets", f"/projects/{ref}/secrets", lambda s: sorted(x.get("name") for x in s if isinstance(x, dict)))
-    out["auth_config"] = api_section("auth_config", f"/projects/{ref}/config/auth", redact)
-    out["postgrest_config"] = api_section("postgrest_config", f"/projects/{ref}/postgrest", redact)
-    out["postgres_config"] = api_section("postgres_config", f"/projects/{ref}/config/database/postgres", redact, optional=True)
-    out["pooler_config"] = api_section("pooler_config", f"/projects/{ref}/config/database/pooler", redact)
-    out["storage_config"] = api_section("storage_config", f"/projects/{ref}/config/storage", redact, optional=True)
-    out["network_restrictions"] = api_section("network_restrictions", f"/projects/{ref}/network-restrictions", redact, optional=True)
-    out["ssl_enforcement"] = api_section("ssl_enforcement", f"/projects/{ref}/ssl-enforcement", redact, optional=True)
-    out["custom_hostname"] = api_section("custom_hostname", f"/projects/{ref}/custom-hostname", redact, optional=True)
+        key=lambda f: f["slug"] or ""), previous=prev.get("edge_functions")) or []
+    out["secrets_names"] = api_section("secrets", f"/projects/{ref}/secrets", lambda s: sorted(x.get("name") for x in s if isinstance(x, dict)),
+                                       previous=prev.get("secrets_names"))
+    out["auth_config"] = api_section("auth_config", f"/projects/{ref}/config/auth", redact, previous=prev.get("auth_config"))
+    out["postgrest_config"] = api_section("postgrest_config", f"/projects/{ref}/postgrest", redact, previous=prev.get("postgrest_config"))
+    out["postgres_config"] = api_section("postgres_config", f"/projects/{ref}/config/database/postgres", redact, optional=True,
+                                         previous=prev.get("postgres_config"))
+    out["pooler_config"] = api_section("pooler_config", f"/projects/{ref}/config/database/pooler", redact, previous=prev.get("pooler_config"))
+    out["storage_config"] = api_section("storage_config", f"/projects/{ref}/config/storage", redact, optional=True,
+                                        previous=prev.get("storage_config"))
+    out["network_restrictions"] = api_section("network_restrictions", f"/projects/{ref}/network-restrictions", redact, optional=True,
+                                              previous=prev.get("network_restrictions"))
+    out["ssl_enforcement"] = api_section("ssl_enforcement", f"/projects/{ref}/ssl-enforcement", redact, optional=True,
+                                         previous=prev.get("ssl_enforcement"))
+    out["custom_hostname"] = api_section("custom_hostname", f"/projects/{ref}/custom-hostname", redact, optional=True,
+                                         previous=prev.get("custom_hostname"))
     out["branches"] = api_section("branches", f"/projects/{ref}/branches",
-                                  lambda bs: [keep(b, ("id", "name", "git_branch", "status", "is_default", "persistent")) for b in bs], optional=True)
-    backups = api_section("backups", f"/projects/{ref}/database/backups", redact, optional=True)
+                                  lambda bs: [keep(b, ("id", "name", "git_branch", "status", "is_default", "persistent")) for b in bs], optional=True,
+                                  previous=prev.get("branches"))
+    backups = api_section("backups", f"/projects/{ref}/database/backups", redact, optional=True, previous=prev.get("backups_config"))
     out["backups_config"] = keep(backups, ("region", "pitr_enabled", "walg_enabled")) if isinstance(backups, dict) else None
     stats["backups"] = backups
     stats["health"] = api_section("health", f"/projects/{ref}/health?services=auth,db,pooler,realtime,rest,storage", redact, optional=True)
@@ -1015,7 +1099,8 @@ def run_pg_dump() -> str | None:
         return None
     lines = [ln for ln in res.stdout.splitlines()
              if not ln.startswith(("-- Dumped from", "-- Dumped by", "\\restrict", "\\unrestrict"))]
-    text = re.sub(r"\n{3,}", "\n\n", "\n".join(lines))
+    # O dump não passa por q(): sem o scrub, token/senha embutidos em corpo de função iriam em claro.
+    text = scrub(re.sub(r"\n{3,}", "\n\n", "\n".join(lines)))
     log(f"pg_dump: ok ({len(text)} bytes)")
     return text
 
@@ -1282,39 +1367,43 @@ def render_tables(db: dict) -> None:
         if used_by_views.get(key):
             props.append(["usada por views", ", ".join(sorted(used_by_views[key]))])
         md.append(md_table(["propriedade", "valor"], props))
+        # Cada bloco vem de uma seção própria: se ela falhou, o arquivo da tabela avisa em vez de
+        # mostrar "_nenhum_" (ou a coleta anterior) como se fosse o estado atual.
         md.append("\n## Colunas\n")
-        md.append(md_table(["#", "coluna", "tipo", "nullable", "default", "identity/generated", "comentário"], [
+        md.append(banner("columns") + md_table(["#", "coluna", "tipo", "nullable", "default", "identity/generated", "comentário"], [
             [c["position"], code(c["name"]), code(c["type"]), c["nullable"], code(c["default"]),
              c.get("identity") or c.get("generated") or "", c.get("comment")] for c in cols.get(key, [])]))
         md.append("\n## Constraints\n")
-        md.append(md_table(["nome", "tipo", "definição", "on delete", "on update", "validada"],
+        md.append(banner("constraints") + md_table(["nome", "tipo", "definição", "on delete", "on update", "validada"],
                            [[c["name"], c["type"], code(c["definition"]), c["on_delete"] or "", c["on_update"] or "", c["validated"]] for c in cons.get(key, [])]))
         if fks_in.get(key):
             md.append("\n## Referenciada por (FKs de outras tabelas)\n")
             md.append(md_table(["tabela", "constraint", "colunas", "on delete"],
                                [[f"{c['schema']}.{c['table']}", c["name"], c["columns"], c["on_delete"]] for c in fks_in[key]]))
         md.append("\n## Índices\n")
-        md.append(md_table(["nome", "método", "colunas", "único", "válido", "predicado", "definição"],
+        md.append(banner("indexes") + md_table(["nome", "método", "colunas", "único", "válido", "predicado", "definição"],
                            [[i["name"], i["method"], i["columns"], i["is_unique"], i["is_valid"], code(i["predicate"]), code(i["definition"])] for i in idx.get(key, [])]))
         md.append("\n## Policies (RLS)\n")
+        if banner("policies"):
+            md.append(banner("policies"))
         if not t["rls_enabled"]:
             md.append("> ⚠️ RLS **desabilitado** nesta tabela.\n\n")
-        elif not pol.get(key):
+        elif not pol.get(key) and db.get("policies") is not None:
             md.append("> ⚠️ RLS habilitado **sem policies**: nenhum acesso via API (anon/authenticated).\n\n")
         for p in pol.get(key, []):
             md.append(f"### `{p['name']}`\n")
             md.append(md_table(["campo", "valor"], [["comando", p["cmd"]], ["tipo", p["permissive"]], ["roles", p["roles"]],
                                                      ["USING", code(p["using"])], ["WITH CHECK", code(p["with_check"])]]))
         md.append("\n## Triggers\n")
-        md.append(md_table(["nome", "timing", "eventos", "nível", "status", "função"],
+        md.append(banner("triggers") + md_table(["nome", "timing", "eventos", "nível", "status", "função"],
                            [[x["name"], x["timing"], x["events"], x["level"], x["status"], x["function"]] for x in trg.get(key, [])]))
         md.append("\n## Grants\n")
-        md.append(md_table(["role", "privilégios"], [[g["grantee"], g["privileges"]] for g in grants.get(key, [])]))
+        md.append(banner("grants") + md_table(["role", "privilégios"], [[g["grantee"], g["privileges"]] for g in grants.get(key, [])]))
         if colgrants.get(key):
             md.append("\nGrants por coluna:\n\n" + md_table(["coluna", "role", "privilégios"], [[g["column"], g["grantee"], g["privileges"]] for g in colgrants[key]]))
         write(OUT / rel, "\n".join(md))
 
-    write(OUT / "tables.md", "# Tabelas\n\n" + banner("tables") + "Um arquivo por tabela em `tables/<schema>/<tabela>.md` "
+    write(OUT / "tables.md", "# Tabelas\n\n" + banner("tables") + banner("columns") + banner("policies") + "Um arquivo por tabela em `tables/<schema>/<tabela>.md` "
           "(colunas, constraints, índices, RLS/policies, triggers, grants). Métricas de volume em `stats.md`.\n\n"
           + md_table(["tabela", "tipo", "RLS", "policies", "colunas", "realtime", "comentário"], index_rows))
 
@@ -1522,7 +1611,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
         + ("\n## Configuração (Management API)\n\n```json\n" + dumps(api_["storage_config"]) + "\n```\n" if api_.get("storage_config") else ""))
 
     # Auth
-    md = ["# Auth\n", "Contagens de usuários em `stats.md` (apenas agregados — sem dados pessoais).\n"]
+    md = ["# Auth\n", banner("api.auth_config") + "Contagens de usuários em `stats.md` (apenas agregados — sem dados pessoais).\n"]
     if api_.get("auth_config"):
         cfg = api_["auth_config"]
         hooks = {k: v for k, v in cfg.items() if k.startswith("hook_")} if isinstance(cfg, dict) else {}
@@ -1532,7 +1621,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
             ["site_url", cfg.get("site_url")], ["providers habilitados", providers], ["jwt_exp (s)", cfg.get("jwt_exp")],
             ["signup desabilitado", cfg.get("disable_signup")], ["confirmação de e-mail", cfg.get("mailer_autoconfirm") is False],
             ["MFA TOTP", cfg.get("mfa_totp_enroll_enabled")], ["hooks", [k for k, v in hooks.items() if k.endswith("_enabled") and v]]]))
-        md.append("\n## Configuração completa (segredos redigidos)\n\n```json\n" + dumps(cfg) + "\n```\n")
+        md.append("\n## Configuração completa (segredos redigidos)\n\n```json\n" + dumps(redact(cfg)) + "\n```\n")
     else:
         md.append("\n_Configuração indisponível (Management API desabilitada)._\n")
     write(OUT / "auth.md", "\n".join(md))
@@ -1547,7 +1636,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
 
     # Edge functions + project config
     if api_.get("enabled"):
-        md = ["# Edge Functions\n", f"URL base: `{api_['url']}/functions/v1/<slug>`. Metadados por função em `edge-functions/<slug>/README.md`. "
+        md = ["# Edge Functions\n", banner("api.edge_functions") + f"URL base: `{api_['url']}/functions/v1/<slug>`. Metadados por função em `edge-functions/<slug>/README.md`. "
               "A Management API devolve só o bundle compilado; o fonte canônico é `supabase/functions/<slug>/` no repo.\n",
               md_table(["slug", "nome", "status", "versão", "verify_jwt", "entrypoint"],
                        [[f["slug"], f["name"], f["status"], f["version"], f["verify_jwt"], f["entrypoint_path"]] for f in api_.get("edge_functions") or []])]
@@ -1560,7 +1649,7 @@ def render_simple(db: dict, api_: dict, caller_sources: dict[str, str] | None = 
             ["projeto", (api_.get("project") or {}).get("name")], ["região", (api_.get("project") or {}).get("region")], ["URL", api_["url"]],
             ["schemas expostos (PostgREST)", pr.get("db_schema")], ["max_rows (PostgREST)", pr.get("max_rows")],
             ["extra_search_path", pr.get("db_extra_search_path")], ["PITR", (api_.get("backups_config") or {}).get("pitr_enabled")],
-            ["branches", len(api_.get("branches") or [])]]) + "\n```json\n" + dumps(cfg) + "\n```\n")
+            ["branches", len(api_.get("branches") or [])]]) + "\n```json\n" + dumps(redact(cfg)) + "\n```\n")
     else:
         write(OUT / "edge-functions.md", "# Edge Functions\n\n_Management API desabilitada: defina SUPABASE_PROJECT_REF e SUPABASE_ACCESS_TOKEN._\n")
         write(OUT / "project-config.md", "# Configuração do projeto\n\n_Management API desabilitada._\n")
@@ -1570,8 +1659,11 @@ def render_stats(stats: dict, api_stats: dict, db: dict) -> None:
     ts = stats.get("table_stats") or []
     ist = stats.get("index_stats") or []
     ds = stats.get("db_stats") or {}
+    # Seção volátil que falhou não tem versão anterior: sem o aviso, "_nenhum_" passaria por banco vazio.
+    warn = "".join(banner(name) for name in ("table_stats", "index_stats", "db_stats"))
     md = ["# Métricas (voláteis — mudam sem alteração de schema)\n",
-          "Valores aproximados de propósito, para não gerar commits a cada coleta. Fora de `snapshot.json`; o bruto está em `stats.json`.\n",
+          "Valores aproximados de propósito, para não gerar commits a cada coleta. Fora de `snapshot.json`; o bruto está em `stats.json`.\n"
+          + ("\n" + warn.rstrip("\n") + "\n" if warn else ""),
           "## Banco\n", md_table(["métrica", "valor"], [["tamanho", human_bytes(ds.get("database_bytes"))]] +
                                  [[f"schema {s['schema']}", human_bytes(s["bytes"])] for s in ds.get("schema_bytes") or []]),
           "\n## Tabelas (ordenadas por tamanho)\n",
@@ -1604,7 +1696,8 @@ def render_stats(stats: dict, api_stats: dict, db: dict) -> None:
     # cron runs
     jobs = ((db.get("cron") or {}).get("jobs")) or []
     runs = group(stats.get("cron_runs"), lambda r: r["jobid"])
-    md = ["# Cron — execuções recentes\n", f"Últimas {CRON_RUNS_PER_JOB} por job (7 dias). Definições em `cron.md`.\n"]
+    md = ["# Cron — execuções recentes\n", f"Últimas {CRON_RUNS_PER_JOB} por job (7 dias). Definições em `cron.md`.\n"
+          + ("\n" + banner("cron_runs").rstrip("\n") + "\n" if banner("cron_runs") else "")]
     for j in jobs:
         md.append(f"\n## {j['jobid']} · {j['jobname'] or '(sem nome)'}\n")
         md.append(md_table(["início (UTC)", "status", "duração (s)", "mensagem"],
@@ -1724,7 +1817,16 @@ def main() -> int:
         except Exception:  # noqa: BLE001
             previous = None
 
-    db, stats = introspect_db((previous or {}).get("db"))
+    try:
+        db, stats = introspect_db((previous or {}).get("db"))
+    except Exception as error:  # noqa: BLE001
+        # As seções nunca propagam erro: o que chega aqui é conexão/handshake. A mensagem do driver
+        # pode ecoar pedaços da URL (senha sem percent-encoding), então sai mascarada e sem traceback.
+        text = str(error).strip().splitlines()[0] if str(error).strip() else repr(error)
+        print(f"Falha ao conectar no banco ({type(error).__name__}): {mask_dsn(text)}", file=sys.stderr)
+        print("Confira SUPABASE_DB_URL: session pooler; senha com @ : / % ? # precisa de percent-encoding "
+              "(%40 %3A %2F %25 %3F %23). Nada foi sobrescrito.", file=sys.stderr)
+        return 1
     if all(v is None for v in db.values()):
         log("Banco inteiro indisponível — nada será sobrescrito.")
         return 1

@@ -45,12 +45,21 @@ const KPI_PATH = join(RAIZ, 'docs', 'ci', 'kpi.json');
 
 const CAMPOS = ['gatilho', 'prova', 'falha', 'avisa'];
 
+// Argumento que nao e `--check` cai no modo de ESCRITA: um `--chek` digitado errado num
+// workflow regeraria o README e sairia 0 em vez de conferir. Erro de uso reprova.
+const ARGUMENTOS_DESCONHECIDOS = process.argv.slice(2).filter((a) => a !== '--check');
+if (ARGUMENTOS_DESCONHECIDOS.length) {
+  console.error(`ERRO: argumento desconhecido: ${ARGUMENTOS_DESCONHECIDOS.join(' ')}`);
+  console.error('Uso: node scripts/ci/render-workflow-docs.mjs [--check]');
+  process.exit(2);
+}
 
 /** Extrai o bloco `# docs:` do topo do arquivo. Devolve null se não houver. */
 function extrairDocs(texto) {
   const linhas = texto.split('\n');
   const saida = {};
   let dentro = false;
+  let anteriorEraCampo = false;
 
   for (const linha of linhas) {
     if (/^#\s*docs:\s*$/.test(linha)) {
@@ -62,10 +71,22 @@ function extrairDocs(texto) {
     // Linha de comentário continua o bloco; qualquer outra coisa o encerra.
     const m = /^#\s+([a-z_]+):\s*(.+?)\s*$/.exec(linha);
     if (m) {
+      // Campo repetido: o segundo valor apagava o primeiro sem aviso.
+      if (Object.hasOwn(saida, m[1])) throw new Error(`campo repetido no bloco # docs: ${m[1]}`);
       saida[m[1]] = m[2];
+      anteriorEraCampo = true;
       continue;
     }
-    if (/^#\s*$/.test(linha) || linha.trim() === '') continue;
+    if (/^#\s*$/.test(linha) || linha.trim() === '') {
+      anteriorEraCampo = false;
+      continue;
+    }
+    // Comentario recuado LOGO abaixo de um campo, sem ser `campo: valor`, e a segunda linha
+    // do valor (ou um campo vazio). Antes caia no `break`: o resto do texto sumia do README
+    // e o CI seguia verde. Depois de uma linha vazia e comentario solto, e encerra o bloco.
+    if (anteriorEraCampo && /^#\s{2,}\S/.test(linha)) {
+      throw new Error(`linha nao reconhecida no bloco # docs: "${linha.trim()}" (cada campo ocupa UMA linha: "#   <campo>: <valor>")`);
+    }
     break;
   }
 
@@ -81,6 +102,7 @@ function extrairNaoEBug(texto) {
   const linhas = texto.split('\n');
   const itens = [];
   let dentro = false;
+  let anteriorEraItem = false;
 
   for (const linha of linhas) {
     if (/^#\s*nao-e-bug:\s*$/.test(linha)) {
@@ -92,6 +114,7 @@ function extrairNaoEBug(texto) {
     const m = /^#\s+-\s+(.+?):\s*(.+?)\s*$/.exec(linha);
     if (m) {
       itens.push({ chave: m[1], descricao: m[2] });
+      anteriorEraItem = true;
       continue;
     }
     // Item que PARECE item mas nao casa (`#   - sem dois pontos`) antes caia no `break`
@@ -100,7 +123,16 @@ function extrairNaoEBug(texto) {
       return { erro: `item malformado em # nao-e-bug: ${linha.trim()} (use "#   - <chave>: <descricao>")` };
     }
     // Linha de comentário vazia continua; qualquer outra coisa (inclusive docs:) encerra.
-    if (/^#\s*$/.test(linha)) continue;
+    if (/^#\s*$/.test(linha)) {
+      anteriorEraItem = false;
+      continue;
+    }
+    // Comentario recuado LOGO abaixo de um item, sem ser item, e a segunda linha da
+    // descricao: antes encerrava o bloco e este item (cortado) e TODOS os seguintes sumiam
+    // do README. Depois de uma linha vazia e comentario solto, e encerra o bloco.
+    if (anteriorEraItem && /^#\s{2,}\S/.test(linha)) {
+      return { erro: `linha nao reconhecida em # nao-e-bug: "${linha.trim()}" (cada item ocupa UMA linha: "#   - <chave>: <descricao>")` };
+    }
     break;
   }
 
@@ -110,18 +142,36 @@ function extrairNaoEBug(texto) {
 /** Nome amigável: `name:` do workflow, senão o nome do arquivo. */
 function nomeDe(texto, arquivo) {
   const m = /^name:\s*(.+?)\s*$/m.exec(texto);
-  return m ? m[1] : arquivo.replace(/\.yml$/, '');
+  if (!m) return arquivo.replace(/\.ya?ml$/, '');
+  // `name: "CI" # principal`: o nome do workflow e CI -- sem as aspas e sem o comentario YAML.
+  const entreAspas = /^(['"])(.*)\1\s*(?:#.*)?$/.exec(m[1]);
+  return entreAspas ? entreAspas[2] : m[1].replace(/\s+#.*$/, '');
 }
 
 // KPI: tenta carregar docs/ci/kpi.json; ignora silenciosamente se não existir.
 let kpi = {};
 try {
   kpi = JSON.parse(await readFile(KPI_PATH, 'utf8'));
-} catch {
-  // sem KPI → colunas ficam "—"
+} catch (erro) {
+  // sem KPI → colunas ficam "—". Arquivo que EXISTE e nao e JSON e outra coisa: engolir o
+  // erro publicava "—" nas duas colunas como se nao houvesse medicao.
+  if (erro.code !== 'ENOENT') {
+    console.error(`ERRO: docs/ci/kpi.json existe mas nao pode ser lido como JSON: ${erro.message}`);
+    process.exit(1);
+  }
+}
+if (kpi === null || typeof kpi !== 'object' || Array.isArray(kpi)) {
+  console.error('ERRO: docs/ci/kpi.json precisa ser um objeto indexado pelo nome do arquivo YAML.');
+  process.exit(1);
 }
 
 const arquivos = (await readdir(DIR_WF)).filter((f) => /\.ya?ml$/.test(f)).sort();
+// Fail-closed: sem nenhum workflow lido, o gerador escrevia "0 workflows" e o --check
+// aprovava um README vazio.
+if (arquivos.length === 0) {
+  console.error(`ERRO: nenhum workflow (.yml/.yaml) em ${DIR_WF} — nada foi lido.`);
+  process.exit(1);
+}
 
 const docs = [];
 const semBloco = [];
@@ -129,7 +179,13 @@ const naoEBugGlobal = [];
 
 for (const arquivo of arquivos) {
   const texto = await readFile(join(DIR_WF, arquivo), 'utf8');
-  const bloco = extrairDocs(texto);
+  let bloco;
+  try {
+    bloco = extrairDocs(texto);
+  } catch (erro) {
+    console.error(`ERRO: ${arquivo}: ${erro.message}`);
+    process.exit(1);
+  }
   if (!bloco) {
     semBloco.push(arquivo);
     continue;
@@ -181,7 +237,7 @@ const linhas = [
     const falha7d = kpi[d.arquivo]?.taxa_falha_7d ?? '—';
     // `|` no texto de um campo abriria uma coluna nova e desalinharia a tabela inteira.
     const c = (v) => String(v).replaceAll('|', '\\|');
-    return `| ${c(d.nome)} | [\`${d.arquivo}\`](../../.github/workflows/${d.arquivo}) | ${c(d.gatilho)} | ${c(d.prova)} | ${c(d.falha)} | ${c(d.avisa)} | ${custo} | ${falha7d} |`;
+    return `| ${c(d.nome)} | [\`${d.arquivo}\`](../../.github/workflows/${d.arquivo}) | ${c(d.gatilho)} | ${c(d.prova)} | ${c(d.falha)} | ${c(d.avisa)} | ${c(custo)} | ${c(falha7d)} |`;
   }),
   '',
   '## Detalhe',

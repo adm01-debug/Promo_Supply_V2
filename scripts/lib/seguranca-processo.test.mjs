@@ -34,6 +34,74 @@ test('resolverExecutavel lanca para comando inexistente', () => {
   );
 });
 
+// Roda `fn` com o PATH trocado e devolve o PATH original em qualquer desfecho.
+function comPath(valor, fn) {
+  const original = process.env.PATH;
+  process.env.PATH = valor;
+  try {
+    return fn();
+  } finally {
+    process.env.PATH = original;
+  }
+}
+
+function criarExecutavel(arquivo) {
+  fs.mkdirSync(path.dirname(arquivo), { recursive: true });
+  fs.writeFileSync(arquivo, '#!/bin/sh\nexit 0\n');
+  fs.chmodSync(arquivo, 0o755);
+  return arquivo;
+}
+
+test('resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-path-'));
+  try {
+    const primeiro = path.join(base, 'a');
+    const segundo = path.join(base, 'b');
+    // `a/ferramenta` e um DIRETORIO (passa em X_OK) e `a/semx` nao e executavel.
+    fs.mkdirSync(path.join(primeiro, 'ferramenta'), { recursive: true });
+    fs.writeFileSync(path.join(primeiro, 'semx'), '');
+    fs.chmodSync(path.join(primeiro, 'semx'), 0o644);
+    const real = criarExecutavel(path.join(segundo, 'ferramenta'));
+    const realSemx = criarExecutavel(path.join(segundo, 'semx'));
+    const caminho = [primeiro, segundo].join(path.delimiter);
+    assert.equal(comPath(caminho, () => resolverExecutavel('ferramenta')), real);
+    assert.equal(comPath(caminho, () => resolverExecutavel('semx')), realSemx);
+    // So o diretorio homonimo no PATH: nao ha binario, entao lanca em vez de devolver a pasta.
+    assert.throws(() => comPath(primeiro, () => resolverExecutavel('ferramenta')), /comando nao encontrado no PATH/);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-path-'));
+  const cwdOriginal = process.cwd();
+  try {
+    const real = criarExecutavel(path.join(base, 'bin', 'ferramenta'));
+    process.chdir(base);
+    const resolvido = comPath('bin', () => resolverExecutavel('ferramenta'));
+    assert.equal(path.isAbsolute(resolvido), true, 'caminho resolvido nao e absoluto: ' + resolvido);
+    assert.equal(fs.realpathSync(resolvido), fs.realpathSync(real));
+  } finally {
+    process.chdir(cwdOriginal);
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('resolverExecutavel lanca com PATH vazio e recusa nome vazio ou com separador de caminho', () => {
+  assert.throws(() => comPath('', () => resolverExecutavel('node')), /comando nao encontrado no PATH: node/);
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-path-'));
+  try {
+    criarExecutavel(path.join(base, 'b', 'ferramenta'));
+    fs.mkdirSync(path.join(base, 'a'));
+    // `../b/ferramenta` juntado a `a` cairia num binario FORA do diretorio do PATH.
+    assert.throws(() => comPath(path.join(base, 'a'), () => resolverExecutavel('../b/ferramenta')), /nome de comando invalido/);
+    assert.throws(() => comPath(path.join(base, 'a'), () => resolverExecutavel('')), /nome de comando invalido/);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('estaDentro aceita a raiz e subpastas', () => {
   assert.equal(estaDentro('/a/b', '/a/b'), true, 'a propria raiz conta como dentro');
   assert.equal(estaDentro('/a/b', '/a/b/sub'), true);
@@ -111,6 +179,46 @@ test('resolverCaminhoPermitido recusa alvo inexistente sob diretorio symlink que
   } finally {
     fs.rmSync(raiz, { recursive: true, force: true });
     fs.rmSync(fora, { recursive: true, force: true });
+  }
+});
+
+// Link pendurado: o link existe dentro da raiz, o alvo (fora dela) ainda nao. `existsSync`
+// segue o link e diz "nao existe"; a guarda aceitava o caminho e a escrita seguinte criava
+// o arquivo FORA da raiz.
+test('resolverCaminhoPermitido recusa link simbolico pendurado que aponta para fora da raiz', () => {
+  const raiz = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-raiz-'));
+  const fora = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-fora-'));
+  try {
+    fs.symlinkSync(path.join(fora, 'ainda-nao-existe.json'), path.join(raiz, 'pendurado'));
+    fs.symlinkSync(path.join(fora, 'pasta-inexistente'), path.join(raiz, 'pendurado-dir'));
+    fs.symlinkSync(path.join('..', path.basename(fora), 'relativo.json'), path.join(raiz, 'pendurado-rel'));
+    for (const alvo of ['pendurado', path.join('pendurado-dir', 'novo.json'), 'pendurado-rel']) {
+      assert.throws(
+        () => resolverCaminhoPermitido(path.join(raiz, alvo), 'saida', [raiz]),
+        /fora das raizes permitidas/,
+        `${alvo} deveria ser recusado`,
+      );
+    }
+    // Link pendurado que aponta para DENTRO da raiz continua aceito, ja resolvido para o alvo.
+    fs.symlinkSync(path.join(raiz, 'novo-dentro.json'), path.join(raiz, 'pendurado-dentro'));
+    assert.equal(
+      resolverCaminhoPermitido(path.join(raiz, 'pendurado-dentro'), 'saida', [raiz]),
+      path.join(fs.realpathSync(raiz), 'novo-dentro.json'),
+    );
+  } finally {
+    fs.rmSync(raiz, { recursive: true, force: true });
+    fs.rmSync(fora, { recursive: true, force: true });
+  }
+});
+
+test('resolverCaminhoPermitido lanca (nao trava) com links simbolicos em ciclo', () => {
+  const raiz = fs.mkdtempSync(path.join(os.tmpdir(), 'seguranca-processo-raiz-'));
+  try {
+    fs.symlinkSync(path.join(raiz, 'b'), path.join(raiz, 'a'));
+    fs.symlinkSync(path.join(raiz, 'a'), path.join(raiz, 'b'));
+    assert.throws(() => resolverCaminhoPermitido(path.join(raiz, 'a'), 'saida', [raiz]), /links simbolicos em ciclo/);
+  } finally {
+    fs.rmSync(raiz, { recursive: true, force: true });
   }
 });
 

@@ -40,6 +40,7 @@ ROTEIRO = {
                           "Qualquer mudança de comportamento · Antes de criar status/valor/validação · Antes de planejar"),
 }
 ORDEM = ["regras de negócio", "banco real", "código"]
+FUTURE_TOLERANCE_MIN = 5  # diferença de relógio aceitável entre quem gerou a fonte e quem monta o índice
 
 
 def git(root: Path, *a: str) -> str:
@@ -103,7 +104,8 @@ def producer_health(d: Path, man: dict) -> tuple[str, list[str]]:
 
 def entry_file(d: Path, man: dict) -> str:
     cand = man.get("entrada") or man.get("entry") or ""
-    if cand and (d / cand).exists():
+    # manifest de outro produtor pode trazer qualquer coisa: só vale nome de arquivo que existe dentro da pasta
+    if isinstance(cand, str) and cand and not Path(cand).is_absolute() and ".." not in Path(cand).parts and (d / cand).is_file():
         return cand
     for name in ("00-INDEX.md", "INDEX.md", "README.md", "index.md"):
         if (d / name).exists():
@@ -123,6 +125,8 @@ def main() -> int:
     ap.add_argument("--head", default="", help="sha do commit de código de referência (default: HEAD do --repo); use quando o índice é montado numa branch gerada")
     args = ap.parse_args()
     root = Path(args.repo).resolve()
+    if not root.is_dir():
+        print(f"[indice] --repo não é um diretório: {root}", file=sys.stderr); return 2
     out = (root / args.out).resolve()
     remote = args.remote or re.sub(r"^.*github\.com[:/]|\.git$", "", git(root, "config", "--get", "remote.origin.url"))
     now = datetime.now(timezone.utc)
@@ -130,11 +134,11 @@ def main() -> int:
 
     fontes = []
     for spec in args.fonte:
-        if "=" not in spec:
-            print(f"[indice] fonte inválida: {spec}", file=sys.stderr); return 2
-        nome, resto = spec.split("=", 1)
+        nome, _, resto = spec.partition("=")
         caminho, _, branch = resto.partition("@")
         nome, caminho, branch = nome.strip(), caminho.strip().strip("/"), branch.strip()
+        if not nome or not caminho:  # sem "=", sem nome ou sem caminho: caminho vazio viraria a raiz do repo com estado "ok"
+            print(f"[indice] fonte inválida: {spec} (esperado \"NOME=CAMINHO[@BRANCH]\")", file=sys.stderr); return 2
         d = root / caminho
         local = d.is_dir() and any(d.iterdir())
         man = read_manifest(d) if local else {}
@@ -151,6 +155,12 @@ def main() -> int:
         idade_min = int((now - gerado).total_seconds() // 60) if gerado else None
         commit = man.get("commit") or man.get("sha") or ""
         status, avisos = producer_health(d, man) if local else ("ok", [])
+        # sem data legível, ou com data no futuro, não há como dizer que a fonte está fresca
+        if local and (idade_min is None or idade_min < -FUTURE_TOLERANCE_MIN):
+            avisos.append("data de geração ausente ou ilegível" if idade_min is None else f"data de geração {-idade_min} min no futuro (relógio?)")
+            status, idade_min = ("não verificável" if status == "ok" else status), None
+        elif idade_min is not None:
+            idade_min = max(0, idade_min)
         if not local:
             status = "não disponível neste checkout" if branch else "ainda não gerado"
         mesmo_commit = (isinstance(commit, str) and isinstance(head, str)

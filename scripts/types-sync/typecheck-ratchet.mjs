@@ -40,7 +40,10 @@ if (!baseline || !candidato) {
   console.error('uso: typecheck-ratchet.mjs <baseline.ts> <candidato.ts>');
   process.exit(2);
 }
-for (const arquivo of [baseline, candidato]) {
+// ALVO e o tsconfig entram na conferencia: sem o ALVO o script morria com excecao (exit 1, que o
+// workflow le como "piorou"); sem o tsconfig o tsc devolve o mesmo TS5058 nas duas rodadas e o
+// gate aprovava "1 -> 1" sem ter checado nada.
+for (const arquivo of [baseline, candidato, ALVO, path.resolve(RAIZ, PROJETO)]) {
   if (!fs.existsSync(arquivo)) {
     console.error(`ERRO: arquivo ausente: ${arquivo}`);
     process.exit(2);
@@ -64,6 +67,14 @@ function rodarTsc(rotulo) {
     .split('\n')
     .filter((linha) => /error TS\d+/.test(linha))
     .map((linha) => linha.replace(/\((\d+),(\d+)\)/, '').trim());
+  // tsc que terminou sai 0 (sem erro) ou 1/2 (com as linhas `error TS`). Fora disso NAO houve
+  // medicao: nao subiu, morreu por sinal (OOM, Ctrl-C), estourou o buffer, saiu 3+ ou saiu != 0
+  // sem listar erro. Sem esta conferencia a rodada contava "0 erro(s)" e o gate aprovava.
+  const { status, signal, error } = resultado;
+  if (error || signal || ![0, 1, 2].includes(status) || (status !== 0 && erros.length === 0)) {
+    throw new Error(`tsc nao concluiu a medicao "${rotulo}" (status ${status}, sinal ${signal || 'nenhum'}`
+      + `${error ? `, ${error.code || error.message}` : ''}); gate sem resultado.`);
+  }
   console.log(`[${rotulo}] tsc: ${erros.length} erro(s)`);
   return erros;
 }
