@@ -77,6 +77,8 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     queryFn: () => resolveStoredFileUrl('comprovantes', comprovanteRef as string),
     enabled: !!comprovanteRef && open,
     staleTime: 30 * 60 * 1000,
+    // A URL assinada vale 1 h: renova antes de expirar enquanto o modal estiver aberto.
+    refetchInterval: 50 * 60 * 1000,
     // Sem isso o default keepPreviousData mostraria o link do pagamento anterior enquanto assina o novo.
     placeholderData: undefined,
   });
