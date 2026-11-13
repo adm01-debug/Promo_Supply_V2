@@ -2,21 +2,24 @@
 
 > Auditoria de 2026-11-12. Linha de base: `main` em `4cc1a7a`. Estado final: `main` em `b6e0427` (deploy de produção READY após #50: `dpl_EYjKiASE1eiagykXutA5UBnbEAfg`).
 > Banco auditado: Supabase `lmypcdfsrgfftzhxawao` (confirmado por `supabase_functions_list` → `project_ref`).
+> **Atualização 2026-11-13:** `main` em `c4a54e7` (#76); deploy Vercel do commit `c4a54e7`: status `success` "Deployment has completed" 14:32:58 UTC. Seções 0, 2, 4, 7, 8 e 9 refletem esse estado.
 > Toda prova abaixo foi obtida nesta sessão (saída de comando, query ou request). Status: **OK** (com prova) ou **BLOQUEADO** (erro exato + o que falta).
 
 ## 0. Resumo
 
 | Área | Situação final |
 |---|---|
-| Qualidade na `main` final `b6e0427` | OK — typecheck exit 0; `eslint .` exit 0 (0 erros); `vitest run` exit 0: **2297 passed / 12 skipped (2309)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (196/196); Deno 36/36 e E2E 30/30 (§1) |
-| GitHub Actions | ver §2 (re-execução pós-merge conferida) |
+| Qualidade na `main` final `c4a54e7` (2026-11-13) | OK — typecheck exit 0; `eslint .` exit 0 (0 erros, 9 warnings); `vitest run` exit 0: **2300 passed / 12 skipped (2312)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (528 pass / 0 fail; inventário de testes OK; `docs/ci/README.md bate com os 8 workflows`); Deno `36 passed / 0 failed / 13 ignored` |
+| GitHub Actions | pós-último-merge (`c4a54e7`): Freight Quest CI/CD, Guards, Automação local, CodeQL (Push on main) **success**; `notifica-falha-main` skipped; `types-sync` success (14:14); `contexto` push com 2 jobs `queued` (fila de runners); `inventario-estado-semanal` **failure** por setting do repositório — BLOQUEADO (§2) |
 | Banco: RLS | OK — 156/156 tabelas com RLS, 0 sem policy (6 tabelas-lixo removidas, #42) |
 | Banco: lints ERROR | OK — 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
 | **Segurança crítica** | OK — `execute_read_query` (#40) e `exec_sql` (#52) fechadas para visitante (`permission denied`); SECURITY DEFINER executáveis por anon **150 → 9** (#54); papéis voltaram a valer em 35 tabelas (#56) |
 | Produção front | OK — link direto/F5 voltaram a funcionar (#50: `/pedidos` 200; antes 404); 0 erro de runtime Vercel |
 | Dashboard de Compras | OK — `get_compras_dashboard_metrics` volta a responder (4 urgências) e fica restrito ao grupo (#55) |
-| Crons do banco | OK no código — apontam para o projeto certo, sem chave literal (#53); **BLOQUEADO** para rodar: falta `edge_invoke_service_key` no Vault e deploy das edges |
-| Edges | 27 no ar; 5 não publicadas + 1 inexistente; 4 de IA com 500; `migrate-helper` sem segredo — BLOQUEADO (token `sbp_`) |
+| Crons do banco | OK — `edge_invoke_service_key` gravada no Vault (md5 igual ao da chave do projeto); `outbox-worker-1min` → `process-outbox` **200** `{"processed":0,"dead":0}`; `xbz-sync-pedidos-30min` 404 → **200** (15:00 UTC); `spot-api-sync-stock` 404 → 500 `SPOT_API_ACCESS_KEY não configurada` — BLOQUEADO (credencial Spot) |
+| Edges | **37 no ar** (Management API `GET /functions` → 37): as 5 que faltavam publicadas e as 4 `ai-*` republicadas da `main` em 2026-11-13; BLOQUEADO: `ai-*` sem `LOVABLE_API_KEY`, `spot-api` sem `SPOT_API_ACCESS_KEY`, `migrate-helper` sem `MIGRATE_HELPER_ACCESS_KEY`, `process-solicitacao-neural` inexistente (§4) |
+| Fluxo de compra completo | BLOQUEADO — 2ª cotação (`numeric field overflow`), aprovação de cotação (`Transição de status inválida`) e pagamento com CNPJ antigo falham em produção (bugs anteriores à auditoria); correções em PRs de migration #70–#75, **abertas aguardando o dono** (§8.1) |
+| Banco: RLS (recheck 2026-11-13) | OK — 156 tabelas, 0 sem RLS, 0 com RLS sem policy, 0 policy com RLS desligada, 0 views sem `security_invoker`, 0 views com `auth.users` para anon |
 | Código pela metade | 0 TODO/FIXME/WIP; 10 botões ligados (#43/#46/#47) e 1 link corrigido (#48); 67 itens triados como decisão de negócio (§5.1) |
 ## 1. Linha de base de qualidade (antes de qualquer mudança)
 
@@ -48,7 +51,8 @@ Histórico do dia: às 11:02 UTC os jobs da `main` não iniciaram — anotação
 | `branch-hygiene-audit.yml` | #1 success | OK |
 | `notifica-falha-main.yml` | `skipped` (nada a notificar) | OK |
 | `inventario-estado-semanal.yml` | #1 failure: `GitHub Actions is not permitted to create or approve pull requests.` | BLOQUEADO — setting do repositório (decisão do dono) |
-| **Execução pós-último-merge na `main` (`b6e0427`, 19:57 UTC)** | 3 checks success, 9 `queued` por mais de 1 h; o repositório tem 38 runs `queued` e nenhum iniciando; consumo cobrável estável (35.951 min, US$ 215,71), ou seja, não é o orçamento | BLOQUEADO — fila de runners da conta parada; não há o que corrigir no código. Prova de qualidade da mesma `main`, rodada localmente: typecheck 0, eslint 0 erros, vitest 2297/2309 (12 skipped), build 0, guards 196/196, Deno 36/36, E2E 30/30 |
+| **Execução pós-último-merge na `main` (`c4a54e7`, #76, 14:31 UTC de 2026-11-13)** | Freight Quest CI/CD `success`; Guards offline `success`; Automação local `success`; Push on main (CodeQL) `success`; `notifica-falha-main` `skipped` (15:01); `types-sync` `success` (schedule 14:14); `contexto` run 43443470018: job "O que precisa rodar" success, "Produtor regras/" e "Produtor codigo/" `queued` sem runner; `inventario-estado-semanal` último run 42603442102 `failure`: `##[error]GitHub Actions is not permitted to create or approve pull requests.` | OK, exceto `contexto` (fila de runners) e `inventario-estado-semanal` — BLOQUEADO: setting do repositório "Allow GitHub Actions to create and approve pull requests" (decisão do dono; não se corrige por código) |
+| Execução anterior (`b6e0427`, 19:57 UTC de 2026-11-12) | 3 checks success, 9 `queued` por mais de 1 h; o repositório tem 38 runs `queued` e nenhum iniciando; consumo cobrável estável (35.951 min, US$ 215,71), ou seja, não é o orçamento | BLOQUEADO — fila de runners da conta parada; não há o que corrigir no código. Prova de qualidade da mesma `main`, rodada localmente: typecheck 0, eslint 0 erros, vitest 2297/2309 (12 skipped), build 0, guards 196/196, Deno 36/36, E2E 30/30 |
 
 ## 3. Banco (`lmypcdfsrgfftzhxawao`)
 
@@ -240,10 +244,10 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 
 | Edge | Chamada pelo front | HTTP no ping | Status | Prova / pendência |
 |---|---|---|---|---|
-| `ai-demand-prediction` | `DemandPredictionPanel.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-negotiation` | `NegociacaoIA.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-supplier-risk` | `SupplierRiskAnalysis.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-supplier-suggestion` | — | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `ai-demand-prediction` | `DemandPredictionPanel.tsx` | 500 → republicada | BLOQUEADO | 2026-11-13: republicada da `main` (`supabase functions deploy --use-api` → "Deployed Functions."; Management API: ACTIVE v3). O código exige `Deno.env.get("LOVABLE_API_KEY")` e a lista de secrets do projeto (`GET /v1/projects/…/secrets`) não tem essa chave — falta a chave do AI Gateway da Lovable (credencial do dono) |
+| `ai-negotiation` | `NegociacaoIA.tsx` | 500 → republicada | BLOQUEADO | 2026-11-13: republicada da `main` (`supabase functions deploy --use-api` → "Deployed Functions."; Management API: ACTIVE v3). O código exige `Deno.env.get("LOVABLE_API_KEY")` e a lista de secrets do projeto (`GET /v1/projects/…/secrets`) não tem essa chave — falta a chave do AI Gateway da Lovable (credencial do dono) |
+| `ai-supplier-risk` | `SupplierRiskAnalysis.tsx` | 500 → republicada | BLOQUEADO | 2026-11-13: republicada da `main` (`supabase functions deploy --use-api` → "Deployed Functions."; Management API: ACTIVE v3). O código exige `Deno.env.get("LOVABLE_API_KEY")` e a lista de secrets do projeto (`GET /v1/projects/…/secrets`) não tem essa chave — falta a chave do AI Gateway da Lovable (credencial do dono) |
+| `ai-supplier-suggestion` | — | 500 → republicada | BLOQUEADO | 2026-11-13: republicada da `main` (`supabase functions deploy --use-api` → "Deployed Functions."; Management API: ACTIVE v3). O código exige `Deno.env.get("LOVABLE_API_KEY")` e a lista de secrets do projeto (`GET /v1/projects/…/secrets`) não tem essa chave — falta a chave do AI Gateway da Lovable (credencial do dono) |
 | `alert-dispatcher` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `check-approval-escalations` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `check-cotacao-followup` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
@@ -255,8 +259,8 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | `fiscal-orchestrator` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `generate-contract-pdf` | `ContractDetailsModal.tsx` | 405 | OK | `supabase_functions_ping` → 405: publicada; ping usa método não aceito (só POST/OPTIONS) — esperado |
 | `guided-buying-ai` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
-| `health-dashboard` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
-| `maintain-partitions` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
+| `health-dashboard` | — | 404 → 401 | OK | 2026-11-13: publicada (ACTIVE v2). `GET` sem login pelo `pg_net` (id 95779) → 401 `{"error":"Unauthorized"}` do próprio código (antes 404 `Requested function was not found`) |
+| `maintain-partitions` | — | 404 → publicada | BLOQUEADO | publicada 2026-11-13 (ACTIVE v2, `GET /functions`). Chamada real não feita: a função cria partições (escrita) e a chamada com a chave `service_role` foi negada pelo controle de permissões da sessão ("Modify Shared Resources"); nenhum cron a chama hoje |
 | `migrate-helper` | — | 500 | BLOQUEADO | ping 500. Log real em `telemetry_logs` (13:48:27 UTC): **`[migrate-helper] server_misconfigured: MIGRATE_HELPER_ACCESS_KEY ausente`** — falta o segredo `MIGRATE_HELPER_ACCESS_KEY` nas secrets das edges (decisão do dono; segredo nunca passa por PR). Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
 | `migrate-storage-paths` | `StorageMigration.tsx` | 405 | OK | `supabase_functions_ping` → 405: publicada; ping usa método não aceito (só POST/OPTIONS) — esperado |
 | `process-invoice-idp` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
@@ -266,7 +270,7 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | `run-audit` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `scim-v2` | `SSOConfig.tsx` | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `send-push-notification` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
-| `spot-api` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
+| `spot-api` | — | 404 → 500 | BLOQUEADO | publicada 2026-11-13; secret `SPOT_CRON_KEY` cadastrado (POST secrets → 201) com o valor de `spot_cron_key` do Vault. Cron `spot-api-sync-stock` 14:45 e 15:00 UTC → 500 `{"error":"SPOT_API_ACCESS_KEY não configurada"}`: passa no gateway e na chave do cron; falta a credencial da conta Spot Gifts |
 | `spot-proxy` | `useSpotIntegration.ts` | 405 | OK | `supabase_functions_ping` → 405: publicada; ping usa método não aceito (só POST/OPTIONS) — esperado |
 | `system-simulation` | `AdminTelemetria.tsx` | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `telemetry` | `logger.ts` | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
@@ -276,8 +280,8 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | `weekly-report` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `weekly-summary-report` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `workflow-engine` | — | 405 | OK | `supabase_functions_ping` → 405: publicada; ping usa método não aceito (só POST/OPTIONS) — esperado |
-| `xbz-proxy` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
-| `xbz-sync-pedidos` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
+| `xbz-proxy` | — | 404 → 405 | OK | publicada 2026-11-13. `GET` pelo `pg_net` (id 95780) → 405 `{"error":"Método não permitido","requestId":…}` do próprio código (só POST) |
+| `xbz-sync-pedidos` | — | 404 → 200 | OK | publicada 2026-11-13. Cron `xbz-sync-pedidos-30min` 15:00 UTC → 200 `{"results":[],"requestId":"f0c11d92-…"}` (antes 404 às 14:30) |
 | `process-solicitacao-neural` | chamada em `src/` mas **sem pasta** em `supabase/functions/` | 404 | BLOQUEADO | fio cortado: o front chama uma edge que não existe no repo nem em produção (`edge-functions.json: chamadas_sem_pasta`) — exige decidir se cria a função ou remove a chamada |
 
 ## 5. Código pela metade
@@ -430,9 +434,9 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 |---|---|---|
 | Vercel (front) | projeto `promo-supply-v2` | OK na home — deploys de produção READY para #43 (`e897b42`), #44 (`257a4c4`) e #46 (`5cdeeac`, `dpl_Gpa7SE4Auyd2wWzKr4HSpjgUJBQZ`); `get_runtime_errors(2h)` → "No runtime errors found". **BLOQUEADO em links diretos**: `GET /compras` → 404 `NOT_FOUND` (já era assim na linha de base `4cc1a7a`): falta `vercel.json` com rewrite da SPA → PR #50; preview `promo-supply-v2-3kf2yhzhf`: `/compras` → 200 `index.html` e `/manifest.webmanifest` → 200 `application/manifest+json` |
 | Supabase Auth/DB | `lmypcdfsrgfftzhxawao` | OK — 12 usuários, 5 papéis admin; simulando um admin (`request.jwt.claims` + `role authenticated`, transação revertida): solicitações 11, pedidos 34, cotações 61, fornecedores 10, pagamentos 3; como `anon`: 0 em todas essas |
-| AI Gateway (Lovable) | edges `ai-*` | BLOQUEADO — as 4 edges de IA devolvem 500 (§4) |
-| XBZ | `xbz-proxy`, `xbz-sync-pedidos` | BLOQUEADO — não publicadas (404) |
-| Spot Gifts | `spot-proxy` (no ar, 405 no ping) / `spot-api` | `spot-proxy` OK; `spot-api` BLOQUEADO (404) |
+| AI Gateway (Lovable) | edges `ai-*` | BLOQUEADO — republicadas; falta o secret `LOVABLE_API_KEY` (§4) |
+| XBZ | `xbz-proxy`, `xbz-sync-pedidos` | OK — publicadas; sincronização agendada 200 às 15:00 UTC (§4) |
+| Spot Gifts | `spot-proxy` (no ar, 405 no ping) / `spot-api` | `spot-proxy` OK; `spot-api` BLOQUEADO — publicada, falta `SPOT_API_ACCESS_KEY` (500 no cron, §4) |
 | ERP | `erp-sync` | OK — publicada (401 sem JWT) |
 | SCIM / SSO | `scim-v2` | OK — publicada (401 sem JWT) |
 | WebAuthn (passkey) | `webauthn-register`, `webauthn-authenticate` | OK — publicadas (405 no ping GET) |
@@ -459,19 +463,44 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 | [#54](https://github.com/adm01-debug/Promo_Supply_V2/pull/54) | revoga 141 SECURITY DEFINER de anon | 150 → 9; login sem sessão OK | mergeada + aplicada |
 | [#55](https://github.com/adm01-debug/Promo_Supply_V2/pull/55) | dashboard de compras volta a carregar, restrito ao grupo | admin: KPIs + 4 urgências; anon → `permission denied` | mergeada + aplicada |
 | [#56](https://github.com/adm01-debug/Promo_Supply_V2/pull/56) | `tenant_isolation_*` RESTRICTIVE em 35 tabelas | admin vê tudo; sem papel: fornecedores 10 → 0 | mergeada + aplicada |
-| [#57](https://github.com/adm01-debug/Promo_Supply_V2/pull/57) | seta do tour corrompida + guard de encoding | local após rebase: guards 198/198, vitest onboarding 59/59, doctor healthy | aberta — aguardando CI (fila parada, §2) |
+| [#57](https://github.com/adm01-debug/Promo_Supply_V2/pull/57) | seta do tour corrompida + guard de encoding | local após rebase: guards 198/198, vitest onboarding 59/59, doctor healthy | mergeada |
 | [#58](https://github.com/adm01-debug/Promo_Supply_V2/pull/58) | números do CSV em formato pt-BR | CI verde | mergeada |
 | [#59](https://github.com/adm01-debug/Promo_Supply_V2/pull/59) | vencimento das urgências um dia antes | `main`+#59: typecheck OK, 1011/1011 | mergeada |
+| [#62](https://github.com/adm01-debug/Promo_Supply_V2/pull/62) | moeda `char(1)` → `char(3)`: cotação e pedido voltam a ser criados | recheck 2026-11-13: `cotacoes`, `pedidos`, `savings_tracker` = `character(3)` | mergeada + aplicada |
+| [#63](https://github.com/adm01-debug/Promo_Supply_V2/pull/63) | números do dashboard de compras sem inflar; período passa a valer | migration `20261112222833` aplicada | mergeada + aplicada |
+| [#64](https://github.com/adm01-debug/Promo_Supply_V2/pull/64) | cadastro preenche a empresa certa | recheck: 37 gatilhos `fill_tenant_id*` ativos | mergeada + aplicada |
+| [#65](https://github.com/adm01-debug/Promo_Supply_V2/pull/65) | comprador lê contratos (só leitura; aprovado pelo dono, opção A) | recheck: policies `buyer_le_contracts`, `buyer_le_contract_items`, `buyer_le_contract_documents` | mergeada + aplicada |
+| [#66](https://github.com/adm01-debug/Promo_Supply_V2/pull/66) | fecha vazamento de papel/empresa e KPIs de outras organizações | recheck: `has_function_privilege('anon','user_belongs_to_tenant')` = false | mergeada + aplicada |
+| [#67](https://github.com/adm01-debug/Promo_Supply_V2/pull/67) | guard de encoding pega acento corrompido, seta e U+FFFD | guards 528/528 na `main` `c4a54e7` | mergeada |
+
+Também mergeadas na `main` no período (escopo de outras frentes): #60, #61, #68, #76.
+
+Operações em produção de 2026-11-13 (aprovadas pelo dono, "APROVADO 1, 2 e 3"): `vault.create_secret` de `edge_invoke_service_key` (valor lido pela Management API e gravado sem exibir; md5 no Vault = md5 da chave do projeto); deploy de `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos` e redeploy das 4 `ai-*` a partir da `main`; secret `SPOT_CRON_KEY` (201). Papéis: 7 usuários com `buyer` (recheck).
+
+### 8.1 PRs abertas aguardando o dono (migration em produção — não mergear sem decisão)
+
+| PR | O quê | Revisão independente | Pendência |
+|---|---|---|---|
+| [#70](https://github.com/adm01-debug/Promo_Supply_V2/pull/70) | 2ª cotação e sequência de status (compra completa) | aprovada (provas em rollback em produção) | conflita com #71 em `trg_pedido_entregue_transition`: aplicar em ordem combinada; 51 de 61 cotações seguem com `score_total` NULL |
+| [#71](https://github.com/adm01-debug/Promo_Supply_V2/pull/71) | solicitação pequena, entrega gera 1 pagamento (hoje 2), orçamento sem multiplicar | sem revisão (`API Error: 500` do revisor) | revisar e combinar com #70 |
+| [#72](https://github.com/adm01-debug/Promo_Supply_V2/pull/72) | CNPJ antigo inválido deixa de travar pedido/pagamento | aprovada | — |
+| [#73](https://github.com/adm01-debug/Promo_Supply_V2/pull/73) | card "Aguardando" mostra o backlog; textos batem com o período | aprovada | CI vermelho era o TS2345 herdado, corrigido na `main` pela #76: precisa rebase |
+| [#74](https://github.com/adm01-debug/Promo_Supply_V2/pull/74) | guard de encoding (maiúsculas, escape JSON) + versiona o job 40 de limpeza do cron | parcial: banco não reproduzido (MCP do Supabase fora) | refazer prova; rebase |
+| [#75](https://github.com/adm01-debug/Promo_Supply_V2/pull/75) | comprador não altera dados de outras organizações | reprovada por falta de prova no banco; riscos em `approval_steps` sem `tenant_id` e licitações/pagamentos sem filtro de org | refazer prova e ajustar |
+| [#69](https://github.com/adm01-debug/Promo_Supply_V2/pull/69) | 14 alertas CodeQL (outra frente) | — | mexe em workflow (`permissions` de CI): decisão do dono |
 
 Dados alterados em produção com aprovação do dono: `vault.create_secret` de `xbz_cron_key` e `spot_cron_key` (64 caracteres, aleatórios, nunca exibidos; `verify_xbz_cron_key` aceita a certa e recusa a errada); papel `buyer` para 6 usuários `@promo.local` (Ana Silva passou a ver fornecedores 0 → 10 e cotações 61).
 
 ## 9. Aguardando decisão do dono (BLOQUEADO)
-1. **`edge_invoke_service_key` no Vault** — é a chave `service_role` do projeto; só o dono cola pelo painel. Sem ela, o outbox (`process-outbox`) e as chamadas do banco às edges ficam parados (#53 aplicada, fail-closed).
-2. **Deploy de edges** — `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos` sem deploy (404); 4 `ai-*` com 500 na versão publicada (o código da `main` carrega: `deno check` OK); `migrate-helper` sem `MIGRATE_HELPER_ACCESS_KEY`; `SPOT_CRON_KEY` da `spot-api` deve receber o valor de `spot_cron_key` do Vault. Exige token `sbp_` (o dono recusou nesta sessão; nenhum MCP disponível publica edge neste projeto).
-3. **`comprador1@promo.local`** — o perfil tem `tenant_id` = id da organização (`df60b900…`, não existe em `tenants`), o que quebra o gatilho de auditoria ao dar papel. A correção (`profiles.tenant_id` → `39838251…`, único tenant da organização) foi barrada pelo controle de permissões da sessão: precisa de aval explícito.
-4. **`CRON_SECRET` ausente** — `verifyCronSecret` (`supabase/functions/_shared/security.ts:196`) é fail-open: qualquer um com a chave anon dispara alert-dispatcher, check-* e weekly-report.
-5. **67 elementos clicáveis sem ação, card fictício `AISupplierSuggestion`, métricas fixas do dashboard executivo, `DeliveryCalendar` nunca renderizado** — exigem definição de negócio (§5.1).
-6. **Ledger de migrations** — decidir baseline (§3.2).
-7. **Dados com mojibake** — `sourcing_event_lots.nome` (6 linhas); correção é DML em produção.
-8. **Segurança da conta** — o repositório está **público**; um token Vercel (`vcp_…`) foi colado no chat e deve ser revogado; `x-spot-cron-key` antigo ficou gravado em 6.037 linhas de `cron.job_run_details` (substituído por chave nova no Vault).
-9. **Inventário semanal** — habilitar "Allow GitHub Actions to create and approve pull requests".
+Resolvidos em 2026-11-13: `edge_invoke_service_key` no Vault, deploy das 5 edges, redeploy das 4 `ai-*`, `SPOT_CRON_KEY` e perfil do `comprador1` (§8).
+
+1. **Fluxo de compra completo** — PRs de migration #70–#75 (§8.1): decidir o caminho do apply (não há ledger) e a ordem #70 → #71 → #72 → #73.
+2. **Credenciais de fornecedores** — `SPOT_API_ACCESS_KEY` (Spot Gifts: cron 500 `SPOT_API_ACCESS_KEY não configurada`) e `LOVABLE_API_KEY` (as 4 edges de IA). Só o dono tem os valores; entram como secrets das edges, nunca por PR.
+3. **`migrate-helper`** — `server_misconfigured: MIGRATE_HELPER_ACCESS_KEY ausente`. É uma função administrativa: definir se fica desligada (estado atual, fail-closed) ou recebe a chave.
+4. **`CRON_SECRET` ausente** — `verifyCronSecret` (`supabase/functions/_shared/security.ts:196`) é fail-open: qualquer um com a chave anon dispara alert-dispatcher, check-* e weekly-report. Ligar exige o mesmo valor nos crons do banco.
+5. **`maintain-partitions`** — publicada, mas a chamada de prova (escreve partições) foi negada pelo controle de permissões da sessão; nenhum cron a chama.
+6. **67 elementos clicáveis sem ação, card fictício `AISupplierSuggestion`, métricas fixas do dashboard executivo, `DeliveryCalendar` nunca renderizado, edge `process-solicitacao-neural` inexistente** (chamada em `NovaSolicitacaoModal.tsx:112` e `DeveloperDocs.tsx:44`) — exigem definição de negócio (§5.1).
+7. **Ledger de migrations** — decidir baseline (§3.2); sem ele, "migrations do repo batem com o banco" não é verificável arquivo a arquivo.
+8. **Dados com mojibake** — `sourcing_event_lots.nome` (6 linhas); correção é DML em produção.
+9. **Segurança da conta** — repositório público; token Vercel (`vcp_…`) colado no chat deve ser revogado; `x-spot-cron-key` antigo em 6.037 linhas de `cron.job_run_details`.
+10. **Actions** — habilitar "Allow GitHub Actions to create and approve pull requests" (inventário semanal); fila de runners do `contexto` parada (jobs `queued`).
