@@ -146,9 +146,32 @@ export function stripHtml(input: string): string {
  * sem stack trace nem caminhos internos (previne js/stack-trace-exposure).
  */
 export function safeErrorMessage(err: unknown): string {
-  const raw = err instanceof Error ? err.message : String(err);
+  let raw: string;
+  if (err instanceof Error) {
+    raw = err.message;
+  } else if (typeof err === "object" && err !== null) {
+    raw = safeSerialize(err);
+  } else {
+    raw = String(err);
+  }
   const firstLine = raw.split("\n")[0].trim();
   return firstLine ? firstLine : "Internal error";
+}
+
+/** Serializa objeto sem expor stack trace nem falhar em referência circular. */
+function safeSerialize(value: object): string {
+  try {
+    const seen = new WeakSet<object>();
+    return JSON.stringify(value, (_key, v) => {
+      if (typeof v === "object" && v !== null) {
+        if (seen.has(v)) return "[Circular]";
+        seen.add(v);
+      }
+      return v;
+    });
+  } catch {
+    return "Internal error";
+  }
 }
 
 /**
