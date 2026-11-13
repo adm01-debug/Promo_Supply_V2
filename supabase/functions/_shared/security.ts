@@ -115,6 +115,31 @@ export const responses = {
 };
 
 /**
+ * Remove HTML tags de uma string, inclusive "<" / ">" remanescentes que sobraram
+ * de tag quebrada (ex.: "<script" sem ">" de fechamento). Loop ate fixpoint para
+ * pegar marcadores aninhados.
+ */
+export function stripHtml(input: string): string {
+  let result = input;
+  for (let i = 0; i < 8; i++) {
+    const next = result.replace(/<[^>]*>?/g, "").trim();
+    if (next === result) break;
+    result = next;
+  }
+  return result.replace(/<|>/g, "").trim();
+}
+
+/**
+ * Converte um erro desconhecido em mensagem segura para devolver ao cliente,
+ * sem stack trace nem caminhos internos (previne js/stack-trace-exposure).
+ */
+export function safeErrorMessage(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err);
+  const firstLine = raw.split("\n")[0].trim();
+  return firstLine ? firstLine : "Internal error";
+}
+
+/**
  * @deprecated M-02: use `getAuthUser` + `getTenantId` (que resolvem tenant a partir do usuário).
  * Mantido apenas para não quebrar callers legados durante a migração.
  * A partir desta versão, o header `x-tenant-id` é ignorado — sempre lança se

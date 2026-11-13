@@ -10,6 +10,7 @@
  *   await recordIdempotentResponse("spot", key, result);
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { safeErrorMessage } from "./security.ts";
 
 function admin() {
   return createClient(
@@ -124,7 +125,7 @@ export async function withIdempotency(
       headers: { ...corsHeaders, "Content-Type": "application/json", "X-Idempotency-Key": key },
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+    const message = safeErrorMessage(err);
     await recordIdempotentResponse(source, key, null, { status: "failed", errorMessage: message });
     return new Response(JSON.stringify({ error: message }), {
       status: 500,

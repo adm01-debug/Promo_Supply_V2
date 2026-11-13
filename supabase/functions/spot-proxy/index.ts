@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, stripHtml } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -440,7 +440,7 @@ function parseProductDetailFromHTML(html: string, productId: string): Record<str
 
   const nameMatch = html.match(/<h1[^>]*class="[^"]*product-name[^"]*"[^>]*>([\s\S]*?)<\/h1>/i)
     || html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  if (nameMatch) detail.name = nameMatch[1].replace(/<[^>]+>/g, "").trim();
+  if (nameMatch) detail.name = stripHtml(nameMatch[1]);
 
   const refMatch = html.match(/data-iderp="(\d+)"/);
   if (refMatch) detail.ref = refMatch[1];
@@ -655,7 +655,7 @@ function parseOrdersFromHTML(html: string): Array<Record<string, unknown>> {
     const orderId = numMatch ? numMatch[1] : "";
 
     const refMatch = row.match(/<td[^>]*class="[^"]*ref[^"]*"[^>]*>([\s\S]*?)<\/td>/i);
-    const reference = refMatch ? refMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+    const reference = refMatch ? stripHtml(refMatch[1]) : "";
 
     const dateMatch = row.match(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/);
     const date = dateMatch ? dateMatch[1] : "";
@@ -667,10 +667,10 @@ function parseOrdersFromHTML(html: string): Array<Record<string, unknown>> {
     const detailsUrl = detailsMatch ? detailsMatch[1] : "";
 
     const trackingMatch = row.match(/tracking[^>]*>([\s\S]*?)<\/td>/i);
-    const tracking = trackingMatch ? trackingMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+    const tracking = trackingMatch ? stripHtml(trackingMatch[1]) : "";
 
     const carrierMatch = row.match(/transportadora[^>]*>([\s\S]*?)<\/td>/i);
-    const carrier = carrierMatch ? carrierMatch[1].replace(/<[^>]+>/g, "").trim() : "";
+    const carrier = carrierMatch ? stripHtml(carrierMatch[1]) : "";
 
     if (orderId) {
       orders.push({
@@ -717,7 +717,7 @@ function parseFinancialDocsFromHTML(html: string): Record<string, unknown> {
     const isOverdue = match[0].includes("vencida");
 
     const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [];
-    const values = cells.map(c => c.replace(/<[^>]+>/g, "").trim());
+    const values = cells.map(c => stripHtml(c));
 
     const downloadMatch = row.match(/download\.php\?id=(\d+)/);
     const downloadId = downloadMatch ? downloadMatch[1] : null;
@@ -752,7 +752,7 @@ async function handleCheckout(supabase: ReturnType<typeof getSupabaseAdmin>, add
   let addrMatch;
   while ((addrMatch = addrPattern.exec(destinoHtml)) !== null) {
     if (addrMatch[1] !== "") {
-      addresses.push({ id: addrMatch[1], label: addrMatch[2].replace(/<[^>]+>/g, "").trim() });
+      addresses.push({ id: addrMatch[1], label: stripHtml(addrMatch[2]) });
     }
   }
 
