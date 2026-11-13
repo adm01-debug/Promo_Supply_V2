@@ -49,11 +49,14 @@ const KanbanWorkflow = () => {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, newStatus }: { id: string; newStatus: string }) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("solicitacoes")
         .update({ status: newStatus })
-        .eq("id", id);
+        .eq("id", id)
+        .select("id");
       if (error) throw error;
+      // RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la.
+      if (!data?.length) throw new Error("Sem permissão para alterar esta solicitação");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["kanban-solicitacoes"] });
