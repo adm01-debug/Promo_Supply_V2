@@ -9,6 +9,9 @@
 #   - e2e-com-placeholder: sem os secrets VITE_*, o E2E sobe o dev server com valores de placeholder e falha nos fluxos logados
 name: Freight Quest CI/CD
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ main, develop ]
