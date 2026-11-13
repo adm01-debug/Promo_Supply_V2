@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "c4a54e7540fcb05f8ed5985998a6790a105685e5",
+  "sha": "9c73ed63b983afdb413c304789d43420f9434821",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 15:23 UTC",
+  "generated_at": "2026-11-13 17:22 UTC",
   "files_total": 1192,
   "code_files": 1052,
   "code_lines": 183129,
@@ -109124,10 +109124,19 @@
   }
  },
  "git": {
-  "sha": "c4a54e7540fcb05f8ed5985998a6790a105685e5",
+  "sha": "9c73ed63b983afdb413c304789d43420f9434821",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9c73ed6",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): fecha relatório de prontidão com o estado de 2026-11-13 (#77)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "c4a54e7",
     "date": "2026-11-13",
@@ -109520,18 +109529,13 @@
     "files": [
      "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql"
     ]
-   },
-   {
-    "sha": "5001fc3",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "security(banco): views com security_invoker e sem leitura anonima (#41)",
-    "files": [
-     "supabase/migrations/20261112135000_views_security_invoker.sql"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/prod-readiness.md",
+    2
+   ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
@@ -109606,10 +109610,6 @@
    ],
    [
     "src/hooks/useLicitacoes.ts",
-    1
-   ],
-   [
-    "src/hooks/usePagamentos.ts",
     1
    ]
   ]

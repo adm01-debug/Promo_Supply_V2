@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c4a54e7540fcb05f8ed5985998a6790a105685e5` (2026-11-13T11:31:06-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9c73ed63b983afdb413c304789d43420f9434821` (2026-11-13T13:06:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -397,11 +397,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (478 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (507 linhas)
 - subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-13 `9c73ed63` docs(prod): fecha relatório de prontidão com o estado de 2026-11-13 (#77)
 - 2026-11-13 `c4a54e75` fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)
 - 2026-11-13 `975d0f95` chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)
 - 2026-11-13 `e7ff5fb4` fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)
@@ -416,7 +417,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `e06e53b1` fix(ui): seta do tour de onboarding aparecia corrompida (#57)
 - 2026-11-12 `62016b23` chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)
 - 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
-- 2026-11-12 `284eef46` fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
