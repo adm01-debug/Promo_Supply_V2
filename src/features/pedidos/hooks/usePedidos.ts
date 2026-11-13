@@ -190,7 +190,7 @@ export function usePedidos(filters?: PedidoFilters) {
   }, [user, organizationId, queryClient]);
 
   // Update pedido
-  const updatePedido = useCallback(async (id: string, updates: Partial<Pedido>) => {
+  const updatePedido = useCallback(async (id: string, updates: Database['public']['Tables']['pedidos']['Update']) => {
     try {
       logger.info('Atualizando pedido', { id, updates });
       const { error } = await supabase.from('pedidos').update(updates).eq('id', id);
@@ -221,7 +221,7 @@ export function usePedidos(filters?: PedidoFilters) {
       return false;
     }
 
-    const updates: Partial<Pedido> = { status: newStatus };
+    const updates: Database['public']['Tables']['pedidos']['Update'] = { status: newStatus };
     if (newStatus === 'entregue') {
       updates.data_entrega = new Date().toISOString().split('T')[0];
     }
@@ -231,7 +231,7 @@ export function usePedidos(filters?: PedidoFilters) {
   // Bulk update status
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pedido['status']) => {
     try {
-      const updates: Partial<Pedido> = { status: newStatus };
+      const updates: Database['public']['Tables']['pedidos']['Update'] = { status: newStatus };
       if (newStatus === 'entregue') updates.data_entrega = new Date().toISOString().split('T')[0];
       const { error } = await supabase.from('pedidos').update(updates).in('id', ids);
       if (error) throw error;

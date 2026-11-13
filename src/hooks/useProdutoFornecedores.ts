@@ -59,7 +59,11 @@ export function useProdutoFornecedores(produtoId?: string) {
       const { data, error } = await supabase
         .from("produto_fornecedores")
         .insert({
-          ...input,
+          produto_id: input.produto_id,
+          fornecedor_id: input.fornecedor_id,
+          preco_custo: input.preco_custo,
+          lead_time_estimado: input.lead_time_estimado,
+          codigo_no_fornecedor: input.codigo_no_fornecedor ?? null,
           organization_id: tenantId,
           tenant_id: tenantId,
         })
