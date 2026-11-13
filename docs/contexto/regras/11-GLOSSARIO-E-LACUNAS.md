@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6c530a0630` · branch `main` · 2026-11-13 01:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3118a1fd0b` · branch `main` · 2026-11-13 03:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -75,7 +75,6 @@
 | `licitacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 27 colunas | migration |
 | `login_attempts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `mfa_settings` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
-| `mv_dashboard_kpis` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | types.ts |
 | `negotiation_analyses` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
 | `notification_preferences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `notifications` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
@@ -129,7 +128,6 @@
 | `spot_skus` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
 | `sso_configurations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `supplier_bonifications` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
-| `supplier_compliance_summary` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | types.ts |
 | `supplier_documents` | _(sem COMMENT ON TABLE — significado não documentado)_ | 17 colunas | types.ts |
 | `supplier_qualification_scores` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | types.ts |
 | `system_alerts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
@@ -142,14 +140,13 @@
 | `telemetry_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | types.ts |
 | `telemetry_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `temp_file_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
-| `tenants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 20 colunas | migration |
+| `tenants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 21 colunas | migration |
 | `unspsc_codes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `user_filter_preferences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `user_organizations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `user_roles` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | migration |
 | `user_tenants` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
 | `user_tour_preferences` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `v_system_health_overview` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | types.ts |
 | `wal_rate_snapshots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `webauthn_challenges` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `webauthn_credentials` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
@@ -172,22 +169,22 @@
 | `xbz_produtos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 20 colunas | migration |
 | `audit_action_type` (enum) | create, update, delete, view, export, login, logout, approve, reject, cancel |  | banco |
 | `audit_entity_type` (enum) | solicitacao, cotacao, pedido, pagamento, fornecedor, usuario, configuracao, relatorio |  | banco |
-| `app_role` (enum) | admin, coordinator, buyer, finance, viewer |  | banco |
+| `app_role` (enum) | admin, coordinator, buyer, finance, viewer, supplier |  | banco |
+| `sourcing_type` (enum) | rfi, rfp, rfq, auction |  | banco |
+| `sourcing_status` (enum) | draft, published, in_progress, evaluation, awarded, cancelled |  | banco |
+| `invitation_status` (enum) | pending, viewed, declined, submitted, expired |  | banco |
+| `question_type` (enum) | text, number, single_choice, multi_choice, file, date |  | banco |
+| `bid_status` (enum) | valid, rejected, withdrawn, winning |  | banco |
+| `audit_event_type` (enum) | create, update, delete, approve, reject, auth, security, export |  | banco |
+| `tenant_status` (enum) | active, suspended, trial, churned |  | banco |
+| `sourcing_project_status` (enum) | backlog, planning, execution, negotiation, implementation, completed, cancelled |  | banco |
+| `saving_type` (enum) | negotiated, avoidance, process, specification |  | banco |
 | `workflow_node_type` (enum) | start, end, approval, condition, action, delay |  | banco |
 | `workflow_status` (enum) | pending, running, completed, failed, cancelled |  | banco |
-| `audit_event_type` (enum) | create, update, delete, approve, reject, auth, security, export |  | banco |
-| `bid_status` (enum) | valid, rejected, withdrawn, winning |  | banco |
-| `invitation_status` (enum) | pending, viewed, declined, submitted, expired |  | banco |
-| `log_level` (enum) | info, warn, error, debug |  | banco |
-| `question_type` (enum) | text, number, single_choice, multi_choice, file, date |  | banco |
-| `regime_tributario` (enum) | simples_nacional, lucro_presumido, lucro_real, mei |  | banco |
-| `saving_type` (enum) | negotiated, avoidance, process, specification |  | banco |
-| `sourcing_project_status` (enum) | backlog, planning, execution, negotiation, implementation, completed, cancelled |  | banco |
-| `sourcing_status` (enum) | draft, published, in_progress, evaluation, awarded, cancelled |  | banco |
-| `sourcing_type` (enum) | rfi, rfp, rfq, auction |  | banco |
-| `status_producao_enum` (enum) | pendente, primeira_peca, em_producao, personalizando, concluido |  | banco |
-| `tenant_status` (enum) | active, suspended, trial, churned |  | banco |
 | `tipo_produto_enum` (enum) | importado, fabricado, personalizado |  | banco |
+| `status_producao_enum` (enum) | pendente, primeira_peca, em_producao, personalizando, concluido |  | banco |
+| `log_level` (enum) | info, warn, error, debug |  | banco |
+| `regime_tributario` (enum) | simples_nacional, lucro_presumido, lucro_real, mei |  | banco |
 | `KpiColor` (TS) | emerald \| orange \| blue \| purple \| green \| cyan \| red \| indigo \| teal \| violet \| fuchsia |  | `src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx` |
 | `SortOption` (TS) | prazo \| valor \| data |  | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `FilterStatus` (TS) | all \| urgente \| escalado \| normal |  | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
@@ -317,51 +314,17 @@
 | coluna | coluna `organization_id` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `role` usada no código não existe no schema de `profiles` |  |
 | coluna | coluna `organization_id` usada no código não existe no schema de `cost_centers` |  |
-| coluna | coluna `status` usada no código não existe no schema de `cron_heartbeats` |  |
 | coluna | coluna `action` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `actor_id` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `resource_id` usada no código não existe no schema de `audit_logs` |  |
 | coluna | coluna `resource_type` usada no código não existe no schema de `audit_logs` |  |
-| tabela | tabela `a` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `b2` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `b3` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `bucket_quebrado` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `comprovantes` usada no código não existe nas migrations/types do repo | `src/components/pagamentos/PagamentoDetailModal.tsx` |
-| tabela | tabela `contacts` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs`<br>`scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `dashboard_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `documentos` usada no código não existe nas migrations/types do repo | `src/components/compras/NovaSolicitacaoModal.tsx` |
-| tabela | tabela `emails` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `fantasma` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `fixture_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `ghost_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `ignorada` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `messages` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `payments` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `pg_class` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
-| tabela | tabela `pg_namespace` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
-| tabela | tabela `pg_policies` usada no código não existe nas migrations/types do repo | `scripts/rls-audit.ts` |
-| tabela | tabela `runtime_table` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `shared_nao_conta` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `so_teste` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `t` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `t1` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs`<br>`scripts/ci/gerar-matriz-edge-tabela.unit.mjs` |
-| tabela | tabela `tabela` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.mjs`<br>`scripts/inventario/gerar-banco.mjs`<br>`scripts/inventario/gerar-repo.mjs` |
-| tabela | tabela `tools_runtime` usada no código não existe nas migrations/types do repo | `scripts/ai-context/gerar.unit.mjs` |
-| tabela | tabela `tx` usada no código não existe nas migrations/types do repo | `scripts/ai-context/cenarios.mjs` |
-| tabela | tabela `x` usada no código não existe nas migrations/types do repo | `scripts/ci/gerar-matriz-edge-tabela.mjs` |
-| rls | `blocked_countries`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/components/security/BlockedCountriesPanel.tsx` |
-| rls | `geo_access_logs`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/components/security/GeoAccessLogsPanel.tsx` |
-| rls | `licitacao_lances`: RLS ligado sem nenhuma política → só service_role acessa | `src/hooks/useLicitacoes.ts` |
-| rls | `notifications`: front faz DELETE mas nenhuma política RLS permite DELETE → vai falhar/retornar vazio para usuários | `src/hooks/useRealPushNotifications.ts` |
-| rls | `qualification_history`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/components/compras/QualificationHistoryTimeline.tsx` |
-| rls | `qualification_requirements`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/hooks/useSupplierQualification.ts` |
-| rls | `savings_tracker`: RLS ligado sem nenhuma política → só service_role acessa | `src/pages/admin/SourcingPipeline.tsx` |
-| rls | `sourcing_projects`: RLS ligado sem nenhuma política → só service_role acessa | `src/pages/admin/SourcingPipeline.tsx` |
-| rls | `supplier_compliance_summary`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/pages/compliance/ComplianceDashboard.tsx` |
-| rls | `supplier_documents`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/hooks/useSupplierQualification.ts` |
-| rls | `supplier_qualification_scores`: acessada do front (3 arquivo(s)) sem RLS (não encontrado) | `src/components/compras/scorecard/supplierScorecardData.ts`<br>`src/hooks/useSupplierQualification.ts`<br>`src/pages/portal-fornecedor/portalFornecedorData.ts` |
+| rls | `blocked_countries`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/security/BlockedCountriesPanel.tsx` |
+| rls | `geo_access_logs`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/security/GeoAccessLogsPanel.tsx` |
+| rls | `qualification_history`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/compras/QualificationHistoryTimeline.tsx` |
+| rls | `qualification_requirements`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
+| rls | `supplier_documents`: acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
+| rls | `supplier_qualification_scores`: acessada do front (3 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/compras/scorecard/supplierScorecardData.ts`<br>`src/hooks/useSupplierQualification.ts`<br>`src/pages/portal-fornecedor/portalFornecedorData.ts` |
 | rls | `user_tenants`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/features/auth/hooks/useAuth.tsx` |
-| rls | `v_system_health_overview`: acessada do front (1 arquivo(s)) sem RLS (não encontrado) | `src/pages/admin/HealthDashboard.tsx` |
 | tenant | `saved_filters` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `entity_versions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `historico_compras` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
@@ -410,58 +373,43 @@
 | tenant | `blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `supplier_compliance_summary` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `v_system_health_overview` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| edge | edge function `dashboard-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `fixture-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `ghost-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `inexistente` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
-| edge | edge function `orphan-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `other` invocada mas não existe em supabase/functions/ | `scripts/ai-context/cenarios.mjs` |
 | edge | edge function `process-solicitacao-neural` invocada mas não existe em supabase/functions/ | `src/components/compras/NovaSolicitacaoModal.tsx`<br>`src/pages/admin/DeveloperDocs.tsx` |
-| edge | edge function `runtime-fn` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `runtime-missing` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `send-email` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| edge | edge function `tools-edge` invocada mas não existe em supabase/functions/ | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `dashboard_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `demo` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/test_snapshot.py` |
-| rpc | RPC `fixture_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `fn` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/snapshot.py` |
-| rpc | RPC `ghost_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `is_admin` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `list_public_policies` chamada mas não definida nas migrations/types | `scripts/rls-audit.ts` |
-| rpc | RPC `nome` chamada mas não definida nas migrations/types | `scripts/supabase_snapshot/snapshot.py` |
-| rpc | RPC `r1` chamada mas não definida nas migrations/types | `scripts/ai-context/cenarios.mjs` |
-| rpc | RPC `runtime_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `tools_rpc` chamada mas não definida nas migrations/types | `scripts/ai-context/gerar.unit.mjs` |
-| rpc | RPC `x` chamada mas não definida nas migrations/types | `scripts/inventario/gerar-rotas.mjs` |
-| dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `scripts/inventario/gerar-banco.mjs` |
-| dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `scripts/regras_negocio/generate.py` |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/hooks/useOfflineSync.ts` |
-| dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `src/tests/integration/supabase-db.test.ts` |
 | dinâmico | 4 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/external-db-bridge/index.ts` |
 | dinâmico | 2 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/migrate-storage-paths/index.ts` |
 | dinâmico | 1 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `supabase/functions/spot-api/index.ts` |
-| dinâmico | 3 chamada(s) `.from(variável)` — tabela só conhecida em runtime | `tests-rls/rls-isolation.test.ts` |
-| segurança | função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql` |
-| segurança | função `handle_solicitacao_budget_change` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
-| segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
-| segurança | função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
-| segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
-| segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
-| segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
-| segurança | função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql` |
+| ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);` · `EXECUTE format('DROP POLICY IF EXISTS %I ON public.security_logs', pol.policyname);` | `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.rate_limit_logs', pol.policyname);` | `supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql` |
+| ddl dinâmico | 5 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE (SELECT string_agg(format('DROP POLICY IF EXISTS %I ON public.approval_rules', policyname), '; ') FROM pg_policies WHERE tablename='approval_rules' AND cmd='SELECT');` · `EXECUTE (SELECT string_agg(format('DROP POLICY IF EXISTS %I ON public.supplier_qualification_scores', policyname), '; ') FROM pg_policies WHERE tablename='supplier_qualification_scores' AND cmd='SELECT');` · `EXECUTE (SELECT string_agg(format('DROP POLICY IF EXISTS %I ON public.receiving_checklists', policyname), '; ') FROM pg_policies WHERE tablename='receiving_checklists' AND cmd='SELECT');` | `supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE 'REVOKE EXECUTE ON FUNCTION public.' \|\| quote_ident(func_record.func_name) \|\| '(' \|\| func_record.args \|\| ') FROM PUBLIC';` | `supabase/migrations/20260507194122_b32edeb5-a032-4132-8ee2-1fc234103852.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER FUNCTION %I.%I(%s) SET search_path = public, pg_temp;', func_record.nspname, func_record.proname, func_record.args);` | `supabase/migrations/20260514211742_3b400e1b-5a7e-4c5b-8326-3f4a7ab9e309.sql` |
+| ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('REVOKE EXECUTE ON FUNCTION %s FROM PUBLIC, anon, authenticated;', func_record.oid::regprocedure);` · `EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO service_role;', func_record.oid::regprocedure);` | `supabase/migrations/20260514211800_648e4d06-4b0d-4ca2-b3e3-5c682f7b6079.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'ALTER FUNCTION %I.%I(%s) SET search_path = public, pg_temp', r.nspname, r.proname, r.argtypes );` | `supabase/migrations/20260521142029_security_hardening.sql` |
+| ddl dinâmico | 3 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER FUNCTION %I.%I(%s) SET search_path = public', r.nspname, r.proname, pg_get_function_identity_arguments(r.oid));` · `EXECUTE format('REVOKE ALL ON FUNCTION %I.%I(%s) FROM PUBLIC', r.nspname, r.proname, pg_get_function_identity_arguments(r.oid));` · `EXECUTE format('GRANT EXECUTE ON FUNCTION %I.%I(%s) TO service_role', r.nspname, r.proname, pg_get_function_identity_arguments(r.oid));` | `supabase/migrations/20260529192540_87382966-9b4e-41cf-851a-a359e114d03b.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER FUNCTION %I.%I(%s) SET search_path = public', r.nspname, r.proname, pg_get_function_identity_arguments(r.oid));` | `supabase/migrations/20260529192650_fc849ba0-cdfa-4a50-8c04-23fcee8f864d.sql` |
+| ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER FUNCTION %I.%I(%s) SET search_path = public', r.nspname, r.proname, r.args);` · `EXECUTE format('REVOKE ALL ON FUNCTION %I.%I(%s) FROM PUBLIC', r.nspname, r.proname, r.args);` | `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'REVOKE EXECUTE ON FUNCTION %I.%I(%s) FROM PUBLIC, anon, authenticated', f.schema_name, f.func_name, f.args );` | `supabase/migrations/20260619194754_f1a59f1a-7413-46ad-86f5-3e325c85da41.sql` |
+| ddl dinâmico | 11 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('CREATE POLICY %I ON public.%I FOR INSERT TO authenticated WITH CHECK (public.tenant_in_my_group(tenant_id))', pol.policyname, pol.tablename);` · `EXECUTE format('CREATE POLICY %I ON public.%I FOR SELECT TO authenticated USING (public.tenant_in_my_group(tenant_id))', pol.policyname, pol.tablename);` · `EXECUTE format('CREATE POLICY %I ON public.%I FOR UPDATE TO authenticated USING (public.tenant_in_my_group(tenant_id)) WITH CHECK (public.tenant_in_my_group(tenant_id))', pol.policyname, pol.tablename);` | `supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'CREATE TABLE IF NOT EXISTS public.%I PARTITION OF public.telemetry_logs FOR VALUES FROM (%L) TO (%L);', part_name, start_date, end_date );` | `supabase/migrations/20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `IF EXISTS ( SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND policyname IN ( 'Authenticated users can … THEN CREATE POLICY "Users can manage own notifications" ON public.notifications FOR ALL TO authenticated US …` | `supabase/migrations/20260719000001_rls_using_true_cleanup.sql` |
+| ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('REVOKE EXECUTE ON FUNCTION %s FROM PUBLIC, anon, authenticated', s::regprocedure);` · `EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO service_role', s::regprocedure);` | `supabase/migrations/20261112171300_secdef_revoga_anon.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'ALTER TABLE public.%I ALTER COLUMN %I TYPE character(3) USING (CASE WHEN %I = %L THEN %L ELSE %I END)::character(3)', r.table_name, r.column_name, r.column_name, 'B', 'BRL', r.column_name);` | `supabase/migrations/20261112222817_moeda_char3_cotacao_pedido.sql` |
+| ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `execute format( 'create trigger a_fill_tenant_id before insert on public.%I ' 'for each row execute function public.fill_tenant_id_from_profile()', t);` | `supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql` |
+| segurança | função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql` |
+| segurança | função `handle_solicitacao_budget_change` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
+| segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
+| segurança | função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
+| segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
+| segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
+| segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
 - Nenhuma regra manual em `manual/`: prazos, limites, exceções comerciais, quem aprova o quê — só o negócio sabe.
 - `cotacoes.follow_up_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `fornecedores.estado` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `contracts.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `approval_steps.etapa` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `spot_pedidos.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `spot_pedidos.status_color` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `spot_pedidos.status_synced_at` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `fiscal_documents.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `fiscal_documents.reconciliation_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `fiscal_documents.sefaz_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -473,7 +421,6 @@
 - `creditos_fornecedor.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `licitacoes.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `licitacao_propostas.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `tenants.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `scim_provisioning_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `punchout_catalogs.last_test_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `fiscal_events.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -486,14 +433,11 @@
 - `xbz_pedidos.status_logistico` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `xbz_pedidos.id_lote_debito_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `xbz_pedidos.lote_debito_status_cliente` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `xbz_pedidos.data_status_lote_debito` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `xbz_carrinho_log.response_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `spot_api_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_documents.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_qualification_scores.qualification_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- `supplier_compliance_summary.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 160/163 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
-- Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel.
+- 157/160 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
 
 ## Regras manuais presentes
 

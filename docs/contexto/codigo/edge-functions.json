@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 38,
+ "total": 37,
  "verify_jwt_false": [
   "migrate-helper"
  ],
@@ -579,10 +579,12 @@
     "security.ts",
     "validation.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useGuidedBuying.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {
@@ -618,10 +620,12 @@
    "usa_shared": [
     "http.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/pages/admin/AlertDetail.tsx"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {
@@ -731,7 +735,9 @@
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
-   "buckets": [],
+   "buckets": [
+    "fiscal-documents"
+   ],
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
@@ -739,10 +745,12 @@
     "logger.ts",
     "security.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/pages/documentos/DocumentosFiscais.tsx"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {
@@ -857,8 +865,8 @@
   {
    "nome": "run-audit",
    "entrada": "supabase/functions/run-audit/index.ts",
-   "arquivos": 2,
-   "linhas": 167,
+   "arquivos": 1,
+   "linhas": 100,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -882,7 +890,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "scim-v2",
@@ -1115,26 +1123,6 @@
    "testes": 1
   },
   {
-   "nome": "tests",
-   "entrada": null,
-   "arquivos": 0,
-   "linhas": 0,
-   "verify_jwt": true,
-   "metodos": [],
-   "tabelas": [],
-   "rpcs": [],
-   "env": [],
-   "buckets": [],
-   "chama_edges": [],
-   "hosts_externos": [],
-   "usa_shared": [],
-   "chamada_pelo_front": [],
-   "chamada_por_edges": [],
-   "chamada_por_sql_ou_cron": false,
-   "orfa": true,
-   "testes": 14
-  },
-  {
    "nome": "webauthn-authenticate",
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
@@ -1347,10 +1335,12 @@
     "xbz_client.ts",
     "xbz_crypto.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/hooks/useXbzIntegration.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 0
   },
   {

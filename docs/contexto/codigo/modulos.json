@@ -85,7 +85,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contract_documents",
     "contract_history",
     "contract_items",
@@ -98,7 +97,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -141,23 +139,20 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
     "licitacao-bids-${licitacaoId}"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert",
-    "combobox"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -198,9 +193,7 @@
    "canais_realtime": [],
    "env": [],
    "flags": [],
-   "papeis": [
-    "status"
-   ],
+   "papeis": [],
    "diretos": {
     "edges": [],
     "tabelas": [],
@@ -253,14 +246,12 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -475,6 +466,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -487,7 +479,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -501,7 +492,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -555,7 +545,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -564,23 +555,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -600,7 +581,6 @@
      "contracts",
      "cotacoes",
      "devolucoes",
-     "documentos",
      "fornecedores",
      "order_contracts",
      "pagamentos",
@@ -691,8 +671,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -867,7 +845,6 @@
     "licitacao-bids-${licitacaoId}"
    ],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1011,14 +988,11 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
-   "papeis": [
-    "dialog"
-   ],
+   "papeis": [],
    "diretos": {
     "edges": [],
     "tabelas": [],
@@ -1076,7 +1050,6 @@
     "notifications-realtime"
    ],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1139,7 +1112,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1239,7 +1211,6 @@
    ],
    "tabelas": [
     "audit_logs",
-    "comprovantes",
     "creditos_fornecedor",
     "fiscal_documents",
     "pagamentos",
@@ -1259,7 +1230,6 @@
    ],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1270,7 +1240,6 @@
    "diretos": {
     "edges": [],
     "tabelas": [
-     "comprovantes",
      "creditos_fornecedor",
      "fiscal_documents",
      "pagamentos",
@@ -1341,7 +1310,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1458,15 +1426,12 @@
     "rate-limit-alerts"
    ],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert",
-    "separator"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -1526,7 +1491,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1591,18 +1555,11 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
-   "papeis": [
-    "alert",
-    "link",
-    "presentation",
-    "separator"
-   ],
+   "papeis": [],
    "diretos": {
     "edges": [],
     "tabelas": [],
@@ -1773,7 +1730,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1862,7 +1818,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -1942,9 +1897,7 @@
    "testes": 4,
    "linhas": 5039,
    "itens_menu": [],
-   "telas": [
-    "/auth"
-   ],
+   "telas": [],
    "rotas_http": [],
    "componentes": 27,
    "hooks_locais": [
@@ -2035,6 +1988,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -2047,7 +2001,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -2061,7 +2014,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -2111,7 +2063,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -2120,23 +2073,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -2238,7 +2181,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -2325,7 +2267,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -2511,10 +2452,12 @@
     "useXbzIntegration"
    ],
    "edges": [
+    "guided-buying-ai",
     "spot-proxy",
     "telemetry",
     "webauthn-authenticate",
-    "webauthn-register"
+    "webauthn-register",
+    "xbz-proxy"
    ],
    "tabelas": [
     "active_sessions",
@@ -2600,8 +2543,6 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -2609,14 +2550,15 @@
    "papeis": [
     "admin",
     "assistant",
-    "dialog",
     "user"
    ],
    "diretos": {
     "edges": [
+     "guided-buying-ai",
      "spot-proxy",
      "webauthn-authenticate",
-     "webauthn-register"
+     "webauthn-register",
+     "xbz-proxy"
     ],
     "tabelas": [
      "active_sessions",
@@ -3012,7 +2954,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contract_documents",
     "contract_history",
     "contract_items",
@@ -3025,7 +2966,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -3076,23 +3016,20 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
     "licitacao-bids-${licitacaoId}"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert",
-    "combobox"
+    "admin"
    ],
    "diretos": {
     "edges": [
@@ -3270,7 +3207,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3329,8 +3265,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3409,6 +3343,7 @@
     "dependency-health",
     "erp-sync",
     "external-db-bridge",
+    "health-dashboard",
     "migrate-storage-paths",
     "process-solicitacao-neural",
     "punchout-setup",
@@ -3447,20 +3382,19 @@
     "system_alerts_admin"
    ],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "diretos": {
     "edges": [
      "dependency-health",
      "erp-sync",
      "external-db-bridge",
+     "health-dashboard",
      "migrate-storage-paths",
      "process-solicitacao-neural",
      "punchout-setup",
@@ -3548,7 +3482,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3636,8 +3569,6 @@
     "approval_notifications_${user.id}"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3695,7 +3626,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3725,7 +3655,9 @@
    "testes": 0,
    "linhas": 534,
    "itens_menu": [],
-   "telas": [],
+   "telas": [
+    "/auth"
+   ],
    "rotas_http": [],
    "componentes": 2,
    "hooks_locais": [
@@ -3757,14 +3689,12 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -3833,7 +3763,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -3899,10 +3828,11 @@
    "rpcs": [
     "current_tenant_id"
    ],
-   "buckets": [],
+   "buckets": [
+    "product-images"
+   ],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -4038,6 +3968,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "spot-proxy",
     "telemetry"
@@ -4051,7 +3982,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -4065,7 +3995,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -4119,7 +4048,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -4128,24 +4058,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "button",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -4272,8 +4191,10 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
-    "telemetry"
+    "telemetry",
+    "xbz-proxy"
    ],
    "tabelas": [
     "approval_delegations",
@@ -4284,7 +4205,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -4298,7 +4218,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -4348,7 +4267,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -4357,23 +4277,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -4433,7 +4343,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -4559,6 +4468,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -4571,7 +4481,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -4585,7 +4494,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -4635,7 +4543,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -4644,23 +4553,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -4717,7 +4616,6 @@
     "contract_items",
     "contract_penalties",
     "contracts",
-    "documentos",
     "order_contracts",
     "profiles",
     "user_roles",
@@ -4731,8 +4629,6 @@
    ],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -4829,8 +4725,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -4875,6 +4769,8 @@
    "testes": 1,
    "linhas": 403,
    "itens_menu": [
+    "Início",
+    "Dashboard",
     "Executivo"
    ],
    "telas": [
@@ -4882,7 +4778,7 @@
     "/dashboard-executivo"
    ],
    "rotas_http": [],
-   "componentes": 0,
+   "componentes": 2,
    "hooks_locais": [
     "useAccountFilters",
     "useAuth",
@@ -4956,15 +4852,12 @@
     "licitacao-bids-${licitacaoId}"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -5016,21 +4909,19 @@
    ],
    "hooks_definidos": [],
    "edges": [
-    "telemetry"
+    "telemetry",
+    "xbz-proxy"
    ],
    "tabelas": [],
    "rpcs": [],
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
-   "papeis": [
-    "alert"
-   ],
+   "papeis": [],
    "diretos": {
     "edges": [],
     "tabelas": [],
@@ -5094,8 +4985,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5143,6 +5032,7 @@
    ],
    "hooks_definidos": [],
    "edges": [
+    "process-invoice-idp",
     "telemetry"
    ],
    "tabelas": [
@@ -5150,18 +5040,20 @@
     "pedidos"
    ],
    "rpcs": [],
-   "buckets": [],
+   "buckets": [
+    "fiscal-documents"
+   ],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [],
    "diretos": {
-    "edges": [],
+    "edges": [
+     "process-invoice-idp"
+    ],
     "tabelas": [
      "fiscal_documents",
      "pedidos"
@@ -5221,7 +5113,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5300,8 +5191,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5376,7 +5265,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5457,7 +5345,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5515,7 +5402,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5640,6 +5526,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -5652,7 +5539,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -5666,7 +5552,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -5716,7 +5601,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -5725,23 +5611,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -5801,7 +5677,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -5935,6 +5810,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -5947,7 +5823,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -5962,7 +5837,6 @@
     "department_budgets",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -6012,7 +5886,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -6021,23 +5896,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -6095,7 +5960,6 @@
    ],
    "tabelas": [
     "audit_logs",
-    "comprovantes",
     "creditos_fornecedor",
     "fiscal_documents",
     "pagamentos",
@@ -6115,8 +5979,6 @@
    ],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -6199,8 +6061,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -6336,6 +6196,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -6348,7 +6209,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -6362,7 +6222,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -6413,7 +6272,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -6422,23 +6282,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -6566,6 +6416,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -6578,7 +6429,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -6592,7 +6442,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -6646,7 +6495,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -6655,23 +6505,13 @@
     "notifications-realtime"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "diretos": {
@@ -6729,7 +6569,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -6796,7 +6635,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -6871,14 +6709,12 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -6945,8 +6781,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -7086,6 +6920,7 @@
     "ai-supplier-risk",
     "check-sla-alerts",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry",
     "webauthn-authenticate",
@@ -7104,7 +6939,6 @@
     "blocked_ips",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -7118,7 +6952,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -7177,7 +7010,8 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -7187,24 +7021,13 @@
     "rate-limit-alerts"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "separator",
-    "status",
     "user"
    ],
    "diretos": {
@@ -7277,7 +7100,6 @@
     "audit_logs",
     "categorias",
     "cost_centers",
-    "documentos",
     "produtos",
     "profiles",
     "solicitacoes",
@@ -7293,18 +7115,17 @@
     "get_effective_approver",
     "get_solicitacoes_kpis"
    ],
-   "buckets": [],
+   "buckets": [
+    "documentos"
+   ],
    "canais_realtime": [],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "combobox"
+    "admin"
    ],
    "diretos": {
     "edges": [],
@@ -7387,7 +7208,6 @@
     "licitacao-bids-${licitacaoId}"
    ],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -7543,7 +7363,10 @@
     "erp-sync",
     "external-db-bridge",
     "generate-contract-pdf",
+    "guided-buying-ai",
+    "health-dashboard",
     "migrate-storage-paths",
+    "process-invoice-idp",
     "process-solicitacao-neural",
     "punchout-setup",
     "scim-v2",
@@ -7551,7 +7374,8 @@
     "system-simulation",
     "telemetry",
     "webauthn-authenticate",
-    "webauthn-register"
+    "webauthn-register",
+    "xbz-proxy"
    ],
    "tabelas": [
     "active_sessions",
@@ -7567,7 +7391,6 @@
     "blocked_ips",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -7582,7 +7405,6 @@
     "department_budgets",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "erp_connections",
     "erp_sync_log",
     "estoque",
@@ -7678,7 +7500,9 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos"
+    "documentos",
+    "fiscal-documents",
+    "product-images"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -7689,25 +7513,13 @@
     "system_alerts_admin"
    ],
    "env": [
-    "DEV",
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "button",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "separator",
-    "status",
     "user"
    ],
    "diretos": {
@@ -7848,7 +7660,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
@@ -7932,7 +7743,6 @@
    "buckets": [],
    "canais_realtime": [],
    "env": [
-    "PROD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],

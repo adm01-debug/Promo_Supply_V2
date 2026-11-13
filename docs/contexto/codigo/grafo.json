@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 591,
- "arestas": 2627,
+ "arestas": 2631,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -207,10 +207,7 @@
   "src/hooks/useUnsavedChangesWarning.ts",
   "src/lib/secureStorage.ts",
   "src/lib/security.ts",
-  "src/lib/supabaseRpc.ts",
-  "supabase/functions/run-audit/rls_test.ts",
-  "tests-e2e/fixtures.ts",
-  "tests-e2e/global-setup.ts"
+  "src/lib/supabaseRpc.ts"
  ],
  "modulos_mais_acoplados": [
   {

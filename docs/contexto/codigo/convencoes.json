@@ -3,12 +3,11 @@
  "format_version": 2,
  "onde_ficam": {
   "telas": [
-   "src/pages (52)",
-   "src/features (1)"
+   "src/pages (53)"
   ],
   "componentes": [
    "src/components (214)",
-   "src/pages (76)",
+   "src/pages (78)",
    "src/features (33)"
   ],
   "hooks": [
@@ -23,13 +22,13 @@
   ],
   "testes": [
    "co-localizado (__tests__) (99)",
-   "co-localizado (*.test) (26)",
-   "outro (26)"
+   "outro (37)",
+   "co-localizado (*.test) (19)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
   "scripts": [
-   "scripts/ci (12)",
+   "scripts/ci (15)",
    "scripts/types-sync (7)",
    "scripts/inventario (5)"
   ],
@@ -42,27 +41,26 @@
   "componentes": "PascalCase (84%)",
   "hooks": "use + PascalCase",
   "servicos": "camelCase (94%)",
-  "edge_functions": "kebab-case (95%)",
-  "tabelas": "snake_case (88%)"
+  "edge_functions": "kebab-case (97%)",
+  "tabelas": "snake_case (89%)"
  },
  "barrels_index": 4,
  "extensao_componentes": [
-  ".tsx (326)"
+  ".tsx (328)"
  ],
  "alias_imports": {
   "(raiz)": {
-   "@/": "src/",
-   "~/": "src/"
+   "@/": "src/"
   }
  },
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)",
    "security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)",
    "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)",
    "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)",
-   "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)",
-   "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)"
+   "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)"
   ]
  },
  "pr_template": null,

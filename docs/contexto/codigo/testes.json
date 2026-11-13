@@ -5,11 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 151,
+ "total": 165,
  "por_tipo": {
   "contrato": 5,
+  "e2e": 9,
   "pytest": 2,
-  "unit": 144
+  "unit": 149
  },
  "onde_ficam": [
   {
@@ -17,23 +18,29 @@
    "arquivos": 99
   },
   {
-   "padrao": "co-localizado (*.test)",
-   "arquivos": 26
+   "padrao": "outro",
+   "arquivos": 37
   },
   {
-   "padrao": "outro",
-   "arquivos": 26
+   "padrao": "co-localizado (*.test)",
+   "arquivos": 19
+  },
+  {
+   "padrao": "tests-e2e/",
+   "arquivos": 9
+  },
+  {
+   "padrao": "tests-rls/",
+   "arquivos": 1
   }
  ],
  "arquivos": [
   {
    "arquivo": "scripts/ai-context/gerar.unit.mjs",
    "tipo": "unit",
-   "linhas": 361,
-   "testa": [
-    "src/routes/AppRoutes.tsx"
-   ],
-   "casos": 18
+   "linhas": 657,
+   "testa": [],
+   "casos": 5
   },
   {
    "arquivo": "scripts/automation.unit.mjs",
@@ -47,19 +54,19 @@
   {
    "arquivo": "scripts/ci/actions-kpi.unit.mjs",
    "tipo": "unit",
-   "linhas": 195,
+   "linhas": 377,
    "testa": [
     "scripts/ci/actions-kpi.mjs",
     "scripts/ci/workflow-test-support.mjs"
    ],
-   "casos": 13
+   "casos": 20
   },
   {
    "arquivo": "scripts/ci/agents-docs-baseline.unit.mjs",
    "tipo": "unit",
-   "linhas": 69,
+   "linhas": 213,
    "testa": [],
-   "casos": 5
+   "casos": 11
   },
   {
    "arquivo": "scripts/ci/ai-context-generator.unit.mjs",
@@ -71,48 +78,48 @@
   {
    "arquivo": "scripts/ci/audit-prod.unit.mjs",
    "tipo": "unit",
-   "linhas": 201,
+   "linhas": 345,
    "testa": [
     "scripts/ci/audit-prod.mjs"
-   ],
-   "casos": 9
-  },
-  {
-   "arquivo": "scripts/ci/branch-podaveis.unit.mjs",
-   "tipo": "unit",
-   "linhas": 181,
-   "testa": [
-    "scripts/ci/branch-podaveis.mjs",
-    "scripts/ci/workflow-test-support.mjs"
    ],
    "casos": 16
   },
   {
+   "arquivo": "scripts/ci/branch-podaveis.unit.mjs",
+   "tipo": "unit",
+   "linhas": 250,
+   "testa": [
+    "scripts/ci/branch-podaveis.mjs",
+    "scripts/ci/workflow-test-support.mjs"
+   ],
+   "casos": 21
+  },
+  {
    "arquivo": "scripts/ci/check-bundle-secrets.unit.mjs",
    "tipo": "unit",
-   "linhas": 294,
+   "linhas": 390,
    "testa": [
     "scripts/ci/check-bundle-secrets.mjs"
    ],
-   "casos": 27
+   "casos": 35
   },
   {
    "arquivo": "scripts/ci/check-test-inventory.unit.mjs",
    "tipo": "unit",
-   "linhas": 176,
+   "linhas": 311,
    "testa": [
     "scripts/ci/check-test-inventory.mjs"
    ],
-   "casos": 11
+   "casos": 18
   },
   {
    "arquivo": "scripts/ci/commit-msg-lint.unit.mjs",
    "tipo": "unit",
-   "linhas": 150,
+   "linhas": 207,
    "testa": [
     "scripts/ci/commit-msg-lint.mjs"
    ],
-   "casos": 10
+   "casos": 14
   },
   {
    "arquivo": "scripts/ci/encoding-src.unit.mjs",
@@ -124,11 +131,74 @@
   {
    "arquivo": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
    "tipo": "unit",
-   "linhas": 87,
+   "linhas": 162,
    "testa": [
     "scripts/ci/gerar-matriz-edge-tabela.mjs"
    ],
-   "casos": 5
+   "casos": 10
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types.unit.mjs",
+   "tipo": "unit",
+   "linhas": 17,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/banco.unit.mjs",
+   "tipo": "unit",
+   "linhas": 416,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs",
+    "scripts/ci/inventario-types/pg.mjs"
+   ],
+   "casos": 34
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/gates.unit.mjs",
+   "tipo": "unit",
+   "linhas": 340,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/gentypes.unit.mjs",
+   "tipo": "unit",
+   "linhas": 402,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs",
+    "scripts/ci/inventario-types/pg.mjs"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/identidade.unit.mjs",
+   "tipo": "unit",
+   "linhas": 322,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/repo.unit.mjs",
+   "tipo": "unit",
+   "linhas": 243,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs"
+   ],
+   "casos": 16
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/rotas.unit.mjs",
+   "tipo": "unit",
+   "linhas": 353,
+   "testa": [
+    "scripts/ci/inventario-types/lib.mjs"
+   ],
+   "casos": 21
   },
   {
    "arquivo": "scripts/ci/maintenance.unit.mjs",
@@ -140,26 +210,39 @@
   {
    "arquivo": "scripts/ci/regras-negocio.unit.mjs",
    "tipo": "unit",
-   "linhas": 288,
+   "linhas": 428,
    "testa": [],
-   "casos": 5
+   "casos": 9
   },
   {
    "arquivo": "scripts/ci/render-workflow-docs.unit.mjs",
    "tipo": "unit",
-   "linhas": 154,
+   "linhas": 277,
    "testa": [],
-   "casos": 10
+   "casos": 21
+  },
+  {
+   "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
+   "tipo": "unit",
+   "linhas": 863,
+   "testa": [
+    "scripts/db-explain-analyze.ts",
+    "scripts/realtime-audit.ts",
+    "scripts/rls-audit.ts",
+    "scripts/stress-test.ts",
+    "scripts/validate-bridge.ts"
+   ],
+   "casos": 40
   },
   {
    "arquivo": "scripts/ci/sla-code-scanning.unit.mjs",
    "tipo": "unit",
-   "linhas": 73,
+   "linhas": 143,
    "testa": [
     "scripts/ci/sla-code-scanning.mjs",
     "scripts/ci/workflow-test-support.mjs"
    ],
-   "casos": 7
+   "casos": 11
   },
   {
    "arquivo": "scripts/ci/supabase-snapshot.unit.mjs",
@@ -171,9 +254,20 @@
   {
    "arquivo": "scripts/ci/toolchain-schedule.unit.mjs",
    "tipo": "unit",
-   "linhas": 14,
-   "testa": [],
-   "casos": 1
+   "linhas": 183,
+   "testa": [
+    "scripts/ci/bump-toolchain.mjs"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "scripts/ci/workflow-yaml-guard.unit.mjs",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [
+    "scripts/ci/workflow-yaml-guard.mjs"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "scripts/graphify-local.unit.mjs",
@@ -185,13 +279,23 @@
    "casos": 24
   },
   {
+   "arquivo": "scripts/lib/psql-leitura.test.mjs",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "scripts/lib/psql-leitura.mjs",
+    "scripts/lib/seguranca-processo.mjs"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "scripts/lib/seguranca-processo.test.mjs",
    "tipo": "unit",
-   "linhas": 125,
+   "linhas": 233,
    "testa": [
     "scripts/lib/seguranca-processo.mjs"
    ],
-   "casos": 10
+   "casos": 15
   },
   {
    "arquivo": "scripts/maintenance/maintenance.unit.mjs",
@@ -206,14 +310,14 @@
   {
    "arquivo": "scripts/regras_negocio/test_generate.py",
    "tipo": "pytest",
-   "linhas": 164,
+   "linhas": 636,
    "testa": [],
    "casos": 0
   },
   {
    "arquivo": "scripts/supabase_snapshot/test_snapshot.py",
    "tipo": "pytest",
-   "linhas": 878,
+   "linhas": 1417,
    "testa": [],
    "casos": 0
   },
@@ -1208,6 +1312,15 @@
    "casos": 22
   },
   {
+   "arquivo": "supabase/functions/_shared/integrity_test.ts",
+   "tipo": "unit",
+   "linhas": 96,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts"
+   ],
+   "casos": 0
+  },
+  {
    "arquivo": "supabase/functions/_shared/logger.fuzz.test.ts",
    "tipo": "unit",
    "linhas": 270,
@@ -1242,6 +1355,13 @@
    "linhas": 227,
    "testa": [],
    "casos": 6
+  },
+  {
+   "arquivo": "supabase/functions/run-audit/rls_test.ts",
+   "tipo": "unit",
+   "linhas": 67,
+   "testa": [],
+   "casos": 1
   },
   {
    "arquivo": "supabase/functions/scim-v2/conformance.test.ts",
@@ -1286,49 +1406,63 @@
   },
   {
    "arquivo": "tests-e2e/auth-navigation.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 74,
    "testa": [],
    "casos": 4
   },
   {
    "arquivo": "tests-e2e/critical-flows.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 43,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests-e2e/dashboard-ui.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 37,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests-e2e/elite-validation.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 54,
    "testa": [],
    "casos": 2
   },
   {
+   "arquivo": "tests-e2e/fixtures.ts",
+   "tipo": "e2e",
+   "linhas": 36,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "tests-e2e/global-setup.ts",
+   "tipo": "e2e",
+   "linhas": 50,
+   "testa": [],
+   "casos": 0
+  },
+  {
    "arquivo": "tests-e2e/production-ready.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 60,
    "testa": [],
    "casos": 5
   },
   {
    "arquivo": "tests-e2e/workflow-advanced.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 53,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests-e2e/xbz-network-panel.spec.ts",
-   "tipo": "unit",
+   "tipo": "e2e",
    "linhas": 144,
    "testa": [],
    "casos": 10
@@ -1347,16 +1481,26 @@
   "scripts/ci/actions-kpi.mjs": 1,
   "scripts/ci/audit-prod.mjs": 1,
   "scripts/ci/branch-podaveis.mjs": 1,
+  "scripts/ci/bump-toolchain.mjs": 1,
   "scripts/ci/check-bundle-secrets.mjs": 1,
   "scripts/ci/check-test-inventory.mjs": 1,
   "scripts/ci/commit-msg-lint.mjs": 1,
   "scripts/ci/gerar-matriz-edge-tabela.mjs": 1,
+  "scripts/ci/inventario-types/lib.mjs": 6,
+  "scripts/ci/inventario-types/pg.mjs": 2,
   "scripts/ci/sla-code-scanning.mjs": 1,
   "scripts/ci/workflow-test-support.mjs": 3,
+  "scripts/ci/workflow-yaml-guard.mjs": 1,
+  "scripts/db-explain-analyze.ts": 1,
   "scripts/graphify-local.mjs": 1,
-  "scripts/lib/seguranca-processo.mjs": 1,
+  "scripts/lib/psql-leitura.mjs": 1,
+  "scripts/lib/seguranca-processo.mjs": 2,
   "scripts/maintenance/lib.mjs": 1,
   "scripts/maintenance/run.mjs": 1,
+  "scripts/realtime-audit.ts": 1,
+  "scripts/rls-audit.ts": 1,
+  "scripts/stress-test.ts": 1,
+  "scripts/validate-bridge.ts": 1,
   "src/components/accessibility/accessibilityHelpers.ts": 1,
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/KanbanBoard.tsx": 1,
@@ -1449,7 +1593,6 @@
   "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts": 1,
   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts": 1,
   "src/pages/solicitacoes/solicitacoesHelpers.ts": 1,
-  "src/routes/AppRoutes.tsx": 1,
   "src/schemas/solicitacao.schema.ts": 1,
   "src/services/auditService.ts": 1,
   "src/stores/buyerAlertsStore.ts": 1,
@@ -1459,7 +1602,7 @@
   "src/stores/undoStore.ts": 1,
   "src/types/contract.ts": 1,
   "src/types/legacyTypes.ts": 1,
-  "supabase/functions/_shared/contracts.ts": 2,
+  "supabase/functions/_shared/contracts.ts": 3,
   "supabase/functions/_shared/fuzzSeed.ts": 2,
   "supabase/functions/_shared/fuzzer.ts": 2,
   "supabase/functions/_shared/logLevel.ts": 1,
@@ -1469,7 +1612,6 @@
  },
  "sem_teste": {
   "telas": [
-   "src/features/layout/components/PageLoader.tsx",
    "src/pages/NotFound.tsx",
    "src/pages/acompanhamento/Acompanhamento.tsx",
    "src/pages/admin-telemetria/AdminTelemetria.tsx",
@@ -1485,6 +1627,7 @@
    "src/pages/admin/WorkflowAdmin.tsx",
    "src/pages/aprovacoes/Aprovacoes.tsx",
    "src/pages/auditoria/Auditoria.tsx",
+   "src/pages/auth/Auth.tsx",
    "src/pages/buyer/BuyerPerformanceDashboard.tsx",
    "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
    "src/pages/catalogo-spot/CatalogoSpot.tsx",
@@ -1522,7 +1665,6 @@
    "src/pages/sourcing/Sourcing.tsx"
   ],
   "hooks": [
-   "scripts/ai-context/cenarios.mjs",
    "src/components/accessibility/AdvancedAccessibility.tsx",
    "src/components/onboarding/OnboardingTour.tsx",
    "src/components/ui/celebration.tsx",
@@ -1609,7 +1751,6 @@
    "process-outbox",
    "punchout-receive",
    "punchout-setup",
-   "run-audit",
    "send-push-notification",
    "spot-api",
    "spot-proxy",

@@ -8,11 +8,24 @@
   "scripts/ci/check-test-inventory.mjs": [
    "scripts/lib/seguranca-processo.mjs"
   ],
+  "scripts/ci/inventario-types/pg.mjs": [
+   "scripts/ci/inventario-types/lib.mjs"
+  ],
+  "scripts/db-explain-analyze.ts": [
+   "scripts/lib/psql-leitura.mjs"
+  ],
+  "scripts/lib/psql-leitura.mjs": [
+   "scripts/lib/seguranca-processo.mjs",
+   "scripts/types-sync/identidade-banco.mjs"
+  ],
   "scripts/maintenance/run.mjs": [
    "scripts/maintenance/lib.mjs"
   ],
   "scripts/maintenance/typecheck.mjs": [
    "scripts/maintenance/lib.mjs"
+  ],
+  "scripts/rls-audit.ts": [
+   "scripts/lib/psql-leitura.mjs"
   ],
   "scripts/types-sync/local-pg-proxy.mjs": [
    "scripts/types-sync/identidade-banco.mjs"
@@ -3329,9 +3342,6 @@
    "supabase/functions/_shared/circuit_breaker.ts",
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/retry.ts"
-  ],
-  "supabase/functions/_shared/integrity_test.ts": [
-   "supabase/functions/_shared/contracts.ts"
   ],
   "supabase/functions/_shared/logger.ts": [
    "supabase/functions/_shared/logLevel.ts"

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6c530a0630ca2c73c17b3d51e2bca90ff8c1da16` (2026-11-12T20:54:13-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3118a1fd0bc5be4db683c04e119768b1f85dda30` (2026-11-12T23:27:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (688), SQL (293), Markdown (71), JavaScript (51), JSON (22), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (688), SQL (293), Markdown (71), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,36 +34,36 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1173 |
-| arquivos_codigo | 742 |
-| linhas_codigo | 151680 |
+| arquivos_total | 1188 |
+| arquivos_codigo | 756 |
+| linhas_codigo | 159923 |
 | rotas | 55 |
-| rotas_http_backend | 12 |
+| rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 48 |
 | modulos | 86 |
-| componentes | 326 |
-| hooks | 90 |
-| edge_functions | 38 |
-| tabelas | 164 |
+| componentes | 328 |
+| hooks | 89 |
+| edge_functions | 37 |
+| tabelas | 163 |
 | migrations | 292 |
 | cron_jobs | 68 |
-| testes | 151 |
+| testes | 165 |
 | workflows | 8 |
-| scripts | 43 |
+| scripts | 47 |
 | docs_md | 71 |
 
 ## Onde ficam as coisas
-- telas: src/pages (52), src/features (1)
-- componentes: src/components (214), src/pages (76), src/features (33)
+- telas: src/pages (53)
+- componentes: src/components (214), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (99), co-localizado (*.test) (26), outro (26)
+- testes: co-localizado (__tests__) (99), outro (37), co-localizado (*.test) (19)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/ci (12), scripts/types-sync (7), scripts/inventario (5)
+- scripts: scripts/ci (15), scripts/types-sync (7), scripts/inventario (5)
 - docs: (raiz) (4), docs (1)
-- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (94%)","edge_functions":"kebab-case (95%)","tabelas":"snake_case (88%)"}
+- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (94%)","edge_functions":"kebab-case (97%)","tabelas":"snake_case (89%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
 ## Módulos (menu → domínio)
@@ -71,59 +71,60 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 5 | 1 | 7 |
-| components/compras | 0 | 0 | 103 | 80 | 5 | 60 |
+| components/compras | 0 | 0 | 103 | 80 | 6 | 58 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
-| components/pagamentos | 0 | 0 | 9 | 12 | 1 | 10 |
+| components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
-| features/layout | 0 | 1 | 32 | 77 | 5 | 56 |
-| hooks | 0 | 0 | 61 | 56 | 4 | 60 |
-| lib | 0 | 0 | 21 | 53 | 5 | 48 |
+| features/layout | 0 | 0 | 32 | 77 | 6 | 54 |
+| hooks | 0 | 0 | 61 | 56 | 6 | 60 |
+| lib | 0 | 0 | 21 | 53 | 5 | 46 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 4 |
-| pages/admin | 10 | 11 | 14 | 4 | 8 | 16 |
+| pages/admin | 10 | 11 | 14 | 4 | 9 | 16 |
 | pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 11 |
 | pages/auditoria | 1 | 1 | 1 | 2 | 1 | 1 |
+| pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 82 | 6 | 60 |
-| pages/catalogo-xbz | 1 | 1 | 9 | 79 | 5 | 56 |
+| pages/catalogo-spot | 1 | 1 | 6 | 82 | 7 | 58 |
+| pages/catalogo-xbz | 1 | 1 | 9 | 79 | 7 | 54 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
-| pages/configuracoes | 1 | 1 | 1 | 77 | 5 | 56 |
-| pages/contratos | 1 | 1 | 1 | 4 | 2 | 10 |
+| pages/configuracoes | 1 | 1 | 1 | 77 | 6 | 54 |
+| pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
 | pages/cotacao | 1 | 2 | 2 | 14 | 1 | 14 |
-| pages/dashboard | 1 | 2 | 2 | 28 | 2 | 26 |
-| pages/dev | 0 | 1 | 1 | 3 | 1 | 0 |
+| pages/dashboard | 3 | 2 | 2 | 28 | 2 | 26 |
+| pages/dev | 0 | 1 | 1 | 3 | 2 | 0 |
 | pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
-| pages/documentos | 1 | 1 | 1 | 2 | 1 | 2 |
+| pages/documentos | 1 | 1 | 1 | 2 | 2 | 2 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 7 |
 | pages/fornecedores | 3 | 2 | 3 | 10 | 2 | 10 |
 | pages/gerar-ordem | 0 | 1 | 2 | 8 | 1 | 9 |
 | pages/historico | 1 | 1 | 7 | 7 | 1 | 11 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 77 | 5 | 56 |
+| pages/licitacoes | 1 | 1 | 2 | 77 | 6 | 54 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
-| pages/orcamentos | 1 | 1 | 1 | 78 | 5 | 57 |
-| pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 10 |
+| pages/orcamentos | 1 | 1 | 1 | 78 | 6 | 55 |
+| pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
 | pages/pedidos | 1 | 1 | 3 | 13 | 1 | 8 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 78 | 5 | 57 |
-| pages/qualificacao | 1 | 1 | 1 | 78 | 5 | 60 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 78 | 6 | 55 |
+| pages/qualificacao | 1 | 1 | 1 | 78 | 6 | 58 |
 | pages/recebimento | 1 | 1 | 3 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 4 | 2 | 5 |
-| pages/seguranca | 1 | 1 | 1 | 83 | 8 | 69 |
-| pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 15 |
+| pages/seguranca | 1 | 1 | 1 | 83 | 9 | 67 |
+| pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
 
 ## Rotas (url → arquivo)
-- `/` [redirect] → **ARQUIVO NÃO RESOLVIDO**
+- `/` [redirect] → **ARQUIVO NÃO RESOLVIDO** (protegida)
 - `/__dev/xbz-network-panel` [tela] → src/pages/dev/XbzNetworkPanelHarness.tsx
 - `/*` [tela] → src/pages/NotFound.tsx
-- `/acompanhamento` [tela] → src/pages/acompanhamento/Acompanhamento.tsx
+- `/acompanhamento` [tela] → src/pages/acompanhamento/Acompanhamento.tsx (protegida)
 - `/admin/dependency-health` [tela] → src/pages/admin/DependencyHealth.tsx (protegida)
 - `/admin/docs` [tela] → src/pages/admin/DeveloperDocs.tsx (protegida)
 - `/admin/erp` [tela] → src/pages/admin/ERPConnections.tsx (protegida)
@@ -136,59 +137,48 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `/admin/storage-migration` [tela] → src/pages/admin/StorageMigration.tsx (protegida)
 - `/admin/telemetria` [tela] → src/pages/admin-telemetria/AdminTelemetria.tsx (protegida)
 - `/admin/workflows` [tela] → src/pages/admin/WorkflowAdmin.tsx (protegida)
-- `/aprovacoes` [tela] → src/pages/aprovacoes/Aprovacoes.tsx
-- `/auditoria` [tela] → src/pages/auditoria/Auditoria.tsx
-- `/auth` [tela] → src/features/layout/components/PageLoader.tsx (protegida)
-- `/buyer-performance` [tela] → src/pages/buyer/BuyerPerformanceDashboard.tsx
-- `/catalogo-produtos` [tela] → src/pages/catalogo-produtos/CatalogoProdutos.tsx
-- `/catalogo-spot` [tela] → src/pages/catalogo-spot/CatalogoSpot.tsx
-- `/catalogo-xbz` [tela] → src/pages/catalogo-xbz/CatalogoXbz.tsx
-- `/compliance` [tela] → src/pages/compliance/ComplianceDashboard.tsx
-- `/compras` [tela] → src/pages/dashboard/ComprasDashboard.tsx
-- `/configuracoes-centro-custo` [tela] → src/pages/configuracoes/ConfiguracoesCentroCusto.tsx
-- `/contratos` [tela] → src/pages/contratos/Contratos.tsx
-- `/cotacao` [tela] → src/pages/cotacao/Cotacao.tsx
-- `/cotacao/:id` [tela] → src/pages/cotacao/Cotacao.tsx
-- `/dashboard-executivo` [tela] → src/pages/dashboard/DashboardExecutivo.tsx
-- `/devolucoes` [tela] → src/pages/devolucoes/Devolucoes.tsx
-- `/documentos-fiscais` [tela] → src/pages/documentos/DocumentosFiscais.tsx
-- `/estoque` [tela] → src/pages/estoque/GestaoEstoque.tsx
-- `/fornecedores` [tela] → src/pages/fornecedores/Fornecedores.tsx
-- `/gerar-ordem` [tela] → src/pages/gerar-ordem/GerarOrdem.tsx
-- `/historico-compras` [tela] → src/pages/historico/HistoricoCompras.tsx
-- `/kanban` [tela] → src/pages/kanban/KanbanWorkflow.tsx
-- `/licitacoes` [tela] → src/pages/licitacoes/Licitacoes.tsx
-- `/negociacao-ia` [tela] → src/pages/negociacao-ia/NegociacaoIA.tsx
-- `/orcamentos` [tela] → src/pages/orcamentos/Orcamentos.tsx
-- `/pagamentos` [tela] → src/pages/pagamentos/Pagamentos.tsx
-- `/pedidos` [tela] → src/pages/pedidos/Pedidos.tsx
+- `/aprovacoes` [tela] → src/pages/aprovacoes/Aprovacoes.tsx (protegida)
+- `/auditoria` [tela] → src/pages/auditoria/Auditoria.tsx (protegida)
+- `/auth` [tela] → src/pages/auth/Auth.tsx
+- `/buyer-performance` [tela] → src/pages/buyer/BuyerPerformanceDashboard.tsx (protegida)
+- `/catalogo-produtos` [tela] → src/pages/catalogo-produtos/CatalogoProdutos.tsx (protegida)
+- `/catalogo-spot` [tela] → src/pages/catalogo-spot/CatalogoSpot.tsx (protegida)
+- `/catalogo-xbz` [tela] → src/pages/catalogo-xbz/CatalogoXbz.tsx (protegida)
+- `/compliance` [tela] → src/pages/compliance/ComplianceDashboard.tsx (protegida)
+- `/compras` [tela] → src/pages/dashboard/ComprasDashboard.tsx (protegida)
+- `/configuracoes-centro-custo` [tela] → src/pages/configuracoes/ConfiguracoesCentroCusto.tsx (protegida)
+- `/contratos` [tela] → src/pages/contratos/Contratos.tsx (protegida)
+- `/cotacao` [tela] → src/pages/cotacao/Cotacao.tsx (protegida)
+- `/cotacao/:id` [tela] → src/pages/cotacao/Cotacao.tsx (protegida)
+- `/dashboard-executivo` [tela] → src/pages/dashboard/DashboardExecutivo.tsx (protegida)
+- `/devolucoes` [tela] → src/pages/devolucoes/Devolucoes.tsx (protegida)
+- `/documentos-fiscais` [tela] → src/pages/documentos/DocumentosFiscais.tsx (protegida)
+- `/estoque` [tela] → src/pages/estoque/GestaoEstoque.tsx (protegida)
+- `/fornecedores` [tela] → src/pages/fornecedores/Fornecedores.tsx (protegida)
+- `/gerar-ordem` [tela] → src/pages/gerar-ordem/GerarOrdem.tsx (protegida)
+- `/historico-compras` [tela] → src/pages/historico/HistoricoCompras.tsx (protegida)
+- `/kanban` [tela] → src/pages/kanban/KanbanWorkflow.tsx (protegida)
+- `/licitacoes` [tela] → src/pages/licitacoes/Licitacoes.tsx (protegida)
+- `/negociacao-ia` [tela] → src/pages/negociacao-ia/NegociacaoIA.tsx (protegida)
+- `/orcamentos` [tela] → src/pages/orcamentos/Orcamentos.tsx (protegida)
+- `/pagamentos` [tela] → src/pages/pagamentos/Pagamentos.tsx (protegida)
+- `/pedidos` [tela] → src/pages/pedidos/Pedidos.tsx (protegida)
 - `/portal-fornecedor` [tela] → src/pages/portal-fornecedor/PortalFornecedor.tsx (protegida)
-- `/qualificacao-fornecedores` [tela] → src/pages/qualificacao/QualificacaoFornecedores.tsx
-- `/recebimento` [tela] → src/pages/recebimento/RecebimentoOffline.tsx
-- `/recompra-inteligente` [tela] → src/pages/recompra/RecompraInteligente.tsx
-- `/relatorios` [tela] → src/pages/relatorios/Relatorios.tsx
-- `/relatorios/negociacoes` [tela] → src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx
-- `/seguranca` [tela] → src/pages/seguranca/Seguranca.tsx
-- `/solicitacoes` [tela] → src/pages/solicitacoes/Solicitacoes.tsx
-- `/sourcing` [tela] → src/pages/sourcing/Sourcing.tsx
-- `/sourcing/:id` [tela] → src/pages/sourcing/RFxDetails.tsx
-- `/sourcing/:id/auction` [tela] → src/pages/sourcing/AuctionRoom.tsx
-- `/sourcing/novo` [tela] → src/pages/sourcing/RFxCreate.tsx
-- `/supplier-performance` [tela] → src/pages/fornecedores/SupplierPerformance.tsx
+- `/qualificacao-fornecedores` [tela] → src/pages/qualificacao/QualificacaoFornecedores.tsx (protegida)
+- `/recebimento` [tela] → src/pages/recebimento/RecebimentoOffline.tsx (protegida)
+- `/recompra-inteligente` [tela] → src/pages/recompra/RecompraInteligente.tsx (protegida)
+- `/relatorios` [tela] → src/pages/relatorios/Relatorios.tsx (protegida)
+- `/relatorios/negociacoes` [tela] → src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx (protegida)
+- `/seguranca` [tela] → src/pages/seguranca/Seguranca.tsx (protegida)
+- `/solicitacoes` [tela] → src/pages/solicitacoes/Solicitacoes.tsx (protegida)
+- `/sourcing` [tela] → src/pages/sourcing/Sourcing.tsx (protegida)
+- `/sourcing/:id` [tela] → src/pages/sourcing/RFxDetails.tsx (protegida)
+- `/sourcing/:id/auction` [tela] → src/pages/sourcing/AuctionRoom.tsx (protegida)
+- `/sourcing/novo` [tela] → src/pages/sourcing/RFxCreate.tsx (protegida)
+- `/supplier-performance` [tela] → src/pages/fornecedores/SupplierPerformance.tsx (protegida)
 
 ## Rotas HTTP de backend
-- `GET /{t}` → scripts/ai-context/cenarios.mjs
-- `GET /a` → scripts/ai-context/cenarios.mjs
-- `GET /a` → scripts/ai-context/cenarios.mjs
-- `POST /b` → scripts/ai-context/cenarios.mjs
-- `POST /b` → scripts/ai-context/cenarios.mjs
-- `DELETE /c` → scripts/ai-context/cenarios.mjs
-- `PUT /d` → scripts/ai-context/cenarios.mjs
-- `GET /items` → scripts/ai-context/gerar.unit.mjs
-- `GET /u` → scripts/ai-context/cenarios.mjs
-- `GET /users` → scripts/ai-context/cenarios.mjs
-- `POST /users/:id` → scripts/ai-context/cenarios.mjs
-- `GET /x` → scripts/ai-context/cenarios.mjs
+- (nenhum)
 
 ## Vistas por id (menu/ViewRouter → arquivo)
 - (nenhum)
@@ -208,12 +198,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `external-db-bridge` — tabelas: query_telemetry; chamada por 1 arquivo(s) do front
 - `fiscal-orchestrator` — tabelas: fiscal_events; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `generate-contract-pdf` — tabelas: contract_items, contract_penalties, contracts; chamada por 1 arquivo(s) do front
-- `guided-buying-ai` — tabelas: fornecedores, produtos; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `health-dashboard` — tabelas: audit_logs, health_scan_runs, system_alerts, v_system_health_overview; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `guided-buying-ai` — tabelas: fornecedores, produtos; chamada por 1 arquivo(s) do front
+- `health-dashboard` — tabelas: audit_logs, health_scan_runs, system_alerts, v_system_health_overview; chamada por 1 arquivo(s) do front
 - `maintain-partitions` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `migrate-helper` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
 - `migrate-storage-paths` — tabelas: profiles; chamada por 1 arquivo(s) do front
-- `process-invoice-idp` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `process-invoice-idp` — tabelas: -; chamada por 1 arquivo(s) do front
 - `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `punchout-receive` — tabelas: punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
@@ -224,13 +214,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
-- `tests` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `weekly-report` — tabelas: cotacoes, notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `weekly-summary-report` — tabelas: cotacoes, notifications, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `workflow-engine` — tabelas: workflow_approvals, workflow_edges, workflow_instances, workflow_logs, workflow_nodes; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `xbz-proxy` — tabelas: xbz_carrinho_log, xbz_credentials; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `xbz-proxy` — tabelas: xbz_carrinho_log, xbz_credentials; chamada por 1 arquivo(s) do front
 - `xbz-sync-pedidos` — tabelas: system_alerts, xbz_credentials, xbz_pedido_status_history, xbz_pedidos; chamada por 0 arquivo(s) do front, por SQL/cron
 
 ## Cron jobs (pg_cron / vercel)
@@ -305,38 +294,39 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, wa.me, x.supabase.co, ai.gateway.lovable.dev, api.pwnedpasswords.com, api.supabase.com, api.x.com, example.okta.com, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, maintenance.invalid, production.invalid
+- hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, ai.gateway.lovable.dev, api.pwnedpasswords.com, example.okta.com, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, raw.githubusercontent.com, xml.cxml.org
 - webhooks recebidos: migrate-helper
-- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, LOVABLE_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SCIM_TEST_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
+- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, LOVABLE_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: admin (9), user (6), system (4), alert (3), status (3), anon (2), dialog (2), group (2), service_role (2), agent (1), assistant (1), ausente (1), authenticated (1), button (1), buyer (1), combobox (1), link (1), main (1), navigation (1), presentation (1), separator (1), sup (1)
+- papéis no código: user (6), admin (5), system (4), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
-- guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 14 · públicas: /__dev/xbz-network-panel, /*, /acompanhamento, /aprovacoes, /auditoria, /buyer-performance, /catalogo-produtos, /catalogo-spot, /catalogo-xbz, /compliance, /compras, /configuracoes-centro-custo, /contratos, /cotacao, /cotacao/:id, /dashboard-executivo, /devolucoes, /documentos-fiscais, /estoque, /fornecedores, /gerar-ordem, /historico-compras, /kanban, /licitacoes, /negociacao-ia, /orcamentos, /pagamentos, /pedidos, /qualificacao-fornecedores, /recebimento, /recompra-inteligente, /relatorios, /relatorios/negociacoes, /seguranca, /solicitacoes, /sourcing, /sourcing/:id, /sourcing/:id/auction, /sourcing/novo, /supplier-performance
-- feature flags: FEATURE_X, nova-tela, novo-inbox
+- guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
+- feature flags: nenhuma
 
 ## Alertas (baseline.json → alertas)
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 13 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_orfas: 8 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
 - edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
 - tabelas_sem_rls: 0
-- tabelas_usadas_sem_definicao: 2 — ex.: comprovantes, documentos
+- tabelas_usadas_sem_definicao: 0
 - tabelas_com_drift_migration_vs_types: 49 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 13 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
 - scripts_orfaos: 0
-- env_usadas_nao_declaradas: 7 — ex.: DEV, FUZZ_SEED, INTEGRATION_TESTS
+- arquivos_nao_lidos_por_tamanho: 0
+- env_usadas_nao_declaradas: 1 — ex.: VITE_SUPABASE_PUBLISHABLE_KEY
 - ciclos_de_import: 2
-- possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:102
+- possiveis_segredos_no_codigo: 4 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/pg.mjs:51
 
 ## Grafo de código (graphify)
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- AGENTS.md (5)
+- AGENTS.md (6)
 - package.json (5)
 - .github/workflows/contexto.yml (4)
 - .github/workflows/main.yml (4)
@@ -345,12 +335,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/agentes/github-ci.md (3)
 - docs/agentes/mapa-repo.md (3)
 - docs/ci/README.md (3)
+- scripts/ai-context/README.md (3)
+- scripts/automation.config.json (3)
+- scripts/ci/branch-podaveis.mjs (3)
+- scripts/supabase_snapshot/README.md (3)
+- scripts/supabase_snapshot/snapshot.py (3)
 - .github/workflows/notifica-falha-main.yml (2)
-- .github/workflows/types-sync.yml (2)
-- DOCS/ESTADO/00_INDICE.md (2)
-- DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md (2)
-- DOCS/ESTADO/L07_HOOKS.md (2)
-- DOCS/ESTADO/L12_BANCO_E_RUNTIME.md (2)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -411,6 +401,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-12 `3118a1fd` fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)
 - 2026-11-12 `6c530a06` security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)
 - 2026-11-12 `f6c2d75b` fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)
 - 2026-11-12 `9eefca6e` fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)
@@ -425,7 +416,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `5efb1134` security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)
 - 2026-11-12 `7db0e1c0` security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)
 - 2026-11-12 `cdc9eee5` ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)
-- 2026-11-12 `9bd9b15f` security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

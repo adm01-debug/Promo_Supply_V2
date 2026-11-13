@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6c530a0630ca2c73c17b3d51e2bca90ff8c1da16",
+  "commit": "3118a1fd0bc5be4db683c04e119768b1f85dda30",
   "branch": "main",
-  "data_commit": "2026-11-12T20:54:13-03:00",
+  "data_commit": "2026-11-12T23:27:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3118a1fd",
+    "data": "2026-11-12",
+    "assunto": "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)"
+   },
    {
     "sha": "6c530a06",
     "data": "2026-11-12",
@@ -126,18 +131,21 @@
     "sha": "5001fc3a",
     "data": "2026-11-12",
     "assunto": "security(banco): views com security_invoker e sem leitura anonima (#41)"
-   },
-   {
-    "sha": "c9488d5d",
-    "data": "2026-11-12",
-    "assunto": "security(banco): revoga execute_read_query de anon e authenticated (#40)"
    }
   ],
-  "arquivos_mudados_7d": 206,
+  "arquivos_mudados_7d": 221,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
     "mudancas": 15
+   },
+   {
+    "pasta": "scripts/ci/inventario-types",
+    "mudancas": 8
+   },
+   {
+    "pasta": "AGENTS.md",
+    "mudancas": 5
    },
    {
     "pasta": "package.json",
@@ -149,10 +157,6 @@
    },
    {
     "pasta": ".github/workflows/main.yml",
-    "mudancas": 4
-   },
-   {
-    "pasta": "AGENTS.md",
     "mudancas": 4
    },
    {
@@ -176,30 +180,26 @@
     "mudancas": 3
    },
    {
-    "pasta": "src/pages/admin",
+    "pasta": "scripts/ai-context/README.md",
     "mudancas": 3
    },
    {
-    "pasta": "src/pages/dashboard",
+    "pasta": "scripts/automation.config.json",
     "mudancas": 3
    },
    {
-    "pasta": "src/pages/relatorio-negociacoes",
+    "pasta": "scripts/ci/branch-podaveis.mjs",
     "mudancas": 3
    },
    {
-    "pasta": ".agents/skills/promo-supply-v2",
-    "mudancas": 2
-   },
-   {
-    "pasta": ".github/workflows/notifica-falha-main.yml",
-    "mudancas": 2
+    "pasta": "scripts/supabase_snapshot/README.md",
+    "mudancas": 3
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": "package.json",
@@ -231,6 +231,26 @@
    },
    {
     "arquivo": "docs/ci/README.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ai-context/README.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ci/branch-podaveis.mjs",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/supabase_snapshot/README.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/supabase_snapshot/snapshot.py",
     "mudancas": 3
    },
    {
@@ -266,42 +286,22 @@
     "mudancas": 2
    },
    {
-    "arquivo": "docs/agentes/secdef-classificacao.md",
+    "arquivo": "deploy_edge_functions_promo_supply.sh",
     "mudancas": 2
    },
    {
-    "arquivo": "inventario/estado/edges.json",
+    "arquivo": "docs/agentes/banco.md",
     "mudancas": 2
    },
    {
-    "arquivo": "scripts/ai-context/README.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/ci/audit-prod.mjs",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/ci/branch-podaveis.mjs",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/supabase_snapshot/README.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "scripts/supabase_snapshot/snapshot.py",
+    "arquivo": "docs/agentes/deploy.md",
     "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 45
+    "commits": 46
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -310,23 +310,23 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1173,
-  "arquivos_codigo": 742,
-  "linhas_codigo": 151680,
+  "arquivos_total": 1188,
+  "arquivos_codigo": 756,
+  "linhas_codigo": 159923,
   "rotas": 55,
-  "rotas_http_backend": 12,
+  "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 48,
   "modulos": 86,
-  "componentes": 326,
-  "hooks": 90,
-  "edge_functions": 38,
-  "tabelas": 164,
+  "componentes": 328,
+  "hooks": 89,
+  "edge_functions": 37,
+  "tabelas": 163,
   "migrations": 292,
   "cron_jobs": 68,
-  "testes": 151,
+  "testes": 165,
   "workflows": 8,
-  "scripts": 43,
+  "scripts": 47,
   "docs_md": 71
  },
  "por_pasta": {
@@ -344,7 +344,7 @@
   },
   "scripts/ai-context": {
    "arquivos": 3,
-   "linhas": 1458
+   "linhas": 1816
   },
   "scripts/automation.mjs": {
    "arquivos": 1,
@@ -355,12 +355,12 @@
    "linhas": 689
   },
   "scripts/ci": {
-   "arquivos": 28,
-   "linhas": 4163
+   "arquivos": 40,
+   "linhas": 9408
   },
   "scripts/db-explain-analyze.ts": {
    "arquivos": 1,
-   "linhas": 123
+   "linhas": 227
   },
   "scripts/graphify-local.mjs": {
    "arquivos": 1,
@@ -372,11 +372,11 @@
   },
   "scripts/inventario": {
    "arquivos": 4,
-   "linhas": 816
+   "linhas": 834
   },
   "scripts/lib": {
-   "arquivos": 2,
-   "linhas": 226
+   "arquivos": 4,
+   "linhas": 572
   },
   "scripts/maintenance": {
    "arquivos": 4,
@@ -384,31 +384,31 @@
   },
   "scripts/realtime-audit.ts": {
    "arquivos": 1,
-   "linhas": 70
+   "linhas": 290
   },
   "scripts/regras_negocio": {
    "arquivos": 3,
-   "linhas": 2539
+   "linhas": 3368
   },
   "scripts/rls-audit.ts": {
    "arquivos": 1,
-   "linhas": 182
+   "linhas": 334
   },
   "scripts/stress-test.ts": {
    "arquivos": 1,
-   "linhas": 129
+   "linhas": 270
   },
   "scripts/supabase_snapshot": {
    "arquivos": 2,
-   "linhas": 2669
+   "linhas": 3310
   },
   "scripts/types-sync": {
    "arquivos": 4,
-   "linhas": 626
+   "linhas": 639
   },
   "scripts/validate-bridge.ts": {
    "arquivos": 1,
-   "linhas": 89
+   "linhas": 265
   },
   "src/App.tsx": {
    "arquivos": 1,
@@ -542,11 +542,11 @@
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
-   "linhas": 2138
+   "linhas": 2485
   },
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
-   "linhas": 1791
+   "linhas": 1893
   },
   {
    "arquivo": "src/pages/admin/DependencyHealth.tsx",
@@ -561,16 +561,16 @@
    "linhas": 1170
   },
   {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linhas": 983
+  },
+  {
    "arquivo": "src/components/compras/SourcingHistoryConsole.tsx",
    "linhas": 973
   },
   {
    "arquivo": "scripts/maintenance/lib.mjs",
    "linhas": 937
-  },
-  {
-   "arquivo": "scripts/ai-context/gerar.mjs",
-   "linhas": 924
   },
   {
    "arquivo": "scripts/maintenance/run.mjs",
@@ -638,8 +638,8 @@
   }
  ],
  "qualidade": {
-  "any": 99,
-  "console_log": 86,
+  "any": 100,
+  "console_log": 76,
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
@@ -648,13 +648,13 @@
  "todos": [
   {
    "arquivo": "scripts/ai-context/gerar.mjs",
-   "linha": 188,
+   "linha": 226,
    "tipo": "TODO",
    "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(line); if (m) todos.push({ linha: ln, tipo: m[1], text"
   },
   {
    "arquivo": "scripts/ai-context/gerar.mjs",
-   "linha": 222,
+   "linha": 260,
    "tipo": "TODO",
    "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(l); return m ? { linha: i + 1, tipo: m[1], texto: m[2]"
   },
@@ -666,13 +666,13 @@
   },
   {
    "arquivo": "scripts/ci/check-test-inventory.unit.mjs",
-   "linha": 149,
+   "linha": 151,
    "tipo": "TODO",
    "texto": "deno test supabase/functions/ depois']), COMANDO_EDGES), false);"
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
-   "linha": 570,
+   "linha": 578,
    "tipo": "TODO",
    "texto": "\", \"http\", \"import\")) and \"://\" not in c:"
   }
@@ -688,25 +688,17 @@
    "ai-supplier-suggestion",
    "alert-dispatcher",
    "fiscal-orchestrator",
-   "guided-buying-ai",
-   "health-dashboard",
    "maintain-partitions",
-   "process-invoice-idp",
    "process-outbox",
    "run-audit",
    "send-push-notification",
-   "tests",
-   "workflow-engine",
-   "xbz-proxy"
+   "workflow-engine"
   ],
   "edges_chamadas_sem_pasta": [
    "process-solicitacao-neural"
   ],
   "tabelas_sem_rls": [],
-  "tabelas_usadas_sem_definicao": [
-   "comprovantes",
-   "documentos"
-  ],
+  "tabelas_usadas_sem_definicao": [],
   "tabelas_com_drift_migration_vs_types": [
    "active_sessions",
    "approval_delegations",
@@ -787,18 +779,16 @@
    "Toaster"
   ],
   "scripts_orfaos": [],
+  "arquivos_nao_lidos_por_tamanho": [],
   "env_usadas_nao_declaradas": [
-   "DEV",
-   "FUZZ_SEED",
-   "INTEGRATION_TESTS",
-   "PROD",
-   "SUPABASE_ANON_KEY",
-   "SUPABASE_SERVICE_ROLE_KEY",
    "VITE_SUPABASE_PUBLISHABLE_KEY"
   ],
   "ciclos_de_import": 2,
   "possiveis_segredos_no_codigo": [
-   "scripts/ai-context/cenarios.mjs:102"
+   "scripts/ci/inventario-types/banco.unit.mjs:18",
+   "scripts/ci/inventario-types/banco.unit.mjs:227",
+   "scripts/ci/inventario-types/pg.mjs:51",
+   "supabase/functions/migrate-helper/index.ts:5"
   ]
  },
  "erros_do_gerador": []

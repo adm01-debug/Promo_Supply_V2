@@ -3,14 +3,14 @@
  "format_version": 2,
  "resumo": {
   "urls": 55,
-  "rotas_http_backend": 12,
+  "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 48,
   "lazy": 75
  },
  "urls": [
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "Navigate"
    ],
@@ -36,8 +36,7 @@
   {
    "protegida": false,
    "wrappers": [
-    "Suspense",
-    "PageLoader"
+    "Suspense"
    ],
    "pai": null,
    "indice": false,
@@ -67,20 +66,18 @@
    "tabelas": [],
    "rpcs": [],
    "edges": [
-    "telemetry"
+    "telemetry",
+    "xbz-proxy"
    ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [
-    "alert"
-   ],
+   "papeis": [],
    "arquivos_puxados": 16
   },
   {
    "protegida": false,
    "wrappers": [
-    "Suspense",
-    "PageLoader"
+    "Suspense"
    ],
    "pai": null,
    "indice": false,
@@ -107,7 +104,7 @@
    "arquivos_puxados": 7
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -209,8 +206,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "arquivos_puxados": 28
   },
@@ -422,7 +418,9 @@
    "hooks_locais": [],
    "tabelas": [],
    "rpcs": [],
-   "edges": [],
+   "edges": [
+    "health-dashboard"
+   ],
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
@@ -550,8 +548,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "arquivos_puxados": 22
   },
@@ -670,7 +667,7 @@
    "arquivos_puxados": 8
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -751,7 +748,7 @@
    "arquivos_puxados": 57
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -791,32 +788,69 @@
    "arquivos_puxados": 20
   },
   {
-   "protegida": true,
+   "protegida": false,
    "wrappers": [
-    "Suspense",
-    "Auth"
+    "Suspense"
    ],
    "pai": null,
    "indice": false,
-   "lazy": false,
+   "lazy": true,
    "tipo": "tela",
    "caminho": "/auth",
-   "componente": "PageLoader",
-   "arquivo": "src/features/layout/components/PageLoader.tsx",
+   "componente": "Auth",
+   "arquivo": "src/pages/auth/Auth.tsx",
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
-   "hooks": [],
-   "hooks_locais": [],
-   "tabelas": [],
-   "rpcs": [],
-   "edges": [],
+   "hooks": [
+    "useAccountLockout",
+    "useAuth",
+    "useCallback",
+    "useContext",
+    "useEffect",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useId",
+    "useMemo",
+    "useNavigate",
+    "useRef",
+    "useState",
+    "useTheme",
+    "useWebAuthn"
+   ],
+   "hooks_locais": [
+    "useAccountLockout",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useWebAuthn"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
+    "webauthn_credentials"
+   ],
+   "rpcs": [
+    "clear_login_lockout",
+    "current_tenant_id",
+    "is_account_locked",
+    "log_login_attempt",
+    "record_failed_login"
+   ],
+   "edges": [
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [],
-   "arquivos_puxados": 0
+   "papeis": [
+    "admin"
+   ],
+   "arquivos_puxados": 25
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -875,7 +909,7 @@
    "arquivos_puxados": 28
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -943,7 +977,7 @@
    "arquivos_puxados": 33
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -1160,7 +1194,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -1174,7 +1207,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -1230,6 +1262,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "spot-proxy",
     "telemetry"
@@ -1243,22 +1276,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "button",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 334
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -1469,7 +1493,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -1483,7 +1506,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -1535,8 +1557,10 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
-    "telemetry"
+    "telemetry",
+    "xbz-proxy"
    ],
    "canais_realtime": [
     "approval_notifications_${user.id}",
@@ -1547,21 +1571,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 338
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -1617,7 +1633,7 @@
    "arquivos_puxados": 28
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -1721,13 +1737,12 @@
    ],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "arquivos_puxados": 73
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -1934,7 +1949,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -1948,7 +1962,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -2000,6 +2013,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -2012,21 +2026,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 330
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2065,7 +2071,6 @@
     "contract_items",
     "contract_penalties",
     "contracts",
-    "documentos",
     "order_contracts",
     "profiles",
     "user_roles",
@@ -2086,7 +2091,7 @@
    "arquivos_puxados": 50
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2178,7 +2183,7 @@
    "arquivos_puxados": 67
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2270,7 +2275,7 @@
    "arquivos_puxados": 67
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2353,7 +2358,7 @@
    "arquivos_puxados": 65
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2425,7 +2430,7 @@
    "arquivos_puxados": 39
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2460,6 +2465,7 @@
    ],
    "rpcs": [],
    "edges": [
+    "process-invoice-idp",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -2468,7 +2474,7 @@
    "arquivos_puxados": 13
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2531,7 +2537,7 @@
    "arquivos_puxados": 28
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2601,7 +2607,7 @@
    "arquivos_puxados": 58
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2672,7 +2678,7 @@
    "arquivos_puxados": 35
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2738,7 +2744,7 @@
    "arquivos_puxados": 44
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2778,7 +2784,7 @@
    "arquivos_puxados": 10
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -2985,7 +2991,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -2999,7 +3004,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -3051,6 +3055,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -3063,21 +3068,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 330
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -3133,7 +3130,7 @@
    "arquivos_puxados": 27
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -3342,7 +3339,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -3357,7 +3353,6 @@
     "department_budgets",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -3409,6 +3404,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -3421,21 +3417,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 331
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -3490,7 +3478,6 @@
    ],
    "tabelas": [
     "audit_logs",
-    "comprovantes",
     "creditos_fornecedor",
     "fiscal_documents",
     "pagamentos",
@@ -3516,7 +3503,7 @@
    "arquivos_puxados": 63
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -3808,7 +3795,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -3822,7 +3808,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -3875,6 +3860,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -3887,21 +3873,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 329
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4110,7 +4088,6 @@
     "audit_logs",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -4124,7 +4101,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -4180,6 +4156,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry"
    ],
@@ -4192,21 +4169,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "status",
     "user"
    ],
    "arquivos_puxados": 332
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4260,7 +4229,7 @@
    "arquivos_puxados": 27
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4316,7 +4285,7 @@
    "arquivos_puxados": 17
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4368,7 +4337,7 @@
    "arquivos_puxados": 43
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4423,13 +4392,12 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [
-    "admin",
-    "alert"
+    "admin"
    ],
    "arquivos_puxados": 31
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4652,7 +4620,6 @@
     "blocked_ips",
     "categorias",
     "category_strategies",
-    "comprovantes",
     "contact_notes",
     "contract_documents",
     "contract_history",
@@ -4666,7 +4633,6 @@
     "dashboard_layouts",
     "devolucao_itens",
     "devolucoes",
-    "documentos",
     "estoque",
     "estoque_movimentacoes",
     "fiscal_documents",
@@ -4728,6 +4694,7 @@
     "ai-supplier-risk",
     "check-sla-alerts",
     "generate-contract-pdf",
+    "guided-buying-ai",
     "process-solicitacao-neural",
     "telemetry",
     "webauthn-authenticate",
@@ -4743,22 +4710,13 @@
    "flags": [],
    "papeis": [
     "admin",
-    "alert",
     "assistant",
-    "combobox",
-    "dialog",
-    "group",
-    "link",
-    "navigation",
-    "presentation",
-    "separator",
-    "status",
     "user"
    ],
    "arquivos_puxados": 350
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4840,7 +4798,6 @@
     "audit_logs",
     "categorias",
     "cost_centers",
-    "documentos",
     "produtos",
     "profiles",
     "solicitacoes",
@@ -4863,13 +4820,12 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [
-    "admin",
-    "combobox"
+    "admin"
    ],
    "arquivos_puxados": 99
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -4946,7 +4902,7 @@
    "arquivos_puxados": 20
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -5024,7 +4980,7 @@
    "arquivos_puxados": 20
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -5102,7 +5058,7 @@
    "arquivos_puxados": 18
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -5180,7 +5136,7 @@
    "arquivos_puxados": 21
   },
   {
-   "protegida": false,
+   "protegida": true,
    "wrappers": [
     "ModuleErrorBoundary",
     "RouteSkeleton"
@@ -5234,304 +5190,7 @@
    "arquivos_puxados": 28
   }
  ],
- "rotas_http_backend": [
-  {
-   "metodo": "GET",
-   "caminho": "/{t}",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/a",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/a",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "POST",
-   "caminho": "/b",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "POST",
-   "caminho": "/b",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "DELETE",
-   "caminho": "/c",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "PUT",
-   "caminho": "/d",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/items",
-   "arquivo": "scripts/ai-context/gerar.unit.mjs",
-   "tabelas": [
-    "contacts",
-    "dashboard_table",
-    "emails",
-    "fixture_table",
-    "ghost_table",
-    "payments",
-    "runtime_table",
-    "tools_runtime"
-   ],
-   "env": [
-    "DB_URL",
-    "RESEND_API_KEY",
-    "VITE_ANON",
-    "VITE_SUPABASE_URL"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/u",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/users",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "POST",
-   "caminho": "/users/:id",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  },
-  {
-   "metodo": "GET",
-   "caminho": "/x",
-   "arquivo": "scripts/ai-context/cenarios.mjs",
-   "tabelas": [
-    "a",
-    "fantasma",
-    "so_teste",
-    "t",
-    "t1",
-    "tx"
-   ],
-   "env": [
-    "A",
-    "K",
-    "NODE_ENV",
-    "SCRIPT_ONLY",
-    "SRK",
-    "SUPABASE_URL",
-    "VITE_A",
-    "VITE_C",
-    "VITE_FEATURE_X",
-    "X"
-   ]
-  }
- ],
+ "rotas_http_backend": [],
  "vistas": [],
  "menu": [
   {
@@ -5559,7 +5218,7 @@
    "papeis": [],
    "papeis_nao_resolvidos": null,
    "definido_em": "src/components/mobile/BottomNavigation.tsx",
-   "resolve_para": null
+   "resolve_para": "src/pages/dashboard/ComprasDashboard.tsx"
   },
   {
    "rotulo": "Mais",
@@ -5955,7 +5614,7 @@
    "papeis": [],
    "papeis_nao_resolvidos": null,
    "definido_em": "src/features/layout/components/AppSidebar.tsx",
-   "resolve_para": null
+   "resolve_para": "src/pages/dashboard/ComprasDashboard.tsx"
   },
   {
    "rotulo": "Executivo",

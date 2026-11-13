@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 326,
+ "total": 328,
  "orfaos": 13,
  "nomes_duplicados": {
   "AnimatedCounter": [
@@ -592,7 +592,6 @@
     "contract_history",
     "contract_items",
     "contract_penalties",
-    "documentos",
     "order_contracts"
    ],
    "edges": [
@@ -1125,7 +1124,6 @@
     "useImageCompression"
    ],
    "tabelas": [
-    "documentos",
     "solicitacoes"
    ],
    "edges": [
@@ -2130,7 +2128,6 @@
     "useAuth"
    ],
    "tabelas": [
-    "comprovantes",
     "creditos_fornecedor",
     "pagamentos",
     "payment_history"
@@ -4153,7 +4150,9 @@
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
-   "edges": [],
+   "edges": [
+    "health-dashboard"
+   ],
    "usado_por": 1,
    "orfao": false
   },
@@ -4732,6 +4731,45 @@
    "orfao": false
   },
   {
+   "arquivo": "src/pages/dashboard/ComprasDashboard.tsx",
+   "exports": [
+    "ComprasDashboard"
+   ],
+   "export_default": "ComprasDashboard",
+   "linhas": 379,
+   "dominio": "pages/dashboard",
+   "hooks_locais": [
+    "useAccountFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useRealtimeSubscription"
+   ],
+   "tabelas": [
+    "categorias",
+    "fornecedores"
+   ],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/pages/dashboard/DashboardExecutivo.tsx",
+   "exports": [
+    "DashboardExecutivo"
+   ],
+   "export_default": "DashboardExecutivo",
+   "linhas": 24,
+   "dominio": "pages/dashboard",
+   "hooks_locais": [
+    "useOnboardingTour",
+    "useRenderProfiler"
+   ],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 2,
+   "orfao": false
+  },
+  {
    "arquivo": "src/pages/dev/XbzNetworkPanelHarness.tsx",
    "exports": [
     "XbzNetworkPanelHarness"
@@ -4796,7 +4834,9 @@
     "fiscal_documents",
     "pedidos"
    ],
-   "edges": [],
+   "edges": [
+    "process-invoice-idp"
+   ],
    "usado_por": 1,
    "orfao": false
   },

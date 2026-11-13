@@ -1,12 +1,12 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 43,
+ "total": 47,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
    "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",
-   "linhas": 173,
+   "linhas": 176,
    "env": [
     "A",
     "K",
@@ -26,7 +26,7 @@
   {
    "arquivo": "scripts/ai-context/gerar.mjs",
    "descricao": "Gera o contexto de projeto para agentes de IA (padrão: inventario/ia/*). Zero dependências. Node >= 18. Genérico: funciona em qualquer repositório.",
-   "linhas": 924,
+   "linhas": 983,
    "env": [
     "AI_CONTEXT_DIR",
     "AI_CONTEXT_PUBLICACAO",
@@ -66,7 +66,7 @@
   {
    "arquivo": "scripts/ci/actions-kpi.mjs",
    "descricao": "E79: KPI de uso do GitHub Actions, para o branch-hygiene-audit semanal. Medido antes de escrever (03/10/2026): a API devolve `run_started_at` e",
-   "linhas": 265,
+   "linhas": 324,
    "env": [
     "GH_TOKEN",
     "GITHUB_API_URL",
@@ -95,7 +95,7 @@
   {
    "arquivo": "scripts/ci/branch-podaveis.mjs",
    "descricao": "W98 — comando pronto de poda de branches (usado pelo branch-hygiene-audit.yml). O plano oferecia duas saídas: apagar sozinho ou só gerar o comando. Apagar é",
-   "linhas": 201,
+   "linhas": 227,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -106,9 +106,10 @@
   {
    "arquivo": "scripts/ci/bump-toolchain.mjs",
    "descricao": "* W40: Verifica se há versão mais nova das ferramentas em .github/toolchain.json.",
-   "linhas": 180,
+   "linhas": 293,
    "env": [
     "GH_TOKEN",
+    "GITHUB_API_URL",
     "GITHUB_STEP_SUMMARY",
     "GITHUB_TOKEN"
    ],
@@ -121,7 +122,7 @@
   {
    "arquivo": "scripts/ci/check-agents-md-integrity.mjs",
    "descricao": "* GA02: garante que as instrucoes para agentes nao foram apagadas ou esvaziadas por outra sessao.",
-   "linhas": 122,
+   "linhas": 147,
    "env": [
     "AGENTS_MD_BASE"
    ],
@@ -134,7 +135,7 @@
   {
    "arquivo": "scripts/ci/check-bundle-secrets.mjs",
    "descricao": "Guarda que o bundle publicado (dist/) nao expoe o JWT service_role do Supabase. Incidente de 20/08 (porta da V3): a variavel de ambiente errada",
-   "linhas": 184,
+   "linhas": 224,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -145,7 +146,7 @@
   {
    "arquivo": "scripts/ci/check-test-inventory.mjs",
    "descricao": "Portado do Zapp_Web_V2 (E48/E49/R2-INF-013) e adaptado a este repo: verifica que todo teste no disco tem um passo que o execute em ALGUM workflow — os .test.ts das edges",
-   "linhas": 264,
+   "linhas": 304,
    "env": [],
    "npm_scripts": [
     "guards"
@@ -158,7 +159,7 @@
   {
    "arquivo": "scripts/ci/commit-msg-lint.mjs",
    "descricao": "Gate de mensagem de commit: a funcao do commitlint sem dependencia nova. Quem chama: o job `commits` do .github/workflows/guards.yml, uma vez por commit do",
-   "linhas": 111,
+   "linhas": 127,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -169,7 +170,7 @@
   {
    "arquivo": "scripts/ci/gerar-matriz-edge-tabela.mjs",
    "descricao": "Inventário 23: matriz edge function x tabela. Escaneia supabase/functions/<funcao>/**/*.ts (sem testes, sem _shared) e anota cada tabela citada em `.from('tabela')`.",
-   "linhas": 131,
+   "linhas": 152,
    "env": [],
    "npm_scripts": [
     "docs:matriz-edge",
@@ -181,9 +182,34 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/ci/inventario-types/lib.mjs",
+   "descricao": "Apoio das suítes de scripts/ci/inventario-types/ (testam scripts/inventario/* e scripts/types-sync/*). Cada suíte monta um \"repo\" de mentira em um diretório temporário (mkdtemp em os.tmpdir(), removid",
+   "linhas": 94,
+   "env": [
+    "INVENTARIO_TEST_TYPESCRIPT",
+    "PATH"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/inventario-types/pg.mjs",
+   "descricao": "Postgres efemero LOCAL (opt-in) para os casos que rodam o banco.sql de verdade (banco.unit.mjs) e o caminho pgbouncer -> Postgres do gen-types.sh (gentypes.unit.mjs).",
+   "linhas": 186,
+   "env": [
+    "INVENTARIO_TEST_PGBOUNCER",
+    "INVENTARIO_TEST_PG_BIN",
+    "INVENTARIO_TEST_PG_USER"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/ci/render-workflow-docs.mjs",
    "descricao": "* W96: gera `docs/ci/README.md` a partir dos blocos `# docs:` e `# nao-e-bug:` de cada workflow.",
-   "linhas": 239,
+   "linhas": 295,
    "env": [
     "RENDER_WF_RAIZ"
    ],
@@ -199,7 +225,7 @@
   {
    "arquivo": "scripts/ci/sla-code-scanning.mjs",
    "descricao": "W83 — SLA dos alertas abertos de Code Scanning (usado pelo branch-hygiene-audit.yml). high/critical → 14 dias; medium/low → 30 dias. Violação → exit 1.",
-   "linhas": 86,
+   "linhas": 109,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -217,15 +243,19 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/ci/workflow-yaml-guard.mjs",
+   "descricao": "Detector de estrutura de workflow do GitHub Actions, em node puro (sem parser YAML). Por que existe: o commit 908b045 desindentou 11 linhas de um `python3 -c '...'` dentro de um `run: |`",
+   "linhas": 63,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/db-explain-analyze.ts",
    "descricao": "* B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS).",
-   "linhas": 123,
-   "env": [
-    "EXPLAIN_LIMIT_MS",
-    "EXPLAIN_RUNS",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
+   "linhas": 227,
+   "env": [],
    "npm_scripts": [],
    "workflows": [],
    "orfao": false
@@ -242,7 +272,7 @@
   {
    "arquivo": "scripts/inventario/banco.sql",
    "descricao": null,
-   "linhas": 147,
+   "linhas": 156,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -251,7 +281,7 @@
   {
    "arquivo": "scripts/inventario/gerar-banco.mjs",
    "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
-   "linhas": 321,
+   "linhas": 328,
    "env": [
     "SUPABASE_ACCESS_TOKEN",
     "SUPABASE_API_URL"
@@ -265,7 +295,7 @@
   {
    "arquivo": "scripts/inventario/gerar-repo.mjs",
    "descricao": "Inventario gerado do lado do repositorio (sem acesso ao banco):  - edge functions: linhas, segredos lidos (Deno.env.get) e quem as invoca (src, migrations, outras edges, e2e, CI)",
-   "linhas": 89,
+   "linhas": 92,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -276,7 +306,7 @@
   {
    "arquivo": "scripts/inventario/gerar-rotas.mjs",
    "descricao": "* Inventario das rotas do front -> inventario/estado/rotas.json (fonte de consulta dos agentes).",
-   "linhas": 321,
+   "linhas": 329,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -296,9 +326,20 @@
    "orfao": false
   },
   {
+   "arquivo": "scripts/lib/psql-leitura.mjs",
+   "descricao": "SQL SOMENTE LEITURA via `psql`, para os scripts de auditoria que precisam do catálogo do Postgres. Por que existe: `scripts/rls-audit.ts` e `scripts/db-explain-analyze.ts` foram escritos para ler",
+   "linhas": 132,
+   "env": [
+    "PATH"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
    "arquivo": "scripts/lib/seguranca-processo.mjs",
    "descricao": "* Utilidades compartilhadas pelos scripts de auditoria/CI.",
-   "linhas": 101,
+   "linhas": 134,
    "env": [
     "PATH"
    ],
@@ -351,7 +392,7 @@
   {
    "arquivo": "scripts/realtime-audit.ts",
    "descricao": "* OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe.",
-   "linhas": 70,
+   "linhas": 290,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -360,7 +401,7 @@
   {
    "arquivo": "scripts/regras_negocio/generate.py",
    "descricao": null,
-   "linhas": 2138,
+   "linhas": 2485,
    "env": [],
    "npm_scripts": [
     "contexto:regras"
@@ -373,7 +414,7 @@
   {
    "arquivo": "scripts/regras_negocio/indice.py",
    "descricao": null,
-   "linhas": 237,
+   "linhas": 247,
    "env": [],
    "npm_scripts": [
     "contexto:indice"
@@ -386,7 +427,7 @@
   {
    "arquivo": "scripts/regras_negocio/publish.sh",
    "descricao": "Publica docs/ai-context gerados: commit + push na branch padrão, ou PR quando a branch é protegida. Variáveis:",
-   "linhas": 195,
+   "linhas": 218,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -394,20 +435,19 @@
   },
   {
    "arquivo": "scripts/rls-audit.ts",
-   "descricao": "* TEST-01 — RLS Policy Audit (refactorado)",
-   "linhas": 182,
-   "env": [
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
+   "descricao": "* TEST-01 — Auditoria de RLS do schema `public`.",
+   "linhas": 334,
+   "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "main.yml"
+   ],
    "orfao": false
   },
   {
    "arquivo": "scripts/squash-migrations.sh",
    "descricao": "scripts/squash-migrations.sh F-031: Migration squash tooling",
-   "linhas": 164,
+   "linhas": 227,
    "env": [],
    "npm_scripts": [],
    "workflows": [],
@@ -416,19 +456,16 @@
   {
    "arquivo": "scripts/stress-test.ts",
    "descricao": "* Stress Test Script for Freight Quest Edge Functions",
-   "linhas": 129,
-   "env": [
-    "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
-   ],
+   "linhas": 270,
+   "env": [],
    "npm_scripts": [],
    "workflows": [],
    "orfao": false
   },
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
-   "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
-   "linhas": 1791,
+   "descricao": "Somente leitura no banco: cada consulta roda em transação READ ONLY com Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
+   "linhas": 1893,
    "env": [],
    "npm_scripts": [
     "contexto:banco"
@@ -441,7 +478,7 @@
   {
    "arquivo": "scripts/types-sync/check-remocoes-destrutivas.mjs",
    "descricao": "scripts/types-sync/check-remocoes-destrutivas.mjs   node scripts/types-sync/check-remocoes-destrutivas.mjs <types-antigo.ts> <types-novo.ts>",
-   "linhas": 178,
+   "linhas": 180,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -452,7 +489,7 @@
   {
    "arquivo": "scripts/types-sync/gen-types.sh",
    "descricao": "gen-types.sh [--local] [output_path] Gera src/integrations/supabase/types.ts a partir do schema do banco.",
-   "linhas": 156,
+   "linhas": 174,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -466,7 +503,9 @@
    "linhas": 192,
    "env": [],
    "npm_scripts": [],
-   "workflows": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
    "orfao": false
   },
   {
@@ -505,7 +544,7 @@
   {
    "arquivo": "scripts/types-sync/typecheck-ratchet.mjs",
    "descricao": "scripts/types-sync/typecheck-ratchet.mjs   node scripts/types-sync/typecheck-ratchet.mjs <baseline.ts> <candidato.ts>",
-   "linhas": 126,
+   "linhas": 137,
    "env": [
     "TYPES_SYNC_TSCONFIG"
    ],
@@ -517,12 +556,9 @@
   },
   {
    "arquivo": "scripts/validate-bridge.ts",
-   "descricao": null,
-   "linhas": 89,
-   "env": [
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_URL"
-   ],
+   "descricao": "* Validação do contrato da Edge Function `external-db-bridge`.",
+   "linhas": 265,
+   "env": [],
    "npm_scripts": [
     "test:bridge"
    ],

@@ -1,13 +1,15 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `6c530a0630` · branch `main` · 2026-11-13 01:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3118a1fd0b` · branch `main` · 2026-11-13 03:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
 
 _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para `manual/regras.md` e preencha._
 
-## B. Quem pode ver/alterar o quê (RLS — conforme migrations do repo; schema real em `06`)
+## B. Quem pode ver/alterar o quê (RLS — conforme migrations do repo; schema real: `context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO))
+
+> ⚠️ **NÃO VERIFICADO:** 20 comando(s) em 5 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`. Confirme no banco real antes de assumir.
 
 | Tabela | Política | Comando | Roles | Modo | USING | WITH CHECK |
 |---|---|---|---|---|---|---|
@@ -61,7 +63,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `user_tour_preferences` | Users can insert their own tour preferences | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `user_tour_preferences` | Users can update their own tour preferences | UPDATE | public | permissive | `auth.uid() = user_id` |  |
 | `user_tour_preferences` | Users can delete their own tour preferences | DELETE | public | permissive | `auth.uid() = user_id` |  |
-| `password_reset_tokens` | Users can view their own reset tokens | SELECT | public | permissive | `auth.uid() = user_id` |  |
 | `active_sessions` | Users can create their own sessions | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `active_sessions` | Users can update their own sessions | UPDATE | public | permissive | `auth.uid() = user_id` |  |
 | `rate_limit_logs` | Authenticated can insert rate limit logs | INSERT | public | permissive |  | `(auth.uid() IS NOT NULL AND (user_id IS NULL OR user_id = auth.uid())) OR user_id IS NULL` |
@@ -138,6 +139,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `creditos_fornecedor` | Authorized roles can manage credits | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `payment_history` | Finance admin can manage payment history | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `query_telemetry` | Admins can manage telemetry | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` | `public.has_role(auth.uid(), 'admin')` |
+| `produtos` | Buyers can insert produtos | INSERT | authenticated | permissive |  | `public.has_role(auth.uid(), 'buyer')` |
 | `storage.objects` | Users can upload documents | INSERT | authenticated | permissive |  | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = auth.uid()::text` |
 | `licitacoes` | Admins and coordinators can manage licitacoes | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` |
 | `licitacao_propostas` | Admins coordinators buyers can manage propostas | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` |
@@ -153,28 +155,45 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `solicitacoes` | Tenant isolation for solicitacoes | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `category_strategies` | Tenant isolation for category_strategies | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `spend_forecasts` | Tenant isolation for spend_forecasts | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
-| `sourcing_events` | tenant_isolation_sourcing_events | ALL | public | permissive | `organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid())` |  |
-| `sourcing_event_lots` | tenant_isolation_sourcing_event_lots | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_event_questions` | tenant_isolation_sourcing_event_questions | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_event_criteria` | tenant_isolation_sourcing_event_criteria | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_invitations` | tenant_isolation_sourcing_invitations | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_responses` | tenant_isolation_sourcing_responses | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_response_items` | tenant_isolation_sourcing_response_items | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_responses r JOIN sourcing_events e ON e.id = r.event_id WHERE r.id = response_id AND e.organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_response_answers` | tenant_isolation_sourcing_response_answers | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_responses r JOIN sourcing_events e ON e.id = r.event_id WHERE r.id = response_id AND e.organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `auction_bids` | tenant_isolation_auction_bids | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
-| `sourcing_awards` | tenant_isolation_sourcing_awards | ALL | public | permissive | `EXISTS (SELECT 1 FROM sourcing_events WHERE id = event_id AND organization_id = (SELECT current_organization_id FROM profiles WHERE user_id = auth.uid()))` |  |
+| `category_strategies` | tenant_isolation | ALL | public | permissive | `organization_id = public.get_my_organization()` |  |
 | `financial_audit_logs` | Admins can view all audit logs | SELECT | public | permissive | `EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text IN ('admin', 'coordinator'))` |  |
 | `dashboard_layouts` | Users can view their own dashboard layouts | SELECT | public | permissive | `auth.uid() = user_id` |  |
 | `dashboard_layouts` | Users can insert their own dashboard layouts | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `dashboard_layouts` | Users can update their own dashboard layouts | UPDATE | public | permissive | `auth.uid() = user_id` |  |
-| `tenants` | tenants visible to members | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.user_tenants WHERE user_id = auth.uid() AND tenant_id = public.tenants.id )` |  |
+| `approval_rules` | Users can view their organization rules | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `approval_rules` | Users can manage their organization rules | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `approval_delegations` | Users can view their organization delegations | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `approval_workflows` | Users can view their organization workflows | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `approval_workflows` | Users can manage their organization workflows | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `categorias` | Users can view their organization categories | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `categorias` | Users can manage their organization categories | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `department_budgets` | Users can view their organization budgets | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `department_budgets` | Users can manage their organization budgets | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
+| `sourcing_events` | tenant_isolation_sourcing_events | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_responses` | tenant_isolation_sourcing_responses | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_invitations` | tenant_isolation_sourcing_invitations | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `auction_bids` | tenant_isolation_auction_bids | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_pipeline` | tenant_isolation_sourcing_pipeline | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_awards` | tenant_isolation_sourcing_awards | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_event_lots` | tenant_isolation_sourcing_event_lots | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_event_criteria` | tenant_isolation_sourcing_event_criteria | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_event_questions` | tenant_isolation_sourcing_event_questions | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_response_items` | tenant_isolation_sourcing_response_items | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_response_answers` | tenant_isolation_sourcing_response_answers | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `licitacao_lances` | tenant_isolation_licitacao_lances | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `approval_steps` | tenant_isolation_approval_steps | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `approval_hierarchy` | tenant_isolation_approval_hierarchy | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `tenants` | tenants visible to members | SELECT | authenticated | permissive | `public.user_belongs_to_tenant(auth.uid(), id)` |  |
 | `user_tenants` | user_tenants own rows | SELECT | authenticated | permissive | `user_id = auth.uid()` |  |
+| `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `scim_provisioning_log` | SCIM logs isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `erp_field_mappings` | ERP field mappings are visible to tenant admins | ALL | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.erp_connections c WHERE c.id = connection_id AND c.tenant_id = public.current_tenant_id() )` |  |
 | `erp_sync_log` | ERP sync logs are tenant-isolated | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `sourcing_projects` | tenant_isolation_sourcing_projects | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `savings_tracker` | tenant_isolation_savings_tracker | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `workflow_templates` | Tenant isolation for workflow_templates | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `workflow_nodes` | Tenant isolation for workflow_nodes | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `workflow_edges` | Tenant isolation for workflow_edges | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
@@ -188,8 +207,11 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | Auth Upload | INSERT | public | permissive |  | `bucket_id = 'product-images' AND auth.role() = 'authenticated'` |
 | `storage.objects` | Auth Delete | DELETE | public | permissive | `bucket_id = 'product-images' AND auth.role() = 'authenticated'` |  |
 | `telemetry_logs_legacy_20260712` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
+| `fornecedor_categorias` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `currencies` | Authenticated can read currencies | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | Authenticated can read exchange_rates | SELECT | authenticated | permissive | `true` |  |
+| `profiles` | Users can view profiles in their tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `storage.objects` | Public Access | SELECT | public | permissive | `bucket_id = 'product-images' AND (auth.role() = 'anon' OR auth.role() = 'authenticated')` |  |
 | `currencies` | currencies_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | exchange_rates_authenticated_read | SELECT | authenticated | permissive | `true` |  |
@@ -256,8 +278,12 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `qualification_requirements` | Procurement roles can view qualification requirements | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 | `allowed_countries` | Admins can view allowed countries | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
 | `blocked_countries` | Admins can view blocked countries | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
+| `pedido_itens` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
+| `notifications` | Users can manage own notifications | ALL | authenticated | permissive | `user_id = auth.uid()` | `user_id = auth.uid()` |
 | `cron_heartbeats` | Service role manages cron heartbeats | ALL | service_role | permissive | `true` | `true` |
 | `cron_heartbeats` | Authenticated users can read cron heartbeats | SELECT | authenticated | permissive | `true` |  |
+| `fornecedores` | supplier_select_own | SELECT | public | permissive | `auth.is_supplier() AND ( user_id = auth.uid() OR EXISTS ( SELECT 1 FROM profiles p WHERE p.id = auth.uid() AND p.organization_id = fornecedores.organization_id ) )` |  |
+| `cotacoes` | supplier_select_cotacoes | SELECT | public | permissive | `auth.is_supplier() AND fornecedor_id IN ( SELECT id FROM fornecedores WHERE user_id = auth.uid() )` |  |
 | `pagamentos` | Finance and admin can view payments | SELECT | authenticated | permissive | `tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role) OR has_role(auth.uid(),'coordinator'::app_role))` |  |
 | `pagamentos` | Finance can manage payments | ALL | authenticated | permissive | `tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))` | `tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'finance'::app_role))` |
 | `fornecedores` | Buyers coordinators admins can manage suppliers | ALL | authenticated | permissive | `tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role))` | `tenant_in_my_group(tenant_id) AND (has_role(auth.uid(),'admin'::app_role) OR has_role(auth.uid(),'coordinator'::app_role) OR has_role(auth.uid(),'buyer'::app_role))` |
@@ -311,7 +337,16 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `licitacao_propostas` | tenant_isolation_licitacao_propostas | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `licitacoes` | tenant_isolation_licitacoes | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `order_contracts` | tenant_isolation_order_contracts | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
-| … +10 linhas — lista completa em `context.json` | | | | | | |
+| `pagamentos` | tenant_isolation_pagamentos | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `payment_history` | tenant_isolation_payment_history | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `pedido_itens` | tenant_isolation_pedido_itens | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `pedidos` | tenant_isolation_pedidos | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `penalty_escalation_config` | tenant_isolation_penalty_escalation_config | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `receiving_checklists` | tenant_isolation_receiving_checklists | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `spend_forecasts` | tenant_isolation_spend_forecasts | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `supplier_bonifications` | tenant_isolation_supplier_bonifications | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `supplier_documents` | tenant_isolation_supplier_documents | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `supplier_qualification_scores` | tenant_isolation_supplier_qualification_scores | ALL | authenticated | restrictive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -350,8 +385,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `solicitacoes` | `created_at` | default now() |
 | `solicitacoes` | `updated_at` | default now() |
 | `solicitacoes` | `organization_id` | FK → organizations.id |
+| `solicitacoes` | `cost_center_id` | FK → cost_centers.id |
+| `solicitacoes` | `tenant_id` | obrigatório; FK → tenants.id |
 | `solicitacoes` | `produto_id` | FK → produtos.id ON DELETE SET NULL |
-| `solicitacoes` | `tenant_id` | obrigatório |
 | `cotacoes` | `id` | PK; default gen_random_uuid() |
 | `cotacoes` | `numero` | obrigatório; único |
 | `cotacoes` | `solicitacao_id` | FK → solicitacoes.id ON DELETE CASCADE |
@@ -373,9 +409,10 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `cotacoes` | `created_at` | default now() |
 | `cotacoes` | `updated_at` | default now() |
 | `cotacoes` | `moeda` | default 'BRL' |
+| `cotacoes` | `taxa_conversao` | default 1.0 |
 | `cotacoes` | `organization_id` | FK → organizations.id |
+| `cotacoes` | `tenant_id` | obrigatório; FK → tenants.id |
 | `cotacoes` | `currency` | default 'BRL'; FK → currencies.code |
-| `cotacoes` | `tenant_id` | obrigatório |
 | `fornecedores` | `id` | PK; default gen_random_uuid() |
 | `fornecedores` | `codigo` | obrigatório; único |
 | `fornecedores` | `razao_social` | obrigatório |
@@ -391,7 +428,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `fornecedores` | `limite_credito` | default NULL |
 | `fornecedores` | `saldo_comprometido` | default 0 |
 | `fornecedores` | `organization_id` | FK → organizations.id |
-| `fornecedores` | `tenant_id` | obrigatório |
+| `fornecedores` | `tenant_id` | obrigatório; FK → tenants.id |
 | `fornecedores` | `(tabela)` | constraint fornecedores_cnpj_valid CHECK (cnpj IS NULL OR public.is_valid_cnpj(cnpj)) NOT VALID |
 | `fornecedores` | `(tabela)` | constraint fornecedores_telefone_e164_chk CHECK (telefone IS NULL OR telefone ~ '^\+[1-9]\d{9,14}$') NOT VALID |
 | `historico_compras` | `id` | PK; default gen_random_uuid() |
@@ -413,8 +450,11 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `profiles` | `empresa_default_id` | FK → tenants.id ON DELETE SET NULL |
 | `profiles` | `(tabela)` | constraint profiles_phone_e164_chk CHECK (phone IS NULL OR phone ~ '^\+[1-9]\d{9,14}$') NOT VALID |
 | `dashboard_filter_favorites` | `id` | PK; default gen_random_uuid() |
-| `dashboard_filter_favorites` | `user_id` | obrigatório; FK → users.id ON DELETE CASCADE |
+| `dashboard_filter_favorites` | `user_id` | obrigatório |
 | `dashboard_filter_favorites` | `name` | obrigatório |
+| `dashboard_filter_favorites` | `category_filter` | default 'all' |
+| `dashboard_filter_favorites` | `supplier_filter` | default 'all' |
+| `dashboard_filter_favorites` | `period_filter` | default '6m' |
 | `dashboard_filter_favorites` | `show_comparison` | default true |
 | `dashboard_filter_favorites` | `is_default` | default false |
 | `dashboard_filter_favorites` | `created_at` | default now() |
@@ -435,9 +475,17 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `contracts` | `created_at` | default now() |
 | `contracts` | `updated_at` | default now() |
 | `contracts` | `sla_delivery_days` | default 30 |
+| `contracts` | `penalty_rate_per_day` | default 0.5 |
+| `contracts` | `penalty_cap_percent` | default 20 |
+| `contracts` | `min_quality_score` | default 3.0 |
+| `contracts` | `quality_penalty_percent` | default 10 |
+| `contracts` | `return_policy` | default 'Itens |
+| `contracts` | `min_supplier_score` | default 3.0 |
+| `contracts` | `auto_block_below_score` | default true |
+| `contracts` | `penalty_clauses` | default '[]'::jsonb |
 | `contracts` | `organization_id` | FK → organizations.id |
+| `contracts` | `tenant_id` | default '00000000-0000-0000-0000-000000000000'; FK → tenants.id |
 | `contracts` | `currency` | default 'BRL'; FK → currencies.code |
-| `contracts` | `tenant_id` | obrigatório |
 | `contract_items` | `id` | PK; default gen_random_uuid() |
 | `contract_items` | `contract_id` | obrigatório; FK → contracts.id ON DELETE CASCADE |
 | `contract_items` | `item_name` | obrigatório |
@@ -446,23 +494,23 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `contract_items` | `unit_price` | default 0 |
 | `contract_items` | `total_price` | default 0 |
 | `contract_items` | `created_at` | default now() |
-| `contract_items` | `tenant_id` | obrigatório |
+| `contract_items` | `tenant_id` | default '00000000-0000-0000-0000-000000000000'; FK → tenants.id |
 | `contract_documents` | `id` | PK; default gen_random_uuid() |
 | `contract_documents` | `contract_id` | obrigatório; FK → contracts.id ON DELETE CASCADE |
 | `contract_documents` | `file_name` | obrigatório |
 | `contract_documents` | `file_url` | obrigatório |
 | `contract_documents` | `created_at` | default now() |
-| `contract_documents` | `tenant_id` | obrigatório |
+| `contract_documents` | `tenant_id` | default '00000000-0000-0000-0000-000000000000'; FK → tenants.id |
 | `contract_history` | `id` | PK; default gen_random_uuid() |
 | `contract_history` | `contract_id` | obrigatório; FK → contracts.id ON DELETE CASCADE |
 | `contract_history` | `action_type` | obrigatório |
 | `contract_history` | `created_at` | default now() |
-| `contract_history` | `tenant_id` | obrigatório |
+| `contract_history` | `tenant_id` | default '00000000-0000-0000-0000-000000000000'; FK → tenants.id |
 | `order_contracts` | `id` | PK; default gen_random_uuid() |
 | `order_contracts` | `order_id` | obrigatório |
 | `order_contracts` | `contract_id` | obrigatório; FK → contracts.id ON DELETE CASCADE |
 | `order_contracts` | `created_at` | default now() |
-| `order_contracts` | `tenant_id` | obrigatório |
+| `order_contracts` | `tenant_id` | default '00000000-0000-0000-0000-000000000000'; FK → tenants.id |
 | `order_contracts` | `(tabela)` | UNIQUE(order_id, contract_id) |
 | `push_subscriptions` | `id` | PK; default gen_random_uuid() |
 | `push_subscriptions` | `user_id` | obrigatório |
@@ -496,7 +544,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `notifications` | `sent_push` | default false |
 | `notifications` | `sent_email` | default false |
 | `notifications` | `created_at` | default now() |
-| `notifications` | `tenant_id` | obrigatório |
+| `notifications` | `tenant_id` | obrigatório; FK → tenants.id |
 | `categorias` | `id` | PK; default gen_random_uuid() |
 | `categorias` | `nome` | obrigatório |
 | `categorias` | `cor` | default '#6366f1' |
@@ -504,7 +552,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `categorias` | `created_at` | default now() |
 | `categorias` | `updated_at` | default now() |
 | `categorias` | `organization_id` | FK → organizations.id |
-| `categorias` | `tenant_id` | obrigatório |
+| `categorias` | `tenant_id` | obrigatório; FK → tenants.id |
+| `categorias` | `codigo_unspsc` | FK → unspsc_codes.code |
 | `produtos` | `id` | PK; default gen_random_uuid() |
 | `produtos` | `codigo` | obrigatório; único |
 | `produtos` | `nome` | obrigatório |
@@ -516,9 +565,13 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `produtos` | `created_at` | default now() |
 | `produtos` | `updated_at` | default now() |
 | `produtos` | `preco_referencia` | default 0 |
+| `produtos` | `ultimo_preco` | default 0 |
+| `produtos` | `fornecedor_preferencial_id` | FK → fornecedores.id |
+| `produtos` | `tags` | default '{}' |
 | `produtos` | `organization_id` | FK → organizations.id |
+| `produtos` | `tenant_id` | obrigatório; FK → tenants.id |
 | `produtos` | `tipo_produto` | default 'fabricado' |
-| `produtos` | `tenant_id` | obrigatório |
+| `produtos` | `lead_time_dias` | default 0 |
 | `pedidos` | `id` | PK; default gen_random_uuid() |
 | `pedidos` | `numero` | obrigatório; único |
 | `pedidos` | `solicitacao_id` | FK → solicitacoes.id |
@@ -534,9 +587,10 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `pedidos` | `created_at` | default now() |
 | `pedidos` | `updated_at` | default now() |
 | `pedidos` | `moeda` | default 'BRL' |
+| `pedidos` | `taxa_conversao` | default 1.0 |
 | `pedidos` | `organization_id` | FK → organizations.id |
+| `pedidos` | `tenant_id` | obrigatório; FK → tenants.id |
 | `pedidos` | `currency` | default 'BRL'; FK → currencies.code |
-| `pedidos` | `tenant_id` | obrigatório |
 | `pedido_itens` | `id` | PK; default gen_random_uuid() |
 | `pedido_itens` | `pedido_id` | FK → pedidos.id ON DELETE CASCADE |
 | `pedido_itens` | `produto_id` | FK → produtos.id |
@@ -547,9 +601,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `pedido_itens` | `valor_total` | obrigatório |
 | `pedido_itens` | `quantidade_recebida` | default 0 |
 | `pedido_itens` | `created_at` | default now() |
+| `pedido_itens` | `tenant_id` | obrigatório; FK → tenants.id |
 | `pedido_itens` | `unspsc_code` | FK → unspsc_codes.code |
 | `pedido_itens` | `status_producao` | default 'pendente' |
-| `pedido_itens` | `tenant_id` | obrigatório |
 | `pagamentos` | `id` | PK; default gen_random_uuid() |
 | `pagamentos` | `numero` | obrigatório; único |
 | `pagamentos` | `pedido_id` | FK → pedidos.id |
@@ -565,7 +619,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `pagamentos` | `updated_at` | default now() |
 | `pagamentos` | `organization_id` | FK → organizations.id |
 | `pagamentos` | `cost_center_id` | FK → cost_centers.id |
-| `pagamentos` | `tenant_id` | obrigatório |
+| `pagamentos` | `tenant_id` | obrigatório; FK → tenants.id |
 | `permissions` | `id` | PK; default gen_random_uuid() |
 | `permissions` | `name` | obrigatório; único |
 | `permissions` | `module` | obrigatório |
@@ -598,26 +652,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ip_whitelist` | `id` | PK; default gen_random_uuid() |
 | `ip_whitelist` | `ip_address` | obrigatório; único |
 | `ip_whitelist` | `created_by` | FK → users.id |
-| `ip_whitelist` | `created_at` | default now() |
-| `rate_limit_logs` | `id` | PK; default gen_random_uuid() |
-| `rate_limit_logs` | `ip_address` | obrigatório |
-| `rate_limit_logs` | `endpoint` | obrigatório |
-| `rate_limit_logs` | `request_count` | default 1 |
-| `rate_limit_logs` | `window_start` | default now() |
-| `rate_limit_logs` | `blocked` | default false |
-| `rate_limit_logs` | `user_id` | FK → users.id |
-| `rate_limit_logs` | `created_at` | default now() |
-| `active_sessions` | `id` | PK; default gen_random_uuid() |
-| `active_sessions` | `user_id` | obrigatório; FK → users.id ON DELETE CASCADE |
-| `active_sessions` | `session_token` | obrigatório; único |
-| `active_sessions` | `last_activity` | default now() |
-| `active_sessions` | `expires_at` | obrigatório |
-| `active_sessions` | `created_at` | default now() |
-| `active_sessions` | `tenant_id` | obrigatório |
-| `security_logs` | `id` | PK; default gen_random_uuid() |
-| `security_logs` | `user_id` | FK → users.id |
-| `security_logs` | `event_type` | obrigatório |
-| … +1043 linhas — lista completa em `context.json` | | |
+| … +1077 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -678,7 +713,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | set_creditos_updated_at | BEFORE UPDATE | `creditos_fornecedor` | `update_updated_at_column` |  |
 | update_licitacoes_updated_at | BEFORE UPDATE | `licitacoes` | `update_updated_at_column` |  |
 | update_licitacao_propostas_updated_at | BEFORE UPDATE | `licitacao_propostas` | `update_updated_at_column` |  |
-| trg_sanitize_audit_metadata | BEFORE INSERT | `audit_logs` | `sanitize_audit_metadata` |  |
 | trg_sanitize_session_token | BEFORE INSERT | `active_sessions` | `sanitize_session_token` |  |
 | update_dependency_health_updated_at | BEFORE UPDATE | `dependency_health` | `update_updated_at_column` |  |
 | trg_ufp_updated_at | BEFORE UPDATE | `user_filter_preferences` | `update_updated_at_column` |  |
@@ -691,14 +725,17 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | tr_budget_transaction_update | AFTER INSERT | `budget_transactions` | `update_cost_center_budget_totals` |  |
 | update_dashboard_layouts_updated_at | BEFORE UPDATE | `dashboard_layouts` | `update_updated_at_column` |  |
 | trg_dashboard_filter_favorites_updated_at | BEFORE UPDATE | `dashboard_filter_favorites` | `update_updated_at_column` |  |
+| trg_calculate_cotacao_scores | BEFORE INSERT OR UPDATE OF VALOR_TOTAL, PRAZO_ENTREGA, FORNECEDOR_ID | `cotacoes` | `calculate_cotacao_scores` |  |
+| trg_recalculate_all_cotacoes | AFTER INSERT OR UPDATE OF VALOR_TOTAL, PRAZO_ENTREGA OR DELETE | `cotacoes` | `recalculate_all_solicitacao_cotacoes` |  |
 | tr_log_cotacao_selection | AFTER UPDATE OF SELECIONADA | `cotacoes` | `log_cotacao_action` |  |
 | update_tenants_updated_at | BEFORE UPDATE | `tenants` | `update_updated_at_column` |  |
-| tr_enforce_audit_integrity | BEFORE INSERT | `audit_logs` | `enforce_audit_integrity` |  |
 | tr_tenants_updated_at | BEFORE UPDATE | `tenants` | `update_updated_at_column` |  |
 | update_sso_configurations_updated_at | BEFORE UPDATE | `sso_configurations` | `update_updated_at_column` |  |
 | update_punchout_catalogs_updated_at | BEFORE UPDATE | `punchout_catalogs` | `update_updated_at_column` |  |
 | update_erp_connections_updated_at | BEFORE UPDATE | `erp_connections` | `update_updated_at_column` |  |
 | update_fiscal_events_updated_at | BEFORE UPDATE | `fiscal_events` | `update_updated_at_column` |  |
+| update_sourcing_projects_updated_at | BEFORE UPDATE | `sourcing_projects` | `update_updated_at_column` |  |
+| update_savings_tracker_updated_at | BEFORE UPDATE | `savings_tracker` | `update_updated_at_column` |  |
 | trigger_update_estoque_saldo | AFTER INSERT | `estoque_movimentacoes` | `update_estoque_saldo` |  |
 | trigger_set_estoque_timestamp | BEFORE UPDATE | `estoque` | `update_updated_at_column` |  |
 | update_produto_fornecedores_updated_at | BEFORE UPDATE | `produto_fornecedores` | `update_updated_at_column` |  |
@@ -707,6 +744,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_webhook_events_updated_at | BEFORE UPDATE | `webhook_events` | `update_updated_at_column` |  |
 | trg_outbox_updated_at | BEFORE UPDATE | `integration_outbox` | `update_updated_at_column` |  |
 | trg_alert_on_outbox_dead | AFTER UPDATE | `integration_outbox` | `alert_on_outbox_dead` |  |
+| trg_normalize_email | BEFORE INSERT OR UPDATE OF EMAIL, PHONE | `profiles` | `normalize_email_lowercase` |  |
 | trg_normalize_email | BEFORE INSERT OR UPDATE OF EMAIL | `login_attempts` | `normalize_email_lowercase` |  |
 | trg_normalize_email | BEFORE INSERT OR UPDATE OF EMAIL | `password_reset_requests` | `normalize_email_lowercase` |  |
 | trg_normalize_email | BEFORE INSERT OR UPDATE OF EMAIL | `account_lockouts` | `normalize_email_lowercase` |  |
@@ -717,6 +755,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_normalize_phone_fornecedores | BEFORE INSERT OR UPDATE OF TELEFONE | `fornecedores` | `tg_normalize_phone` |  |
 | trg_normalize_phone_profiles | BEFORE INSERT OR UPDATE OF PHONE | `profiles` | `tg_normalize_phone` |  |
 | trg_audit_user_roles | AFTER INSERT OR UPDATE OR DELETE | `user_roles` | `audit_user_roles_changes` |  |
+| trg_alert_subs_updated | BEFORE UPDATE | `alert_subscriptions` | `update_updated_at_column` |  |
 | trg_secret_rotation_maintain | BEFORE INSERT OR UPDATE | `secret_rotation_schedule` | `tg_secret_rotation_maintain` |  |
 | trigger_check_telemetry_alerts | AFTER INSERT | `telemetry_logs` | `check_telemetry_alerts` |  |
 | trg_xbz_credentials_updated | BEFORE UPDATE | `xbz_credentials` | `update_updated_at_column` |  |
@@ -762,7 +801,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `solicitacoes` | `status` | `aprovada`, `cancelada`, `concluida`, `em_andamento`, `em_cotacao`, `pendente`, `rejeitada` | `pendente` |
 | `cotacoes` | `status` | `analisando`, `aprovada`, `expirada`, `pendente`, `rejeitada` | `pendente` |
 | `cotacoes` | `follow_up_status` | **livre (sem enum/CHECK)** |  |
-| `fornecedores` | `estado` | **livre (sem enum/CHECK)** |  |
 | `fornecedores` | `status` | `ativo`, `bloqueado`, `inativo`, `pendente` | `ativo` |
 | `contracts` | `status` | **livre (sem enum/CHECK)** | `draft` |
 | `pedidos` | `status` | `aprovado`, `cancelado`, `em_transito`, `entregue`, `enviado`, `parcial`, `pendente` | `pendente` |
@@ -773,8 +811,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `approval_steps` | `etapa` | **livre (sem enum/CHECK)** | `1` |
 | `approval_steps` | `status` | `approved`, `pending`, `rejected`, `skipped` | `pending` |
 | `spot_pedidos` | `status` | **livre (sem enum/CHECK)** | `Submetida` |
-| `spot_pedidos` | `status_color` | **livre (sem enum/CHECK)** |  |
-| `spot_pedidos` | `status_synced_at` | **livre (sem enum/CHECK)** |  |
 | `fiscal_documents` | `status` | **livre (sem enum/CHECK)** | `pendente` |
 | `fiscal_documents` | `reconciliation_status` | **livre (sem enum/CHECK)** | `pending` |
 | `fiscal_documents` | `sefaz_status` | **livre (sem enum/CHECK)** |  |
@@ -790,7 +826,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `sourcing_events` | `status` | `draft`, `published`, `in_progress`, `evaluation`, `awarded`, `cancelled` | `draft` |
 | `sourcing_invitations` | `status` | `pending`, `viewed`, `declined`, `submitted`, `expired` | `pending` |
 | `auction_bids` | `status` | `valid`, `rejected`, `withdrawn`, `winning` | `valid` |
-| `tenants` | `status` | **livre (sem enum/CHECK)** | `active` |
+| `tenants` | `status` | `active`, `suspended`, `trial`, `churned` | `trial` |
 | `scim_provisioning_log` | `status` | **livre (sem enum/CHECK)** |  |
 | `punchout_catalogs` | `last_test_status` | **livre (sem enum/CHECK)** |  |
 | `punchout_sessions` | `status` | `cancelled`, `completed`, `error`, `opened` | `opened` |
@@ -811,26 +847,16 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `xbz_pedidos` | `status_logistico` | **livre (sem enum/CHECK)** |  |
 | `xbz_pedidos` | `id_lote_debito_status` | **livre (sem enum/CHECK)** |  |
 | `xbz_pedidos` | `lote_debito_status_cliente` | **livre (sem enum/CHECK)** |  |
-| `xbz_pedidos` | `data_status_lote_debito` | **livre (sem enum/CHECK)** |  |
 | `xbz_carrinho_log` | `response_status` | **livre (sem enum/CHECK)** |  |
 | `spot_api_sync_log` | `status` | **livre (sem enum/CHECK)** | `success` |
 | `supplier_documents` | `status` | **livre (sem enum/CHECK)** |  |
 | `supplier_qualification_scores` | `qualification_status` | **livre (sem enum/CHECK)** |  |
-| `supplier_compliance_summary` | `status` | **livre (sem enum/CHECK)** |  |
 
 ### E.2 Mapas de transição declarados no código
 
-- **springTransition** (`src/components/onboarding/OnboardingTour.tsx`):
-  ```ts
-  type: 'spring' as const, stiffness: 300, damping: 30, mass: 0.8,
-  ```
-- **baseTransition** (`src/features/layout/transitions/presets.ts`):
-  ```ts
-  duration: 0.4, ease: EASE_OUT_EXPO
-  ```
 - **VALID_PEDIDO_TRANSITIONS** (`src/features/pedidos/hooks/usePedidos.ts`):
   ```ts
-  pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], // Allow reset for corrections concluido: [],
+  pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],
   ```
 - **VALID_SOLICITACAO_TRANSITIONS** (`src/features/solicitacoes/hooks/useSolicitacoes.ts`):
   ```ts
@@ -1112,22 +1138,22 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 |---|---|---|
 | audit_action_type | `create`, `update`, `delete`, `view`, `export`, `login`, `logout`, `approve`, `reject`, `cancel` | banco |
 | audit_entity_type | `solicitacao`, `cotacao`, `pedido`, `pagamento`, `fornecedor`, `usuario`, `configuracao`, `relatorio` | banco |
-| app_role | `admin`, `coordinator`, `buyer`, `finance`, `viewer` | banco |
+| app_role | `admin`, `coordinator`, `buyer`, `finance`, `viewer`, `supplier` | banco |
+| sourcing_type | `rfi`, `rfp`, `rfq`, `auction` | banco |
+| sourcing_status | `draft`, `published`, `in_progress`, `evaluation`, `awarded`, `cancelled` | banco |
+| invitation_status | `pending`, `viewed`, `declined`, `submitted`, `expired` | banco |
+| question_type | `text`, `number`, `single_choice`, `multi_choice`, `file`, `date` | banco |
+| bid_status | `valid`, `rejected`, `withdrawn`, `winning` | banco |
+| audit_event_type | `create`, `update`, `delete`, `approve`, `reject`, `auth`, `security`, `export` | banco |
+| tenant_status | `active`, `suspended`, `trial`, `churned` | banco |
+| sourcing_project_status | `backlog`, `planning`, `execution`, `negotiation`, `implementation`, `completed`, `cancelled` | banco |
+| saving_type | `negotiated`, `avoidance`, `process`, `specification` | banco |
 | workflow_node_type | `start`, `end`, `approval`, `condition`, `action`, `delay` | banco |
 | workflow_status | `pending`, `running`, `completed`, `failed`, `cancelled` | banco |
-| audit_event_type | `create`, `update`, `delete`, `approve`, `reject`, `auth`, `security`, `export` | banco |
-| bid_status | `valid`, `rejected`, `withdrawn`, `winning` | banco |
-| invitation_status | `pending`, `viewed`, `declined`, `submitted`, `expired` | banco |
-| log_level | `info`, `warn`, `error`, `debug` | banco |
-| question_type | `text`, `number`, `single_choice`, `multi_choice`, `file`, `date` | banco |
-| regime_tributario | `simples_nacional`, `lucro_presumido`, `lucro_real`, `mei` | banco |
-| saving_type | `negotiated`, `avoidance`, `process`, `specification` | banco |
-| sourcing_project_status | `backlog`, `planning`, `execution`, `negotiation`, `implementation`, `completed`, `cancelled` | banco |
-| sourcing_status | `draft`, `published`, `in_progress`, `evaluation`, `awarded`, `cancelled` | banco |
-| sourcing_type | `rfi`, `rfp`, `rfq`, `auction` | banco |
-| status_producao_enum | `pendente`, `primeira_peca`, `em_producao`, `personalizando`, `concluido` | banco |
-| tenant_status | `active`, `suspended`, `trial`, `churned` | banco |
 | tipo_produto_enum | `importado`, `fabricado`, `personalizado` | banco |
+| status_producao_enum | `pendente`, `primeira_peca`, `em_producao`, `personalizando`, `concluido` | banco |
+| log_level | `info`, `warn`, `error`, `debug` | banco |
+| regime_tributario | `simples_nacional`, `lucro_presumido`, `lucro_real`, `mei` | banco |
 | KpiColor | emerald \| orange \| blue \| purple \| green \| cyan \| red \| indigo \| teal \| violet \| fuchsia | `src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx` |
 | SortOption | prazo \| valor \| data | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | FilterStatus | all \| urgente \| escalado \| normal | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
@@ -1206,11 +1232,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **FiscalContract** (`supabase/functions/_shared/contracts.ts`, z.object):
   ```ts
-  { action: ciEnum(["send", "cancel", "query", "manifest"]), // NFe/NFSe/CTe/MDFe são siglas com case fixo — mantemos preprocess p/ uppercase type: z.preprocess( (v: unknown) => (typeof v === "string" ? v.toUpperCase().trim() : v), z.enum(["NFE", "NFSE", "CTE", "MDFE"]).transform((v: string) => { const map: Record<string, string> = { NFE: "NFe", NFSE: "NFSe", CTE: "CTe", MDFE: "MDFe" }; return map[v] as "NFe" | "NFSe" | "CTe" | "MDFe"; }) ), document_id: z.string().uuid().optional(), payload: z.record(z.any()).optional(), }
+  { action: ciEnum(["send", "cancel", "query", "manifest"]), /* NFe/NFSe/CTe/MDFe são siglas com case fixo — mantemos preprocess p/ uppercase */ type: z.preprocess( (v: unknown) => (typeof v === "string" ? v.toUpperCase().trim() : v), z.enum(["NFE", "NFSE", "CTE", "MDFE"]).transform((v: string) => { const map: Record<string, string> = { NFE: "NFe", NFSE: "NFSe", CTE: "CTe", MDFE: "MDFe" }; return map[v] as "NFe" | "NFSe" | "CTe" | "MDFe"; }) ), document_id: z.string().uuid().optional(), payload: z.record(z.any()).optional(), }
   ```
 - **TelemetryContract** (`supabase/functions/_shared/contracts.ts`, z.object):
   ```ts
-  { // Aceita variações (ERROR/WARNING/etc.) e normaliza para o enum log_level level: z.preprocess((v: unknown) => { const s = String(v ?? "info").toLowerCase().trim(); if (s === "warning") return "warn"; return ["info", "warn", "error", "debug"].includes(s) ? s : "info"; }, z.enum(["info", "warn", "error", "debug"])), message: z.string(), context: z.record(z.any()).optional(), requestId: z.string().optional(), tenantId: z.string().uuid().optional(), url: z.string().optional(), userAgent: z.string().optional(), }
+  { /* Aceita variações (ERROR/WARNING/etc.) e normaliza para o enum log_level */ level: z.preprocess((v: unknown) => { const s = String(v ?? "info").toLowerCase().trim(); if (s === "warning") return "warn"; return ["info", "warn", "error", "debug"].includes(s) ? s : "info"; }, z.enum(["info", "warn", "error", "debug"])), message: z.string(), context: z.record(z.any()).optional(), requestId: z.string().optional(), tenantId: z.string().uuid().optional(), url: z.string().optional(), userAgent: z.string().optional(), }
   ```
 - **DemandPredictionContract** (`supabase/functions/_shared/contracts.ts`, z.object):
   ```ts
@@ -1280,7 +1306,6 @@ _nenhum item encontrado_
 |---|---|
 | `supplier_compliance_summary` | `SELECT f.id AS fornecedor_id, f.razao_social, f.status, f.avaliacao, COALESCE(cp_agg.penalty_count, 0) AS penalty_count, COALESCE(cp_agg.total_penalty_value, 0) AS total_penalty_value, COALESCE(rc_agg.avg_quality_score, 0) AS avg_quality_score, COALESCE(sb_agg.bonus_count, 0) AS bonus_count, COALESC …` |
 | `v_system_health_overview` | `SELECT alert_type, severity, count(*) AS total_open, count(*) FILTER (WHERE created_at > now() - interval '24h') AS last_24h, count(*) FILTER (WHERE created_at > now() - interval '1h') AS last_1h, min(created_at) AS oldest_open, max(created_at) AS most_recent FROM public.system_alerts WHERE resolved …` |
-| `cron_job_staleness` | `SELECT j.jobid, j.jobname, j.schedule, j.active, latest.last_run_at, latest.status AS last_status, EXTRACT(EPOCH FROM (now() - latest.last_run_at)) / 3600.0 AS hours_since_last_run, CASE WHEN latest.last_run_at IS NULL THEN 'never_ran' WHEN now() - latest.last_run_at > interval '48 hours' THEN 'crit …` |
 | `mv_dashboard_kpis` | `SELECT p.tenant_id, date_trunc('day', p.created_at)::date AS dia, COUNT(*)::bigint AS total_pedidos, COALESCE(SUM(p.valor_total), 0)::numeric AS valor_total, COALESCE(AVG(p.valor_total), 0)::numeric AS ticket_medio, COUNT(DISTINCT p.fornecedor_id)::bigint AS fornecedores_unicos, COUNT(*) FILTER (WHE …` |
 
 ### G.3 Funções de cálculo/decisão no código
@@ -1343,7 +1368,7 @@ _nenhum item encontrado_
   ```
 - **generateQuotesFromSuppliers(fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [])** — `src/components/compras/price-comparator/priceComparatorHelpers.ts`
   ```
-  const quotes: PriceQuote[] = fornecedores.map((f, index) => { // Check if we have real data linked for this supplier and product const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id); // If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats const unitPrice = linkedData?.preco_custo ? Number(linkedData.preco_custo) : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2)); const totalPrice = Number …
+  const quotes: PriceQuote[] = fornecedores.map((f, index) => { /* Check if we have real data linked for this supplier and product */ const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id); /* If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats */ const unitPrice = linkedData?.preco_custo ? Number(linkedData.preco_custo) : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2)); const totalPrice = …
   ```
 - **usePriceHistoryAnalysis(cotacoes: CotacaoRecord[], filtered: CotacaoRecord[], fornecedorMap: Map<string, string>, solicitacaoMap: Map<string, st)** — `src/components/compras/price-history/priceHistoryHelpers.ts`
   ```
@@ -1387,7 +1412,7 @@ _nenhum item encontrado_
   ```
 - **triggerFeedback(type: FeedbackType)** — `src/lib/feedbackToast.ts`
   ```
-  const { soundEnabled, hapticEnabled, volume } = useFeedbackPreferences.getState(); // Haptic feedback if (hapticEnabled && 'vibrate' in navigator) { navigator.vibrate(hapticPatterns[type]); } // Sound feedback if (soundEnabled) { try { const audioContext = getAudioContext(); if (!audioContext) return; const config = soundConfigs[type]; const oscillator = audioContext.createOscillator(); const gainNode = audioContext.createGain(); oscillator.type = config.type; oscillator.frequency.setValueAtTime …
+  const { soundEnabled, hapticEnabled, volume } = useFeedbackPreferences.getState(); /* Haptic feedback */ if (hapticEnabled && 'vibrate' in navigator) { navigator.vibrate(hapticPatterns[type]); } /* Sound feedback */ if (soundEnabled) { try { const audioContext = getAudioContext(); if (!audioContext) return; const config = soundConfigs[type]; const oscillator = audioContext.createOscillator(); const gainNode = audioContext.createGain(); oscillator.type = config.type; oscillator.frequency.setValue …
   ```
 - **calculateDimensions(originalWidth: number, originalHeight: number, maxWidth: number, maxHeight: number)** — `src/lib/imageCompression.ts`
   ```
@@ -1395,7 +1420,7 @@ _nenhum item encontrado_
   ```
 - **generateOrderPDF(data: OrderPDFData)** — `src/lib/pdfGenerator.ts`
   ```
-  const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company }; const doc = new jsPDF(); const pageWidth = doc.internal.pageSize.getWidth(); // Branding Colors const primaryColor = [13, 148, 136]; // Teal-600 (approx) const secondaryColor = [71, 85, 105]; // Slate-600 // Header Background doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.rect(0, 0, pageWidth, 40, 'F'); // Title doc.setFontSize(24); doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold") …
+  const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company }; const doc = new jsPDF(); const pageWidth = doc.internal.pageSize.getWidth(); /* Branding Colors */ const primaryColor = [13, 148, 136]; /* Teal-600 (approx) */ const secondaryColor = [71, 85, 105]; /* Slate-600 */ /* Header Background */ doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.rect(0, 0, pageWidth, 40, 'F'); /* Title */ doc.setFontSize(24); doc.setTextColor(255, 255, 255); doc.setFont("helv …
   ```
 - **rpcGenerateSequentialNumber(supabase: SupabaseClient, params: { prefix: string; table_name: string },)** — `src/lib/supabaseRpc.ts`
   ```
@@ -1467,11 +1492,11 @@ _nenhum item encontrado_
   ```
 - **generateMutations(schema: any, validBase: any)** — `supabase/functions/_shared/fuzzer.ts`
   ```
-  const mutations: any[] = []; // Support Discriminated Unions and regular Objects const shape = schema instanceof z.ZodObject ? schema.shape : (schema._def?.options?.[0]?.shape || schema._def?.shape || {}); const keys = Object.keys(shape); // 1. Missing required fields keys.forEach(key => { const mutation = { ...validBase }; delete mutation[key]; mutations.push({ type: `missing_${key}`, payload: mutation }); }); // 2. Wrong types for fields keys.forEach(key => { const mutation = { ...validBase }; …
+  const mutations: any[] = []; /* Support Discriminated Unions and regular Objects */ const shape = schema instanceof z.ZodObject ? schema.shape : (schema._def?.options?.[0]?.shape || schema._def?.shape || {}); const keys = Object.keys(shape); /* 1. Missing required fields */ keys.forEach(key => { const mutation = { ...validBase }; delete mutation[key]; mutations.push({ type: `missing_${key}`, payload: mutation }); }); /* 2. Wrong types for fields */ keys.forEach(key => { const mutation = { ...val …
   ```
 - **defaultShouldRetry(err: unknown)** — `supabase/functions/_shared/retry.ts`
   ```
-  const msg = (err as Error)?.message?.toLowerCase() ?? ""; // Timeouts, resets, 5xx e 429 são retryable return /timeout|timed out|econnreset|network|fetch failed|5\d\d|429/.test(msg);
+  const msg = (err as Error)?.message?.toLowerCase() ?? ""; /* Timeouts, resets, 5xx e 429 são retryable */ return /timeout|timed out|econnreset|network|fetch failed|5\d\d|429/.test(msg);
   ```
 - **validateAuth(req: Request)** — `supabase/functions/_shared/security.ts`
   ```
@@ -1499,7 +1524,7 @@ _nenhum item encontrado_
   ```
 - **computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry)** — `supabase/functions/dependency-health/index.ts`
   ```
-  let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? ""; if (!spec) { const altLoc: TrackedEntry["location"] = entry.location === "dependencies" ? "devDependencies" : "dependencies"; spec = pkg?.[altLoc]?.[entry.npmName] ?? ""; } const locked = resolveLockedVersion(lockText, entry.npmName) ?? ""; const installed = locked; // edge cannot read node_modules const exactPinned = /^\d+\.\d+\.\d+$/.test(spec); const normalizedSpec = spec.replace(/^[\^~]/, ""); const driftDetected = Boolean(spec …
+  let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? ""; if (!spec) { const altLoc: TrackedEntry["location"] = entry.location === "dependencies" ? "devDependencies" : "dependencies"; spec = pkg?.[altLoc]?.[entry.npmName] ?? ""; } const locked = resolveLockedVersion(lockText, entry.npmName) ?? ""; const installed = locked; /* edge cannot read node_modules */ const exactPinned = /^\d+\.\d+\.\d+$/.test(spec); const normalizedSpec = spec.replace(/^[\^~]/, ""); const driftDetected = Boolean(s …
   ```
 - **generateVapidAuth(endpoint: string, vapidPublicKey: string, vapidPrivateKey: string)** — `supabase/functions/send-push-notification/index.ts`
   ```
@@ -1522,16 +1547,8 @@ _nenhum item encontrado_
 
 | Trecho | Arquivo |
 |---|---|
-| `--background: 0 0% 0%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
-| `--card-foreground: 0 0% 100%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
-| `--card: 0 0% 5%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
-| `--foreground: 0 0% 100%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
-| `--primary-foreground: 0 0% 0%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
-| `--primary: 60 100% 50%;` | `src/components/accessibility/AccessibilityStyles.tsx` |
 | `0%` | `src/components/compras/AdvancedProcurementKPIs.tsx` |
 | `<span>85% alcançado</span>` | `src/components/compras/BulkPlanningConsole.tsx` |
-| `transition={{ delay: idx * 0.1 }}` | `src/components/compras/BulkPlanningConsole.tsx` |
-| `transition={{ delay: index * 0.1 }}` | `src/components/compras/BuscaAutomatica.tsx` |
 | `// Delivery time weight: 30%` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `// Price weight: 50%` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `// Stock availability weight: 20%` | `src/components/compras/ComparadorCotacoes.tsx` |
@@ -1539,41 +1556,23 @@ _nenhum item encontrado_
 | `score += priceScore * 0.5;` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `score += stockScore * 0.2;` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `const potentialExtraSaving = Math.round(kpis.volumeMes * 0.03); // Assuming we can save 3% more` | `src/components/compras/DashboardInsights.tsx` |
-| `transition={{ duration: 0.2, delay: idx * 0.05 }}` | `src/components/compras/DashboardInsights.tsx` |
-| `transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}` | `src/components/compras/EnhancedPedidoTimeline.tsx` |
-| `transition={{ delay: index * 0.1 }}` | `src/components/compras/EnhancedPedidoTimeline.tsx` |
-| `transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}` | `src/components/compras/EnhancedPedidoTimeline.tsx` |
-| `transition={{ delay: 0.3 + index * 0.05 }}` | `src/components/compras/PipelineChart.tsx` |
-| `transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}` | `src/components/compras/PipelineChart.tsx` |
 | `Confiança da análise: 94%` | `src/components/compras/PriceHistoryModal.tsx` |
 | `Sum must equal 100% for precise calculation.` | `src/components/compras/RankingCotacoes.tsx` |
-| `transition={{ duration: 0.4, delay: index * 0.05 }}` | `src/components/compras/RankingCotacoes.tsx` |
 | `const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));` | `src/components/compras/RiskHeatMap.tsx` |
 | `const overallRisk = Math.round(financialRisk * 0.15 + operationalRisk * 0.25 + qualityRisk * 0.2 + deliveryRisk * 0.2 + concentrationRisk * 0.1 + geopoliticalRi …` | `src/components/compras/RiskHeatMap.tsx` |
 | `Predição Neural: 94% Confiança baseada em logística histórica.` | `src/components/compras/SolicitacaoCard.tsx` |
 | `A concentração de 65% no Sudeste sugere otimização de frete, mas eleva risco de ruptura local. Considere diversificação para o Sul.` | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `Lead time médio subiu 15% para itens de infraestrutura.` | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `{ date: '2', price: record.totalPrice * 0.95 },` | `src/components/compras/SourcingHistoryConsole.tsx` |
-| `transition={{ delay: idx * 0.1 }}` | `src/components/compras/SourcingIntelligenceWidget.tsx` |
-| `transition={{ delay: idx * 0.1, type: "spring", stiffness: 100 }}` | `src/components/compras/StrategicQuoteTable.tsx` |
 | `.filter(f => f.limite_credito && f.saldo_comprometido && f.saldo_comprometido >= f.limite_credito * 0.8)` | `src/components/compras/SupplierAlertsPanel.tsx` |
-| `transition={{ delay: idx * 0.1 }}` | `src/components/compras/SupplierEcosystemSection.tsx` |
 | `deve subir 8% no próximo mês. Recomendamos antecipar pedidos com` | `src/components/compras/SupplierIntelligenceConsole.tsx` |
-| `transition={{ delay: idx * 0.1 }}` | `src/components/compras/SupplierInteractionLog.tsx` |
 | `// Delivery time weight: 30%` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `// Price weight: 50%` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `// Stock availability weight: 20%` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `score += prazoScore * 0.3;` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `score += priceScore * 0.5;` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `score += stockScore * 0.2;` | `src/components/compras/VisualComparadorCotacoes.tsx` |
-| `transition={{ delay: index * 0.05 }}` | `src/components/compras/VisualComparadorCotacoes.tsx` |
-| `transition={{ delay: index * 0.1 }}` | `src/components/compras/executive/ExecutiveAIInsights.tsx` |
 | `+12.4% vs LTM` | `src/components/compras/executive/ExecutiveChartsRow.tsx` |
-| `transition={{ delay: i * 0.1 }}` | `src/components/compras/executive/ExecutiveDrillDownModal.tsx` |
-| `transition={{ delay: index * 0.05 }}` | `src/components/compras/executive/ExecutiveDrillDownModal.tsx` |
-| `transition={{ duration: 0.4, delay: delay * 0.05 }}` | `src/components/compras/executive/ExecutiveMetricCard.tsx` |
-| `transition={{ duration: 0.3, delay: index * 0.05 }}` | `src/components/compras/executive/ExecutivePendingActions.tsx` |
-| `transition={{ duration: 0.2, delay: index * 0.05 }}` | `src/components/compras/executive/ExecutiveTablesRow.tsx` |
 | `: Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2));` | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
 | `communication * 0.08 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `deliveryTime * 0.20 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
@@ -1581,30 +1580,9 @@ _nenhum item encontrado_
 | `pricing * 0.15 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `quality * 0.25 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `slaCompliance * 0.25 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
-| `transition={{ delay: i * 0.05 }}` | `src/components/fornecedores/FornecedorMobileCard.tsx` |
-| `transition={{ duration: 0.5, delay: i * 0.1 }}` | `src/components/mobile/MobileRefreshWrapper.tsx` |
-| `transition={{ delay: index * 0.05 }}` | `src/components/mobile/SwipeableListItem.tsx` |
-| `transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}` | `src/components/navigation/ModernBreadcrumbs.tsx` |
-| `delay: delay * 0.08,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `x: -380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `x: 380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
-| `delay: Math.random() * 0.5,` | `src/components/onboarding/TourVisualComponents.tsx` |
-| `<FloatingHeart key={i} delay={i * 0.2} />` | `src/components/ui/celebration.tsx` |
-| `<Sparkle key={i} delay={i * 0.08} size={['sm', 'md', 'lg'][i % 3] as 'sm' \| 'md' \| 'lg'} />` | `src/components/ui/celebration.tsx` |
-| `<StarBurst key={`star-${i}`} delay={0.3 + i * 0.15} />` | `src/components/ui/celebration.tsx` |
-| `delay={piece.id * 0.02}` | `src/components/ui/celebration.tsx` |
-| `transition={{ delay: 0.5 + i * 0.1, type: "spring" }}` | `src/components/ui/celebration.tsx` |
-| `transition={{ delay: index * 0.03 }}` | `src/components/ui/enhanced-search.tsx` |
-| `transition={{ delay: 0.4 + i * 0.1 }}` | `src/components/ui/illustrated-empty-state.tsx` |
-| `transition={{ delay: 0.3 + index * 0.05 }}` | `src/components/ui/page-header-extras.tsx` |
-| `transition={{ delay: 0.35 + index * 0.05 }}` | `src/components/ui/page-header-extras.tsx` |
-| `transition={{ delay: 0.5 + index * 0.05, duration: 0.2 }}` | `src/components/ui/sparkline.tsx` |
-| `transition={{ delay: i * 0.05, type: "spring", stiffness: 500 }}` | `src/components/ui/indicators/MiscIndicators.tsx` |
 | `items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });` | `src/features/layout/components/AdvancedSearch.tsx` |
-| `transition: { delay: index * 0.05 }` | `src/features/layout/components/QuickActionsFAB.tsx` |
-| `delay: Math.min(index * 0.05, 0.5)` | `src/features/layout/components/chat/MessageBubble.tsx` |
-| `transition={{ delay: idx * 0.05 }}` | `src/features/layout/components/search/SearchEmptyState.tsx` |
-| `transition={{ delay: idx * 0.03 }}` | `src/features/layout/components/search/SearchResultsList.tsx` |
 | `maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)` | `src/hooks/useExecutiveDashboardData.ts` |
 | `savings: { value: savings, target: savings * 0.8 },` | `src/hooks/useExecutiveDashboardData.ts` |
 | `tailSpend: { value: totalSpend * 0.12, percentage: 12.0 }, // Simulated tail spend (low value, high volume)` | `src/hooks/useExecutiveDashboardData.ts` |
@@ -1612,12 +1590,7 @@ _nenhum item encontrado_
 | `// Explicit columns: drops ~30% payload vs `*` on wide table.` | `src/hooks/useProdutos.ts` |
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |
 | `1. **Cost Efficiency:** Supplier **${best.fornecedor}** guarantees **15%** savings vs. market average.` | `src/pages/cotacao/Cotacao.tsx` |
-| `transition={{ delay: index * 0.03 }}` | `src/pages/fornecedores/Fornecedores.tsx` |
-| `transition={{ delay: idx * 0.05 }}` | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
-| `transition={{ delay: idx * 0.1 }}` | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
-| `transition={{ delay: index * 0.03 }}` | `src/pages/pedidos/Pedidos.tsx` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
-| `transition={{ delay: i * 0.1 }}` | `src/pages/solicitacoes/Solicitacoes.tsx` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
 | `const jitter = delay * (Math.random() * 0.5 - 0.25);` | `supabase/functions/dependency-health/index.ts` |
 
@@ -1627,8 +1600,8 @@ _nenhum item encontrado_
 
 | Constante | Valor | Arquivo |
 |---|---|---|
-| `STALE_MS` | `7` | `src/components/admin/DependencyHealthBadge.tsx` |
-| `SIDEBAR_COOKIE_MAX_AGE` | `60` | `src/components/ui/sidebar.tsx` |
+| `STALE_MS` | `7 * 24 * 60 * 60 * 1000` | `src/components/admin/DependencyHealthBadge.tsx` |
+| `SIDEBAR_COOKIE_MAX_AGE` | `60 * 60 * 24 * 7` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `"16rem"` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `"18rem"` | `src/components/ui/sidebar.tsx` |
 | `MAX_VISIBLE` | `3` | `src/features/layout/components/Breadcrumbs.tsx` |
@@ -1641,39 +1614,39 @@ _nenhum item encontrado_
 | `DEBOUNCE_MS` | `800` | `src/hooks/useAccountFilters.ts` |
 | `UNDO_TIMEOUT_MS` | `6000` | `src/hooks/useClearFiltersFlow.tsx` |
 | `MAX_RETRIES` | `5` | `src/hooks/useOfflineSync.ts` |
-| `PREFETCH_STALE_TIME` | `30` | `src/hooks/usePrefetch.ts` |
-| `PREFETCH_CACHE_TIME` | `5` | `src/hooks/usePrefetch.ts` |
+| `PREFETCH_STALE_TIME` | `30 * 1000` | `src/hooks/usePrefetch.ts` |
+| `PREFETCH_CACHE_TIME` | `5 * 60 * 1000` | `src/hooks/usePrefetch.ts` |
 | `DEFAULT_MAX_ITEMS` | `30` | `src/hooks/useRecentlyViewed.ts` |
-| `IDLE_TIMEOUT_MS` | `30` | `src/hooks/useSessionIdleTimeout.ts` |
-| `THROTTLE_MS` | `60` | `src/hooks/useSessionIdleTimeout.ts` |
+| `IDLE_TIMEOUT_MS` | `30 * 60 * 1000` | `src/hooks/useSessionIdleTimeout.ts` |
+| `THROTTLE_MS` | `60_000` | `src/hooks/useSessionIdleTimeout.ts` |
 | `MAX_RETRIES` | `3` | `src/hooks/useWorkflowDLQ.ts` |
-| `XBZ_CLIENT_TIMEOUT_MS` | `45` | `src/hooks/useXbzIntegration.ts` |
+| `XBZ_CLIENT_TIMEOUT_MS` | `45_000` | `src/hooks/useXbzIntegration.ts` |
 | `RETRY_MAX_ATTEMPTS` | `2` | `src/hooks/useXbzIntegration.ts` |
 | `RETRY_BASE_DELAY_MS` | `600` | `src/hooks/useXbzIntegration.ts` |
-| `STATIC_CACHE_TTL_MS` | `5` | `src/hooks/useXbzIntegration.ts` |
-| `XBZ_SLOW_MS` | `3` | `src/hooks/useXbzIntegration.ts` |
-| `XBZ_VERY_SLOW_MS` | `8` | `src/hooks/useXbzIntegration.ts` |
+| `STATIC_CACHE_TTL_MS` | `5 * 60_000` | `src/hooks/useXbzIntegration.ts` |
+| `XBZ_SLOW_MS` | `3_000` | `src/hooks/useXbzIntegration.ts` |
+| `XBZ_VERY_SLOW_MS` | `8_000` | `src/hooks/useXbzIntegration.ts` |
 | `CHANGE_EVENT` | `'clear-filters-shortcut-changed'` | `src/lib/clearFiltersShortcut.ts` |
 | `BOM` | `'\uFEFF'` | `src/lib/exportData.ts` |
-| `TELEMETRY_BATCH_INTERVAL_MS` | `5` | `src/lib/logger.ts` |
+| `TELEMETRY_BATCH_INTERVAL_MS` | `5_000` | `src/lib/logger.ts` |
 | `TELEMETRY_MAX_BATCH` | `20` | `src/lib/logger.ts` |
-| `TELEMETRY_RATE_WINDOW_MS` | `60` | `src/lib/logger.ts` |
+| `TELEMETRY_RATE_WINDOW_MS` | `60_000` | `src/lib/logger.ts` |
 | `TELEMETRY_RATE_LIMIT` | `60` | `src/lib/logger.ts` |
-| `DEFAULT_MAX_ROWS` | `50` | `src/lib/paginatedFetch.ts` |
-| `DEFAULT_STALE_TIME` | `30` | `src/lib/query-client.ts` |
-| `REFERENCE_STALE_TIME` | `5` | `src/lib/query-client.ts` |
-| `STATIC_STALE_TIME` | `30` | `src/lib/query-client.ts` |
-| `DEFAULT_GC_TIME` | `10` | `src/lib/query-client.ts` |
-| `CI_COOLDOWN_MS` | `30` | `src/pages/admin/DependencyHealth.tsx` |
+| `DEFAULT_MAX_ROWS` | `50_000` | `src/lib/paginatedFetch.ts` |
+| `DEFAULT_STALE_TIME` | `30_000` | `src/lib/query-client.ts` |
+| `REFERENCE_STALE_TIME` | `5 * 60_000` | `src/lib/query-client.ts` |
+| `STATIC_STALE_TIME` | `30 * 60_000` | `src/lib/query-client.ts` |
+| `DEFAULT_GC_TIME` | `10 * 60_000` | `src/lib/query-client.ts` |
+| `CI_COOLDOWN_MS` | `30_000` | `src/pages/admin/DependencyHealth.tsx` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
-| `REFRESH_MS` | `5` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
+| `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
 | `MIN_SAMPLE` | `10` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `WARN_RATIO` | `0.3` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `TARGET_RATIO` | `0.5` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `TREND_WINDOW` | `12` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_MIN_SAMPLES` | `6` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
-| `DEFAULT_TTL_MS` | `5` | `src/stores/undoStore.ts` |
+| `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
 | `MAX_SELECT_LIMIT` | `500` | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `DEFAULT_LEVEL` | `"info"` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_MESSAGE_LENGTH` | `4000` | `supabase/functions/_shared/logLevel.ts` |
@@ -1682,20 +1655,20 @@ _nenhum item encontrado_
 | `SPOT_QUOTA_RESERVE` | `2` | `supabase/functions/_shared/spot_api.ts` |
 | `CHUNK` | `500` | `supabase/functions/_shared/xbz_catalog_cache.ts` |
 | `XBZ_BASE` | `"https://api.minhaxbz.com.br:5001"` | `supabase/functions/_shared/xbz_client.ts` |
-| `XBZ_TIMEOUT_MS` | `15` | `supabase/functions/_shared/xbz_client.ts` |
+| `XBZ_TIMEOUT_MS` | `15_000` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
 | `DISPATCH_WORKFLOW_FILE` | `"dependency-health.yml"` | `supabase/functions/dependency-health/index.ts` |
 | `FORBIDDEN_MESSAGE` | `"Forbidden: admin role required"` | `supabase/functions/dependency-health/index.ts` |
-| `SEFAZ_TIMEOUT_MS` | `20` | `supabase/functions/fiscal-orchestrator/index.ts` |
+| `SEFAZ_TIMEOUT_MS` | `20_000` | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `SEFAZ_RETRIES` | `4` | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `MAX_RETRIES` | `5` | `supabase/functions/process-outbox/index.ts` |
 | `BATCH_SIZE` | `20` | `supabase/functions/process-outbox/index.ts` |
 | `SOURCE` | `"punchout"` | `supabase/functions/punchout-receive/index.ts` |
 | `LANG` | `"PT"` | `supabase/functions/spot-api/index.ts` |
-| `REQUEST_TIMEOUT_MS` | `120` | `supabase/functions/spot-api/index.ts` |
+| `REQUEST_TIMEOUT_MS` | `120_000` | `supabase/functions/spot-api/index.ts` |
 | `UPSERT_BATCH` | `500` | `supabase/functions/spot-api/index.ts` |
-| `SESSION_TTL_MS` | `23` | `supabase/functions/spot-api/index.ts` |
+| `SESSION_TTL_MS` | `23 * 60 * 60 * 1000` | `supabase/functions/spot-api/index.ts` |
 | `SESSION_TAG` | `"spot-api-token"` | `supabase/functions/spot-api/index.ts` |
 | `SPOT_BASE` | `"https://www.spotgifts.com.br"` | `supabase/functions/spot-proxy/index.ts` |
 | `LANG` | `"pt"` | `supabase/functions/spot-proxy/index.ts` |
@@ -1949,17 +1922,47 @@ _nenhum item encontrado_
 | Mensagem | Arquivo |
 |---|---|
 | falha fixture | `scripts/automation.unit.mjs` |
+| ${rotulo} inválido:  | `scripts/db-explain-analyze.ts` |
+| --out exige um diretório | `scripts/db-explain-analyze.ts` |
+| EXPLAIN_RUNS inválido: mínimo 1 | `scripts/db-explain-analyze.ts` |
+| argumento desconhecido: ${a} | `scripts/db-explain-analyze.ts` |
+| plano sem tempo de execução | `scripts/db-explain-analyze.ts` |
+| --dir exige um caminho | `scripts/realtime-audit.ts` |
+| argumento desconhecido: ${a} | `scripts/realtime-audit.ts` |
+| --allowlist exige um caminho | `scripts/rls-audit.ts` |
+| allowlist ${arquivo} não é JSON válido | `scripts/rls-audit.ts` |
+| allowlist ${arquivo}: excecoes[${i}] precisa de  | `scripts/rls-audit.ts` |
+| allowlist ${arquivo}: falta o array  | `scripts/rls-audit.ts` |
+| argumento desconhecido: ${a} | `scripts/rls-audit.ts` |
+| nenhuma tabela encontrada em public — auditoria não comprovou nada | `scripts/rls-audit.ts` |
+| resposta do banco fora do formato esperado (policies/tables) | `scripts/rls-audit.ts` |
+| ${rotulo} inválido:  | `scripts/stress-test.ts` |
+| --endpoint inválido:  | `scripts/stress-test.ts` |
+| --endpoint precisa ser http(s):  | `scripts/stress-test.ts` |
+| argumento desconhecido: ${a} | `scripts/stress-test.ts` |
+| --timeout-ms exige inteiro >= 100 | `scripts/validate-bridge.ts` |
+| argumento desconhecido: ${a} | `scripts/validate-bridge.ts` |
 | ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
-| ${metodo} ${caminho} -> ${r.status} | `scripts/ci/actions-kpi.mjs` |
+| precisa ser um objeto JSON | `scripts/ai-context/gerar.mjs` |
+| ><span role= | `scripts/ai-context/gerar.unit.mjs` |
+| ${metodo} ${caminho} -> ${r.status} com corpo que nao e JSON (${e.message}) | `scripts/ci/actions-kpi.mjs` |
+| ${metodo} ${caminho} -> sem resposta (${e.cause?.code ?? e.cause?.message ?? e.message}) | `scripts/ci/actions-kpi.mjs` |
 | ${argv[index - 1]} exige um valor | `scripts/ci/audit-prod.mjs` |
 | --level invalido: ${args.level} | `scripts/ci/audit-prod.mjs` |
 | Argumento desconhecido: ${argv[index]} | `scripts/ci/audit-prod.mjs` |
+| --limite-prs inválido (esperado inteiro positivo): ${JSON.stringify(saida[ | `scripts/ci/branch-podaveis.mjs` |
 | PR sem headRefName | `scripts/ci/branch-podaveis.mjs` |
 | a lista de PRs abertas não é um array | `scripts/ci/branch-podaveis.mjs` |
 | a lista de PRs abertas veio cheia (${dados.length} >= limite ${limite}); pode haver PR que não veio | `scripts/ci/branch-podaveis.mjs` |
+| argumento desconhecido: ${chave} | `scripts/ci/branch-podaveis.mjs` |
 | argumento inválido: ${chave} | `scripts/ci/branch-podaveis.mjs` |
 | falta --${obrigatorio} | `scripts/ci/branch-podaveis.mjs` |
+| o conteúdo não é um objeto JSON | `scripts/ci/bump-toolchain.mjs` |
+| ${argv[i - 1]} exige um valor | `scripts/ci/check-bundle-secrets.mjs` |
 | Argumento desconhecido: ${argv[i]} | `scripts/ci/check-bundle-secrets.mjs` |
+| campo repetido no bloco # docs: ${m[1]} | `scripts/ci/render-workflow-docs.mjs` |
+| linha nao reconhecida no bloco # docs:  | `scripts/ci/render-workflow-docs.mjs` |
+| relation  | `scripts/ci/scripts-operacionais.unit.mjs` |
 | --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
 | Management API ${caminho} respondeu HTTP ${res.status} | `scripts/inventario/gerar-banco.mjs` |
 | a resposta nao parece ser do banco deste projeto: ${comuns} tabelas em comum com o manifesto  | `scripts/inventario/gerar-banco.mjs` |
@@ -1969,14 +1972,28 @@ _nenhum item encontrado_
 | entrada sem as chaves: ${faltando.join( | `scripts/inventario/gerar-banco.mjs` |
 | entrada sem tabelas | `scripts/inventario/gerar-banco.mjs` |
 | format_version ${dado.format_version} desconhecido (esperado 1) | `scripts/inventario/gerar-banco.mjs` |
+| o banco consultado ${registros === null ?  | `scripts/inventario/gerar-banco.mjs` |
 | sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script). | `scripts/inventario/gerar-banco.mjs` |
 | sem ref do projeto: defina SUPABASE_PROJECT_REF (ou VITE_SUPABASE_PROJECT_ID / VITE_SUPABASE_URL). | `scripts/inventario/gerar-banco.mjs` |
 | sem supabase/migrations/ para conferir o ledger: nao da para garantir a origem da resposta. | `scripts/inventario/gerar-banco.mjs` |
 | ripgrep (rg) falhou com exit ${status}; o inventário não foi gerado. | `scripts/inventario/gerar-repo.mjs` |
 | ripgrep (rg) não encontrado; o inventário não pode ser gerado com segurança. | `scripts/inventario/gerar-repo.mjs` |
+| ${arquivo}: <Route> sem fim (chaves desbalanceadas?) em  | `scripts/inventario/gerar-rotas.mjs` |
 | ${arquivo}: nao achei o bloco <Routes>...</Routes> | `scripts/inventario/gerar-rotas.mjs` |
+| SQL com mais de um comando ( | `scripts/lib/psql-leitura.mjs` |
+| SQL vazio | `scripts/lib/psql-leitura.mjs` |
+| SUPABASE_DB_URL aponta para outro projeto que não o oficial — nada foi executado | `scripts/lib/psql-leitura.mjs` |
+| SUPABASE_DB_URL ausente | `scripts/lib/psql-leitura.mjs` |
+| SUPABASE_DB_URL não identifica um projeto Supabase Cloud (esperado db.<ref>.supabase.co ou  | `scripts/lib/psql-leitura.mjs` |
+| Somente comando de leitura (SELECT/WITH/EXPLAIN/SHOW/VALUES/TABLE) é aceito | `scripts/lib/psql-leitura.mjs` |
+| psql não concluiu: ${motivo} | `scripts/lib/psql-leitura.mjs` |
+| psql não devolveu nenhuma linha (esperado um documento JSON) | `scripts/lib/psql-leitura.mjs` |
+| psql saiu com código ${resultado.status ?? resultado.signal}: ${detalhe \|\|  | `scripts/lib/psql-leitura.mjs` |
+| saída do psql não é JSON válido (${bruto.length} bytes) | `scripts/lib/psql-leitura.mjs` |
 | caminho de  | `scripts/lib/seguranca-processo.mjs` |
 | comando nao encontrado no PATH:  | `scripts/lib/seguranca-processo.mjs` |
+| links simbolicos em ciclo ou em cadeia longa demais:  | `scripts/lib/seguranca-processo.mjs` |
+| nome de comando invalido para busca no PATH:  | `scripts/lib/seguranca-processo.mjs` |
 | failed | `scripts/maintenance/lib.mjs` |
 | missing_dependencies | `scripts/maintenance/lib.mjs` |
 | skipped_busy | `scripts/maintenance/lib.mjs` |
@@ -1993,6 +2010,7 @@ _nenhum item encontrado_
 | view sem permissão na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | nenhum objeto reconhecido em ${arquivo}; formato inesperado | `scripts/types-sync/check-remocoes-destrutivas.mjs` |
 | Parametros de conexao PostgreSQL invalidos ou nao suportados (detalhes omitidos) | `scripts/types-sync/identidade-banco.mjs` |
+| tsc nao concluiu a medicao  | `scripts/types-sync/typecheck-ratchet.mjs` |
 | useAccessibility must be used within AccessibilityProvider | `src/components/accessibility/AdvancedAccessibility.tsx` |
 | HTTP ${res.status} | `src/components/admin/DateFnsUsagePanel.tsx` |
 | HTTP ${res.status} | `src/components/admin/DependencyHealthBadge.tsx` |
@@ -2203,52 +2221,7 @@ _nenhum item encontrado_
 | Erro ao entrar com Google | `src/pages/auth/Auth.tsx` |
 | Esta senha foi encontrada em vazamentos de dados (Pwned Passwords). Por sua segurança, escolha outra senha. | `src/pages/auth/Auth.tsx` |
 | Este email já está cadastrado | `src/pages/auth/Auth.tsx` |
-| Informe seu email para usar Passkey | `src/pages/auth/Auth.tsx` |
-| Muitas tentativas falhadas. Conta bloqueada por ${lockoutResult.lockoutMinutes} minuto(s). | `src/pages/auth/Auth.tsx` |
-| Erro ao enviar imagem:  | `src/pages/catalogo-produtos/CatalogoProdutos.tsx` |
-| Não foi possível identificar o produto SPOT para adicionar ao carrinho | `src/pages/catalogo-spot/CatalogoSpot.tsx` |
-| ; import { RefreshCw, AlertTriangle, Database, Clock } from  | `src/pages/catalogo-spot/SpotSyncPanel.tsx` |
-| >             <AlertTriangle className= | `src/pages/catalogo-spot/SpotSyncPanel.tsx` |
-| Não foi possível abrir o link | `src/pages/catalogo-spot/spotHelpers.ts` |
-| URL externa inválida bloqueada por segurança | `src/pages/catalogo-spot/spotHelpers.ts` |
-| ; import { KeyRound, Loader2, Plug } from  | `src/pages/catalogo-xbz/CatalogoXbz.tsx` |
-| ; import { Loader2, ShieldCheck } from  | `src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx` |
-| ; import { Progress } from  | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
-| >             <AlertDescription>{health.message}</AlertDescription>           </Alert>         ) : (           <p className= | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
-| Erro ao carregar dados de compliance | `src/pages/compliance/ComplianceDashboard.tsx` |
-| Erro ao excluir:  | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
-| Erro ao salvar:  | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
-| Preencha nome e código | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
-| Preencha todos os itens | `src/pages/devolucoes/DevolucoesModals.tsx` |
-| Selecione o fornecedor | `src/pages/devolucoes/DevolucoesModals.tsx` |
-| Apenas arquivos PDF ou Imagem são aceitos | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Apenas arquivos XML são aceitos | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Documento não encontrado | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Erro ao processar XML. Verifique o formato do arquivo. | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Erro ao processar com IA:  | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Erro na conciliação | `src/pages/documentos/DocumentosFiscais.tsx` |
-| IA não retornou dados extraídos | `src/pages/documentos/DocumentosFiscais.tsx` |
-| Quantidade deve ser maior que zero | `src/pages/estoque/GestaoEstoque.tsx` |
-| Selecione um produto | `src/pages/estoque/GestaoEstoque.tsx` |
-| Dados insuficientes para gerar a ordem. | `src/pages/gerar-ordem/GerarOrdem.tsx` |
-| Sem dados para exportar | `src/pages/historico/HistoricoCompras.tsx` |
-| Erro ao atualizar produção:  | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
-| Erro ao buscar pedidos | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| Sem conexão — modo offline ativo | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| Organização ativa não identificada | `src/pages/recompra/RecompraInteligente.tsx` |
-| Não foi possível criar o evento. Tente novamente. | `src/pages/sourcing/RFxCreate.tsx` |
-| Por favor, preencha o título e a data de fechamento. | `src/pages/sourcing/RFxCreate.tsx` |
-| circuit_open | `supabase/functions/_shared/circuit_breaker.ts` |
-| Missing Authorization header | `supabase/functions/_shared/security.ts` |
-| Security error: User has no tenant membership | `supabase/functions/_shared/security.ts` |
-| Security error: getTenantId requires an authenticated user | `supabase/functions/_shared/security.ts` |
-| Security error: preferredTenantId does not match user | `supabase/functions/_shared/security.ts` |
-| validateTenant() está descontinuado (M-02). Use getAuthUser(req) + getTenantId(client, user) para resolver o tenant via user_tenants. | `supabase/functions/_shared/security.ts` |
-| chunk size must be > 0 | `supabase/functions/_shared/spot_api.ts` |
-| Method ${req.method} not allowed. Use: ${methods.join( | `supabase/functions/_shared/validation.ts` |
-| Credencial cifrada corrompida | `supabase/functions/_shared/xbz_crypto.ts` |
-| Credencial cifrada em formato inválido | `supabase/functions/_shared/xbz_crypto.ts` |
-| … +119 linhas — lista completa em `context.json` | |
+| … +164 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2256,10 +2229,7 @@ _nenhum item encontrado_
 |---|---|
 | `granted` | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | `admin` | `src/components/security/PermissionMatrix.tsx` |
-| `permissionId` | `src/components/security/PermissionMatrix.tsx` |
-| `role` | `src/components/security/PermissionMatrix.tsx` |
 | `admin` | `src/features/auth/hooks/useAuth.tsx` |
-| `requiredRole` | `src/features/auth/hooks/useAuth.tsx` |
 | `user` | `src/features/layout/components/GuidedBuyingAssistant.tsx` |
 | `denied` | `src/features/layout/components/RealNotificationCenter.tsx` |
 | `granted` | `src/features/layout/components/RealNotificationCenter.tsx` |
@@ -2269,7 +2239,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2615 testes em 121 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2625 testes em 122 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2351,13 +2321,13 @@ _nenhum item encontrado_
 | `src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts` | 16 | KNOWN_SUPPLIERS · is an array · has 6 supplier entries · every entry has id and name strings … |
 | `src/features/layout/transitions/__tests__/presets.test.ts` | 16 | PRESETS · has exactly 12 entries · covers all TransitionName values · every preset has initial, animate, exit, and transition … |
 | `src/lib/__tests__/safeDisplay.test.ts` | 16 | safeDisplay · retorna string original quando cabe no limite · trunca com ellipsis padrão respeitando o limite total · aceita ellipsis customizado … |
+| `scripts/lib/seguranca-processo.test.mjs` | 15 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell · resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH … |
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `supabase/functions/_shared/logLevel.test.ts` | 13 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `src/tests/integration/supabase-db.test.ts` | 12 | required tables exist · approval_workflows has required columns · approval_steps has required columns · cron_heartbeats table is queryable … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
-| `scripts/lib/seguranca-processo.test.mjs` | 10 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · estaDentro aceita a raiz e subpastas · estaDentro recusa  … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
@@ -2371,6 +2341,7 @@ _nenhum item encontrado_
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 6 | mapProduto: normaliza campos principais · mapProduto: aceita chaves alternativas (Id / Descricao) · mapProduto: descarta itens sem produto_id válido · normalizeCatalogo: deduplica por produto_id e ignora lixo … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
+| `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
@@ -2397,9 +2368,7 @@ _nenhum item encontrado_
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
-| Evento | Arquivo |
-|---|---|
-| `auction` | `src/pages/sourcing/RFxDetails.tsx` |
+_nenhum item encontrado_
 
 ## M. Efeitos colaterais (e-mail, SMS, cobrança, fila — não são idempotentes por padrão)
 
@@ -2435,7 +2404,6 @@ _nenhum item encontrado_
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
-| (weights.prazo / 100)) + | `src/components/compras/RankingCotacoes.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 1. `stepPrazoLimite`   — deadline set directly on the step | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 2. `workflowPrazoLimite` — deadline inherited from the parent workflow | `src/components/compras/pending-approvals/deadlineFallback.ts` |
@@ -2454,7 +2422,6 @@ _nenhum item encontrado_
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | * F-023 fix: replaced setInterval deadline-polling with Realtime subscription | `src/hooks/useApprovalNotifications.ts` |
 | Business logic lives in focused sub-hooks: | `src/hooks/useApprovalWorkflow.ts` |
-| rule.tempo_limite_horas * 3600_000).toISOString(), | `src/hooks/useApprovalWorkflow.ts` |
 | Rule/delegation mutations | `src/hooks/useApprovalWorkflow.ts` |
 | Entregues no prazo | `src/hooks/useBuyerPerformanceData.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
@@ -2473,7 +2440,7 @@ _nenhum item encontrado_
 | uma chamada ao portal e aproximava o rate limit. | `src/hooks/useXbzIntegration.ts` |
 | métrica direta de risco de rate limit e de latência percebida. | `src/hooks/useXbzIntegration.ts` |
 | * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações | `src/hooks/useXbzIntegration.ts` |
-| * Other shortcuts in the app that the user must NOT collide with. */ | `src/lib/clearFiltersShortcut.ts` |
+| Other shortcuts in the app that the user must NOT collide with. */ | `src/lib/clearFiltersShortcut.ts` |
 | Must use at least one modifier — single letter shortcuts would fire while typing. | `src/lib/clearFiltersShortcut.ts` |
 | * Fetch all rows from a Supabase table, bypassing the 1000-row default limit. | `src/lib/paginatedFetch.ts` |
 | - Acrescenta `ellipsis` (default: "…") somente quando houve truncamento. | `src/lib/safeDisplay.ts` |
@@ -2481,22 +2448,14 @@ _nenhum item encontrado_
 | * Trunca uma string em no máximo `maxUnits` UTF-16 code units SEM quebrar | `src/lib/safeTruncate.ts` |
 | Handles sanitization, security validation and audit logging. | `src/lib/security.ts` |
 | exibia 14/06 para "2024-06-15" e recusava "hoje" no prazo de entrega. | `src/lib/utils.ts` |
-| *Hooks** \| \`src/hooks/\` \| Lógica de negócio, integração com queries e estados complexos. Quase toda a inteligência reside aqui. \| | `src/pages/admin/DeveloperDocs.tsx` |
 | **Validação Rigorosa:** Shared utilities para validação de esquemas \`zod\` em Edge Functions e chamadas RPC. | `src/pages/admin/DeveloperDocs.tsx` |
-| *Regra**: Componentes compartilhados continuam em \`src/components/ui\` ou \`src/components/common\`.`, | `src/pages/admin/DeveloperDocs.tsx` |
 | **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuário logado. | `src/pages/admin/DeveloperDocs.tsx` |
-| ").gte("created_at", from).lte("created_at", to).order("created_at", { ascending: false }).limit(500); | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
-| $%^&*(),.?":{}\|<>\-_=+\[\]\\;'/`~]/, 'Senha deve ter pelo menos um caractere especial'), | `src/pages/auth/Auth.tsx` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
-| * Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
-| 100)}% — risco de rate limit na XBZ.`, | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
-| * Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
-| * Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
+| Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
-| Desconto:* R$ ${desconto.toFixed(2)}` : ''} | `src/pages/gerar-ordem/gerarOrdemHelpers.ts` |
-| Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')} | `src/pages/gerar-ordem/gerarOrdemHelpers.ts` |
-| (desconto / 100); | `src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts` |
 | Rate Limit Tab */} | `src/pages/seguranca/Seguranca.tsx` |
 | Validate: thresholds must be positive | `src/stores/slaSettingsStore.ts` |
 | Warning must be >= critical | `src/stores/slaSettingsStore.ts` |
@@ -2504,8 +2463,8 @@ _nenhum item encontrado_
 | Used for automated permission validation. | `supabase/functions/_shared/contracts.ts` |
 | Non-blocking — log but never throw; heartbeat failure must not kill the cron run. | `supabase/functions/_shared/cronHealth.ts` |
 | * Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra | `supabase/functions/_shared/external-bridge-allowlist.ts` |
-| * Limite máximo por chamada — evita dump silencioso. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
-| * Resultado da validação; se `ok=false`, `reason` explica o motivo. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| Limite máximo por chamada — evita dump silencioso. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| Resultado da validação; se `ok=false`, `reason` explica o motivo. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | 1. Missing required fields | `supabase/functions/_shared/fuzzer.ts` |
 | * Trunca uma string em no máximo `maxUnits` UTF-16 code units SEM quebrar | `supabase/functions/_shared/logLevel.ts` |
 | inválida (sem mensagem string não-vazia) — o chamador deve filtrar. | `supabase/functions/_shared/logLevel.ts` |
@@ -2518,9 +2477,9 @@ _nenhum item encontrado_
 | alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId` | `supabase/functions/_shared/security.ts` |
 | * Enhanced validation utility that automatically logs failures to telemetry. | `supabase/functions/_shared/validation.ts` |
 | Extract validation details if available from Zod error message | `supabase/functions/_shared/validation.ts` |
-| * Garante que a flag de permissão do portal XBZ está habilitada para o cliente. */ | `supabase/functions/_shared/xbz_auth.ts` |
+| Garante que a flag de permissão do portal XBZ está habilitada para o cliente. */ | `supabase/functions/_shared/xbz_auth.ts` |
 | - /api/clientes/  → header `cnpj` + `token`   (36 req/dia — apenas fallback) | `supabase/functions/_shared/xbz_client.ts` |
-| * Flags de permissão retornadas pelo getToken — a UI deve respeitá-las. */ | `supabase/functions/_shared/xbz_client.ts` |
+| Flags de permissão retornadas pelo getToken — a UI deve respeitá-las. */ | `supabase/functions/_shared/xbz_client.ts` |
 | são gravados em texto claro. A chave mestra vive apenas no secret | `supabase/functions/_shared/xbz_crypto.ts` |
 | Rule-based fallback: return empty-but-valid structure with a warning | `supabase/functions/ai-demand-prediction/index.ts` |
 | M-05: rate-limit — IA custa tokens; 20 req/min por usuário. | `supabase/functions/ai-negotiation/index.ts` |
@@ -2537,7 +2496,6 @@ _nenhum item encontrado_
 | Clamp de limit para evitar dump silencioso do DB externo. | `supabase/functions/external-db-bridge/index.ts` |
 | Rate limit por usuário (60 req/min) — protege o DB externo de abuso. | `supabase/functions/external-db-bridge/index.ts` |
 | Rate limit: geração de PDF é custosa (I/O + render). 20 req/min por usuário. | `supabase/functions/generate-contract-pdf/index.ts` |
-| b91c1c;">6.1 Prazo de Entrega</h3> | `supabase/functions/generate-contract-pdf/index.ts` |
 | // Acesso: somente POST + usuário autenticado com role admin. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Dry-run: passe { dryRun: true } no body para apenas simular. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Prevent path traversal: filePath must be a relative path without .. | `supabase/functions/process-invoice-idp/index.ts` |

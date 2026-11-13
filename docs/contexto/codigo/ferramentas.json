@@ -6,8 +6,8 @@
    "TypeScript (688)",
    "SQL (293)",
    "Markdown (71)",
-   "JavaScript (51)",
-   "JSON (22)",
+   "JavaScript (65)",
+   "JSON (23)",
    "YAML (9)",
    "Shell (7)",
    "CSS (6)"
@@ -268,10 +268,7 @@
    "npm_scripts": [
     "build"
    ],
-   "secrets": [
-    "X",
-    "mjs"
-   ],
+   "secrets": [],
    "actions": [
     "actions/checkout",
     "actions/setup-node",
@@ -334,7 +331,8 @@
    ],
    "permissoes": [],
    "scripts_usados": [
-    "scripts/ci/check-agents-md-integrity.mjs"
+    "scripts/ci/check-agents-md-integrity.mjs",
+    "scripts/rls-audit.ts"
    ],
    "npm_scripts": [
     "lint",
@@ -402,6 +400,7 @@
    "scripts_usados": [
     "scripts/types-sync/check-remocoes-destrutivas.mjs",
     "scripts/types-sync/gen-types.sh",
+    "scripts/types-sync/identidade-banco.mjs",
     "scripts/types-sync/install-pgbouncer.sh",
     "scripts/types-sync/install-postgresql-client.sh",
     "scripts/types-sync/typecheck-ratchet.mjs"
@@ -488,13 +487,6 @@
    "VITE_SUPABASE_URL"
   ],
   "usadas_no_front": [
-   "DEV",
-   "FUZZ_SEED",
-   "INTEGRATION_TESTS",
-   "PROD",
-   "SUPABASE_ANON_KEY",
-   "SUPABASE_SERVICE_ROLE_KEY",
-   "VITE_SUPABASE_ANON_KEY",
    "VITE_SUPABASE_PUBLISHABLE_KEY",
    "VITE_SUPABASE_URL"
   ],
@@ -509,14 +501,8 @@
    "GITHUB_DISPATCH_TOKEN",
    "GITHUB_REPO_RAW_BASE",
    "LOVABLE_API_KEY",
-   "QA_ADMIN_EMAIL",
-   "QA_ADMIN_PASSWORD",
-   "QA_USER_EMAIL",
-   "QA_USER_PASSWORD",
    "RESEND_API_KEY",
    "SCIM_BEARER_TOKEN",
-   "SCIM_TEST_BASE_URL",
-   "SCIM_TEST_TOKEN",
    "SEFAZ_API_TOKEN",
    "SEFAZ_WEBHOOK_URL",
    "SLACK_WEBHOOK_URL",
@@ -531,8 +517,6 @@
    "SUPABASE_URL",
    "VAPID_PRIVATE_KEY",
    "VAPID_PUBLIC_KEY",
-   "VITE_SUPABASE_PUBLISHABLE_KEY",
-   "VITE_SUPABASE_URL",
    "XBZ_ENCRYPTION_KEY"
   ],
   "usadas_no_python": [
@@ -540,7 +524,6 @@
    "AI_CONTEXT_MODEL",
    "AI_CONTEXT_PROFILE",
    "AI_CONTEXT_SCHEMA_SNAPSHOT",
-   "ANTHROPIC_API_KEY",
    "CODE_SCAN_DIRS",
    "GEN_TYPES",
    "PGDUMP",
@@ -549,18 +532,13 @@
    "SNAPSHOT_DIR",
    "SNAPSHOT_EXCLUDE_SCHEMAS",
    "SNAPSHOT_INCLUDE_SCHEMAS",
+   "SNAPSHOT_TEST_DB_URL",
    "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_DB_URL",
    "SUPABASE_PROJECT_REF",
    "SUPABASE_SNAPSHOT_PUBLICACAO"
   ],
   "usadas_mas_nao_declaradas": [
-   "DEV",
-   "FUZZ_SEED",
-   "INTEGRATION_TESTS",
-   "PROD",
-   "SUPABASE_ANON_KEY",
-   "SUPABASE_SERVICE_ROLE_KEY",
    "VITE_SUPABASE_PUBLISHABLE_KEY"
   ],
   "secrets_em_workflows": [
@@ -574,9 +552,7 @@
    "TYPES_SYNC_PR_TOKEN",
    "VITE_SUPABASE_PROJECT_ID",
    "VITE_SUPABASE_PUBLISHABLE_KEY",
-   "VITE_SUPABASE_URL",
-   "X",
-   "mjs"
+   "VITE_SUPABASE_URL"
   ]
  },
  "deploy": {
@@ -626,22 +602,18 @@
   "hosts_externos": [
    {
     "host": "api.resend.com",
-    "arquivos": 3
-   },
-   {
-    "host": "ws.spotgifts.com.br",
-    "arquivos": 3
-   },
-   {
-    "host": "www.spotgifts.com.br",
-    "arquivos": 3
+    "arquivos": 2
    },
    {
     "host": "wa.me",
     "arquivos": 2
    },
    {
-    "host": "x.supabase.co",
+    "host": "ws.spotgifts.com.br",
+    "arquivos": 2
+   },
+   {
+    "host": "www.spotgifts.com.br",
     "arquivos": 2
    },
    {
@@ -650,14 +622,6 @@
    },
    {
     "host": "api.pwnedpasswords.com",
-    "arquivos": 1
-   },
-   {
-    "host": "api.supabase.com",
-    "arquivos": 1
-   },
-   {
-    "host": "api.x.com",
     "arquivos": 1
    },
    {
@@ -677,31 +641,7 @@
     "arquivos": 1
    },
    {
-    "host": "maintenance.invalid",
-    "arquivos": 1
-   },
-   {
-    "host": "production.invalid",
-    "arquivos": 1
-   },
-   {
-    "host": "production.supabase.co",
-    "arquivos": 1
-   },
-   {
     "host": "raw.githubusercontent.com",
-    "arquivos": 1
-   },
-   {
-    "host": "registry.npmjs.org",
-    "arquivos": 1
-   },
-   {
-    "host": "spotgifts.com.br",
-    "arquivos": 1
-   },
-   {
-    "host": "spotgifts.evil.com",
     "arquivos": 1
    },
    {
@@ -715,7 +655,6 @@
    "LOVABLE_API_KEY",
    "RESEND_API_KEY",
    "SCIM_BEARER_TOKEN",
-   "SCIM_TEST_TOKEN",
    "SEFAZ_API_TOKEN",
    "SEFAZ_WEBHOOK_URL",
    "SLACK_WEBHOOK_URL",
@@ -736,91 +675,19 @@
  "permissoes": {
   "papeis_no_codigo": [
    {
-    "papel": "admin",
-    "ocorrencias": 9
-   },
-   {
     "papel": "user",
     "ocorrencias": 6
+   },
+   {
+    "papel": "admin",
+    "ocorrencias": 5
    },
    {
     "papel": "system",
     "ocorrencias": 4
    },
    {
-    "papel": "alert",
-    "ocorrencias": 3
-   },
-   {
-    "papel": "status",
-    "ocorrencias": 3
-   },
-   {
-    "papel": "anon",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "dialog",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "group",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "service_role",
-    "ocorrencias": 2
-   },
-   {
-    "papel": "agent",
-    "ocorrencias": 1
-   },
-   {
     "papel": "assistant",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "ausente",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "authenticated",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "button",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "buyer",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "combobox",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "link",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "main",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "navigation",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "presentation",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "separator",
-    "ocorrencias": 1
-   },
-   {
-    "papel": "sup",
     "ocorrencias": 1
    }
   ],
@@ -845,68 +712,18 @@
   "guards": [
    "src/features/auth/components/ProtectedRoute.tsx"
   ],
-  "rotas_protegidas": 14,
+  "rotas_protegidas": 52,
   "rotas_publicas": [
    "/__dev/xbz-network-panel",
    "/*",
-   "/acompanhamento",
-   "/aprovacoes",
-   "/auditoria",
-   "/buyer-performance",
-   "/catalogo-produtos",
-   "/catalogo-spot",
-   "/catalogo-xbz",
-   "/compliance",
-   "/compras",
-   "/configuracoes-centro-custo",
-   "/contratos",
-   "/cotacao",
-   "/cotacao/:id",
-   "/dashboard-executivo",
-   "/devolucoes",
-   "/documentos-fiscais",
-   "/estoque",
-   "/fornecedores",
-   "/gerar-ordem",
-   "/historico-compras",
-   "/kanban",
-   "/licitacoes",
-   "/negociacao-ia",
-   "/orcamentos",
-   "/pagamentos",
-   "/pedidos",
-   "/qualificacao-fornecedores",
-   "/recebimento",
-   "/recompra-inteligente",
-   "/relatorios",
-   "/relatorios/negociacoes",
-   "/seguranca",
-   "/solicitacoes",
-   "/sourcing",
-   "/sourcing/:id",
-   "/sourcing/:id/auction",
-   "/sourcing/novo",
-   "/supplier-performance"
+   "/auth"
   ],
   "menu_com_papeis": [],
   "tabelas_sem_rls": []
  },
  "feature_flags": {
-  "total": 3,
-  "flags": [
-   {
-    "flag": "FEATURE_X",
-    "arquivos": 1
-   },
-   {
-    "flag": "nova-tela",
-    "arquivos": 1
-   },
-   {
-    "flag": "novo-inbox",
-    "arquivos": 1
-   }
-  ],
+  "total": 0,
+  "flags": [],
   "tabelas_de_flag": [
    "geo_settings",
    "mfa_settings"
