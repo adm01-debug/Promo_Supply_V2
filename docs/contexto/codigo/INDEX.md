@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1bb3c10774a3a7f054d7b50903bc0ec412c8418e` (2026-11-13T15:41:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6594ae72f3a9dce19400d07992112a42ac1bb904` (2026-11-13T16:12:07-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -336,12 +336,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/agentes/github-ci.md (3)
 - docs/agentes/mapa-repo.md (3)
 - docs/ci/README.md (3)
+- docs/prod-readiness.md (3)
 - scripts/ai-context/README.md (3)
 - scripts/automation.config.json (3)
 - scripts/ci/branch-podaveis.mjs (3)
 - scripts/ci/encoding-src.unit.mjs (3)
 - scripts/supabase_snapshot/README.md (3)
-- scripts/supabase_snapshot/snapshot.py (3)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -398,11 +398,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (507 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (533 linhas)
 - subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-13 `6594ae72` docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)
 - 2026-11-13 `1bb3c107` fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)
 - 2026-11-13 `53f69f30` fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)
 - 2026-11-13 `8a5540cf` security(banco): comprador não altera dados de outros nem troca de organização (#75)
@@ -417,7 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `e7ff5fb4` fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)
 - 2026-11-13 `fa24df57` docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)
 - 2026-11-13 `50817a04` fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)
-- 2026-11-12 `3118a1fd` fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

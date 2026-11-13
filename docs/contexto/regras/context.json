@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
+  "sha": "6594ae72f3a9dce19400d07992112a42ac1bb904",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 19:57 UTC",
+  "generated_at": "2026-11-13 21:03 UTC",
   "files_total": 1200,
   "code_files": 1060,
   "code_lines": 184605,
@@ -109840,10 +109840,19 @@
   }
  },
  "git": {
-  "sha": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
+  "sha": "6594ae72f3a9dce19400d07992112a42ac1bb904",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6594ae7",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "1bb3c10",
     "date": "2026-11-13",
@@ -110235,18 +110244,13 @@
      "scripts/supabase_snapshot/README.md",
      "scripts/supabase_snapshot/snapshot.py"
     ]
-   },
-   {
-    "sha": "9bd9b15",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "security(banco): revoga exec_sql e chaves xbz de anon e authenticated (#52)",
-    "files": [
-     "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/prod-readiness.md",
+    3
+   ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     3
@@ -110265,10 +110269,6 @@
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
-    2
-   ],
-   [
-    "docs/prod-readiness.md",
     2
    ],
    [

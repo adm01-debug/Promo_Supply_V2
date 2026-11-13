@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
+  "commit": "6594ae72f3a9dce19400d07992112a42ac1bb904",
   "branch": "main",
-  "data_commit": "2026-11-13T15:41:15-03:00",
+  "data_commit": "2026-11-13T16:12:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6594ae72",
+    "data": "2026-11-13",
+    "assunto": "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)"
+   },
    {
     "sha": "1bb3c107",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "284eef46",
     "data": "2026-11-12",
     "assunto": "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)"
-   },
-   {
-    "sha": "d429cef0",
-    "data": "2026-11-12",
-    "assunto": "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)"
    }
   ],
   "arquivos_mudados_7d": 251,
@@ -192,7 +192,7 @@
     "mudancas": 3
    },
    {
-    "pasta": "scripts/ai-context/README.md",
+    "pasta": "docs/prod-readiness.md",
     "mudancas": 3
    }
   ],
@@ -231,6 +231,10 @@
    },
    {
     "arquivo": "docs/ci/README.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "docs/prod-readiness.md",
     "mudancas": 3
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md",
     "mudancas": 2
-   },
-   {
-    "arquivo": "ai-context.config.json",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 60
+    "commits": 61
    },
    {
     "autor": "copilot-swe-agent[bot]",

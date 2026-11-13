@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)",
    "fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)",
    "fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)",
    "security(banco): comprador não altera dados de outros nem troca de organização (#75)",
-   "fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)",
-   "fix(banco): pedido e pagamento voltam a funcionar para fornecedores com CNPJ antigo inválido (#72)"
+   "fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)"
   ]
  },
  "pr_template": null,
