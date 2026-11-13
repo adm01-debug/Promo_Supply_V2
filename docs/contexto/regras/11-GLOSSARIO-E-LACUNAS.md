@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6594ae72f3` · branch `main` · 2026-11-13 21:03 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `960390401c` · branch `main` · 2026-11-13 22:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -195,6 +195,7 @@
 | `TransitionName` (TS) | fade \| slide-left \| slide-right \| slide-up \| slide-down \| zoom-in \| zoom-out \| flip-x \| flip-y \| parallax \| blur-scale \| none |  | `src/features/layout/transitions/presets.ts` |
 | `FeedbackType` (TS) | success \| error \| warning \| info \| notification \| click \| approval \| rejection |  | `src/hooks/useFeedback.ts` |
 | `WorkflowDLQOperationType` (TS) | create_workflow \| approve_step \| reject_step \| escalate |  | `src/hooks/useWorkflowDLQ.ts` |
+| `PrivateBucket` (TS) | documentos \| comprovantes |  | `src/lib/storageFiles.ts` |
 | `SLAStatus` (TS) | atrasado \| critico \| atencao \| no_prazo \| entregue |  | `src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `SeverityFilter` (TS) | all \| slow \| very_slow \| error |  | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | `TimeFilter` (TS) | 1h \| 6h \| 24h \| 7d \| custom |  | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
@@ -394,7 +395,6 @@
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `execute format( 'create trigger a_fill_tenant_id before insert on public.%I ' 'for each row execute function public.fill_tenant_id_from_profile()', t);` | `supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql` |
 | segurança | função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260507204732_0bb6c80f-2526-453e-9be9-4990561632e4.sql` |
 | segurança | função `log_budget_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512141452_3be6aedb-f8fa-4312-b1be-610e86b46974.sql` |
-| segurança | função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql` |
 | segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
 | segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
 | segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |

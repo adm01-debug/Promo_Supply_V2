@@ -16,12 +16,12 @@
    "src/components (10)"
   ],
   "servicos_logica": [
-   "src/lib (21)",
+   "src/lib (22)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (101)",
+   "co-localizado (__tests__) (102)",
    "outro (37)",
    "co-localizado (*.test) (19)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)",
-   "fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)",
-   "fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)",
-   "security(banco): comprador não altera dados de outros nem troca de organização (#75)",
-   "fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)"
+   "fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)",
+   "fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)",
+   "fix(banco): corrige crons de retencao LGPD e refresh da mv_dashboard_kpis (#83)",
+   "docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)",
+   "docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)"
   ]
  },
  "pr_template": null,

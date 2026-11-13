@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (690)",
-   "SQL (300)",
+   "TypeScript (692)",
+   "SQL (303)",
    "Markdown (72)",
    "JavaScript (65)",
    "JSON (23)",
@@ -457,7 +457,7 @@
   {
    "arquivo": "docs/prod-readiness.md",
    "titulo": "Prontidão para produção — Promo Supply V2",
-   "linhas": 533
+   "linhas": 539
   }
  ],
  "docs_em_subpastas": [

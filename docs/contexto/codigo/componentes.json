@@ -582,7 +582,7 @@
     "ContractDetailsModal"
    ],
    "export_default": null,
-   "linhas": 363,
+   "linhas": 366,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -1117,7 +1117,7 @@
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 449,
+   "linhas": 455,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",
@@ -2122,7 +2122,7 @@
     "PagamentoDetailModal"
    ],
    "export_default": null,
-   "linhas": 424,
+   "linhas": 443,
    "dominio": "components/pagamentos",
    "hooks_locais": [
     "useAuth"

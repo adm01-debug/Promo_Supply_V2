@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 35,
+ "total": 36,
  "por_camada": {
   "integrations": 3,
-  "lib": 21,
+  "lib": 22,
   "python": 3,
   "schemas": 1,
   "services": 2,
@@ -275,7 +275,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 123,
+   "usado_por": 124,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -902,6 +902,36 @@
    "usado_por_modulos": [],
    "coberto_por_testes": 1,
    "orfao": true
+  },
+  {
+   "arquivo": "src/lib/storageFiles.ts",
+   "camada": "lib",
+   "exports": [
+    "PrivateBucket",
+    "getStorageTenantId",
+    "privateStoragePath",
+    "resolveStoredFileUrl",
+    "storagePathFromStoredValue"
+   ],
+   "export_default": null,
+   "linhas": 66,
+   "tabelas": [
+    "profiles"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 3,
+   "usado_por_modulos": [
+    "components/compras",
+    "components/pagamentos"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/lib/supabaseQuery.ts",

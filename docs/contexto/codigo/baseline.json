@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6594ae72f3a9dce19400d07992112a42ac1bb904",
+  "commit": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
   "branch": "main",
-  "data_commit": "2026-11-13T16:12:07-03:00",
+  "data_commit": "2026-11-13T18:17:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "96039040",
+    "data": "2026-11-13",
+    "assunto": "fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)"
+   },
+   {
+    "sha": "d80b0707",
+    "data": "2026-11-13",
+    "assunto": "fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)"
+   },
+   {
+    "sha": "09f253a8",
+    "data": "2026-11-13",
+    "assunto": "fix(banco): corrige crons de retencao LGPD e refresh da mv_dashboard_kpis (#83)"
+   },
+   {
+    "sha": "04284c96",
+    "data": "2026-11-13",
+    "assunto": "docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)"
+   },
    {
     "sha": "6594ae72",
     "data": "2026-11-13",
@@ -111,33 +131,13 @@
     "sha": "db1dfe5c",
     "data": "2026-11-12",
     "assunto": "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)"
-   },
-   {
-    "sha": "e06e53b1",
-    "data": "2026-11-12",
-    "assunto": "fix(ui): seta do tour de onboarding aparecia corrompida (#57)"
-   },
-   {
-    "sha": "62016b23",
-    "data": "2026-11-12",
-    "assunto": "chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)"
-   },
-   {
-    "sha": "b6e0427f",
-    "data": "2026-11-12",
-    "assunto": "fix(ui): vencimento das urgências aparecia um dia antes (#59)"
-   },
-   {
-    "sha": "284eef46",
-    "data": "2026-11-12",
-    "assunto": "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)"
    }
   ],
-  "arquivos_mudados_7d": 251,
+  "arquivos_mudados_7d": 258,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 19
+    "mudancas": 21
    },
    {
     "pasta": "scripts/ci/inventario-types",
@@ -156,6 +156,10 @@
     "mudancas": 5
    },
    {
+    "pasta": "src/lib/__tests__",
+    "mudancas": 5
+   },
+   {
     "pasta": "supabase/functions/_shared",
     "mudancas": 5
    },
@@ -164,11 +168,11 @@
     "mudancas": 4
    },
    {
-    "pasta": "src/features/solicitacoes",
+    "pasta": "docs/prod-readiness.md",
     "mudancas": 4
    },
    {
-    "pasta": "src/lib/__tests__",
+    "pasta": "src/features/solicitacoes",
     "mudancas": 4
    },
    {
@@ -190,10 +194,6 @@
    {
     "pasta": "docs/ci/README.md",
     "mudancas": 3
-   },
-   {
-    "pasta": "docs/prod-readiness.md",
-    "mudancas": 3
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -214,6 +214,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "docs/prod-readiness.md",
+    "mudancas": 4
+   },
+   {
     "arquivo": "ESTADO_ATUAL.md",
     "mudancas": 3
    },
@@ -231,10 +235,6 @@
    },
    {
     "arquivo": "docs/ci/README.md",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "docs/prod-readiness.md",
     "mudancas": 3
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 61
+    "commits": 65
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1198,
-  "arquivos_codigo": 758,
-  "linhas_codigo": 160226,
+  "arquivos_total": 1203,
+  "arquivos_codigo": 760,
+  "linhas_codigo": 160389,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -322,9 +322,9 @@
   "hooks": 89,
   "edge_functions": 37,
   "tabelas": 163,
-  "migrations": 299,
+  "migrations": 302,
   "cron_jobs": 69,
-  "testes": 167,
+  "testes": 168,
   "workflows": 8,
   "scripts": 47,
   "docs_md": 72
@@ -416,7 +416,7 @@
   },
   "src/components": {
    "arquivos": 260,
-   "linhas": 48648
+   "linhas": 48676
   },
   "src/features": {
    "arquivos": 64,
@@ -435,8 +435,8 @@
    "linhas": 10153
   },
   "src/lib": {
-   "arquivos": 45,
-   "linhas": 5669
+   "arquivos": 47,
+   "linhas": 5804
   },
   "src/main.tsx": {
    "arquivos": 1,

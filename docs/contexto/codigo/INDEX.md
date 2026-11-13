@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6594ae72f3a9dce19400d07992112a42ac1bb904` (2026-11-13T16:12:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `960390401cdf7b5112a9601ed6c6b358b83dd81f` (2026-11-13T18:17:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (690), SQL (300), Markdown (72), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (692), SQL (303), Markdown (72), JavaScript (65), JSON (23), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1198 |
-| arquivos_codigo | 758 |
-| linhas_codigo | 160226 |
+| arquivos_total | 1203 |
+| arquivos_codigo | 760 |
+| linhas_codigo | 160389 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,9 +46,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 37 |
 | tabelas | 163 |
-| migrations | 299 |
+| migrations | 302 |
 | cron_jobs | 69 |
-| testes | 167 |
+| testes | 168 |
 | workflows | 8 |
 | scripts | 47 |
 | docs_md | 72 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (214), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
-- servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (101), outro (37), co-localizado (*.test) (19)
+- servicos_logica: src/lib (22), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (102), outro (37), co-localizado (*.test) (19)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (15), scripts/types-sync (7), scripts/inventario (5)
@@ -79,7 +79,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 77 | 6 | 54 |
 | hooks | 0 | 0 | 61 | 56 | 6 | 60 |
-| lib | 0 | 0 | 21 | 53 | 5 | 46 |
+| lib | 0 | 0 | 22 | 53 | 5 | 46 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 4 |
 | pages/admin | 10 | 11 | 14 | 4 | 9 | 16 |
@@ -331,12 +331,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (6)
 - .github/workflows/main.yml (5)
 - .github/workflows/contexto.yml (4)
+- docs/prod-readiness.md (4)
 - ESTADO_ATUAL.md (3)
 - docs/agentes/contexto-ia.md (3)
 - docs/agentes/github-ci.md (3)
 - docs/agentes/mapa-repo.md (3)
 - docs/ci/README.md (3)
-- docs/prod-readiness.md (3)
 - scripts/ai-context/README.md (3)
 - scripts/automation.config.json (3)
 - scripts/ci/branch-podaveis.mjs (3)
@@ -398,11 +398,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (533 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (539 linhas)
 - subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-13 `96039040` fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)
+- 2026-11-13 `d80b0707` fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)
+- 2026-11-13 `09f253a8` fix(banco): corrige crons de retencao LGPD e refresh da mv_dashboard_kpis (#83)
+- 2026-11-13 `04284c96` docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)
 - 2026-11-13 `6594ae72` docs(prod): registra a aplicação do fluxo de compra e as falhas do re-teste (#82)
 - 2026-11-13 `1bb3c107` fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)
 - 2026-11-13 `53f69f30` fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)
@@ -414,10 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `a8c38476` fix(sec): fecha 14 alerts CodeQL (XSS spot-proxy, permissions CI, stack-trace) (#69)
 - 2026-11-13 `9c73ed63` docs(prod): fecha relatório de prontidão com o estado de 2026-11-13 (#77)
 - 2026-11-13 `c4a54e75` fix(types): corrige 12 erros TS2345 do typecheck (supabase) (#76)
-- 2026-11-13 `975d0f95` chore(deps): converge lockfile p/ versoes corretas (OSV -84%) (#68)
-- 2026-11-13 `e7ff5fb4` fix(rls): comprador passa a ver contratos (só leitura) para comprar dentro dos acordos (#65)
-- 2026-11-13 `fa24df57` docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)
-- 2026-11-13 `50817a04` fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

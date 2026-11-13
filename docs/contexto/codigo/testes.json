@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 167,
+ "total": 168,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 151
+  "unit": 152
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 101
+   "arquivos": 102
   },
   {
    "padrao": "outro",
@@ -935,6 +935,15 @@
    "casos": 18
   },
   {
+   "arquivo": "src/lib/__tests__/storageFiles.test.ts",
+   "tipo": "unit",
+   "linhas": 69,
+   "testa": [
+    "src/lib/storageFiles.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/lib/__tests__/supabaseQuery.test.ts",
    "tipo": "unit",
    "linhas": 83,
@@ -1590,6 +1599,7 @@
   "src/lib/safeTruncate.ts": 1,
   "src/lib/secureStorage.ts": 1,
   "src/lib/security.ts": 1,
+  "src/lib/storageFiles.ts": 1,
   "src/lib/supabaseQuery.ts": 1,
   "src/lib/supabaseRpc.ts": 1,
   "src/lib/utils.ts": 1,

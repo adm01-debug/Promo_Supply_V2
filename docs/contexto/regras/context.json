@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6594ae72f3a9dce19400d07992112a42ac1bb904",
+  "sha": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 21:03 UTC",
-  "files_total": 1200,
-  "code_files": 1060,
-  "code_lines": 184605,
+  "generated_at": "2026-11-13 22:02 UTC",
+  "files_total": 1205,
+  "code_files": 1065,
+  "code_lines": 185184,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "88be17dd21a4132f",
+ "facts_hash": "98da755e1c770abd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -225,9 +225,9 @@
   ],
   "package_manager": "bun",
   "languages": {
+   ".ts": 346,
    ".tsx": 346,
-   ".ts": 344,
-   ".sql": 300,
+   ".sql": 303,
    ".mjs": 63,
    ".py": 5,
    ".js": 2
@@ -16483,16 +16483,6 @@
     "src": "supabase/migrations/20260323120656_8f201ce2-2e5e-4351-8598-f677f245ede8.sql"
    },
    {
-    "name": "Users can upload documents",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "src": "supabase/migrations/20260402113615_635bc5b6-1d4b-4db9-8225-037a807b2c82.sql"
-   },
-   {
     "name": "Admins and coordinators can manage licitacoes",
     "table": "licitacoes",
     "cmd": "ALL",
@@ -17083,26 +17073,6 @@
     "src": "supabase/migrations/20260514211518_fb82654a-c28c-421d-9421-8044e4397f39.sql"
    },
    {
-    "name": "Auth Upload",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'product-images' AND auth.role() = 'authenticated'",
-    "src": "supabase/migrations/20260516112846_a9e3ae85-1ab1-429c-a95f-890f7c110846.sql"
-   },
-   {
-    "name": "Auth Delete",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images' AND auth.role() = 'authenticated'",
-    "check": "",
-    "src": "supabase/migrations/20260516112846_a9e3ae85-1ab1-429c-a95f-890f7c110846.sql"
-   },
-   {
     "name": "Admins can view telemetry logs",
     "table": "telemetry_logs_legacy_20260712",
     "cmd": "SELECT",
@@ -17161,16 +17131,6 @@
     "using": "tenant_id = public.current_tenant_id()",
     "check": "",
     "src": "supabase/migrations/20260521142029_security_hardening.sql"
-   },
-   {
-    "name": "Public Access",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images' AND (auth.role() = 'anon' OR auth.role() = 'authenticated')",
-    "check": "",
-    "src": "supabase/migrations/20260522142837_4f603e8f-e052-4752-af7f-a0f12fa8d05e.sql"
    },
    {
     "name": "currencies_authenticated_read",
@@ -17303,36 +17263,6 @@
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
-    "name": "Fiscal docs: upload na própria pasta",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Fiscal docs: ver da própria pasta",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Fiscal docs: admin vê todos",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'fiscal-documents' AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
     "name": "Users can view product suppliers within tenant",
     "table": "produto_fornecedores",
     "cmd": "SELECT",
@@ -17381,126 +17311,6 @@
     "using": "tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )",
     "check": "tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )",
     "src": "supabase/migrations/20260619162046_3cbed543-933a-4566-aea6-651897e6162a.sql"
-   },
-   {
-    "name": "documentos: owner reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: admin reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: insert into own tenant/user",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: owner updates within tenant",
-    "table": "storage.objects",
-    "cmd": "UPDATE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: owner deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: admin deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: admin/finance reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'finance'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: insert into own tenant/user",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner updates within tenant",
-    "table": "storage.objects",
-    "cmd": "UPDATE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: admin deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND public.has_role(auth.uid(), 'admin'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
    },
    {
     "name": "Grupo ve suas aliquotas",
@@ -18711,6 +18521,126 @@
     "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "storage_tenant_dono_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_dono_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_gestor_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "( (bucket_id = 'documentos' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role))) OR (bucket_id = 'comprovantes' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_admin_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND public.has_role(auth.uid(), 'admin'::public.app_role) AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_gestor_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_leitura_publica",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "anon, authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images'",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
    }
   ],
   "triggers": [
@@ -18796,24 +18726,6 @@
     "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
    },
    {
-    "name": "update_solicitacoes_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
-    "name": "update_pedidos_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "pedidos",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
     "name": "update_mfa_settings_updated_at",
     "when": "BEFORE UPDATE",
     "table": "mfa_settings",
@@ -18893,15 +18805,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql"
-   },
-   {
-    "name": "update_saldo_on_pedido_change",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "pedidos",
-    "function": "trigger_update_saldo_on_pedido",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260315151013_dfff8719-f695-4626-98f6-1380350d5d9a.sql"
    },
    {
     "name": "update_department_budgets_updated_at",
@@ -19307,15 +19210,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260512191725_886f1f1b-2960-4b94-8879-2a00183c438d.sql"
-   },
-   {
-    "name": "tr_tenants_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "tenants",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
    },
    {
     "name": "update_sso_configurations_updated_at",
@@ -20314,17 +20208,17 @@
    },
    "handle_pedido_budget_realization": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql",
+    "src": "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
     "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; BEGIN SELECT id, cost_center_id, valor_estimado INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); ELSIF (NEW. …",
+    "search_path": true,
+    "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; v_sol_created_at TIMESTAMPTZ; BEGIN SELECT id, cost_center_id, valor_estimado, created_at INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado, v_sol_created_at FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_cent …",
     "raises": [],
     "tables": [
-     "CURRENT_DATE",
      "department_budgets",
      "solicitacoes",
+     "v_sol_created_at",
      "v_solicitacao_id"
     ]
    },
@@ -21603,7 +21497,7 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql",
+    "src": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_result jsonb := '{}'::jsonb; v_deleted bigint; v_started timestamptz := clock_timestamp(); BEGIN DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('audit_logs', v_deleted); DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('security_logs', v_deleted); DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('financial_audit_logs', v_deleted); DELETE FROM …",
@@ -25957,6 +25851,14 @@
     "unique": true,
     "where": "WHERE internal_reference IS NOT NULL",
     "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+   },
+   {
+    "name": "idx_mv_dashboard_kpis_pk",
+    "table": "mv_dashboard_kpis",
+    "columns": "tenant_id, dia",
+    "unique": true,
+    "where": "",
+    "src": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql"
    }
   ],
   "cron_jobs": [
@@ -26533,6 +26435,9 @@
    "supabase/migrations/20261113123531_compras_dashboard_backlog_rotulos.sql",
    "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
    "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
+   "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+   "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+   "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -33528,7 +33433,7 @@
   {
    "module": "src/components",
    "files": 260,
-   "lines": 48648,
+   "lines": 48676,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34282,9 +34187,11 @@
   },
   {
    "module": "src/lib",
-   "files": 46,
-   "lines": 5689,
-   "tables": [],
+   "files": 48,
+   "lines": 5824,
+   "tables": [
+    "profiles"
+   ],
    "exports": [
     "clearFiltersShortcut.ts: ShortcutCombo, DEFAULT_CLEAR_FILTERS_SHORTCUT, RESERVED_SHORTCUTS, isSameCombo, findReservedConflict, isInvalidCombo",
     "dateUtils.ts: parseLocalDate, formatDateBR",
@@ -34304,6 +34211,7 @@
     "safeTruncate.ts: safeTruncate",
     "secureStorage.ts: secureStorage",
     "security.ts: security",
+    "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
     "utils.ts: cn, generateUniqueKey, formatCurrency, parseDateValue, formatDate, formatDateTime",
@@ -34354,6 +34262,7 @@
     "src/lib/safeTruncate.ts",
     "src/lib/secureStorage.ts",
     "src/lib/security.ts",
+    "src/lib/storageFiles.ts",
     "src/lib/supabaseQuery.ts",
     "src/lib/supabaseRpc.ts",
     "src/lib/utils.ts",
@@ -34378,6 +34287,7 @@
     "src/lib/__tests__/safeTruncate.test.ts",
     "src/lib/__tests__/secureStorage.test.ts",
     "src/lib/__tests__/security.test.ts",
+    "src/lib/__tests__/storageFiles.test.ts",
     "src/lib/__tests__/supabaseQuery.test.ts",
     "src/lib/__tests__/supabaseRpc.test.ts",
     "src/lib/__tests__/utils.test.ts",
@@ -34950,8 +34860,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 299,
-   "lines": 24175,
+   "files": 302,
+   "lines": 24591,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -35983,6 +35893,7 @@
     "select": [
      "src/features/auth/hooks/useAuth.tsx",
      "src/hooks/useBuyerPerformanceData.ts",
+     "src/lib/storageFiles.ts",
      "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "src/stores/buyerAlertsStore.ts",
@@ -38732,6 +38643,11 @@
     "values": "create_workflow | approve_step | reject_step | escalate"
    },
    {
+    "file": "src/lib/storageFiles.ts",
+    "name": "PrivateBucket",
+    "values": "documentos | comprovantes"
+   },
+   {
     "file": "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     "name": "SLAStatus",
     "values": "atrasado | critico | atencao | no_prazo | entregue"
@@ -39252,6 +39168,10 @@
    {
     "file": "src/components/compras/FornecedorModal.tsx",
     "msg": "Não foi possível salvar o fornecedor. Tente novamente."
+   },
+   {
+    "file": "src/components/compras/NovaSolicitacaoModal.tsx",
+    "msg": "Anexos não enviados: organização não identificada. Faça login novamente."
    },
    {
     "file": "src/components/compras/NovaSolicitacaoModal.tsx",
@@ -54573,6 +54493,14 @@
     "line": "const mesAnterior = startOfMonth(subMonths(hoje, 1));"
    },
    {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "line": "refetchInterval: 50 * 60 * 1000,"
+   },
+   {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "line": "staleTime: 30 * 60 * 1000,"
+   },
+   {
     "file": "src/components/pagamentos/PagamentoFinancialDashboard.tsx",
     "line": "const weekEnd = addWeeks(weekStart, 1);"
    },
@@ -55155,6 +55083,54 @@
    {
     "file": "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
     "line": "$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.geo_access_logs WHERE created_at < now() - interval '180 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.login_attempts WHERE created_at < now() - interval '180 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.query_telemetry WHERE created_at < now() - interval '90 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.rate_limit_logs WHERE created_at < now() - interval '180 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.telemetry_logs WHERE created_at < now() - interval '90 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "DELETE FROM public.wal_rate_snapshots WHERE captured_at < now() - interval '90 days';"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "WHERE created_at < now() - interval '180 days'"
+   },
+   {
+    "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    "line": "WHERE created_at < now() - interval '90 days'"
    },
    {
     "file": "tests-e2e/global-setup.ts",
@@ -61805,6 +61781,34 @@
     "name": "passes through safe HTML"
    },
    {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "storageFiles"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "monta o caminho {tenant}/{usuário}/... exigido pelas policies"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "aceita o caminho salvo (formato atual)"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "extrai o caminho da URL pública antiga do mesmo bucket"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "não confunde bucket nem URL externa"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "abre caminho e URL antiga por URL assinada; URL externa volta igual"
+   },
+   {
+    "file": "src/lib/__tests__/storageFiles.test.ts",
+    "name": "tenant: usa o do contexto; sem ele, lê profiles.tenant_id"
+   },
+   {
     "file": "src/lib/__tests__/supabaseQuery.test.ts",
     "name": "escapeIlike"
    },
@@ -67232,16 +67236,6 @@
     "src": "supabase/migrations/20260323120656_8f201ce2-2e5e-4351-8598-f677f245ede8.sql"
    },
    {
-    "name": "Users can upload documents",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "src": "supabase/migrations/20260402113615_635bc5b6-1d4b-4db9-8225-037a807b2c82.sql"
-   },
-   {
     "name": "Admins and coordinators can manage licitacoes",
     "table": "licitacoes",
     "cmd": "ALL",
@@ -67832,26 +67826,6 @@
     "src": "supabase/migrations/20260514211518_fb82654a-c28c-421d-9421-8044e4397f39.sql"
    },
    {
-    "name": "Auth Upload",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'product-images' AND auth.role() = 'authenticated'",
-    "src": "supabase/migrations/20260516112846_a9e3ae85-1ab1-429c-a95f-890f7c110846.sql"
-   },
-   {
-    "name": "Auth Delete",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images' AND auth.role() = 'authenticated'",
-    "check": "",
-    "src": "supabase/migrations/20260516112846_a9e3ae85-1ab1-429c-a95f-890f7c110846.sql"
-   },
-   {
     "name": "Admins can view telemetry logs",
     "table": "telemetry_logs_legacy_20260712",
     "cmd": "SELECT",
@@ -67910,16 +67884,6 @@
     "using": "tenant_id = public.current_tenant_id()",
     "check": "",
     "src": "supabase/migrations/20260521142029_security_hardening.sql"
-   },
-   {
-    "name": "Public Access",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images' AND (auth.role() = 'anon' OR auth.role() = 'authenticated')",
-    "check": "",
-    "src": "supabase/migrations/20260522142837_4f603e8f-e052-4752-af7f-a0f12fa8d05e.sql"
    },
    {
     "name": "currencies_authenticated_read",
@@ -68052,36 +68016,6 @@
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
-    "name": "Fiscal docs: upload na própria pasta",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Fiscal docs: ver da própria pasta",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text",
-    "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
-    "name": "Fiscal docs: admin vê todos",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'fiscal-documents' AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
     "name": "Users can view product suppliers within tenant",
     "table": "produto_fornecedores",
     "cmd": "SELECT",
@@ -68130,126 +68064,6 @@
     "using": "tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )",
     "check": "tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )",
     "src": "supabase/migrations/20260619162046_3cbed543-933a-4566-aea6-651897e6162a.sql"
-   },
-   {
-    "name": "documentos: owner reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: admin reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: insert into own tenant/user",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: owner updates within tenant",
-    "table": "storage.objects",
-    "cmd": "UPDATE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: owner deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "documentos: admin deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: admin/finance reads within tenant",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'finance'::app_role))",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: insert into own tenant/user",
-    "table": "storage.objects",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner updates within tenant",
-    "table": "storage.objects",
-    "cmd": "UPDATE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: owner deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
-   },
-   {
-    "name": "comprovantes: admin deletes within tenant",
-    "table": "storage.objects",
-    "cmd": "DELETE",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND public.has_role(auth.uid(), 'admin'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20260619183456_c433d0f7-5470-40bc-beff-09fc9a60a41f.sql"
    },
    {
     "name": "Grupo ve suas aliquotas",
@@ -69460,6 +69274,126 @@
     "using": "public.has_role(auth.uid(), 'buyer'::app_role)",
     "check": "",
     "src": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql"
+   },
+   {
+    "name": "storage_tenant_dono_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_dono_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_gestor_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "( (bucket_id = 'documentos' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role))) OR (bucket_id = 'comprovantes' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_tenant_admin_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id IN ('documentos', 'comprovantes') AND public.has_role(auth.uid(), 'admin'::public.app_role) AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_fiscal_gestor_select",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_leitura_publica",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "anon, authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images'",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_insert",
+    "table": "storage.objects",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "storage_produtos_dono_delete",
+    "table": "storage.objects",
+    "cmd": "DELETE",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
+    "check": "",
+    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
    }
   ],
   "db_triggers": [
@@ -69545,24 +69479,6 @@
     "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
    },
    {
-    "name": "update_solicitacoes_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
-    "name": "update_pedidos_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "pedidos",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql"
-   },
-   {
     "name": "update_mfa_settings_updated_at",
     "when": "BEFORE UPDATE",
     "table": "mfa_settings",
@@ -69642,15 +69558,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql"
-   },
-   {
-    "name": "update_saldo_on_pedido_change",
-    "when": "AFTER INSERT OR UPDATE OR DELETE",
-    "table": "pedidos",
-    "function": "trigger_update_saldo_on_pedido",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260315151013_dfff8719-f695-4626-98f6-1380350d5d9a.sql"
    },
    {
     "name": "update_department_budgets_updated_at",
@@ -70056,15 +69963,6 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260512191725_886f1f1b-2960-4b94-8879-2a00183c438d.sql"
-   },
-   {
-    "name": "tr_tenants_updated_at",
-    "when": "BEFORE UPDATE",
-    "table": "tenants",
-    "function": "update_updated_at_column",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
    },
    {
     "name": "update_sso_configurations_updated_at",
@@ -71063,17 +70961,17 @@
    },
    "handle_pedido_budget_realization": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql",
+    "src": "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
     "security_definer": true,
-    "search_path": false,
-    "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; BEGIN SELECT id, cost_center_id, valor_estimado INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_center_id AND ano = EXTRACT(YEAR FROM CURRENT_DATE); ELSIF (NEW. …",
+    "search_path": true,
+    "body": "DECLARE v_solicitacao_id UUID; v_cost_center_id UUID; v_valor_solicitado NUMERIC; v_sol_created_at TIMESTAMPTZ; BEGIN SELECT id, cost_center_id, valor_estimado, created_at INTO v_solicitacao_id, v_cost_center_id, v_valor_solicitado, v_sol_created_at FROM public.solicitacoes WHERE id = NEW.solicitacao_id; IF v_cost_center_id IS NOT NULL THEN IF (NEW.status IN ('aprovado', 'concluido', 'recebido') AND (OLD.status IS NULL OR OLD.status NOT IN ('aprovado', 'concluido', 'recebido'))) THEN UPDATE public.department_budgets SET valor_comprometido = valor_comprometido - COALESCE(v_valor_solicitado, 0), valor_utilizado = valor_utilizado + COALESCE(NEW.valor_total, 0) WHERE cost_center_id = v_cost_cent …",
     "raises": [],
     "tables": [
-     "CURRENT_DATE",
      "department_budgets",
      "solicitacoes",
+     "v_sol_created_at",
      "v_solicitacao_id"
     ]
    },
@@ -72352,7 +72250,7 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql",
+    "src": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_result jsonb := '{}'::jsonb; v_deleted bigint; v_started timestamptz := clock_timestamp(); BEGIN DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('audit_logs', v_deleted); DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('security_logs', v_deleted); DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years'; GET DIAGNOSTICS v_deleted = ROW_COUNT; v_result := v_result || jsonb_build_object('financial_audit_logs', v_deleted); DELETE FROM …",
@@ -84147,13 +84045,6 @@
    },
    {
     "kind": "segurança",
-    "msg": "função `handle_pedido_budget_realization` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
-    "where": [
-     "supabase/migrations/20260512142916_25d93055-daa9-4d2c-a22a-7bd283935021.sql"
-    ]
-   },
-   {
-    "kind": "segurança",
     "msg": "função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
     "where": [
      "supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql"
@@ -87674,7 +87565,7 @@
   },
   "src/components/compras/ContractDetailsModal.tsx": {
    "path": "src/components/compras/ContractDetailsModal.tsx",
-   "lines": 363,
+   "lines": 366,
    "exports": [
     "function ContractDetailsModal"
    ],
@@ -88428,7 +88319,7 @@
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
    "path": "src/components/compras/NovaSolicitacaoModal.tsx",
-   "lines": 449,
+   "lines": 455,
    "exports": [
     "function NovaSolicitacaoModal"
    ],
@@ -88455,6 +88346,7 @@
     "documentos"
    ],
    "errors": [
+    "Anexos não enviados: organização não identificada. Faça login novamente.",
     "Erro ao criar solicitação: ",
     "Erro ao processar solicitação via IA.",
     "Você precisa estar logado em uma organização"
@@ -91678,7 +91570,7 @@
   },
   "src/components/pagamentos/PagamentoDetailModal.tsx": {
    "path": "src/components/pagamentos/PagamentoDetailModal.tsx",
-   "lines": 424,
+   "lines": 443,
    "exports": [
     "const PagamentoDetailModal"
    ],
@@ -91749,6 +91641,10 @@
      "value": "ativo",
      "kind": "filtra"
     }
+   ],
+   "temporal": [
+    "refetchInterval: 50 * 60 * 1000,",
+    "staleTime: 30 * 60 * 1000,"
    ]
   },
   "src/components/pagamentos/PagamentoExportPanel.tsx": {
@@ -98188,6 +98084,36 @@
     "Handles sanitization, security validation and audit logging."
    ]
   },
+  "src/lib/storageFiles.ts": {
+   "path": "src/lib/storageFiles.ts",
+   "lines": 66,
+   "exports": [
+    "type PrivateBucket",
+    "function getStorageTenantId",
+    "function privateStoragePath",
+    "function storagePathFromStoredValue",
+    "function resolveStoredFileUrl"
+   ],
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "tenant_id",
+     "user_id"
+    ]
+   },
+   "enums": [
+    {
+     "name": "PrivateBucket",
+     "values": "documentos | comprovantes"
+    }
+   ],
+   "doc": "Arquivos dos buckets privados (`documentos`, `comprovantes`). As policies de storage.objects exigem o caminho `{tenantId}/{userId}/...`, com o tenant entre os do usuário (public.user_tenants). O tenant vem do cadastro (profiles.tenant_id): o JWT não tem a claim `tenant_id`, então `tenantId` do useAu …"
+  },
   "src/lib/supabaseQuery.ts": {
    "path": "src/lib/supabaseQuery.ts",
    "lines": 15,
@@ -98997,6 +98923,20 @@
     "returns empty string for falsy input",
     "returns a string",
     "passes through safe HTML"
+   ]
+  },
+  "src/lib/__tests__/storageFiles.test.ts": {
+   "path": "src/lib/__tests__/storageFiles.test.ts",
+   "lines": 69,
+   "is_test": true,
+   "tests": [
+    "storageFiles",
+    "monta o caminho {tenant}/{usuário}/... exigido pelas policies",
+    "aceita o caminho salvo (formato atual)",
+    "extrai o caminho da URL pública antiga do mesmo bucket",
+    "não confunde bucket nem URL externa",
+    "abre caminho e URL antiga por URL assinada; URL externa volta igual",
+    "tenant: usa o do contexto; sem ele, lê profiles.tenant_id"
    ]
   },
   "src/lib/__tests__/supabaseQuery.test.ts": {
@@ -109621,6 +109561,32 @@
     "$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$"
    ]
   },
+  "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql": {
+   "path": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+   "lines": 122,
+   "temporal": [
+    "DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';",
+    "DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';",
+    "DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';",
+    "DELETE FROM public.geo_access_logs WHERE created_at < now() - interval '180 days';",
+    "DELETE FROM public.login_attempts WHERE created_at < now() - interval '180 days';",
+    "DELETE FROM public.query_telemetry WHERE created_at < now() - interval '90 days';",
+    "DELETE FROM public.rate_limit_logs WHERE created_at < now() - interval '180 days';",
+    "DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years';",
+    "DELETE FROM public.telemetry_logs WHERE created_at < now() - interval '90 days';",
+    "DELETE FROM public.wal_rate_snapshots WHERE captured_at < now() - interval '90 days';",
+    "WHERE created_at < now() - interval '180 days'",
+    "WHERE created_at < now() - interval '90 days'"
+   ]
+  },
+  "supabase/migrations/20261113180000_storage_policies_por_bucket.sql": {
+   "path": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+   "lines": 209
+  },
+  "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql": {
+   "path": "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
+   "lines": 85
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -109840,10 +109806,51 @@
   }
  },
  "git": {
-  "sha": "6594ae72f3a9dce19400d07992112a42ac1bb904",
+  "sha": "960390401cdf7b5112a9601ed6c6b358b83dd81f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9603904",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)",
+    "files": [
+     "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql"
+    ]
+   },
+   {
+    "sha": "d80b070",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)",
+    "files": [
+     "src/components/compras/ContractDetailsModal.tsx",
+     "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/pagamentos/PagamentoDetailModal.tsx",
+     "src/lib/__tests__/storageFiles.test.ts",
+     "src/lib/storageFiles.ts",
+     "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    ]
+   },
+   {
+    "sha": "09f253a",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(banco): corrige crons de retencao LGPD e refresh da mv_dashboard_kpis (#83)",
+    "files": [
+     "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql"
+    ]
+   },
+   {
+    "sha": "04284c9",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "docs(prod): registra #81 mergeada, #84 completa e a checagem de produção na Vercel (#86)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "6594ae7",
     "date": "2026-11-13",
@@ -110194,62 +110201,12 @@
      "src/hooks/useDashboardKPIs.ts",
      "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql"
     ]
-   },
-   {
-    "sha": "c3f4dcf",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)",
-    "files": [
-     "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql"
-    ]
-   },
-   {
-    "sha": "5efb113",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)",
-    "files": [
-     "docs/agentes/secdef-classificacao.md",
-     "supabase/migrations/20261112171300_secdef_revoga_anon.sql"
-    ]
-   },
-   {
-    "sha": "7db0e1c",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "security(rls): torna tenant_isolation_* RESTRICTIVE em 35 tabelas com regra por papel (#56)",
-    "files": [
-     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-     "supabase/migrations/20261112170347_rls_tenant_isolation_restrictive.sql"
-    ]
-   },
-   {
-    "sha": "cdc9eee",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "ci: types-sync e contexto passam de 10 em 10 min para 1x por hora (corta gasto de Actions) (#51)",
-    "files": [
-     ".github/workflows/contexto.yml",
-     ".github/workflows/notifica-falha-main.yml",
-     ".github/workflows/types-sync.yml",
-     "AGENTS.md",
-     "ai-context.config.json",
-     "docs/agentes/contexto-ia.md",
-     "docs/agentes/github-ci.md",
-     "docs/agentes/mapa-repo.md",
-     "docs/ci/README.md",
-     "scripts/ai-context/README.md",
-     "scripts/ci/branch-podaveis.mjs",
-     "scripts/supabase_snapshot/README.md",
-     "scripts/supabase_snapshot/snapshot.py"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/prod-readiness.md",
-    3
+    4
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -110280,32 +110237,40 @@
     2
    ],
    [
-    "AGENTS.md",
-    2
-   ],
-   [
-    "scripts/ai-context/README.md",
-    2
-   ],
-   [
     "scripts/automation.config.json",
     2
    ],
    [
-    "scripts/ci/branch-podaveis.mjs",
-    2
+    "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
+    1
    ],
    [
-    "scripts/supabase_snapshot/README.md",
-    2
+    "src/components/compras/ContractDetailsModal.tsx",
+    1
    ],
    [
-    "scripts/supabase_snapshot/snapshot.py",
-    2
+    "src/components/compras/NovaSolicitacaoModal.tsx",
+    1
    ],
    [
-    "docs/agentes/secdef-classificacao.md",
-    2
+    "src/components/pagamentos/PagamentoDetailModal.tsx",
+    1
+   ],
+   [
+    "src/lib/__tests__/storageFiles.test.ts",
+    1
+   ],
+   [
+    "src/lib/storageFiles.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
+    1
    ],
    [
     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
@@ -110317,14 +110282,6 @@
    ],
    [
     "src/components/compras/DashboardInsights.tsx",
-    1
-   ],
-   [
-    "src/components/compras/TrendAnalysisCharts.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     1
    ]
   ]

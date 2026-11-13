@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 299,
+ "migrations": 302,
  "seeds": [],
  "avisos": [
   "47 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -752,20 +752,6 @@
    "funcao": "validate_pedido_status_transition"
   },
   {
-   "nome": "update_pedidos_updated_at",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "pedidos",
-   "funcao": "update_updated_at_column"
-  },
-  {
-   "nome": "update_saldo_on_pedido_change",
-   "quando": "after",
-   "evento": "insert or update or delete",
-   "tabela": "pedidos",
-   "funcao": "trigger_update_saldo_on_pedido"
-  },
-  {
    "nome": "validate_pedido_status",
    "quando": "before",
    "evento": "update of status",
@@ -906,13 +892,6 @@
    "funcao": "validate_solicitacao_status_transition"
   },
   {
-   "nome": "update_solicitacoes_updated_at",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "solicitacoes",
-   "funcao": "update_updated_at_column"
-  },
-  {
    "nome": "validate_solicitacao_status",
    "quando": "before",
    "evento": "update of status",
@@ -981,13 +960,6 @@
    "evento": "insert",
    "tabela": "tenants",
    "funcao": "grant_tenant_access_on_insert"
-  },
-  {
-   "nome": "tr_tenants_updated_at",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "tenants",
-   "funcao": "update_updated_at_column"
   },
   {
    "nome": "trg_grant_tenant_access",
@@ -12363,8 +12335,6 @@
     "trg_update_pedidos_updated_at",
     "trg_update_saldo_on_pedido",
     "trg_validate_pedido_status",
-    "update_pedidos_updated_at",
-    "update_saldo_on_pedido_change",
     "validate_pedido_status"
    ],
    "sem_rls": false,
@@ -13202,7 +13172,7 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 5,
+   "usada_no_front": 6,
    "usada_em_edges": [
     "check-cotacao-followup",
     "migrate-storage-paths"
@@ -15648,7 +15618,6 @@
     "trg_update_budget_on_solicitacao",
     "trg_update_solicitacoes_updated_at",
     "trg_validate_solicitacao_status",
-    "update_solicitacoes_updated_at",
     "validate_solicitacao_status"
    ],
    "sem_rls": false,
@@ -18471,116 +18440,74 @@
    "rls": false,
    "policies": [
     {
-     "nome": "Auth Delete",
-     "comando": "delete",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Auth Upload",
-     "comando": "insert",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "comprovantes: admin deletes within tenant",
+     "nome": "storage_fiscal_dono_delete",
      "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "comprovantes: admin/finance reads within tenant",
-     "comando": "select",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "comprovantes: insert into own tenant/user",
+     "nome": "storage_fiscal_dono_insert",
      "comando": "insert",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "comprovantes: owner deletes within tenant",
+     "nome": "storage_fiscal_dono_select",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "storage_fiscal_gestor_select",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "storage_produtos_dono_delete",
      "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "comprovantes: owner reads within tenant",
+     "nome": "storage_produtos_insert",
+     "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "storage_produtos_leitura_publica",
      "comando": "select",
-     "para": "authenticated",
+     "para": "anon, authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "comprovantes: owner updates within tenant",
-     "comando": "update",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "documentos: admin deletes within tenant",
+     "nome": "storage_tenant_admin_delete",
      "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "documentos: admin reads within tenant",
-     "comando": "select",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "documentos: insert into own tenant/user",
-     "comando": "insert",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "documentos: owner deletes within tenant",
+     "nome": "storage_tenant_dono_delete",
      "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "documentos: owner reads within tenant",
-     "comando": "select",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "documentos: owner updates within tenant",
-     "comando": "update",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Fiscal docs: admin vê todos",
-     "comando": "select",
-     "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Fiscal docs: upload na própria pasta",
+     "nome": "storage_tenant_dono_insert",
      "comando": "insert",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "Fiscal docs: ver da própria pasta",
+     "nome": "storage_tenant_dono_select",
      "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     },
     {
-     "nome": "Public Access",
+     "nome": "storage_tenant_gestor_select",
      "comando": "select",
-     "para": "public",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Users can upload documents",
-     "comando": "insert",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -19883,7 +19810,6 @@
    "usada_em_edges": [],
    "triggers": [
     "grant_tenant_access_on_insert_trigger",
-    "tr_tenants_updated_at",
     "trg_grant_tenant_access",
     "trg_normalize_cnpj",
     "update_tenants_updated_at"

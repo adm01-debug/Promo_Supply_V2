@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6594ae72f3` · branch `main` · 2026-11-13 21:03 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `960390401c` · branch `main` · 2026-11-13 22:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -138,7 +138,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `creditos_fornecedor` | Authorized roles can manage credits | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `payment_history` | Finance admin can manage payment history | ALL | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` | `has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)` |
 | `query_telemetry` | Admins can manage telemetry | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` | `public.has_role(auth.uid(), 'admin')` |
-| `storage.objects` | Users can upload documents | INSERT | authenticated | permissive |  | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = auth.uid()::text` |
 | `licitacoes` | Admins and coordinators can manage licitacoes | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator')` |
 | `licitacao_propostas` | Admins coordinators buyers can manage propostas | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` | `public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'coordinator') OR public.has_role(auth.uid(), 'buyer')` |
 | `query_telemetry` | Authenticated users can insert own telemetry | INSERT | authenticated | permissive |  | `user_id = auth.uid()` |
@@ -198,15 +197,12 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `workflow_tasks` | tenant_isolation_workflow_tasks | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `workflow_audit_log` | tenant_isolation_workflow_audit_log | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `cost_centers` | Apenas administradores podem inserir centros de custo | INSERT | authenticated | permissive |  | `has_role(auth.uid(), 'admin'::app_role)` |
-| `storage.objects` | Auth Upload | INSERT | public | permissive |  | `bucket_id = 'product-images' AND auth.role() = 'authenticated'` |
-| `storage.objects` | Auth Delete | DELETE | public | permissive | `bucket_id = 'product-images' AND auth.role() = 'authenticated'` |  |
 | `telemetry_logs_legacy_20260712` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
 | `fornecedor_categorias` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `currencies` | Authenticated can read currencies | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | Authenticated can read exchange_rates | SELECT | authenticated | permissive | `true` |  |
 | `profiles` | Users can view profiles in their tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `storage.objects` | Public Access | SELECT | public | permissive | `bucket_id = 'product-images' AND (auth.role() = 'anon' OR auth.role() = 'authenticated')` |  |
 | `currencies` | currencies_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | exchange_rates_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `fornecedor_categorias` | tenant_isolation_fornecedor_categorias | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
@@ -220,26 +216,11 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `estoque_movimentacoes` | Movimentações: ver da própria organização | SELECT | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 | `budget_transactions` | Budget transactions viewable by finance roles | SELECT | authenticated | permissive | `tenant_id = current_tenant_id() AND ( has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) )` |  |
-| `storage.objects` | Fiscal docs: upload na própria pasta | INSERT | authenticated | permissive |  | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text` |
-| `storage.objects` | Fiscal docs: ver da própria pasta | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = auth.uid()::text` |  |
-| `storage.objects` | Fiscal docs: admin vê todos | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
 | `produto_fornecedores` | Users can view product suppliers within tenant | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )` |  |
 | `repurchase_suggestions` | Users can view repurchase suggestions within tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `repurchase_suggestions` | Buyers coordinators admins can manage repurchase suggestions within tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role) )` | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role) )` |
 | `erp_connections` | Admins and coordinators manage ERP connections within tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` |
 | `punchout_catalogs` | Admins and coordinators manage PunchOut catalogs within tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` | `tenant_id = public.current_tenant_id() AND ( public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) )` |
-| `storage.objects` | documentos: owner reads within tenant | SELECT | authenticated | permissive | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
-| `storage.objects` | documentos: admin reads within tenant | SELECT | authenticated | permissive | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))` |  |
-| `storage.objects` | documentos: insert into own tenant/user | INSERT | authenticated | permissive |  | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |
-| `storage.objects` | documentos: owner updates within tenant | UPDATE | authenticated | permissive | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |
-| `storage.objects` | documentos: owner deletes within tenant | DELETE | authenticated | permissive | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
-| `storage.objects` | documentos: admin deletes within tenant | DELETE | authenticated | permissive | `bucket_id = 'documentos' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role))` |  |
-| `storage.objects` | comprovantes: owner reads within tenant | SELECT | authenticated | permissive | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
-| `storage.objects` | comprovantes: admin/finance reads within tenant | SELECT | authenticated | permissive | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'finance'::app_role))` |  |
-| `storage.objects` | comprovantes: insert into own tenant/user | INSERT | authenticated | permissive |  | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |
-| `storage.objects` | comprovantes: owner updates within tenant | UPDATE | authenticated | permissive | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |
-| `storage.objects` | comprovantes: owner deletes within tenant | DELETE | authenticated | permissive | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
-| `storage.objects` | comprovantes: admin deletes within tenant | DELETE | authenticated | permissive | `bucket_id = 'comprovantes' AND (storage.foldername(name))[1] = (public.current_tenant_id())::text AND public.has_role(auth.uid(), 'admin'::app_role)` |  |
 | `aliquotas_tributarias` | Grupo ve suas aliquotas | SELECT | authenticated | permissive | `organization_id = public.get_user_grupo_id()` |  |
 | `aliquotas_tributarias` | Admin coord gerencia aliquotas | ALL | authenticated | permissive | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(),'admin'::app_role) OR public.has_role(auth.uid(),'coordinator'::app_role))` | `organization_id = public.get_user_grupo_id() AND (public.has_role(auth.uid(),'admin'::app_role) OR public.has_role(auth.uid(),'coordinator'::app_role))` |
 | `webhook_events` | Admins can view webhook events | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
@@ -361,6 +342,18 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `produto_fornecedores` | produto_fornecedores_escrita_papeis | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` | `public.tenant_in_my_group(tenant_id) AND (public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role) OR public.has_role(auth.uid(), 'buyer'::app_role))` |
 | `licitacoes` | licitacoes_select_comprador | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
 | `pagamentos` | pagamentos_select_comprador | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'buyer'::app_role)` |  |
+| `storage.objects` | storage_tenant_dono_select | SELECT | authenticated | permissive | `bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …` |  |
+| `storage.objects` | storage_tenant_dono_insert | INSERT | authenticated | permissive |  | `bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …` |
+| `storage.objects` | storage_tenant_dono_delete | DELETE | authenticated | permissive | `bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …` |  |
+| `storage.objects` | storage_tenant_gestor_select | SELECT | authenticated | permissive | `( (bucket_id = 'documentos' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role))) OR (bucket_id = 'comprovantes' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role) …` |  |
+| `storage.objects` | storage_tenant_admin_delete | DELETE | authenticated | permissive | `bucket_id IN ('documentos', 'comprovantes') AND public.has_role(auth.uid(), 'admin'::public.app_role) AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) …` |  |
+| `storage.objects` | storage_fiscal_dono_select | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
+| `storage.objects` | storage_fiscal_dono_insert | INSERT | authenticated | permissive |  | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text` |
+| `storage.objects` | storage_fiscal_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
+| `storage.objects` | storage_fiscal_gestor_select | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …` |  |
+| `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
+| `storage.objects` | storage_produtos_insert | INSERT | authenticated | permissive |  | `bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))` |
+| `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -681,8 +674,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | update_notification_preferences_updated_at | BEFORE UPDATE | `notification_preferences` | `update_updated_at_column` |  |
 | update_categorias_updated_at | BEFORE UPDATE | `categorias` | `update_updated_at_column` |  |
 | update_produtos_updated_at | BEFORE UPDATE | `produtos` | `update_updated_at_column` |  |
-| update_solicitacoes_updated_at | BEFORE UPDATE | `solicitacoes` | `update_updated_at_column` |  |
-| update_pedidos_updated_at | BEFORE UPDATE | `pedidos` | `update_updated_at_column` |  |
 | update_mfa_settings_updated_at | BEFORE UPDATE | `mfa_settings` | `update_updated_at_column` |  |
 | update_webauthn_credentials_updated_at | BEFORE UPDATE | `webauthn_credentials` | `update_updated_at_column` |  |
 | update_user_tour_preferences_updated_at | BEFORE UPDATE | `user_tour_preferences` | `update_updated_at_column` |  |
@@ -692,7 +683,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | update_approval_workflows_updated_at | BEFORE UPDATE | `approval_workflows` | `update_approval_updated_at` |  |
 | validate_solicitacao_status | BEFORE UPDATE OF STATUS | `solicitacoes` | `validate_solicitacao_status_transition` |  |
 | validate_pedido_status | BEFORE UPDATE OF STATUS | `pedidos` | `validate_pedido_status_transition` |  |
-| update_saldo_on_pedido_change | AFTER INSERT OR UPDATE OR DELETE | `pedidos` | `trigger_update_saldo_on_pedido` |  |
 | update_department_budgets_updated_at | BEFORE UPDATE | `department_budgets` | `update_updated_at_column` |  |
 | update_fiscal_documents_updated_at | BEFORE UPDATE | `fiscal_documents` | `update_updated_at_column` |  |
 | update_repurchase_suggestions_updated_at | BEFORE UPDATE | `repurchase_suggestions` | `update_updated_at_column` |  |
@@ -738,7 +728,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_recalculate_all_cotacoes | AFTER INSERT OR UPDATE OF VALOR_TOTAL, PRAZO_ENTREGA OR DELETE | `cotacoes` | `recalculate_all_solicitacao_cotacoes` |  |
 | tr_log_cotacao_selection | AFTER UPDATE OF SELECIONADA | `cotacoes` | `log_cotacao_action` |  |
 | update_tenants_updated_at | BEFORE UPDATE | `tenants` | `update_updated_at_column` |  |
-| tr_tenants_updated_at | BEFORE UPDATE | `tenants` | `update_updated_at_column` |  |
 | update_sso_configurations_updated_at | BEFORE UPDATE | `sso_configurations` | `update_updated_at_column` |  |
 | update_punchout_catalogs_updated_at | BEFORE UPDATE | `punchout_catalogs` | `update_updated_at_column` |  |
 | update_erp_connections_updated_at | BEFORE UPDATE | `erp_connections` | `update_updated_at_column` |  |
@@ -1182,6 +1171,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | TransitionName | fade \| slide-left \| slide-right \| slide-up \| slide-down \| zoom-in \| zoom-out \| flip-x \| flip-y \| parallax \| blur-scale \| none | `src/features/layout/transitions/presets.ts` |
 | FeedbackType | success \| error \| warning \| info \| notification \| click \| approval \| rejection | `src/hooks/useFeedback.ts` |
 | WorkflowDLQOperationType | create_workflow \| approve_step \| reject_step \| escalate | `src/hooks/useWorkflowDLQ.ts` |
+| PrivateBucket | documentos \| comprovantes | `src/lib/storageFiles.ts` |
 | SLAStatus | atrasado \| critico \| atencao \| no_prazo \| entregue | `src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | SeverityFilter | all \| slow \| very_slow \| error | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | TimeFilter | 1h \| 6h \| 24h \| 7d \| custom | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
@@ -1735,6 +1725,8 @@ _nenhum item encontrado_
 | `setTimeout(() => setShowSuccess(false), 1500);` | `src/components/mobile/MobileRefreshWrapper.tsx` |
 | `const fimMesAnterior = endOfMonth(subMonths(hoje, 1));` | `src/components/pagamentos/PagamentoAdvancedKPIs.tsx` |
 | `const mesAnterior = startOfMonth(subMonths(hoje, 1));` | `src/components/pagamentos/PagamentoAdvancedKPIs.tsx` |
+| `refetchInterval: 50 * 60 * 1000,` | `src/components/pagamentos/PagamentoDetailModal.tsx` |
+| `staleTime: 30 * 60 * 1000,` | `src/components/pagamentos/PagamentoDetailModal.tsx` |
 | `const weekEnd = addWeeks(weekStart, 1);` | `src/components/pagamentos/PagamentoFinancialDashboard.tsx` |
 | `: new Date(Date.now() + parseInt(expiresHours, 10) * 60 * 60 * 1000).toISOString();` | `src/components/security/BlockedIPsPanel.tsx` |
 | `typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);` | `src/features/layout/components/SupplierChat.tsx` |
@@ -1881,6 +1873,18 @@ _nenhum item encontrado_
 | `now() - interval '7 days'` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
 | `WHERE next_due_at <= now() + interval '30 days'` | `supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `$$delete from cron.job_run_details where end_time < now() - interval '7 days'$$` | `supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql` |
+| `DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.geo_access_logs WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.login_attempts WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.query_telemetry WHERE created_at < now() - interval '90 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.rate_limit_logs WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.telemetry_logs WHERE created_at < now() - interval '90 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `DELETE FROM public.wal_rate_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `WHERE created_at < now() - interval '180 days'` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
+| `WHERE created_at < now() - interval '90 days'` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 
@@ -2052,6 +2056,7 @@ _nenhum item encontrado_
 | Campos obrigatórios | `src/components/compras/DigitalSignature.tsx` |
 | Preencha todos os campos obrigatórios | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Não foi possível salvar o fornecedor. Tente novamente. | `src/components/compras/FornecedorModal.tsx` |
+| Anexos não enviados: organização não identificada. Faça login novamente. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar solicitação:  | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao processar solicitação via IA. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Você precisa estar logado em uma organização | `src/components/compras/NovaSolicitacaoModal.tsx` |
@@ -2241,8 +2246,7 @@ _nenhum item encontrado_
 | Conta temporariamente bloqueada. Aguarde ${formatCountdown(countdown)} | `src/pages/auth/Auth.tsx` |
 | Email ou senha incorretos. ${lockoutResult.remainingAttempts} tentativa(s) restante(s). | `src/pages/auth/Auth.tsx` |
 | Erro ao entrar com Google | `src/pages/auth/Auth.tsx` |
-| Esta senha foi encontrada em vazamentos de dados (Pwned Passwords). Por sua segurança, escolha outra senha. | `src/pages/auth/Auth.tsx` |
-| … +166 linhas — lista completa em `context.json` | |
+| … +167 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2260,7 +2264,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 
-## K. Testes como especificação (2636 testes em 124 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2643 testes em 125 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2356,6 +2360,7 @@ _nenhum item encontrado_
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
+| `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |

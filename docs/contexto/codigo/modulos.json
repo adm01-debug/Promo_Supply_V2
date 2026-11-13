@@ -368,7 +368,7 @@
    "modulo": "components/compras",
    "arquivos": 103,
    "testes": 17,
-   "linhas": 24830,
+   "linhas": 24839,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1186,7 +1186,7 @@
    "modulo": "components/pagamentos",
    "arquivos": 9,
    "testes": 1,
-   "linhas": 1724,
+   "linhas": 1743,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2875,9 +2875,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 21,
+   "arquivos": 22,
    "testes": 0,
-   "linhas": 1991,
+   "linhas": 2057,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3035,7 +3035,9 @@
     "edges": [
      "telemetry"
     ],
-    "tabelas": [],
+    "tabelas": [
+     "profiles"
+    ],
     "rpcs": [
      "admin_scan_runs_sla_status",
      "check_budget_availability",
@@ -3161,7 +3163,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 24,
+   "testes": 25,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
