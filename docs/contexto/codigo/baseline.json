@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "53f69f3081dce1536f7b0992712325a813695632",
+  "commit": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
   "branch": "main",
-  "data_commit": "2026-11-13T14:11:34-03:00",
+  "data_commit": "2026-11-13T15:41:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1bb3c107",
+    "data": "2026-11-13",
+    "assunto": "fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)"
+   },
    {
     "sha": "53f69f30",
     "data": "2026-11-13",
@@ -126,18 +131,13 @@
     "sha": "d429cef0",
     "data": "2026-11-12",
     "assunto": "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)"
-   },
-   {
-    "sha": "c3f4dcf7",
-    "data": "2026-11-12",
-    "assunto": "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)"
    }
   ],
-  "arquivos_mudados_7d": 250,
+  "arquivos_mudados_7d": 251,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "pasta": "scripts/ci/inventario-types",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 59
+    "commits": 60
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 1198,
   "arquivos_codigo": 758,
-  "linhas_codigo": 160217,
+  "linhas_codigo": 160226,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -416,7 +416,7 @@
   },
   "src/components": {
    "arquivos": 260,
-   "linhas": 48642
+   "linhas": 48648
   },
   "src/features": {
    "arquivos": 64,
@@ -444,7 +444,7 @@
   },
   "src/pages": {
    "arquivos": 120,
-   "linhas": 27804
+   "linhas": 27807
   },
   "src/routes": {
    "arquivos": 1,

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `53f69f3081dce1536f7b0992712325a813695632` (2026-11-13T14:11:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1bb3c10774a3a7f054d7b50903bc0ec412c8418e` (2026-11-13T15:41:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1198 |
 | arquivos_codigo | 758 |
-| linhas_codigo | 160217 |
+| linhas_codigo | 160226 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -403,6 +403,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-13 `1bb3c107` fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)
 - 2026-11-13 `53f69f30` fix(dashboard): card Aguardando volta a mostrar o backlog e textos batem com o período (#73)
 - 2026-11-13 `8a5540cf` security(banco): comprador não altera dados de outros nem troca de organização (#75)
 - 2026-11-13 `83eab056` fix(ci): guard de encoding pega maiúsculas acentuadas e escape JSON; versiona job de limpeza do cron (#74)
@@ -417,7 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `fa24df57` docs(prod): inventário e prontidão para produção com provas (docs/prod-readiness.md) (#45)
 - 2026-11-13 `50817a04` fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)
 - 2026-11-12 `3118a1fd` fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)
-- 2026-11-12 `6c530a06` security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

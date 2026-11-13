@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "53f69f3081dce1536f7b0992712325a813695632",
+  "sha": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 18:45 UTC",
+  "generated_at": "2026-11-13 19:57 UTC",
   "files_total": 1200,
   "code_files": 1060,
-  "code_lines": 184596,
+  "code_lines": 184605,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "f6a0388a0493b362",
+ "facts_hash": "88be17dd21a4132f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33528,7 +33528,7 @@
   {
    "module": "src/components",
    "files": 260,
-   "lines": 48642,
+   "lines": 48648,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34387,7 +34387,7 @@
   {
    "module": "src/pages",
    "files": 120,
-   "lines": 27804,
+   "lines": 27807,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36132,6 +36132,7 @@
      "src/components/compras/PurchaseClimateWidget.tsx",
      "src/components/compras/SLADistributionChart.tsx",
      "src/components/compras/SavingsGoalPanel.tsx",
+     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
      "src/components/mobile/BottomNavigation.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useApprovalWorkflow.ts",
@@ -39325,6 +39326,10 @@
     "msg": "Erro ao atualizar status."
    },
    {
+    "file": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+    "msg": "Sem permissão para alterar esta solicitação."
+   },
+   {
     "file": "src/components/notifications/NotificationSettingsPanel.tsx",
     "msg": "Erro ao enviar notificação de teste."
    },
@@ -40129,6 +40134,10 @@
     "msg": "Sem dados para exportar"
    },
    {
+    "file": "src/pages/kanban/KanbanWorkflow.tsx",
+    "msg": "Sem permissão para alterar esta solicitação"
+   },
+   {
     "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
     "msg": "Erro ao atualizar produção: "
    },
@@ -40737,6 +40746,10 @@
     "text": "Check solicitacoes near deadline"
    },
    {
+    "file": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+    "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
+   },
+   {
     "file": "src/components/compras/pending-approvals/deadlineFallback.ts",
     "text": "* Resolves the effective deadline for a pending approval step."
    },
@@ -40947,6 +40960,10 @@
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "text": "Desconto Editável */}"
+   },
+   {
+    "file": "src/pages/kanban/KanbanWorkflow.tsx",
+    "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    },
    {
     "file": "src/pages/seguranca/Seguranca.tsx",
@@ -89979,7 +89996,7 @@
   },
   "src/components/compras/dashboard/UrgencyDetailsSheet.tsx": {
    "path": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-   "lines": 310,
+   "lines": 316,
    "exports": [
     "const UrgencyDetailsSheet"
    ],
@@ -89990,7 +90007,7 @@
     },
     {
      "table": "solicitacoes",
-     "op": "update"
+     "op": "select,update"
     }
    ],
    "table_cols": {
@@ -90002,7 +90019,11 @@
     "/cotacao?id="
    ],
    "errors": [
-    "Erro ao atualizar status."
+    "Erro ao atualizar status.",
+    "Sem permissão para alterar esta solicitação."
+   ],
+   "rule_comments": [
+    "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    ],
    "temporal": [
     "const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));"
@@ -101832,7 +101853,7 @@
   },
   "src/pages/kanban/KanbanWorkflow.tsx": {
    "path": "src/pages/kanban/KanbanWorkflow.tsx",
-   "lines": 191,
+   "lines": 194,
    "exports": [
     "default KanbanWorkflow"
    ],
@@ -101843,7 +101864,7 @@
     },
     {
      "table": "solicitacoes",
-     "op": "update"
+     "op": "select,update"
     }
    ],
    "table_cols": {
@@ -101859,6 +101880,9 @@
      "valor_estimado"
     ]
    },
+   "errors": [
+    "Sem permissão para alterar esta solicitação"
+   ],
    "transition_maps": [
     {
      "name": "VALID_TRANSITIONS",
@@ -101881,6 +101905,9 @@
      "value": "concluida",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    ],
    "pagination": [
     "200"
@@ -109813,10 +109840,20 @@
   }
  },
  "git": {
-  "sha": "53f69f3081dce1536f7b0992712325a813695632",
+  "sha": "1bb3c10774a3a7f054d7b50903bc0ec412c8418e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1bb3c10",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(solicitacoes): kanban e painel de urgências avisam quando a mudança de status é negada (#81)",
+    "files": [
+     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+     "src/pages/kanban/KanbanWorkflow.tsx"
+    ]
+   },
    {
     "sha": "53f69f3",
     "date": "2026-11-13",
@@ -110207,15 +110244,6 @@
     "files": [
      "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql"
     ]
-   },
-   {
-    "sha": "63a0e0c",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(deploy): rotas da spa deixam de dar 404 ao abrir link direto (#50)",
-    "files": [
-     "vercel.json"
-    ]
    }
   ],
   "hot_files": [
@@ -110280,6 +110308,14 @@
     2
    ],
    [
+    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+    1
+   ],
+   [
+    "src/pages/kanban/KanbanWorkflow.tsx",
+    1
+   ],
+   [
     "src/components/compras/DashboardInsights.tsx",
     1
    ],
@@ -110289,14 +110325,6 @@
    ],
    [
     "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
-    1
-   ],
-   [
-    "src/locales/en/translation.json",
-    1
-   ],
-   [
-    "src/locales/es/translation.json",
     1
    ]
   ]

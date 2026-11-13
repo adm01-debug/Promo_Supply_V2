@@ -673,7 +673,7 @@
     "UrgencyDetailsSheet"
    ],
    "export_default": null,
-   "linhas": 310,
+   "linhas": 316,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -5021,7 +5021,7 @@
     "KanbanWorkflow"
    ],
    "export_default": "KanbanWorkflow",
-   "linhas": 191,
+   "linhas": 194,
    "dominio": "pages/kanban",
    "hooks_locais": [],
    "tabelas": [

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53f69f3081` · branch `main` · 2026-11-13 18:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1bb3c10774` · branch `main` · 2026-11-13 19:57 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2070,6 +2070,7 @@ _nenhum item encontrado_
 | Fornecedor não encontrado | `src/components/compras/SupplierRiskAnalysis.tsx` |
 | Selecione um fornecedor | `src/components/compras/SupplierRiskAnalysis.tsx` |
 | Erro ao atualizar status. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
+| Sem permissão para alterar esta solicitação. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | Erro ao enviar notificação de teste. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Erro ao verificar alertas. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Permissão para notificações foi negada. | `src/components/notifications/NotificationSettingsPanel.tsx` |
@@ -2241,8 +2242,7 @@ _nenhum item encontrado_
 | Email ou senha incorretos. ${lockoutResult.remainingAttempts} tentativa(s) restante(s). | `src/pages/auth/Auth.tsx` |
 | Erro ao entrar com Google | `src/pages/auth/Auth.tsx` |
 | Esta senha foi encontrada em vazamentos de dados (Pwned Passwords). Por sua segurança, escolha outra senha. | `src/pages/auth/Auth.tsx` |
-| Este email já está cadastrado | `src/pages/auth/Auth.tsx` |
-| … +164 linhas — lista completa em `context.json` | |
+| … +166 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2427,6 +2427,7 @@ _nenhum item encontrado_
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
+| RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 1. `stepPrazoLimite`   — deadline set directly on the step | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 2. `workflowPrazoLimite` — deadline inherited from the parent workflow | `src/components/compras/pending-approvals/deadlineFallback.ts` |
@@ -2480,6 +2481,7 @@ _nenhum item encontrado_
 | Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
+| RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
 | Rate Limit Tab */} | `src/pages/seguranca/Seguranca.tsx` |
 | Validate: thresholds must be positive | `src/stores/slaSettingsStore.ts` |
 | Warning must be >= critical | `src/stores/slaSettingsStore.ts` |
