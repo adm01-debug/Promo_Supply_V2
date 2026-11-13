@@ -500,8 +500,14 @@ Riscos aceitos e registrados pelo verificador: o comprador pode criar etapa de a
 
 | PR | Estado |
 |---|---|
-| [#81](https://github.com/adm01-debug/Promo_Supply_V2/pull/81) | front: aviso de "sem permissão" no Kanban/urgências — aguardando CI |
+| [#81](https://github.com/adm01-debug/Promo_Supply_V2/pull/81) | front: aviso de "sem permissão" no Kanban/urgências — **mergeada** (13 checks verdes incl. E2E; deploy Vercel `1bb3c10` success 18:43 UTC) |
 | [#78](https://github.com/adm01-debug/Promo_Supply_V2/pull/78), [#79](https://github.com/adm01-debug/Promo_Supply_V2/pull/79), [#80](https://github.com/adm01-debug/Promo_Supply_V2/pull/80) | reabertas por outro processo a partir de branches já mergeadas (#64, #66, #77): duplicatas — fechar |
+
+### 8.3 Produção (front) — conferido em 2026-11-13 20:29 UTC
+
+- `GET https://promo-supply-v2.vercel.app/pedidos` → **200** (`server: Vercel`, `index.html` da SPA) via MCP da Vercel.
+- `get_runtime_errors` (projeto `prj_fHDZ7WsU1uW4j2HusDSrGLspbbDN`, 24 h) → **"No runtime errors found"**.
+- CI da `main` `6594ae7`: Freight Quest CI/CD, Guards, Automação local e CodeQL **success**; `types-sync` e `contexto` na fila de runners.
 
 ## 10. Falhas encontradas no re-teste de 2026-11-13 (anteriores à auditoria; aguardando decisão — DDL em produção)
 
@@ -509,7 +515,7 @@ Re-teste só leitura/rollback de todas as entregas #40–#67: todas seguem valen
 
 | # | Falha | Prova | Status |
 |---|---|---|---|
-| 1 | **Upload de arquivos quebrado para todos**: `storage.objects` com RLS e **0 policies** (buckets privados `comprovantes`, `documentos`, `fiscal-documents`) | admin: `ERR 42501 new row violates row-level security policy for table objects`; `PagamentoDetailModal.tsx:89-91` | PR [#84](https://github.com/adm01-debug/Promo_Supply_V2/pull/84) aberta, aguardando o dono — revisor reproduziu 46 casos; **ressalva**: `documentos`/`comprovantes` seguem bloqueados porque `current_tenant_id()` lê a claim `tenant_id` do JWT e nenhum usuário a tem (0/12, sem access-token hook) |
+| 1 | **Upload de arquivos quebrado para todos**: `storage.objects` com RLS e **0 policies** (buckets privados `comprovantes`, `documentos`, `fiscal-documents`) | admin: `ERR 42501 new row violates row-level security policy for table objects`; `PagamentoDetailModal.tsx:89-91` | PR [#84](https://github.com/adm01-debug/Promo_Supply_V2/pull/84) aberta, aguardando o dono — **completa**: policies resolvem a empresa pelo cadastro (`user_belongs_to_tenant`, sem depender de claim no JWT); front grava o caminho e abre por URL assinada (renovada a cada 50 min). Revisor independente: 147/147 asserções em rollback com usuários reais sem claim; nenhum acesso entre tenants; UPDATE não move arquivo para o bucket público |
 | 2 | Cron `refresh-mv-dashboard-kpis` falha a cada 15 min desde 11/09 (6.064 falhas, 0 sucesso) | `cannot refresh materialized view public.mv_dashboard_kpis concurrently` (sem índice único) | PR [#83](https://github.com/adm01-debug/Promo_Supply_V2/pull/83) aberta, aguardando o dono — recria `idx_mv_dashboard_kpis_pk`; refresh `ok=true` em rollback |
 | 3 | Cron `lgpd_retention_daily` falha todo dia desde 12/09: a retenção LGPD de 12 tabelas não roda | `column created_at does not exist` em `wal_rate_snapshots` (coluna real `captured_at`) | PR [#83](https://github.com/adm01-debug/Promo_Supply_V2/pull/83) aberta, aguardando o dono — corrige 3 colunas inexistentes; em rollback roda e apagaria 3 linhas de `login_attempts` (>180 dias) — deleção real |
 | 4 | Gatilhos duplicados após a aplicação | `pedidos.trigger_update_saldo_on_pedido`×2 (saldo do fornecedor em dobro), `validate_pedido_status_transition`×2, `validate_solicitacao_status_transition`×2, `supplier_documents.trigger_recalculate_qualification_score`×2, `update_updated_at_column`×2 (pedidos, solicitacoes, tenants) | PR [#85](https://github.com/adm01-debug/Promo_Supply_V2/pull/85) aberta, aguardando o dono — remove só as cópias idênticas; saldo e auditoria passam a contar 1× |
