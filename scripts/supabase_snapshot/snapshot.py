@@ -307,6 +307,7 @@ def uslug(text: str, scope: str = "") -> str:
 
 def write(path: pathlib.Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    content = scrub(content)
     path.write_text(content if content.endswith("\n") else content + "\n", encoding="utf-8")
 
 
