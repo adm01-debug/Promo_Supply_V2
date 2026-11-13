@@ -5,11 +5,11 @@
   "vitest",
   "playwright"
  ],
- "total": 149,
+ "total": 150,
  "por_tipo": {
   "contrato": 4,
   "pytest": 2,
-  "unit": 143
+  "unit": 144
  },
  "onde_ficam": [
   {
@@ -22,7 +22,7 @@
   },
   {
    "padrao": "outro",
-   "arquivos": 25
+   "arquivos": 26
   }
  ],
  "arquivos": [
@@ -113,6 +113,13 @@
     "scripts/ci/commit-msg-lint.mjs"
    ],
    "casos": 10
+  },
+  {
+   "arquivo": "scripts/ci/encoding-src.unit.mjs",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",

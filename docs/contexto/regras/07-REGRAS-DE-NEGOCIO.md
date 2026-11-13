@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `b6e0427f4a` · branch `main` · 2026-11-12 21:38 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `db1dfe5c72` · branch `main` · 2026-11-13 00:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1674,7 +1674,7 @@ _nenhum item encontrado_
 | `MAX_SELECT_LIMIT` | `500` | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `DEFAULT_LEVEL` | `"info"` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_MESSAGE_LENGTH` | `4000` | `supabase/functions/_shared/logLevel.ts` |
-| `MAX_LOG_MESSAGE_LEN` | `4000` | `supabase/functions/_shared/logger.ts` |
+| `MAX_LOG_MESSAGE_LEN` | `45000` | `supabase/functions/_shared/logger.ts` |
 | `MAX_ERR_MESSAGE_LEN` | `500` | `supabase/functions/_shared/logger.ts` |
 | `SPOT_QUOTA_RESERVE` | `2` | `supabase/functions/_shared/spot_api.ts` |
 | `CHUNK` | `500` | `supabase/functions/_shared/xbz_catalog_cache.ts` |
@@ -1948,6 +1948,7 @@ _nenhum item encontrado_
 | falha fixture | `scripts/automation.unit.mjs` |
 | ${msg}: esperado ${JSON.stringify(b)} obtido ${JSON.stringify(a)} | `scripts/ai-context/cenarios.mjs` |
 | ${metodo} ${caminho} -> ${r.status} | `scripts/ci/actions-kpi.mjs` |
+| ${argv[index - 1]} exige um valor | `scripts/ci/audit-prod.mjs` |
 | --level invalido: ${args.level} | `scripts/ci/audit-prod.mjs` |
 | Argumento desconhecido: ${argv[index]} | `scripts/ci/audit-prod.mjs` |
 | PR sem headRefName | `scripts/ci/branch-podaveis.mjs` |
@@ -2244,8 +2245,7 @@ _nenhum item encontrado_
 | Method ${req.method} not allowed. Use: ${methods.join( | `supabase/functions/_shared/validation.ts` |
 | Credencial cifrada corrompida | `supabase/functions/_shared/xbz_crypto.ts` |
 | Credencial cifrada em formato inválido | `supabase/functions/_shared/xbz_crypto.ts` |
-| Valor a cifrar deve ser uma string não vazia | `supabase/functions/_shared/xbz_crypto.ts` |
-| … +118 linhas — lista completa em `context.json` | |
+| … +119 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

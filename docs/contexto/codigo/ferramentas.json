@@ -6,7 +6,7 @@
    "TypeScript (686)",
    "SQL (289)",
    "Markdown (71)",
-   "JavaScript (50)",
+   "JavaScript (51)",
    "JSON (22)",
    "YAML (9)",
    "Shell (7)",
@@ -84,8 +84,8 @@
    "test:watch": "vitest",
    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
   },
-  "dependencias": 78,
-  "dev_dependencias": 23,
+  "dependencias": 67,
+  "dev_dependencias": 34,
   "principais": {
    "@supabase/supabase-js": "^2.87.3",
    "@tanstack/query-sync-storage-persister": "^5.100.10",
@@ -103,12 +103,10 @@
    "react-hook-form": "^7.61.1",
    "react-i18next": "^17.0.7",
    "react-markdown": "^10.1.0",
-   "react-router-dom": "^6.30.1",
+   "react-router-dom": "^6.30.6",
    "recharts": "^2.15.4",
    "tailwindcss-animate": "^1.0.7",
-   "vite-plugin-pwa": "0.21.1",
-   "vitest": "^3.2.4",
-   "zod": "^3.25.76",
+   "zod": "^4.6.7",
    "zustand": "^5.0.9"
   },
   "engines": null,
@@ -622,7 +620,7 @@
    {
     "pacote": "zod",
     "servico": "zod",
-    "versao": "^3.25.76"
+    "versao": "^4.6.7"
    }
   ],
   "hosts_externos": [

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b6e0427f4ae544e1da0c73675ca99d01dc0209cb` (2026-11-12T16:43:13-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06` (2026-11-12T19:43:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (686), SQL (289), Markdown (71), JavaScript (50), JSON (22), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (686), SQL (289), Markdown (71), JavaScript (51), JSON (22), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1166 |
-| arquivos_codigo | 739 |
-| linhas_codigo | 151457 |
+| arquivos_total | 1167 |
+| arquivos_codigo | 740 |
+| linhas_codigo | 151575 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 288 |
 | cron_jobs | 68 |
-| testes | 149 |
+| testes | 150 |
 | workflows | 8 |
 | scripts | 43 |
 | docs_md | 71 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (76), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (21), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (98), co-localizado (*.test) (26), outro (25)
+- testes: co-localizado (__tests__) (98), co-localizado (*.test) (26), outro (26)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (12), scripts/types-sync (7), scripts/inventario (5)
@@ -337,9 +337,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - AGENTS.md (5)
+- package.json (5)
 - .github/workflows/contexto.yml (4)
 - .github/workflows/main.yml (4)
-- package.json (4)
 - ESTADO_ATUAL.md (3)
 - docs/agentes/contexto-ia.md (3)
 - docs/agentes/github-ci.md (3)
@@ -411,6 +411,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-12 `db1dfe5c` fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)
+- 2026-11-12 `e06e53b1` fix(ui): seta do tour de onboarding aparecia corrompida (#57)
+- 2026-11-12 `62016b23` chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)
 - 2026-11-12 `b6e0427f` fix(ui): vencimento das urgências aparecia um dia antes (#59)
 - 2026-11-12 `284eef46` fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)
 - 2026-11-12 `d429cef0` fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)
@@ -423,9 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-12 `5507e433` fix(ui): citar agora abre a cotacao da solicitacao certa (#48)
 - 2026-11-12 `ffcc71ad` fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)
 - 2026-11-12 `dd8f1fd8` fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)
-- 2026-11-12 `5cdeeaca` fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)
-- 2026-11-12 `257a4c44` fix(ui): corrige acentuacao corrompida em 12 telas (#44)
-- 2026-11-12 `e897b429` fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

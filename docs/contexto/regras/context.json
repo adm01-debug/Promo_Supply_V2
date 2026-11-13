@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "b6e0427f4ae544e1da0c73675ca99d01dc0209cb",
+  "sha": "db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-12 21:38 UTC",
-  "files_total": 1168,
-  "code_files": 1030,
-  "code_lines": 174022
+  "generated_at": "2026-11-13 00:19 UTC",
+  "files_total": 1169,
+  "code_files": 1031,
+  "code_lines": 174140
  },
  "version": "1.3.2",
- "facts_hash": "4c7508afe46b028c",
+ "facts_hash": "118018c9897d9bce",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -62,7 +62,7 @@
     "in": "package.json"
    },
    "react-router-dom": {
-    "version": "^6.30.1",
+    "version": "^6.30.6",
     "role": "Roteamento (React Router)",
     "in": "package.json"
    },
@@ -71,19 +71,19 @@
     "role": "Gráficos Recharts",
     "in": "package.json"
    },
-   "vitest": {
-    "version": "^3.2.4",
-    "role": "Testes Vitest",
-    "in": "package.json"
-   },
    "zod": {
-    "version": "^3.25.76",
+    "version": "^4.6.7",
     "role": "Validação de schemas (Zod)",
     "in": "package.json"
    },
    "zustand": {
     "version": "^5.0.9",
     "role": "Estado Zustand",
+    "in": "package.json"
+   },
+   "vitest": {
+    "version": "^3.2.4",
+    "role": "Testes Vitest",
     "in": "package.json"
    },
    "tailwindcss": {
@@ -227,7 +227,7 @@
    ".tsx": 344,
    ".ts": 342,
    ".sql": 289,
-   ".mjs": 48,
+   ".mjs": 49,
    ".py": 5,
    ".js": 2
   },
@@ -32011,8 +32011,8 @@
   },
   {
    "module": "scripts",
-   "files": 59,
-   "lines": 19846,
+   "files": 60,
+   "lines": 19964,
    "tables": [
     "a",
     "b2",
@@ -32142,6 +32142,7 @@
     "scripts/ci/check-test-inventory.unit.mjs",
     "scripts/ci/commit-msg-lint.mjs",
     "scripts/ci/commit-msg-lint.unit.mjs",
+    "scripts/ci/encoding-src.unit.mjs",
     "scripts/ci/gerar-matriz-edge-tabela.mjs",
     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
     "scripts/ci/maintenance.unit.mjs",
@@ -37297,6 +37298,10 @@
    {
     "file": "scripts/ci/actions-kpi.mjs",
     "msg": "${metodo} ${caminho} -> ${r.status}"
+   },
+   {
+    "file": "scripts/ci/audit-prod.mjs",
+    "msg": "${argv[index - 1]} exige um valor"
    },
    {
     "file": "scripts/ci/audit-prod.mjs",
@@ -46502,7 +46507,7 @@
    {
     "file": "supabase/functions/_shared/logger.ts",
     "name": "MAX_LOG_MESSAGE_LEN",
-    "value": "4000"
+    "value": "45000"
    },
    {
     "file": "supabase/functions/_shared/logger.ts",
@@ -82958,7 +82963,7 @@
   },
   "scripts/ci/audit-prod.mjs": {
    "path": "scripts/ci/audit-prod.mjs",
-   "lines": 221,
+   "lines": 285,
    "exports": [
     "function parseAuditText",
     "function evaluate",
@@ -82967,6 +82972,7 @@
     "function main"
    ],
    "errors": [
+    "${argv[index - 1]} exige um valor",
     "--level invalido: ${args.level}",
     "Argumento desconhecido: ${argv[index]}"
    ],
@@ -83187,6 +83193,11 @@
   "scripts/ci/commit-msg-lint.unit.mjs": {
    "path": "scripts/ci/commit-msg-lint.unit.mjs",
    "lines": 150
+  },
+  "scripts/ci/encoding-src.unit.mjs": {
+   "path": "scripts/ci/encoding-src.unit.mjs",
+   "lines": 54,
+   "doc": "Guard de encoding do front: texto com mojibake (UTF-8 lido como Windows-1252 e salvo de novo) chega ao usuario como lixo na tela. Caso real: a seta do tour de onboarding (src/components/onboarding/OnboardingTour.tsx) saiu como \"â†\" + U+0090 no lugar de \"←\". Reprova qualquer arquivo de src/ (exceto _ …"
   },
   "scripts/ci/gerar-matriz-edge-tabela.mjs": {
    "path": "scripts/ci/gerar-matriz-edge-tabela.mjs",
@@ -101270,7 +101281,7 @@
     {
      "name": "ERPSyncContract",
      "kind": "object",
-     "body": "{ action: ciEnum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']), entity_id: z.string().uuid().optional(), payload: z.record(z.unknown()).optional(), }",
+     "body": "{ action: ciEnum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']), entity_id: z.string().uuid().optional(), payload: z.record(z.string(), z.unknown()).optional(), }",
      "refines": [],
      "chain": []
     }
@@ -102109,7 +102120,7 @@
    "params": [
     {
      "name": "MAX_LOG_MESSAGE_LEN",
-     "value": "4000"
+     "value": "45000"
     },
     {
      "name": "MAX_ERR_MESSAGE_LEN",
@@ -106950,10 +106961,45 @@
   }
  },
  "git": {
-  "sha": "b6e0427f4ae544e1da0c73675ca99d01dc0209cb",
+  "sha": "db1dfe5c7253bf0fa3f5d9ad6960e1ccc777ec06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "db1dfe5",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)",
+    "files": [
+     "bun.lock",
+     "package.json",
+     "scripts/ci/audit-prod.mjs",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/pages/auth/Auth.tsx",
+     "src/tests/contracts-elite.test.ts"
+    ]
+   },
+   {
+    "sha": "e06e53b",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): seta do tour de onboarding aparecia corrompida (#57)",
+    "files": [
+     "scripts/automation.config.json",
+     "scripts/ci/encoding-src.unit.mjs",
+     "src/components/onboarding/OnboardingTour.tsx"
+    ]
+   },
+   {
+    "sha": "62016b2",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)",
+    "files": [
+     "inventario/estado/edges.json",
+     "supabase/functions/_shared/logger.ts"
+    ]
+   },
    {
     "sha": "b6e0427",
     "date": "2026-11-12",
@@ -107286,80 +107332,24 @@
      "supabase/functions/telemetry/index.test.ts",
      "supabase/functions/workflow-engine/fuzz.test.ts"
     ]
-   },
-   {
-    "sha": "dc3d95d",
-    "date": "2026-11-09",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #4 from adm01-debug/fix/ui-render-and-math",
-    "files": []
-   },
-   {
-    "sha": "1a7756c",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "ci: porta os guards offline e a auditoria semanal autônoma do Zapp_Web_V2",
-    "files": [
-     ".github/toolchain.json",
-     ".github/workflows/branch-hygiene-audit.yml",
-     ".github/workflows/guards.yml",
-     ".github/workflows/main.yml",
-     ".github/workflows/notifica-falha-main.yml",
-     "AGENTS.md",
-     "docs/agentes/github-ci.md",
-     "docs/agentes/mapa-repo.md",
-     "docs/ci/README.md",
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "package.json",
-     "scripts/ci/README.md",
-     "scripts/ci/actions-kpi.mjs",
-     "scripts/ci/actions-kpi.unit.mjs",
-     "scripts/ci/audit-prod.mjs",
-     "scripts/ci/audit-prod.unit.mjs",
-     "scripts/ci/branch-podaveis.mjs",
-     "scripts/ci/branch-podaveis.unit.mjs",
-     "scripts/ci/bump-toolchain.mjs",
-     "scripts/ci/check-bundle-secrets.mjs",
-     "scripts/ci/check-bundle-secrets.unit.mjs",
-     "scripts/ci/check-test-inventory.mjs",
-     "scripts/ci/check-test-inventory.unit.mjs",
-     "scripts/ci/commit-msg-lint.mjs",
-     "scripts/ci/commit-msg-lint.unit.mjs",
-     "scripts/ci/gerar-matriz-edge-tabela.mjs",
-     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
-     "scripts/ci/render-workflow-docs.mjs",
-     "scripts/ci/render-workflow-docs.unit.mjs",
-     "scripts/ci/sla-code-scanning.mjs",
-     "scripts/ci/sla-code-scanning.unit.mjs",
-     "scripts/ci/toolchain-schedule.unit.mjs",
-     "scripts/ci/workflow-test-support.mjs",
-     "scripts/lib/README.md",
-     "scripts/lib/seguranca-processo.mjs",
-     "scripts/lib/seguranca-processo.test.mjs"
-    ]
-   },
-   {
-    "sha": "908b045",
-    "date": "2026-11-08",
-    "author": "adm01-debug",
-    "subject": "fix(ci): remove --depth 1 do fetch da branch contexto no job de publicação",
-    "files": [
-     ".github/workflows/contexto.yml"
-    ]
    }
   ],
   "hot_files": [
    [
-    ".github/workflows/contexto.yml",
-    3
-   ],
-   [
-    "docs/ci/README.md",
-    3
-   ],
-   [
     "package.json",
     3
+   ],
+   [
+    "src/tests/contracts-elite.test.ts",
+    2
+   ],
+   [
+    "scripts/automation.config.json",
+    2
+   ],
+   [
+    "src/components/onboarding/OnboardingTour.tsx",
+    2
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
@@ -107370,23 +107360,11 @@
     2
    ],
    [
-    ".github/workflows/notifica-falha-main.yml",
+    ".github/workflows/contexto.yml",
     2
    ],
    [
-    "AGENTS.md",
-    2
-   ],
-   [
-    "docs/agentes/github-ci.md",
-    2
-   ],
-   [
-    "docs/agentes/mapa-repo.md",
-    2
-   ],
-   [
-    "scripts/ci/branch-podaveis.mjs",
+    "docs/ci/README.md",
     2
    ],
    [
@@ -107398,8 +107376,32 @@
     2
    ],
    [
-    ".github/workflows/main.yml",
-    2
+    "bun.lock",
+    1
+   ],
+   [
+    "scripts/ci/audit-prod.mjs",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    1
+   ],
+   [
+    "src/pages/auth/Auth.tsx",
+    1
+   ],
+   [
+    "scripts/ci/encoding-src.unit.mjs",
+    1
+   ],
+   [
+    "inventario/estado/edges.json",
+    1
+   ],
+   [
+    "supabase/functions/_shared/logger.ts",
+    1
    ],
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
@@ -107411,22 +107413,6 @@
    ],
    [
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useDashboardKPIs.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261112171900_compras_dashboard_metrics_fix.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
-    1
-   ],
-   [
-    "docs/agentes/secdef-classificacao.md",
     1
    ]
   ]

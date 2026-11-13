@@ -84,7 +84,7 @@
   {
    "arquivo": "scripts/ci/audit-prod.mjs",
    "descricao": "Bloqueia o CI quando `bun audit` reporta advisory HIGH/CRITICAL alcancavel a partir de uma dependencia de PRODUCAO (package.json#dependencies). Advisories",
-   "linhas": 221,
+   "linhas": 285,
    "env": [],
    "npm_scripts": [],
    "workflows": [

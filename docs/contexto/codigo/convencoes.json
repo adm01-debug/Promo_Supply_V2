@@ -24,7 +24,7 @@
   "testes": [
    "co-localizado (__tests__) (98)",
    "co-localizado (*.test) (26)",
-   "outro (25)"
+   "outro (26)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -58,11 +58,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(deps): zera vulns high/critical do advisory e corrige regressoes do bump zod (#61)",
+   "fix(ui): seta do tour de onboarding aparecia corrompida (#57)",
+   "chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)",
    "fix(ui): vencimento das urgências aparecia um dia antes (#59)",
-   "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)",
-   "fix(dashboard): KPIs de compras voltam a carregar e ficam restritos ao grupo do usuário (#55)",
-   "fix(banco): crons e chamadas de edge apontavam para outro projeto Supabase (#53)",
-   "security(banco): visitante sem login deixa de executar 141 funções SECURITY DEFINER (#54)"
+   "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)"
   ]
  },
  "pr_template": null,
