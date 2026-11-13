@@ -23,9 +23,11 @@ interface TrendAnalysisChartsProps {
   monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
   cotacaoStatus: { name: string; value: number; color: string }[];
   topCategories: { name: string; value: number; percentage: number }[];
+  /** Rótulo do período filtrado (ex.: "último mês"); sem ele o título diz "no período". */
+  periodLabel?: string;
 }
 
-export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategories }: TrendAnalysisChartsProps) => {
+export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategories, periodLabel }: TrendAnalysisChartsProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Volume de Pedidos vs. Cotações */}
@@ -33,7 +35,7 @@ export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategorie
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
-            Tendência de Volume (6 meses)
+            {periodLabel ? `Tendência de Volume (${periodLabel})` : 'Tendência de Volume no Período'}
           </h3>
         </div>
         <div className="h-[300px] w-full">

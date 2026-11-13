@@ -51,12 +51,12 @@
       "pending_approval": "Pending Approval",
       "active_quotes": "Active Quotes",
       "completed_orders": "Completed Orders",
-      "total_spend": "Total Spend",
+      "total_spend": "Volume in Period",
       "saving": "Total Saving",
       "sla": "SLA Rate",
       "subtitles": {
         "pending": "Pending requests",
-        "volume": "Total billed",
+        "volume": "Orders issued in the period",
         "economy": "of total volume",
         "sla": "Service level"
       }

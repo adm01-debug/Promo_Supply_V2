@@ -45,7 +45,7 @@ export const DashboardInsights = () => {
         id: '1',
         type: 'opportunity',
         title: 'Otimização de Negociação',
-        description: `Seu saving atual de ${kpis.economiaPercentual}% está abaixo do benchmark de 18% para sua categoria principal.`,
+        description: `Seu saving atual de ${kpis.economiaPercentual.toFixed(1)}% está abaixo do benchmark de 18% para sua categoria principal.`,
         impact: `Potencial de +R$ ${potentialExtraSaving.toLocaleString('pt-BR')} em economia mensal adicional.`,
         action: 'Revisar cotações em aberto',
         icon: Target,

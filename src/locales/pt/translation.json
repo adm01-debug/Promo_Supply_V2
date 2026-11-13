@@ -51,12 +51,12 @@
       "pending_approval": "Aguardando Cotação",
       "active_quotes": "Cotações Ativas",
       "completed_orders": "Pedidos Concluídos",
-      "total_spend": "Volume do Mês",
+      "total_spend": "Volume no Período",
       "saving": "Economia Gerada",
       "sla": "SLA de Atendimento",
       "subtitles": {
         "pending": "Solicitações pendentes",
-        "volume": "Total faturado",
+        "volume": "Pedidos emitidos no período",
         "economy": "do volume total",
         "sla": "Nível de serviço"
       }
