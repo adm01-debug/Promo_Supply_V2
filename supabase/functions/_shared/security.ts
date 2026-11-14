@@ -8,8 +8,8 @@ import { createClient, type SupabaseClient, type User } from "https://esm.sh/@su
  */
 export type SupabaseClientLike = {
   auth: {
-    getUser: (jwt: string) => Promise<{
-      data: { user: User | null } | null;
+    getUser: (jwt: string) => PromiseLike<{
+      data: { user: User } | null;
       error: { message: string; status?: number } | null;
     }>;
   };
@@ -20,7 +20,7 @@ export type SupabaseClientLike = {
       eq: (
         column: string,
         value: string,
-      ) => Promise<{
+      ) => PromiseLike<{
         data: { tenant_id: string; is_default?: boolean }[] | null;
         error: { message: string } | null;
       }>;
@@ -29,7 +29,7 @@ export type SupabaseClientLike = {
   rpc: (
     fn: string,
     args?: Record<string, unknown>,
-  ) => Promise<{ data: unknown; error: { message: string } | null }>;
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
 };
 
 
@@ -228,13 +228,16 @@ export const validateTenant = (_req: Request, _resourceTenantId?: string): strin
 export const getAuthUser = async (req: Request) => {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
   if (!token) return { user: null, token: null, client: null as SupabaseClientLike | null };
+  // As edges importam versoes diferentes da lib; `SupabaseClientLike` e o
+  // minimo que usamos. O cast na fronteira evita casar tipos nominais (a classe
+  // tem membros protected) e a varredura estrutural profunda da lib.
   const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: `Bearer ${token}` } } },
-  );
+  ) as unknown as SupabaseClientLike;
   const { data, error } = await client.auth.getUser(token);
-  if (error || !data.user) return { user: null, token, client };
+  if (error || !data?.user) return { user: null, token, client };
   return { user: data.user, token, client };
 };
 
@@ -384,6 +387,6 @@ export const requireAdmin = async (
     };
   }
 
-  return { user: userData.user, admin };
+  return { user: userData.user, admin: admin as unknown as SupabaseClientLike };
 };
 
