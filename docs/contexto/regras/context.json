@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
+  "sha": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-14 00:00 UTC",
+  "generated_at": "2026-11-14 01:50 UTC",
   "files_total": 1205,
   "code_files": 1065,
   "code_lines": 185191,
@@ -109806,10 +109806,19 @@
   }
  },
  "git": {
-  "sha": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
+  "sha": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1e80afa",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra PR #88 e verdes do main 4f1a4cab em prod-readiness (#89)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "4f1a4ca",
     "date": "2026-11-13",
@@ -110194,22 +110203,12 @@
      "inventario/estado/edges.json",
      "supabase/functions/_shared/logger.ts"
     ]
-   },
-   {
-    "sha": "b6e0427",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): vencimento das urgências aparecia um dia antes (#59)",
-    "files": [
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/prod-readiness.md",
-    5
+    6
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -110241,10 +110240,6 @@
    ],
    [
     "scripts/ci/toolchain-schedule.unit.mjs",
-    2
-   ],
-   [
-    "src/pages/dashboard/ComprasDashboard.tsx",
     2
    ],
    [
@@ -110285,6 +110280,10 @@
    ],
    [
     "src/lib/storageFiles.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
     1
    ]
   ]

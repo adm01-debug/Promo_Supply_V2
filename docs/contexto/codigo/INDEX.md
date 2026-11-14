@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4f1a4caba793ad8fcff7166680e5fffb753eaf92` (2026-11-13T20:43:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1e80afaaaddd92ff080ce35483ceb118ce7f2ce2` (2026-11-13T22:05:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -328,9 +328,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - AGENTS.md (6)
+- docs/prod-readiness.md (6)
 - package.json (6)
 - .github/workflows/main.yml (5)
-- docs/prod-readiness.md (5)
 - .github/workflows/contexto.yml (4)
 - ESTADO_ATUAL.md (3)
 - docs/agentes/contexto-ia.md (3)
@@ -398,11 +398,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
-- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (541 linhas)
+- `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (543 linhas)
 - subpastas de docs/: docs/agentes (8), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-13 `1e80afaa` chore(docs): registra PR #88 e verdes do main 4f1a4cab em prod-readiness (#89)
 - 2026-11-13 `4f1a4cab` fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)
 - 2026-11-13 `772cf0ae` docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)
 - 2026-11-13 `96039040` fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)
@@ -417,7 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `a7263607` fix(banco): pedido e pagamento voltam a funcionar para fornecedores com CNPJ antigo inválido (#72)
 - 2026-11-13 `4c5128dc` fix(banco): solicitação pequena volta a ser criada, entrega gera 1 pagamento e orçamento deixa de multiplicar (#71)
 - 2026-11-13 `b157d5ae` fix(banco): compra completa volta a funcionar (notas de cotação e sequência de status) (#70)
-- 2026-11-13 `a8c38476` fix(sec): fecha 14 alerts CodeQL (XSS spot-proxy, permissions CI, stack-trace) (#69)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

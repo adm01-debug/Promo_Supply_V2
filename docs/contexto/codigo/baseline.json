@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
+  "commit": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
   "branch": "main",
-  "data_commit": "2026-11-13T20:43:15-03:00",
+  "data_commit": "2026-11-13T22:05:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1e80afaa",
+    "data": "2026-11-13",
+    "assunto": "chore(docs): registra PR #88 e verdes do main 4f1a4cab em prod-readiness (#89)"
+   },
    {
     "sha": "4f1a4cab",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "f6c2d75b",
     "data": "2026-11-12",
     "assunto": "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)"
-   },
-   {
-    "sha": "9eefca6e",
-    "data": "2026-11-12",
-    "assunto": "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)"
    }
   ],
   "arquivos_mudados_7d": 258,
@@ -144,6 +144,10 @@
     "mudancas": 8
    },
    {
+    "pasta": "docs/prod-readiness.md",
+    "mudancas": 6
+   },
+   {
     "pasta": "package.json",
     "mudancas": 6
    },
@@ -153,10 +157,6 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 5
-   },
-   {
-    "pasta": "docs/prod-readiness.md",
     "mudancas": 5
    },
    {
@@ -202,15 +202,15 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/prod-readiness.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "package.json",
     "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/main.yml",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/prod-readiness.md",
     "mudancas": 5
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 67
+    "commits": 68
    },
    {
     "autor": "copilot-swe-agent[bot]",
