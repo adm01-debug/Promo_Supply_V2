@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
+  "sha": "85a0ee3c10d670688e978070cafc911232ff2cdd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-14 01:50 UTC",
+  "generated_at": "2026-11-14 03:28 UTC",
   "files_total": 1205,
   "code_files": 1065,
   "code_lines": 185191,
@@ -109806,10 +109806,28 @@
   }
  },
  "git": {
-  "sha": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
+  "sha": "85a0ee3c10d670688e978070cafc911232ff2cdd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "85a0ee3",
+    "date": "2026-11-14",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra main final 738c6259 e PR #90 (#91)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
+   {
+    "sha": "738c625",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra main final 1e80afaa e PR #89 em prod-readiness (#90)",
+    "files": [
+     "docs/prod-readiness.md"
+    ]
+   },
    {
     "sha": "1e80afa",
     "date": "2026-11-13",
@@ -110182,40 +110200,15 @@
      "src/pages/auth/Auth.tsx",
      "src/tests/contracts-elite.test.ts"
     ]
-   },
-   {
-    "sha": "e06e53b",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(ui): seta do tour de onboarding aparecia corrompida (#57)",
-    "files": [
-     "scripts/automation.config.json",
-     "scripts/ci/encoding-src.unit.mjs",
-     "src/components/onboarding/OnboardingTour.tsx"
-    ]
-   },
-   {
-    "sha": "62016b2",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "chore: resgata fixes ôrfãos de agentes (logger truncation + inventário) (#60)",
-    "files": [
-     "inventario/estado/edges.json",
-     "supabase/functions/_shared/logger.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/prod-readiness.md",
-    6
+    8
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    3
-   ],
-   [
-    "scripts/ci/encoding-src.unit.mjs",
     3
    ],
    [
@@ -110243,15 +110236,15 @@
     2
    ],
    [
+    "scripts/ci/encoding-src.unit.mjs",
+    2
+   ],
+   [
     "bun.lock",
     2
    ],
    [
     "package.json",
-    2
-   ],
-   [
-    "scripts/automation.config.json",
     2
    ],
    [
@@ -110284,6 +110277,10 @@
    ],
    [
     "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
     1
    ]
   ]

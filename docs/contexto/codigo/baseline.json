@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1e80afaaaddd92ff080ce35483ceb118ce7f2ce2",
+  "commit": "85a0ee3c10d670688e978070cafc911232ff2cdd",
   "branch": "main",
-  "data_commit": "2026-11-13T22:05:42-03:00",
+  "data_commit": "2026-11-14T00:10:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "85a0ee3c",
+    "data": "2026-11-14",
+    "assunto": "chore(docs): registra main final 738c6259 e PR #90 (#91)"
+   },
+   {
+    "sha": "738c6259",
+    "data": "2026-11-13",
+    "assunto": "chore(docs): registra main final 1e80afaa e PR #89 em prod-readiness (#90)"
+   },
    {
     "sha": "1e80afaa",
     "data": "2026-11-13",
@@ -121,16 +131,6 @@
     "sha": "3118a1fd",
     "data": "2026-11-12",
     "assunto": "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)"
-   },
-   {
-    "sha": "6c530a06",
-    "data": "2026-11-12",
-    "assunto": "security(banco): fecha vazamento de papel/empresa e KPIs de outras organizações (#66)"
-   },
-   {
-    "sha": "f6c2d75b",
-    "data": "2026-11-12",
-    "assunto": "fix(banco): cadastro preenche a empresa certa quando o app envia vazia ou errada (#64)"
    }
   ],
   "arquivos_mudados_7d": 258,
@@ -140,12 +140,12 @@
     "mudancas": 21
    },
    {
-    "pasta": "scripts/ci/inventario-types",
+    "pasta": "docs/prod-readiness.md",
     "mudancas": 8
    },
    {
-    "pasta": "docs/prod-readiness.md",
-    "mudancas": 6
+    "pasta": "scripts/ci/inventario-types",
+    "mudancas": 8
    },
    {
     "pasta": "package.json",
@@ -198,11 +198,11 @@
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": "AGENTS.md",
-    "mudancas": 6
+    "arquivo": "docs/prod-readiness.md",
+    "mudancas": 8
    },
    {
-    "arquivo": "docs/prod-readiness.md",
+    "arquivo": "AGENTS.md",
     "mudancas": 6
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 68
+    "commits": 70
    },
    {
     "autor": "copilot-swe-agent[bot]",
