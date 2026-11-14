@@ -1,3 +1,5 @@
+import { createClient, type SupabaseClient, type User } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+
 /**
  * Centralized security utilities for Edge Functions.
  *
@@ -93,7 +95,7 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: unknown, requestId?: string) => new Response(
+  success: (data: any, requestId?: string) => new Response(
     JSON.stringify({
       data,
       requestId,
@@ -102,7 +104,7 @@ export const responses = {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400, requestId?: string, details?: unknown) => new Response(
+  error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
     JSON.stringify({
       error: message,
       requestId,
@@ -191,11 +193,8 @@ export const validateTenant = (_req: Request, _resourceTenantId?: string): strin
  * Returns `null` if missing/invalid (callers decide whether to 401).
  */
 export const getAuthUser = async (req: Request) => {
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (!token) {
-    return { user: null, token: null, client: null };
-  }
+  if (!token) return { user: null, token: null, client: null as SupabaseClient | null };
   const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -213,27 +212,10 @@ export const getAuthUser = async (req: Request) => {
  * alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId`
  * explicitamente (validado contra as memberships).
  */
-interface TenantMembership {
-  tenant_id: string;
-  is_default: boolean;
-}
-
-interface TypedClient {
-  from: (table: "user_tenants") => {
-    select: (columns: string) => {
-      eq: (column: string, value: string) => Promise<{ data: TenantMembership[] | null; error: unknown }>;
-    };
-  };
-}
-
-interface AuthUser {
-  id: string;
-}
-
 export const getTenantId = async (
-  supabase: TypedClient,
-  user: AuthUser | null,
-  preferredTenantId?: string,
+  supabase: SupabaseClient,
+  user: User | null,
+  preferredTenantId?: string | null,
 ): Promise<string> => {
   if (!user) throw new Error("Security error: getTenantId requires an authenticated user");
 
@@ -243,7 +225,7 @@ export const getTenantId = async (
     .eq("user_id", user.id);
   if (error) throw error;
 
-  const allowed = new Set<string>((memberships ?? []).map((m: TenantMembership) => m.tenant_id));
+  const allowed = new Set<string>((memberships ?? []).map((m: { tenant_id: string }) => m.tenant_id));
   if (allowed.size === 0) {
     throw new Error("Security error: User has no tenant membership");
   }
@@ -255,8 +237,8 @@ export const getTenantId = async (
     return preferredTenantId;
   }
 
-  const defaultTenant = (memberships ?? []).find((m: TenantMembership) => m.is_default)?.tenant_id;
-  return defaultTenant ?? (memberships![0] as TenantMembership).tenant_id;
+  const defaultTenant = (memberships ?? []).find((m: { is_default?: boolean }) => m.is_default)?.tenant_id as string | undefined;
+  return defaultTenant ?? (memberships![0] as { tenant_id: string }).tenant_id;
 };
 
 /**
@@ -304,9 +286,8 @@ export const requireAdmin = async (
   req: Request,
 ): Promise<
   | { response: Response; user?: undefined; admin?: undefined }
-  | { response?: undefined; user: any; admin: any }
+  | { response?: undefined; user: User; admin: SupabaseClient }
 > => {
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
   const cors = buildCorsHeaders(req);
   const jsonHeaders = { ...cors, "Content-Type": "application/json" };
 
