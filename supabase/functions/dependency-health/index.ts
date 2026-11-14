@@ -354,7 +354,7 @@ async function handleHistory(): Promise<Response> {
     .select("id, generated_at, drift_count, barrel_imports, payload")
     .order("generated_at", { ascending: false })
     .limit(30);
-  if (error) return json({ error: error.message }, 500);
+  if (error) return json({ error: safeErrorMessage(error) }, 500);
   // deno-lint-ignore no-explicit-any
   const rows = (data ?? []).map((row: any) => {
     const pkgs: any[] = Array.isArray(row?.payload?.packages) ? row.payload.packages : [];
@@ -528,7 +528,7 @@ async function fetchWithRetry(
       if (!transient) return { ok: false, status: res.status, reason: lastReason, attempts: attempt };
     } catch (e) {
       lastStatus = 0;
-      lastReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      lastReason = safeErrorMessage(e);
     }
     if (attempt < retries) {
       // Exponential backoff with jitter: 300ms, 600ms, 1200ms (+/- 25%).
@@ -616,7 +616,7 @@ async function handlePost(req: Request): Promise<Response> {
   const { error: upsertErr } = await admin
     .from("dependency_health")
     .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
-  if (upsertErr) return json({ error: `Upsert failed: ${upsertErr.message}` }, 500);
+  if (upsertErr) return json({ error: safeErrorMessage(upsertErr) }, 500);
 
   // Audit log: record snapshot recompute
   const driftCountForAudit = packages.filter((p) => p.driftDetected).length;
