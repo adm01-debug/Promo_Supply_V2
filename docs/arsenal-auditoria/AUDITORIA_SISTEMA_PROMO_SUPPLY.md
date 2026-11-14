@@ -60,7 +60,7 @@
 
 ### 7. DOCUMENTAÇÃO — **7**
 - `docs/agentes/*` (8 arquivos), `docs/contexto/` (gerado), `DOCS/` (ARCHITECTURE_GUIDE, SECURITY, ADR ×2, RUNBOOKS).
-- Duplicidade conhecida: `docs/conventions/pages-directory.md` == `DOCS/conventions/pages-directory.md`.
+- Duplicidade resolvida (Etapa 15): `DOCS/conventions/pages-directory.md` removida; path único `docs/conventions/pages-directory.md`.
 - Gap: deduplicar; atualizar números (mapa-repo cita 39 pastas; inventário 37 publicadas).
 
 ### 8. TIPAGEM — **8**
@@ -332,7 +332,7 @@
 
 ### Etapa 15 — Deduplicar `pages-directory`
 - **Dimensão:** Documentação
-- **Gap:** `docs/conventions/pages-directory.md` == `DOCS/conventions/pages-directory.md`
+~ **Status:** CONCLUÍDA (2026-11-14) — removida `DOCS/conventions/pages-directory.md`; atualizadas refs em `mapa-repo.md` e `L11_CI_TESTES_E_DOCS.md`; critério atendido.
 - **Tipo:** Documentação
 - **Arquivos:** um dos dois paths
 - **Passos:** manter um, atualizar referências
