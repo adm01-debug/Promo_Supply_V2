@@ -1,6 +1,6 @@
 # Prontidão para produção — Promo Supply V2
 
-> Auditoria de 2026-11-12. Linha de base: `main` em `4cc1a7a`. Estado final: `main` em `b6e0427` (deploy de produção READY após #50: `dpl_EYjKiASE1eiagykXutA5UBnbEAfg`).
+> Auditoria de 2026-11-12. Linha de base: `main` em `4cc1a7a`. Estado final: `main` em `85a0ee3c` (2026-11-14, pos #91; deploy Vercel `dpl_6wWmrdGXAm` READY).
 > Banco auditado: Supabase `lmypcdfsrgfftzhxawao` (confirmado por `supabase_functions_list` → `project_ref`).
 > **Atualização 2026-11-13:** `main` em `c4a54e7` (#76); deploy Vercel do commit `c4a54e7`: status `success` "Deployment has completed" 14:32:58 UTC. Seções 0, 2, 4, 7, 8 e 9 refletem esse estado.
 > Toda prova abaixo foi obtida nesta sessão (saída de comando, query ou request). Status: **OK** (com prova) ou **BLOQUEADO** (erro exato + o que falta).
@@ -10,7 +10,7 @@
 | Área | Situação final |
 |---|---|
 | Qualidade na `main` final `1e80afaa` (2026-11-14, pos #88/#89) | OK - typecheck exit 0; `eslint .` exit 0 (0 erros, 9 warnings); `vitest run` exit 0: **2300 passed / 12 skipped (2312)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (528 pass / 0 fail); Deno `36 passed / 0 failed / 13 ignored`; **suite de scripts via WSL no path com espaco: 579 passed / 0 failed / 8 skipped (era 65+ falhas por `%20`)** - consertado por #88 (`fileURLToPath`) |
-| GitHub Actions | ultimo-main `738c6259` (pos #90): Freight Quest CI/CD (Quality Gate + Unit/Edge + E2E Playwright), Guards offline, Automacao local, Push on main (CodeQL), types-sync e contexto (agendados) todos **success** - conferido em 2026-11-14; `inventario-estado-semanal` **failure** por setting do repositorio - BLOQUEADO (sec. 2) |
+| GitHub Actions | ultimo-main `85a0ee3c` (pos #91): Freight Quest CI/CD (Quality Gate + Unit/Edge + E2E Playwright), Guards offline, Automacao local, Push on main (CodeQL), types-sync e contexto (agendados) todos **success** - conferido em 2026-11-14 (6 runs, `gh api .../actions/runs?head_sha=85a0ee3c`); `inventario-estado-semanal` **failure** por setting do repositorio - BLOQUEADO (sec. 2) |
 | Banco: RLS | OK — 156/156 tabelas com RLS, 0 sem policy (6 tabelas-lixo removidas, #42) |
 | Banco: lints ERROR | OK — 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
 | **Segurança crítica** | OK — `execute_read_query` (#40) e `exec_sql` (#52) fechadas para visitante (`permission denied`); SECURITY DEFINER executáveis por anon **150 → 9** (#54); papéis voltaram a valer em 35 tabelas (#56) |
@@ -32,7 +32,7 @@
 | Testes front | `npx vitest run` | OK — `102 passed \| 1 skipped (103)` arquivos; `2250 passed \| 12 skipped (2262)` testes; exit 0. **Linha de base: 2262 testes** |
 | Guards | `npm run guards` | OK — `tests 196, pass 196, fail 0`; inventário de testes OK; `docs/ci/README.md bate com os 8 workflows` |
 | Segredo no bundle | `node scripts/ci/check-bundle-secrets.mjs --dist dist --env .env` | OK — `nenhum JWT service_role no bundle (137 arquivo(s))` |
-| Advisory de produção | `bun audit` + `node scripts/ci/audit-prod.mjs --level high` | OK — `nenhuma advisory >= high alcancavel por dependencia de producao` (179 advisories totais, todas em devDependencies ou abaixo de high) |
+| Advisory de produção | `bun audit` + `node scripts/ci/audit-prod.mjs --level high` | OK — `nenhuma advisory >= high alcancavel por dependencia de producao` (179 advisories totais, todas em devDependencies ou abaixo de high). Reconfirmado em 2026-11-14 no main `85a0ee3c`: `bun audit --production` = 0 high / 0 critical (2 moderates de react-router, fora do escopo) |
 | Automação local | `node scripts/automation.mjs doctor --static` / `test` | OK — `"status":"healthy"`, `issues: []`; testes exit 0 |
 | Testes edge (Deno) | `deno test --no-check --node-modules-dir=none --allow-net --allow-env --allow-read --import-map=<local> supabase/functions/` | OK — `ok \| 36 passed \| 0 failed \| 13 ignored`, exit 0. O import map (só local, fora do repo) troca `esm.sh`/`deno.land` (bloqueados pelo proxy desta sessão) pelos mesmos pacotes em `npm:`/`jsr:`; os 13 ignorados são os de integração, que se pulam sem Supabase local (igual ao CI). `--no-check` porque o `@std/dotenv` do jsr não tem `allowEmptyValues` da std 0.224 — diferença da substituição, não do repo |
 | E2E (Playwright) | `npx playwright test --project=chromium --trace off` (dev server em `127.0.0.1:8080`; build 1234 do Chromium apontado para o 1243 instalado) | OK — `30 passed (22.5s)`, exit 0 |
@@ -476,6 +476,7 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 | [#88](https://github.com/adm01-debug/Promo_Supply_V2/pull/88) | bug de path com espaco (`%20`) em 7 arquivos de scripts/testes: `new URL(...).pathname` -> `fileURLToPath`; 1 e codigo de producao (`scripts/ai-context/cenarios.mjs`) | suite de scripts via WSL no path `Joaquim Ataides` (com espaco): **579 passed / 0 failed / 8 skipped** (antes 65+ falhas por `%20` ENOENT); eslint nos 7: 0; CI 100% verde; merge 2026-11-13T23:43:15Z | mergeada (#88, main `4f1a4cab`; deploy Vercel `dpl_5qaFKpEwZ2k2qeHHgAvs47iWdH9R` READY) |
 | [#89](https://github.com/adm01-debug/Promo_Supply_V2/pull/89) | docs: registra #88 e verdes do main `4f1a4cab` em prod-readiness | PR #89 CI 100% verde (incl. Quality Gate, Unit/Edge, E2E); deploy Vercel preview READY; squash-merge 2026-11-14 | mergeada (#89, main `1e80afaa`) |
 | [#90](https://github.com/adm01-debug/Promo_Supply_V2/pull/90) | docs: registra main final `1e80afaa` e PR #89 em prod-readiness | PR #90 CI 100% verde (13 checks); squash-merge 2026-11-14 | mergeada (#90, main final `738c6259`) |
+| [#91](https://github.com/adm01-debug/Promo_Supply_V2/pull/91) | docs: registra main final `738c6259` e PR #90 em prod-readiness | PR #91 CI 100% verde (Quality Gate + Unit + E2E Playwright); squash-merge 2026-11-14 | mergeada (#91, main final `85a0ee3c`); 6 workflows do novo main success; deploy `dpl_6wWmrdGXAm` READY |
 
 Também mergeadas na `main` no período (escopo de outras frentes): #60, #61, #68, #76.
 
