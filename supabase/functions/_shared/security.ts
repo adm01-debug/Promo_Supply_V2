@@ -93,7 +93,7 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: any, requestId?: string) => new Response(
+  success: (data: unknown, requestId?: string) => new Response(
     JSON.stringify({
       data,
       requestId,
@@ -102,7 +102,7 @@ export const responses = {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
+  error: (message: string, status = 400, requestId?: string, details?: unknown) => new Response(
     JSON.stringify({
       error: message,
       requestId,
@@ -193,7 +193,9 @@ export const validateTenant = (_req: Request, _resourceTenantId?: string): strin
 export const getAuthUser = async (req: Request) => {
   const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (!token) return { user: null, token: null, client: null as any };
+  if (!token) {
+    return { user: null, token: null, client: null };
+  }
   const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -211,9 +213,26 @@ export const getAuthUser = async (req: Request) => {
  * alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId`
  * explicitamente (validado contra as memberships).
  */
+interface TenantMembership {
+  tenant_id: string;
+  is_default: boolean;
+}
+
+interface TypedClient {
+  from: (table: "user_tenants") => {
+    select: (columns: string) => {
+      eq: (column: string, value: string) => Promise<{ data: TenantMembership[] | null; error: unknown }>;
+    };
+  };
+}
+
+interface AuthUser {
+  id: string;
+}
+
 export const getTenantId = async (
-  supabase: any,
-  user: any,
+  supabase: TypedClient,
+  user: AuthUser | null,
   preferredTenantId?: string,
 ): Promise<string> => {
   if (!user) throw new Error("Security error: getTenantId requires an authenticated user");
@@ -224,7 +243,7 @@ export const getTenantId = async (
     .eq("user_id", user.id);
   if (error) throw error;
 
-  const allowed = new Set<string>((memberships ?? []).map((m: any) => m.tenant_id));
+  const allowed = new Set<string>((memberships ?? []).map((m: TenantMembership) => m.tenant_id));
   if (allowed.size === 0) {
     throw new Error("Security error: User has no tenant membership");
   }
@@ -236,8 +255,8 @@ export const getTenantId = async (
     return preferredTenantId;
   }
 
-  const defaultTenant = (memberships ?? []).find((m: any) => m.is_default)?.tenant_id;
-  return defaultTenant ?? (memberships![0] as any).tenant_id;
+  const defaultTenant = (memberships ?? []).find((m: TenantMembership) => m.is_default)?.tenant_id;
+  return defaultTenant ?? (memberships![0] as TenantMembership).tenant_id;
 };
 
 /**
