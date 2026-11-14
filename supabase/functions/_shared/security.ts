@@ -1,6 +1,39 @@
 import { createClient, type SupabaseClient, type User } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 /**
+ * Contrato estrutural mínimo do client Supabase usado pelas helpers de
+ * segurança. Nao acopla a versao exata da lib: qualquer client criado via
+ * `createClient` (v2.38+ e v2.x flutuante) satisfaz esta forma, evitando
+ * conflito de tipos entre versoes diferentes importadas pelas edges.
+ */
+export type SupabaseClientLike = {
+  auth: {
+    getUser: (jwt: string) => Promise<{
+      data: { user: User | null } | null;
+      error: { message: string; status?: number } | null;
+    }>;
+  };
+  from: (
+    table: string,
+  ) => {
+    select: (columns: string) => {
+      eq: (
+        column: string,
+        value: string,
+      ) => Promise<{
+        data: { tenant_id: string; is_default?: boolean }[] | null;
+        error: { message: string } | null;
+      }>;
+    };
+  };
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { message: string } | null }>;
+};
+
+
+/**
  * Centralized security utilities for Edge Functions.
  *
  * M-02: o header legado `x-tenant-id` foi **descontinuado**. A resolução de
@@ -95,7 +128,7 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: any, requestId?: string) => new Response(
+  success: (data: unknown, requestId?: string) => new Response(
     JSON.stringify({
       data,
       requestId,
@@ -104,7 +137,7 @@ export const responses = {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
+  error: (message: string, status = 400, requestId?: string, details?: unknown) => new Response(
     JSON.stringify({
       error: message,
       requestId,
@@ -194,7 +227,7 @@ export const validateTenant = (_req: Request, _resourceTenantId?: string): strin
  */
 export const getAuthUser = async (req: Request) => {
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (!token) return { user: null, token: null, client: null as SupabaseClient | null };
+  if (!token) return { user: null, token: null, client: null as SupabaseClientLike | null };
   const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -213,7 +246,7 @@ export const getAuthUser = async (req: Request) => {
  * explicitamente (validado contra as memberships).
  */
 export const getTenantId = async (
-  supabase: SupabaseClient,
+  supabase: SupabaseClientLike,
   user: User | null,
   preferredTenantId?: string | null,
 ): Promise<string> => {
@@ -286,7 +319,7 @@ export const requireAdmin = async (
   req: Request,
 ): Promise<
   | { response: Response; user?: undefined; admin?: undefined }
-  | { response?: undefined; user: User; admin: SupabaseClient }
+  | { response?: undefined; user: User; admin: SupabaseClientLike }
 > => {
   const cors = buildCorsHeaders(req);
   const jsonHeaders = { ...cors, "Content-Type": "application/json" };
