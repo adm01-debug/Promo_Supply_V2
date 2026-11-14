@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(docs): registra main final 85a0ee3c e PR #91 em prod-readiness (#92)",
    "chore(docs): registra main final 738c6259 e PR #90 (#91)",
    "chore(docs): registra main final 1e80afaa e PR #89 em prod-readiness (#90)",
    "chore(docs): registra PR #88 e verdes do main 4f1a4cab em prod-readiness (#89)",
-   "fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)",
-   "docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)"
+   "fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)"
   ]
  },
  "pr_template": null,

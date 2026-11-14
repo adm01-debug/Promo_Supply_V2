@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "85a0ee3c10d670688e978070cafc911232ff2cdd",
+  "commit": "361580adc547ebc4611b385b9c2e08d68cd6ab4f",
   "branch": "main",
-  "data_commit": "2026-11-14T00:10:59-03:00",
+  "data_commit": "2026-11-14T00:53:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "361580ad",
+    "data": "2026-11-14",
+    "assunto": "chore(docs): registra main final 85a0ee3c e PR #91 em prod-readiness (#92)"
+   },
    {
     "sha": "85a0ee3c",
     "data": "2026-11-14",
@@ -126,11 +131,6 @@
     "sha": "50817a04",
     "data": "2026-11-13",
     "assunto": "fix(ci): guard de encoding pega mojibake de acento, seta e U+FFFD (#67)"
-   },
-   {
-    "sha": "3118a1fd",
-    "data": "2026-11-12",
-    "assunto": "fix(scripts): corrige e blinda os scripts operacionais, de CI e de contexto (#31)"
    }
   ],
   "arquivos_mudados_7d": 258,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/prod-readiness.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "pasta": "scripts/ci/inventario-types",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/prod-readiness.md",
-    "mudancas": 8
+    "mudancas": 9
    },
    {
     "arquivo": "AGENTS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 70
+    "commits": 71
    },
    {
     "autor": "copilot-swe-agent[bot]",
