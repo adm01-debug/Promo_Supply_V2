@@ -1,3 +1,38 @@
+import { createClient, type User } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+
+/**
+ * Contrato estrutural mínimo do client Supabase usado pelas helpers de
+ * segurança. Nao acopla a versao exata da lib: qualquer client criado via
+ * `createClient` (v2.38+ e v2.x flutuante) satisfaz esta forma, evitando
+ * conflito de tipos entre versoes diferentes importadas pelas edges.
+ */
+export type SupabaseClientLike = {
+  auth: {
+    getUser: (jwt: string) => PromiseLike<{
+      data: { user: User } | null;
+      error: { message: string; status?: number } | null;
+    }>;
+  };
+  from: (
+    table: string,
+  ) => {
+    select: (columns: string) => {
+      eq: (
+        column: string,
+        value: string,
+      ) => PromiseLike<{
+        data: { tenant_id: string; is_default?: boolean }[] | null;
+        error: { message: string } | null;
+      }>;
+    };
+  };
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+};
+
+
 /**
  * Centralized security utilities for Edge Functions.
  *
@@ -93,7 +128,7 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: any, requestId?: string) => new Response(
+  success: (data: unknown, requestId?: string) => new Response(
     JSON.stringify({
       data,
       requestId,
@@ -102,7 +137,7 @@ export const responses = {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
+  error: (message: string, status = 400, requestId?: string, details?: unknown) => new Response(
     JSON.stringify({
       error: message,
       requestId,
@@ -191,16 +226,18 @@ export const validateTenant = (_req: Request, _resourceTenantId?: string): strin
  * Returns `null` if missing/invalid (callers decide whether to 401).
  */
 export const getAuthUser = async (req: Request) => {
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
   const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (!token) return { user: null, token: null, client: null as any };
+  if (!token) return { user: null, token: null, client: null as SupabaseClientLike | null };
+  // As edges importam versoes diferentes da lib; `SupabaseClientLike` e o
+  // minimo que usamos. O cast na fronteira evita casar tipos nominais (a classe
+  // tem membros protected) e a varredura estrutural profunda da lib.
   const client = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: `Bearer ${token}` } } },
-  );
+  ) as unknown as SupabaseClientLike;
   const { data, error } = await client.auth.getUser(token);
-  if (error || !data.user) return { user: null, token, client };
+  if (error || !data?.user) return { user: null, token, client };
   return { user: data.user, token, client };
 };
 
@@ -212,9 +249,9 @@ export const getAuthUser = async (req: Request) => {
  * explicitamente (validado contra as memberships).
  */
 export const getTenantId = async (
-  supabase: any,
-  user: any,
-  preferredTenantId?: string,
+  supabase: SupabaseClientLike,
+  user: User | null,
+  preferredTenantId?: string | null,
 ): Promise<string> => {
   if (!user) throw new Error("Security error: getTenantId requires an authenticated user");
 
@@ -224,7 +261,7 @@ export const getTenantId = async (
     .eq("user_id", user.id);
   if (error) throw error;
 
-  const allowed = new Set<string>((memberships ?? []).map((m: any) => m.tenant_id));
+  const allowed = new Set<string>((memberships ?? []).map((m: { tenant_id: string }) => m.tenant_id));
   if (allowed.size === 0) {
     throw new Error("Security error: User has no tenant membership");
   }
@@ -236,8 +273,8 @@ export const getTenantId = async (
     return preferredTenantId;
   }
 
-  const defaultTenant = (memberships ?? []).find((m: any) => m.is_default)?.tenant_id;
-  return defaultTenant ?? (memberships![0] as any).tenant_id;
+  const defaultTenant = (memberships ?? []).find((m: { is_default?: boolean }) => m.is_default)?.tenant_id as string | undefined;
+  return defaultTenant ?? (memberships![0] as { tenant_id: string }).tenant_id;
 };
 
 /**
@@ -307,9 +344,8 @@ export const requireAdmin = async (
   req: Request,
 ): Promise<
   | { response: Response; user?: undefined; admin?: undefined }
-  | { response?: undefined; user: any; admin: any }
+  | { response?: undefined; user: User; admin: SupabaseClientLike }
 > => {
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
   const cors = buildCorsHeaders(req);
   const jsonHeaders = { ...cors, "Content-Type": "application/json" };
 
@@ -373,6 +409,6 @@ export const requireAdmin = async (
     };
   }
 
-  return { user: userData.user, admin };
+  return { user: userData.user, admin: admin as unknown as SupabaseClientLike };
 };
 
