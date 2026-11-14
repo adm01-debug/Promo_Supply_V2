@@ -388,7 +388,7 @@ const Acompanhamento = () => {
                                    <motion.div 
                                      initial={{ width: 0 }}
                                      animate={{ width: `${Math.max(5, Math.min(100, (pedido.sla.diasRestantes / 10) * 100))}%` }}
-                                     className={cn("h-full rounded-full transition-colors", pedido.sla.bgColor.replace('bg-', 'bg-').split(' ')[0])}
+                                     className={cn("h-full rounded-full transition-colors", pedido.sla.bgColor.split(' ')[0])}
                                    />
                                 </div>
                               </div>
