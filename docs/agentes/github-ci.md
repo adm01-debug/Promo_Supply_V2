@@ -21,6 +21,26 @@ workflow falhar de forma estranha.
   `github_list_pull_requests` devolve o repositório inteiro em cada nó e estoura o contexto (já estourou:
   ~100 KB para 5 PRs).
 
+### Clone WSL com hooks de automação — use `wsl git`, não git Windows
+
+O repo também está clonado em `\wsl.localhost\Ubuntu-24.04\home\joaquim_ataides\projetos\Promo_Supply_V2`
+(no WSL: `/home/joaquim_ataides/projetos/Promo_Supply_V2`), com `core.hooksPath` apontando
+`.tools/repo-automation/hooks` (stubs que chamam `scripts/automation.mjs`). Consequência medível
+(2026-11-14): `git checkout -b` *via git Windows* nesse clone trava com `update aborted by the
+reference-transaction hook` e não cria a branch — o hook sobe na violação do caminho UNC.
+
+Regra prática: **toda operação `git` no clone WSL roda dentro do WSL**, nunca com o executável Windows
+apontando para o caminho UNC:
+
+```text
+wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_V2 && git status"
+wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_V2 && git branch claude/fix-xyz-20261114-0000"
+wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_V2 && git push origin HEAD"
+```
+
+Idem para `git fetch`/`git pull`/`git merge`/`git rebase` no clone. Se estiver só lendo, `\wsl.localhost\...`
+funciona; escrita de branch/commit/push exige `wsl git` (ou o MCP, que escreve no remoto direto).
+
 ## Perímetro do GitHub — estado medido
 
 | Campo | Estado | Como foi verificado |
