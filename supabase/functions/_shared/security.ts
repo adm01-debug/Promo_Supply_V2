@@ -251,14 +251,36 @@ export const getTenantId = async (
  */
 export function verifyCronSecret(req: Request): Response | null {
   const secret = Deno.env.get("CRON_SECRET");
-  // If no secret is configured, allow (backward compat with setups that rely on
-  // platform-level firewall. Log a warning to encourage configuration.)
-  if (!secret) {
-    console.warn("CRON_SECRET not configured — cron endpoint is unprotected");
+  const provided = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+  if (!provided) {
+    return new Response(JSON.stringify({ error: "Unauthorized: missing cron secret" }), {
+      status: 401,
+      headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
+    });
+  }
+  // CRON_SECRET configurado: exige casamento exato.
+  if (secret) {
+    if (provided !== secret) {
+      return new Response(JSON.stringify({ error: "Unauthorized: invalid cron secret" }), {
+        status: 401,
+        headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
+      });
+    }
     return null;
   }
-  const provided = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
-  if (!provided || provided !== secret) {
+  // Sem CRON_SECRET configurado (fail-closed por padrao): so a chave service role,
+  // que e o que as funcoes _invoke_* do pg_net/Vault enviam (edge_invoke_service_key),
+  // e aceita como invocacao interna de cron. Qualquer outro token (anon, JWT de
+  // usuario) e negado ate que um CRON_SECRET real seja definido nas secrets.
+  const svc = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!svc) {
+    console.error("CRON_SECRET and SUPABASE_SERVICE_ROLE_KEY are not set — cron endpoint is unreachable");
+    return new Response(JSON.stringify({ error: "Unauthorized: cron secret not configured" }), {
+      status: 401,
+      headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
+    });
+  }
+  if (provided !== svc) {
     return new Response(JSON.stringify({ error: "Unauthorized: invalid cron secret" }), {
       status: 401,
       headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
