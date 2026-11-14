@@ -9,8 +9,8 @@
 
 | Área | Situação final |
 |---|---|
-| Qualidade na `main` final `c4a54e7` (2026-11-13) | OK — typecheck exit 0; `eslint .` exit 0 (0 erros, 9 warnings); `vitest run` exit 0: **2300 passed / 12 skipped (2312)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (528 pass / 0 fail; inventário de testes OK; `docs/ci/README.md bate com os 8 workflows`); Deno `36 passed / 0 failed / 13 ignored` |
-| GitHub Actions | pós-último-merge (`c4a54e7`): Freight Quest CI/CD, Guards, Automação local, CodeQL (Push on main) **success**; `notifica-falha-main` skipped; `types-sync` success (14:14); `contexto` push com 2 jobs `queued` (fila de runners); `inventario-estado-semanal` **failure** por setting do repositório — BLOQUEADO (§2) |
+| Qualidade na `main` final `4f1a4cab` (2026-11-14, pos #88) | OK - typecheck exit 0; `eslint .` exit 0 (0 erros, 9 warnings); `vitest run` exit 0: **2300 passed / 12 skipped (2312)** vs linha de base 2250/2262; build exit 0; `npm run guards` exit 0 (528 pass / 0 fail); Deno `36 passed / 0 failed / 13 ignored`; **suite de scripts via WSL no path com espaco: 579 passed / 0 failed / 8 skipped (era 65+ falhas por `%20`)** - consertado por #88 (`fileURLToPath`) |
+| GitHub Actions | ultimo-main `4f1a4cab` (pos-merge #88): Freight Quest CI/CD, Guards offline, Automacao local, Push on main (CodeQL), notifica-falha-main (skipped) e contexto (5 jobs) todos **success/verdes** - conferido em 2026-11-14 apos o merge; `inventario-estado-semanal` **failure** por setting do repositorio - BLOQUEADO (sec. 2) |
 | Banco: RLS | OK — 156/156 tabelas com RLS, 0 sem policy (6 tabelas-lixo removidas, #42) |
 | Banco: lints ERROR | OK — 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
 | **Segurança crítica** | OK — `execute_read_query` (#40) e `exec_sql` (#52) fechadas para visitante (`permission denied`); SECURITY DEFINER executáveis por anon **150 → 9** (#54); papéis voltaram a valer em 35 tabelas (#56) |
@@ -52,6 +52,7 @@ Histórico do dia: às 11:02 UTC os jobs da `main` não iniciaram — anotação
 | `notifica-falha-main.yml` | `skipped` (nada a notificar) | OK |
 | `inventario-estado-semanal.yml` | #1 failure: `GitHub Actions is not permitted to create or approve pull requests.` | BLOQUEADO — setting do repositório (decisão do dono) |
 | **Execução pós-último-merge na `main` (`c4a54e7`, #76, 14:31 UTC de 2026-11-13)** | Freight Quest CI/CD `success`; Guards offline `success`; Automação local `success`; Push on main (CodeQL) `success`; `notifica-falha-main` `skipped` (15:01); `types-sync` `success` (schedule 14:14); `contexto` run 43443470018: job "O que precisa rodar" success, "Produtor regras/" e "Produtor codigo/" `queued` sem runner; `inventario-estado-semanal` último run 42603442102 `failure`: `##[error]GitHub Actions is not permitted to create or approve pull requests.` | OK, exceto `contexto` (fila de runners) e `inventario-estado-semanal` — BLOQUEADO: setting do repositório "Allow GitHub Actions to create and approve pull requests" (decisão do dono; não se corrige por código) |
+| **Execucao pos-merge #88 na `main` (`4f1a4cab`, 2026-11-14)** | Freight Quest CI/CD `success`; Guards offline `success`; Automacao local `success`; Push on main (CodeQL) `success`; `notifica-falha-main` `skipped`; `contexto` run 43529202899 `success` (5 jobs, incl. Indice unico + branch contexto) - todos verdes, fila de runners destravada | OK |
 | Execução anterior (`b6e0427`, 19:57 UTC de 2026-11-12) | 3 checks success, 9 `queued` por mais de 1 h; o repositório tem 38 runs `queued` e nenhum iniciando; consumo cobrável estável (35.951 min, US$ 215,71), ou seja, não é o orçamento | BLOQUEADO — fila de runners da conta parada; não há o que corrigir no código. Prova de qualidade da mesma `main`, rodada localmente: typecheck 0, eslint 0 erros, vitest 2297/2309 (12 skipped), build 0, guards 196/196, Deno 36/36, E2E 30/30 |
 
 ## 3. Banco (`lmypcdfsrgfftzhxawao`)
@@ -472,6 +473,7 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 | [#65](https://github.com/adm01-debug/Promo_Supply_V2/pull/65) | comprador lê contratos (só leitura; aprovado pelo dono, opção A) | recheck: policies `buyer_le_contracts`, `buyer_le_contract_items`, `buyer_le_contract_documents` | mergeada + aplicada |
 | [#66](https://github.com/adm01-debug/Promo_Supply_V2/pull/66) | fecha vazamento de papel/empresa e KPIs de outras organizações | recheck: `has_function_privilege('anon','user_belongs_to_tenant')` = false | mergeada + aplicada |
 | [#67](https://github.com/adm01-debug/Promo_Supply_V2/pull/67) | guard de encoding pega acento corrompido, seta e U+FFFD | guards 528/528 na `main` `c4a54e7` | mergeada |
+| [#88](https://github.com/adm01-debug/Promo_Supply_V2/pull/88) | bug de path com espaco (`%20`) em 7 arquivos de scripts/testes: `new URL(...).pathname` -> `fileURLToPath`; 1 e codigo de producao (`scripts/ai-context/cenarios.mjs`) | suite de scripts via WSL no path `Joaquim Ataides` (com espaco): **579 passed / 0 failed / 8 skipped** (antes 65+ falhas por `%20` ENOENT); eslint nos 7: 0; CI 100% verde; merge 2026-11-13T23:43:15Z | mergeada (#88, main `4f1a4cab`; deploy Vercel `dpl_5qaFKpEwZ2k2qeHHgAvs47iWdH9R` READY) |
 
 Também mergeadas na `main` no período (escopo de outras frentes): #60, #61, #68, #76.
 
@@ -537,4 +539,4 @@ Resolvidos em 2026-11-13: `edge_invoke_service_key` no Vault, deploy das 5 edges
 7. **Ledger de migrations** — decidir baseline (§3.2); sem ele, "migrations do repo batem com o banco" não é verificável arquivo a arquivo.
 8. **Dados com mojibake** — `sourcing_event_lots.nome` (6 linhas); correção é DML em produção.
 9. **Segurança da conta** — repositório público; token Vercel (`vcp_…`) colado no chat deve ser revogado; `x-spot-cron-key` antigo em 6.037 linhas de `cron.job_run_details`.
-10. **Actions** — habilitar "Allow GitHub Actions to create and approve pull requests" (inventário semanal); fila de runners do `contexto` parada (jobs `queued`).
+10. **Actions** - habilitar "Allow GitHub Actions to create and approve pull requests" (inventario semanal) - unico pendente do Actions; a fila de runners do `contexto` foi destravada em 2026-11-13/14 (run 43529202899 do novo main `4f1a4cab` concluiu `success` com os 5 jobs).
