@@ -354,7 +354,7 @@ async function handleHistory(): Promise<Response> {
     .select("id, generated_at, drift_count, barrel_imports, payload")
     .order("generated_at", { ascending: false })
     .limit(30);
-  if (error) return json({ error: error.message }, 500);
+  if (error) return json({ error: safeErrorMessage(error) }, 500);
   // deno-lint-ignore no-explicit-any
   const rows = (data ?? []).map((row: any) => {
     const pkgs: any[] = Array.isArray(row?.payload?.packages) ? row.payload.packages : [];
