@@ -528,7 +528,7 @@ async function fetchWithRetry(
       if (!transient) return { ok: false, status: res.status, reason: lastReason, attempts: attempt };
     } catch (e) {
       lastStatus = 0;
-      lastReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      lastReason = safeErrorMessage(e);
     }
     if (attempt < retries) {
       // Exponential backoff with jitter: 300ms, 600ms, 1200ms (+/- 25%).
@@ -616,7 +616,7 @@ async function handlePost(req: Request): Promise<Response> {
   const { error: upsertErr } = await admin
     .from("dependency_health")
     .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
-  if (upsertErr) return json({ error: `Upsert failed: ${upsertErr.message}` }, 500);
+  if (upsertErr) return json({ error: safeErrorMessage(upsertErr) }, 500);
 
   // Audit log: record snapshot recompute
   const driftCountForAudit = packages.filter((p) => p.driftDetected).length;

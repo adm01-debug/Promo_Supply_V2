@@ -240,6 +240,7 @@
 - **Esforço:** Baixo · **Impacto:** Médio · **Requires aval do dono (deleção)**
 
 ### Etapa 5 — Remover `: any` edges/_shared
+~ **Status:** CONCLUÍDA (2026-11-14) — PRs #96/#100 mergeadas: `SupabaseClientLike` no `security.ts`, zero `: any` nas helpers; typecheck verde.
 - **Dimensão:** Tipagem
 - **Gap:** `security.ts:197,213,218` e ~38 usos em edges
 - **Tipo:** Código
@@ -305,6 +306,7 @@
 - **Esforço:** Alto · **Impacto:** Médio · **Requires triagem de negócio (dono)**
 
 ### Etapa 12 — stack-trace exposure edges
+~ **Status:** PARCIAL — PR #99 mergeada cobre 168/451; PR #102 (branch `fix-stacktrace-dephealth`) corrige 357/531/619; verificar re-scan CodeQL 72h.
 - **Dimensão:** Logging
 - **Gap:** 5 alerts medium (advisory)
 - **Tipo:** Código
