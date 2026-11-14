@@ -323,7 +323,7 @@
 
 ### Etapa 14 — Tooling de build → devDependencies
 - **Dimensão:** Qualidade de Código
-- **Gap:** ferramentas de build em `dependencies` (mapa-repo)
+~ **Status:** JÁ RESOLVIDA — verificado (2026-11-14): 67 deps runtime legítimas; todas as ferramentas de build (vite, typescript, eslint, vitest, playwright, tailwind) já em `devDependencies`.
 - **Tipo:** Config
 - **Arquivos:** `package.json` + lockfiles
 - **Passos:** mover itens de build para `devDependencies`; validar bundle
