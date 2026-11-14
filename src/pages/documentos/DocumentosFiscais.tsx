@@ -74,7 +74,8 @@ const DocumentosFiscais = () => {
 
       const nNF = getTag("nNF");
       const serie = getTag("serie");
-      const chaveAcesso = getTag("chNFe") || xml.querySelector("[Id]")?.getAttribute("Id")?.replace("NFe", "") || "";
+      const rawChave = getTag("chNFe") || xml.querySelector("[Id]")?.getAttribute("Id")?.replace("NFe", "") || "";
+      const chaveAcesso = /^\d{44}$/.test(rawChave) ? rawChave : "";
       const dhEmi = getTag("dhEmi");
       const vNF = parseFloat(getTag("vNF")) || 0;
       const vProd = parseFloat(getTag("vProd")) || 0;

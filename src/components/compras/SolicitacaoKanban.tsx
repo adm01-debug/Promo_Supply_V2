@@ -185,7 +185,7 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
     )}>
       <div className="p-5 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
-          <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]", config?.color.replace('bg-', 'bg-'))} />
+          <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]", config?.color)} />
           <h3 className="font-black text-xs text-white uppercase tracking-widest">{config?.label}</h3>
         </div>
         <Badge className="text-[10px] font-black bg-white/5 text-zinc-400 border-none rounded-lg px-2 h-5">

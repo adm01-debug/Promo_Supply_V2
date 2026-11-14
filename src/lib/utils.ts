@@ -14,10 +14,12 @@ export function cn(...inputs: ClassValue[]) {
  * non-secure contexts).
  */
 export function generateUniqueKey(): string {
-  const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  const c = globalThis.crypto;
   if (c?.randomUUID) {
     try { return c.randomUUID(); } catch { /* fall through */ }
   }
+  const rand = c?.getRandomValues(new Uint32Array(2));
+  if (rand) return `k-${Date.now().toString(36)}-${Array.from(rand, (n) => n.toString(36)).join("")}`;
   return `k-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
