@@ -6,7 +6,7 @@
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
    "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",
-   "linhas": 176,
+   "linhas": 177,
    "env": [
     "A",
     "K",

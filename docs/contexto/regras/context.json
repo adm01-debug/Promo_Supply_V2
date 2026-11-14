@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
+  "sha": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-13 23:33 UTC",
+  "generated_at": "2026-11-14 00:00 UTC",
   "files_total": 1205,
   "code_files": 1065,
-  "code_lines": 185184,
+  "code_lines": 185191,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "98da755e1c770abd",
+ "facts_hash": "4505446e34bc0800",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33178,7 +33178,7 @@
   {
    "module": "scripts",
    "files": 74,
-   "lines": 28290,
+   "lines": 28297,
    "tables": [
     "a",
     "a_tabela",
@@ -84444,7 +84444,7 @@
   },
   "scripts/ai-context/cenarios.mjs": {
    "path": "scripts/ai-context/cenarios.mjs",
-   "lines": 176,
+   "lines": 177,
    "tables": [
     {
      "table": "t",
@@ -84736,7 +84736,7 @@
   },
   "scripts/ai-context/gerar.unit.mjs": {
    "path": "scripts/ai-context/gerar.unit.mjs",
-   "lines": 657,
+   "lines": 658,
    "exports": [
     "function AppRoutes",
     "function useContacts",
@@ -84982,7 +84982,7 @@
   },
   "scripts/ci/actions-kpi.unit.mjs": {
    "path": "scripts/ci/actions-kpi.unit.mjs",
-   "lines": 377,
+   "lines": 378,
    "env": [
     "PATH"
    ]
@@ -85081,7 +85081,7 @@
   },
   "scripts/ci/branch-podaveis.unit.mjs": {
    "path": "scripts/ci/branch-podaveis.unit.mjs",
-   "lines": 250,
+   "lines": 251,
    "rule_comments": [
     "relatório. Os testes cobrem a regra (elegível, com PR, recente, main, protegida),"
    ],
@@ -85491,7 +85491,7 @@
   },
   "scripts/ci/sla-code-scanning.unit.mjs": {
    "path": "scripts/ci/sla-code-scanning.unit.mjs",
-   "lines": 143
+   "lines": 144
   },
   "scripts/ci/supabase-snapshot.unit.mjs": {
    "path": "scripts/ci/supabase-snapshot.unit.mjs",
@@ -85503,7 +85503,7 @@
   },
   "scripts/ci/toolchain-schedule.unit.mjs": {
    "path": "scripts/ci/toolchain-schedule.unit.mjs",
-   "lines": 183,
+   "lines": 184,
    "env": [
     "PATH"
    ]
@@ -86359,7 +86359,7 @@
   },
   "scripts/maintenance/maintenance.unit.mjs": {
    "path": "scripts/maintenance/maintenance.unit.mjs",
-   "lines": 1098,
+   "lines": 1099,
    "external_urls": [
     "http://192.0.2.1:9"
    ],
@@ -109806,10 +109806,25 @@
   }
  },
  "git": {
-  "sha": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
+  "sha": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4f1a4ca",
+    "date": "2026-11-13",
+    "author": "adm01-debug",
+    "subject": "fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)",
+    "files": [
+     "scripts/ai-context/cenarios.mjs",
+     "scripts/ai-context/gerar.unit.mjs",
+     "scripts/ci/actions-kpi.unit.mjs",
+     "scripts/ci/branch-podaveis.unit.mjs",
+     "scripts/ci/sla-code-scanning.unit.mjs",
+     "scripts/ci/toolchain-schedule.unit.mjs",
+     "scripts/maintenance/maintenance.unit.mjs"
+    ]
+   },
    {
     "sha": "772cf0a",
     "date": "2026-11-13",
@@ -110189,16 +110204,6 @@
      "src/pages/dashboard/ComprasDashboard.tsx",
      "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
     ]
-   },
-   {
-    "sha": "284eef4",
-    "date": "2026-11-12",
-    "author": "adm01-debug",
-    "subject": "fix(export): números do CSV saíam com ponto decimal no Excel pt-BR (#58)",
-    "files": [
-     "src/lib/__tests__/exportData.csv.test.ts",
-     "src/lib/exportData.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -110215,6 +110220,30 @@
     3
    ],
    [
+    "scripts/ai-context/cenarios.mjs",
+    2
+   ],
+   [
+    "scripts/ai-context/gerar.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/actions-kpi.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/branch-podaveis.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/sla-code-scanning.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/toolchain-schedule.unit.mjs",
+    2
+   ],
+   [
     "src/pages/dashboard/ComprasDashboard.tsx",
     2
    ],
@@ -110229,6 +110258,10 @@
    [
     "scripts/automation.config.json",
     2
+   ],
+   [
+    "scripts/maintenance/maintenance.unit.mjs",
+    1
    ],
    [
     "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
@@ -110252,34 +110285,6 @@
    ],
    [
     "src/lib/storageFiles.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
-    1
-   ],
-   [
-    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-    1
-   ],
-   [
-    "src/pages/kanban/KanbanWorkflow.tsx",
-    1
-   ],
-   [
-    "src/components/compras/DashboardInsights.tsx",
-    1
-   ],
-   [
-    "src/components/compras/TrendAnalysisCharts.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `772cf0aeb245fba0b01a6737c61b67a33f6f3bbb` (2026-11-13T19:42:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4f1a4caba793ad8fcff7166680e5fffb753eaf92` (2026-11-13T20:43:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1203 |
 | arquivos_codigo | 760 |
-| linhas_codigo | 160389 |
+| linhas_codigo | 160396 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,10 +338,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/agentes/mapa-repo.md (3)
 - docs/ci/README.md (3)
 - scripts/ai-context/README.md (3)
+- scripts/ai-context/cenarios.mjs (3)
+- scripts/ai-context/gerar.unit.mjs (3)
 - scripts/automation.config.json (3)
-- scripts/ci/branch-podaveis.mjs (3)
-- scripts/ci/encoding-src.unit.mjs (3)
-- scripts/supabase_snapshot/README.md (3)
+- scripts/ci/actions-kpi.unit.mjs (3)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -403,6 +403,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-13 `4f1a4cab` fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)
 - 2026-11-13 `772cf0ae` docs(prod): registra #83-#85 aplicadas em produção com as provas (#87)
 - 2026-11-13 `96039040` fix(banco): remove gatilhos duplicados e limita orçamento do pedido ao período (#85)
 - 2026-11-13 `d80b0707` fix(storage): recria policies de storage.objects com tenant pelo cadastro (upload volta a funcionar) (#84)
@@ -417,7 +418,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-13 `4c5128dc` fix(banco): solicitação pequena volta a ser criada, entrega gera 1 pagamento e orçamento deixa de multiplicar (#71)
 - 2026-11-13 `b157d5ae` fix(banco): compra completa volta a funcionar (notas de cotação e sequência de status) (#70)
 - 2026-11-13 `a8c38476` fix(sec): fecha 14 alerts CodeQL (XSS spot-proxy, permissions CI, stack-trace) (#69)
-- 2026-11-13 `9c73ed63` docs(prod): fecha relatório de prontidão com o estado de 2026-11-13 (#77)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

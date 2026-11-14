@@ -38,7 +38,7 @@
   {
    "arquivo": "scripts/ai-context/gerar.unit.mjs",
    "tipo": "unit",
-   "linhas": 657,
+   "linhas": 658,
    "testa": [],
    "casos": 5
   },
@@ -54,7 +54,7 @@
   {
    "arquivo": "scripts/ci/actions-kpi.unit.mjs",
    "tipo": "unit",
-   "linhas": 377,
+   "linhas": 378,
    "testa": [
     "scripts/ci/actions-kpi.mjs",
     "scripts/ci/workflow-test-support.mjs"
@@ -87,7 +87,7 @@
   {
    "arquivo": "scripts/ci/branch-podaveis.unit.mjs",
    "tipo": "unit",
-   "linhas": 250,
+   "linhas": 251,
    "testa": [
     "scripts/ci/branch-podaveis.mjs",
     "scripts/ci/workflow-test-support.mjs"
@@ -237,7 +237,7 @@
   {
    "arquivo": "scripts/ci/sla-code-scanning.unit.mjs",
    "tipo": "unit",
-   "linhas": 143,
+   "linhas": 144,
    "testa": [
     "scripts/ci/sla-code-scanning.mjs",
     "scripts/ci/workflow-test-support.mjs"
@@ -254,7 +254,7 @@
   {
    "arquivo": "scripts/ci/toolchain-schedule.unit.mjs",
    "tipo": "unit",
-   "linhas": 183,
+   "linhas": 184,
    "testa": [
     "scripts/ci/bump-toolchain.mjs"
    ],
@@ -300,7 +300,7 @@
   {
    "arquivo": "scripts/maintenance/maintenance.unit.mjs",
    "tipo": "unit",
-   "linhas": 1098,
+   "linhas": 1099,
    "testa": [
     "scripts/maintenance/lib.mjs",
     "scripts/maintenance/run.mjs"

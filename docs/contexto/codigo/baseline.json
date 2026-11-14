@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "772cf0aeb245fba0b01a6737c61b67a33f6f3bbb",
+  "commit": "4f1a4caba793ad8fcff7166680e5fffb753eaf92",
   "branch": "main",
-  "data_commit": "2026-11-13T19:42:15-03:00",
+  "data_commit": "2026-11-13T20:43:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "4f1a4cab",
+    "data": "2026-11-13",
+    "assunto": "fix(scripts): troca URL.pathname por fileURLToPath nos testes e cenario do gerador (#88)"
+   },
    {
     "sha": "772cf0ae",
     "data": "2026-11-13",
@@ -126,11 +131,6 @@
     "sha": "9eefca6e",
     "data": "2026-11-12",
     "assunto": "fix(dashboard): números do dashboard de compras deixam de vir inflados e o período passa a valer (#63)"
-   },
-   {
-    "sha": "27032009",
-    "data": "2026-11-12",
-    "assunto": "fix(banco): cotação e pedido voltam a ser criados (coluna de moeda com 1 caractere) (#62)"
    }
   ],
   "arquivos_mudados_7d": 258,
@@ -242,7 +242,19 @@
     "mudancas": 3
    },
    {
+    "arquivo": "scripts/ai-context/cenarios.mjs",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ai-context/gerar.unit.mjs",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/automation.config.json",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ci/actions-kpi.unit.mjs",
     "mudancas": 3
    },
    {
@@ -250,7 +262,19 @@
     "mudancas": 3
    },
    {
+    "arquivo": "scripts/ci/branch-podaveis.unit.mjs",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/ci/encoding-src.unit.mjs",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ci/sla-code-scanning.unit.mjs",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "scripts/ci/toolchain-schedule.unit.mjs",
     "mudancas": 3
    },
    {
@@ -272,36 +296,12 @@
    {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 2
-   },
-   {
-    "arquivo": ".github/workflows/types-sync.yml",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "DOCS/ESTADO/00_INDICE.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "DOCS/ESTADO/L07_HOOKS.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
-    "mudancas": 2
-   },
-   {
-    "arquivo": "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md",
-    "mudancas": 2
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 66
+    "commits": 67
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 1203,
   "arquivos_codigo": 760,
-  "linhas_codigo": 160389,
+  "linhas_codigo": 160396,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -344,7 +344,7 @@
   },
   "scripts/ai-context": {
    "arquivos": 3,
-   "linhas": 1816
+   "linhas": 1818
   },
   "scripts/automation.mjs": {
    "arquivos": 1,
@@ -356,7 +356,7 @@
   },
   "scripts/ci": {
    "arquivos": 40,
-   "linhas": 9482
+   "linhas": 9486
   },
   "scripts/db-explain-analyze.ts": {
    "arquivos": 1,
@@ -380,7 +380,7 @@
   },
   "scripts/maintenance": {
    "arquivos": 4,
-   "linhas": 3044
+   "linhas": 3045
   },
   "scripts/realtime-audit.ts": {
    "arquivos": 1,
