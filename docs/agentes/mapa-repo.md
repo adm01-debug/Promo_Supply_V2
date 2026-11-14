@@ -35,7 +35,7 @@ Ler quando precisar saber onde fica algo antes de buscar por texto.
 | `DOCS/` (maiúsculo) | documentação escrita à mão: `ARCHITECTURE_GUIDE.md`, `ENGINEERING_EXCELLENCE.md`, `SECURITY.md`, `BACKUP_STRATEGY.md`, `ESTADO/` (16 arquivos), `CODEBASE_ATLAS/` (12), `ADR/` (2), `RUNBOOKS/` (1) |
 | `inventario/estado/` | `rotas.json` e `edges.json` gerados; **`banco.json` não existe ainda** (falta o secret `SUPABASE_ACCESS_TOKEN` — `inventario/README.md`) |
 
-`DOCS/conventions/pages-directory.md` e `docs/conventions/pages-directory.md` são **o mesmo arquivo duplicado**;
+`docs/conventions/pages-directory.md` e o path único de convenção de páginas (removida a duplicata em `DOCS/conventions/`);
 `docs/` (minúsculo) é a pasta de infraestrutura para agentes, `DOCS/` é a documentação humana.
 
 Lixo comitado na raiz, a apagar (não é fonte de nada): dois `C:UsersTI-01AppData…txt` (dumps de resposta MCP
