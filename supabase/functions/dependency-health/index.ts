@@ -168,7 +168,7 @@ async function dispatchWorkflow(rawBase: string): Promise<DispatchInfo> {
     };
   } catch (e) {
     return {
-      status: `failed: ${e instanceof Error ? e.message : String(e)}`,
+      status: `failed: ${safeErrorMessage(e)}`,
       branch,
       dispatchedAt: dispatchedAt.toISOString(),
     };
@@ -451,7 +451,7 @@ async function handlePrSmoke(): Promise<Response> {
   } catch (e) {
     return json({
       status: "error",
-      reason: e instanceof Error ? `${e.name}: ${e.message}` : String(e),
+      reason: safeErrorMessage(e),
       artifact: null,
     });
   }
