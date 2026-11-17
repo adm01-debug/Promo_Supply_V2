@@ -33,6 +33,7 @@ import {
   getCachedOrders,
   saveCachedOrders,
 } from "./recebimentoHelpers";
+import { createComplementaryOrder } from "./pedidoComplementar";
 
 export default function RecebimentoOffline() {
   const { user } = useAuth();
@@ -49,6 +50,7 @@ export default function RecebimentoOffline() {
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [offlineEntries, setOfflineEntries] = useState<ReceivingEntry[]>(getOfflineEntries);
+  const [generateComplementary, setGenerateComplementary] = useState(true);
 
   // Online/offline detection
   useEffect(() => {
@@ -193,6 +195,18 @@ export default function RecebimentoOffline() {
 
         entry.synced = true;
         toast.success(isComplete ? "Recebimento completo registrado!" : "Recebimento parcial registrado!");
+
+        if (!isComplete && totalReceived > 0 && generateComplementary) {
+          const result = await createComplementaryOrder(selectedOrder, receivedQty);
+          if (result.created) {
+            toast.info(`Pedido complementar ${result.numero} criado com ${result.itemCount} item(ns) pendente(s)`);
+          } else if (result.reason === "no-tenant") {
+            toast.warning("Pedido complementar nao gerado: pedido original sem empresa definida");
+          } else if (result.reason === "error") {
+            toast.warning("Recebimento salvo, mas o pedido complementar falhou: " + (result.error || "erro desconhecido"));
+          }
+        }
+
         setSelectedOrder(null);
         fetchOrders();
       } catch (err: unknown) {
@@ -211,7 +225,7 @@ export default function RecebimentoOffline() {
     }
 
     setSaving(false);
-  }, [selectedOrder, receivedQty, itemNotes, generalNote, isOnline, isComplete, totalReceived, offlineEntries, fetchOrders]);
+  }, [selectedOrder, receivedQty, itemNotes, generalNote, isOnline, isComplete, totalReceived, offlineEntries, fetchOrders, generateComplementary]);
 
   // Auto-sync when coming back online
   const syncOfflineEntries = useCallback(async () => {
@@ -382,6 +396,9 @@ export default function RecebimentoOffline() {
             totalOrdered={totalOrdered}
             totalReceived={totalReceived}
             progress={progress}
+            isComplete={isComplete}
+            generateComplementary={generateComplementary}
+            onSetGenerateComplementary={setGenerateComplementary}
           />
         )}
       </div>

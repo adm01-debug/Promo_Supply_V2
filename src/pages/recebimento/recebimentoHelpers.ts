@@ -54,3 +54,34 @@ export function getCachedOrders(): PendingOrder[] | null {
 export function saveCachedOrders(orders: PendingOrder[]) {
   localStorage.setItem(ORDERS_CACHE_KEY, JSON.stringify(orders));
 }
+
+/** Linha de um pedido complementar: saldo nao entregue de um item. */
+export interface PendingLine {
+  descricao: string;
+  quantidade: number;
+  unidade: string;
+  valor_unitario: number;
+  valor_total: number;
+}
+
+/** Itens com saldo a receber, ja com a quantidade restante calculada. */
+export function buildPendingLines(
+  itens: PendingOrder["itens"],
+  receivedQty: Record<string, number>,
+): PendingLine[] {
+  return itens
+    .map((item) => ({ item, remaining: item.quantidade - (receivedQty[item.id] || 0) }))
+    .filter(({ remaining }) => remaining > 0)
+    .map(({ item, remaining }) => ({
+      descricao: item.descricao,
+      quantidade: remaining,
+      unidade: item.unidade || "un",
+      valor_unitario: item.valor_unitario,
+      valor_total: remaining * item.valor_unitario,
+    }));
+}
+
+/** Data de previsao do pedido complementar: 7 dias a frente, em YYYY-MM-DD. */
+export function defaultForecastDate(now: Date = new Date()): string {
+  return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+}

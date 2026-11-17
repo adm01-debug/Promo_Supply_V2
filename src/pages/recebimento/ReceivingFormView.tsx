@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { PendingOrder } from "./recebimentoHelpers";
 
@@ -27,13 +28,18 @@ interface ReceivingFormViewProps {
   totalOrdered: number;
   totalReceived: number;
   progress: number;
+  isComplete: boolean;
+  generateComplementary: boolean;
+  onSetGenerateComplementary: (value: boolean) => void;
 }
 
 export function ReceivingFormView({
   order, receivedQty, itemNotes, generalNote, saving, isOnline,
   onBack, onSetReceivedQty, onSetItemNotes, onSetGeneralNote, onSave,
   totalOrdered, totalReceived, progress,
+  isComplete, generateComplementary, onSetGenerateComplementary,
 }: ReceivingFormViewProps) {
+  const isPartial = totalReceived > 0 && !isComplete;
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -160,6 +166,23 @@ export function ReceivingFormView({
           rows={3}
         />
       </div>
+
+      {isPartial && isOnline && (
+        <div className="flex items-start gap-3 rounded-md border border-border bg-muted/40 p-3">
+          <Checkbox
+            id="gerar-complementar"
+            checked={generateComplementary}
+            onCheckedChange={value => onSetGenerateComplementary(value === true)}
+            className="mt-0.5"
+          />
+          <Label htmlFor="gerar-complementar" className="text-sm font-normal leading-snug cursor-pointer">
+            Gerar pedido complementar com o saldo não entregue
+            <span className="block text-xs text-muted-foreground">
+              Cria um novo pedido para o mesmo fornecedor com os itens que faltaram.
+            </span>
+          </Label>
+        </div>
+      )}
 
       <div className="flex gap-3">
         <Button variant="outline" className="flex-1" onClick={onBack}>
