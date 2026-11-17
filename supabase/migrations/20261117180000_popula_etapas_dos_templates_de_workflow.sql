@@ -7,7 +7,7 @@
 -- Templates cujo tenant_id nao existe em public.tenants sao ignorados: workflow_nodes
 -- tem FK para tenants, entao inserir para eles violaria a restricao.
 
-DO $mig$
+DO $wf$
 DECLARE
   tpl         RECORD;
   steps       jsonb;
@@ -85,4 +85,4 @@ BEGIN
     INSERT INTO public.workflow_edges (template_id, tenant_id, source_node_id, target_node_id)
     VALUES (tpl.id, tpl.tenant_id, prev_id, end_id);
   END LOOP;
-END $mig$;
+END $wf$;
