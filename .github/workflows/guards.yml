@@ -200,13 +200,26 @@ jobs:
       - name: Instalar dependencias
         run: bun install --frozen-lockfile
 
+      - name: Preparar `.env` de producao (via secrets)
+        # `.env` versionado removido (limpeza da raiz). Os valores VITE_* sao publicos e
+        # passam a vir dos secrets do repo; o arquivo e gerado no runner. `test -n` deixa o
+        # step fail-closed: secret ausente/vazio aborta antes do build, evitando o bundle
+        # `createClient("","")` que o comentario antigo do build alertava.
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$VITE_SUPABASE_URL"
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY"
+          printf 'VITE_SUPABASE_URL=%s\n' "$VITE_SUPABASE_URL" > .env
+          printf 'VITE_SUPABASE_PUBLISHABLE_KEY=%s\n' "$VITE_SUPABASE_PUBLISHABLE_KEY" >> .env
+          printf 'VITE_SUPABASE_PROJECT_ID=%s\n' "$VITE_SUPABASE_PROJECT_ID" >> .env
+
       - name: Build
-        # SEM bloco `env:` de proposito. O `.env` deste repo esta versionado e ja traz os
-        # valores publicos de producao (`VITE_*` e publico por definicao). Passar
-        # `${{ secrets.X }}` aqui seria pior: secret ausente ou renomeado chega ao processo
-        # como string VAZIA, e variavel de ambiente vazia tem precedencia sobre o `.env` no
-        # loadEnv do Vite -- o build nao falharia, geraria um bundle com `createClient("","")`
-        # e a varredura do passo seguinte sairia verde sobre um bundle que nao e o de producao.
+        # O `.env` de producao foi criado no passo anterior a partir dos secrets do repo.
+        # Nenhum secret extra entra no processo -- so as VITE_* publicas.
         run: bun run build
 
       - name: Nenhum JWT `service_role` no bundle
