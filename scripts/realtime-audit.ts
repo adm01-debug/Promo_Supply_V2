@@ -4,6 +4,9 @@
  * Regras:
  *   - Todo `.channel(...)` deve ter `removeChannel`, `removeAllChannels` ou `.unsubscribe`
  *     no cleanup do mesmo arquivo.
+ *   - Canal aberto dentro de `useEffect` tem de ser fechado no cleanup do próprio efeito
+ *     (OPS-02b): fechar num `onClick` empata os totais do arquivo mas vaza o canal quando a
+ *     tela desmonta.
  *   - Comentário e conteúdo de string não contam (nem como abertura, nem como cleanup).
  *   - Falha o build se sobrar canal órfão.
  *
@@ -173,7 +176,10 @@ export function somenteCodigo(src: string): string {
 export function contarCanais(src: string): { opens: number; closes: number } {
   const codigo = somenteCodigo(src);
   const conta = (re: RegExp) => (codigo.match(re) ?? []).length;
-  const opens = conta(/\.channel\s*\(/g);
+  // `abrirCanalPostgres(`/`abrirCanalCompartilhado(` (src/lib/realtime.ts) tambem abrem canal.
+  // O lookbehind descarta a declaracao das proprias funcoes, que nao e uma abertura.
+  const opens =
+    conta(/\.channel\s*\(/g) + conta(/(?<![\w.])(?<!function )abrirCanal[A-Za-z]*\s*\(/g);
   // `removeAllChannels(` fecha tudo que o arquivo abriu.
   if (conta(/\bremoveAllChannels\s*\(/g) > 0) return { opens, closes: opens };
   // `\bremoveChannel(` casa tanto `supabase.removeChannel(` quanto `removeChannel(` desestruturado, uma vez só.
@@ -185,6 +191,62 @@ export function auditarArquivo(file: string, src: string): Orfao | null {
   const { opens, closes } = contarCanais(src);
   if (opens === 0 || closes >= opens) return null;
   return { file, opens, closes, count: opens - closes };
+}
+
+const ABRE_CANAL = [/\.channel\s*\(/g, /(?<![\w.])(?<!function )abrirCanal[A-Za-z]*\s*\(/g];
+const FECHA_CANAL = /\bremoveChannel\s*\(|\.unsubscribe\s*\(|\bremoveAllChannels\s*\(/;
+
+const abreCanal = (trecho: string) => ABRE_CANAL.some((re) => new RegExp(re.source).test(trecho));
+
+/**
+ * A partir de `idx` (índice do `(` de abertura), devolve o conteúdo até o `)` que o fecha,
+ * contando também `{` e `[`. Devolve `null` se o parêntese nunca fecha (arquivo truncado).
+ */
+function extrairArgumentos(codigo: string, idx: number): string | null {
+  let profundidade = 0;
+  for (let i = idx; i < codigo.length; i++) {
+    const c = codigo[i];
+    if (c === "(" || c === "{" || c === "[") profundidade++;
+    else if (c === ")" || c === "}" || c === "]") {
+      profundidade--;
+      if (profundidade === 0) return codigo.slice(idx + 1, i);
+    }
+  }
+  return null;
+}
+
+/**
+ * Trecho de cleanup de um corpo de `useEffect`: tudo a partir do primeiro `return` que
+ * devolve uma função (`return () =>`, `return function`). Deliberadamente generoso — o
+ * guard só deve acusar quem claramente não fecha; falso positivo aqui vira ruído e o
+ * time passa a ignorar o guard.
+ */
+export function trechoDeCleanup(corpo: string): string | null {
+  for (const m of corpo.matchAll(/\breturn\b/g)) {
+    const depois = corpo.slice(m.index + 6, m.index + 66);
+    if (/^[\s(]*(?:\(|function\b|async\b)/.test(depois) && /=>|function\b/.test(depois)) {
+      return corpo.slice(m.index);
+    }
+  }
+  return null;
+}
+
+/**
+ * OPS-02b: canal aberto dentro de `useEffect` precisa ser fechado no cleanup do próprio
+ * efeito. `contarCanais` só compara totais por arquivo, então um componente que abre no
+ * `useEffect` e só fecha num `onClick` passava no guard e mesmo assim vazava o canal ao
+ * desmontar a tela — exatamente a classe de bug que derrubou a aplicação em produção.
+ */
+export function efeitosSemCleanup(src: string): number {
+  const codigo = somenteCodigo(src);
+  let faltando = 0;
+  for (const m of codigo.matchAll(/\buseEffect\s*\(/g)) {
+    const corpo = extrairArgumentos(codigo, m.index + m[0].length - 1);
+    if (corpo === null || !abreCanal(corpo)) continue;
+    const cleanup = trechoDeCleanup(corpo);
+    if (cleanup === null || !FECHA_CANAL.test(cleanup)) faltando++;
+  }
+  return faltando;
 }
 
 /** Percorre `dir` (sem seguir symlink) e devolve os `.ts`/`.tsx`, em ordem estável. */
@@ -244,6 +306,7 @@ export function principal(argv: string[]): number {
   }
 
   const orphaned: Orfao[] = [];
+  const missingCleanup: { file: string; effects: number }[] = [];
   let arquivos = 0;
   let canais = 0;
   try {
@@ -254,6 +317,8 @@ export function principal(argv: string[]): number {
         canais += contarCanais(src).opens;
         const orfao = auditarArquivo(file, src);
         if (orfao) orphaned.push(orfao);
+        const efeitos = efeitosSemCleanup(src);
+        if (efeitos > 0) missingCleanup.push({ file, effects: efeitos });
       }
     }
   } catch (e) {
@@ -266,15 +331,28 @@ export function principal(argv: string[]): number {
     return 2;
   }
 
-  if (o.json) console.log(JSON.stringify({ files: arquivos, channels: canais, orphaned, total: orphaned.length }, null, 2));
+  if (o.json)
+    console.log(
+      JSON.stringify(
+        { files: arquivos, channels: canais, orphaned, total: orphaned.length, missingCleanup, totalMissingCleanup: missingCleanup.length },
+        null,
+        2,
+      ),
+    );
 
-  if (orphaned.length === 0) {
+  if (orphaned.length === 0 && missingCleanup.length === 0) {
     if (!o.json) console.log(`✅ Nenhum canal Realtime órfão detectado (${canais} canal(is) em ${arquivos} arquivo(s)).`);
     return 0;
   }
 
-  console.error("❌ Canais Realtime sem cleanup:");
-  for (const x of orphaned) console.error(`  - ${x.file} (${x.count} canal(is) sem removeChannel)`);
+  if (orphaned.length > 0) {
+    console.error("❌ Canais Realtime sem cleanup:");
+    for (const x of orphaned) console.error(`  - ${x.file} (${x.count} canal(is) sem removeChannel)`);
+  }
+  if (missingCleanup.length > 0) {
+    console.error("❌ useEffect abre canal e não fecha no cleanup (vaza ao desmontar a tela):");
+    for (const x of missingCleanup) console.error(`  - ${x.file} (${x.effects} efeito(s) sem removeChannel no return)`);
+  }
   return 1;
 }
 

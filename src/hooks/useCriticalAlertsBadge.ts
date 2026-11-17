@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { abrirCanalPostgres } from "@/lib/realtime";
 
 const STORAGE_KEY = "critical_alerts_last_seen_at";
 
@@ -41,8 +42,7 @@ export function useCriticalAlertsBadge() {
 
   useEffect(() => {
     refresh();
-    const channel = supabase
-      .channel("critical_alerts_badge")
+    const channel = abrirCanalPostgres("critical_alerts_badge")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "system_alerts" },

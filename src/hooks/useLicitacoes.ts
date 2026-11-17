@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { abrirCanalPostgres } from '@/lib/realtime';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
 import type { Database } from '@/integrations/supabase/types';
@@ -328,8 +329,7 @@ export function useLicitacaoLances(licitacaoId: string | null) {
   // Subscribe to real-time bids
   const subscribeToBids = useCallback(() => {
     if (!licitacaoId) return () => {};
-    const channel = supabase
-      .channel(`licitacao-bids-${licitacaoId}`)
+    const channel = abrirCanalPostgres(`licitacao-bids-${licitacaoId}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'licitacao_lances', filter: `licitacao_id=eq.${licitacaoId}` },
