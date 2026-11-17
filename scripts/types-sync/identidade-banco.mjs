@@ -51,7 +51,9 @@ export function validarSupabaseCa(arquivo = path.join(AQUI, 'certs', 'supabase-p
  *
  * Supabase Cloud usa duas formas comuns de conexao:
  *   - host direto: db.<project-ref>.supabase.co
- *   - pooler: usuario postgres.<project-ref>@*.pooler.supabase.com
+ *   - pooler: usuario <role>.<project-ref>@*.pooler.supabase.com
+ *     (o role pode ser `postgres` ou um usuario dedicado de CI; o project-ref
+ *      vem sempre depois do ponto e e ele que prova a identidade do projeto)
  */
 export function extrairProjectRef(connectionString) {
   if (!connectionString) return null;
@@ -76,7 +78,7 @@ export function extrairProjectRef(connectionString) {
   } catch {
     return null;
   }
-  const usuarioPooler = usuario.match(/^postgres\.([a-z0-9]{20})$/i);
+  const usuarioPooler = usuario.match(/^[a-z0-9_-]+\.([a-z0-9]{20})$/i);
   if (
     usuarioPooler
     && PROJECT_REF.test(usuarioPooler[1].toLowerCase())
@@ -102,7 +104,7 @@ export function validarDestino(connectionString, refEsperado) {
   const avisos = [];
   const projectRef = extrairProjectRef(connectionString);
   if (!projectRef) {
-    erros.push('SUPABASE_DB_URL nao identifica um projeto Supabase Cloud suportado (esperado db.<ref>.supabase.co ou postgres.<ref>@*.pooler.supabase.com)');
+    erros.push('SUPABASE_DB_URL nao identifica um projeto Supabase Cloud suportado (esperado db.<ref>.supabase.co ou <role>.<ref>@*.pooler.supabase.com)');
     return { erros, avisos };
   }
 
