@@ -502,7 +502,10 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
   const orderStamp = String(first.OrderStamp ?? "");
 
   if (orderStamp) {
-    await db.from("spot_pedidos").upsert(
+    // Falha de upsert era engolida em silencio: ate a migration
+    // 20260726184620 ser aplicada por inteiro, `internal_reference` e
+    // `status_synced_at` nao existiam e nenhum pedido era gravado.
+    const { error: upsertError } = await db.from("spot_pedidos").upsert(
       {
         spot_order_id: orderStamp,
         internal_reference: internalReference,
@@ -515,6 +518,13 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
       },
       { onConflict: "spot_order_id" },
     );
+
+    if (upsertError) {
+      console.error("spot_pedidos upsert failed", {
+        spot_order_id: orderStamp,
+        error: upsertError.message,
+      });
+    }
   }
 
   return { internalReference, details };
