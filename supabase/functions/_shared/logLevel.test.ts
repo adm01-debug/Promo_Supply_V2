@@ -18,7 +18,10 @@ import {
   buildTelemetryRow,
   CANONICAL_LEVELS,
   DEFAULT_LEVEL,
+  MAX_CONTEXT_BYTES,
   MAX_MESSAGE_LENGTH,
+  MAX_URL_LENGTH,
+  MAX_USER_AGENT_LENGTH,
   normalizeLevel,
   safeTruncate,
   type CanonicalLogLevel,
@@ -196,7 +199,9 @@ Deno.test("buildTelemetryRow: payload possui exatamente as chaves esperadas com 
   assertEquals(row.context, { foo: "bar" });
   assertEquals(row.request_id, "req-123");
   assertEquals(row.user_id, USER_ID);
-  assertEquals(row.tenant_id, "tenant-x");
+  // M-02: "tenant-x" veio do corpo e não bate com o tenant do usuário
+  // autenticado (TENANT_ID), então é descartado.
+  assertEquals(row.tenant_id, TENANT_ID);
   assertEquals(row.url, "https://app/x");
   assertEquals(row.user_agent, "UA/1.0");
   assertEquals(row.client_ip, "1.2.3.4");
@@ -436,4 +441,77 @@ Deno.test("property: buildTelemetryRow mantém message idempotente sob JSON roun
       `seed=${seed} iter=${i} encoding UTF-8 não reversível`,
     );
   }
+});
+
+const TEST_TENANT = "11111111-1111-1111-1111-111111111111";
+const OTHER_TENANT = "22222222-2222-2222-2222-222222222222";
+
+Deno.test("tenant_id do corpo nao sobrepoe o tenant do usuario autenticado", () => {
+  const forjado = buildTelemetryRow({
+    raw: { message: "ok", tenantId: OTHER_TENANT },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+    fallbackTenantId: TEST_TENANT,
+  });
+  assert(forjado !== null);
+  assertEquals(forjado.tenant_id, TEST_TENANT);
+
+  // Confirmacao coerente continua sendo aceita
+  const coerente = buildTelemetryRow({
+    raw: { message: "ok", tenantId: TEST_TENANT },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+    fallbackTenantId: TEST_TENANT,
+  });
+  assertEquals(coerente!.tenant_id, TEST_TENANT);
+
+  // Sem membership: nao herda o valor do corpo
+  const semTenant = buildTelemetryRow({
+    raw: { message: "ok", tenantId: OTHER_TENANT },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+    fallbackTenantId: null,
+  });
+  assertEquals(semTenant!.tenant_id, null);
+});
+
+Deno.test("context, url e user_agent respeitam os tetos de tamanho", () => {
+  const grande = buildTelemetryRow({
+    raw: {
+      message: "ok",
+      context: { blob: "x".repeat(MAX_CONTEXT_BYTES + 1) },
+      url: "https://e.com/" + "a".repeat(MAX_URL_LENGTH + 100),
+      userAgent: "UA/" + "b".repeat(MAX_USER_AGENT_LENGTH + 100),
+    },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assert(grande !== null);
+  assertEquals(grande.context?._dropped, true);
+  assertEquals(grande.context?._reason, "too-large");
+  assertEquals(grande.url!.length, MAX_URL_LENGTH);
+  assertEquals(grande.user_agent!.length, MAX_USER_AGENT_LENGTH);
+
+  // Dentro do limite: preservado intacto
+  const pequeno = buildTelemetryRow({
+    raw: { message: "ok", context: { a: 1 }, url: "https://e.com/x", userAgent: "UA/1" },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assertEquals(pequeno!.context, { a: 1 });
+  assertEquals(pequeno!.url, "https://e.com/x");
+  assertEquals(pequeno!.user_agent, "UA/1");
+});
+
+Deno.test("context circular nao quebra a construcao da linha", () => {
+  const circular: Record<string, unknown> = { a: 1 };
+  circular.self = circular;
+  const row = buildTelemetryRow({
+    raw: { message: "ok", context: circular },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assert(row !== null);
+  assertEquals(row.context?._dropped, true);
+  assertEquals(row.context?._reason, "not-serializable");
 });
