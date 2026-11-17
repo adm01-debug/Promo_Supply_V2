@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useSecurityLogs } from '@/hooks/useSecurityLogs';
 import { supabase } from '@/integrations/supabase/client';
+import { abrirCanalPostgres } from '@/lib/realtime';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 
@@ -24,8 +25,7 @@ export const RateLimitDashboard = () => {
 
   // Subscribe to realtime rate limit alerts
   useEffect(() => {
-    const channel = supabase
-      .channel('rate-limit-alerts')
+    const channel = abrirCanalPostgres('rate-limit-alerts')
       .on(
         'postgres_changes',
         {

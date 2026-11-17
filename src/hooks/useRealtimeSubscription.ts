@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { abrirCanalPostgres } from '@/lib/realtime';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
@@ -112,7 +113,7 @@ export function useRealtimeSubscription({
 
     // Scope channel name by tenant so each tenant has an isolated channel.
     const channelName = `realtime-${tenantId ?? 'global'}-${tables.join('-')}`;
-    let channel = supabase.channel(channelName);
+    let channel = abrirCanalPostgres(channelName);
 
     tables.forEach((table) => {
       const isTenantScoped = TENANT_SCOPED_TABLES.has(table);

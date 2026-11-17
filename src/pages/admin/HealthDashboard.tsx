@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { abrirCanalPostgres } from "@/lib/realtime";
 import type { Tables } from "@/integrations/supabase/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -346,8 +347,7 @@ export default function HealthDashboard() {
 
   // Realtime push para novos alertas críticos
   useEffect(() => {
-    const channel = supabase
-      .channel("system_alerts_admin")
+    const channel = abrirCanalPostgres("system_alerts_admin")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "system_alerts" },

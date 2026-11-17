@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from '@/lib/feedbackToast';
 import { supabase } from '@/integrations/supabase/client';
+import { abrirCanalPostgres } from '@/lib/realtime';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { safeTruncate } from '@/lib/safeTruncate';
 
@@ -84,8 +85,7 @@ export const useApprovalNotifications = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    const channel = supabase
-      .channel(`approval_notifications_${user.id}`)
+    const channel = abrirCanalPostgres(`approval_notifications_${user.id}`)
       .on(
         'postgres_changes',
         {

@@ -7,6 +7,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { abrirCanalCompartilhado } from "@/lib/realtime";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -129,7 +130,7 @@ export function SupplierChat() {
   useEffect(() => {
     if (!selectedContact || !user) return;
     const channelName = `chat-presence-${selectedContact.fornecedorId}`;
-    const channel = supabase.channel(channelName);
+    const channel = abrirCanalCompartilhado(channelName);
     channel
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
