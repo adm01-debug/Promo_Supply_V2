@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       account_lockouts: {
@@ -893,7 +888,22 @@ export type Database = {
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs_202606: {
         Row: {
@@ -950,7 +960,22 @@ export type Database = {
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs_202607: {
         Row: {
@@ -1007,7 +1032,22 @@ export type Database = {
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs_202608: {
         Row: {
@@ -1064,7 +1104,22 @@ export type Database = {
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs_202609: {
         Row: {
@@ -1121,7 +1176,22 @@ export type Database = {
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs_legacy_20260712: {
         Row: {
@@ -2237,6 +2307,39 @@ export type Database = {
           },
         ]
       }
+      cron_heartbeats: {
+        Row: {
+          error_count: number
+          job_name: string
+          last_error: string | null
+          last_run_at: string
+          last_status: string
+          run_count: number
+          success_count: number
+          updated_at: string
+        }
+        Insert: {
+          error_count?: number
+          job_name: string
+          last_error?: string | null
+          last_run_at?: string
+          last_status?: string
+          run_count?: number
+          success_count?: number
+          updated_at?: string
+        }
+        Update: {
+          error_count?: number
+          job_name?: string
+          last_error?: string | null
+          last_run_at?: string
+          last_status?: string
+          run_count?: number
+          success_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       currencies: {
         Row: {
           code: string
@@ -2671,6 +2774,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      entity_versions: {
+        Row: {
+          change_summary: string | null
+          changed_at: string
+          changed_by: string | null
+          data: Json
+          entity_id: string
+          entity_type: string
+          id: string
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          data?: Json
+          entity_id: string
+          entity_type: string
+          id?: string
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          data?: Json
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          version_number?: number
+        }
+        Relationships: []
       }
       erp_connections: {
         Row: {
@@ -4833,6 +4969,7 @@ export type Database = {
           created_at: string
           current_organization_id: string | null
           department: string | null
+          display_name: string | null
           email: string | null
           empresa_default_id: string | null
           full_name: string | null
@@ -4848,6 +4985,7 @@ export type Database = {
           created_at?: string
           current_organization_id?: string | null
           department?: string | null
+          display_name?: string | null
           email?: string | null
           empresa_default_id?: string | null
           full_name?: string | null
@@ -4863,6 +5001,7 @@ export type Database = {
           created_at?: string
           current_organization_id?: string | null
           department?: string | null
+          display_name?: string | null
           email?: string | null
           empresa_default_id?: string | null
           full_name?: string | null
@@ -5461,6 +5600,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_filters: {
+        Row: {
+          created_at: string
+          entity_type: string
+          filters: Json
+          id: string
+          is_default: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_type: string
+          filters?: Json
+          id?: string
+          is_default?: boolean
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_type?: string
+          filters?: Json
+          id?: string
+          is_default?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       savings_tracker: {
         Row: {
@@ -7347,6 +7519,7 @@ export type Database = {
           resolved_at: string | null
           resolved_by: string | null
           severity: string
+          source: string | null
           tenant_id: string | null
           title: string | null
         }
@@ -7363,6 +7536,7 @@ export type Database = {
           resolved_at?: string | null
           resolved_by?: string | null
           severity: string
+          source?: string | null
           tenant_id?: string | null
           title?: string | null
         }
@@ -7379,6 +7553,7 @@ export type Database = {
           resolved_at?: string | null
           resolved_by?: string | null
           severity?: string
+          source?: string | null
           tenant_id?: string | null
           title?: string | null
         }
@@ -9112,6 +9287,7 @@ export type Database = {
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      _invoke_spot_sync: { Args: { _action: string }; Returns: number }
       _invoke_xbz_sync: { Args: never; Returns: number }
       admin_scan_runs_sla_status: {
         Args: never
@@ -9262,6 +9438,7 @@ export type Database = {
         Returns: undefined
       }
       exec_sql: { Args: { sql_query: string }; Returns: Json }
+      execute_read_query: { Args: { p_sql: string }; Returns: Json }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
         Returns: string
@@ -9428,6 +9605,14 @@ export type Database = {
         }
         Returns: string
       }
+      maintain_monthly_partitions: {
+        Args: {
+          p_ahead_months?: number
+          p_parent_table: string
+          p_retain_months?: number
+        }
+        Returns: Json
+      }
       mask_sensitive_data: { Args: { data: Json }; Returns: Json }
       normalize_phone_br: { Args: { _raw: string }; Returns: string }
       pg_activity_watchdog: { Args: never; Returns: number }
@@ -9452,6 +9637,7 @@ export type Database = {
           resolved_at: string | null
           resolved_by: string | null
           severity: string
+          source: string | null
           tenant_id: string | null
           title: string | null
         }
@@ -9765,6 +9951,36 @@ export type Database = {
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
       tenants_in_my_group: { Args: never; Returns: string[] }
+      test_no_defaults: {
+        Args: {
+          p_category_id: string
+          p_organization_id: string
+          p_period: string
+          p_supplier_id: string
+        }
+        Returns: Json
+      }
+      test_subselect: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_period?: string
+        }
+        Returns: Json
+      }
+      test_with_defaults: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_period?: string
+          p_supplier_id?: string
+        }
+        Returns: Json
+      }
+      upsert_cron_heartbeat: {
+        Args: { p_error?: string; p_job_name: string; p_status: string }
+        Returns: undefined
+      }
       user_belongs_to_tenant: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
