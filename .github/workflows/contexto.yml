@@ -27,8 +27,8 @@ name: Contexto para agentes de IA (1h)
 #
 # Secret do banco: SUPABASE_DB_URL (session pooler, usuário postgres) — ver scripts/supabase_snapshot/README.md.
 # Enquanto ele não existir, codigo/ e regras/ funcionam e supabase/ sai verde com aviso.
-# Project ref do Supabase: o repo tem divergência (supabase/config.toml = trwgmplubeqxrxpncdgf,
-# .env = lmypcdfsrgfftzhxawao). Este workflow não usa ref: o destino é inteiramente definido pelo secret.
+# Project ref do Supabase: houve divergência entre supabase/config.toml e .env, resolvida em 0bdc3cbf
+# (ambos = lmypcdfsrgfftzhxawao). Este workflow não usa ref: o destino é inteiramente definido pelo secret.
 
 on:
   push:
