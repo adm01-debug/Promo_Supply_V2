@@ -502,19 +502,28 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
   const orderStamp = String(first.OrderStamp ?? "");
 
   if (orderStamp) {
-    await db.from("spot_pedidos").upsert(
+    // A referencia do pedido fica em `referencia_cliente` (nao existe
+    // `internal_reference` nem `status_synced_at` na tabela). O erro era
+    // silencioso: nenhum pedido criado por esta rota chegava a ser gravado.
+    const { error: upsertError } = await db.from("spot_pedidos").upsert(
       {
         spot_order_id: orderStamp,
-        internal_reference: internalReference,
+        referencia_cliente: internalReference,
         status: "PROCESSING",
         valor_total: parseSpotDecimal(first.OrderTotal) ?? 0,
         codigo_rastreamento: first.Tracking ? String(first.Tracking) : null,
         itens: input.order,
         last_synced_at: new Date().toISOString(),
-        status_synced_at: new Date().toISOString(),
       },
       { onConflict: "spot_order_id" },
     );
+
+    if (upsertError) {
+      console.error("spot_pedidos upsert failed", {
+        spot_order_id: orderStamp,
+        error: upsertError.message,
+      });
+    }
   }
 
   return { internalReference, details };
