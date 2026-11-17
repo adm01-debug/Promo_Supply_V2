@@ -35,7 +35,7 @@ export interface SolicitacaoInsert {
   observacoes: string;
   solicitante_id: string;
   tenant_id: string;
-  organization_id: string;
+  organization_id: string | null;
 }
 
 const MAX_TITULO = 200;
@@ -64,10 +64,15 @@ export function buildCartTitle(items: CartItem[]): string {
   return `Carrinho PunchOut — ${items.length} itens`;
 }
 
+// `organization_id` tem FK para `organizations(id)` e NÃO é o `tenant_id`
+// (tabelas distintas). O valor correto é `profiles.current_organization_id` do
+// solicitante — a mesma origem usada por get_user_grupo_id() e pela UI. Quando o
+// perfil não tem organização, a coluna fica nula (é nullable).
 export function buildSolicitacaoFromCart(
   items: CartItem[],
   session: { tenant_id: string; user_id: string },
   numero: string,
+  organizationId: string | null = null,
 ): SolicitacaoInsert {
   if (items.length === 0) throw new Error("PunchOut cart has no items");
 
@@ -90,6 +95,6 @@ export function buildSolicitacaoFromCart(
     observacoes: "Importado via PunchOut",
     solicitante_id: session.user_id,
     tenant_id: session.tenant_id,
-    organization_id: session.tenant_id,
+    organization_id: organizationId,
   };
 }
