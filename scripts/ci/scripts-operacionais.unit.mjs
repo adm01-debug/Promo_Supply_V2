@@ -137,6 +137,33 @@ test('realtime CLI: órfão sai 1, limpo sai 0, pasta ausente/vazia e flag desco
   }
 });
 
+test('realtime (OPS-02b): useEffect que abre canal precisa fechar no próprio cleanup', () => {
+  // O bug alvo: totais do arquivo batem (1 abertura, 1 fechamento), mas o fechamento está
+  // num handler de clique — ao desmontar a tela o canal fica aberto.
+  const fechaNoClique = `useEffect(() => {
+    const ch = supabase.channel('x').subscribe();
+    setCanal(ch);
+  }, []);
+  const sair = () => supabase.removeChannel(canal);`;
+  assert.equal(realtime.contarCanais(fechaNoClique).closes, 1, 'o guard antigo considerava este arquivo limpo');
+  assert.equal(realtime.efeitosSemCleanup(fechaNoClique), 1);
+
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  supabase.channel('x').subscribe();\n}, []);"), 1);
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  const c = abrirCanalPostgres(a, b, d);\n}, []);"), 1);
+
+  // Cleanup presente, com e sem chaves, e `removeAllChannels`.
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  const c = supabase.channel('x');\n  return () => { supabase.removeChannel(c); };\n}, []);"), 0);
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  const c = supabase.channel('x');\n  return () => supabase.removeChannel(c);\n}, []);"), 0);
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  const c = abrirCanalCompartilhado('x');\n  return function limpar() { c.unsubscribe(); };\n}, []);"), 0);
+
+  // Canal fora de useEffect não é problema deste guard (src/lib/realtime.ts é assim).
+  assert.equal(realtime.efeitosSemCleanup("export function abrir(t) { return supabase.channel(t); }"), 0);
+  // `return;` antecipado não pode ser confundido com cleanup, nem cegar o guard.
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  if (!id) return;\n  supabase.channel('x').subscribe();\n}, [id]);"), 1);
+  // Comentário e string não abrem canal.
+  assert.equal(realtime.efeitosSemCleanup("useEffect(() => {\n  // supabase.channel('x')\n}, []);"), 0);
+});
+
 test('realtime (OPS-02): o src/ real não tem canal Realtime sem cleanup', async () => {
   const r = await rodarTs('realtime-audit.ts', ['--json'], { cwd: RAIZ });
   assert.equal(r.status, 0, `canal órfão em src/:\n${r.tudo}`);
