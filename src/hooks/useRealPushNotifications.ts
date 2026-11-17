@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { abrirCanalPostgres } from '@/lib/realtime';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
@@ -385,8 +386,7 @@ export function useRealPushNotifications() {
     let channel: RealtimeChannel;
 
     const setupRealtimeSubscription = () => {
-      channel = supabase
-        .channel('notifications-realtime')
+      channel = abrirCanalPostgres('notifications-realtime')
         .on(
           'postgres_changes',
           {
