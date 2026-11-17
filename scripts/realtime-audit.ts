@@ -173,7 +173,10 @@ export function somenteCodigo(src: string): string {
 export function contarCanais(src: string): { opens: number; closes: number } {
   const codigo = somenteCodigo(src);
   const conta = (re: RegExp) => (codigo.match(re) ?? []).length;
-  const opens = conta(/\.channel\s*\(/g);
+  // `abrirCanalPostgres(`/`abrirCanalCompartilhado(` (src/lib/realtime.ts) tambem abrem canal.
+  // O lookbehind descarta a declaracao das proprias funcoes, que nao e uma abertura.
+  const opens =
+    conta(/\.channel\s*\(/g) + conta(/(?<![\w.])(?<!function )abrirCanal[A-Za-z]*\s*\(/g);
   // `removeAllChannels(` fecha tudo que o arquivo abriu.
   if (conta(/\bremoveAllChannels\s*\(/g) > 0) return { opens, closes: opens };
   // `\bremoveChannel(` casa tanto `supabase.removeChannel(` quanto `removeChannel(` desestruturado, uma vez só.

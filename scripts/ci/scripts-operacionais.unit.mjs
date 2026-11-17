@@ -74,6 +74,12 @@ test('realtime: cadeia quebrada em linhas conta como canal (antes só `supabase.
   assert.equal(realtime.auditarArquivo('a.ts', `${fonte}return () => { supabase.removeChannel(c); };`), null);
 });
 
+test('realtime: helper abrirCanal* conta como abertura; a declaração dele não', () => {
+  const uso = "const c = abrirCanalPostgres('pedidos');\nconst d = abrirCanalCompartilhado('chat');\n";
+  assert.deepEqual(realtime.contarCanais(uso), { opens: 2, closes: 0 });
+  assert.equal(realtime.contarCanais("export function abrirCanalPostgres(base) {}\n").opens, 0);
+});
+
 test('realtime: comentário e string não abrem nem fecham canal', () => {
   assert.equal(realtime.contarCanais("// supabase.channel('x')\n/* a.channel('y') */\nconst s = \"z.channel('w')\";").opens, 0);
   // cleanup só em comentário/string NÃO fecha: o canal continua órfão

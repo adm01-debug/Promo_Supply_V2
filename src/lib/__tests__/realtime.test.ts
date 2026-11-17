@@ -48,18 +48,27 @@ vi.mock("@/integrations/supabase/client", () => ({
       const i = canais.indexOf(canal);
       if (i >= 0) canais.splice(i, 1);
     },
+    removeAllChannels: () => {
+      canais.length = 0;
+    },
   },
 }));
 
-const { abrirCanalPostgres, abrirCanalCompartilhado } = await import("../realtime");
+const modulo = await import("../realtime");
+const { supabase } = await import("@/integrations/supabase/client");
+
+// As funcoes devolvem o `RealtimeChannel` real; nos testes quem responde e o dublê.
+const abrirCanalPostgres = (base: string) =>
+  modulo.abrirCanalPostgres(base) as unknown as CanalFalso;
+const abrirCanalCompartilhado = (topico: string) =>
+  modulo.abrirCanalCompartilhado(topico) as unknown as CanalFalso;
 
 beforeEach(() => {
-  canais.length = 0;
+  supabase.removeAllChannels();
 });
 
 describe("padrao antigo (controle)", () => {
-  it("supabase.channel com nome fixo quebra na segunda montagem", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
+  it("supabase.channel com nome fixo quebra na segunda montagem", () => {
     const cliente = supabase as unknown as { channel: (t: string) => CanalFalso };
 
     cliente.channel("critical_alerts_badge").on().subscribe();

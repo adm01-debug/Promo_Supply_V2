@@ -14,6 +14,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 let contador = 0;
 
+/** Unico ponto de criacao de canal do app (OPS-02 audita abertura x cleanup por arquivo). */
+function criarCanal(topico: string): RealtimeChannel {
+  return supabase.channel(topico);
+}
+
 /** Remove do cliente qualquer canal ja registrado sob este topico. */
 function descartarTopico(topico: string): void {
   const alvo = `realtime:${topico}`;
@@ -32,7 +37,7 @@ function descartarTopico(topico: string): void {
  */
 export function abrirCanalPostgres(base: string): RealtimeChannel {
   contador += 1;
-  return supabase.channel(`${base}:${contador}`);
+  return criarCanal(`${base}:${contador}`);
 }
 
 /**
@@ -44,5 +49,5 @@ export function abrirCanalPostgres(base: string): RealtimeChannel {
  */
 export function abrirCanalCompartilhado(topico: string): RealtimeChannel {
   descartarTopico(topico);
-  return supabase.channel(topico);
+  return criarCanal(topico);
 }
