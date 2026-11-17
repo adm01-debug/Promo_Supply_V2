@@ -3,8 +3,10 @@ import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.3.6";
+import { safeTruncate } from "../_shared/logLevel.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
+import { isPunchOutSessionExpired } from "./session.ts";
 
 const SOURCE = "punchout";
 
@@ -23,22 +25,6 @@ interface PunchOutItem {
   currency: string;
   supplier_part_id?: string;
   unit?: string;
-}
-
-const SESSION_TTL_MINUTES = (() => {
-  const raw = Number(Deno.env.get("PUNCHOUT_SESSION_TTL_MINUTES"));
-  return Number.isFinite(raw) && raw > 0 ? raw : 1440;
-})();
-
-export function isPunchOutSessionExpired(
-  createdAt: string | null | undefined,
-  now: Date = new Date(),
-  ttlMinutes: number = SESSION_TTL_MINUTES,
-): boolean {
-  if (!createdAt) return false;
-  const created = new Date(createdAt).getTime();
-  if (!Number.isFinite(created)) return false;
-  return now.getTime() - created > ttlMinutes * 60_000;
 }
 
 function toArray<T>(v: T | T[] | undefined | null): T[] {
