@@ -49,8 +49,21 @@ function ehPublic(schema) {
   return schema === undefined || schema === null || schema.toLowerCase() === 'public';
 }
 
+// O Postgres trunca identificador em NAMEDATALEN-1 = 63 BYTES (nao caracteres).
+// Sem replicar isso, toda politica de nome longo aparecia como "ausente" porque
+// o banco guarda a versao cortada. MEDIDO: a politica declarada "Buyers ...
+// repurchase suggestions within tenant" existe no banco como "... suggestions wi".
+const LIMITE_IDENTIFICADOR = 63;
+export function truncarIdentificador(nome) {
+  const bytes = Buffer.from(nome, 'utf8');
+  if (bytes.length <= LIMITE_IDENTIFICADOR) return nome;
+  // `toString` em corte no meio de um caractere multibyte produz U+FFFD; o
+  // Postgres tambem nao parte caractere, entao o resto invalido sai fora.
+  return bytes.subarray(0, LIMITE_IDENTIFICADOR).toString('utf8').replace(/\uFFFD+$/u, '');
+}
+
 function nomeDe(m, i) {
-  return (m[i] ?? m[i + 1] ?? '').toLowerCase();
+  return truncarIdentificador((m[i] ?? m[i + 1] ?? '').toLowerCase());
 }
 
 // Cada migration e' aplicada em ordem cronologica sobre o mesmo estado: CREATE
@@ -132,7 +145,9 @@ export function declaradoPorMigrations(arquivos) {
 }
 
 export function comparar(declarado, real, allowlist = []) {
-  const liberados = new Set(allowlist.map((i) => `${i.tipo}:${String(i.nome).toLowerCase()}`));
+  const liberados = new Set(
+    allowlist.map((i) => `${i.tipo}:${truncarIdentificador(String(i.nome).toLowerCase())}`),
+  );
   const ausentes = {};
   for (const tipo of TIPOS) {
     const presentes = new Set((real[tipo] ?? []).map((n) => String(n).toLowerCase()));
