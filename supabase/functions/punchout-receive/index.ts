@@ -3,8 +3,10 @@ import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.3.6";
+import { safeTruncate } from "../_shared/logLevel.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
+import { isPunchOutSessionExpired } from "./session.ts";
 
 const SOURCE = "punchout";
 
@@ -128,18 +130,14 @@ serve(async (req) => {
 
     if (sessionError || !session) throw new Error("Session not found");
 
-    // Session must be open. Reject reused or expired cookies so a stolen one
-    // can't reopen completed sessions to inject more solicitations.
-    if (session.status !== "open") {
-      return new Response(JSON.stringify({ error: "Session not open" }), {
-        status: 409,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (session.expires_at && new Date(session.expires_at) < new Date()) {
+    // Reject stale cookies so a stolen one can't be replayed days later to inject
+    // solicitations. The query above already guarantees status === "opened" and
+    // closed_at IS NULL, so only the age needs checking here. punchout_sessions
+    // has no expires_at column, so the TTL is derived from created_at.
+    if (isPunchOutSessionExpired(session.created_at)) {
       return new Response(JSON.stringify({ error: "Session expired" }), {
         status: 410,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 

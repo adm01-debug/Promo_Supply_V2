@@ -41,6 +41,18 @@ wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_
 Idem para `git fetch`/`git pull`/`git merge`/`git rebase` no clone. Se estiver só lendo, `\wsl.localhost\...`
 funciona; escrita de branch/commit/push exige `wsl git` (ou o MCP, que escreve no remoto direto).
 
+**PATH do `node` dos hooks:** o hook `pre-push` roda suite via `scripts/automation.mjs`, e o isolamento
+de rede usa `unshare` que herda o PATH do shell. Em shell não-interativo (`bash -c`, CI de agente), se
+`~/.local/opt/node/bin` (e `~/.nvm/versions/node/<v>/bin`) não estiver no PATH, o hook aborta o push com
+`unshare: failed to execute node: No such file or directory` e o teste
+`scripts/maintenance/maintenance.unit.mjs` falha com `blocked_baseline` (linha ~1038). Exporte antes do
+push:
+
+```text
+export PATH="$HOME/.local/opt/node/bin:$HOME/.nvm/versions/node/v24.22.2/bin:$PATH"
+wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_V2 && export PATH=\"\$HOME/.local/opt/node/bin:\$HOME/.nvm/versions/node/v24.22.2/bin:\$PATH\" && git push origin HEAD"
+```
+
 ## Perímetro do GitHub — estado medido
 
 | Campo | Estado | Como foi verificado |

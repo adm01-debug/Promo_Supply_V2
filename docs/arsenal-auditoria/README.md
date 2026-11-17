@@ -11,6 +11,7 @@ Arsenal de prompts que agentes de IA usam para auditar e corrigir sistemas de pr
 | [PROMPT_AUDITORIA_SISTEMA_v2.md](./PROMPT_AUDITORIA_SISTEMA_v2.md) | Auditoria completa do sistema: 20 dimensões com nota 0-10, scorecard ponderado e plano de ação |
 | [PROMPT_AUDITORIA_MIGRACAO_DB_v1.md](./PROMPT_AUDITORIA_MIGRACAO_DB_v1.md) | Validar migração de banco com evidência dupla ORIGEM+DESTINO e veredito ÍNTEGRA/RESSALVAS/INCOMPLETA |
 | [prompt-auditoria-100-etapas-v2.md](./prompt-auditoria-100-etapas-v2.md) | Converter gaps da auditoria em plano de correção — 1 etapa = 1 PR verificável, P0 primeiro |
+| [AUDITORIA_SISTEMA_PROMO_SUPPLY.md](./AUDITORIA_SISTEMA_PROMO_SUPPLY.md) | **Caso real:** auditoria completa aplicada no próprio Promo Supply V2 (2026-11-14) — scorecard, Top 10 ROI e plano de 15 etapas |
 
 ## Dimensões e pesos (SISTEMA_v2)
 

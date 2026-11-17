@@ -219,7 +219,7 @@ com `test -e`. Resultado que merece crédito: **apenas 1 é uma citação genuin
 (`DOCS/ADR/README.md`). Outros 18 "inexistentes" são, na verdade, honestos: 6 são specs
 explicitamente rotulados "planejados" (`AUDITORIA_QA_2026Q3.md:74-80`), 1 é declarado "to be created"
 (`BACKUP_STRATEGY.md:41`), 10 são o **lado-destino** de migrações pendentes num documento que os
-rotula como "Existing Violations (tracked for migration)" (`DOCS/conventions/pages-directory.md:22-34`),
+rotula como "Existing Violations (tracked for migration)" (`docs/conventions/pages-directory.md:22-34`),
 e 1 é um caminho elidido com `...`.
 
 **A fabricação nesta base não está nos caminhos — está nos identificadores e nas descrições de
@@ -311,7 +311,7 @@ comportamentos e ferramentas.
 1. **`DOCS/BACKUP_STRATEGY.md`** — o melhor documento do repositório. Marca explicitamente o que
    não existe (`:41` "to be created"), tem uma seção §9 "Gaps and Next Steps" com owner e prioridade,
    e não se atribui nota. É o único que **declara a própria incompletude**.
-2. **`DOCS/conventions/pages-directory.md`** — regra clara, e a lista de 10 arquivos aparece sob o
+2. **`docs/conventions/pages-directory.md`** — regra clara, e a lista de 10 arquivos aparece sob o
    título "Existing Violations (tracked for migration)" (`:22`), deixando inequívoco que os caminhos
    `src/components/...` são alvo, não estado.
 3. **`DOCS/SECURITY.md`** — argumentação técnica sólida sobre `SECURITY DEFINER` (§3, §4), com
@@ -550,5 +550,5 @@ como evidência de que estão corretos.
 /home/user/promo-supply-v2/DOCS/ADR/0001-feature-based-architecture.md
 /home/user/promo-supply-v2/DOCS/ADR/0002-auth-strategy.md
 /home/user/promo-supply-v2/DOCS/RUNBOOKS/rollback-template.md
-/home/user/promo-supply-v2/DOCS/conventions/pages-directory.md
+/home/user/promo-supply-v2/docs/conventions/pages-directory.md
 /home/user/promo-supply-v2/docs/conventions/pages-directory.md
