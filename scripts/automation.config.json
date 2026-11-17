@@ -278,6 +278,14 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher não executa esta operação."
     },
     {
+      "id": "guard-edge-tenant",
+      "kind": "legacy",
+      "files": ["scripts/ci/edge-tenant-guard.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/edge-tenant-guard.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Guard EDGE-01: impede que getTenantId receba o Request como preferredTenantId. Referencias literais: .github/workflows/guards.yml (glob scripts/ci/*.unit.mjs), package.json:scripts.guards. O dispatcher nao executa esta operacao."
+    },
+    {
       "id": "legacy-9c69056ffd5e34ab",
       "kind": "legacy",
       "files": ["scripts/ci/maintenance.unit.mjs"],
