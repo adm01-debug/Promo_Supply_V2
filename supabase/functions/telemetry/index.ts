@@ -5,6 +5,7 @@ import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { TelemetryContract } from "../_shared/contracts.ts";
 import { buildTelemetryRow } from "../_shared/logLevel.ts";
+import { getTenantId } from "../_shared/security.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -58,7 +59,15 @@ serve(async (req) => {
     );
 
     const clientIp = req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for");
-    const fallbackTenantId = (user?.user_metadata?.tenant_id as string) || null;
+    // M-02: `user_metadata` é editável pelo próprio usuário; a fonte confiável
+    // do tenant são as memberships em `user_tenants`. Usuário sem membership
+    // grava telemetria sem tenant (null) em vez de herdar um valor forjado.
+    let fallbackTenantId: string | null = null;
+    try {
+      fallbackTenantId = await getTenantId(supabaseClient, user);
+    } catch (_e) {
+      fallbackTenantId = null;
+    }
     const rows = entries
       .map((raw) =>
         buildTelemetryRow({

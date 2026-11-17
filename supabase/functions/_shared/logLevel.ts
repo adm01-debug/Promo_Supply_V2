@@ -39,6 +39,13 @@ export function normalizeLevel(input: unknown): CanonicalLogLevel {
 
 export const MAX_MESSAGE_LENGTH = 4000;
 
+/** Tamanho máximo do `context` serializado em JSON (bytes UTF-8). */
+export const MAX_CONTEXT_BYTES = 8 * 1024;
+/** Tamanho máximo de `url` (UTF-16 code units). */
+export const MAX_URL_LENGTH = 2048;
+/** Tamanho máximo de `user_agent` (UTF-16 code units). */
+export const MAX_USER_AGENT_LENGTH = 512;
+
 /**
  * Trunca uma string em no máximo `maxUnits` UTF-16 code units SEM quebrar
  * um surrogate pair (evita gerar lone surrogates que viram U+FFFD ao
@@ -56,6 +63,25 @@ export function safeTruncate(input: string, maxUnits: number): string {
   const code = input.charCodeAt(end - 1);
   if (code >= 0xd800 && code <= 0xdbff) end -= 1;
   return input.slice(0, end);
+}
+
+/**
+ * Limita o `context` a `MAX_CONTEXT_BYTES`. Se o objeto serializado passar do
+ * teto, descarta o conteúdo e grava apenas um marcador — preferimos perder o
+ * detalhe a deixar um cliente gravar payload ilimitado em `telemetry_logs`.
+ */
+export function clampContext(
+  context: Record<string, unknown>,
+): Record<string, unknown> {
+  let bytes: number;
+  try {
+    bytes = new TextEncoder().encode(JSON.stringify(context)).length;
+  } catch (_e) {
+    // Referência circular / BigInt: não é serializável, não persiste.
+    return { _dropped: true, _reason: "not-serializable" };
+  }
+  if (bytes <= MAX_CONTEXT_BYTES) return context;
+  return { _dropped: true, _reason: "too-large", _bytes: bytes };
 }
 
 export interface TelemetryRowInput {
@@ -102,17 +128,25 @@ export function buildTelemetryRow(
     message: safeTruncate(msg, MAX_MESSAGE_LENGTH),
     context:
       context && typeof context === "object" && !Array.isArray(context)
-        ? (context as Record<string, unknown>)
+        ? clampContext(context as Record<string, unknown>)
         : null,
     request_id: typeof requestId === "string" && requestId.length > 0
       ? requestId
       : input.fallbackRequestId,
     user_id: input.userId,
-    tenant_id: typeof tenantId === "string" && tenantId.length > 0
+    // M-02: o `tenantId` do corpo é apenas uma confirmação. Só é aceito se
+    // bater com o tenant resolvido a partir das memberships do usuário
+    // autenticado; qualquer outro valor é ignorado em favor do fallback.
+    // Sem isso, um usuário autenticado grava telemetria carimbada com o
+    // tenant de outra empresa (a inserção usa service_role e ignora RLS).
+    tenant_id: typeof tenantId === "string" && tenantId.length > 0 &&
+        tenantId === input.fallbackTenantId
       ? tenantId
       : input.fallbackTenantId ?? null,
-    url: typeof url === "string" ? url : null,
-    user_agent: typeof userAgent === "string" ? userAgent : null,
+    url: typeof url === "string" ? safeTruncate(url, MAX_URL_LENGTH) : null,
+    user_agent: typeof userAgent === "string"
+      ? safeTruncate(userAgent, MAX_USER_AGENT_LENGTH)
+      : null,
     client_ip: input.clientIp ?? null,
   };
 }
