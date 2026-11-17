@@ -1,0 +1,26 @@
+{
+  "_leia": "Excecoes aceitas para scripts/ci/paridade-migrations-banco.mjs. Cada item libera UM objeto declarado em supabase/migrations/ que NAO existe no banco de producao, e exige o motivo verificado. Formato: { \"tipo\": \"tabelas|views|matviews|funcoes|indices|triggers|politicas\", \"nome\": \"...\", \"motivo\": \"...\" }. Objeto que some do banco sem entrada aqui quebra o CI de proposito: ou a migration foi esquecida, ou a excecao precisa ser registrada com justificativa.",
+  "_triagem": "Os 16 itens abaixo foram triados em 17/11/2026 consultando o banco de producao (to_regclass, pg_policies, pg_indexes, pg_trigger). Nenhum representa funcionalidade perdida.",
+  "excecoes": [
+    { "tipo": "tabelas", "nome": "historico_compras", "motivo": "Nunca aplicada em producao. O codigo le historico por `pedidos` + `pedido_itens`; nenhuma query referencia esta tabela." },
+
+    { "tipo": "funcoes", "nome": "update_updated_at", "motivo": "Declarada em 20250102000000_compras_production.sql:80 e substituida por public.update_updated_at_column(), que existe no banco e e' a usada por todos os gatilhos atuais." },
+
+    { "tipo": "indices", "nome": "idx_fornecedores_categoria", "motivo": "Coluna `categoria` nao existe mais em fornecedores (hoje: segmento, tipo). Documentado em 20261117160000_indices_nunca_aplicados.sql:6." },
+    { "tipo": "indices", "nome": "idx_solicitacoes_vendedor", "motivo": "Coluna `vendedor` nao existe mais em solicitacoes. Documentado em 20261117160000_indices_nunca_aplicados.sql:4." },
+    { "tipo": "indices", "nome": "idx_mv_dashboard_kpis_dia", "motivo": "A materialized view mv_dashboard_kpis_dia nao existe no banco (to_regclass = null); indice sem objeto alvo." },
+    { "tipo": "indices", "nome": "idx_password_reset_token", "motivo": "A tabela password_reset_tokens nao existe no banco; o reset de senha passou a ser o do Supabase Auth." },
+    { "tipo": "indices", "nome": "idx_xbz_pedidos_tenant", "motivo": "Redundante: o unique xbz_pedidos_tenant_id_pedido_numero_key comeca por tenant_id e ja atende filtro por tenant. Criar o indice so adicionaria custo de escrita." },
+    { "tipo": "indices", "nome": "idx_xbz_produtos_tenant", "motivo": "Redundante: o unique xbz_produtos_tenant_id_produto_id_key comeca por tenant_id e ja atende filtro por tenant." },
+
+    { "tipo": "triggers", "nome": "solicitacoes_updated_at", "motivo": "Consolidado em trg_update_solicitacoes_updated_at, presente em public.solicitacoes. A deduplicacao esta em 20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql." },
+
+    { "tipo": "politicas", "nome": "authenticated can insert rate limit logs", "motivo": "Renomeada: a politica equivalente no banco e' `Authenticated insert rate limit logs` em rate_limit_logs." },
+    { "tipo": "politicas", "nome": "authenticated can insert security logs", "motivo": "Substituida por `Only admins can insert security logs` em security_logs — endurecimento proposital, nao perda de regra." },
+    { "tipo": "politicas", "nome": "authenticated can read currencies", "motivo": "Renomeada para `currencies_authenticated_read`, presente em currencies." },
+    { "tipo": "politicas", "nome": "authenticated can read exchange_rates", "motivo": "Renomeada para `exchange_rates_authenticated_read`, presente em exchange_rates." },
+    { "tipo": "politicas", "nome": "authenticated users can view active approval rules", "motivo": "Substituida por `Role-restricted approval rules select` + `Users can view their organization rules` em approval_rules." },
+    { "tipo": "politicas", "nome": "authenticated users can view escalation config", "motivo": "A tabela escalation_config nao existe no banco (to_regclass = null)." },
+    { "tipo": "politicas", "nome": "users can view their own reset tokens", "motivo": "A tabela password_reset_tokens nao existe no banco." }
+  ]
+}
