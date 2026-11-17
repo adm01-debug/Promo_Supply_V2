@@ -2,7 +2,7 @@
 #   gatilho: toda segunda 09:00 UTC (06:00 em Sao Paulo), dispatch manual e push em main que toque o verificador ou a allowlist
 #   prova: o job roda scripts/ci/paridade-migrations-banco.sql no banco de producao e compara a saida com o que supabase/migrations/ declara
 #   falha: o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist
-#   avisa: abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run
+#   avisa: abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail
 # nao-e-bug:
 #   - objeto-renomeado: politica/indice que mudou de nome nao esta "faltando"; registre a excecao na allowlist com o nome novo como motivo
 #   - secret-ausente: sem SUPABASE_DB_URL o job falha fechado de proposito -- relatar paridade sem ler o banco seria mentira
@@ -84,12 +84,17 @@ jobs:
         run: |
           set -euo pipefail
           gh label create paridade-banco --color B60205 --description "Migration declarada que nao existe no banco" 2>/dev/null || true
-          corpo="$(printf 'Objetos declarados em \x60supabase/migrations/\x60 que NAO existem no banco de producao.\n\nOu a migration nunca foi aplicada, ou a excecao precisa entrar em \x60scripts/ci/paridade-migrations-banco.allowlist.json\x60 com motivo.\n\n\x60\x60\x60\n%s\n\x60\x60\x60\n\nRun: %s/%s/actions/runs/%s\n' "$(cat relatorio.txt)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+          # A mencao e o assignee sao o canal de aviso: o GitHub manda e-mail para o dono
+          # ao ser atribuido ou citado. Sem isso a issue fica so na aba Issues e ninguem ve.
+          corpo="$(printf '@%s\n\nObjetos declarados em \x60supabase/migrations/\x60 que NAO existem no banco de producao.\n\nOu a migration nunca foi aplicada, ou a excecao precisa entrar em \x60scripts/ci/paridade-migrations-banco.allowlist.json\x60 com motivo.\n\n\x60\x60\x60\n%s\n\x60\x60\x60\n\nRun: %s/%s/actions/runs/%s\n' "$GITHUB_REPOSITORY_OWNER" "$(cat relatorio.txt)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
           atual="$(gh issue list --label paridade-banco --state open --limit 1 --json number --jq '.[0].number // empty')"
           if [ -n "$atual" ]; then
             gh issue comment "$atual" --body "$corpo"
           else
-            gh issue create --title "Paridade migrations x banco: divergencia detectada" --label paridade-banco --body "$corpo"
+            # `--assignee` nao pode derrubar o job: perder o relatorio por causa do aviso
+            # seria pior que o aviso faltar. A mencao no corpo ja garante o e-mail.
+            gh issue create --title "Paridade migrations x banco: divergencia detectada" --label paridade-banco --assignee "$GITHUB_REPOSITORY_OWNER" --body "$corpo" \
+              || gh issue create --title "Paridade migrations x banco: divergencia detectada" --label paridade-banco --body "$corpo"
           fi
 
       - name: Falhar quando houver divergencia

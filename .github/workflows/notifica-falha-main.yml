@@ -25,6 +25,10 @@ on:
       - Inventário do estado real (semanal)
       - Branch Hygiene Audit
       - Guards offline do repositorio
+      # Sem esta linha, se a propria verificacao de paridade quebrar (secret vencido,
+      # psql ausente, banco fora do ar) ela para de avisar em silencio -- o pior caso,
+      # porque "nenhuma issue" passa a significar "nenhuma divergencia".
+      - Paridade migrations x banco (semanal)
     branches: [main]
     types: [completed]
 
@@ -55,7 +59,11 @@ jobs:
           script: |
             const wf = context.payload.workflow_run;
             const titulo = `[falha-main] ${wf.name} falhou na main`;
+            // A mencao e o que transforma a issue em e-mail: sem ela o aviso so existe
+            // na aba Issues, que o dono nao acompanha.
             const corpo = [
+              `@${context.repo.owner}`,
+              '',
               `**Workflow:** ${wf.name}`,
               `**Branch:** ${wf.head_branch}`,
               `**Commit:** ${wf.head_sha.slice(0, 7)}`,
@@ -81,6 +89,18 @@ jobs:
                 labels: ['falha-main'],
               });
               core.info(`issue criada: #${nova.number}`);
+              // Atribuir e um reforco do aviso; se falhar, a mencao no corpo ja cobriu o
+              // e-mail e derrubar o job aqui apagaria a notificacao que acabou de ser criada.
+              try {
+                await github.rest.issues.addAssignees({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: nova.number,
+                  assignees: [context.repo.owner],
+                });
+              } catch (e) {
+                core.warning(`nao foi possivel atribuir a issue: ${e.message}`);
+              }
               return;
             }
 
