@@ -1,0 +1,185 @@
+# docs:
+#   gatilho: push em main que toque supabase/functions; dispatch (uma funcao, lista ou todas)
+#   prova: cada edge function alterada no push esta deployada no projeto oficial, com a versao publicada subindo
+#   falha: o job fica vermelho e o deploy nao acontece; nenhuma funcao fica parcialmente publicada sem aviso
+#   avisa: issue [falha-main] pelo notifica-falha-main.yml e o resumo do run com a lista do que subiu
+# nao-e-bug:
+#   - nada-a-deployar: push que so mexe em supabase/functions/tests/ ou em arquivo solto sai VERDE sem deployar (nao sao functions; function e pasta com index.ts)
+#   - deploy-total: mudanca em supabase/functions/_shared/ deploya TODAS as functions de proposito, porque o codigo compartilhado entra no bundle de cada uma
+# ==================================================================
+# PROMO SUPPLY - Deploy automatico das edge functions
+# ==================================================================
+# Por que existe: ate 2026-11 o deploy das edge functions era 100% manual.
+# O merge de uma correcao em supabase/functions/ nao publicava nada, e a
+# producao ficou rodando codigo de duas versoes atras sem ninguem perceber -
+# incluindo um bug que derrubava aprovacao e fiscal para todos os usuarios.
+#
+# PROJECT REF: vem do secret VITE_SUPABASE_PROJECT_ID, igual ao types-sync.yml.
+# O supabase/config.toml tem um project_id divergente e NAO e usado aqui; quem
+# decide qual projeto e o oficial e o dono, nos secrets.
+#
+# FALHA FECHADA: sem SUPABASE_ACCESS_TOKEN ou sem VITE_SUPABASE_PROJECT_ID o
+# job falha. Sair verde sem publicar reproduziria exatamente o problema que
+# este workflow existe para resolver.
+# ==================================================================
+
+name: Deploy das edge functions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/deploy-edge-functions.yml'
+  workflow_dispatch:
+    inputs:
+      functions:
+        description: 'Funcoes a deployar, separadas por espaco. Vazio = todas.'
+        required: false
+        default: ''
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-edge-functions
+  cancel-in-progress: false
+
+env:
+  SUPABASE_CLI_VERSION: '2.116.0'
+
+jobs:
+  deploy:
+    name: Publicar edge functions alteradas
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
+
+      - name: Exigir credenciais do projeto oficial
+        env:
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          faltando=()
+          [[ -n "${ACCESS_TOKEN}" ]] || faltando+=("SUPABASE_ACCESS_TOKEN")
+          [[ -n "${PROJECT_REF}" ]] || faltando+=("VITE_SUPABASE_PROJECT_ID")
+          if (( ${#faltando[@]} > 0 )); then
+            echo "::error::Secret ausente: ${faltando[*]}. O deploy nao roda sem credencial — sair verde aqui esconderia codigo nao publicado."
+            exit 1
+          fi
+          echo "Credenciais presentes."
+
+      - name: Decidir o que deployar
+        id: alvo
+        env:
+          EVENTO: ${{ github.event_name }}
+          ENTRADA: ${{ github.event.inputs.functions }}
+          ANTES: ${{ github.event.before }}
+          AGORA: ${{ github.sha }}
+        run: |
+          raiz='supabase/functions'
+
+          # Uma edge function e uma pasta de primeiro nivel com index.ts.
+          # Isso exclui _shared/ (biblioteca) e tests/ (suites Deno).
+          todas() {
+            find "${raiz}" -mindepth 2 -maxdepth 2 -name 'index.ts' -printf '%h\n' \
+              | sed "s#^${raiz}/##" | sort -u
+          }
+
+          selecao=''
+          motivo=''
+
+          if [[ "${EVENTO}" == 'workflow_dispatch' ]]; then
+            if [[ -n "${ENTRADA// /}" ]]; then
+              selecao="$(tr ' ' '\n' <<< "${ENTRADA}" | sed '/^$/d' | sort -u)"
+              motivo='dispatch com lista explicita'
+            else
+              selecao="$(todas)"
+              motivo='dispatch sem lista: todas as functions'
+            fi
+          else
+            base="${ANTES}"
+            # Primeiro push numa branch (ou historico podado) vem com SHA zerado.
+            if [[ -z "${base}" || "${base}" == '0000000000000000000000000000000000000000' ]] \
+               || ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+              selecao="$(todas)"
+              motivo='sem commit base confiavel: todas as functions'
+            else
+              mudou="$(git diff --name-only "${base}" "${AGORA}" -- "${raiz}" || true)"
+              if grep -qE "^${raiz}/_shared/" <<< "${mudou}"; then
+                selecao="$(todas)"
+                motivo='supabase/functions/_shared/ mudou: todas as functions'
+              else
+                selecao="$(sed -n "s#^${raiz}/\([^/]*\)/.*#\1#p" <<< "${mudou}" | sort -u)"
+                motivo='functions tocadas no push'
+              fi
+            fi
+          fi
+
+          # Mantem so o que e realmente uma function neste commit (pasta com index.ts).
+          validas="$(todas)"
+          final="$(comm -12 <(sort -u <<< "${selecao}") <(sort -u <<< "${validas}") || true)"
+
+          if [[ -z "${final// /}" ]]; then
+            echo "Nada a deployar (${motivo})."
+            echo "lista=" >> "${GITHUB_OUTPUT}"
+            {
+              echo '### Deploy das edge functions'
+              echo
+              echo "Nada a deployar — ${motivo}."
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+
+          echo "Motivo: ${motivo}"
+          echo "${final}"
+          echo "lista=$(tr '\n' ' ' <<< "${final}" | sed 's/ *$//')" >> "${GITHUB_OUTPUT}"
+          echo "motivo=${motivo}" >> "${GITHUB_OUTPUT}"
+
+      - name: Setup Supabase CLI ${{ env.SUPABASE_CLI_VERSION }}
+        if: steps.alvo.outputs.lista != ''
+        uses: supabase/setup-cli@d239d1052f6f024a8d746d7e5aeddead63b9cb53 # v3.1.0
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+
+      - name: Deployar
+        if: steps.alvo.outputs.lista != ''
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          LISTA: ${{ steps.alvo.outputs.lista }}
+          MOTIVO: ${{ steps.alvo.outputs.motivo }}
+        run: |
+          ok=()
+          erro=()
+          for fn in ${LISTA}; do
+            echo "::group::deploy ${fn}"
+            if supabase functions deploy "${fn}" --project-ref "${PROJECT_REF}"; then
+              ok+=("${fn}")
+            else
+              erro+=("${fn}")
+            fi
+            echo '::endgroup::'
+          done
+
+          {
+            echo '### Deploy das edge functions'
+            echo
+            echo "Motivo: ${MOTIVO}"
+            echo
+            echo "- Publicadas (${#ok[@]}): ${ok[*]:-nenhuma}"
+            echo "- Falharam (${#erro[@]}): ${erro[*]:-nenhuma}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          if (( ${#erro[@]} > 0 )); then
+            echo "::error::Falha ao deployar: ${erro[*]}"
+            exit 1
+          fi

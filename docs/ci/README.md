@@ -4,13 +4,14 @@
 > `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.
 > Para mudar o que está aqui, mude o bloco no YAML.
 
-**9 workflows.**
+**10 workflows.**
 
 | Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |
 |---|---|---|---|---|---|---|---|
 | Automação local | [`automation-local.yml`](../../.github/workflows/automation-local.yml) | PR para main, push em main e execução manual. | Contratos estáticos e suites locais de automação em fixtures isoladas. | O job falha; nenhum patch, commit, publicação ou deploy é executado. | O check fica vermelho no GitHub para o autor da PR e mantenedores. | — | — |
 | Branch Hygiene Audit | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | agendado (segunda 09:34 UTC) e dispatch | branches podaveis, PRs paradas ha mais de 7 dias, versoes da toolchain e SLA dos alertas de code scanning | SLA vencido deixa o job vermelho e publica o diagnostico se o relatorio foi gerado | issue `[branch-hygiene]` (relatorio) e issue `[kpi-actions]` (custo do Actions) | — | — |
 | Contexto para agentes de IA (1h) | [`contexto.yml`](../../.github/workflows/contexto.yml) | push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada hora (minuto 3); dispatch | branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests | falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação | ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha) | — | — |
+| Deploy das edge functions | [`deploy-edge-functions.yml`](../../.github/workflows/deploy-edge-functions.yml) | push em main que toque supabase/functions; dispatch (uma funcao, lista ou todas) | cada edge function alterada no push esta deployada no projeto oficial, com a versao publicada subindo | o job fica vermelho e o deploy nao acontece; nenhuma funcao fica parcialmente publicada sem aviso | issue [falha-main] pelo notifica-falha-main.yml e o resumo do run com a lista do que subiu | — | — |
 | Guards offline do repositorio | [`guards.yml`](../../.github/workflows/guards.yml) | pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch | docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml | — | — |
 | Inventário do estado real (semanal) | [`inventario-estado-semanal.yml`](../../.github/workflows/inventario-estado-semanal.yml) | agendado (seg 10:41 UTC) e dispatch | inventario/estado (banco, rotas, edges) regerado do banco do projeto e do codigo | rotas/edges quebrados deixam o job vermelho; no agendado, banco sem secret so avisa | PR automation/inventario-estado com o inventario novo | — | — |
 | Freight Quest CI/CD | [`main.yml`](../../.github/workflows/main.yml) | push em main/develop e pull_request para main | lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml | — | — |
@@ -40,6 +41,13 @@
 - **O que prova:** branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests
 - **Quando falha:** falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação
 - **Quem é avisado:** ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha)
+
+### Deploy das edge functions (`deploy-edge-functions.yml`)
+
+- **Gatilho:** push em main que toque supabase/functions; dispatch (uma funcao, lista ou todas)
+- **O que prova:** cada edge function alterada no push esta deployada no projeto oficial, com a versao publicada subindo
+- **Quando falha:** o job fica vermelho e o deploy nao acontece; nenhuma funcao fica parcialmente publicada sem aviso
+- **Quem é avisado:** issue [falha-main] pelo notifica-falha-main.yml e o resumo do run com a lista do que subiu
 
 ### Guards offline do repositorio (`guards.yml`)
 
@@ -95,6 +103,8 @@
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **sem-commit** | "nada mudou" no publicar significa que nenhuma das três fontes mudou desde a última publicação |
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **metricas** | métricas/manifests do banco aguardam 60 min desde a coleta publicada; commits de código não reiniciam o prazo; data ausente/inválida/futura e mudanças de saúde/estado do índice publicam sem espera |
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **banco-pulado** | sem o secret SUPABASE_DB_URL o job do banco sai verde com aviso e a pasta supabase/ fica como estava |
+| [`deploy-edge-functions.yml`](../../.github/workflows/deploy-edge-functions.yml) | **nada-a-deployar** | push que so mexe em supabase/functions/tests/ ou em arquivo solto sai VERDE sem deployar (nao sao functions; function e pasta com index.ts) |
+| [`deploy-edge-functions.yml`](../../.github/workflows/deploy-edge-functions.yml) | **deploy-total** | mudanca em supabase/functions/_shared/ deploya TODAS as functions de proposito, porque o codigo compartilhado entra no bundle de cada uma |
 | [`guards.yml`](../../.github/workflows/guards.yml) | **doc-desatualizada** | `--check` vermelho significa que o YAML mudou e a doc gerada nao foi regerada; rode o gerador e comite, nao edite o .md |
 | [`guards.yml`](../../.github/workflows/guards.yml) | **suite-orfa** | check-test-inventory vermelho significa que uma suite nova de scripts/ nao tem passo que a execute em nenhum workflow |
 | [`guards.yml`](../../.github/workflows/guards.yml) | **bundle-so-na-main** | o job do bundle precisa de `bun run build` (minutos de Actions em repo privado), entao roda no push que vai para producao, nao em cada PR |
