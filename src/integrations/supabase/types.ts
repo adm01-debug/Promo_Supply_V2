@@ -768,12 +768,15 @@ export type Database = {
           entity_description: string | null
           entity_id: string | null
           entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          hash_anterior: string
           id: string
           ip_address: string | null
           metadata: Json | null
           new_values: Json | null
           old_values: Json | null
           organization_id: string | null
+          registro_hash: string
+          sequencia: number
           tenant_id: string
           user_agent: string | null
           user_email: string | null
@@ -786,12 +789,15 @@ export type Database = {
           entity_description?: string | null
           entity_id?: string | null
           entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          hash_anterior?: string
           id?: string
           ip_address?: string | null
           metadata?: Json | null
           new_values?: Json | null
           old_values?: Json | null
           organization_id?: string | null
+          registro_hash?: string
+          sequencia?: number
           tenant_id: string
           user_agent?: string | null
           user_email?: string | null
@@ -804,12 +810,15 @@ export type Database = {
           entity_description?: string | null
           entity_id?: string | null
           entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          hash_anterior?: string
           id?: string
           ip_address?: string | null
           metadata?: Json | null
           new_values?: Json | null
           old_values?: Json | null
           organization_id?: string | null
+          registro_hash?: string
+          sequencia?: number
           tenant_id?: string
           user_agent?: string | null
           user_email?: string | null
@@ -9358,6 +9367,10 @@ export type Database = {
           moved_rows: number
         }[]
       }
+      audit_log_conteudo_canonico: {
+        Args: { r: Database["public"]["Tables"]["audit_logs"]["Row"] }
+        Returns: string
+      }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
@@ -9403,7 +9416,6 @@ export type Database = {
         }[]
       }
       cleanup_health_scan_runs: { Args: never; Returns: undefined }
-      cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
       cleanup_old_integration_outbox: { Args: never; Returns: number }
       cleanup_old_login_attempts: { Args: never; Returns: number }
@@ -9984,6 +9996,17 @@ export type Database = {
       user_belongs_to_tenant: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
+      }
+      verificar_integridade_audit_logs: {
+        Args: never
+        Returns: {
+          detalhe: string
+          primeiro_divergente: string
+          sequencia_divergente: number
+          situacao: string
+          total_registros: number
+          verificados_ate: number
+        }[]
       }
       verify_xbz_cron_key: { Args: { _key: string }; Returns: boolean }
       xbz_cron_key_get: { Args: never; Returns: string }
