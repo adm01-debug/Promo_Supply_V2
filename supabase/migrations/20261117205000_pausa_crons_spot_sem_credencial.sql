@@ -15,6 +15,16 @@
 -- de 24h e limites diários (Stocks 96/dia, catálogo 22/dia) conferem.
 -- Nada precisa ser alterado no código — falta apenas a credencial.
 --
+-- ONDE ESTÁ A CREDENCIAL VÁLIDA (achado em 2026-11-17):
+-- NÃO solicitar chave nova ao fornecedor antes de checar aqui. O projeto irmão
+-- Promo_Gifts_V4 (Supabase ref doufsxqlfjyuvxuezpln) mantém a chave da SPOT
+-- ativa e em uso, guardada no Vault como SPOT_ACCESS_KEY e lida por
+-- fn_get_spot_access_key() (SECURITY DEFINER). Referência no repo daquele
+-- projeto: medallion/SPOT_INTEGRACAO_COMPLETA.md:136.
+-- Esse projeto pertence a outra conta/organização Supabase: o token usado por
+-- este repositório recebe HTTP 403 ao consultá-lo. É preciso um access token
+-- com permissão naquele projeto para copiar a chave.
+--
 -- PARA REATIVAR (depois de cadastrar SPOT_API_ACCESS_KEY nos secrets):
 --   select cron.alter_job(jobid, active := true)
 --     from cron.job where jobname like 'spot-api-sync%';
