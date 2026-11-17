@@ -15,8 +15,8 @@
 # incluindo um bug que derrubava aprovacao e fiscal para todos os usuarios.
 #
 # PROJECT REF: vem do secret VITE_SUPABASE_PROJECT_ID, igual ao types-sync.yml.
-# O supabase/config.toml tem um project_id divergente e NAO e usado aqui; quem
-# decide qual projeto e o oficial e o dono, nos secrets.
+# O supabase/config.toml ja aponta para o mesmo projeto (corrigido em 0bdc3cbf),
+# mas NAO e lido aqui: quem decide qual projeto e o oficial e o dono, nos secrets.
 #
 # FALHA FECHADA: sem SUPABASE_ACCESS_TOKEN ou sem VITE_SUPABASE_PROJECT_ID o
 # job falha. Sair verde sem publicar reproduziria exatamente o problema que

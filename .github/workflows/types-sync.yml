@@ -16,10 +16,10 @@
 # main — a Vercel builda main como producao, entao push direto seria deploy de
 # artefato nao revisado.
 #
-# PROJECT REF — DIVERGENCIA CONHECIDA NO REPO (nao resolvida aqui):
-#   supabase/config.toml  -> project_id = "trwgmplubeqxrxpncdgf"
-#   .env                  -> VITE_SUPABASE_URL = https://lmypcdfsrgfftzhxawao.supabase.co
-# Este workflow NAO escolhe entre os dois: a credencial e o secret
+# PROJECT REF — houve divergencia no repo (config.toml apontava para outro
+# projeto), resolvida em 0bdc3cbf: supabase/config.toml e .env agora apontam
+# ambos para lmypcdfsrgfftzhxawao.
+# Este workflow NAO le nenhum dos dois: a credencial e o secret
 # SUPABASE_DB_URL e a identidade esperada vem do secret VITE_SUPABASE_PROJECT_ID.
 # Se os dois secrets apontarem para projetos diferentes, o passo "Exigir
 # credencial do banco oficial" falha e nada e proposto. Quem decide qual ref e

@@ -7,8 +7,8 @@
 // (database-identity.json) com o SHA-256 do project-ref. Aqui esse arquivo não
 // existe, então o project-ref esperado vem do secret VITE_SUPABASE_PROJECT_ID
 // — que é o mesmo valor que o front usa em runtime. Isso evita chumbar o ref
-// no repositório (há divergência entre supabase/config.toml e .env; ver o
-// cabeçalho de .github/workflows/types-sync.yml).
+// no repositório: o ref oficial é decidido pelo dono, nos secrets, e não por um
+// arquivo versionado (ver o cabeçalho de .github/workflows/types-sync.yml).
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';

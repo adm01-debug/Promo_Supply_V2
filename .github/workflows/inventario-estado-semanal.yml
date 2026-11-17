@@ -19,9 +19,9 @@ name: Inventário do estado real (semanal)
 #     parte de BANCO com ::warning:: e segue com rotas + edges (nada de job vermelho todo dia);
 #     em workflow_dispatch, a falta do secret falha o job de propósito.
 #   - VITE_SUPABASE_PROJECT_ID / VITE_SUPABASE_URL (já existem): dão o ref do projeto em runtime.
-#     DIVERGÊNCIA REAL NO REPO, não resolvida aqui: supabase/config.toml diz
-#     `project_id = "trwgmplubeqxrxpncdgf"` e .env diz
-#     `VITE_SUPABASE_URL=https://lmypcdfsrgfftzhxawao.supabase.co`. Por isso nenhum ref está
+#     Houve divergência no repo (config.toml apontava para outro projeto), resolvida em
+#     0bdc3cbf: supabase/config.toml e .env agora apontam ambos para
+#     `lmypcdfsrgfftzhxawao`. Mesmo assim nenhum ref está
 #     escrito neste workflow nem no gerar-banco.mjs: o ref sai do secret. Quem manda é o secret —
 #     se ele apontar para o projeto errado, o inventário do banco não é gerado, porque o
 #     gerar-banco.mjs confere o ledger da resposta contra supabase/migrations/.
