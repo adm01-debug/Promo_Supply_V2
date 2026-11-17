@@ -64,6 +64,10 @@ test('extrairProjectRef: host direto e pooler, com toda senha esquisita, com e s
   assert.equal(m.extrairProjectRef(`postgresql://postgres:x@db.${REF}.supabase.co/postgres`), REF);
   assert.equal(m.extrairProjectRef(`postgresql://postgres:x@DB.${REF.toUpperCase()}.SUPABASE.CO:6543/postgres`), REF);
   assert.equal(m.extrairProjectRef(`postgresql://postgres%2E${REF}:x@aws-1-us-east-1.pooler.supabase.com/postgres`), REF);
+  // o pooler aceita qualquer role com sufixo .<ref>; o CI usa um usuario dedicado de leitura
+  for (const role of ['ci_snapshot', 'outro', 'leitor-ci']) {
+    assert.equal(m.extrairProjectRef(`postgresql://${role}.${REF}:x@aws-1-us-west-2.pooler.supabase.com:5432/postgres`), REF, role);
+  }
   assert.equal(m.extrairProjectRef(`postgresql://postgres:p@ss:w@rd@db.${REF}.supabase.co:5432/postgres`), REF, 'senha com @ e : crus');
 });
 
@@ -73,7 +77,7 @@ test('extrairProjectRef: tudo que nao e Supabase Cloud suportado vira null', () 
     `postgresql://postgres:x@db.${REF}.supabase.co.evil.com/postgres`, `postgresql://postgres:x@evil.com/db.${REF}.supabase.co`,
     `postgresql://postgres:x@db.curto.supabase.co/postgres`, `postgresql://postgres.${REF}:x@evil.com/postgres`,
     `postgresql://postgres.${REF}:x@pooler.supabase.com.evil.com/postgres`, `postgresql://postgres.${REF}:x@xpooler.supabase.com/postgres`,
-    `postgresql://outro.${REF}:x@aws.pooler.supabase.com/postgres`, 'postgresql://postgres:x@[::1]:5432/postgres',
+    `postgresql://semponto:x@aws.pooler.supabase.com/postgres`, 'postgresql://postgres:x@[::1]:5432/postgres',
     'postgresql://postgres:x@127.0.0.1:5432/postgres', `postgresql://postgres:pa#ss@db.${REF}.supabase.co/postgres`,
     `postgresql://postgres:pa/ss@db.${REF}.supabase.co/postgres`, `postgresql://postgres:pa?ss@db.${REF}.supabase.co/postgres`,
     `postgresql://post%ZZgres.${REF}:x@aws.pooler.supabase.com/postgres`,
