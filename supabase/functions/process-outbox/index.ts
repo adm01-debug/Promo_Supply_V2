@@ -108,10 +108,12 @@ serve(async (req) => {
         admin
           .from("system_alerts")
           .insert({
+            // `alert_type` e NOT NULL sem default e nao existe coluna `source`:
+            // sem isso o insert falhava sempre e o alerta de DLQ nunca era gravado.
+            alert_type: "outbox_dead_letter",
             severity: "critical",
-            source: "process-outbox",
             message: `Outbox item ${row.id} (target: ${row.target}) reached dead status after ${retries} retries. Last error: ${errMsg}`,
-            metadata: { id: row.id, target: row.target, endpoint: row.endpoint, retries, last_error: errMsg },
+            metadata: { source: "process-outbox", id: row.id, target: row.target, endpoint: row.endpoint, retries, last_error: errMsg },
           })
           .then(() => {/* fire-and-forget */})
           .catch(() => {/* system_alerts may not exist — silently ignore */});
