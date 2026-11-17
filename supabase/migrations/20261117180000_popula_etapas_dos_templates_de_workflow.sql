@@ -1,10 +1,13 @@
 -- WF-01: popula as etapas (nodes) e as conexoes (edges) dos templates de workflow.
--- Causa: os templates foram semeados apenas com `config.steps` (descricao declarativa),
--- mas `workflow_nodes`/`workflow_edges` ficaram vazias. O `workflow-engine` faz
--- `.eq('type','start').single()` e falha com PGRST116, derrubando `start_workflow`.
+-- Causa: os templates foram semeados apenas com config.steps (descricao declarativa),
+-- mas workflow_nodes e workflow_edges ficaram vazias. A edge function workflow-engine
+-- busca o node de tipo start com .single() e falha com PGRST116, derrubando a acao
+-- start_workflow para todos os templates.
 -- Idempotente: so gera o grafo de templates que ainda nao tem nenhum node.
+-- Templates cujo tenant_id nao existe em public.tenants sao ignorados: workflow_nodes
+-- tem FK para tenants, entao inserir para eles violaria a restricao.
 
-DO $$
+DO $mig$
 DECLARE
   tpl         RECORD;
   steps       jsonb;
@@ -19,7 +22,12 @@ DECLARE
   step_action text;
   y           int;
 BEGIN
-  FOR tpl IN SELECT id, tenant_id, name, config FROM public.workflow_templates ORDER BY created_at LOOP
+  FOR tpl IN
+    SELECT t.id, t.tenant_id, t.name, t.config
+    FROM public.workflow_templates t
+    JOIN public.tenants tn ON tn.id = t.tenant_id
+    ORDER BY t.created_at
+  LOOP
     CONTINUE WHEN EXISTS (SELECT 1 FROM public.workflow_nodes WHERE template_id = tpl.id);
 
     steps := COALESCE(tpl.config -> 'steps', '[]'::jsonb);
@@ -77,4 +85,4 @@ BEGIN
     INSERT INTO public.workflow_edges (template_id, tenant_id, source_node_id, target_node_id)
     VALUES (tpl.id, tpl.tenant_id, prev_id, end_id);
   END LOOP;
-END $$;
+END $mig$;
