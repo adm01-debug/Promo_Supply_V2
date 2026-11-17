@@ -129,3 +129,21 @@ END;
 $fn$;
 
 COMMIT;
+-- ---------------------------------------------------------------------------
+-- 4. Triggers de auditoria/telemetria que nunca foram criados em producao.
+--    Funcoes ja existiam; apenas os triggers estavam ausentes.
+-- ---------------------------------------------------------------------------
+DROP TRIGGER IF EXISTS trg_sanitize_audit_metadata ON public.audit_logs;
+CREATE TRIGGER trg_sanitize_audit_metadata
+  BEFORE INSERT ON public.audit_logs
+  FOR EACH ROW EXECUTE FUNCTION public.sanitize_audit_metadata();
+
+DROP TRIGGER IF EXISTS tr_enforce_audit_integrity ON public.audit_logs;
+CREATE TRIGGER tr_enforce_audit_integrity
+  BEFORE INSERT ON public.audit_logs
+  FOR EACH ROW EXECUTE FUNCTION public.enforce_audit_integrity();
+
+DROP TRIGGER IF EXISTS trig_cleanup_telemetry ON public.query_telemetry;
+CREATE TRIGGER trig_cleanup_telemetry
+  AFTER INSERT ON public.query_telemetry
+  FOR EACH STATEMENT EXECUTE FUNCTION public.cleanup_old_telemetry();
