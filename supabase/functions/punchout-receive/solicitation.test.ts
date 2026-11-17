@@ -29,6 +29,16 @@ Deno.test("usa apenas colunas reais de solicitacoes", () => {
   assertEquals("items" in row, false);
 });
 
+Deno.test("organization_id vem do perfil, nunca do tenant_id", () => {
+  const org = "33333333-3333-3333-3333-333333333333";
+  assertEquals(buildSolicitacaoFromCart([item()], sessao, "X", org).organization_id, org);
+  // sem perfil com organização, a coluna fica nula em vez de violar a FK
+  // solicitacoes_organization_id_fkey -> organizations(id)
+  const semOrg = buildSolicitacaoFromCart([item()], sessao, "X");
+  assertEquals(semOrg.organization_id, null);
+  assertEquals(semOrg.tenant_id, sessao.tenant_id);
+});
+
 Deno.test("status respeita solicitacoes_status_check e o guard de escrita", () => {
   const row = buildSolicitacaoFromCart([item()], sessao, "SOL-000001");
   assertEquals(row.status, "pendente");

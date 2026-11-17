@@ -151,9 +151,24 @@ serve(async (req) => {
     );
     if (numeroError) throw new Error("Error generating solicitation number: " + numeroError.message);
 
+    // `solicitacoes.organization_id` referencia `organizations(id)` e não o tenant.
+    // A origem correta é o perfil do solicitante (mesma fonte de get_user_grupo_id()).
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("current_organization_id")
+      .eq("user_id", session.user_id)
+      .maybeSingle();
+
     const { data: solicitation, error: solError } = await supabaseClient
       .from("solicitacoes")
-      .insert(buildSolicitacaoFromCart(cart.items, session, String(numeroData)))
+      .insert(
+        buildSolicitacaoFromCart(
+          cart.items,
+          session,
+          String(numeroData),
+          profile?.current_organization_id ?? null,
+        ),
+      )
       .select()
       .single();
 
