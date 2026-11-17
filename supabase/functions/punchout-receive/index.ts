@@ -7,6 +7,7 @@ import { safeTruncate } from "../_shared/logLevel.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
 import { isPunchOutSessionExpired } from "./session.ts";
+import { buildSolicitacaoFromCart } from "./solicitation.ts";
 
 const SOURCE = "punchout";
 
@@ -143,15 +144,16 @@ serve(async (req) => {
 
     const cart = { items: cartItems };
 
+    // `solicitacoes.numero` é NOT NULL e segue a mesma sequência usada pela UI.
+    const { data: numeroData, error: numeroError } = await supabaseClient.rpc(
+      "generate_sequential_number",
+      { prefix: "SOL", table_name: "solicitacoes" },
+    );
+    if (numeroError) throw new Error("Error generating solicitation number: " + numeroError.message);
+
     const { data: solicitation, error: solError } = await supabaseClient
       .from("solicitacoes")
-      .insert({
-        tenant_id: session.tenant_id,
-        requester_id: session.user_id,
-        status: "rascunho",
-        observacoes: "Importado via PunchOut",
-        items: cart.items,
-      })
+      .insert(buildSolicitacaoFromCart(cart.items, session, String(numeroData)))
       .select()
       .single();
 
