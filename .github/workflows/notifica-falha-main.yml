@@ -29,6 +29,9 @@ on:
       # psql ausente, banco fora do ar) ela para de avisar em silencio -- o pior caso,
       # porque "nenhuma issue" passa a significar "nenhuma divergencia".
       - Paridade migrations x banco (semanal)
+      # Deploy que falha em silencio foi o que deixou a producao rodando codigo
+      # de duas versoes atras; o aviso aqui e o que fecha esse buraco.
+      - Deploy das edge functions
     branches: [main]
     types: [completed]
 
