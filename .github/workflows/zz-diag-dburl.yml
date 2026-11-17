@@ -1,0 +1,29 @@
+name: zz diag dburl
+on:
+  push:
+    branches: [claude/diag-dburl-261117-1730]
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fingerprint do SUPABASE_DB_URL
+        env:
+          U: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          node -e '
+            const raw = process.env.U || "";
+            if (!raw) { console.log("VAZIO"); process.exit(0); }
+            console.log("len", raw.length);
+            console.log("prefixo", raw.slice(0, 11).replace(/[^a-z:\/]/g, "?"));
+            let u;
+            try { u = new URL(raw); } catch (e) { console.log("URL-PARSE-FALHOU", e.message); process.exit(0); }
+            console.log("protocol", u.protocol);
+            console.log("hostname", u.hostname);
+            console.log("port", u.port);
+            console.log("pathname", u.pathname);
+            console.log("search", u.search);
+            console.log("userLen", u.username.length, "userPattern", u.username.replace(/[a-z]/g,"a").replace(/[0-9]/g,"9"));
+            console.log("userPrefix", u.username.split(".")[0]);
+          '
