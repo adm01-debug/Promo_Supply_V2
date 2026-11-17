@@ -38,7 +38,7 @@ serve(async (req) => {
     const data = await validateBody(req, WorkflowContract, logger);
     const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
 
-    const tenant_id = await getTenantId(supabase, user, req);
+    const tenant_id = await getTenantId(supabase, user);
 
 
 
