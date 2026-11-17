@@ -1,0 +1,17 @@
+-- public.cleanup_old_audit_logs() era uma rotina de retencao orfa e QUEBRADA.
+--
+-- Por que quebrada: a clausula NOT IN cita os rotulos 'role_change',
+-- 'permission_grant' e 'permission_revoke', que NAO existem no enum
+-- public.audit_action_type (valores reais: create, update, delete, view, export,
+-- login, logout, approve, reject, cancel). Qualquer chamada aborta com
+-- 22P02 invalid input value for enum audit_action_type: "role_change".
+-- Verificado executando a funcao no projeto lmypcdfsrgfftzhxawao em 2026-11-17.
+--
+-- Por que orfa: zero chamadores. Nenhuma entrada em cron.job, nenhuma outra
+-- funcao em public a referencia e nenhum codigo de aplicacao a invoca.
+--
+-- Por que remover em vez de consertar: a retencao de audit_logs ja e feita por
+-- public.apply_lgpd_retention() (cron lgpd_retention_daily, diario), que mantem
+-- 5 anos conforme LGPD art.16. Manter esta funcao viva e armadilha: um agente
+-- futuro poderia agenda-la e encurtar a guarda legal de 5 anos para 365 dias.
+DROP FUNCTION IF EXISTS public.cleanup_old_audit_logs();
