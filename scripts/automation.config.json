@@ -114,6 +114,22 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/branch-hygiene-audit.yml, .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-paridade-banco",
+      "kind": "legacy",
+      "files": ["scripts/ci/paridade-migrations-banco.mjs"],
+      "manual": ["node", "scripts/ci/paridade-migrations-banco.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/paridade-banco.yml. Exige o secret SUPABASE_DB_URL e acesso ao banco de produção, por isso o dispatcher local não executa esta operação."
+    },
+    {
+      "id": "legacy-paridade-banco-testes",
+      "kind": "legacy",
+      "files": ["scripts/ci/paridade-migrations-banco.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/paridade-migrations-banco.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/guards.yml (glob scripts/ci/*.unit.mjs), .github/workflows/paridade-banco.yml. O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-c29f252692806070",
       "kind": "legacy",
       "files": ["scripts/ci/actions-kpi.unit.mjs"],
