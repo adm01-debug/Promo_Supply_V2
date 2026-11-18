@@ -54,7 +54,7 @@ const App = () => {
   usePerformanceMonitor();
 
   useEffect(() => {
-    logger.info("AplicaÃ§Ã£o inicializada");
+    logger.info("Aplicação inicializada");
   }, []);
 
   return (
