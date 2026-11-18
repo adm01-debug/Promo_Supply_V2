@@ -9,7 +9,7 @@ Nomes de variável abaixo; **valores só em `supabase secrets` / secret do GitHu
 | **Spot Gifts (API)** | `spot-api` | `https://ws.spotgifts.com.br/api/v1` | `SPOT_API_BASE_URL`, `SPOT_API_ACCESS_KEY`, `SPOT_CRON_KEY` |
 | **Spot Gifts (portal)** | `spot-proxy` | `https://www.spotgifts.com.br` (login no portal) | `SPOT_USERNAME`, `SPOT_PASSWORD` |
 | **Banco externo (ponte)** | `external-db-bridge` | outro Postgres/Supabase | `EXTERNAL_DB_URL`, `EXTERNAL_DB_KEY`; **allowlist** de tabelas/RPC em `_shared/external-bridge-allowlist.ts` — tabela fora da lista é recusada por design, não é bug |
-| **IA** | `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `guided-buying-ai` | AI Gateway da Lovable, `https://ai.gateway.lovable.dev/v1/chat/completions` (`_shared/ai_gateway.ts:12`) | `LOVABLE_API_KEY` |
+| **IA** | `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `guided-buying-ai` | OpenRouter (OpenAI-compatible), `https://openrouter.ai/api/v1/chat/completions` (`_shared/ai_gateway.ts:12`) | `OPENROUTER_API_KEY` |
 | **SEFAZ / fiscal** | `fiscal-orchestrator`, `process-invoice-idp` | SEFAZ | `SEFAZ_API_TOKEN`, `SEFAZ_WEBHOOK_URL` |
 | **E-mail e Slack** | `alert-dispatcher`, `weekly-report`, `weekly-summary-report`, `check-*` | Resend e Slack | `RESEND_API_KEY`, `ALERT_EMAIL_FROM`, `SLACK_WEBHOOK_URL`, `APP_URL` |
 | **Punchout (e-procurement)** | `punchout-setup`, `punchout-receive` | cXML do cliente | sessão/credencial vêm do banco; `punchout-receive` roda **sem verificação de JWT** |

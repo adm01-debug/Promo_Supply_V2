@@ -35,9 +35,9 @@ Deno.serve(async (req) => {
     const validatedData = await validateBody(req, DemandPredictionContract, logger);
     const { historicalData, category, timeframe } = validatedData;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+    if (!OPENROUTER_API_KEY) {
+      throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
     const systemPrompt = `Você é um especialista em análise de demanda e previsão de compras corporativas.
@@ -87,13 +87,13 @@ ${JSON.stringify(historicalData, null, 2)}
 
 Por favor, analise os padrões e forneça previsões detalhadas.`;
 
-    logger.info("Calling Lovable AI for demand prediction", { userId: user.id });
+    logger.info("Calling OpenRouter for demand prediction", { userId: user.id });
 
     const { response, usedFallback } = await callAIGatewayWithFallback(
       {
-        apiKey: LOVABLE_API_KEY,
+        apiKey: OPENROUTER_API_KEY,
         body: {
-          model: "google/gemini-2.0-flash",
+          model: "google/gemini-2.5-flash",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
