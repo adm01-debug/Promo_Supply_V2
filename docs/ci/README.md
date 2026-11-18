@@ -4,13 +4,14 @@
 > `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.
 > Para mudar o que está aqui, mude o bloco no YAML.
 
-**10 workflows.**
+**11 workflows.**
 
 | Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |
 |---|---|---|---|---|---|---|---|
 | Automação local | [`automation-local.yml`](../../.github/workflows/automation-local.yml) | PR para main, push em main e execução manual. | Contratos estáticos e suites locais de automação em fixtures isoladas. | O job falha; nenhum patch, commit, publicação ou deploy é executado. | O check fica vermelho no GitHub para o autor da PR e mantenedores. | — | — |
 | Branch Hygiene Audit | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | agendado (segunda 09:34 UTC) e dispatch | branches podaveis, PRs paradas ha mais de 7 dias, versoes da toolchain e SLA dos alertas de code scanning | SLA vencido deixa o job vermelho e publica o diagnostico se o relatorio foi gerado | issue `[branch-hygiene]` (relatorio) e issue `[kpi-actions]` (custo do Actions) | — | — |
 | Contexto para agentes de IA (1h) | [`contexto.yml`](../../.github/workflows/contexto.yml) | push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada hora (minuto 3); dispatch | branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests | falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação | ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha) | — | — |
+| Dependency Review | [`dependency-review.yml`](../../.github/workflows/dependency-review.yml) | PR para main. | Nenhuma dependência nova do PR tem vulnerabilidade conhecida de severidade alta ou crítica. | O job falha listando a dependência e o CVE; PRs do Dependabot e de forks são pulados. | O check fica vermelho no GitHub para o autor da PR. | — | — |
 | Deploy das edge functions | [`deploy-edge-functions.yml`](../../.github/workflows/deploy-edge-functions.yml) | push em main que toque supabase/functions; dispatch (uma funcao, lista ou todas) | cada edge function alterada no push esta deployada no projeto oficial, com a versao publicada subindo | o job fica vermelho e o deploy nao acontece; nenhuma funcao fica parcialmente publicada sem aviso | issue [falha-main] pelo notifica-falha-main.yml e o resumo do run com a lista do que subiu | — | — |
 | Guards offline do repositorio | [`guards.yml`](../../.github/workflows/guards.yml) | pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch | docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml | — | — |
 | Inventário do estado real (semanal) | [`inventario-estado-semanal.yml`](../../.github/workflows/inventario-estado-semanal.yml) | agendado (seg 10:41 UTC) e dispatch | inventario/estado (banco, rotas, edges) regerado do banco do projeto e do codigo | rotas/edges quebrados deixam o job vermelho; no agendado, banco sem secret so avisa | PR automation/inventario-estado com o inventario novo | — | — |
@@ -41,6 +42,13 @@
 - **O que prova:** branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests
 - **Quando falha:** falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação
 - **Quem é avisado:** ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha)
+
+### Dependency Review (`dependency-review.yml`)
+
+- **Gatilho:** PR para main.
+- **O que prova:** Nenhuma dependência nova do PR tem vulnerabilidade conhecida de severidade alta ou crítica.
+- **Quando falha:** O job falha listando a dependência e o CVE; PRs do Dependabot e de forks são pulados.
+- **Quem é avisado:** O check fica vermelho no GitHub para o autor da PR.
 
 ### Deploy das edge functions (`deploy-edge-functions.yml`)
 
