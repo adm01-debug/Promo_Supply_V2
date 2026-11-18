@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, BookOpen, ShieldCheck, Network, Settings2, Github, Terminal, Award, Layout as Architecture } from "lucide-react";
+import { FileText, BookOpen, ShieldCheck, Network, Settings2, ExternalLink, Terminal, Award, Layout as Architecture } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -10,30 +10,30 @@ import { toast } from "@/lib/feedbackToast";
 const DOCS_CONTENT = {
   architecture: `# Guia de Arquitetura - Freight Quest
 
-## 🗺️ Mapa de Pastas e Responsabilidades
+## ðŸ—ºï¸ Mapa de Pastas e Responsabilidades
 
 O projeto segue uma arquitetura modular baseada em React (Vite) e Supabase.
 
 | Camada | Pasta | Responsabilidade |
 | :--- | :--- | :--- |
-| **Páginas** | \`src/pages/\` | Componentes de rota, gerenciam o estado macro da tela e compõem as seções. |
-| **Componentes** | \`src/components/\` | UI Reutilizável. Dividida por domínio (ex: \`compras/\`, \`admin/\`) e base (\`ui/\` via shadcn). |
-| **Hooks** | \`src/hooks/\` | Lógica de negócio, integração com queries e estados complexos. Quase toda a inteligência reside aqui. |
-| **Serviços** | \`src/services/\` | Wrappers para APIs externas, persistência local e lógica de domínio pura (ex: \`auditService\`). |
-| **Lib/Config** | \`src/lib/\` | Instâncias globais (Supabase, Logger, Utils utilitários). |
-| **Backend** | \`supabase/functions/\` | Edge Functions para processamento pesado, integrações com IA e banco externo. |
+| **PÃ¡ginas** | \`src/pages/\` | Componentes de rota, gerenciam o estado macro da tela e compÃµem as seÃ§Ãµes. |
+| **Componentes** | \`src/components/\` | UI ReutilizÃ¡vel. Dividida por domÃ­nio (ex: \`compras/\`, \`admin/\`) e base (\`ui/\` via shadcn). |
+| **Hooks** | \`src/hooks/\` | LÃ³gica de negÃ³cio, integraÃ§Ã£o com queries e estados complexos. Quase toda a inteligÃªncia reside aqui. |
+| **ServiÃ§os** | \`src/services/\` | Wrappers para APIs externas, persistÃªncia local e lÃ³gica de domÃ­nio pura (ex: \`auditService\`). |
+| **Lib/Config** | \`src/lib/\` | InstÃ¢ncias globais (Supabase, Logger, Utils utilitÃ¡rios). |
+| **Backend** | \`supabase/functions/\` | Edge Functions para processamento pesado, integraÃ§Ãµes com IA e banco externo. |
 
 ---
 
-## 🔄 Fluxo de Dados e Exemplo de Chamada
+## ðŸ”„ Fluxo de Dados e Exemplo de Chamada
 
-### Camadas de Execução:
-1. **Componente UI**: Dispara uma ação (ex: clique em salvar).
-2. **Hook**: Recebe a ação, valida dados e chama o serviço ou função.
-3. **Serviço/Edge Function**: Executa a lógica pesada ou acessa o banco.
+### Camadas de ExecuÃ§Ã£o:
+1. **Componente UI**: Dispara uma aÃ§Ã£o (ex: clique em salvar).
+2. **Hook**: Recebe a aÃ§Ã£o, valida dados e chama o serviÃ§o ou funÃ§Ã£o.
+3. **ServiÃ§o/Edge Function**: Executa a lÃ³gica pesada ou acessa o banco.
 4. **Estado (React Query/Context)**: Atualiza o cache e reflete na UI.
 
-### Exemplo Real (Solicitação Neural):
+### Exemplo Real (SolicitaÃ§Ã£o Neural):
 \`\`\`typescript
 // No Componente: NovaSolicitacaoModal.tsx
 const { mutate } = useNeuralSolicitacao();
@@ -50,9 +50,9 @@ const processNeural = async (payload) => {
 
 ---
 
-## 🛠️ Contratos da Edge Function: \`external-db-bridge\`
+## ðŸ› ï¸ Contratos da Edge Function: \`external-db-bridge\`
 
-Esta função atua como um proxy seguro para bancos de dados externos (ERP, Legados).
+Esta funÃ§Ã£o atua como um proxy seguro para bancos de dados externos (ERP, Legados).
 
 ### 1. Request Format
 **Endpoint:** \`POST /functions/v1/external-db-bridge\`
@@ -70,12 +70,12 @@ Esta função atua como um proxy seguro para bancos de dados externos (ERP, Lega
 }
 \`\`\`
 
-**Operações Suportadas:**
+**OperaÃ§Ãµes Suportadas:**
 - \`select\`: Busca registros.
 - \`insert\`: Cria novos registros (requer campo \`data\`).
 - \`update\`: Atualiza (requer \`data\` e \`filters\`).
 - \`delete\`: Remove (requer \`filters\`).
-- \`rpc\`: Executa funções no banco externo (requer \`rpcName\` e \`params\`).
+- \`rpc\`: Executa funÃ§Ãµes no banco externo (requer \`rpcName\` e \`params\`).
 
 ### 2. Response Format
 \`\`\`json
@@ -91,13 +91,13 @@ Esta função atua como um proxy seguro para bancos de dados externos (ERP, Lega
 \`\`\`
 
 ### 3. Tratamento de Erros
-- **400 Bad Request**: Parâmetros inválidos ou erro de sintaxe SQL no banco externo.
-- **401 Unauthorized**: Token JWT inválido ou ausente.
-- **500 Internal Error**: Erro de configuração (ex: \`EXTERNAL_DB_URL\` não definida).
+- **400 Bad Request**: ParÃ¢metros invÃ¡lidos ou erro de sintaxe SQL no banco externo.
+- **401 Unauthorized**: Token JWT invÃ¡lido ou ausente.
+- **500 Internal Error**: Erro de configuraÃ§Ã£o (ex: \`EXTERNAL_DB_URL\` nÃ£o definida).
 
 ---
 
-## 📊 Diagrama de Sequência
+## ðŸ“Š Diagrama de SequÃªncia
 
 \`\`\`mermaid
 sequenceDiagram
@@ -107,10 +107,10 @@ sequenceDiagram
     participant Edge as Edge Function (Bridge)
     participant ExtDB as Banco de Dados Externo
 
-    UI->>Hook: Chama método (ex: fetchData)
+    UI->>Hook: Chama mÃ©todo (ex: fetchData)
     Hook->>Supabase: invoca 'external-db-bridge'
     Supabase->>Edge: Request POST (Payload + Auth)
-    Edge->>Edge: Valida Auth e Configuração
+    Edge->>Edge: Valida Auth e ConfiguraÃ§Ã£o
     Edge->>ExtDB: Executa Query (Select/Insert/RPC)
     ExtDB-->>Edge: Retorna Dados Brutos
     Edge->>Edge: Gera Telemetria (Audit Log)
@@ -119,117 +119,117 @@ sequenceDiagram
     Hook-->>UI: Atualiza Estado Local
     UI->>UI: Renderiza dados na tela
 \`\`\``,
-  excellence: `# Guia de Excelência e Perfeição em Engenharia de Software Full Stack
+  excellence: `# Guia de ExcelÃªncia e PerfeiÃ§Ã£o em Engenharia de Software Full Stack
 
-Este projeto segue os mais altos padrões de engenharia sênior, com foco em performance, segurança, escalabilidade e qualidade de código.
+Este projeto segue os mais altos padrÃµes de engenharia sÃªnior, com foco em performance, seguranÃ§a, escalabilidade e qualidade de cÃ³digo.
 
 ---
 
 ## 1. Frontend: Alta Performance e UX Fluida (Status: 10/10)
 
-### 1.1 Otimização de Performance
-*   **Lazy Loading Global:** Todas as rotas e componentes pesados (gráficos, tabelas complexas) utilizam \`React.lazy\` e \`Suspense\`.
+### 1.1 OtimizaÃ§Ã£o de Performance
+*   **Lazy Loading Global:** Todas as rotas e componentes pesados (grÃ¡ficos, tabelas complexas) utilizam \`React.lazy\` e \`Suspense\`.
 *   **Core Web Vitals:** Monitoramento em tempo real de LCP, CLS e FID integrado ao layout principal via \`usePerformanceMonitor\`.
-*   **Profiling:** Hook \`useRenderProfiler\` disponível para identificar gargalos de renderização em desenvolvimento.
-*   **Asset Management:** Compressão automática de imagens e suporte a formatos modernos implementado no catálogo de produtos.
+*   **Profiling:** Hook \`useRenderProfiler\` disponÃ­vel para identificar gargalos de renderizaÃ§Ã£o em desenvolvimento.
+*   **Asset Management:** CompressÃ£o automÃ¡tica de imagens e suporte a formatos modernos implementado no catÃ¡logo de produtos.
 
 ### 1.2 Arquitetura de Componentes
-*   **Functional Separation:** Componentes desacoplados de lógica de dados (ex: \`features/aprovacoes\`).
-*   **Design System:** Uso rigoroso de tokens semânticos Tailwind e HSL.
+*   **Functional Separation:** Componentes desacoplados de lÃ³gica de dados (ex: \`features/aprovacoes\`).
+*   **Design System:** Uso rigoroso de tokens semÃ¢nticos Tailwind e HSL.
 
 ---
 
-## 2. Backend e Segurança: Resiliência e Compliance (Status: 10/10)
+## 2. Backend e SeguranÃ§a: ResiliÃªncia e Compliance (Status: 10/10)
 
-### 2.1 Segurança em Camadas
-*   **Zero Trust RLS:** Políticas de Row Level Security garantem isolamento total entre tenants e acesso baseado em roles (RBAC).
+### 2.1 SeguranÃ§a em Camadas
+*   **Zero Trust RLS:** PolÃ­ticas de Row Level Security garantem isolamento total entre tenants e acesso baseado em roles (RBAC).
 *   **Auth Moderno:** Suporte nativo a Google OAuth e Passkeys (WebAuthn).
-*   **Validação Rigorosa:** Shared utilities para validação de esquemas \`zod\` em Edge Functions e chamadas RPC.
+*   **ValidaÃ§Ã£o Rigorosa:** Shared utilities para validaÃ§Ã£o de esquemas \`zod\` em Edge Functions e chamadas RPC.
 
 ### 2.2 Auditoria e Observabilidade
-*   **Logs de Auditoria:** Registro detalhado de operações críticas (Logins, Aprovações, Alterações de Dados).
+*   **Logs de Auditoria:** Registro detalhado de operaÃ§Ãµes crÃ­ticas (Logins, AprovaÃ§Ãµes, AlteraÃ§Ãµes de Dados).
 *   **Telemetria de Banco:** Monitoramento de queries lentas e performance do banco externo via dashboard administrativo.
 
 ---
 
-## 3. Qualidade de Código e QA (Status: 10/10)
+## 3. Qualidade de CÃ³digo e QA (Status: 10/10)
 
 ### 3.1 Testes Automatizados
-*   **Hooks Críticos:** Cobertura de testes unitários para \`useAuth\`, \`usePermissions\` e hooks de performance.
-*   **Componentes de UI:** Testes de renderização e lógica de conversão para componentes complexos (ex: \`PipelineChart\`).
-*   **Ambiente:** Configuração robusta com Vitest e Testing Library.
+*   **Hooks CrÃ­ticos:** Cobertura de testes unitÃ¡rios para \`useAuth\`, \`usePermissions\` e hooks de performance.
+*   **Componentes de UI:** Testes de renderizaÃ§Ã£o e lÃ³gica de conversÃ£o para componentes complexos (ex: \`PipelineChart\`).
+*   **Ambiente:** ConfiguraÃ§Ã£o robusta com Vitest e Testing Library.
 
 ### 3.2 Tipagem e Linting
-*   **Strict TypeScript:** Configuração \`strict: true\` e eliminação contínua de \`any\` em favor de interfaces de domínio.
-*   **Documentação ADR:** Decisões arquiteturais registradas em \`DOCS/ADR/\` para perenidade do conhecimento.
+*   **Strict TypeScript:** ConfiguraÃ§Ã£o \`strict: true\` e eliminaÃ§Ã£o contÃ­nua de \`any\` em favor de interfaces de domÃ­nio.
+*   **DocumentaÃ§Ã£o ADR:** DecisÃµes arquiteturais registradas em \`DOCS/ADR/\` para perenidade do conhecimento.
 
 ---
 
-## 4. Próximos Passos (Evolução Contínua)
+## 4. PrÃ³ximos Passos (EvoluÃ§Ã£o ContÃ­nua)
 
-1.  **Expansão de E2E:** Implementar fluxos completos de integração com Playwright.
-2.  **Storybook:** Documentar visualmente os átomos do design system.
+1.  **ExpansÃ£o de E2E:** Implementar fluxos completos de integraÃ§Ã£o com Playwright.
+2.  **Storybook:** Documentar visualmente os Ã¡tomos do design system.
 3.  **Edge Cache:** Otimizar headers de cache para dados de baixa volatilidade.
 
 ---
-*Documento certificado por Engenharia de Software Sênior / PhD QA*`,
+*Documento certificado por Engenharia de Software SÃªnior / PhD QA*`,
   adr0001: `# ADR 0001: Arquitetura Baseada em Funcionalidades (Feature-Based Architecture)
 
 ## Status
-Proposto e em implementação.
+Proposto e em implementaÃ§Ã£o.
 
 ## Contexto
-O projeto estava utilizando uma estrutura técnica tradicional (\`hooks/\`, \`components/\`, \`schemas/\`), o que dificulta a escalabilidade e a localização de lógicas relacionadas quando o sistema cresce.
+O projeto estava utilizando uma estrutura tÃ©cnica tradicional (\`hooks/\`, \`components/\`, \`schemas/\`), o que dificulta a escalabilidade e a localizaÃ§Ã£o de lÃ³gicas relacionadas quando o sistema cresce.
 
-## Decisão
+## DecisÃ£o
 Adotar uma estrutura baseada em funcionalidades dentro de \`src/features/\`. Cada funcionalidade deve conter:
-- \`hooks/\`: Hooks específicos da funcionalidade.
+- \`hooks/\`: Hooks especÃ­ficos da funcionalidade.
 - \`components/\`: Componentes exclusivos da funcionalidade.
-- \`schemas/\`: Esquemas de validação (Zod) e tipos.
-- \`services/\`: (Opcional) Chamadas de API específicas.
-- \`index.ts\`: Ponto de entrada público da funcionalidade.
+- \`schemas/\`: Esquemas de validaÃ§Ã£o (Zod) e tipos.
+- \`services/\`: (Opcional) Chamadas de API especÃ­ficas.
+- \`index.ts\`: Ponto de entrada pÃºblico da funcionalidade.
 
-## Consequências
-- **Positivas**: Melhor isolamento, facilidade de manutenção, redução de acoplamento circular.
-- **Negativas**: Maior profundidade de diretórios inicialmente.
+## ConsequÃªncias
+- **Positivas**: Melhor isolamento, facilidade de manutenÃ§Ã£o, reduÃ§Ã£o de acoplamento circular.
+- **Negativas**: Maior profundidade de diretÃ³rios inicialmente.
 - **Regra**: Componentes compartilhados continuam em \`src/components/ui\` ou \`src/components/common\`.`,
-  adr0002: `# ADR 0002: Estratégia de Autenticação e Autorização
+  adr0002: `# ADR 0002: EstratÃ©gia de AutenticaÃ§Ã£o e AutorizaÃ§Ã£o
 
 **Status:** Aceito
 **Data:** 2026-05-16
-**Autor:** Especialista Sênior em Engenharia / PhD QA
+**Autor:** Especialista SÃªnior em Engenharia / PhD QA
 
 ## Contexto e Problema
 
-O sistema exige um controle de acesso rigoroso para garantir que diferentes usuários (Solicitantes, Compradores, Aprovadores, Administradores) acessem apenas as funcionalidades e dados permitidos. Além disso, como um sistema Multi-Tenant, o isolamento de dados entre organizações é crítico.
+O sistema exige um controle de acesso rigoroso para garantir que diferentes usuÃ¡rios (Solicitantes, Compradores, Aprovadores, Administradores) acessem apenas as funcionalidades e dados permitidos. AlÃ©m disso, como um sistema Multi-Tenant, o isolamento de dados entre organizaÃ§Ãµes Ã© crÃ­tico.
 
-## Decisões Tomadas
+## DecisÃµes Tomadas
 
 ### 1. Supabase Auth
-Utilizamos o Supabase Auth para gerenciar o ciclo de vida do usuário (Signup, Login, MFA, Recuperação de Senha).
-*   **Motivo:** Integração nativa com o banco de dados e suporte a provedores OAuth (Google) e Passkeys (WebAuthn).
+Utilizamos o Supabase Auth para gerenciar o ciclo de vida do usuÃ¡rio (Signup, Login, MFA, RecuperaÃ§Ã£o de Senha).
+*   **Motivo:** IntegraÃ§Ã£o nativa com o banco de dados e suporte a provedores OAuth (Google) e Passkeys (WebAuthn).
 
 ### 2. Row Level Security (RLS)
 Todas as tabelas possuem RLS habilitado.
-*   **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuário logado.
-*   **Filtro por Role:** As políticas de RLS verificam a \`role\` do usuário (armazenada nos \`user_metadata\` ou tabela de perfis) para permitir SELECT/INSERT/UPDATE/DELETE.
+*   **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuÃ¡rio logado.
+*   **Filtro por Role:** As polÃ­ticas de RLS verificam a \`role\` do usuÃ¡rio (armazenada nos \`user_metadata\` ou tabela de perfis) para permitir SELECT/INSERT/UPDATE/DELETE.
 
 ### 3. Role-Based Access Control (RBAC) no Frontend
-*   Utilizamos o hook \`useAuth\` e o componente \`PermissionGate\` para esconder/mostrar elementos da UI baseados em permissões.
-*   As roles são hierárquicas: Administrador > Gerente > Comprador > Solicitante.
+*   Utilizamos o hook \`useAuth\` e o componente \`PermissionGate\` para esconder/mostrar elementos da UI baseados em permissÃµes.
+*   As roles sÃ£o hierÃ¡rquicas: Administrador > Gerente > Comprador > Solicitante.
 
 ### 4. Auditoria
-Todas as tentativas de login (sucesso/falha) e operações críticas (criação de pedidos, aprovações) são registradas em uma tabela de auditoria para compliance.
+Todas as tentativas de login (sucesso/falha) e operaÃ§Ãµes crÃ­ticas (criaÃ§Ã£o de pedidos, aprovaÃ§Ãµes) sÃ£o registradas em uma tabela de auditoria para compliance.
 
-## Consequências
+## ConsequÃªncias
 
-*   **Positivas:** Segurança robusta, conformidade com GDPR/LGPD, facilidade de implementação de novos níveis de acesso.
-*   **Negativas:** Pequeno overhead de latência nas políticas de RLS complexas.
+*   **Positivas:** SeguranÃ§a robusta, conformidade com GDPR/LGPD, facilidade de implementaÃ§Ã£o de novos nÃ­veis de acesso.
+*   **Negativas:** Pequeno overhead de latÃªncia nas polÃ­ticas de RLS complexas.
 
 ## Alternativas Consideradas
 
-*   **JWT Customizado:** Rejeitado devido à complexidade de manutenção e falta de suporte nativo a RLS do Supabase.
-*   **Autorização no Application Level:** Rejeitado por ser propenso a falhas humanas (esquecer um filtro de tenant em uma query).`
+*   **JWT Customizado:** Rejeitado devido Ã  complexidade de manutenÃ§Ã£o e falta de suporte nativo a RLS do Supabase.
+*   **AutorizaÃ§Ã£o no Application Level:** Rejeitado por ser propenso a falhas humanas (esquecer um filtro de tenant em uma query).`
 };
 
 const DeveloperDocs = () => {
@@ -249,15 +249,15 @@ const DeveloperDocs = () => {
           <div className="space-y-1">
             <h1 className="text-4xl font-black tracking-tight flex items-center gap-3">
               <Terminal className="w-8 h-8 text-primary" />
-              Documentação Técnica
+              DocumentaÃ§Ã£o TÃ©cnica
             </h1>
             <p className="text-muted-foreground text-lg">
-              Central de arquitetura, decisões e guias de engenharia do Freight Quest.
+              Central de arquitetura, decisÃµes e guias de engenharia do Freight Quest.
             </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => window.open('https://github.com', '_blank')}>
-              <Github className="w-4 h-4 mr-2" />
+              <ExternalLink className="w-4 h-4 mr-2" />
               Ver Repo
             </Button>
           </div>
@@ -298,7 +298,7 @@ const DeveloperDocs = () => {
                           </div>
                           <CardTitle className="text-xl">
                             {key === 'architecture' ? 'Guia de Arquitetura' : 
-                             key === 'excellence' ? 'Excelência Técnica' : 
+                             key === 'excellence' ? 'ExcelÃªncia TÃ©cnica' : 
                              key === 'adr0001' ? 'ADR 0001' : 'ADR 0002'}
                           </CardTitle>
                         </div>
@@ -347,13 +347,13 @@ const DeveloperDocs = () => {
             <aside className="space-y-6">
               <Card className="border-border/50 bg-card/30 backdrop-blur-xl">
                 <CardHeader>
-                  <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Navegação Rápida</CardTitle>
+                  <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">NavegaÃ§Ã£o RÃ¡pida</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-2">
                     <Button variant="ghost" className="justify-start gap-3 h-11 text-sm font-medium" onClick={() => handleCopyPath('src/pages/')}>
                       <Network className="w-4 h-4 text-violet-400" />
-                      Estrutura de Páginas
+                      Estrutura de PÃ¡ginas
                     </Button>
                     <Button variant="ghost" className="justify-start gap-3 h-11 text-sm font-medium" onClick={() => handleCopyPath('src/hooks/')}>
                       <Settings2 className="w-4 h-4 text-violet-400" />
