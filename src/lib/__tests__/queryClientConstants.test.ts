@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('@tanstack/react-query', () => ({
-  QueryClient: vi.fn().mockImplementation(() => ({})),
+  QueryClient: vi.fn().mockImplementation(function () { return {}; }),
   keepPreviousData: undefined,
 }));
 vi.mock('@tanstack/query-sync-storage-persister', () => ({

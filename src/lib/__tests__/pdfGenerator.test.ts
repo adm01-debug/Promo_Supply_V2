@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 
 // Mock jsPDF and autotable to avoid canvas/browser dependencies in tests
 vi.mock('jspdf', () => {
-  const MockJsPDF = vi.fn().mockImplementation(() => ({
+  const MockJsPDF = vi.fn().mockImplementation(function () {
+    return {
     internal: { pageSize: { getWidth: () => 210, getHeight: () => 297 } },
     setFillColor: vi.fn(),
     setTextColor: vi.fn(),
@@ -14,7 +15,8 @@ vi.mock('jspdf', () => {
     lastAutoTable: { finalY: 120 },
     save: vi.fn(),
     output: vi.fn().mockReturnValue('pdf-data'),
-  }));
+    };
+  });
   return { jsPDF: MockJsPDF };
 });
 
