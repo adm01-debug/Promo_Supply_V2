@@ -2,6 +2,7 @@ import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { detectConsecutiveFailures } from "./failures.ts";
 
 interface AlertResult {
   sla_warnings: number;
@@ -66,26 +67,14 @@ async function detectIntegrationFailures(
       continue;
     }
 
-    // Agrupa registros do mais recente para o mais antigo, por endpooint/entidade.
-    const groups = new Map<string, { status: string; created_at: string }[]>();
-    for (const row of data as Array<Record<string, string>>) {
-      const key = String(row[source.keyColumn] ?? 'desconhecido');
-      const arr = groups.get(key) ?? [];
-      arr.push({ status: row.status, created_at: row.created_at });
-      groups.set(key, arr);
-    }
-
-    for (const [key, rows] of groups) {
-      let count = 0;
-      const mostRecent = rows[0];
-      for (const row of rows) {
-        if (row.status !== 'success') count++;
-        else break;
-      }
-      if (count < INTEGRATION_FAILURE_THRESHOLD) continue;
-      const lastTs = Date.parse(mostRecent.created_at);
-      if (!lastTs || now - lastTs > INTEGRATION_LOOKBACK_MS) continue;
-      failures.push({ label: source.label, name: key, count, lastAt: mostRecent.created_at });
+    const rows = (data as Array<Record<string, string>>).map((row) => ({
+      key: String(row[source.keyColumn] ?? 'desconhecido'),
+      status: row.status,
+      created_at: row.created_at,
+    }));
+    const detected = detectConsecutiveFailures(rows, INTEGRATION_FAILURE_THRESHOLD, INTEGRATION_LOOKBACK_MS, now);
+    for (const f of detected) {
+      failures.push({ label: source.label, name: f.key, count: f.count, lastAt: f.lastAt });
     }
   }
 
