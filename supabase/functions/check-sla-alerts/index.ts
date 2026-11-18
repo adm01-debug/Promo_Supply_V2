@@ -8,6 +8,7 @@ interface AlertResult {
   sla_critical: number;
   pending_approvals: number;
   overdue_payments: number;
+  integration_failures_detected: number;
   notifications_sent: number;
   notifications_skipped: number;
 }
@@ -29,6 +30,66 @@ async function insertIfNotDuplicate(
 
   const { error } = await supabase.from('notifications').insert(notif);
   return !error;
+}
+
+
+const INTEGRATION_FAILURE_THRESHOLD = 3;
+const INTEGRATION_LOOKBACK_MS = 6 * 60 * 60 * 1000; // 6h: só alerta falhas numa janela recente
+
+const INTEGRATION_SOURCES = [
+  { table: 'spot_api_sync_log' as const, keyColumn: 'endpoint', label: 'SPOT' },
+] as const;
+
+interface IntegrationFailure {
+  label: string;
+  name: string;
+  count: number;
+  lastAt: string;
+}
+
+async function detectIntegrationFailures(
+  supabase: ReturnType<typeof createClient>
+): Promise<IntegrationFailure[]> {
+  const now = Date.now();
+  const failures: IntegrationFailure[] = [];
+
+  for (const source of INTEGRATION_SOURCES) {
+    const select = `status, created_at, error_message, ${source.keyColumn}`;
+    const { data, error } = await supabase
+      .from(source.table)
+      .select(select)
+      .order('created_at', { ascending: false })
+      .limit(200);
+
+    if (error || !data) {
+      console.warn(JSON.stringify({ level: 'WARN', event: 'integration_failure_check_skip', table: source.table, error: String(error) }));
+      continue;
+    }
+
+    // Agrupa registros do mais recente para o mais antigo, por endpooint/entidade.
+    const groups = new Map<string, { status: string; created_at: string }[]>();
+    for (const row of data as Array<Record<string, string>>) {
+      const key = String(row[source.keyColumn] ?? 'desconhecido');
+      const arr = groups.get(key) ?? [];
+      arr.push({ status: row.status, created_at: row.created_at });
+      groups.set(key, arr);
+    }
+
+    for (const [key, rows] of groups) {
+      let count = 0;
+      const mostRecent = rows[0];
+      for (const row of rows) {
+        if (row.status !== 'success') count++;
+        else break;
+      }
+      if (count < INTEGRATION_FAILURE_THRESHOLD) continue;
+      const lastTs = Date.parse(mostRecent.created_at);
+      if (!lastTs || now - lastTs > INTEGRATION_LOOKBACK_MS) continue;
+      failures.push({ label: source.label, name: key, count, lastAt: mostRecent.created_at });
+    }
+  }
+
+  return failures;
 }
 
 Deno.serve(async (req) => {
@@ -58,6 +119,7 @@ Deno.serve(async (req) => {
       sla_critical: 0,
       pending_approvals: 0,
       overdue_payments: 0,
+      integration_failures_detected: 0,
       notifications_sent: 0,
       notifications_skipped: 0,
     };
@@ -201,6 +263,38 @@ Deno.serve(async (req) => {
           else result.notifications_skipped++;
         }
       }
+    }
+
+    // 5. Detect repeated consecutive integration failures (SPOT sync, ERP sync)
+    const integrationFailures = await detectIntegrationFailures(supabase);
+    result.integration_failures_detected = integrationFailures.length;
+
+    if (integrationFailures.length > 0) {
+      const { data: admins } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .in('role', ['admin', 'coordinator']);
+      const adminIds = [...new Set((admins || []).map(a => a.user_id))];
+
+      for (const failure of integrationFailures) {
+        const title = `Integração ${failure.label}: ${failure.count} falhas consecutivas`;
+        const message = `A integração ${failure.label} (${failure.name}) acumula **${failure.count} falhas consecutivas** desde ${new Date(failure.lastAt).toLocaleString('pt-BR')}. Verifique o credenciamento e a disponibilidade do serviço.`;
+        for (const userId of adminIds) {
+          const sent = await insertIfNotDuplicate(supabase, {
+            user_id: userId,
+            type: 'integration_failure',
+            title,
+            message,
+            priority: 'critical',
+            data: { integration: failure.label, name: failure.name, count: failure.count, last_at: failure.lastAt },
+            action_url: '/',
+            action_label: 'Ver Integrações',
+          }, today);
+          if (sent) result.notifications_sent++;
+          else result.notifications_skipped++;
+        }
+      }
+      logger.warn('Integration failures detected', { failures: integrationFailures });
     }
 
     logger.info('Alert check complete', { result });
