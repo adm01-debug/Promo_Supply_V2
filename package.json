@@ -134,6 +134,7 @@
     "@vitest/coverage-v8": "^5.1.0",
     "artillery": "^2.0.34",
     "autoprefixer": "^10.6.2",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
@@ -151,6 +152,6 @@
     "typescript-eslint": "^8.72.2",
     "vite": "^8.3.8",
     "vite-plugin-pwa": "2.0.0",
-    "vitest": "^5.1.0"
+    "vitest": "5.1.1"
   }
 }
