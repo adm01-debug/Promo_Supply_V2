@@ -1,5 +1,5 @@
 /**
- * INT-01 extended: chamada unificada ao Lovable AI Gateway com
+ * INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com
  * circuit breaker + retry (5xx/429/timeout) + timeout de 30s.
  *
  * Sob falha sustentada (5 erros seguidos) abre o breaker por 30s,
@@ -9,7 +9,7 @@ import { fetchWithTimeout } from "./http.ts";
 import { retry } from "./retry.ts";
 import { getBreaker } from "./circuit_breaker.ts";
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const GATEWAY_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export class AIGatewayCircuitOpenError extends Error {
   constructor() {

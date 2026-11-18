@@ -43,10 +43,10 @@ Deno.serve(async (req) => {
     if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
     logger.info("Iniciando análise de risco de fornecedor", { userId });
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      logger.error("LOVABLE_API_KEY não configurada");
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+    if (!OPENROUTER_API_KEY) {
+      logger.error("OPENROUTER_API_KEY não configurada");
+      throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
     const { supplier, purchaseHistory, marketData } = await req.json();
@@ -85,7 +85,7 @@ Forneça uma análise de risco completa e acionável.`;
 
     const { response, usedFallback } = await callAIGatewayWithFallback(
       {
-        apiKey: LOVABLE_API_KEY,
+        apiKey: OPENROUTER_API_KEY,
         body: {
           model: "google/gemini-2.5-flash",
           messages: [
