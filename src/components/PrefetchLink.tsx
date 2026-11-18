@@ -1,6 +1,6 @@
 /**
- * Componente Link com prefetch automático de DADOS (React Query) e do
- * CHUNK JS da rota destino, no hover/focus do usuário.
+ * Componente Link com prefetch automÃƒÂ¡tico de DADOS (React Query) e do
+ * CHUNK JS da rota destino, no hover/focus do usuÃƒÂ¡rio.
  */
 
 import React, { useCallback, useRef, forwardRef } from 'react';
@@ -9,10 +9,11 @@ import { usePrefetch } from '@/hooks/usePrefetch';
 import { prefetchRouteChunk } from '@/lib/routePrefetch';
 
 
-interface PrefetchLinkProps extends LinkProps {
+interface PrefetchLinkProps extends Omit<LinkProps, 'prefetch'> {
   prefetch?: boolean;
   prefetchDelay?: number;
 }
+
 
 export const PrefetchLink = forwardRef<HTMLAnchorElement, PrefetchLinkProps>(
   function PrefetchLinkInner(

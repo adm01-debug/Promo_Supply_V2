@@ -54,7 +54,7 @@ const App = () => {
   usePerformanceMonitor();
 
   useEffect(() => {
-    logger.info("Aplicação inicializada");
+    logger.info("AplicaÃ§Ã£o inicializada");
   }, []);
 
   return (
@@ -69,7 +69,7 @@ const App = () => {
                 <Sonner />
                 <PWAInstallPrompt />
                 <AccessibilityPanel />
-                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <BrowserRouter>
                   <NavigationProvider>
                     <GlobalErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
