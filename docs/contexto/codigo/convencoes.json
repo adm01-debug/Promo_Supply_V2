@@ -1,0 +1,82 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "onde_ficam": {
+  "telas": [
+   "src/pages (53)"
+  ],
+  "componentes": [
+   "src/components (213)",
+   "src/pages (78)",
+   "src/features (33)"
+  ],
+  "hooks": [
+   "src/hooks (60)",
+   "src/features (11)",
+   "src/components (10)"
+  ],
+  "servicos_logica": [
+   "src/lib (23)",
+   "src/stores (5)",
+   "src/integrations (3)"
+  ],
+  "testes": [
+   "co-localizado (__tests__) (104)",
+   "outro (40)",
+   "co-localizado (*.test) (21)"
+  ],
+  "edge_functions": "supabase/functions",
+  "migrations": "supabase/migrations",
+  "scripts": [
+   "scripts/ci (17)",
+   "scripts/types-sync (7)",
+   "scripts/inventario (5)"
+  ],
+  "docs": [
+   "(raiz) (4)",
+   "docs (2)"
+  ]
+ },
+ "nomenclatura": {
+  "componentes": "PascalCase (84%)",
+  "hooks": "use + PascalCase",
+  "servicos": "camelCase (95%)",
+  "edge_functions": "kebab-case (97%)",
+  "tabelas": "snake_case (89%)"
+ },
+ "barrels_index": 4,
+ "extensao_componentes": [
+  ".tsx (327)"
+ ],
+ "alias_imports": {
+  "(raiz)": {
+   "@/": "src/"
+  }
+ },
+ "commits": {
+  "convencao": "conventional commits (observado)",
+  "exemplos": [
+   "docs: registra auditoria forense dos descartes sem trabalho perdido (#152)",
+   "docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)",
+   "chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)",
+   "chore(deps): bump framer-motion from 12.43.0 to 14.14.0 (#148)",
+   "fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)"
+  ]
+ },
+ "pr_template": null,
+ "codeowners": null,
+ "contributing": null,
+ "instrucoes_agentes": [
+  "AGENTS.md",
+  "CLAUDE.md"
+ ],
+ "typescript": {
+  "strict": true,
+  "noImplicitAny": null,
+  "tsconfigs": [
+   "tsconfig.app.json",
+   "tsconfig.json",
+   "tsconfig.node.json"
+  ]
+ }
+}

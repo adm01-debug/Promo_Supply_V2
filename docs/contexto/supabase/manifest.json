@@ -1,0 +1,8 @@
+{
+  "carried": [],
+  "entrada": "README.md",
+  "erros": [],
+  "gerado_em": "2026-11-18T19:10:38Z",
+  "gerador": "scripts/supabase_snapshot/snapshot.py",
+  "produtor": "supabase-snapshot"
+}

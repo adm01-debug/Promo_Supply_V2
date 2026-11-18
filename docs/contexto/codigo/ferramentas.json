@@ -1,0 +1,854 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "stack": {
+  "linguagens": [
+   "TypeScript (702)",
+   "SQL (315)",
+   "Markdown (78)",
+   "JavaScript (68)",
+   "JSON (24)",
+   "YAML (13)",
+   "Shell (7)",
+   "CSS (6)"
+  ],
+  "linguagem_principal": "TypeScript",
+  "framework": "React",
+  "backend_http": [],
+  "bundler": "Vite",
+  "roteador": "react-router",
+  "banco": "Supabase",
+  "testes": [
+   "vitest",
+   "playwright"
+  ],
+  "ui": [
+   "tailwind",
+   "radix/shadcn"
+  ],
+  "estado": [
+   "react-query",
+   "zustand"
+  ],
+  "gerenciador_pacotes": "bun",
+  "node": null,
+  "python": null,
+  "deploy": [
+   "vercel"
+  ],
+  "monorepo": null,
+  "pastas_fonte": [
+   "src"
+  ]
+ },
+ "workspaces": [],
+ "package": {
+  "nome": "vite_react_shadcn_ts",
+  "versao": "0.0.0",
+  "scripts": {
+   "automation:check": "node scripts/automation.mjs check --ref HEAD",
+   "automation:doctor": "node scripts/automation.mjs doctor",
+   "automation:graph": "node scripts/automation.mjs graph",
+   "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+   "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+   "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+   "automation:status": "node scripts/automation.mjs graph status",
+   "automation:test": "node scripts/automation.mjs test",
+   "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks",
+   "build": "vite build",
+   "build:dev": "vite build --mode development",
+   "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
+   "contexto:codigo": "node scripts/ai-context/gerar.mjs --out docs/contexto/codigo",
+   "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
+   "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
+   "dev": "vite",
+   "docs:ci": "node scripts/ci/render-workflow-docs.mjs",
+   "docs:matriz-edge": "node scripts/ci/gerar-matriz-edge-tabela.mjs",
+   "guards": "npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check",
+   "lint": "eslint .",
+   "maintenance:check": "sh scripts/maintenance/run.sh check --root . --ref origin/main",
+   "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
+   "maintenance:heal": "sh scripts/maintenance/run.sh heal --root . --ref origin/main",
+   "prepare": "",
+   "preview": "vite preview",
+   "test": "vitest run",
+   "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e",
+   "test:bridge": "bun run scripts/validate-bridge.ts",
+   "test:coverage": "vitest run --coverage",
+   "test:e2e": "playwright test",
+   "test:load": "npx artillery run src/tests/load/backend-stress.yml",
+   "test:maintenance": "node --test scripts/maintenance/maintenance.unit.mjs",
+   "test:rls": "vitest run --config ./vitest.rls.config.ts",
+   "test:scripts": "node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs",
+   "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
+   "test:watch": "vitest",
+   "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencias": 68,
+  "dev_dependencias": 35,
+  "principais": {
+   "@supabase/supabase-js": "^2.119.0",
+   "@tanstack/query-sync-storage-persister": "^5.107.1",
+   "@tanstack/react-query": "^5.107.1",
+   "@tanstack/react-query-persist-client": "^5.107.1",
+   "date-fns": "3.6.0",
+   "framer-motion": "^14.14.0",
+   "i18next": "^26.7.2",
+   "i18next-browser-languagedetector": "^8.3.0",
+   "next-themes": "^0.4.6",
+   "react": "^18.3.1",
+   "react-day-picker": "^8.10.2",
+   "react-dom": "^18.3.1",
+   "react-error-boundary": "^6.1.6",
+   "react-hook-form": "^7.92.0",
+   "react-i18next": "^17.1.13",
+   "react-markdown": "^10.1.0",
+   "react-router-dom": "^7.18.5",
+   "recharts": "^2.15.4",
+   "tailwindcss-animate": "^1.0.7",
+   "zod": "^4.6.7",
+   "zustand": "^5.1.0"
+  },
+  "engines": null,
+  "packageManager": null
+ },
+ "python": {
+  "dependencias": [
+   "psycopg"
+  ]
+ },
+ "configs": [
+  ".github/dependabot.yml",
+  "ai-context.config.json",
+  "components.json",
+  "eslint.config.js",
+  "package.json",
+  "playwright.config.ts",
+  "postcss.config.js",
+  "supabase/config.toml",
+  "tailwind.config.ts",
+  "tsconfig.app.json",
+  "tsconfig.json",
+  "tsconfig.node.json",
+  "vercel.json",
+  "vite.config.ts",
+  "vitest.config.ts"
+ ],
+ "workflows": [
+  {
+   "arquivo": ".github/workflows/automation-local.yml",
+   "nome": "Automação local",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "contracts"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/automation.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/branch-hygiene-audit.yml",
+   "nome": "Branch Hygiene Audit",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "34 9 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "audit"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: read"
+   ],
+   "scripts_usados": [
+    "scripts/ci/actions-kpi.mjs",
+    "scripts/ci/branch-podaveis.mjs",
+    "scripts/ci/bump-toolchain.mjs",
+    "scripts/ci/sla-code-scanning.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/contexto.yml",
+   "nome": "Contexto para agentes de IA (1h)",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "3 * * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "gate",
+    "codigo",
+    "banco",
+    "regras",
+    "publicar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ai-context/gerar.mjs",
+    "scripts/regras_negocio/generate.py",
+    "scripts/regras_negocio/indice.py",
+    "scripts/regras_negocio/test_generate.py",
+    "scripts/supabase_snapshot/snapshot.py",
+    "scripts/supabase_snapshot/test_snapshot.py"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_DB_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/dependency-review.yml",
+   "nome": "Dependency Review",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "dependency-review"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "actions/dependency-review-action"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/deploy-edge-functions.yml",
+   "nome": "Deploy das edge functions",
+   "gatilhos": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "deploy"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_ACCESS_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID"
+   ],
+   "actions": [
+    "actions/checkout",
+    "supabase/setup-cli"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/guards.yml",
+   "nome": "Guards offline do repositorio",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "suites",
+    "commits",
+    "dependencias",
+    "bundle"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ci/audit-prod.mjs",
+    "scripts/ci/check-bundle-secrets.mjs",
+    "scripts/ci/check-test-inventory.mjs",
+    "scripts/ci/commit-msg-lint.mjs",
+    "scripts/ci/gerar-matriz-edge-tabela.mjs",
+    "scripts/ci/render-workflow-docs.mjs"
+   ],
+   "npm_scripts": [
+    "build"
+   ],
+   "secrets": [
+    "VITE_SUPABASE_PROJECT_ID",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+   "nome": "Inventário do estado real (semanal)",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "41 10 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "gerar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/gerar-repo.mjs",
+    "scripts/inventario/gerar-rotas.mjs",
+    "scripts/inventario/mudou-conteudo.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_ACCESS_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "peter-evans/create-pull-request"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/main.yml",
+   "nome": "Freight Quest CI/CD",
+   "gatilhos": [
+    "pull_request",
+    "push"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "quality-gate",
+    "unit-integration-tests",
+    "e2e-tests"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ci/check-agents-md-integrity.mjs",
+    "scripts/rls-audit.ts"
+   ],
+   "npm_scripts": [
+    "lint",
+    "test",
+    "typecheck"
+   ],
+   "secrets": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/upload-artifact",
+    "denoland/setup-deno",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/notifica-falha-main.yml",
+   "nome": "Notifica falha na main",
+   "gatilhos": [
+    "workflow_run"
+   ],
+   "crons": [],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "notificar"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/github-script"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/paridade-banco.yml",
+   "nome": "Paridade migrations x banco (semanal)",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "0 9 * * 1"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "paridade"
+   ],
+   "permissoes": [
+    "contents: read",
+    "issues: write"
+   ],
+   "scripts_usados": [
+    "scripts/ci/paridade-migrations-banco.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_DB_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/setup-node"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/types-sync.yml",
+   "nome": "types-sync",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "7 * * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "preflight",
+    "ler-banco",
+    "gates-e-pr"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/types-sync/check-remocoes-destrutivas.mjs",
+    "scripts/types-sync/gen-types.sh",
+    "scripts/types-sync/identidade-banco.mjs",
+    "scripts/types-sync/install-pgbouncer.sh",
+    "scripts/types-sync/install-postgresql-client.sh",
+    "scripts/types-sync/typecheck-ratchet.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "GITHUB_TOKEN",
+    "SUPABASE_DB_URL",
+    "TYPES_SYNC_PR_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "oven-sh/setup-bun",
+    "peter-evans/create-pull-request",
+    "supabase/setup-cli"
+   ]
+  }
+ ],
+ "hooks_git": [],
+ "docs_raiz": [
+  {
+   "arquivo": "AGENTS.md",
+   "titulo": "AGENTS.md — Promo Supply V2",
+   "linhas": 128
+  },
+  {
+   "arquivo": "CLAUDE.md",
+   "titulo": null,
+   "linhas": 2
+  },
+  {
+   "arquivo": "ESTADO_ATUAL.md",
+   "titulo": "ESTADO ATUAL DO SISTEMA — Promo Supply V2",
+   "linhas": 264
+  },
+  {
+   "arquivo": "README.md",
+   "titulo": "Welcome to your Lovable project",
+   "linhas": 59
+  },
+  {
+   "arquivo": "docs/AUTOMACAO_LOCAL.md",
+   "titulo": "Automação local — Promo_Supply_V2",
+   "linhas": 124
+  },
+  {
+   "arquivo": "docs/prod-readiness.md",
+   "titulo": "Prontidão para produção — Promo Supply V2",
+   "linhas": 546
+  }
+ ],
+ "docs_em_subpastas": [
+  {
+   "pasta": "docs/agentes",
+   "arquivos_md": 10
+  },
+  {
+   "pasta": "docs/arsenal-auditoria",
+   "arquivos_md": 5
+  },
+  {
+   "pasta": "docs/contexto",
+   "arquivos_md": 2
+  },
+  {
+   "pasta": "docs/ci",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/conventions",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/mapa",
+   "arquivos_md": 1
+  }
+ ],
+ "changelog_topo": null,
+ "env": {
+  "declaradas_no_env_example": [
+   "VITE_APP_ENV",
+   "VITE_APP_NAME",
+   "VITE_BITRIX_WEBHOOK_URL",
+   "VITE_ENABLE_ANALYTICS",
+   "VITE_ENABLE_DEBUG",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_no_front": [
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_nas_edges": [
+   "ALERT_EMAIL_FROM",
+   "ALLOWED_ORIGINS",
+   "APP_URL",
+   "CRON_SECRET",
+   "EXTERNAL_DB_KEY",
+   "EXTERNAL_DB_URL",
+   "FUZZ_SEED",
+   "GITHUB_DISPATCH_TOKEN",
+   "GITHUB_REPO_RAW_BASE",
+   "OPENROUTER_API_KEY",
+   "PSV2_ENCRYPTION_KEY",
+   "PUNCHOUT_SESSION_TTL_MINUTES",
+   "RESEND_API_KEY",
+   "SCIM_BEARER_TOKEN",
+   "SEFAZ_API_TOKEN",
+   "SEFAZ_WEBHOOK_URL",
+   "SLACK_WEBHOOK_URL",
+   "SPOT_API_ACCESS_KEY",
+   "SPOT_API_BASE_URL",
+   "SPOT_CRON_KEY",
+   "SPOT_PASSWORD",
+   "SPOT_USERNAME",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
+   "VAPID_PRIVATE_KEY",
+   "VAPID_PUBLIC_KEY",
+   "XBZ_ENCRYPTION_KEY"
+  ],
+  "usadas_no_python": [
+   "AI_CONTEXT_INDEX",
+   "AI_CONTEXT_MODEL",
+   "AI_CONTEXT_PROFILE",
+   "AI_CONTEXT_SCHEMA_SNAPSHOT",
+   "CODE_SCAN_DIRS",
+   "GEN_TYPES",
+   "PGDUMP",
+   "PGDUMP_SCHEMAS",
+   "REPO_ROOT",
+   "SNAPSHOT_DIR",
+   "SNAPSHOT_EXCLUDE_SCHEMAS",
+   "SNAPSHOT_INCLUDE_SCHEMAS",
+   "SNAPSHOT_TEST_DB_URL",
+   "SUPABASE_ACCESS_TOKEN",
+   "SUPABASE_DB_URL",
+   "SUPABASE_PROJECT_REF",
+   "SUPABASE_SNAPSHOT_PUBLICACAO"
+  ],
+  "usadas_mas_nao_declaradas": [],
+  "secrets_em_workflows": [
+   "E2E_TEST_EMAIL",
+   "E2E_TEST_PASSWORD",
+   "GITHUB_TOKEN",
+   "SUPABASE_ACCESS_TOKEN",
+   "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
+   "TYPES_SYNC_PR_TOKEN",
+   "VITE_SUPABASE_PROJECT_ID",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ]
+ },
+ "deploy": {
+  "alvos": [
+   "vercel"
+  ],
+  "dockerfiles": [],
+  "compose": [],
+  "vercel": {
+   "framework": null,
+   "build": null,
+   "rewrites": 1,
+   "redirects": 0,
+   "headers": 0,
+   "ignore_command": null,
+   "crons": []
+  }
+ },
+ "integracoes": {
+  "sdks": [
+   {
+    "pacote": "i18next",
+    "servico": "i18next",
+    "versao": "^26.7.2"
+   },
+   {
+    "pacote": "react-i18next",
+    "servico": "i18next",
+    "versao": "^17.1.13"
+   },
+   {
+    "pacote": "@tanstack/react-query",
+    "servico": "react-query",
+    "versao": "^5.107.1"
+   },
+   {
+    "pacote": "@supabase/supabase-js",
+    "servico": "Supabase",
+    "versao": "^2.119.0"
+   },
+   {
+    "pacote": "zod",
+    "servico": "zod",
+    "versao": "^4.6.7"
+   }
+  ],
+  "hosts_externos": [
+   {
+    "host": "api.resend.com",
+    "arquivos": 2
+   },
+   {
+    "host": "wa.me",
+    "arquivos": 2
+   },
+   {
+    "host": "ws.spotgifts.com.br",
+    "arquivos": 2
+   },
+   {
+    "host": "www.spotgifts.com.br",
+    "arquivos": 2
+   },
+   {
+    "host": "api.pwnedpasswords.com",
+    "arquivos": 1
+   },
+   {
+    "host": "example.okta.com",
+    "arquivos": 1
+   },
+   {
+    "host": "fornecedor.com.br",
+    "arquivos": 1
+   },
+   {
+    "host": "hooks.slack.com",
+    "arquivos": 1
+   },
+   {
+    "host": "hub-harmony-unite.lovable.app",
+    "arquivos": 1
+   },
+   {
+    "host": "lmypcdfsrgfftzhxawao.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "openrouter.ai",
+    "arquivos": 1
+   },
+   {
+    "host": "raw.githubusercontent.com",
+    "arquivos": 1
+   },
+   {
+    "host": "xml.cxml.org",
+    "arquivos": 1
+   }
+  ],
+  "env_de_integracao": [
+   "CRON_SECRET",
+   "GITHUB_DISPATCH_TOKEN",
+   "OPENROUTER_API_KEY",
+   "RESEND_API_KEY",
+   "SCIM_BEARER_TOKEN",
+   "SEFAZ_API_TOKEN",
+   "SEFAZ_WEBHOOK_URL",
+   "SLACK_WEBHOOK_URL",
+   "VITE_BITRIX_WEBHOOK_URL"
+  ],
+  "webhooks_recebidos": [
+   "migrate-helper"
+  ],
+  "realtime": []
+ },
+ "permissoes": {
+  "papeis_no_codigo": [
+   {
+    "papel": "user",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "admin",
+    "ocorrencias": 5
+   },
+   {
+    "papel": "system",
+    "ocorrencias": 4
+   },
+   {
+    "papel": "assistant",
+    "ocorrencias": 1
+   }
+  ],
+  "enums_de_papel": [
+   {
+    "enum": "app_role",
+    "valores": [
+     "admin",
+     "coordinator",
+     "buyer",
+     "finance",
+     "viewer",
+     "supplier"
+    ]
+   }
+  ],
+  "rpcs_de_autorizacao": [
+   "admin_scan_runs_sla_status",
+   "has_role",
+   "is_account_locked"
+  ],
+  "guards": [
+   "src/features/auth/components/ProtectedRoute.tsx"
+  ],
+  "rotas_protegidas": 52,
+  "rotas_publicas": [
+   "/__dev/xbz-network-panel",
+   "/*",
+   "/auth"
+  ],
+  "menu_com_papeis": [],
+  "tabelas_sem_rls": []
+ },
+ "feature_flags": {
+  "total": 0,
+  "flags": [],
+  "tabelas_de_flag": [
+   "geo_settings",
+   "mfa_settings"
+  ]
+ },
+ "providers": {
+  "entrada": "src/main.tsx",
+  "providers": [
+   "AccessibilityProvider",
+   "AuthProvider",
+   "BrowserRouter",
+   "GlobalErrorBoundary",
+   "NavigationProvider",
+   "PersistQueryClientProvider",
+   "ThemeProvider",
+   "TooltipProvider"
+  ]
+ },
+ "i18n": {
+  "arquivos": 7,
+  "idiomas": [
+   "en",
+   "es",
+   "pt"
+  ],
+  "lib": [
+   "i18next"
+  ]
+ }
+}

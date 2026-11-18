@@ -1,0 +1,359 @@
+# Policies (RLS)
+
+
+Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes por tabela em `tables/`.
+
+| tabela | policy | cmd | tipo | roles | USING | WITH CHECK |
+|---|---|---|---|---|---|---|
+| public.account_lockouts | Admins can manage lockouts | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.account_lockouts | Users can check own lockout status | SELECT | PERMISSIVE | authenticated | `((email = auth.email()) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.active_sessions | Admins can delete any session | DELETE | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.active_sessions | Admins can view all sessions | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.active_sessions | Users can create their own sessions | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.active_sessions | Users can delete their own sessions | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.active_sessions | Users can update their own sessions | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.active_sessions | Users can view their own sessions | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.active_sessions | tenant_isolation_active_sessions | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.alert_subscriptions | Admins manage own alert subscriptions | ALL | PERMISSIVE | authenticated | `((auth.uid() = user_id) AND has_role(auth.uid(), 'admin'::app_role))` | `((auth.uid() = user_id) AND has_role(auth.uid(), 'admin'::app_role))` |
+| public.aliquotas_tributarias | Admin coord gerencia aliquotas | ALL | PERMISSIVE | authenticated | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| public.aliquotas_tributarias | Grupo ve suas aliquotas | SELECT | PERMISSIVE | authenticated | `(organization_id = get_user_grupo_id())` |  |
+| public.allowed_countries | Admins can manage allowed countries | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.allowed_countries | Admins can view allowed countries | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.approval_delegations | Users can create delegations from themselves | INSERT | PERMISSIVE | public |  | `((auth.uid() = delegante_id) OR has_role(auth.uid(), 'admin'::app_role))` |
+| public.approval_delegations | Users can delete their own delegations | DELETE | PERMISSIVE | public | `((auth.uid() = delegante_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.approval_delegations | Users can update their own delegations | UPDATE | PERMISSIVE | public | `((auth.uid() = delegante_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.approval_delegations | Users can view delegations they are part of | SELECT | PERMISSIVE | public | `((auth.uid() = delegante_id) OR (auth.uid() = delegado_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.approval_delegations | Users can view their organization delegations | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.approval_delegations | tenant_isolation_approval_delegations | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.approval_hierarchy | tenant_isolation_approval_hierarchy | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.approval_history | Restricted approval history insert | INSERT | PERMISSIVE | authenticated |  | `((auth.uid() = usuario_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.approval_history | Role-restricted approval history select | SELECT | PERMISSIVE | authenticated | `((auth.uid() = usuario_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.approval_history | tenant_isolation_approval_history | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.approval_rules | Admins can manage approval rules | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.approval_rules | Role-restricted approval rules select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.approval_rules | Users can view their organization rules | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.approval_rules | approval_rules_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.approval_rules | tenant_isolation_approval_rules | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.approval_steps | Admins and coordinators can create steps | INSERT | PERMISSIVE | authenticated |  | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.approval_steps | Approvers can update their steps | UPDATE | PERMISSIVE | public | `((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.approval_steps | Users can view assigned steps or admin | SELECT | PERMISSIVE | authenticated | `((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.approval_steps | approval_steps_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.approval_steps | approval_steps_insert_workflow_proprio | INSERT | PERMISSIVE | authenticated |  | `(EXISTS ( SELECT 1    FROM (approval_workflows w      JOIN solicitacoes s ON ((s.id = w.solicitacao_id)))   WHERE ((w.id = approval_steps.workflow_id) AND (s.solicitante_id = auth.uid()))))` |
+| public.approval_steps | approval_steps_select_grupo | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.approval_steps | approval_steps_skip_workflow_rejeitado | UPDATE | PERMISSIVE | authenticated | `((status = 'pending'::text) AND (EXISTS ( SELECT 1    FROM approval_workflows w   WHERE ((w.id = approval_steps.workflow_id) AND (w.status = 'rejected'::text)))))` | `(status = 'skipped'::text)` |
+| public.approval_steps | tenant_isolation_approval_steps | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.approval_workflows | Admins and coordinators can create workflows | INSERT | PERMISSIVE | authenticated |  | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.approval_workflows | Admins and coordinators can update workflows | UPDATE | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.approval_workflows | Role-restricted workflow access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.approval_workflows | Users can manage their organization workflows | ALL | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.approval_workflows | Users can view their organization workflows | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.approval_workflows | tenant_isolation_approval_workflows | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.auction_bids | tenant_isolation_auction_bids | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.audit_logs | Admins can view all audit logs | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs | authenticated_insert_audit_logs | INSERT | PERMISSIVE | authenticated |  | `(tenant_in_my_group(tenant_id) AND (auth.uid() IS NOT NULL))` |
+| public.audit_logs | tenant_isolation_audit_logs | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.audit_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202605 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202606 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202607 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202608 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202609 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_legacy_20260712 | audit_logs_legacy_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.blocked_countries | Admins can manage blocked countries | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.blocked_countries | Admins can view blocked countries | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.blocked_ips | Admins can manage blocked IPs | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.blocked_ips | Admins can view blocked IPs | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.budget_audit_logs | admin_view_budget_audit_logs | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.budget_transactions | Budget transactions viewable by finance roles | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |  |
+| public.budget_transactions | tenant_isolation_budget_transactions | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.categorias | Admins can manage categories | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.categorias | Tenant users can view categories | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.categorias | Users can view their organization categories | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.categorias | categorias_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.categorias | tenant_isolation_categorias | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.category_strategies | Tenant isolation for category_strategies | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
+| public.category_strategies | tenant_isolation | ALL | PERMISSIVE | public | `(organization_id = get_my_organization())` |  |
+| public.category_strategies | tenant_isolation_category_strategies | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.checkpoint_snapshots | ckpt_snapshots_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.contact_notes | Authenticated users can create contact notes | INSERT | PERMISSIVE | public |  | `((auth.uid() IS NOT NULL) AND (auth.uid() = author_id))` |
+| public.contact_notes | Author and privileged roles can view contact notes | SELECT | PERMISSIVE | authenticated | `((auth.uid() = author_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.contact_notes | Users can delete their own notes or admins | DELETE | PERMISSIVE | public | `((auth.uid() = author_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.contact_notes | Users can update their own notes | UPDATE | PERMISSIVE | public | `(auth.uid() = author_id)` |  |
+| public.contact_notes | tenant_isolation_contact_notes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.contract_documents | Admin coordinator finance can manage contract documents | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |
+| public.contract_documents | Role-restricted contract documents select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.contract_documents | buyer_le_contract_documents | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'buyer'::app_role)` |  |
+| public.contract_documents | tenant_isolation_contract_documents | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.contract_history | Role-restricted contract history access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.contract_history | Users can create own contract history entries | INSERT | PERMISSIVE | authenticated |  | `((auth.uid() IS NOT NULL) AND ((performed_by IS NULL) OR (performed_by = auth.uid())))` |
+| public.contract_history | tenant_isolation_contract_history | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.contract_items | Admin coordinator finance can manage contract items | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |
+| public.contract_items | Role-restricted contract items select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.contract_items | buyer_le_contract_items | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'buyer'::app_role)` |  |
+| public.contract_items | tenant_isolation_contract_items | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.contract_penalties | Admin coordinator finance can manage contract penalties | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |
+| public.contract_penalties | Role-restricted contract penalties select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.contract_penalties | tenant_isolation_contract_penalties | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.contracts | Admin coordinator finance can manage contracts | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |
+| public.contracts | Admins can delete contracts | DELETE | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.contracts | Role-restricted contract access | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |  |
+| public.contracts | buyer_le_contracts | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'buyer'::app_role)` |  |
+| public.contracts | tenant_isolation_contracts | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.cost_centers | Apenas administradores podem inserir centros de custo | INSERT | PERMISSIVE | authenticated |  | `has_role(auth.uid(), 'admin'::app_role)` |
+| public.cost_centers | cost_centers_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.cost_centers | cost_centers_select_grupo | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.cost_centers | tenant_isolation_cost_centers | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.cotacoes | Buyers coordinators admins can manage quotations | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.cotacoes | Role-restricted quotation access | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |  |
+| public.cotacoes | tenant_isolation_cotacoes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.creditos_fornecedor | Authorized roles can manage credits | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.creditos_fornecedor | tenant_isolation_creditos_fornecedor | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.cron_heartbeats | Authenticated users can read cron heartbeats | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.cron_heartbeats | Service role manages cron heartbeats | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.currencies | currencies_authenticated_read | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.dashboard_filter_favorites | Users can create their own filter favorites | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.dashboard_filter_favorites | Users can delete their own filter favorites | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.dashboard_filter_favorites | Users can update their own filter favorites | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.dashboard_filter_favorites | Users can view their own filter favorites | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.dashboard_layouts | Users can insert their own dashboard layouts | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.dashboard_layouts | Users can update their own dashboard layouts | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.dashboard_layouts | Users can view their own dashboard layouts | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.deadlock_snapshots | Admins can view deadlock snapshots | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.department_budgets | Admin and coordinator can manage budgets | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.department_budgets | Finance can manage budgets | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'finance'::app_role)` | `has_role(auth.uid(), 'finance'::app_role)` |
+| public.department_budgets | Role-restricted budget access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.department_budgets | Users can view their organization budgets | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.department_budgets | tenant_isolation_department_budgets | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.dependency_health | authenticated_read_dependency_health | SELECT | PERMISSIVE | authenticated | `(auth.uid() IS NOT NULL)` |  |
+| public.dependency_health | dependency_health_write_admin | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
+| public.dependency_health_history | authenticated_read_dependency_health_history | SELECT | PERMISSIVE | authenticated | `(auth.uid() IS NOT NULL)` |  |
+| public.dependency_health_history | dependency_health_history_insert_admin | INSERT | PERMISSIVE | authenticated |  | `has_role(auth.uid(), 'admin'::app_role)` |
+| public.devolucao_itens | Buyers coordinators admins can manage return items | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.devolucao_itens | Finance can view return items | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'finance'::app_role)` |  |
+| public.devolucao_itens | tenant_isolation_devolucao_itens | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.devolucoes | Buyers coordinators admins can manage returns | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.devolucoes | Finance can view returns | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'finance'::app_role)` |  |
+| public.devolucoes | tenant_isolation_devolucoes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.entity_versions | Users can insert versions | INSERT | PERMISSIVE | public |  | `((auth.uid() = changed_by) OR (changed_by IS NULL))` |
+| public.entity_versions | Users can view versions | SELECT | PERMISSIVE | public | `true` |  |
+| public.erp_connections | Admins and coordinators manage ERP connections within tenant | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| public.erp_field_mappings | ERP field mappings are visible to tenant admins | ALL | PERMISSIVE | authenticated | `(EXISTS ( SELECT 1    FROM erp_connections c   WHERE ((c.id = erp_field_mappings.connection_id) AND (c.tenant_id = current_tenant_id()))))` |  |
+| public.erp_sync_log | ERP sync logs are tenant-isolated | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.estoque | Estoque: ver da própria organização | SELECT | PERMISSIVE | authenticated | `(organization_id = ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.estoque | estoque_delete_admin_coord | DELETE | PERMISSIVE | authenticated | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |  |
+| public.estoque | estoque_insert_papeis | INSERT | PERMISSIVE | authenticated |  | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.estoque | estoque_update_papeis | UPDATE | PERMISSIVE | authenticated | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.estoque_movimentacoes | Movimentações: inserir na própria organização | INSERT | PERMISSIVE | authenticated |  | `(organization_id = ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |
+| public.estoque_movimentacoes | Movimentações: ver da própria organização | SELECT | PERMISSIVE | authenticated | `(organization_id = ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |  |
+| public.exchange_rates | exchange_rates_authenticated_read | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.financial_audit_logs | Admins can view all audit logs | SELECT | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = ANY (ARRAY['admin'::text, 'coordinator'::text])))))` |  |
+| public.fiscal_documents | Buyers coordinators admins can manage fiscal documents | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |
+| public.fiscal_documents | Role-restricted fiscal document access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.fiscal_documents | tenant_isolation_fiscal_documents | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.fiscal_events | fiscal_events tenant isolation | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.fornecedor_categorias | tenant_isolation_fornecedor_categorias | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.fornecedores | Buyers coordinators admins can manage suppliers | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.fornecedores | Role-restricted supplier access | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |  |
+| public.fornecedores | tenant_isolation_fornecedores | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.geo_access_logs | Admins can view geo access logs | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.geo_access_logs | Authenticated can insert geo access logs | INSERT | PERMISSIVE | public |  | `(auth.uid() IS NOT NULL)` |
+| public.geo_settings | Admins can manage geo settings | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.geo_settings | Authenticated users can view geo settings | SELECT | PERMISSIVE | public | `(auth.uid() IS NOT NULL)` |  |
+| public.health_scan_runs | Admins can read health_scan_runs | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.integration_outbox | outbox_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.integration_outbox | outbox_authenticated_enqueue | INSERT | PERMISSIVE | authenticated |  | `(created_by = auth.uid())` |
+| public.integration_outbox | outbox_service_role_all | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.ip_whitelist | Admins can manage IP whitelist | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.ip_whitelist | Admins can view IP whitelist | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.licitacao_lances | tenant_isolation_licitacao_lances | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.licitacao_propostas | Admins coordinators buyers can manage propostas | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.licitacao_propostas | tenant_isolation_licitacao_propostas | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.licitacoes | Admins and coordinators can manage licitacoes | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.licitacoes | licitacoes_select_comprador | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'buyer'::app_role)` |  |
+| public.licitacoes | tenant_isolation_licitacoes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.login_attempts | Admins can view login attempts | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.login_attempts | Authenticated can insert login attempts | INSERT | PERMISSIVE | authenticated |  | `((auth.uid() IS NOT NULL) AND (auth.email() = email))` |
+| public.mfa_settings | Users can manage their own MFA settings | ALL | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.negotiation_analyses | Buyers coordinators admins can manage negotiation analyses | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.negotiation_analyses | Role-restricted negotiation analysis access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.notification_preferences | Users can manage their own preferences | ALL | PERMISSIVE | public | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| public.notifications | Users can create own notifications | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.notifications | Users can update their own notifications | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.notifications | Users can view their own notifications | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.notifications | tenant_isolation_notifications | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.order_contracts | Buyers coordinators admins can manage order contracts | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.order_contracts | tenant_isolation_order_contracts | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.organizations | Users can see their organizations | SELECT | PERMISSIVE | public | `(id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
+| public.pagamentos | Finance and admin can view payments | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |  |
+| public.pagamentos | Finance can manage payments | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |
+| public.pagamentos | pagamentos_select_comprador | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'buyer'::app_role)` |  |
+| public.pagamentos | tenant_isolation_pagamentos | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.password_reset_requests | Admins can update any reset request | UPDATE | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.password_reset_requests | Admins can view all reset requests | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.password_reset_requests | Users can create their own reset requests | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.password_reset_requests | Users can view their own reset requests | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.payment_history | Finance admin can manage payment history | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.payment_history | tenant_isolation_payment_history | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.pedido_itens | Buyers coordinators admins can manage order items | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.pedido_itens | Role-restricted order items access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.pedido_itens | tenant_isolation_pedido_itens | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.pedidos | Buyers coordinators admins can manage orders | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.pedidos | Role-restricted order access | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))` |  |
+| public.pedidos | tenant_isolation_pedidos | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.penalty_escalation_config | Admins coordinators can manage escalation config | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.penalty_escalation_config | Role-restricted escalation config select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.penalty_escalation_config | tenant_isolation_penalty_escalation_config | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.permissions | Admins can manage permissions | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.permissions | Admins can view permissions | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.produto_fornecedores | Users can view product suppliers within tenant | SELECT | PERMISSIVE | authenticated | `(EXISTS ( SELECT 1    FROM profiles p   WHERE ((p.user_id = auth.uid()) AND (p.tenant_id = produto_fornecedores.tenant_id))))` |  |
+| public.produto_fornecedores | produto_fornecedores_escrita_papeis | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.produtos | Admin coordinator can manage produtos | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| public.produtos | Buyers coordinators admins can manage products | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.produtos | tenant_isolation_produtos | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.profiles | Admins can manage all profiles | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.profiles | Admins can view all profiles | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.profiles | Users can insert their own profile | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.profiles | Users can update their own profile | UPDATE | PERMISSIVE | authenticated | `(auth.uid() = user_id)` |  |
+| public.profiles | Users can view their own profile | SELECT | PERMISSIVE | authenticated | `((auth.uid() = user_id) OR has_role(auth.uid(), 'admin'::app_role))` |  |
+| public.profiles | profiles_tenant_isolation | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.punchout_catalogs | Admins and coordinators manage PunchOut catalogs within tenant | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| public.punchout_sessions | tenant isolation punchout_sessions | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.push_subscriptions | Users can manage their own subscriptions | ALL | PERMISSIVE | public | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| public.qualification_history | Role-restricted qualification history insert | INSERT | PERMISSIVE | authenticated |  | `((has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)) AND (performed_by = auth.uid()))` |
+| public.qualification_history | Role-restricted qualification history select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.qualification_requirements | Admin and coordinator can manage requirements | ALL | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::app_role, 'coordinator'::app_role])))))` |  |
+| public.qualification_requirements | Procurement roles can view qualification requirements | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.query_telemetry | Admins can manage telemetry | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
+| public.query_telemetry | Authenticated users can insert own telemetry | INSERT | PERMISSIVE | authenticated |  | `(user_id = auth.uid())` |
+| public.rate_limit_logs | Admins can view rate limit logs | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.rate_limit_logs | Authenticated insert rate limit logs | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() IS NOT NULL)` |
+| public.receiving_checklists | Buyers coordinators admins can manage checklists | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.receiving_checklists | Role-restricted checklists select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.receiving_checklists | tenant_isolation_receiving_checklists | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.repurchase_suggestions | Buyers coordinators admins can manage repurchase suggestions wi | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.repurchase_suggestions | Users can view repurchase suggestions within tenant | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.role_permissions | Admins can manage role permissions | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.role_permissions | Admins can view role permissions | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.saved_filters | Users can delete own filters | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.saved_filters | Users can insert own filters | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.saved_filters | Users can update own filters | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| public.saved_filters | Users can view own filters | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.savings_tracker | tenant_isolation_savings_tracker | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.scim_provisioning_log | SCIM logs isolated by tenant | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.secret_rotation_schedule | Admins manage secret rotation schedule | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` | `has_role(auth.uid(), 'admin'::app_role)` |
+| public.security_definer_baseline | Admins can view baseline | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.security_logs | Admins can view security logs | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.security_logs | Only admins can insert security logs | INSERT | PERMISSIVE | authenticated |  | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.solicitacoes | Only admins can delete requests | DELETE | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.solicitacoes | Tenant isolation for solicitacoes | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
+| public.solicitacoes | Users can create requests | INSERT | PERMISSIVE | public |  | `(auth.uid() = solicitante_id)` |
+| public.solicitacoes | Users can view their own requests | SELECT | PERMISSIVE | public | `((auth.uid() = solicitante_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |  |
+| public.solicitacoes | solicitacoes_select_grupo | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.solicitacoes | solicitacoes_update_admin_coord | UPDATE | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.solicitacoes | solicitacoes_update_comprador_gera_ordem | UPDATE | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'buyer'::app_role) AND (status = 'aprovada'::text))` | `(has_role(auth.uid(), 'buyer'::app_role) AND (status = 'em_andamento'::text))` |
+| public.solicitacoes | solicitacoes_update_proprias_nao_aprovadas | UPDATE | PERMISSIVE | authenticated | `((solicitante_id = auth.uid()) AND (status = ANY (ARRAY['pendente'::text, 'rejeitada'::text])))` | `((solicitante_id = auth.uid()) AND (status = ANY (ARRAY['pendente'::text, 'cancelada'::text])))` |
+| public.solicitacoes | tenant_isolation_solicitacoes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_awards | tenant_isolation_sourcing_awards | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_event_criteria | tenant_isolation_sourcing_event_criteria | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_event_lots | tenant_isolation_sourcing_event_lots | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_event_questions | tenant_isolation_sourcing_event_questions | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_events | tenant_isolation_sourcing_events | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_invitations | tenant_isolation_sourcing_invitations | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_pipeline | tenant_isolation_sourcing_pipeline | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_projects | tenant_isolation_sourcing_projects | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_response_answers | tenant_isolation_sourcing_response_answers | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_response_items | tenant_isolation_sourcing_response_items | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.sourcing_responses | tenant_isolation_sourcing_responses | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.spend_forecasts | Tenant isolation for spend_forecasts | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
+| public.spend_forecasts | tenant_isolation_spend_forecasts | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.spot_api_sync_log | Allowed roles can view spot sync log | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.spot_customization_options | Allowed roles can view spot customization | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.spot_estoque | Allowed roles can view spot estoque | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.spot_pedidos | Allowed roles can view spot orders | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.spot_pedidos | Buyers coordinators admins can manage spot orders | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+| public.spot_produtos | Allowed roles can view spot produtos | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.spot_sessions | No client access to spot sessions | ALL | PERMISSIVE | authenticated | `false` | `false` |
+| public.spot_skus | Allowed roles can view spot skus | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.sso_configurations | SSO configurations isolated by tenant | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.supplier_bonifications | Admins coordinators can manage bonifications | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.supplier_bonifications | Role-restricted bonifications select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
+| public.supplier_bonifications | tenant_isolation_supplier_bonifications | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.supplier_documents | Admin coordinator buyer can manage supplier documents | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| public.supplier_documents | Role-restricted supplier document select | SELECT | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |  |
+| public.supplier_documents | tenant_isolation_supplier_documents | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.supplier_qualification_scores | Admins and coordinators can manage qualification scores | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| public.supplier_qualification_scores | Role-restricted qualification scores select | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role))` |  |
+| public.supplier_qualification_scores | tenant_isolation_supplier_qualification_scores | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.system_alerts | Users view tenant alerts via verified mapping | SELECT | PERMISSIVE | authenticated | `(((tenant_id IS NOT NULL) AND tenant_in_my_group(tenant_id)) OR ((tenant_id IS NULL) AND has_role(auth.uid(), 'admin'::app_role)))` |  |
+| public.table_size_snapshots | admins_read_table_size_snapshots | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs | Admins can view telemetry logs | SELECT | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = 'admin'::text))))` |  |
+| public.telemetry_logs | authenticated_insert_telemetry_logs | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.telemetry_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202605 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.telemetry_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202606 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.telemetry_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202607 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.telemetry_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202608 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.telemetry_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202609 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.telemetry_logs_legacy_20260712 | Admins can view telemetry logs | SELECT | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = 'admin'::text))))` |  |
+| public.telemetry_logs_legacy_20260712 | admins_read_legacy_telemetry | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_legacy_20260712 | authenticated_insert_telemetry_logs | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.temp_file_snapshots | admin_read_temp_file_snapshots | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.tenants | tenants visible to members | SELECT | PERMISSIVE | authenticated | `user_belongs_to_tenant(auth.uid(), id)` |  |
+| public.unspsc_codes | unspsc_codes_authenticated_read | SELECT | PERMISSIVE | authenticated | `(auth.uid() IS NOT NULL)` |  |
+| public.user_filter_preferences | ufp_own_delete | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.user_filter_preferences | ufp_own_insert | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.user_filter_preferences | ufp_own_select | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.user_filter_preferences | ufp_own_update | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
+| public.user_organizations | Users can see their own memberships | SELECT | PERMISSIVE | public | `(user_id = auth.uid())` |  |
+| public.user_roles | Admins can manage all roles | ALL | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.user_roles | Users can view their own roles | SELECT | PERMISSIVE | authenticated | `(auth.uid() = user_id)` |  |
+| public.user_tenants | user_tenants own rows | SELECT | PERMISSIVE | authenticated | `(user_id = auth.uid())` |  |
+| public.user_tour_preferences | Users can delete their own tour preferences | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.user_tour_preferences | Users can insert their own tour preferences | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.user_tour_preferences | Users can update their own tour preferences | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.user_tour_preferences | Users can view their own tour preferences | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.wal_rate_snapshots | wal_snapshots_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.webauthn_challenges | Users can create their own challenges | INSERT | PERMISSIVE | public |  | `(((auth.uid() IS NOT NULL) AND ((user_id IS NULL) OR (user_id = auth.uid()))) OR ((auth.email() IS NOT NULL) AND ((email IS NULL) OR (email = auth.email()))))` |
+| public.webauthn_challenges | Users can delete their own challenges | DELETE | PERMISSIVE | public | `(((auth.uid() IS NOT NULL) AND (user_id = auth.uid())) OR ((auth.email() IS NOT NULL) AND (email = auth.email())))` |  |
+| public.webauthn_challenges | Users can view their own challenges | SELECT | PERMISSIVE | public | `(((auth.uid() IS NOT NULL) AND (user_id = auth.uid())) OR ((auth.email() IS NOT NULL) AND (email = auth.email())))` |  |
+| public.webauthn_credentials | Users can create their own credentials | INSERT | PERMISSIVE | public |  | `(auth.uid() = user_id)` |
+| public.webauthn_credentials | Users can delete their own credentials | DELETE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.webauthn_credentials | Users can update their own credentials | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.webauthn_credentials | Users can view their own credentials | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
+| public.webhook_events | Admins can view webhook events | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.workflow_approvals | Tenant isolation for workflow_approvals | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_audit_log | tenant_isolation_workflow_audit_log | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_edges | Tenant isolation for workflow_edges | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_instances | Tenant isolation for workflow_instances | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_logs | Tenant isolation for workflow_logs | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_nodes | Tenant isolation for workflow_nodes | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_sod_rules | tenant_isolation_workflow_sod_rules | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_tasks | tenant_isolation_workflow_tasks | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.workflow_templates | Tenant isolation for workflow_templates | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.xbz_carrinho_log | xbz_carrinho_log_group_read | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.xbz_cores | xbz_cores_read_authenticated | SELECT | PERMISSIVE | authenticated | `true` |  |
+| public.xbz_credentials | xbz_credentials_admin_manage | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))` | `(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))` |
+| public.xbz_pedido_status_history | xbz_status_history_group_read | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.xbz_pedidos | xbz_pedidos_group_read | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.xbz_produto_fiscal | xbz_produto_fiscal_group_read | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| public.xbz_produtos | xbz_produtos_group_read | SELECT | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` |  |
+| storage.objects | storage_fiscal_dono_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = 'fiscal-documents'::text) AND ((storage.foldername(name))[1] = 'uploads'::text) AND ((storage.foldername(name))[2] = (auth.uid())::text))` |  |
+| storage.objects | storage_fiscal_dono_insert | INSERT | PERMISSIVE | authenticated |  | `((bucket_id = 'fiscal-documents'::text) AND ((storage.foldername(name))[1] = 'uploads'::text) AND ((storage.foldername(name))[2] = (auth.uid())::text))` |
+| storage.objects | storage_fiscal_dono_select | SELECT | PERMISSIVE | authenticated | `((bucket_id = 'fiscal-documents'::text) AND ((storage.foldername(name))[1] = 'uploads'::text) AND ((storage.foldername(name))[2] = (auth.uid())::text))` |  |
+| storage.objects | storage_fiscal_gestor_select | SELECT | PERMISSIVE | authenticated | `((bucket_id = 'fiscal-documents'::text) AND ((storage.foldername(name))[1] = 'uploads'::text) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role)) AND (EXISTS ( SELECT 1    FROM profiles p   WHERE (((p.user_id)::text = (storage.foldername(objects.name))[2]) AND user_belongs_to_tenant(auth.uid(), p.tenant_id)))))` |  |
+| storage.objects | storage_produtos_dono_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = 'product-images'::text) AND ((owner = auth.uid()) OR (owner_id = (auth.uid())::text)))` |  |
+| storage.objects | storage_produtos_insert | INSERT | PERMISSIVE | authenticated |  | `((bucket_id = 'product-images'::text) AND ((storage.foldername(name))[1] = 'products'::text) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))` |
+| storage.objects | storage_produtos_leitura_publica | SELECT | PERMISSIVE | anon, authenticated | `(bucket_id = 'product-images'::text)` |  |
+| storage.objects | storage_tenant_admin_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = ANY (ARRAY['documentos'::text, 'comprovantes'::text])) AND has_role(auth.uid(), 'admin'::app_role) AND CASE     WHEN ((storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text) THEN user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid)     ELSE false END)` |  |
+| storage.objects | storage_tenant_dono_delete | DELETE | PERMISSIVE | authenticated | `((bucket_id = ANY (ARRAY['documentos'::text, 'comprovantes'::text])) AND ((storage.foldername(name))[2] = (auth.uid())::text) AND CASE     WHEN ((storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text) THEN user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid)     ELSE false END)` |  |
+| storage.objects | storage_tenant_dono_insert | INSERT | PERMISSIVE | authenticated |  | `((bucket_id = ANY (ARRAY['documentos'::text, 'comprovantes'::text])) AND ((storage.foldername(name))[2] = (auth.uid())::text) AND CASE     WHEN ((storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text) THEN user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid)     ELSE false END)` |
+| storage.objects | storage_tenant_dono_select | SELECT | PERMISSIVE | authenticated | `((bucket_id = ANY (ARRAY['documentos'::text, 'comprovantes'::text])) AND ((storage.foldername(name))[2] = (auth.uid())::text) AND CASE     WHEN ((storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text) THEN user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid)     ELSE false END)` |  |
+| storage.objects | storage_tenant_gestor_select | SELECT | PERMISSIVE | authenticated | `((((bucket_id = 'documentos'::text) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))) OR ((bucket_id = 'comprovantes'::text) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))) AND CASE     WHEN ((storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text) THEN user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid)     ELSE false END)` |  |

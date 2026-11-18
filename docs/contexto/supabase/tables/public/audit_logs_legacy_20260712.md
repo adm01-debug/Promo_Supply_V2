@@ -1,0 +1,83 @@
+# public.audit_logs_legacy_20260712
+
+| propriedade | valor |
+|---|---|
+| tipo | table |
+| owner | postgres |
+| RLS habilitado | sim |
+| RLS forçado (owner) | não |
+| policies | 1 |
+| realtime (publication) | não |
+| replica identity | default |
+| vem de extensão | não |
+
+
+## Colunas
+
+| # | coluna | tipo | nullable | default | identity/generated | comentário |
+|---|---|---|---|---|---|---|
+| 1 | `id` | `uuid` | não | `gen_random_uuid()` |  |  |
+| 2 | `user_id` | `uuid` | sim |  |  |  |
+| 3 | `user_email` | `text` | sim |  |  |  |
+| 4 | `user_name` | `text` | sim |  |  |  |
+| 5 | `action_type` | `audit_action_type` | não |  |  |  |
+| 6 | `entity_type` | `audit_entity_type` | não |  |  |  |
+| 7 | `entity_id` | `text` | sim |  |  |  |
+| 8 | `entity_description` | `text` | sim |  |  |  |
+| 9 | `old_values` | `jsonb` | sim |  |  |  |
+| 10 | `new_values` | `jsonb` | sim |  |  |  |
+| 11 | `metadata` | `jsonb` | sim | `'{}'::jsonb` |  |  |
+| 12 | `ip_address` | `text` | sim |  |  |  |
+| 13 | `user_agent` | `text` | sim |  |  |  |
+| 14 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
+| 15 | `organization_id` | `uuid` | sim |  |  |  |
+| 16 | `tenant_id` | `uuid` | não |  |  |  |
+
+
+## Constraints
+
+| nome | tipo | definição | on delete | on update | validada |
+|---|---|---|---|---|---|
+| audit_logs_legacy_20260712_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
+
+
+## Índices
+
+| nome | método | colunas | único | válido | predicado | definição |
+|---|---|---|---|---|---|---|
+| audit_logs_legacy_20260712_action_type_idx | btree | action_type | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_action_type_idx ON public.audit_logs_legacy_20260712 USING btree (action_type)` |
+| audit_logs_legacy_20260712_created_at_idx | btree | created_at | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_created_at_idx ON public.audit_logs_legacy_20260712 USING btree (created_at DESC)` |
+| audit_logs_legacy_20260712_entity_id_idx | btree | entity_id | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_entity_id_idx ON public.audit_logs_legacy_20260712 USING btree (entity_id)` |
+| audit_logs_legacy_20260712_entity_type_entity_id_idx | btree | entity_type, entity_id | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_entity_type_entity_id_idx ON public.audit_logs_legacy_20260712 USING btree (entity_type, entity_id)` |
+| audit_logs_legacy_20260712_entity_type_idx | btree | entity_type | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_entity_type_idx ON public.audit_logs_legacy_20260712 USING btree (entity_type)` |
+| audit_logs_legacy_20260712_organization_id_created_at_idx | btree | organization_id, created_at | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_organization_id_created_at_idx ON public.audit_logs_legacy_20260712 USING btree (organization_id, created_at DESC)` |
+| audit_logs_legacy_20260712_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX audit_logs_legacy_20260712_pkey ON public.audit_logs_legacy_20260712 USING btree (id)` |
+| audit_logs_legacy_20260712_tenant_id_idx | btree | tenant_id | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_tenant_id_idx ON public.audit_logs_legacy_20260712 USING btree (tenant_id)` |
+| audit_logs_legacy_20260712_user_id_idx | btree | user_id | não | sim |  | `CREATE INDEX audit_logs_legacy_20260712_user_id_idx ON public.audit_logs_legacy_20260712 USING btree (user_id)` |
+
+
+## Policies (RLS)
+
+### `audit_logs_legacy_admin_read`
+
+| campo | valor |
+|---|---|
+| comando | SELECT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `has_role(auth.uid(), 'admin'::app_role)` |
+| WITH CHECK |  |
+
+
+## Triggers
+
+_nenhum_
+
+
+## Grants
+
+| role | privilégios |
+|---|---|
+| anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
