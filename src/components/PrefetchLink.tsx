@@ -1,6 +1,6 @@
 /**
- * Componente Link com prefetch automÃ¡tico de DADOS (React Query) e do
- * CHUNK JS da rota destino, no hover/focus do usuÃ¡rio.
+ * Componente Link com prefetch automático de DADOS (React Query) e do
+ * CHUNK JS da rota destino, no hover/focus do usuário.
  */
 
 import React, { useCallback, useRef, forwardRef } from 'react';
