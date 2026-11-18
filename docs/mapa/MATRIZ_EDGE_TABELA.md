@@ -33,6 +33,7 @@
 | `migrate-storage-paths` | `profiles` |
 | `process-invoice-idp` | — |
 | `process-outbox` | `integration_outbox`, `system_alerts` |
+| `punchout-encrypt` | `user_tenants` |
 | `punchout-receive` | `profiles`, `punchout_sessions`, `solicitacoes` |
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
 | `run-audit` | — |
@@ -88,7 +89,7 @@
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
 | `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
-| `user_tenants` | `punchout-setup` |
+| `user_tenants` | `punchout-encrypt`, `punchout-setup` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
 | `webauthn_credentials` | `webauthn-authenticate`, `webauthn-register` |
