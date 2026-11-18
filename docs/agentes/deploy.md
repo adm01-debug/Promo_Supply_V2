@@ -48,7 +48,7 @@ Ler quando for confirmar um deploy, mexer em env var do front, domínio ou publi
 
 - Vars `VITE_*` entram no bundle e são **públicas** — nunca segredo com prefixo `VITE_`.
 - **Nunca** colocar `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_DB_URL`, `EXTERNAL_DB_KEY`, `XBZ_ENCRYPTION_KEY`,
-  `LOVABLE_API_KEY`, `RESEND_API_KEY`, `SEFAZ_API_TOKEN`, `SPOT_*` ou `CRON_SECRET` na Vercel: são de
+  `OPENROUTER_API_KEY`, `RESEND_API_KEY`, `SEFAZ_API_TOKEN`, `SPOT_*` ou `CRON_SECRET` na Vercel: são de
   servidor e vivem nas edge functions (`supabase secrets`).
 - O front lê exatamente **duas** vars (`src/integrations/supabase/client.ts:4-5`): `VITE_SUPABASE_URL` e
   `VITE_SUPABASE_PUBLISHABLE_KEY`. `VITE_SUPABASE_PROJECT_ID` é usada pelos workflows;

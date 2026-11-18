@@ -50,9 +50,9 @@ serve(async (req) => {
       numCotacoes: cotacoes?.length 
     });
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      logger.error("LOVABLE_API_KEY não configurada");
+    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+    if (!OPENROUTER_API_KEY) {
+      logger.error("OPENROUTER_API_KEY não configurada");
       throw new Error("Critical: AI Gateway Credentials missing");
     }
 
@@ -65,7 +65,7 @@ ${historico_precos ? `Histórico de preços anteriores: ${JSON.stringify(histori
 Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     const response = await callAIGateway({
-      apiKey: LOVABLE_API_KEY!,
+      apiKey: OPENROUTER_API_KEY!,
       body: {
         model: "google/gemini-3-flash-preview",
         messages: [

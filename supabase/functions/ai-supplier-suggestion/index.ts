@@ -35,9 +35,9 @@ Deno.serve(async (req) => {
     const validatedData = await validateBody(req, SupplierSuggestionContract, logger);
     const { productDescription, category, quantity, budget, purchaseHistory, suppliers } = validatedData;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+    if (!OPENROUTER_API_KEY) {
+      throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
     const systemPrompt = `Você é um assistente especialista em compras corporativas e gestão de fornecedores.
@@ -78,13 +78,13 @@ ${suppliers ? JSON.stringify(suppliers, null, 2) : "Nenhum fornecedor cadastrado
 
 Por favor, analise e forneça suas recomendações.`;
 
-    logger.info("Calling Lovable AI for supplier suggestions", { userId: user.id });
+    logger.info("Calling OpenRouter for supplier suggestions", { userId: user.id });
 
     const { response, usedFallback } = await callAIGatewayWithFallback(
       {
-        apiKey: LOVABLE_API_KEY,
+        apiKey: OPENROUTER_API_KEY,
         body: {
-          model: "google/gemini-2.0-flash",
+          model: "google/gemini-2.5-flash",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
