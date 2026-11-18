@@ -118,7 +118,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/typography": "^0.5.20",
     "@testing-library/dom": "^10.4.2",
@@ -134,10 +134,10 @@
     "@vitest/coverage-v8": "^5.1.0",
     "artillery": "^2.0.34",
     "autoprefixer": "^10.6.2",
-    "eslint": "^10.15.0",
+    "eslint": "^9.39.5",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.5.8",
     "globals": "^17.14.0",
     "husky": "^9.1.7",
