@@ -183,7 +183,7 @@ jobs:
 
       - name: Setup Supabase CLI ${{ env.SUPABASE_CLI_VERSION }}
         if: env.SYNC_SKIPPED != '1'
-        uses: supabase/setup-cli@d239d1052f6f024a8d746d7e5aeddead63b9cb53 # v3.1.0
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v3.2.0
         with:
           version: ${{ env.SUPABASE_CLI_VERSION }}
 
@@ -498,7 +498,7 @@ jobs:
         if: >-
           steps.gate1.outputs.passed == 'true' &&
           steps.gate2.outputs.passed == 'true'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         env:
           HUSKY: '0'  # Evita que um hook pre-push bloqueie o push interno da action
         with:
