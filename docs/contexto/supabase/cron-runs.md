@@ -7,27 +7,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-19 02:00:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-18 02:00:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-17 02:00:00 | succeeded | 0.02 | DELETE 0 |
-| 2026-11-16 02:00:00 | succeeded | 0.02 | DELETE 0 |
 
 
 ## 2 · cleanup-system-alerts
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-19 02:10:00 | succeeded | 0.04 | DELETE 0 |
 | 2026-11-18 02:10:00 | succeeded | 0.05 | DELETE 0 |
 | 2026-11-17 02:10:00 | succeeded | 0.02 | DELETE 0 |
-| 2026-11-16 02:10:00 | succeeded | 0.04 | DELETE 0 |
 
 
 ## 5 · cleanup-rate-limit-logs
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-19 01:45:00 | succeeded | 0.05 | DELETE 0 |
+| 2026-11-19 00:45:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-18 23:45:00 | succeeded | 0.04 | DELETE 0 |
-| 2026-11-18 22:45:00 | succeeded | 0.04 | DELETE 0 |
-| 2026-11-18 21:45:00 | succeeded | 0.05 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,36 +73,36 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-19 00:35:00 | succeeded | 0.01 | 1 row |
-| 2026-11-19 00:34:00 | succeeded | 0.02 | 1 row |
-| 2026-11-19 00:33:00 | succeeded | 0.03 | 1 row |
+| 2026-11-19 02:17:00 | succeeded | 0.01 | 1 row |
+| 2026-11-19 02:16:00 | succeeded | 0.03 | 1 row |
+| 2026-11-19 02:15:00 | succeeded | 0.01 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-19 00:30:00 | succeeded | 0.24 | 1 row |
-| 2026-11-19 00:15:00 | succeeded | 0.18 | 1 row |
-| 2026-11-19 00:00:00 | succeeded | 0.24 | 1 row |
+| 2026-11-19 02:15:00 | succeeded | 0.21 | 1 row |
+| 2026-11-19 02:00:00 | succeeded | 0.13 | 1 row |
+| 2026-11-19 01:45:00 | succeeded | 0.19 | 1 row |
 
 
 ## 23 · xbz-sync-pedidos-30min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-19 00:30:00 | succeeded | 0.03 | 1 row |
-| 2026-11-19 00:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-18 23:30:00 | succeeded | 0.01 | 1 row |
+| 2026-11-19 02:00:00 | succeeded | 0.03 | 1 row |
+| 2026-11-19 01:30:00 | succeeded | 0.02 | 1 row |
+| 2026-11-19 01:00:00 | succeeded | 0.02 | 1 row |
 
 
 ## 24 · xbz-sync-watchdog-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-19 02:15:00 | succeeded | 0.96 | 1 row |
+| 2026-11-19 01:15:00 | succeeded | 1.28 | 1 row |
 | 2026-11-19 00:15:00 | succeeded | 0.73 | 1 row |
-| 2026-11-18 23:15:00 | succeeded | 0.79 | 1 row |
-| 2026-11-18 22:15:00 | succeeded | 0.90 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -125,9 +125,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-19 00:30:00 | succeeded | 0.03 | 1 row |
-| 2026-11-19 00:15:00 | succeeded | 0.01 | 1 row |
-| 2026-11-19 00:00:00 | succeeded | 0.02 | 1 row |
+| 2026-11-19 02:15:00 | succeeded | 0.01 | 1 row |
+| 2026-11-19 02:00:00 | succeeded | 0.03 | 1 row |
+| 2026-11-19 01:45:00 | succeeded | 0.01 | 1 row |
 
 
 ## 110 · limpa-historico-cron-semanal
