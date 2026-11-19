@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `69e604f2060a6f1c752a23ee3fdf3c6cccb85a95` (2026-11-19T08:26:31-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d897c776836aabb8380b0fb8a0e23eb871ebb201` (2026-11-19T11:10:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1237 |
 | arquivos_codigo | 773 |
-| linhas_codigo | 162265 |
+| linhas_codigo | 162272 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -408,6 +408,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `d897c77` Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103
+- 2026-11-19 `cfa585f` fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup
 - 2026-11-19 `69e604f` fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)
 - 2026-11-19 `e238664` fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)
 - 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
@@ -421,8 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `922f6df` chore(deps): bump the producao-minor-patch group with 3 updates (#145)
 - 2026-11-18 `2dc69d6` chore(ci): bump the acoes group with 8 updates (#144)
 - 2026-11-18 `0a3c2c2` ci(seguranca): dependency review nos PRs e dependabot agrupado (#142)
-- 2026-11-18 `7d7348f` feat(alerta): detecta falhas consecutivas de integrações no check-sla-alerts (#143)
-- 2026-11-18 `049f54c` chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -252,7 +252,7 @@
    "nome": "check-cotacao-followup",
    "entrada": "supabase/functions/check-cotacao-followup/index.ts",
    "arquivos": 1,
-   "linhas": 159,
+   "linhas": 166,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

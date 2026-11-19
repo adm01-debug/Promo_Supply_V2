@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103",
+   "fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup",
    "fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)",
    "fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)",
-   "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)",
-   "docs: registra auditoria forense dos descartes sem trabalho perdido (#152)",
-   "docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)"
+   "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)"
   ]
  },
  "pr_template": null,

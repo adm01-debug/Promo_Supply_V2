@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "69e604f2060a6f1c752a23ee3fdf3c6cccb85a95",
+  "sha": "d897c776836aabb8380b0fb8a0e23eb871ebb201",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 12:17 UTC",
+  "generated_at": "2026-11-19 14:10 UTC",
   "files_total": 1238,
   "code_files": 1091,
-  "code_lines": 188187,
+  "code_lines": 188194,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "445dcdab351990f0",
+ "facts_hash": "1df824df61f6328e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35221,7 +35221,7 @@
   {
    "module": "supabase/functions",
    "files": 77,
-   "lines": 13885,
+   "lines": 13892,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -107152,7 +107152,7 @@
   },
   "supabase/functions/check-cotacao-followup/index.ts": {
    "path": "supabase/functions/check-cotacao-followup/index.ts",
-   "lines": 159,
+   "lines": 166,
    "tables": [
     {
      "table": "cotacoes",
@@ -111498,10 +111498,26 @@
   }
  },
  "git": {
-  "sha": "69e604f2060a6f1c752a23ee3fdf3c6cccb85a95",
+  "sha": "d897c776836aabb8380b0fb8a0e23eb871ebb201",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d897c77",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103",
+    "files": []
+   },
+   {
+    "sha": "cfa585f",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup",
+    "files": [
+     "supabase/functions/check-cotacao-followup/index.ts"
+    ]
+   },
    {
     "sha": "69e604f",
     "date": "2026-11-19",
@@ -111804,28 +111820,6 @@
      "scripts/ci/inventario-types/identidade.unit.mjs",
      "scripts/types-sync/identidade-banco.mjs"
     ]
-   },
-   {
-    "sha": "8633808",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "ci(edge): deploya as edge functions automaticamente no merge para main (#123)",
-    "files": [
-     ".github/workflows/deploy-edge-functions.yml",
-     ".github/workflows/notifica-falha-main.yml",
-     "docs/ci/README.md"
-    ]
-   },
-   {
-    "sha": "3ec772f",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat: transforma a issue de paridade em aviso por e-mail (#119)",
-    "files": [
-     ".github/workflows/notifica-falha-main.yml",
-     ".github/workflows/paridade-banco.yml",
-     "docs/ci/README.md"
-    ]
    }
   ],
   "hot_files": [
@@ -111839,14 +111833,6 @@
    ],
    [
     "scripts/rls-audit.allowlist.json",
-    3
-   ],
-   [
-    ".github/workflows/deploy-edge-functions.yml",
-    3
-   ],
-   [
-    "docs/ci/README.md",
     3
    ],
    [
@@ -111866,11 +111852,11 @@
     2
    ],
    [
-    ".github/workflows/inventario-estado-semanal.yml",
+    ".github/workflows/deploy-edge-functions.yml",
     2
    ],
    [
-    ".github/workflows/paridade-banco.yml",
+    ".github/workflows/inventario-estado-semanal.yml",
     2
    ],
    [
@@ -111886,8 +111872,8 @@
     2
    ],
    [
-    ".github/workflows/notifica-falha-main.yml",
-    2
+    "supabase/functions/check-cotacao-followup/index.ts",
+    1
    ],
    [
     "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
@@ -111907,6 +111893,14 @@
    ],
    [
     "postcss.config.js",
+    1
+   ],
+   [
+    "src/index.css",
+    1
+   ],
+   [
+    "src/lib/__tests__/pdfGenerator.test.ts",
     1
    ]
   ]
