@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)",
    "chore(ci): exige execução real do Security RLS Audit com --strict (#159)",
    "ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)",
    "security: remove migrate-helper que vazava service_role e DB URL em producao (#158)",
-   "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103",
-   "fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup"
+   "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103"
   ]
  },
  "pr_template": null,
