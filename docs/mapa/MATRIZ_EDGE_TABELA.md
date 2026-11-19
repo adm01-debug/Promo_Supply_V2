@@ -29,7 +29,6 @@
 | `guided-buying-ai` | `fornecedores`, `produtos` |
 | `health-dashboard` | `audit_logs`, `health_scan_runs`, `system_alerts`, `v_system_health_overview` |
 | `maintain-partitions` | — |
-| `migrate-helper` | — |
 | `migrate-storage-paths` | `profiles` |
 | `process-invoice-idp` | — |
 | `process-outbox` | `integration_outbox`, `system_alerts` |

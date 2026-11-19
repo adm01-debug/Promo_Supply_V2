@@ -128,6 +128,16 @@ jobs:
           validas="$(todas)"
           final="$(comm -12 <(sort -u <<< "${selecao}") <(sort -u <<< "${validas}") || true)"
 
+          # NUNCA publicar, nem por dispatch --only: migrate-helper devolve a service_role
+          # e a DB URL para quem tiver a access key fixa no codigo-fonte (repo publico).
+          # Removida do repo (commit 58f4fc8) e re-adicionada por Lovable (97b6efc); a
+          # entrada em producao esteve ativa com HTTP 200 ate 2026-11-19. O mesmo bloqueio
+          # existe no script manual (deploy_edge_functions_promo_supply.sh).
+          BLOQUEADAS=("migrate-helper")
+          for bn in "${BLOQUEADAS[@]}"; do
+            final="$(grep -vxF "${bn}" <<< "${final}" || true)"
+          done
+
           if [[ -z "${final// /}" ]]; then
             echo "Nada a deployar (${motivo})."
             echo "lista=" >> "${GITHUB_OUTPUT}"
