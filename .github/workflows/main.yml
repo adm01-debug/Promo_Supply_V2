@@ -55,7 +55,7 @@ jobs:
         run: |
           # Run the audit script if it exists
           if [ -f "scripts/rls-audit.ts" ]; then
-            bun run scripts/rls-audit.ts
+            bun run scripts/rls-audit.ts --strict
           fi
 
   unit-integration-tests:
