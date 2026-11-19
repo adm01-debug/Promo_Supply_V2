@@ -128,6 +128,19 @@ jobs:
           validas="$(todas)"
           final="$(comm -12 <(sort -u <<< "${selecao}") <(sort -u <<< "${validas}") || true)"
 
+          # Functions que existiam no commit anterior e sumiram agora precisam ser
+          # DELETADAS do projeto. Sem este passo a remocao no repo passava verde
+          # ("Nada a deployar") e a function continuava viva em producao - foi o
+          # caso do migrate-helper, HTTP 200 meses apos a remocao do codigo-fonte.
+          antigas="$(git ls-tree -r --name-only "${base}" "${raiz}" 2>/dev/null \
+                      | sed -n "s#^${raiz}/\([^/]*\)/index\.ts$#\1#p" | sort -u || true)"
+          if [[ -n "${antigas}" ]]; then
+            sumiram="$(comm -23 <(printf '%s\n' "${antigas}") <(printf '%s\n' "${validas}") || true)"
+            removidas="$(comm -12 <(printf '%s\n' "${sumiram}") <(printf '%s\n' "${selecao}") || true)"
+          else
+            removidas=''
+          fi
+
           # NUNCA publicar, nem por dispatch --only: migrate-helper devolve a service_role
           # e a DB URL para quem tiver a access key fixa no codigo-fonte (repo publico).
           # Removida do repo (commit 58f4fc8) e re-adicionada por Lovable (97b6efc); a
@@ -138,9 +151,10 @@ jobs:
             final="$(grep -vxF "${bn}" <<< "${final}" || true)"
           done
 
-          if [[ -z "${final// /}" ]]; then
+          if [[ -z "${final// /}" && -z "${removidas// /}" ]]; then
             echo "Nada a deployar (${motivo})."
             echo "lista=" >> "${GITHUB_OUTPUT}"
+            echo "remover=" >> "${GITHUB_OUTPUT}"
             {
               echo '### Deploy das edge functions'
               echo
@@ -150,8 +164,9 @@ jobs:
           fi
 
           echo "Motivo: ${motivo}"
-          echo "${final}"
+          [[ -z "${final// /}" ]] || echo "${final}"
           echo "lista=$(tr '\n' ' ' <<< "${final}" | sed 's/ *$//')" >> "${GITHUB_OUTPUT}"
+          echo "remover=$(tr '\n' ' ' <<< "${removidas}" | sed 's/ *$//')" >> "${GITHUB_OUTPUT}"
           echo "motivo=${motivo}" >> "${GITHUB_OUTPUT}"
 
       - name: Setup Supabase CLI ${{ env.SUPABASE_CLI_VERSION }}
@@ -191,5 +206,44 @@ jobs:
 
           if (( ${#erro[@]} > 0 )); then
             echo "::error::Falha ao deployar: ${erro[*]}"
+            exit 1
+          fi
+
+      - name: Deletar functions removidas do projeto
+        if: steps.alvo.outputs.remover != ''
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          REMOVER: ${{ steps.alvo.outputs.remover }}
+        run: |
+          ok=()
+          erro=()
+          for fn in ${REMOVER}; do
+            echo "::group::delete ${fn}"
+            code="$(curl -s -o /tmp/delete-${fn}.out -w '%{http_code}' \
+              -X DELETE \
+              -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+              -H "Accept: application/json" \
+              "https://api.supabase.com/v1/projects/${PROJECT_REF}/functions/${fn}")"
+            if [[ "${code}" == '200' ]]; then
+              ok+=("${fn}")
+            else
+              corpo="$(cat /tmp/delete-${fn}.out 2>/dev/null | head -c 300 || true)"
+              echo "::error::Falha ao deletar ${fn} (HTTP ${code}): ${corpo}"
+              erro+=("${fn}")
+            fi
+            rm -f /tmp/delete-${fn}.out
+            echo '::endgroup::'
+          done
+
+          {
+            echo '### Remocao de edge functions'
+            echo
+            echo "- Removidas do projeto (${#ok[@]}): ${ok[*]:-nenhuma}"
+            echo "- Falharam (${#erro[@]}): ${erro[*]:-nenhuma}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          if (( ${#erro[@]} > 0 )); then
+            echo "::error::Falha ao deletar: ${erro[*]}"
             exit 1
           fi
