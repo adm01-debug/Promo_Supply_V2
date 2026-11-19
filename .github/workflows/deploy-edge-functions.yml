@@ -37,6 +37,10 @@ on:
         description: 'Funcoes a deployar, separadas por espaco. Vazio = todas.'
         required: false
         default: ''
+      remove:
+        description: 'Funcoes a DELETAR do projeto, separadas por espaco. Ex.: remove=migrate-helper'
+        required: false
+        default: ''
 
 defaults:
   run:
@@ -210,11 +214,11 @@ jobs:
           fi
 
       - name: Deletar functions removidas do projeto
-        if: steps.alvo.outputs.remover != ''
+        if: steps.alvo.outputs.remover != '' || github.event.inputs.remove != ''
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
-          REMOVER: ${{ steps.alvo.outputs.remover }}
+          REMOVER: ${{ github.event.inputs.remove || steps.alvo.outputs.remover }}
         run: |
           ok=()
           erro=()
