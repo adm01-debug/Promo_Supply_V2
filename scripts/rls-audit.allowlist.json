@@ -4,6 +4,7 @@
     { "table": "currencies", "policy": "currencies_authenticated_read", "motivo": "Leitura de moedas por usuários autenticados (catálogo/carrinho)." },
     { "table": "exchange_rates", "policy": "exchange_rates_authenticated_read", "motivo": "Leitura de taxa de câmbio por usuários autenticados." },
     { "table": "xbz_cores", "policy": "xbz_cores_read_authenticated", "motivo": "Leitura de cores do PunchOut por usuários autenticados." },
-    { "table": "cron_heartbeats", "policy": "Authenticated users can read cron heartbeats", "motivo": "Leitura do status de execução de crons por usuários autenticados (dashboard de saúde/observabilidade)." }
+    { "table": "cron_heartbeats", "policy": "Authenticated users can read cron heartbeats", "motivo": "Leitura do status de execução de crons por usuários autenticados (dashboard de saúde/observabilidade)." },
+    { "table": "entity_versions", "policy": "Authenticated can view versions", "motivo": "Histórico de versões de entidades legível por usuários autenticados (auditoria interna; tabela fora de uso ativo, sem PII)." }
   ]
 }
