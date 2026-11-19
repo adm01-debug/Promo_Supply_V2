@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b512d69b2d` · branch `main` · 2026-11-19 00:34 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e238664b2a` · branch `main` · 2026-11-19 10:50 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -17,7 +17,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `saved_filters` | Users can insert own filters | INSERT | public | permissive |  | `auth.uid() = user_id` |
 | `saved_filters` | Users can update own filters | UPDATE | public | permissive | `auth.uid() = user_id` | `auth.uid() = user_id` |
 | `saved_filters` | Users can delete own filters | DELETE | public | permissive | `auth.uid() = user_id` |  |
-| `entity_versions` | Users can insert versions | INSERT | public | permissive |  | `auth.uid() = changed_by OR changed_by IS NULL` |
 | `user_roles` | Users can view their own roles | SELECT | authenticated | permissive | `auth.uid() = user_id` |  |
 | `user_roles` | Admins can manage all roles | ALL | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `profiles` | Users can update their own profile | UPDATE | authenticated | permissive | `auth.uid() = user_id` |  |
@@ -199,7 +198,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `cost_centers` | Apenas administradores podem inserir centros de custo | INSERT | authenticated | permissive |  | `has_role(auth.uid(), 'admin'::app_role)` |
 | `telemetry_logs_legacy_20260712` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
 | `fornecedor_categorias` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `currencies` | Authenticated can read currencies | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | Authenticated can read exchange_rates | SELECT | authenticated | permissive | `true` |  |
 | `profiles` | Users can view profiles in their tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
@@ -354,6 +352,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
 | `storage.objects` | storage_produtos_insert | INSERT | authenticated | permissive |  | `bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))` |
 | `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
+| `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
+| `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

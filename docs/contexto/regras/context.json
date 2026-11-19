@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b512d69b2d40fff594d26ed17e13a355720c17a9",
+  "sha": "e238664b2a78ad50206ecdac39e6214235202b2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 00:34 UTC",
-  "files_total": 1237,
-  "code_files": 1090,
-  "code_lines": 188147,
+  "generated_at": "2026-11-19 10:50 UTC",
+  "files_total": 1238,
+  "code_files": 1091,
+  "code_lines": 188187,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "043aca04ebafa207",
+ "facts_hash": "445dcdab351990f0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -251,7 +251,7 @@
   "languages": {
    ".ts": 357,
    ".tsx": 345,
-   ".sql": 315,
+   ".sql": 316,
    ".mjs": 66,
    ".py": 5,
    ".js": 2
@@ -15332,16 +15332,6 @@
     "src": "supabase/migrations/20241231000000_saved_filters.sql"
    },
    {
-    "name": "Users can insert versions",
-    "table": "entity_versions",
-    "cmd": "INSERT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "",
-    "check": "auth.uid() = changed_by OR changed_by IS NULL",
-    "src": "supabase/migrations/20241231000001_entity_versions.sql"
-   },
-   {
     "name": "Users can view their own roles",
     "table": "user_roles",
     "cmd": "SELECT",
@@ -17152,16 +17142,6 @@
     "src": "supabase/migrations/20260521142029_security_hardening.sql"
    },
    {
-    "name": "Authenticated can view versions",
-    "table": "entity_versions",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
-    "src": "supabase/migrations/20260521142029_security_hardening.sql"
-   },
-   {
     "name": "Authenticated can read currencies",
     "table": "currencies",
     "cmd": "SELECT",
@@ -18700,6 +18680,26 @@
     "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
     "check": "",
     "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "Authenticated can view versions",
+    "table": "entity_versions",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
+   },
+   {
+    "name": "Authenticated can insert versions",
+    "table": "entity_versions",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "changed_by IS NULL OR auth.uid() = changed_by",
+    "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
    }
   ],
   "triggers": [
@@ -26864,6 +26864,7 @@
    "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql",
    "supabase/migrations/20261117220000_audit_logs_hash_defaults.sql",
    "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
+   "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35393,8 +35394,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 313,
-   "lines": 25660,
+   "files": 314,
+   "lines": 25700,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -67016,16 +67017,6 @@
     "src": "supabase/migrations/20241231000000_saved_filters.sql"
    },
    {
-    "name": "Users can insert versions",
-    "table": "entity_versions",
-    "cmd": "INSERT",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "",
-    "check": "auth.uid() = changed_by OR changed_by IS NULL",
-    "src": "supabase/migrations/20241231000001_entity_versions.sql"
-   },
-   {
     "name": "Users can view their own roles",
     "table": "user_roles",
     "cmd": "SELECT",
@@ -68836,16 +68827,6 @@
     "src": "supabase/migrations/20260521142029_security_hardening.sql"
    },
    {
-    "name": "Authenticated can view versions",
-    "table": "entity_versions",
-    "cmd": "SELECT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "true",
-    "check": "",
-    "src": "supabase/migrations/20260521142029_security_hardening.sql"
-   },
-   {
     "name": "Authenticated can read currencies",
     "table": "currencies",
     "cmd": "SELECT",
@@ -70384,6 +70365,26 @@
     "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
     "check": "",
     "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+   },
+   {
+    "name": "Authenticated can view versions",
+    "table": "entity_versions",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "true",
+    "check": "",
+    "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
+   },
+   {
+    "name": "Authenticated can insert versions",
+    "table": "entity_versions",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "changed_by IS NULL OR auth.uid() = changed_by",
+    "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
    }
   ],
   "db_triggers": [
@@ -77130,7 +77131,7 @@
      "authenticated: true"
     ],
     "INSERT": [
-     "public: auth.uid() = changed_by OR changed_by IS NULL"
+     "authenticated: changed_by IS NULL OR auth.uid() = changed_by"
     ],
     "UPDATE": [],
     "DELETE": []
@@ -111274,6 +111275,10 @@
    "path": "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
    "lines": 100
   },
+  "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql": {
+   "path": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
+   "lines": 40
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -111493,10 +111498,20 @@
   }
  },
  "git": {
-  "sha": "b512d69b2d40fff594d26ed17e13a355720c17a9",
+  "sha": "e238664b2a78ad50206ecdac39e6214235202b2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e238664",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)",
+    "files": [
+     "scripts/rls-audit.allowlist.json",
+     "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
+    ]
+   },
    {
     "sha": "b512d69",
     "date": "2026-11-18",
@@ -111811,18 +111826,6 @@
     "files": [
      "supabase/migrations/20261117180000_popula_etapas_dos_templates_de_workflow.sql"
     ]
-   },
-   {
-    "sha": "f436bcc",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(edge): destrava aprovacao e fiscal, que falhavam em 100% das chamadas (#121)",
-    "files": [
-     "scripts/automation.config.json",
-     "scripts/ci/edge-tenant-guard.unit.mjs",
-     "supabase/functions/fiscal-orchestrator/index.ts",
-     "supabase/functions/workflow-engine/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -111841,6 +111844,10 @@
    [
     "docs/ci/README.md",
     3
+   ],
+   [
+    "scripts/rls-audit.allowlist.json",
+    2
    ],
    [
     "src/App.tsx",
@@ -111883,7 +111890,7 @@
     2
    ],
    [
-    "scripts/rls-audit.allowlist.json",
+    "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
     1
    ],
    [
@@ -111900,10 +111907,6 @@
    ],
    [
     "postcss.config.js",
-    1
-   ],
-   [
-    "src/index.css",
     1
    ]
   ]

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)",
    "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)",
    "docs: registra auditoria forense dos descartes sem trabalho perdido (#152)",
    "docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)",
-   "chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)",
-   "chore(deps): bump framer-motion from 12.43.0 to 14.14.0 (#148)"
+   "chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)"
   ]
  },
  "pr_template": null,

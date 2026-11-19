@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 313,
+ "migrations": 314,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -7556,9 +7556,15 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Users can insert versions",
+     "nome": "Authenticated can insert versions",
      "comando": "insert",
-     "para": "public",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "Authenticated can view versions",
+     "comando": "select",
+     "para": "authenticated",
      "tipo": "permissive"
     }
    ],

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b512d69b2d40fff594d26ed17e13a355720c17a9` (2026-11-18T20:52:59-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e238664b2a78ad50206ecdac39e6214235202b2e` (2026-11-19T07:49:56-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (702), SQL (315), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (702), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1236 |
+| arquivos_total | 1237 |
 | arquivos_codigo | 773 |
 | linhas_codigo | 162265 |
 | rotas | 55 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 38 |
 | tabelas | 163 |
-| migrations | 313 |
+| migrations | 314 |
 | cron_jobs | 70 |
 | testes | 175 |
 | workflows | 11 |
@@ -408,6 +408,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `e238664` fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)
 - 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
 - 2026-11-18 `8c4f685` docs: registra auditoria forense dos descartes sem trabalho perdido (#152)
 - 2026-11-18 `64b0a2a` docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)
@@ -422,7 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `7d7348f` feat(alerta): detecta falhas consecutivas de integrações no check-sla-alerts (#143)
 - 2026-11-18 `049f54c` chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)
 - 2026-11-18 `bfc3e0e` chore(db): sincroniza types.ts com colunas de auditoria do banco (#140)
-- 2026-11-18 `e94b12f` feat(punchout): habilita cadastro e edição de catálogos (#139)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

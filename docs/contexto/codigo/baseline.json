@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b512d69b2d40fff594d26ed17e13a355720c17a9",
+  "commit": "e238664b2a78ad50206ecdac39e6214235202b2e",
   "branch": "main",
-  "data_commit": "2026-11-18T20:52:59-03:00",
+  "data_commit": "2026-11-19T07:49:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e238664",
+    "data": "2026-11-19",
+    "assunto": "fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)"
+   },
    {
     "sha": "b512d69",
     "data": "2026-11-18",
@@ -126,14 +131,9 @@
     "sha": "50b70bd",
     "data": "2026-11-17",
     "assunto": "chore: ignora .env para impedir que credencial volte ao repositorio (#126)"
-   },
-   {
-    "sha": "c0bdb15",
-    "data": "2026-11-17",
-    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#125)"
    }
   ],
-  "arquivos_mudados_7d": 272,
+  "arquivos_mudados_7d": 273,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 119
+    "commits": 120
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1236,
+  "arquivos_total": 1237,
   "arquivos_codigo": 773,
   "linhas_codigo": 162265,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 89,
   "edge_functions": 38,
   "tabelas": 163,
-  "migrations": 313,
+  "migrations": 314,
   "cron_jobs": 70,
   "testes": 175,
   "workflows": 11,
