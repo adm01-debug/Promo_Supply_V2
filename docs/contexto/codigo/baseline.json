@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cbb76bd70f847f9c421d44cf3df0f70ac6f8abe5",
+  "commit": "69948387597ddbfc42a424a9219052a18e886648",
   "branch": "main",
-  "data_commit": "2026-11-19T16:19:11-03:00",
+  "data_commit": "2026-11-19T19:06:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6994838",
+    "data": "2026-11-19",
+    "assunto": "ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)"
+   },
    {
     "sha": "cbb76bd",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "dbb16b9",
     "data": "2026-11-17",
     "assunto": "fix(banco): DEFAULT sentinela nas colunas da cadeia de hash de audit_logs (#133)"
-   },
-   {
-    "sha": "ac3956e",
-    "data": "2026-11-17",
-    "assunto": "feat(seguranca): trilha de auditoria append-only com hash encadeado verificavel (#130)"
    }
   ],
-  "arquivos_mudados_7d": 249,
+  "arquivos_mudados_7d": 239,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -168,6 +168,10 @@
     "mudancas": 8
    },
    {
+    "pasta": ".github/workflows/main.yml",
+    "mudancas": 7
+   },
+   {
     "pasta": "docs/ci/README.md",
     "mudancas": 7
    },
@@ -181,10 +185,6 @@
    },
    {
     "pasta": ".github/workflows/contexto.yml",
-    "mudancas": 6
-   },
-   {
-    "pasta": ".github/workflows/main.yml",
     "mudancas": 6
    },
    {
@@ -210,15 +210,15 @@
     "mudancas": 8
    },
    {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 7
+   },
+   {
     "arquivo": "docs/ci/README.md",
     "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/contexto.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/main.yml",
     "mudancas": 6
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 124
+    "commits": 125
    },
    {
     "autor": "dependabot[bot]",

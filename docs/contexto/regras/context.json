@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "cbb76bd70f847f9c421d44cf3df0f70ac6f8abe5",
+  "sha": "69948387597ddbfc42a424a9219052a18e886648",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 19:19 UTC",
+  "generated_at": "2026-11-19 22:07 UTC",
   "files_total": 1237,
   "code_files": 1090,
   "code_lines": 188158,
@@ -111442,10 +111442,19 @@
   }
  },
  "git": {
-  "sha": "cbb76bd70f847f9c421d44cf3df0f70ac6f8abe5",
+  "sha": "69948387597ddbfc42a424a9219052a18e886648",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6994838",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)",
+    "files": [
+     ".github/workflows/main.yml"
+    ]
+   },
    {
     "sha": "cbb76bd",
     "date": "2026-11-19",
@@ -111757,15 +111766,6 @@
     "files": [
      ".gitignore"
     ]
-   },
-   {
-    "sha": "c0bdb15",
-    "date": "2026-11-17",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#125)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -111784,6 +111784,10 @@
    [
     "scripts/rls-audit.allowlist.json",
     3
+   ],
+   [
+    ".github/workflows/main.yml",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -111811,10 +111815,6 @@
    ],
    [
     ".github/workflows/types-sync.yml",
-    2
-   ],
-   [
-    "src/integrations/supabase/types.ts",
     2
    ],
    [
