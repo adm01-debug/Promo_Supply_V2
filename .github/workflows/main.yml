@@ -49,6 +49,9 @@ jobs:
         run: bun run typecheck
 
       - name: Security RLS Audit
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
         run: |
           # Run the audit script if it exists
           if [ -f "scripts/rls-audit.ts" ]; then
