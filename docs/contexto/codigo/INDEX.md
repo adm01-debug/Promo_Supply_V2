@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d897c776836aabb8380b0fb8a0e23eb871ebb201` (2026-11-19T11:10:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cbb76bd70f847f9c421d44cf3df0f70ac6f8abe5` (2026-11-19T16:19:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (702), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (701), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1237 |
-| arquivos_codigo | 773 |
-| linhas_codigo | 162272 |
+| arquivos_total | 1236 |
+| arquivos_codigo | 772 |
+| linhas_codigo | 162236 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,7 +44,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 86 |
 | componentes | 327 |
 | hooks | 89 |
-| edge_functions | 38 |
+| edge_functions | 37 |
 | tabelas | 163 |
 | migrations | 314 |
 | cron_jobs | 70 |
@@ -201,7 +201,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `guided-buying-ai` — tabelas: fornecedores, produtos; chamada por 1 arquivo(s) do front
 - `health-dashboard` — tabelas: audit_logs, health_scan_runs, system_alerts, v_system_health_overview; chamada por 1 arquivo(s) do front
 - `maintain-partitions` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `migrate-helper` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
 - `migrate-storage-paths` — tabelas: profiles; chamada por 1 arquivo(s) do front
 - `process-invoice-idp` — tabelas: -; chamada por 1 arquivo(s) do front
 - `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -298,7 +297,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
-- webhooks recebidos: migrate-helper
+- webhooks recebidos: nenhum
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
@@ -323,7 +322,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - arquivos_nao_lidos_por_tamanho: 0
 - env_usadas_nao_declaradas: 0
 - ciclos_de_import: 2
-- possiveis_segredos_no_codigo: 4 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/pg.mjs:51
+- possiveis_segredos_no_codigo: 3 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/pg.mjs:51
 
 ## Grafo de código (graphify)
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
@@ -338,12 +337,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
+- .github/workflows/deploy-edge-functions.yml (4)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
 - docs/agentes/mapa-repo.md (4)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (4)
 - scripts/realtime-audit.ts (4)
-- scripts/rls-audit.allowlist.json (4)
-- supabase/functions/punchout-receive/index.ts (4)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -408,6 +407,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `cbb76bd` security: remove migrate-helper que vazava service_role e DB URL em producao (#158)
 - 2026-11-19 `d897c77` Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103
 - 2026-11-19 `cfa585f` fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup
 - 2026-11-19 `69e604f` fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)
@@ -422,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `a3c3c17` chore(deps)(deps): bump react-router-dom from 6.30.6 to 7.18.5 (#147)
 - 2026-11-18 `922f6df` chore(deps): bump the producao-minor-patch group with 3 updates (#145)
 - 2026-11-18 `2dc69d6` chore(ci): bump the acoes group with 8 updates (#144)
-- 2026-11-18 `0a3c2c2` ci(seguranca): dependency review nos PRs e dependabot agrupado (#142)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

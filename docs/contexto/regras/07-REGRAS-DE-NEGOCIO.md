@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d897c77683` · branch `main` · 2026-11-19 14:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cbb76bd70f` · branch `main` · 2026-11-19 19:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2275,7 +2275,7 @@ _nenhum item encontrado_
 | Erro ao gerar PDF | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | Nenhum dado para exportar | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | ; import { FloatingInput } from  | `src/pages/auth/Auth.tsx` |
-| … +174 linhas — lista completa em `context.json` | |
+| … +172 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

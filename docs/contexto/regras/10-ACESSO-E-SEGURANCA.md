@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d897c77683` · branch `main` · 2026-11-19 14:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cbb76bd70f` · branch `main` · 2026-11-19 19:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -182,7 +182,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo. `?` = nenhuma migration do repo liga ou desliga RLS nessa tabela (ex.: tabela conhecida só pelo arquivo de tipos) — NÃO VERIFICADO; política listada numa linha `não encontrado` só vale se o RLS estiver ligado no banco real.
 
-## Onde o RLS é IGNORADO (service_role) — 52 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 51 arquivo(s)
 
 - `scripts/ai-context/cenarios.mjs`
 - `scripts/ai-context/gerar.unit.mjs`
@@ -217,7 +217,6 @@
 - `supabase/functions/guided-buying-ai/index.ts`
 - `supabase/functions/health-dashboard/index.ts`
 - `supabase/functions/maintain-partitions/index.ts`
-- `supabase/functions/migrate-helper/index.ts`
 - `supabase/functions/migrate-storage-paths/index.ts`
 - `supabase/functions/process-invoice-idp/index.ts`
 - `supabase/functions/process-outbox/index.ts`
@@ -392,7 +391,7 @@
 
 ## Edge functions públicas (sem JWT — qualquer um chama)
 
-- `migrate-helper`
+_nenhuma declarada em config.toml_
 
 ## Rotas protegidas no front
 

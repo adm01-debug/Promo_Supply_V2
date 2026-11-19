@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (702)",
+   "TypeScript (701)",
    "SQL (316)",
    "Markdown (78)",
    "JavaScript (68)",
@@ -615,7 +615,6 @@
    "SPOT_PASSWORD",
    "SPOT_USERNAME",
    "SUPABASE_ANON_KEY",
-   "SUPABASE_DB_URL",
    "SUPABASE_SERVICE_ROLE_KEY",
    "SUPABASE_URL",
    "VAPID_PRIVATE_KEY",
@@ -765,9 +764,7 @@
    "SLACK_WEBHOOK_URL",
    "VITE_BITRIX_WEBHOOK_URL"
   ],
-  "webhooks_recebidos": [
-   "migrate-helper"
-  ],
+  "webhooks_recebidos": [],
   "realtime": []
  },
  "permissoes": {

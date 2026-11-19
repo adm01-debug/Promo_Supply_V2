@@ -2,10 +2,8 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 38,
- "verify_jwt_false": [
-  "migrate-helper"
- ],
+ "total": 37,
+ "verify_jwt_false": [],
  "shared": [
   "supabase/functions/_shared/ai_gateway.ts",
   "supabase/functions/_shared/circuit_breaker.ts",
@@ -657,32 +655,6 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 0
-  },
-  {
-   "nome": "migrate-helper",
-   "entrada": "supabase/functions/migrate-helper/index.ts",
-   "arquivos": 1,
-   "linhas": 36,
-   "verify_jwt": false,
-   "metodos": [
-    "OPTIONS"
-   ],
-   "tabelas": [],
-   "rpcs": [],
-   "env": [
-    "SUPABASE_DB_URL",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_URL"
-   ],
-   "buckets": [],
-   "chama_edges": [],
-   "hosts_externos": [],
-   "usa_shared": [],
-   "chamada_pelo_front": [],
-   "chamada_por_edges": [],
-   "chamada_por_sql_ou_cron": false,
-   "orfa": false,
    "testes": 0
   },
   {

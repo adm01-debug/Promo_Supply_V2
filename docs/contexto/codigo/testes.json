@@ -1846,7 +1846,6 @@
    "guided-buying-ai",
    "health-dashboard",
    "maintain-partitions",
-   "migrate-helper",
    "migrate-storage-paths",
    "process-invoice-idp",
    "process-outbox",
