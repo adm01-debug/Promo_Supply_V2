@@ -1,4 +1,4 @@
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+﻿import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
@@ -18,11 +18,18 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const resendConfigured = Boolean(resendApiKey);
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     logger = new EdgeLogger('check-cotacao-followup', requestId);
 
     logger.info("Starting cotação follow-up check...");
+
+    if (!resendConfigured) {
+      logger.warn("RESEND_API_KEY não configurada — e-mails de follow-up serão pulados", {
+        hint: "Cadastre RESEND_API_KEY no Supabase (Edge Functions > Secrets)",
+      });
+    }
 
     const now = new Date();
     const cutoff48h = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
@@ -134,11 +141,11 @@ Deno.serve(async (req) => {
       }
     }
 
-    logger.info(`Follow-up check complete`, { followUpsSent, emailsSent, totalStale: staleCotacoes?.length });
+    logger.info(`Follow-up check complete`, { followUpsSent, emailsSent, resendConfigured, totalStale: staleCotacoes?.length });
 
     await recordCronHeartbeat(supabase as any, "check-cotacao-followup");
     return new Response(
-      JSON.stringify({ followUpsSent, emailsSent, totalStale: staleCotacoes?.length || 0 }),
+      JSON.stringify({ followUpsSent, emailsSent, resendConfigured, resendWarning: resendConfigured ? null : "RESEND_API_KEY não configurada — e-mails pulados", totalStale: staleCotacoes?.length || 0 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
