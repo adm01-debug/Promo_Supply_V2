@@ -58143,7 +58143,7 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.entity_versions.Users can insert versions",
+        "object": "public.entity_versions.Authenticated can insert versions",
         "severity": "BAIXA"
       },
       {
@@ -59173,6 +59173,11 @@
         "statements": 6,
         "statements_sha": "05d26feeb7d3d00a",
         "version": "20241231000001"
+      },
+      {
+        "name": "entity_versions_politicas_authenticated",
+        "statements": null,
+        "version": "20261119000000"
       }
     ],
     "policies": [
@@ -60774,22 +60779,22 @@
       },
       {
         "cmd": "INSERT",
-        "name": "Users can insert versions",
+        "name": "Authenticated can insert versions",
         "permissive": "PERMISSIVE",
         "roles": [
-          "public"
+          "authenticated"
         ],
         "schema": "public",
         "table": "entity_versions",
         "using": null,
-        "with_check": "((auth.uid() = changed_by) OR (changed_by IS NULL))"
+        "with_check": "((changed_by IS NULL) OR (auth.uid() = changed_by))"
       },
       {
         "cmd": "SELECT",
-        "name": "Users can view versions",
+        "name": "Authenticated can view versions",
         "permissive": "PERMISSIVE",
         "roles": [
-          "public"
+          "authenticated"
         ],
         "schema": "public",
         "table": "entity_versions",

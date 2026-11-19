@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e238664b2a78ad50206ecdac39e6214235202b2e` (2026-11-19T07:49:56-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `69e604f2060a6f1c752a23ee3fdf3c6cccb85a95` (2026-11-19T08:26:31-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -342,8 +342,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/types-sync.yml (4)
 - docs/agentes/mapa-repo.md (4)
 - scripts/realtime-audit.ts (4)
+- scripts/rls-audit.allowlist.json (4)
 - supabase/functions/punchout-receive/index.ts (4)
-- .github/workflows/deploy-edge-functions.yml (3)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -408,6 +408,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `69e604f` fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)
 - 2026-11-19 `e238664` fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)
 - 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
 - 2026-11-18 `8c4f685` docs: registra auditoria forense dos descartes sem trabalho perdido (#152)
@@ -422,7 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `0a3c2c2` ci(seguranca): dependency review nos PRs e dependabot agrupado (#142)
 - 2026-11-18 `7d7348f` feat(alerta): detecta falhas consecutivas de integrações no check-sla-alerts (#143)
 - 2026-11-18 `049f54c` chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)
-- 2026-11-18 `bfc3e0e` chore(db): sincroniza types.ts com colunas de auditoria do banco (#140)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

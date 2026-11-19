@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e238664b2a78ad50206ecdac39e6214235202b2e",
+  "sha": "69e604f2060a6f1c752a23ee3fdf3c6cccb85a95",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 10:50 UTC",
+  "generated_at": "2026-11-19 12:17 UTC",
   "files_total": 1238,
   "code_files": 1091,
   "code_lines": 188187,
@@ -111498,10 +111498,19 @@
   }
  },
  "git": {
-  "sha": "e238664b2a78ad50206ecdac39e6214235202b2e",
+  "sha": "69e604f2060a6f1c752a23ee3fdf3c6cccb85a95",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "69e604f",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)",
+    "files": [
+     "scripts/rls-audit.allowlist.json"
+    ]
+   },
    {
     "sha": "e238664",
     "date": "2026-11-19",
@@ -111817,15 +111826,6 @@
      ".github/workflows/paridade-banco.yml",
      "docs/ci/README.md"
     ]
-   },
-   {
-    "sha": "3cbf20c",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(workflow): popula as etapas dos templates de aprovacao (#122)",
-    "files": [
-     "supabase/migrations/20261117180000_popula_etapas_dos_templates_de_workflow.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -111838,16 +111838,16 @@
     6
    ],
    [
+    "scripts/rls-audit.allowlist.json",
+    3
+   ],
+   [
     ".github/workflows/deploy-edge-functions.yml",
     3
    ],
    [
     "docs/ci/README.md",
     3
-   ],
-   [
-    "scripts/rls-audit.allowlist.json",
-    2
    ],
    [
     "src/App.tsx",

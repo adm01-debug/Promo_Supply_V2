@@ -138,8 +138,8 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.devolucoes | Buyers coordinators admins can manage returns | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
 | public.devolucoes | Finance can view returns | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'finance'::app_role)` |  |
 | public.devolucoes | tenant_isolation_devolucoes | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
-| public.entity_versions | Users can insert versions | INSERT | PERMISSIVE | public |  | `((auth.uid() = changed_by) OR (changed_by IS NULL))` |
-| public.entity_versions | Users can view versions | SELECT | PERMISSIVE | public | `true` |  |
+| public.entity_versions | Authenticated can insert versions | INSERT | PERMISSIVE | authenticated |  | `((changed_by IS NULL) OR (auth.uid() = changed_by))` |
+| public.entity_versions | Authenticated can view versions | SELECT | PERMISSIVE | authenticated | `true` |  |
 | public.erp_connections | Admins and coordinators manage ERP connections within tenant | ALL | PERMISSIVE | authenticated | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
 | public.erp_field_mappings | ERP field mappings are visible to tenant admins | ALL | PERMISSIVE | authenticated | `(EXISTS ( SELECT 1    FROM erp_connections c   WHERE ((c.id = erp_field_mappings.connection_id) AND (c.tenant_id = current_tenant_id()))))` |  |
 | public.erp_sync_log | ERP sync logs are tenant-isolated | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |

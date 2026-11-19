@@ -47,23 +47,23 @@
 
 ## Policies (RLS)
 
-### `Users can insert versions`
+### `Authenticated can insert versions`
 
 | campo | valor |
 |---|---|
 | comando | INSERT |
 | tipo | PERMISSIVE |
-| roles | public |
+| roles | authenticated |
 | USING |  |
-| WITH CHECK | `((auth.uid() = changed_by) OR (changed_by IS NULL))` |
+| WITH CHECK | `((changed_by IS NULL) OR (auth.uid() = changed_by))` |
 
-### `Users can view versions`
+### `Authenticated can view versions`
 
 | campo | valor |
 |---|---|
 | comando | SELECT |
 | tipo | PERMISSIVE |
-| roles | public |
+| roles | authenticated |
 | USING | `true` |
 | WITH CHECK |  |
 
