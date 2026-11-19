@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "69948387597ddbfc42a424a9219052a18e886648",
+  "sha": "cbe40386377d16ae250e04cb4593fd8c46d0168b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 22:07 UTC",
+  "generated_at": "2026-11-19 22:25 UTC",
   "files_total": 1237,
   "code_files": 1090,
   "code_lines": 188158,
@@ -111442,10 +111442,19 @@
   }
  },
  "git": {
-  "sha": "69948387597ddbfc42a424a9219052a18e886648",
+  "sha": "cbe40386377d16ae250e04cb4593fd8c46d0168b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cbe4038",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(ci): exige execução real do Security RLS Audit com --strict (#159)",
+    "files": [
+     ".github/workflows/main.yml"
+    ]
+   },
    {
     "sha": "6994838",
     "date": "2026-11-19",
@@ -111757,15 +111766,6 @@
      ".github/workflows/types-sync.yml",
      "scripts/types-sync/identidade-banco.mjs"
     ]
-   },
-   {
-    "sha": "50b70bd",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "chore: ignora .env para impedir que credencial volte ao repositorio (#126)",
-    "files": [
-     ".gitignore"
-    ]
    }
   ],
   "hot_files": [
@@ -111778,16 +111778,16 @@
     6
    ],
    [
+    ".github/workflows/main.yml",
+    3
+   ],
+   [
     ".github/workflows/deploy-edge-functions.yml",
     3
    ],
    [
     "scripts/rls-audit.allowlist.json",
     3
-   ],
-   [
-    ".github/workflows/main.yml",
-    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",

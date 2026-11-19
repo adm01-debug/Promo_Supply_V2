@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `69948387597ddbfc42a424a9219052a18e886648` (2026-11-19T19:06:48-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cbe40386377d16ae250e04cb4593fd8c46d0168b` (2026-11-19T19:25:16-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -330,8 +330,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (12)
 - docs/prod-readiness.md (9)
+- .github/workflows/main.yml (8)
 - bun.lock (8)
-- .github/workflows/main.yml (7)
 - docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
 - AGENTS.md (5)
@@ -407,6 +407,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `cbe4038` chore(ci): exige execução real do Security RLS Audit com --strict (#159)
 - 2026-11-19 `6994838` ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)
 - 2026-11-19 `cbb76bd` security: remove migrate-helper que vazava service_role e DB URL em producao (#158)
 - 2026-11-19 `d897c77` Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103
@@ -421,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `3293856` fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)
 - 2026-11-18 `a1e0e53` chore(deps)(deps): bump lucide-react from 0.462.0 to 1.73.0 (#149)
 - 2026-11-18 `a3c3c17` chore(deps)(deps): bump react-router-dom from 6.30.6 to 7.18.5 (#147)
-- 2026-11-18 `922f6df` chore(deps): bump the producao-minor-patch group with 3 updates (#145)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
