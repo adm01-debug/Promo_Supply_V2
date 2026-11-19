@@ -29,7 +29,6 @@
 | `guided-buying-ai` | `fornecedores`, `produtos` |
 | `health-dashboard` | `audit_logs`, `health_scan_runs`, `system_alerts`, `v_system_health_overview` |
 | `maintain-partitions` | — |
-| `migrate-helper` | — |
 | `migrate-storage-paths` | `profiles` |
 | `process-invoice-idp` | — |
 | `process-outbox` | `integration_outbox`, `system_alerts` |
@@ -110,9 +109,9 @@
 
 | Helper | Tabelas |
 |---|---|
-| `_shared/idempotency.ts` | `webhook_events` |
-| `_shared/logger.ts` | `telemetry_logs` |
-| `_shared/security.ts` | `user_tenants` |
-| `_shared/telemetry.ts` | `telemetry_logs` |
-| `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
-| `_shared/xbz_catalog_cache.ts` | `xbz_produtos` |
+| `_shared\idempotency.ts` | `webhook_events` |
+| `_shared\logger.ts` | `telemetry_logs` |
+| `_shared\security.ts` | `user_tenants` |
+| `_shared\telemetry.ts` | `telemetry_logs` |
+| `_shared\xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
+| `_shared\xbz_catalog_cache.ts` | `xbz_produtos` |
