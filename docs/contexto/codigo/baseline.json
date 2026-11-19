@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8c4f6856c04c43d396d3ba468eacc1bdf6afcd5c",
+  "commit": "b512d69b2d40fff594d26ed17e13a355720c17a9",
   "branch": "main",
-  "data_commit": "2026-11-18T16:03:42-03:00",
+  "data_commit": "2026-11-18T20:52:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b512d69",
+    "data": "2026-11-18",
+    "assunto": "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)"
+   },
    {
     "sha": "8c4f685",
     "data": "2026-11-18",
@@ -126,11 +131,6 @@
     "sha": "c0bdb15",
     "data": "2026-11-17",
     "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#125)"
-   },
-   {
-    "sha": "1c46b1a",
-    "data": "2026-11-17",
-    "assunto": "fix(ci): aceita usuario dedicado de CI no pooler do Supabase (#124)"
    }
   ],
   "arquivos_mudados_7d": 272,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 118
+    "commits": 119
    },
    {
     "autor": "dependabot[bot]",

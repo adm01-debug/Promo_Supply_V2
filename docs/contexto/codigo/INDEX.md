@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8c4f6856c04c43d396d3ba468eacc1bdf6afcd5c` (2026-11-18T16:03:42-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b512d69b2d40fff594d26ed17e13a355720c17a9` (2026-11-18T20:52:59-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -408,6 +408,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
 - 2026-11-18 `8c4f685` docs: registra auditoria forense dos descartes sem trabalho perdido (#152)
 - 2026-11-18 `64b0a2a` docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)
 - 2026-11-18 `193c9b9` chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)
@@ -422,7 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `049f54c` chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)
 - 2026-11-18 `bfc3e0e` chore(db): sincroniza types.ts com colunas de auditoria do banco (#140)
 - 2026-11-18 `e94b12f` feat(punchout): habilita cadastro e edição de catálogos (#139)
-- 2026-11-17 `960f965` fix(banco): fonte unica de retencao e marcacao das funcoes nao agendadas (#135)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

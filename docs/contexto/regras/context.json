@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8c4f6856c04c43d396d3ba468eacc1bdf6afcd5c",
+  "sha": "b512d69b2d40fff594d26ed17e13a355720c17a9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-18 19:10 UTC",
+  "generated_at": "2026-11-19 00:34 UTC",
   "files_total": 1237,
   "code_files": 1090,
   "code_lines": 188147,
@@ -111493,10 +111493,19 @@
   }
  },
  "git": {
-  "sha": "8c4f6856c04c43d396d3ba468eacc1bdf6afcd5c",
+  "sha": "b512d69b2d40fff594d26ed17e13a355720c17a9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b512d69",
+    "date": "2026-11-18",
+    "author": "adm01-debug",
+    "subject": "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)",
+    "files": [
+     "scripts/rls-audit.allowlist.json"
+    ]
+   },
    {
     "sha": "8c4f685",
     "date": "2026-11-18",
@@ -111814,16 +111823,6 @@
      "supabase/functions/fiscal-orchestrator/index.ts",
      "supabase/functions/workflow-engine/index.ts"
     ]
-   },
-   {
-    "sha": "beb31ff",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(ops): guard pega canal Realtime que nao fecha ao sair da tela (#120)",
-    "files": [
-     "scripts/ci/scripts-operacionais.unit.mjs",
-     "scripts/realtime-audit.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -111884,6 +111883,10 @@
     2
    ],
    [
+    "scripts/rls-audit.allowlist.json",
+    1
+   ],
+   [
     "docs/agentes/auditoria-forense-descartes-261118.md",
     1
    ],
@@ -111901,10 +111904,6 @@
    ],
    [
     "src/index.css",
-    1
-   ],
-   [
-    "src/lib/__tests__/pdfGenerator.test.ts",
     1
    ]
   ]
