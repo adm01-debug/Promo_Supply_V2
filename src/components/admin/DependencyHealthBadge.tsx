@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { usePermissions } from "@/hooks/usePermissions";
+import { useAuth } from "@/features/auth";
 
 interface PackageEntry {
   name: string;
@@ -99,7 +99,7 @@ function formatRelative(iso?: string): string {
 
 const DependencyHealthBadge = () => {
   const navigate = useNavigate();
-  const { isAdmin } = usePermissions() as { isAdmin?: boolean };
+  const { isAdmin } = useAuth();
 
   const { data, isSuccess, isError } = useQuery({
     queryKey: ["dep-health-static"],
