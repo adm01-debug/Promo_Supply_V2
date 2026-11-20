@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3e84319c3448e199463dc1034fea86f1ae45ad2a",
+  "commit": "91b330c71f14105bdd56eb8a56cf817976e2812b",
   "branch": "main",
-  "data_commit": "2026-11-20T08:19:50-03:00",
+  "data_commit": "2026-11-20T10:08:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "91b330c",
+    "data": "2026-11-20",
+    "assunto": "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)"
+   },
    {
     "sha": "3e84319",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "2dc69d6",
     "data": "2026-11-18",
     "assunto": "chore(ci): bump the acoes group with 8 updates (#144)"
-   },
-   {
-    "sha": "0a3c2c2",
-    "data": "2026-11-18",
-    "assunto": "ci(seguranca): dependency review nos PRs e dependabot agrupado (#142)"
    }
   ],
-  "arquivos_mudados_7d": 167,
+  "arquivos_mudados_7d": 170,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 133
+    "commits": 134
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1236,
+  "arquivos_total": 1240,
   "arquivos_codigo": 772,
   "linhas_codigo": 162236,
   "rotas": 55,
@@ -335,7 +335,7 @@
   "testes": 175,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 78
+  "docs_md": 82
  },
  "por_pasta": {
   "eslint.config.js": {

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3e84319c3448e199463dc1034fea86f1ae45ad2a` (2026-11-20T08:19:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `91b330c71f14105bdd56eb8a56cf817976e2812b` (2026-11-20T10:08:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (701), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (701), SQL (316), Markdown (82), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1236 |
+| arquivos_total | 1240 |
 | arquivos_codigo | 772 |
 | linhas_codigo | 162236 |
 | rotas | 55 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 175 |
 | workflows | 11 |
 | scripts | 49 |
-| docs_md | 78 |
+| docs_md | 82 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -403,10 +403,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (10), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (10), docs/arsenal-auditoria (5), docs/pendencias (4), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
 - 2026-11-20 `3e84319` fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)
 - 2026-11-20 `b151331` feat(ci): dummy para reprovar delete automatico no push (#165)
 - 2026-11-20 `1a7b20b` fix(ci): impede que $# de sed astringa o delete de edge functions (#164)
@@ -421,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `cfa585f` fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup
 - 2026-11-19 `69e604f` fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)
 - 2026-11-19 `e238664` fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)
-- 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
