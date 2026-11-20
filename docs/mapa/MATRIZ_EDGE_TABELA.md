@@ -42,7 +42,6 @@
 | `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles` |
 | `system-simulation` | — |
 | `telemetry` | `telemetry_logs` |
-| `test-auto-delete-reprova` | — |
 | `tests` | — |
 | `webauthn-authenticate` | `webauthn_challenges`, `webauthn_credentials` |
 | `webauthn-register` | `webauthn_challenges`, `webauthn_credentials` |
