@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cc9dceed57` · branch `main` · 2026-11-20 18:34 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a0f4bb25bc` · branch `main` · 2026-11-20 18:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1680,6 +1680,9 @@ _nenhum item encontrado_
 | `MAX_USER_AGENT_LENGTH` | `512` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_LOG_MESSAGE_LEN` | `45000` | `supabase/functions/_shared/logger.ts` |
 | `MAX_ERR_MESSAGE_LEN` | `500` | `supabase/functions/_shared/logger.ts` |
+| `ENC_LABEL` | `"enc"` | `supabase/functions/_shared/punchout_crypto.ts` |
+| `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/punchout_crypto.ts` |
+| `KDF_ALGO` | `"aesgcm"` | `supabase/functions/_shared/punchout_crypto.ts` |
 | `SPOT_QUOTA_RESERVE` | `2` | `supabase/functions/_shared/spot_api.ts` |
 | `CHUNK` | `500` | `supabase/functions/_shared/xbz_catalog_cache.ts` |
 | `XBZ_BASE` | `"https://api.minhaxbz.com.br:5001"` | `supabase/functions/_shared/xbz_client.ts` |
@@ -2278,7 +2281,7 @@ _nenhum item encontrado_
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
 | Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao limpar dados antigos | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| … +185 linhas — lista completa em `context.json` | |
+| … +188 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

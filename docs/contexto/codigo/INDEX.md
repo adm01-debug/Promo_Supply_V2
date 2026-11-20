@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cc9dceed57bf7472d8cece623d52f8e24a78a1bb` (2026-11-20T15:33:43-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a` (2026-11-20T15:52:52-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (702), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (704), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1245 |
-| arquivos_codigo | 773 |
-| linhas_codigo | 162562 |
+| arquivos_total | 1247 |
+| arquivos_codigo | 775 |
+| linhas_codigo | 162711 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 163 |
 | migrations | 315 |
 | cron_jobs | 70 |
-| testes | 175 |
+| testes | 176 |
 | workflows | 11 |
 | scripts | 49 |
 | docs_md | 85 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (213), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (23), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (104), outro (40), co-localizado (*.test) (21)
+- testes: co-localizado (__tests__) (104), outro (40), co-localizado (*.test) (22)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -206,10 +206,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `process-solicitacao-neural` — tabelas: -; chamada por 2 arquivo(s) do front
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
-- `punchout-receive` — tabelas: profiles, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
+- `punchout-receive` — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `scim-v2` — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
+- `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: notifications, push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
@@ -298,7 +298,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
-- webhooks recebidos: nenhum
+- webhooks recebidos: scim-v2
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (12)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
@@ -342,8 +342,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
+- supabase/functions/punchout-receive/index.ts (5)
 - .github/workflows/notifica-falha-main.yml (4)
-- .github/workflows/types-sync.yml (4)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `a0f4bb2` fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)
 - 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
 - 2026-11-20 `134e364` chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)
 - 2026-11-20 `2e8e436` chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `a19f3fa` fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)
 - 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
 - 2026-11-20 `3e84319` fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)
-- 2026-11-20 `b151331` feat(ci): dummy para reprovar delete automatico no push (#165)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

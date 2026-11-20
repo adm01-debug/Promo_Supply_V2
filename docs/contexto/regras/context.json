@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
+  "sha": "a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 18:34 UTC",
-  "files_total": 1246,
-  "code_files": 1092,
-  "code_lines": 188522,
+  "generated_at": "2026-11-20 18:53 UTC",
+  "files_total": 1248,
+  "code_files": 1094,
+  "code_lines": 188671,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c12bb30c4552bc3a",
+ "facts_hash": "647221608fdddad9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 357,
+   ".ts": 359,
    ".tsx": 345,
    ".sql": 317,
    ".mjs": 66,
@@ -258,7 +258,9 @@
   },
   "monorepo_packages": [],
   "supabase_config": {
-   "functions_no_jwt": [],
+   "functions_no_jwt": [
+    "scim-v2"
+   ],
    "auth": {}
   },
   "name": "vite_react_shadcn_ts",
@@ -31780,6 +31782,7 @@
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "profiles",
+     "punchout_catalogs",
      "punchout_sessions",
      "solicitacoes",
      "user_tenants",
@@ -31796,9 +31799,11 @@
      "BuyerCookie missing in response",
      "Error creating solicitation: ",
      "Error generating solicitation number: ",
+     "Error loading catalog: ",
      "Invalid PunchOut XML: ",
      "PunchOut cart has no items",
-     "Session not found"
+     "Session not found",
+     "SharedSecret mismatch"
     ],
     "side_effects": [],
     "webhook_events": [],
@@ -31865,7 +31870,7 @@
      "PATCH",
      "POST"
     ],
-    "auth": "service_role (ignora RLS) + valida JWT do usuário",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "sso_configurations",
      "user_tenants"
@@ -35267,8 +35272,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 77,
-   "lines": 14051,
+   "files": 79,
+   "lines": 14200,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35332,6 +35337,7 @@
     "integrity_test.ts: runIntegrityTests",
     "logLevel.ts: CanonicalLogLevel, CANONICAL_LEVELS, DEFAULT_LEVEL, normalizeLevel, MAX_MESSAGE_LENGTH, MAX_CONTEXT_BYTES",
     "logger.ts: LogLevel, LogEntry, EdgeLogger",
+    "punchout_crypto.ts: decryptPunchOutSecret",
     "rate_limit.ts: RateLimitResult, RateLimitOptions, checkRateLimit, rateLimitedResponse",
     "retry.ts: RetryOptions, retry",
     "security.ts: SupabaseClientLike, buildCorsHeaders, corsHeaders, validateAuth, responses, stripHtml",
@@ -35374,6 +35380,8 @@
     "supabase/functions/_shared/logLevel.ts",
     "supabase/functions/_shared/logger.fuzz.test.ts",
     "supabase/functions/_shared/logger.ts",
+    "supabase/functions/_shared/punchout_crypto.test.ts",
+    "supabase/functions/_shared/punchout_crypto.ts",
     "supabase/functions/_shared/rate_limit.ts",
     "supabase/functions/_shared/retry.ts",
     "supabase/functions/_shared/security.ts",
@@ -36487,6 +36495,7 @@
    "punchout_catalogs": {
     "select": [
      "src/pages/admin/PunchOutCatalogs.tsx",
+     "supabase/functions/punchout-receive/index.ts",
      "supabase/functions/punchout-setup/index.ts"
     ],
     "update": [
@@ -37516,13 +37525,19 @@
     "identity",
     "is_active",
     "setup_url",
+    "shared_secret_encrypted",
     "tenant_id"
    ],
    "punchout_sessions": [
     "buyer_cookie",
+    "catalog_id",
     "closed_at",
+    "created_at",
     "id",
-    "status"
+    "return_url",
+    "status",
+    "tenant_id",
+    "user_id"
    ],
    "push_subscriptions": [
     "id"
@@ -37946,6 +37961,7 @@
     "src/lib/logger.ts"
    ],
    "PSV2_ENCRYPTION_KEY": [
+    "supabase/functions/_shared/punchout_crypto.ts",
     "supabase/functions/punchout-encrypt/index.ts"
    ],
    "PUNCHOUT_SESSION_TTL_MINUTES": [
@@ -40719,6 +40735,10 @@
     "msg": "circuit_open"
    },
    {
+    "file": "supabase/functions/_shared/punchout_crypto.ts",
+    "msg": "PSV2_ENCRYPTION_KEY ausente ou muito curta (min. 32 chars)"
+   },
+   {
     "file": "supabase/functions/_shared/security.ts",
     "msg": "Missing Authorization header"
    },
@@ -40932,6 +40952,10 @@
    },
    {
     "file": "supabase/functions/punchout-receive/index.ts",
+    "msg": "Error loading catalog: "
+   },
+   {
+    "file": "supabase/functions/punchout-receive/index.ts",
     "msg": "Invalid PunchOut XML: "
    },
    {
@@ -40941,6 +40965,10 @@
    {
     "file": "supabase/functions/punchout-receive/index.ts",
     "msg": "Session not found"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/index.ts",
+    "msg": "SharedSecret mismatch"
    },
    {
     "file": "supabase/functions/punchout-receive/solicitation.ts",
@@ -49043,6 +49071,21 @@
     "file": "supabase/functions/_shared/logger.ts",
     "name": "MAX_ERR_MESSAGE_LEN",
     "value": "500"
+   },
+   {
+    "file": "supabase/functions/_shared/punchout_crypto.ts",
+    "name": "ENC_LABEL",
+    "value": "\"enc\""
+   },
+   {
+    "file": "supabase/functions/_shared/punchout_crypto.ts",
+    "name": "ENC_VERSION",
+    "value": "\"v1\""
+   },
+   {
+    "file": "supabase/functions/_shared/punchout_crypto.ts",
+    "name": "KDF_ALGO",
+    "value": "\"aesgcm\""
    },
    {
     "file": "supabase/functions/_shared/spot_api.ts",
@@ -79169,7 +79212,9 @@
    "xbz_cron_key_get",
    "xbz_sync_watchdog"
   ],
-  "public_functions": [],
+  "public_functions": [
+   "scim-v2"
+  ],
   "auth_config": {},
   "grants": [
    {
@@ -106466,6 +106511,44 @@
    "doc": "Centralized logging utility for Edge Functions. Enforces JSON structured logging for observability and persistence.",
    "uses_service_role": true
   },
+  "supabase/functions/_shared/punchout_crypto.test.ts": {
+   "path": "supabase/functions/_shared/punchout_crypto.test.ts",
+   "lines": 57,
+   "is_test": true,
+   "errors": [
+    "label v1 nao deveria decriptar: ",
+    "lixo nao deveria decriptar: ",
+    "round-trip falhou: "
+   ]
+  },
+  "supabase/functions/_shared/punchout_crypto.ts": {
+   "path": "supabase/functions/_shared/punchout_crypto.ts",
+   "lines": 55,
+   "exports": [
+    "function decryptPunchOutSecret"
+   ],
+   "env": [
+    "PSV2_ENCRYPTION_KEY"
+   ],
+   "errors": [
+    "PSV2_ENCRYPTION_KEY ausente ou muito curta (min. 32 chars)"
+   ],
+   "params": [
+    {
+     "name": "ENC_LABEL",
+     "value": "\"enc\""
+    },
+    {
+     "name": "ENC_VERSION",
+     "value": "\"v1\""
+    },
+    {
+     "name": "KDF_ALGO",
+     "value": "\"aesgcm\""
+    }
+   ],
+   "doc": "Codec do shared_secret do PunchOut (formato `enc::v1::aesgcm::<base64>`). Espelha o encrypt de `punchout-encrypt/index.ts` (mesmo KDF SHA-256 sobre PSV2_ENCRYPTION_KEY e mesmo layout AES-GCM: iv(12) || ciphertext+tag em um único base64). O label `enc::v1::aesgcm::` é próprio do PunchOut e não se mis …"
+  },
   "supabase/functions/_shared/rate_limit.ts": {
    "path": "supabase/functions/_shared/rate_limit.ts",
    "lines": 64,
@@ -108593,10 +108676,14 @@
   },
   "supabase/functions/punchout-receive/index.ts": {
    "path": "supabase/functions/punchout-receive/index.ts",
-   "lines": 208,
+   "lines": 245,
    "tables": [
     {
      "table": "punchout_sessions",
+     "op": "select"
+    },
+    {
+     "table": "punchout_catalogs",
      "op": "select"
     },
     {
@@ -108615,9 +108702,19 @@
    "table_cols": {
     "punchout_sessions": [
      "buyer_cookie",
+     "catalog_id",
      "closed_at",
+     "created_at",
      "id",
-     "status"
+     "return_url",
+     "status",
+     "tenant_id",
+     "user_id"
+    ],
+    "punchout_catalogs": [
+     "id",
+     "is_active",
+     "shared_secret_encrypted"
     ],
     "profiles": [
      "current_organization_id",
@@ -108635,9 +108732,11 @@
     "BuyerCookie missing in response",
     "Error creating solicitation: ",
     "Error generating solicitation number: ",
+    "Error loading catalog: ",
     "Invalid PunchOut XML: ",
     "PunchOut cart has no items",
-    "Session not found"
+    "Session not found",
+    "SharedSecret mismatch"
    ],
    "params": [
     {
@@ -111760,10 +111859,23 @@
   }
  },
  "git": {
-  "sha": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
+  "sha": "a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a0f4bb2",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "supabase/config.toml",
+     "supabase/functions/_shared/punchout_crypto.test.ts",
+     "supabase/functions/_shared/punchout_crypto.ts",
+     "supabase/functions/punchout-receive/index.ts"
+    ]
+   },
    {
     "sha": "cc9dcee",
     "date": "2026-11-20",
@@ -112052,18 +112164,13 @@
     "files": [
      "docs/agentes/auditoria-forense-descartes-261118.md"
     ]
-   },
-   {
-    "sha": "64b0a2a",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)",
-    "files": [
-     "docs/agentes/estado-spot-sync.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    7
+   ],
    [
     "docs/pendencias/_indice.md",
     7
@@ -112073,16 +112180,16 @@
     6
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    6
-   ],
-   [
     ".github/workflows/deploy-edge-functions.yml",
     3
    ],
    [
     "scripts/rls-audit.allowlist.json",
     3
+   ],
+   [
+    "supabase/config.toml",
+    2
    ],
    [
     "docs/pendencias/_regras-de-negocio.md",
@@ -112099,6 +112206,18 @@
    [
     ".github/workflows/main.yml",
     2
+   ],
+   [
+    "supabase/functions/_shared/punchout_crypto.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/punchout_crypto.ts",
+    1
+   ],
+   [
+    "supabase/functions/punchout-receive/index.ts",
+    1
    ],
    [
     "src/components/compras/AdvancedProcurementKPIs.tsx",
@@ -112126,22 +112245,6 @@
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
-    1
-   ],
-   [
-    "src/pages/documentos/DocumentosFiscais.tsx",
-    1
-   ],
-   [
-    "supabase/functions/guided-buying-ai/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/process-invoice-idp/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/webauthn-authenticate/index.ts",
     1
    ]
   ]

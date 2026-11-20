@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (104)",
    "outro (40)",
-   "co-localizado (*.test) (21)"
+   "co-localizado (*.test) (22)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)",
    "fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)",
    "chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)",
    "chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)",
-   "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assinatura (#177)",
-   "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)"
+   "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assinatura (#177)"
   ]
  },
  "pr_template": null,

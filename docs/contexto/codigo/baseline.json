@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
+  "commit": "a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a",
   "branch": "main",
-  "data_commit": "2026-11-20T15:33:43-03:00",
+  "data_commit": "2026-11-20T15:52:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a0f4bb2",
+    "data": "2026-11-20",
+    "assunto": "fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)"
+   },
    {
     "sha": "cc9dcee",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "d897c77",
     "data": "2026-11-19",
     "assunto": "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103"
-   },
-   {
-    "sha": "cfa585f",
-    "data": "2026-11-19",
-    "assunto": "fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup"
    }
   ],
   "arquivos_mudados_7d": 156,
@@ -145,15 +145,15 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 10
+    "mudancas": 12
    },
    {
     "pasta": "supabase/functions/punchout-receive",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "pasta": "docs/prod-readiness.md",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "docs/prod-readiness.md",
@@ -250,6 +250,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "supabase/functions/punchout-receive/index.ts",
+    "mudancas": 5
+   },
+   {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 4
    },
@@ -274,7 +278,7 @@
     "mudancas": 4
    },
    {
-    "arquivo": "supabase/functions/punchout-receive/index.ts",
+    "arquivo": "supabase/config.toml",
     "mudancas": 4
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/agentes/deploy.md",
     "mudancas": 3
-   },
-   {
-    "arquivo": "docs/arsenal-auditoria/AUDITORIA_SISTEMA_PROMO_SUPPLY.md",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 146
+    "commits": 147
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1245,
-  "arquivos_codigo": 773,
-  "linhas_codigo": 162562,
+  "arquivos_total": 1247,
+  "arquivos_codigo": 775,
+  "linhas_codigo": 162711,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 315,
   "cron_jobs": 70,
-  "testes": 175,
+  "testes": 176,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 85
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 77,
-   "linhas": 14051
+   "arquivos": 79,
+   "linhas": 14200
   },
   "tailwind.config.ts": {
    "arquivos": 1,

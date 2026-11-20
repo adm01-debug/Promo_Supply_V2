@@ -13433,6 +13433,7 @@
    },
    "usada_no_front": 1,
    "usada_em_edges": [
+    "punchout-receive",
     "punchout-setup"
    ],
    "triggers": [
