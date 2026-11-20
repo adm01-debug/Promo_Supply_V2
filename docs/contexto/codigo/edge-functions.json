@@ -552,7 +552,7 @@
    "nome": "guided-buying-ai",
    "entrada": "supabase/functions/guided-buying-ai/index.ts",
    "arquivos": 1,
-   "linhas": 115,
+   "linhas": 160,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -563,6 +563,7 @@
    ],
    "rpcs": [],
    "env": [
+    "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
@@ -571,6 +572,7 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
+    "ai_gateway.ts",
     "http.ts",
     "logger.ts",
     "rate_limit.ts",
@@ -696,7 +698,7 @@
    "nome": "process-invoice-idp",
    "entrada": "supabase/functions/process-invoice-idp/index.ts",
    "arquivos": 1,
-   "linhas": 84,
+   "linhas": 94,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1175,7 +1177,7 @@
    "nome": "webauthn-authenticate",
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
-   "linhas": 246,
+   "linhas": 254,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

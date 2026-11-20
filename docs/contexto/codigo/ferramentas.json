@@ -782,14 +782,14 @@
   "papeis_no_codigo": [
    {
     "papel": "user",
-    "ocorrencias": 7
-   },
-   {
-    "papel": "admin",
-    "ocorrencias": 5
+    "ocorrencias": 8
    },
    {
     "papel": "system",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "admin",
     "ocorrencias": 5
    },
    {

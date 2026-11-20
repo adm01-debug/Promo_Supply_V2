@@ -365,7 +365,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 17,
-   "linhas": 24536,
+   "linhas": 24520,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3633,7 +3633,7 @@
    "modulo": "pages/auth",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 534,
+   "linhas": 535,
    "itens_menu": [],
    "telas": [
     "/auth"
@@ -4732,7 +4732,7 @@
    "modulo": "pages/dashboard",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 414,
+   "linhas": 398,
    "itens_menu": [
     "Início",
     "Dashboard",
@@ -4980,7 +4980,7 @@
    "modulo": "pages/documentos",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 352,
+   "linhas": 356,
    "itens_menu": [
     "Docs Fiscais"
    ],

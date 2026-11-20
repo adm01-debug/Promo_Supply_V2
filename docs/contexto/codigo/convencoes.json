@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assinatura (#177)",
    "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)",
    "docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)",
    "chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)",
-   "chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)",
-   "feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)"
+   "chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)"
   ]
  },
  "pr_template": null,

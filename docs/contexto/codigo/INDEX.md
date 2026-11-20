@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d1f90e970b8386cef795283b938efc96f7ec6e2e` (2026-11-20T11:44:04-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f691f17c1d139a00f2a2d7cef9911c2599be2987` (2026-11-20T12:03:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1245 |
 | arquivos_codigo | 773 |
-| linhas_codigo | 162413 |
+| linhas_codigo | 162449 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -302,7 +302,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (7), admin (5), system (5), assistant (1)
+- papéis no código: user (8), system (6), admin (5), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
 - feature flags: nenhuma
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `f691f17` feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin
 - 2026-11-20 `d1f90e9` feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)
 - 2026-11-20 `dcd764b` docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)
 - 2026-11-20 `b425ff9` chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `1a7b20b` fix(ci): impede que $# de sed astringa o delete de edge functions (#164)
 - 2026-11-19 `2a86602` fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)
 - 2026-11-19 `d14201c` merge #162 (triagem automatizada)
-- 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

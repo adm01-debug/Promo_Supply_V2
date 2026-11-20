@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d1f90e970b8386cef795283b938efc96f7ec6e2e",
+  "sha": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 14:44 UTC",
+  "generated_at": "2026-11-20 15:03 UTC",
   "files_total": 1246,
   "code_files": 1092,
-  "code_lines": 188373,
+  "code_lines": 188409,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "23cd067946730168",
+ "facts_hash": "0bf60d5a5ffb4911",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -31572,6 +31572,7 @@
      "user_tenants"
     ],
     "env": [
+     "OPENROUTER_API_KEY",
      "SUPABASE_ANON_KEY",
      "SUPABASE_SERVICE_ROLE_KEY",
      "SUPABASE_URL"
@@ -31580,6 +31581,9 @@
     "invokes": [],
     "doc": "",
     "errors": [
+     "AI Gateway error: ${aiResponseBody.response.status}",
+     "No content in AI response",
+     "OPENROUTER_API_KEY is not configured",
      "unauthorized"
     ],
     "side_effects": [],
@@ -33997,7 +34001,7 @@
   {
    "module": "src/components",
    "files": 259,
-   "lines": 48374,
+   "lines": 48358,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34864,7 +34868,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28245,
+   "lines": 28234,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35264,7 +35268,7 @@
   {
    "module": "supabase/functions",
    "files": 77,
-   "lines": 13988,
+   "lines": 14051,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37917,6 +37921,7 @@
     "supabase/functions/ai-negotiation/index.ts",
     "supabase/functions/ai-supplier-risk/index.ts",
     "supabase/functions/ai-supplier-suggestion/index.ts",
+    "supabase/functions/guided-buying-ai/index.ts",
     "supabase/functions/process-solicitacao-neural/index.ts"
    ],
    "PATH": [
@@ -40863,6 +40868,18 @@
    },
    {
     "file": "supabase/functions/guided-buying-ai/index.ts",
+    "msg": "AI Gateway error: ${aiResponseBody.response.status}"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "msg": "No content in AI response"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "msg": "OPENROUTER_API_KEY is not configured"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
     "msg": "unauthorized"
    },
    {
@@ -41012,6 +41029,10 @@
    {
     "file": "supabase/functions/webauthn-authenticate/index.ts",
     "msg": "Invalid credential type"
+   },
+   {
+    "file": "supabase/functions/webauthn-authenticate/index.ts",
+    "msg": "Login por passkey desabilitado: verificação de assinatura pendente. Use e-mail/senha."
    },
    {
     "file": "supabase/functions/webauthn-authenticate/index.ts",
@@ -41294,6 +41315,10 @@
    {
     "file": "src/pages/cotacao/Cotacao.tsx",
     "value": "coordinator"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "value": "user"
    }
   ],
   "comments": [
@@ -41812,6 +41837,14 @@
    {
     "file": "supabase/functions/webauthn-authenticate/index.ts",
     "text": "Rate limit: mitiga brute-force / enumeração por IP+email"
+   },
+   {
+    "file": "supabase/functions/webauthn-authenticate/index.ts",
+    "text": "SECURITY: fail-closed. A autenticação por passkey não pode ser"
+   },
+   {
+    "file": "supabase/functions/webauthn-authenticate/index.ts",
+    "text": "posse da chave privada. Reativar apenas quando a verificação de"
    },
    {
     "file": "supabase/functions/webauthn-register/index.ts",
@@ -49396,12 +49429,6 @@
    {
     "file": "src/components/compras/DashboardInsights.tsx",
     "field": "type",
-    "value": "warning",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/DashboardInsights.tsx",
-    "field": "type",
     "value": "info",
     "kind": "escreve"
    },
@@ -54467,6 +54494,24 @@
     "file": "supabase/functions/generate-contract-pdf/index.ts",
     "field": "status",
     "value": "applied",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "field": "role",
+    "value": "system",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "field": "role",
+    "value": "user",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/guided-buying-ai/index.ts",
+    "field": "role",
+    "value": "user",
     "kind": "compara"
    },
    {
@@ -75367,7 +75412,6 @@
       "compara:src/components/compras/BuyerPerformanceAlerts.tsx",
       "compara:src/components/compras/executive/ExecutiveAIInsights.tsx",
       "compara:src/hooks/useApprovalNotifications.ts",
-      "escreve:src/components/compras/DashboardInsights.tsx",
       "escreve:src/components/compras/executive/ExecutiveAIInsights.tsx",
       "escreve:src/components/ui/undo-toast.tsx",
       "escreve:src/hooks/useApprovalNotifications.ts",
@@ -76382,11 +76426,13 @@
      ],
      "user": [
       "compara:src/features/layout/components/GuidedBuyingAssistant.tsx",
+      "compara:supabase/functions/guided-buying-ai/index.ts",
       "escreve:src/hooks/useGuidedBuying.ts",
       "escreve:supabase/functions/ai-demand-prediction/index.ts",
       "escreve:supabase/functions/ai-negotiation/index.ts",
       "escreve:supabase/functions/ai-supplier-risk/index.ts",
       "escreve:supabase/functions/ai-supplier-suggestion/index.ts",
+      "escreve:supabase/functions/guided-buying-ai/index.ts",
       "escreve:supabase/functions/process-solicitacao-neural/index.ts"
      ],
      "assistant": [
@@ -76397,6 +76443,7 @@
       "escreve:supabase/functions/ai-negotiation/index.ts",
       "escreve:supabase/functions/ai-supplier-risk/index.ts",
       "escreve:supabase/functions/ai-supplier-suggestion/index.ts",
+      "escreve:supabase/functions/guided-buying-ai/index.ts",
       "escreve:supabase/functions/process-solicitacao-neural/index.ts"
      ]
     },
@@ -89171,7 +89218,7 @@
   },
   "src/components/compras/DashboardInsights.tsx": {
    "path": "src/components/compras/DashboardInsights.tsx",
-   "lines": 199,
+   "lines": 183,
    "exports": [
     "const DashboardInsights"
    ],
@@ -89184,11 +89231,6 @@
     {
      "field": "type",
      "value": "opportunity",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "warning",
      "kind": "escreve"
     },
     {
@@ -101468,7 +101510,7 @@
   },
   "src/pages/auth/Auth.tsx": {
    "path": "src/pages/auth/Auth.tsx",
-   "lines": 473,
+   "lines": 474,
    "exports": [
     "default Auth"
    ],
@@ -102361,7 +102403,7 @@
   },
   "src/pages/dashboard/ComprasDashboard.tsx": {
    "path": "src/pages/dashboard/ComprasDashboard.tsx",
-   "lines": 390,
+   "lines": 374,
    "exports": [
     "default memo"
    ],
@@ -102625,7 +102667,7 @@
   },
   "src/pages/documentos/DocumentosFiscais.tsx": {
    "path": "src/pages/documentos/DocumentosFiscais.tsx",
-   "lines": 352,
+   "lines": 356,
    "exports": [
     "default DocumentosFiscais"
    ],
@@ -108159,7 +108201,7 @@
   },
   "supabase/functions/guided-buying-ai/index.ts": {
    "path": "supabase/functions/guided-buying-ai/index.ts",
-   "lines": 115,
+   "lines": 160,
    "tables": [
     {
      "table": "produtos",
@@ -108187,11 +108229,15 @@
     ]
    },
    "env": [
+    "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
    "errors": [
+    "AI Gateway error: ${aiResponseBody.response.status}",
+    "No content in AI response",
+    "OPENROUTER_API_KEY is not configured",
     "unauthorized"
    ],
    "zod": [
@@ -108202,6 +108248,26 @@
      "refines": [],
      "chain": []
     }
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "system",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "user",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "user",
+     "kind": "compara"
+    }
+   ],
+   "role_checks": [
+    "user"
    ],
    "pagination": [
     "10",
@@ -108341,7 +108407,7 @@
   },
   "supabase/functions/process-invoice-idp/index.ts": {
    "path": "supabase/functions/process-invoice-idp/index.ts",
-   "lines": 84,
+   "lines": 94,
    "storage": [
     "fiscal-documents"
    ],
@@ -109211,7 +109277,7 @@
   },
   "supabase/functions/webauthn-authenticate/index.ts": {
    "path": "supabase/functions/webauthn-authenticate/index.ts",
-   "lines": 246,
+   "lines": 254,
    "tables": [
     {
      "table": "webauthn_credentials",
@@ -109269,6 +109335,7 @@
     "Failed to create session",
     "Invalid action",
     "Invalid credential type",
+    "Login por passkey desabilitado: verificação de assinatura pendente. Use e-mail/senha.",
     "Nenhuma passkey registrada para este usuário"
    ],
    "status_values": [
@@ -109294,7 +109361,9 @@
     }
    ],
    "rule_comments": [
-    "Rate limit: mitiga brute-force / enumeração por IP+email"
+    "Rate limit: mitiga brute-force / enumeração por IP+email",
+    "SECURITY: fail-closed. A autenticação por passkey não pode ser",
+    "posse da chave privada. Reativar apenas quando a verificação de"
    ],
    "temporal": [
     "expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),",
@@ -111679,10 +111748,25 @@
   }
  },
  "git": {
-  "sha": "d1f90e970b8386cef795283b938efc96f7ec6e2e",
+  "sha": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "f691f17",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assinatura (#177)",
+    "files": [
+     "src/components/compras/DashboardInsights.tsx",
+     "src/pages/auth/Auth.tsx",
+     "src/pages/dashboard/ComprasDashboard.tsx",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "supabase/functions/guided-buying-ai/index.ts",
+     "supabase/functions/process-invoice-idp/index.ts",
+     "supabase/functions/webauthn-authenticate/index.ts"
+    ]
+   },
    {
     "sha": "d1f90e9",
     "date": "2026-11-20",
@@ -111971,17 +112055,6 @@
      "src/components/PrefetchLink.tsx",
      "src/pages/admin/DeveloperDocs.tsx"
     ]
-   },
-   {
-    "sha": "a1e0e53",
-    "date": "2026-11-18",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps)(deps): bump lucide-react from 0.462.0 to 1.73.0 (#149)",
-    "files": [
-     "bun.lock",
-     "package.json",
-     "src/pages/admin/DeveloperDocs.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -111994,14 +112067,6 @@
     5
    ],
    [
-    "bun.lock",
-    4
-   ],
-   [
-    "package.json",
-    4
-   ],
-   [
     "docs/pendencias/_ordem.md",
     3
    ],
@@ -112011,6 +112076,14 @@
    ],
    [
     "scripts/rls-audit.allowlist.json",
+    3
+   ],
+   [
+    "bun.lock",
+    3
+   ],
+   [
+    "package.json",
     3
    ],
    [
@@ -112026,8 +112099,32 @@
     2
    ],
    [
-    "src/pages/admin/DeveloperDocs.tsx",
-    2
+    "src/components/compras/DashboardInsights.tsx",
+    1
+   ],
+   [
+    "src/pages/auth/Auth.tsx",
+    1
+   ],
+   [
+    "src/pages/dashboard/ComprasDashboard.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/DocumentosFiscais.tsx",
+    1
+   ],
+   [
+    "supabase/functions/guided-buying-ai/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/webauthn-authenticate/index.ts",
+    1
    ],
    [
     "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
@@ -112039,30 +112136,6 @@
    ],
    [
     "src/components/compras/NovaSolicitacaoModal.tsx",
-    1
-   ],
-   [
-    "supabase/functions/process-solicitacao-neural/index.ts",
-    1
-   ],
-   [
-    "docs/pendencias/fio-1-cotacao-selecao.md",
-    1
-   ],
-   [
-    "src/pages/cotacao/Cotacao.tsx",
-    1
-   ],
-   [
-    "docs/pendencias/fio-3-kanban-acompanhamento.md",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    1
-   ],
-   [
-    "docs/pendencias/_linha-de-base.md",
     1
    ]
   ]

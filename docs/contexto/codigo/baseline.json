@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d1f90e970b8386cef795283b938efc96f7ec6e2e",
+  "commit": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
   "branch": "main",
-  "data_commit": "2026-11-20T11:44:04-03:00",
+  "data_commit": "2026-11-20T12:03:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "f691f17",
+    "data": "2026-11-20",
+    "assunto": "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin"
+   },
    {
     "sha": "d1f90e9",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "b512d69",
     "data": "2026-11-18",
     "assunto": "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)"
-   },
-   {
-    "sha": "8c4f685",
-    "data": "2026-11-18",
-    "assunto": "docs: registra auditoria forense dos descartes sem trabalho perdido (#152)"
    }
   ],
-  "arquivos_mudados_7d": 168,
+  "arquivos_mudados_7d": 172,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "pasta": "package.json",
@@ -266,6 +266,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "src/pages/dashboard/ComprasDashboard.tsx",
+    "mudancas": 4
+   },
+   {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 4
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 3
-   },
-   {
-    "arquivo": "scripts/ai-context/README.md",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 142
+    "commits": 143
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1245,
   "arquivos_codigo": 773,
-  "linhas_codigo": 162413,
+  "linhas_codigo": 162449,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -424,7 +424,7 @@
   },
   "src/components": {
    "arquivos": 259,
-   "linhas": 48374
+   "linhas": 48358
   },
   "src/features": {
    "arquivos": 64,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 28245
+   "linhas": 28234
   },
   "src/routes": {
    "arquivos": 1,
@@ -484,7 +484,7 @@
   },
   "supabase/functions": {
    "arquivos": 77,
-   "linhas": 13988
+   "linhas": 14051
   },
   "tailwind.config.ts": {
    "arquivos": 1,

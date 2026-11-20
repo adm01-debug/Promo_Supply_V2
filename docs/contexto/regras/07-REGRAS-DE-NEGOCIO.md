@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d1f90e970b` · branch `main` · 2026-11-20 14:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `f691f17c1d` · branch `main` · 2026-11-20 15:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -991,7 +991,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `triangle` | escreve | `src/hooks/useFeedback.ts` |
 | `type` | `update` | compara | `src/hooks/useOfflineSync.ts` |
 | `type` | `user-action` | escreve | `src/hooks/useGlobalUndo.ts` |
-| `type` | `warning` | compara, escreve | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/DashboardInsights.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx`<br>`src/hooks/useApprovalNotifications.ts`<br>… +3 |
+| `type` | `warning` | compara, escreve | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx`<br>`src/hooks/useApprovalNotifications.ts`<br>`src/stores/buyerAlertsStore.ts`<br>… +2 |
 | `type` | `weekly_report` | escreve | `supabase/functions/weekly-report/index.ts`<br>`supabase/functions/weekly-summary-report/index.ts` |
 | `status` | `AGUARDANDO_COTACAO` | compara, escreve | `src/components/compras/SolicitacaoCard.tsx`<br>`src/types/legacyTypes.ts` |
 | `status` | `Crítico` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx` |
@@ -1131,8 +1131,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
 | `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`src/hooks/usePermissions.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>… +2 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
-| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/process-solicitacao-neural/index.ts` |
-| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +2 |
+| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/guided-buying-ai/index.ts`<br>… +1 |
+| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +3 |
 | `state` | `collapsed` | compara | `src/components/ui/sidebar.tsx` |
 | `state` | `expanded` | escreve | `src/components/ui/sidebar.tsx` |
 | `state` | `open` | compara | `supabase/functions/_shared/circuit_breaker.ts` |
@@ -2280,7 +2280,7 @@ _nenhum item encontrado_
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
 | Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao limpar dados antigos | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| … +181 linhas — lista completa em `context.json` | |
+| … +185 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2297,6 +2297,7 @@ _nenhum item encontrado_
 | `admin` | `src/hooks/usePermissions.ts` |
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
+| `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
 ## K. Testes como especificação (2679 testes em 129 arquivos — nomes completos em `context.json`)
 
@@ -2594,6 +2595,8 @@ _nenhum item encontrado_
 | M-05: rate limit uniforme por usuário (60 req/min). | `supabase/functions/spot-proxy/index.ts` |
 | versões diferentes da lib; `SupabaseClientLike` é o mínimo usado). | `supabase/functions/telemetry/index.ts` |
 | Rate limit: mitiga brute-force / enumeração por IP+email | `supabase/functions/webauthn-authenticate/index.ts` |
+| SECURITY: fail-closed. A autenticação por passkey não pode ser | `supabase/functions/webauthn-authenticate/index.ts` |
+| posse da chave privada. Reativar apenas quando a verificação de | `supabase/functions/webauthn-authenticate/index.ts` |
 | Rate limit por usuário para evitar registro em massa/enumeração | `supabase/functions/webauthn-register/index.ts` |
 | Contract Validation: Ensures type safety and catches malformed payloads before logic execution | `supabase/functions/workflow-engine/index.ts` |
 | - Credenciais decifradas apenas no servidor, nunca retornadas ao browser | `supabase/functions/xbz-proxy/index.ts` |
