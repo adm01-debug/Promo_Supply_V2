@@ -14,6 +14,7 @@ export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
     id: string;
     razao_social: string;
     nome_fantasia: string | null;
+    email: string | null;
   } | null;
   solicitacao?: {
     id: string;
@@ -79,7 +80,7 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
       valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega,
       condicao_pagamento, endereco_entrega, observacoes, comprador_id,
       organization_id, tenant_id, created_at, updated_at,
-      fornecedor:fornecedores(id, razao_social, nome_fantasia),
+      fornecedor:fornecedores(id, razao_social, nome_fantasia, email),
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })

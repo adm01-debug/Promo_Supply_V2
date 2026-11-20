@@ -26,6 +26,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { normalizeText } from "@/hooks/useFuseSearch";
 import { ChatArea } from "./chat/ChatArea";
 import { logger } from "@/lib/logger";
+import { onHubEvent } from "@/lib/hubEvents";
 
 interface ChatContact {
   id: string;
@@ -122,6 +123,16 @@ export function SupplierChat() {
       type: 'text' as const,
     })).reverse();
   }, [notes, user?.id]);
+
+  useEffect(() => {
+    return onHubEvent<{ fornecedorId: string }>('chat:open-fornecedor', ({ payload }) => {
+      const contact = contacts.find((c) => c.fornecedorId === payload.fornecedorId);
+      if (contact) {
+        setSelectedContact(contact);
+        setIsOpen(true);
+      }
+    });
+  }, [contacts]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
