@@ -34,7 +34,7 @@
 | `process-outbox` | `integration_outbox`, `system_alerts` |
 | `process-solicitacao-neural` | — |
 | `punchout-encrypt` | `user_tenants` |
-| `punchout-receive` | `profiles`, `punchout_sessions`, `solicitacoes` |
+| `punchout-receive` | `profiles`, `punchout_catalogs`, `punchout_sessions`, `solicitacoes` |
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
@@ -77,7 +77,7 @@
 | `pedidos` | `check-sla-alerts`, `weekly-report`, `weekly-summary-report` |
 | `produtos` | `guided-buying-ai` |
 | `profiles` | `check-cotacao-followup`, `migrate-storage-paths`, `punchout-receive` |
-| `punchout_catalogs` | `punchout-setup` |
+| `punchout_catalogs` | `punchout-receive`, `punchout-setup` |
 | `punchout_sessions` | `punchout-receive`, `punchout-setup` |
 | `push_subscriptions` | `send-push-notification` |
 | `query_telemetry` | `external-db-bridge` |
