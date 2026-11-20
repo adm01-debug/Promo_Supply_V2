@@ -6,8 +6,8 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 
 | métrica | valor |
 |---|---|
-| tamanho | 85.2 MB |
-| schema public | 39.0 MB |
+| tamanho | 85.3 MB |
+| schema public | 39.1 MB |
 
 
 ## Tabelas (ordenadas por tamanho)
@@ -16,13 +16,13 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 |---|---|---|---|---|---|---|---|---|
 | public.spot_skus | ~3.8k | 14.0 MB | 13.2 MB | 640.0 KB | 0 | ~20 | ~15.1k | 2026-11-20 |
 | public.spot_produtos | ~1.3k | 8.0 MB | 1.0 MB | 736.0 KB | 0 | ~30 | ~5.1k | 2026-11-20 |
-| public.spot_estoque | ~3.8k | 1.4 MB | 752.0 KB | 616.0 KB | 0 | ~20 | ~1M | 2026-11-20 |
+| public.spot_estoque | ~3.8k | 1.4 MB | 752.0 KB | 616.0 KB | 0 | ~20 | ~1.1M | 2026-11-20 |
 | public.telemetry_logs | ~500 | 1.2 MB | 128.0 KB | 1.1 MB | 2 | ~210 | ~860 | 2026-09-07 |
 | public.system_alerts | ~420 | 784.0 KB | 88.0 KB | 656.0 KB | 0 | ~3.8k | ~4.7k | 2026-11-17 |
 | public.health_scan_runs | ~650 | 616.0 KB | 120.0 KB | 464.0 KB | ~20 | ~200 | ~3.5k | 2026-11-13 |
 | public.telemetry_logs_202605 | ~560 | 520.0 KB | 320.0 KB | 168.0 KB | 0 | ~20 | ~560 |  |
 | public.telemetry_logs_legacy_20260712 | ~570 | 496.0 KB | 312.0 KB | 152.0 KB | 0 | ~20 | ~570 |  |
-| public.login_attempts | ~480 | 312.0 KB | 104.0 KB | 176.0 KB | ~30 | ~120 | ~100 |  |
+| public.login_attempts | ~480 | 320.0 KB | 112.0 KB | 176.0 KB | ~30 | ~120 | ~100 |  |
 | public.pedidos | ~30 | 312.0 KB | 16.0 KB | 256.0 KB | ~40 | ~4.7k | ~11.5k | 2026-11-13 |
 | public.solicitacoes | ~10 | 304.0 KB | 24.0 KB | 240.0 KB | ~40 | ~10.3k | ~18.7k | 2026-11-13 |
 | public.cotacoes | ~60 | 280.0 KB | 32.0 KB | 208.0 KB | ~40 | ~3.9k | ~7.9k | 2026-11-13 |
@@ -33,8 +33,8 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.telemetry_logs_202607 | ~50 | 184.0 KB | 40.0 KB | 112.0 KB | 0 | ~20 | ~50 |  |
 | public.licitacoes | 7 | 168.0 KB | 16.0 KB | 112.0 KB | 0 | ~140 | ~290 | 2026-11-13 |
 | public.contracts | 0 | 152.0 KB | 24.0 KB | 96.0 KB | ~50 | ~200 | ~260 |  |
-| public.profiles | ~10 | 152.0 KB | 8.0 KB | 104.0 KB | ~30 | ~38.4k | ~71k | 2026-11-13 |
-| public.tenants | 1 | 152.0 KB | 8.0 KB | 104.0 KB | ~20 | ~5.9k | ~88.2k | 2026-11-13 |
+| public.profiles | ~10 | 152.0 KB | 8.0 KB | 104.0 KB | ~30 | ~38.5k | ~71k | 2026-11-13 |
+| public.tenants | 1 | 152.0 KB | 8.0 KB | 104.0 KB | ~20 | ~6k | ~88.2k | 2026-11-13 |
 | public.approval_workflows | 0 | 144.0 KB | 8.0 KB | 112.0 KB | ~20 | ~230 | ~9.3k | 2026-11-13 |
 | public.rate_limit_logs | 0 | 144.0 KB | 8.0 KB | 128.0 KB | 9 | ~2.6k | ~230 |  |
 | public.department_budgets | ~30 | 136.0 KB | 16.0 KB | 80.0 KB | ~20 | ~790 | ~2k | 2026-11-13 |
@@ -46,11 +46,12 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.pedido_itens | 7 | 128.0 KB | 8.0 KB | 80.0 KB | ~10 | ~100 | ~150 | 2026-11-13 |
 | public.query_telemetry | ~20 | 128.0 KB | 8.0 KB | 112.0 KB | ~40 | ~210 | ~210 |  |
 | public.sourcing_invitations | 0 | 128.0 KB | 16.0 KB | 80.0 KB | ~20 | ~20 | 2 |  |
+| public.spot_api_sync_log | ~240 | 128.0 KB | 32.0 KB | 64.0 KB | 0 | ~950 | ~490 |  |
 | public.supplier_documents | ~110 | 128.0 KB | 24.0 KB | 64.0 KB | 5 | ~220 | ~6.7k | 2026-11-12 |
 | public.approval_steps | 0 | 120.0 KB | 8.0 KB | 88.0 KB | ~40 | ~130 | ~13.6k | 2026-11-13 |
 | public.deadlock_snapshots | 0 | 120.0 KB | 8.0 KB | 88.0 KB | 6 | ~170 | ~880 | 2026-08-02 |
 | public.estoque | ~20 | 120.0 KB | 16.0 KB | 64.0 KB | ~30 | ~90 | ~200 | 2026-11-12 |
-| public.account_lockouts | 4 | 112.0 KB | 8.0 KB | 64.0 KB | ~30 | ~1.3k | 1 | 2026-11-12 |
+| public.account_lockouts | 4 | 112.0 KB | 8.0 KB | 64.0 KB | ~30 | ~1.4k | 1 | 2026-11-12 |
 | public.budget_audit_logs | ~30 | 112.0 KB | 24.0 KB | 48.0 KB | 0 | ~40 | ~140 | 2026-11-13 |
 | public.creditos_fornecedor | 0 | 112.0 KB | 8.0 KB | 96.0 KB | ~20 | ~60 | ~70 |  |
 | public.estoque_movimentacoes | ~70 | 112.0 KB | 16.0 KB | 64.0 KB | 0 | ~240 | 6 |  |
@@ -58,10 +59,9 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.security_definer_baseline | ~120 | 112.0 KB | 32.0 KB | 48.0 KB | 0 | ~20 | ~120 |  |
 | public.sourcing_events | 0 | 112.0 KB | 8.0 KB | 96.0 KB | 0 | ~40 | ~70 |  |
 | public.sourcing_pipeline | 0 | 112.0 KB | 8.0 KB | 96.0 KB | 4 | ~50 | 7 |  |
-| public.spot_api_sync_log | ~240 | 112.0 KB | 32.0 KB | 48.0 KB | 0 | ~950 | ~490 |  |
 | public.workflow_edges | 0 | 112.0 KB | 8.0 KB | 96.0 KB | 0 | ~30 | ~20 |  |
 | public.supplier_qualification_scores | ~10 | 104.0 KB | 16.0 KB | 48.0 KB | ~10 | ~60 | ~2.3k | 2026-11-12 |
-| public.user_tenants | ~10 | 104.0 KB | 8.0 KB | 64.0 KB | ~10 | ~158.6k | ~50 | 2026-11-13 |
+| public.user_tenants | ~10 | 104.0 KB | 8.0 KB | 64.0 KB | ~10 | ~158.7k | ~50 | 2026-11-13 |
 | public.approval_history | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 6 | ~50 | ~160 |  |
 | public.approval_rules | 0 | 96.0 KB | 8.0 KB | 80.0 KB | ~30 | ~80 | ~24.2k |  |
 | public.contact_notes | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 5 | ~1.3k | ~40 |  |
@@ -98,7 +98,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.contract_documents | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 7 | ~80 | ~20 |  |
 | public.contract_history | 0 | 64.0 KB | 8.0 KB | 48.0 KB | ~20 | ~40 | ~30 |  |
 | public.contract_items | 0 | 64.0 KB | 8.0 KB | 48.0 KB | ~30 | ~60 | ~40 |  |
-| public.cron_heartbeats | 9 | 64.0 KB | 8.0 KB | 16.0 KB | 0 | 2 | ~120 | 2026-11-20 |
+| public.cron_heartbeats | 9 | 64.0 KB | 8.0 KB | 16.0 KB | ~10 | 2 | ~180 | 2026-11-20 |
 | public.payment_history | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 5 | ~50 | ~40 |  |
 | public.penalty_escalation_config | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 7 | ~30 | ~30 |  |
 | public.produto_fornecedores | 0 | 64.0 KB | 8.0 KB | 48.0 KB | ~30 | ~230 | ~70 |  |
@@ -107,7 +107,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.sourcing_event_criteria | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~20 | 1 |  |
 | public.sourcing_event_lots | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~40 | 2 |  |
 | public.spot_pedidos | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 1 | ~20 | 3 |  |
-| public.spot_sessions | ~50 | 64.0 KB | 16.0 KB | 16.0 KB | 2 | ~760 | 1 |  |
+| public.spot_sessions | ~50 | 64.0 KB | 16.0 KB | 16.0 KB | 3 | ~770 | 1 |  |
 | public.unspsc_codes | ~20 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~40 | ~20 |  |
 | public.webhook_events | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 3 | ~40 | ~20 |  |
 | public.workflow_nodes | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 4 | ~30 | ~160 |  |
@@ -169,7 +169,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.scim_provisioning_log | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
 | public.webauthn_challenges | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 7 |  |
 | public.xbz_carrinho_log | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
-| public.xbz_credentials | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~360 | 0 |  |
+| public.xbz_credentials | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~370 | 0 |  |
 | public.xbz_pedido_status_history | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
 | public.xbz_produto_fiscal | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
 | public.xbz_cores | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 8 | 0 |  |
@@ -205,29 +205,30 @@ _nenhum_
 ## Consultas mais custosas (pg_stat_statements, desde o último reset)
 | role | chamadas (~) | total ms (~) | média ms | query |
 |---|---|---|---|---|
-| postgres | ~6.6k | ~111.3k | 16.84 | `SELECT public._invoke_edge_function($1)` |
-| authenticator | ~100 | ~84.9k | 849.41 | `SELECT name FROM pg_timezone_names` |
-| postgres | ~110 | ~83.3k | 757.17 | `select public.xbz_sync_watchdog()` |
-| postgres | ~440 | ~79.8k | 180.90 | `SELECT public.refresh_mv_dashboard_kpis()` |
-| service_role | ~2.2k | ~67.6k | 30.72 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
-| ci_snapshot | ~80 | ~59.1k | 757.65 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
-| authenticator | ~100 | ~28.3k | 282.86 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $2), oid) AS base_type FROM pg_type UNIO` |
-| ci_snapshot | ~80 | ~24k | 307.50 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
-| ci_snapshot | ~80 | ~22.2k | 284.14 | `SELECT n.nspname AS schema, c.relname AS "table", a.attnum AS position, a.attname AS name, format_type(a.atttypid, a.atttypmod) AS type, NOT a.attnotnull AS nullable, pg_get_expr(d.adbin, d.adrelid) AS "default", NULLIF(` |
-| ci_snapshot | ~80 | ~22k | 267.81 | `with tables as ( SELECT c.oid :: int8 AS id, nc.nspname AS schema, c.relname AS name, c.relrowsecurity AS rls_enabled, c.relforcerowsecurity AS rls_forced, CASE WHEN c.relreplident = $1 THEN $2 WHEN c.relreplident = $3 T` |
+| postgres | ~6.7k | ~112.9k | 16.91 | `SELECT public._invoke_edge_function($1)` |
+| authenticator | ~110 | ~93.4k | 849.02 | `SELECT name FROM pg_timezone_names` |
+| postgres | ~110 | ~84.2k | 758.24 | `select public.xbz_sync_watchdog()` |
+| postgres | ~440 | ~80.2k | 180.29 | `SELECT public.refresh_mv_dashboard_kpis()` |
+| service_role | ~2.2k | ~68.7k | 30.77 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
+| ci_snapshot | ~80 | ~60.1k | 760.90 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
+| authenticator | ~110 | ~30.9k | 280.61 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $2), oid) AS base_type FROM pg_type UNIO` |
+| ci_snapshot | ~80 | ~24.3k | 307.67 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
+| ci_snapshot | ~80 | ~22.3k | 269.13 | `with tables as ( SELECT c.oid :: int8 AS id, nc.nspname AS schema, c.relname AS name, c.relrowsecurity AS rls_enabled, c.relforcerowsecurity AS rls_forced, CASE WHEN c.relreplident = $1 THEN $2 WHEN c.relreplident = $3 T` |
+| ci_snapshot | ~80 | ~22.2k | 281.11 | `SELECT n.nspname AS schema, c.relname AS "table", a.attnum AS position, a.attname AS name, format_type(a.atttypid, a.atttypmod) AS type, NOT a.attnotnull AS nullable, pg_get_expr(d.adbin, d.adrelid) AS "default", NULLIF(` |
 | service_role | ~30 | ~16.1k | 501.92 | `WITH pgrst_source AS (INSERT INTO "public"."spot_skus"("capacity", "color_code", "color_hex", "color_name", "handling_costs", "image_url", "no_replenishment", "price_tiers", "print_area", "product_reference", "raw", "siz` |
-| authenticator | ~100 | ~12.2k | 121.96 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $3), oid) AS base_type FROM pg_type UNIO` |
-| ci_snapshot | ~80 | ~10.9k | 139.70 | `SELECT n.nspname AS schema, p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, pg_get_function_result(p.oid) AS returns, l.lanname AS language, CASE p.prokind WHEN $1 THEN $2 WHEN $3 THEN $4 WHEN $5 TH` |
-| pgbouncer | ~130 | ~7.9k | 59.39 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
-| postgres | ~440 | ~7.7k | 17.42 | `SELECT public._invoke_spot_sync($1)` |
+| authenticator | ~110 | ~13.4k | 122.08 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $3), oid) AS base_type FROM pg_type UNIO` |
+| ci_snapshot | ~80 | ~11k | 139.54 | `SELECT n.nspname AS schema, p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, pg_get_function_result(p.oid) AS returns, l.lanname AS language, CASE p.prokind WHEN $1 THEN $2 WHEN $3 THEN $4 WHEN $5 TH` |
+| pgbouncer | ~140 | ~8k | 59.06 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
+| postgres | ~450 | ~7.8k | 17.49 | `SELECT public._invoke_spot_sync($1)` |
 
 
 ## Conexões
 | usuário | estado | n |
 |---|---|---|
-| authenticator | idle | 2 |
+| authenticator | idle | 5 |
 | ci_snapshot | active | 1 |
 | pgbouncer | idle | 2 |
 | supabase_admin | idle | 3 |
 | supabase_admin |  | 1 |
+| supabase_auth_admin | idle | 1 |
 | supabase_storage_admin | idle | 1 |
