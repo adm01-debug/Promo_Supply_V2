@@ -109,6 +109,9 @@ export const ExecutiveDashboard = () => {
         change: calculateChange(rm.overdueOrders.value || 1, executiveMetrics.overdueOrders.previousValue || 1),
         critical: rm.overdueOrders.critical
       },
+    // Maverick/tail spend (pdv sem contrato ativo, derivado do banco)
+      maverickSpend: { value: rm.maverickSpend.value, percentage: rm.maverickSpend.percentage },
+      tailSpend: { value: rm.tailSpend.value, percentage: rm.tailSpend.percentage },
     };
   }, [realMetrics, realDataLoading]);
 

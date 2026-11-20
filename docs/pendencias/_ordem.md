@@ -16,7 +16,7 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 ## T3 - fachadas que mentem
 8. `fake-invoice` CONCLUIDO na PR #177: process-invoice-idp agora determinístico (hash do arquivo) + campo `fonte=simulacao` + toast honesto no front.
 9. `fake-ai-guided` CONCLUIDO na PR #177: guided-buying-ai ligado ao `callAIGateway` (OpenRouter) real com fallback determinístico; historico incluido.
-10. `fake-*` dashboards - PARCIAL na PR #177: removido card `kpi-sla` e bloco SLA fabricado (85%/1.8d); KPI real via RPC `get_compras_dashboard_metrics` mantido. Ainda pendentes: `kpiTargetsStore.ts` metas fixas, `slaSettingsStore.ts:37` e-mail fixo multi-tenant, `useExecutiveDashboardData`.
+10. `fake-*` dashboards - CONCLUIDO na PR #181 (branch claude/fix-honest-dashboard-261120-1450): dashboard Executivo e KPIs passam a usar dados reais - maverick/tail spend derivados de pedidos off-contract, concentracao top-5 de spend real, compliance de contratos ativos, e-mail de SLA do tenant; `kpiTargetsStore` continua como metas (objetivos), não como dados simulados.
 
 ## T4 - edge/pecas menores, docs, mortos
 11. edge-alert-sev, edge-sla-reve, edge-xbz-cron, edge-ai-risk, etc.

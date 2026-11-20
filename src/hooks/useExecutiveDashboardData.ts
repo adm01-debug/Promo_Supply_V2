@@ -30,7 +30,7 @@ export function useExecutiveDashboardData() {
     queryKey: ['exec-pedidos', organizationId],
     queryFn: () => {
       if (!organizationId) return [];
-      return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at', {
+      return fetchAllRows<{ id: string; status: string; valor_total: number; fornecedor_id: string | null; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, fornecedor_id, data_emissao, data_previsao, data_entrega, created_at', {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
@@ -63,7 +63,7 @@ export function useExecutiveDashboardData() {
     queryKey: ['exec-contracts', organizationId],
     queryFn: () => {
       if (!organizationId) return [];
-      return fetchAllRows<{ id: string; status: string; total_value: number }>('contracts', 'id, status, total_value', {
+      return fetchAllRows<{ id: string; status: string; supplier_id: string | null; total_value: number }>('contracts', 'id, status, supplier_id, total_value', {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
@@ -140,6 +140,18 @@ export function useExecutiveDashboardData() {
       ? Math.round((activeContracts / totalContracts) * 100) 
       : 100;
 
+    // Maverick/tail spend: pedidos cujo fornecedor não tem contrato ativo.
+    // No banco, contracts.supplier_id é TEXT linkado a fornecedores.id (UUID) — a
+    // comparação textual é válida porque ambos usam a mesma representação UUID.
+    const activeContractSupplierIds = new Set(
+      cont.filter(c => c.status === 'active').map(c => c.supplier_id)
+    );
+    const offContractOrders = ped.filter(
+      (p) => p.fornecedor_id && p.fornecedor_id !== null && !activeContractSupplierIds.has(p.fornecedor_id)
+    );
+    const maverickSpend = offContractOrders.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
+    const maverickPercentage = totalSpend > 0 ? (maverickSpend / totalSpend) * 100 : 0;
+
     return {
       totalSpend: { value: totalSpend, target: totalSpend * 1.02 },
       savings: { value: savings, target: savings * 0.8 },
@@ -150,10 +162,40 @@ export function useExecutiveDashboardData() {
       pendingApprovals: { value: pendingWf.length, urgent: urgentWf.length },
       overdueOrders: { value: overdue.length, critical: criticalOverdue.length },
       contractCompliance: { value: contractCompliance, target: 90 },
-      maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)
-      tailSpend: { value: totalSpend * 0.12, percentage: 12.0 },    // Simulated tail spend (low value, high volume)
+      maverickSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
+      tailSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
     };
   }, [pedidos, solicitacoes, fornecedores, contracts, workflows]);
+
+  // Resumo derivado do banco, fora do ExecutiveMetrics (shape estável dos testes)
+  const summary = useMemo(() => {
+    const ped = pedidos || [];
+    const cont = contracts || [];
+    const forn = fornecedores || [];
+    const totalSpend = ped.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
+
+    const spendBySupplier = new Map<string, number>();
+    ped.forEach((p) => {
+      if (!p.fornecedor_id) return;
+      spendBySupplier.set(p.fornecedor_id, (spendBySupplier.get(p.fornecedor_id) || 0) + (Number(p.valor_total) || 0));
+    });
+    const orderedSuppliers = [...spendBySupplier.entries()].sort((a, b) => b[1] - a[1]);
+    const supplierNameById = new Map(forn.map(f => [f.id, f.razao_social]));
+    const topSuppliersBySpend = orderedSuppliers.slice(0, 5).map(([id, value]) => ({
+      name: supplierNameById.get(id) || 'Fornecedor',
+      value,
+    }));
+    const top5Value = topSuppliersBySpend.reduce((sum, s) => sum + s.value, 0);
+    const top5Concentration = totalSpend > 0 ? Math.round((top5Value / totalSpend) * 1000) / 10 : 0;
+
+    return {
+      totalSpend,
+      activeContractCount: cont.filter(c => c.status === 'active').length,
+      totalContractCount: cont.length,
+      topSuppliersBySpend,
+      top5Concentration,
+    };
+  }, [pedidos, fornecedores, contracts]);
 
   // Spend by category
   const spendByCategory = useMemo(() => {
@@ -187,5 +229,14 @@ export function useExecutiveDashboardData() {
 
   const loading = l1 || l2 || l3 || l4 || l5 || l6;
 
-  return { metrics, spendByCategory, topSuppliers, loading };
+  return {
+    metrics,
+    spendByCategory,
+    topSuppliers,
+    topSuppliersBySpend: summary.topSuppliersBySpend,
+    top5Concentration: summary.top5Concentration,
+    activeContractCount: summary.activeContractCount,
+    totalContractCount: summary.totalContractCount,
+    loading,
+  };
 }

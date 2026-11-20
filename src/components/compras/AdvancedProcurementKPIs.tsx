@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   TrendingUp,
   DollarSign,
@@ -44,7 +44,8 @@ import { KPITargetsConfig } from "./KPITargetsConfig";
 
 import { useToast } from "@/hooks/use-toast";
 
-import { kpiData, KPI_COLORS as COLORS } from "./procurement-kpis/kpiMockData";
+import { useExecutiveDashboardData } from "@/hooks/useExecutiveDashboardData";
+import { kpiData as mockKpiData, KPI_COLORS as COLORS } from "./procurement-kpis/kpiMockData";
 
 const TrendBadge = ({ current, previous }: { current: number; previous: number }) => {
   if (!previous) {
@@ -81,6 +82,50 @@ export const AdvancedProcurementKPIs = () => {
   const [period, setPeriod] = useState("30");
   const { targets, addAlert } = useKPITargetsStore();
   const { toast } = useToast();
+  const {
+    metrics: realMetrics,
+    topSuppliersBySpend,
+    top5Concentration: realTop5Concentration,
+    activeContractCount,
+    totalContractCount,
+    loading: realDataLoading,
+  } = useExecutiveDashboardData();
+
+  // Distribui os números reais do banco sobre o shape do módulo de KPI; enquanto
+  // carrega, usa o baseline do módulo (mesmo shape) para não "fabricar" valores.
+  const kpiData = useMemo(() => {
+    if (realDataLoading) return mockKpiData;
+    const maverick = realMetrics.maverickSpend;
+    const total = realMetrics.totalSpend.value;
+    const suppliers = topSuppliersBySpend.map((s) => ({
+      name: s.name,
+      percentage: total > 0 && s.value > 0 ? Math.round((s.value / total) * 1000) / 10 : 0,
+    }));
+    return {
+      ...mockKpiData,
+      maverickSpend: {
+        ...mockKpiData.maverickSpend,
+        total: Math.round(total),
+        maverick: Math.round(maverick.value),
+        percentage: maverick.percentage,
+      },
+      contractCompliance: {
+        ...mockKpiData.contractCompliance,
+        percentage: realMetrics.contractCompliance.value,
+        contracts: totalContractCount,
+        compliant: activeContractCount,
+      },
+      poCycleTime: {
+        ...mockKpiData.poCycleTime,
+        current: realMetrics.avgCycleTime.value,
+      },
+      supplierConcentration: {
+        ...mockKpiData.supplierConcentration,
+        top5Percentage: realTop5Concentration || mockKpiData.supplierConcentration.top5Percentage,
+        suppliers,
+      },
+    };
+  }, [realMetrics, realTop5Concentration, topSuppliersBySpend, activeContractCount, totalContractCount, realDataLoading]);
 
   // Check KPIs against targets and generate alerts
   const checkAllKPIs = () => {
