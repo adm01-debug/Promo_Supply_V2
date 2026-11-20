@@ -25,9 +25,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-20 17:45:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-20 16:45:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-20 15:45:00 | succeeded | 0.05 | DELETE 0 |
-| 2026-11-20 14:45:00 | succeeded | 0.02 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,36 +73,36 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 17:10:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 17:09:00 | succeeded | 0.01 | 1 row |
-| 2026-11-20 17:08:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 18:15:00 | succeeded | 0.00 | 1 row |
+| 2026-11-20 18:14:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 18:13:00 | succeeded | 0.01 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 17:00:00 | succeeded | 0.19 | 1 row |
-| 2026-11-20 16:45:00 | succeeded | 0.07 | 1 row |
-| 2026-11-20 16:30:00 | succeeded | 0.27 | 1 row |
+| 2026-11-20 18:15:00 | succeeded | 0.16 | 1 row |
+| 2026-11-20 18:00:00 | succeeded | 0.15 | 1 row |
+| 2026-11-20 17:45:00 | succeeded | 0.16 | 1 row |
 
 
 ## 23 · xbz-sync-pedidos-30min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-20 18:00:00 | succeeded | 0.03 | 1 row |
+| 2026-11-20 17:30:00 | succeeded | 0.03 | 1 row |
 | 2026-11-20 17:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 16:30:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 16:00:00 | succeeded | 0.02 | 1 row |
 
 
 ## 24 · xbz-sync-watchdog-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-20 18:15:00 | succeeded | 1.20 | 1 row |
+| 2026-11-20 17:15:00 | succeeded | 1.17 | 1 row |
 | 2026-11-20 16:15:00 | succeeded | 0.05 | 1 row |
-| 2026-11-20 15:15:00 | succeeded | 1.09 | 1 row |
-| 2026-11-20 14:15:00 | succeeded | 0.08 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -125,9 +125,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 17:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 16:45:00 | succeeded | 0.01 | 1 row |
-| 2026-11-20 16:30:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 18:15:00 | succeeded | 0.01 | 1 row |
+| 2026-11-20 18:00:00 | succeeded | 0.03 | 1 row |
+| 2026-11-20 17:45:00 | succeeded | 0.01 | 1 row |
 
 
 ## 110 · limpa-historico-cron-semanal

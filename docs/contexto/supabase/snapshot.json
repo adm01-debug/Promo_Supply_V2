@@ -59212,6 +59212,56 @@
         "version": "20241231000001"
       },
       {
+        "name": "religa_cadastro_de_usuarios",
+        "statements": [],
+        "version": "20261117150000"
+      },
+      {
+        "name": "indices_nunca_aplicados",
+        "statements": [],
+        "version": "20261117160000"
+      },
+      {
+        "name": "auditoria_preserva_autoria",
+        "statements": [],
+        "version": "20261117162000"
+      },
+      {
+        "name": "corrige_alertas_sistema_e_agenda_scan_particoes",
+        "statements": [],
+        "version": "20261117170000"
+      },
+      {
+        "name": "popula_etapas_dos_templates_de_workflow",
+        "statements": [],
+        "version": "20261117180000"
+      },
+      {
+        "name": "remove_cleanup_old_audit_logs_quebrado",
+        "statements": [],
+        "version": "20261117190000"
+      },
+      {
+        "name": "telemetria_retencao_unica_90_dias",
+        "statements": [],
+        "version": "20261117200000"
+      },
+      {
+        "name": "audit_logs_append_only_hash_encadeado",
+        "statements": [],
+        "version": "20261117210000"
+      },
+      {
+        "name": "audit_logs_hash_defaults",
+        "statements": [],
+        "version": "20261117220000"
+      },
+      {
+        "name": "retencao_fonte_unica",
+        "statements": [],
+        "version": "20261117230000"
+      },
+      {
         "name": "entity_versions_politicas_authenticated",
         "statements": null,
         "version": "20261119000000"
