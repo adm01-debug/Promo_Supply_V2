@@ -37406,6 +37406,43 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.approval_workflows.trg_workflow_approved_promotes_solicitacao"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "2e34156dc31b8782",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "auto_transition_solicitacao_on_workflow_approved",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "supabase/migrations/20260315151408_8ffa629b-ebf8-41cd-a770-8b0d78746e04.sql",
               "hits": 1
             },
@@ -59178,6 +59215,12 @@
         "name": "entity_versions_politicas_authenticated",
         "statements": null,
         "version": "20261119000000"
+      },
+      {
+        "name": "fio2_workflow_approved_promove_solicitacao",
+        "statements": 5,
+        "statements_sha": "f389b5058bc70d53",
+        "version": "20261120120000"
       }
     ],
     "policies": [
@@ -66414,6 +66457,17 @@
         "status": "enabled",
         "table": "approval_workflows",
         "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER trg_workflow_approved_promotes_solicitacao AFTER UPDATE OF status ON approval_workflows FOR EACH ROW WHEN (new.status = 'approved'::text) EXECUTE FUNCTION auto_transition_solicitacao_on_workflow_approved()",
+        "events": "UPDATE",
+        "function": "public.auto_transition_solicitacao_on_workflow_approved",
+        "level": "ROW",
+        "name": "trg_workflow_approved_promotes_solicitacao",
+        "schema": "public",
+        "status": "enabled",
+        "table": "approval_workflows",
+        "timing": "AFTER"
       },
       {
         "definition": "CREATE TRIGGER update_approval_workflows_updated_at BEFORE UPDATE ON approval_workflows FOR EACH ROW EXECUTE FUNCTION update_approval_updated_at()",

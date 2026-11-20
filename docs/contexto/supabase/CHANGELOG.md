@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-20 17:10 UTC
+
+- **functions** adicionado (1): `public.auto_transition_solicitacao_on_workflow_approved()`
+- **migrations** adicionado (1): `20261120120000_fio2_workflow_approved_promove_solicitacao`
+- **triggers** adicionado (1): `public.approval_workflows.trg_workflow_approved_promotes_solicitacao`
+
 ## 2026-11-20 04:14 UTC
 
 - **realtime** removido (2): `supabase_realtime_messages_publication:realtime.messages_2026_11_15`, `supabase_realtime_messages_publication:realtime.messages_2026_11_16`
