@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1a7b20b5203b14e7c395cf3284f7d7ccf28d4e30",
+  "commit": "b1513317b16f7ee8848e4eedf073f224a1614511",
   "branch": "main",
-  "data_commit": "2026-11-20T08:01:24-03:00",
+  "data_commit": "2026-11-20T08:11:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b151331",
+    "data": "2026-11-20",
+    "assunto": "feat(ci): dummy para reprovar delete automatico no push (#165)"
+   },
    {
     "sha": "1a7b20b",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "7d7348f",
     "data": "2026-11-18",
     "assunto": "feat(alerta): detecta falhas consecutivas de integrações no check-sla-alerts (#143)"
-   },
-   {
-    "sha": "049f54c",
-    "data": "2026-11-18",
-    "assunto": "chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)"
    }
   ],
-  "arquivos_mudados_7d": 166,
+  "arquivos_mudados_7d": 167,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -176,6 +176,10 @@
     "mudancas": 7
    },
    {
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 7
+   },
+   {
     "pasta": "src/pages/admin",
     "mudancas": 7
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 6
-   },
-   {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 6
    }
   ],
@@ -218,15 +218,15 @@
     "mudancas": 7
    },
    {
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 7
+   },
+   {
     "arquivo": ".github/workflows/contexto.yml",
     "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 6
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 131
+    "commits": 132
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1236,
-  "arquivos_codigo": 772,
-  "linhas_codigo": 162236,
+  "arquivos_total": 1237,
+  "arquivos_codigo": 773,
+  "linhas_codigo": 162240,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "modulos": 86,
   "componentes": 327,
   "hooks": 89,
-  "edge_functions": 37,
+  "edge_functions": 38,
   "tabelas": 163,
   "migrations": 314,
   "cron_jobs": 70,
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 76,
-   "linhas": 13856
+   "arquivos": 77,
+   "linhas": 13860
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -700,6 +700,7 @@
    "process-outbox",
    "run-audit",
    "send-push-notification",
+   "test-auto-delete-reprova",
    "workflow-engine"
   ],
   "edges_chamadas_sem_pasta": [
