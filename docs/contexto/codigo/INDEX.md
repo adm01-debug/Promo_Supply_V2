@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `931bcdb948c17da741a90a1fae349caaf6b061b5` (2026-11-19T20:56:54-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d14201cce04fe7e67dc6b0ff95d826d07cec7be6` (2026-11-19T21:24:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -338,11 +338,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-edge-functions.yml (5)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (5)
 - scripts/automation.config.json (5)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
 - docs/agentes/mapa-repo.md (4)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (4)
 - scripts/realtime-audit.ts (4)
 
 ## Workflows
@@ -408,6 +408,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `d14201c` merge #162 (triagem automatizada)
 - 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
 - 2026-11-19 `6f6549b` fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)
 - 2026-11-19 `cbe4038` chore(ci): exige execução real do Security RLS Audit com --strict (#159)
@@ -422,7 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `64b0a2a` docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)
 - 2026-11-18 `193c9b9` chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)
 - 2026-11-18 `76f3c8b` chore(deps): bump framer-motion from 12.43.0 to 14.14.0 (#148)
-- 2026-11-18 `3293856` fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

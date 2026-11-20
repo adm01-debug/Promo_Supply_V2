@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "931bcdb948c17da741a90a1fae349caaf6b061b5",
+  "commit": "d14201cce04fe7e67dc6b0ff95d826d07cec7be6",
   "branch": "main",
-  "data_commit": "2026-11-19T20:56:54-03:00",
+  "data_commit": "2026-11-19T21:24:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d14201c",
+    "data": "2026-11-19",
+    "assunto": "merge #162 (triagem automatizada)"
+   },
    {
     "sha": "931bcdb",
     "data": "2026-11-19",
@@ -126,11 +131,6 @@
     "sha": "e94b12f",
     "data": "2026-11-18",
     "assunto": "feat(punchout): habilita cadastro e edição de catálogos (#139)"
-   },
-   {
-    "sha": "960f965",
-    "data": "2026-11-17",
-    "assunto": "fix(banco): fonte unica de retencao e marcacao das funcoes nao agendadas (#135)"
    }
   ],
   "arquivos_mudados_7d": 226,
@@ -234,6 +234,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 5
+   },
+   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 5
    },
@@ -247,10 +251,6 @@
    },
    {
     "arquivo": "docs/agentes/mapa-repo.md",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 4
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 128
+    "commits": 129
    },
    {
     "autor": "dependabot[bot]",
