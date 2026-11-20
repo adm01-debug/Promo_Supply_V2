@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)",
    "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)",
    "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)",
    "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)",
-   "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)",
-   "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)"
+   "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)"
   ]
  },
  "pr_template": null,

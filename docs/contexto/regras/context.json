@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "5ae1935758fe110afc4864cf131b9139c8efbbf5",
+  "sha": "6de29ff20d27e2ea664da665d192481f8824a8a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 20:53 UTC",
+  "generated_at": "2026-11-20 21:11 UTC",
   "files_total": 1248,
   "code_files": 1094,
   "code_lines": 189141,
@@ -112077,10 +112077,19 @@
   }
  },
  "git": {
-  "sha": "5ae1935758fe110afc4864cf131b9139c8efbbf5",
+  "sha": "6de29ff20d27e2ea664da665d192481f8824a8a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6de29ff",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "5ae1935",
     "date": "2026-11-20",
@@ -112380,33 +112389,23 @@
      "docs/mapa/MATRIZ_EDGE_TABELA.md",
      "supabase/functions/test-auto-delete-reprova/index.ts"
     ]
-   },
-   {
-    "sha": "b151331",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(ci): dummy para reprovar delete automatico no push (#165)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/functions/test-auto-delete-reprova/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    13
+    14
    ],
    [
     "docs/pendencias/_ordem.md",
     7
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    4
+    "src/pages/acompanhamento/Acompanhamento.tsx",
+    3
    ],
    [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
     3
    ],
    [
@@ -112415,10 +112414,6 @@
    ],
    [
     "docs/pendencias/_regras-de-negocio.md",
-    2
-   ],
-   [
-    "supabase/functions/test-auto-delete-reprova/index.ts",
     2
    ],
    [
@@ -112471,6 +112466,10 @@
    ],
    [
     "src/hooks/useAccountLockout.ts",
+    1
+   ],
+   [
+    "src/hooks/useCriticalAlertsBadge.ts",
     1
    ]
   ]

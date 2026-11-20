@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5ae1935758fe110afc4864cf131b9139c8efbbf5` (2026-11-20T17:52:46-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6de29ff20d27e2ea664da665d192481f8824a8a7` (2026-11-20T18:00:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -329,7 +329,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (13)
+- docs/pendencias/_indice.md (14)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - docs/prod-readiness.md (9)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `6de29ff` chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)
 - 2026-11-20 `5ae1935` fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)
 - 2026-11-20 `044001f` fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)
 - 2026-11-20 `0c33e56` fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `d4690b5` fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)
 - 2026-11-20 `a0363dd` fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)
 - 2026-11-20 `3b8e89b` chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)
-- 2026-11-20 `a0f4bb2` fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
