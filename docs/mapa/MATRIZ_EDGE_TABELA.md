@@ -22,6 +22,7 @@
 | `check-expiry-alerts` | `cotacoes`, `notifications`, `pagamentos`, `user_roles` |
 | `check-sla-alerts` | `notifications`, `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
 | `dependency-health` | `audit_logs`, `dependency_health`, `dependency_health_history` |
+| `erp-credential-encrypt` | `user_tenants` |
 | `erp-sync` | `erp_connections`, `erp_sync_log` |
 | `external-db-bridge` | `query_telemetry` |
 | `fiscal-orchestrator` | `fiscal_events` |
@@ -89,7 +90,7 @@
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
 | `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
-| `user_tenants` | `punchout-encrypt`, `punchout-setup` |
+| `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
 | `webauthn_credentials` | `webauthn-authenticate`, `webauthn-register` |
