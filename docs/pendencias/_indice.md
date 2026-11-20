@@ -17,9 +17,9 @@ catalogo, Fase 2 execucao vertical por item.
 |---|---|---|---|
 | seg-passkey | passkey login valida so `challenge`/`type` (bypass S-1) | CONCLUIDO (PR #177, fail-closed) | `webauthn-authenticate/index.ts` rejeita finish; botao `Auth.tsx` desabilitado. Verificacao COSE real: futuro |
 | seg-fio-entrada | `process-solicitacao-neural` invocado mas edge NAO EXISTE | CONCLUIDO | PR #171 (edge criado + front consome `data.fields`; deploy confirmado, GET no endpoint -> 401 sem JWT) |
-| seg-tenant-alerts | `useCriticalAlertsBadge` sem tenant/filtro | PENDENTE | `useCriticalAlertsBadge.ts:25-27` |
-| seg-mfa-bp | backup codes via `Math.random` | PENDENTE | `useMFA.ts:184` |
-| seg-lockout | `useAccountLockout` fail-open | PENDENTE | `useAccountLockout.ts:50-83` |
+| seg-tenant-alerts | `useCriticalAlertsBadge` sem tenant/filtro | CONCLUIDO (PR #183, merge 2026-11-20) | `useCriticalAlertsBadge.ts:25-27` |
+| seg-mfa-bp | backup codes via `Math.random` | CONCLUIDO (PR #183, merge 2026-11-20) | `useMFA.ts:184` |
+| seg-lockout | `useAccountLockout` fail-open | CONCLUIDO (PR #183, merge 2026-11-20) | `useAccountLockout.ts:50-83` |
 | seg-scim | `scim-v2` nao em NO_JWT, sem `verify_jwt=false` | CONCLUIDO (PR #180, merge 2026-11-20 + deploy) | `config.toml` [functions.scim-v2] verify_jwt=false; edged prod scim-v2 verify_jwt=False v14 |
 | seg-punchout | cXML shared_secret nunca validado | CONCLUIDO (PR #180, merge 2026-11-20 + deploy) | `punchout-receive/index.ts:155-176` valida `shared_secret_encrypted` de `punchout_catalogs`; edged prod v17 verify_jwt=False |
 
@@ -66,10 +66,10 @@ catalogo, Fase 2 execucao vertical por item.
 ## Front - componentes/telas (A6) sem acao
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| ui-acomp-novos | "NOVA ATUALIZACAO" onClick vazio | PENDENTE | `Acompanhamento.tsx:198` |
-| ui-acomp-filtros | "FILTROS AVANCADOS" sem acao | PENDENTE | `Acompanhamento.tsx:298` |
-| ui-acomp-nfe | "VISUALIZAR NF-E" sem acao | PENDENTE | `Acompanhamento.tsx:450` |
-| ui-acomp-logs | "HISTORICO DE LOGS" sem acao | PENDENTE | `Acompanhamento.tsx:451` |
+| ui-acomp-novos | "NOVA ATUALIZACAO" onClick vazio | CONCLUIDO (PR #185, merge 2026-11-20) | `Acompanhamento.tsx:198` |
+| ui-acomp-filtros | "FILTROS AVANCADOS" sem acao | CONCLUIDO (PR #185, merge 2026-11-20) | `Acompanhamento.tsx:298` |
+| ui-acomp-nfe | "VISUALIZAR NF-E" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:450` |
+| ui-acomp-logs | "HISTORICO DE LOGS" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:451` |
 | ui-spot-checkout | "Finalizar Pedido" SPOT so toast (compromisso financeiro - decisao do dono) | AGUARDANDO HUMANO | `CatalogoSpot.tsx:216` |
 | ui-bulk-undo | "Desfazer" em bulk so toast | PENDENTE | `BulkOperationsPreview.tsx:189` |
 | ui-erp-* | varios botoes ERP sem acao | PENDENTE | `ERPConnections.tsx:80,119,159,208,224` |
