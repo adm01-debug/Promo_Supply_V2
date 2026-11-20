@@ -46,7 +46,7 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-maintain | `maintain-partitions` morta | PENDENTE | seed `:37` |
 | edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) â€” retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
 | edge-bridge | `external-db-bridge` sem chamador prod | PENDENTE | so `validate-bridge.ts` |
-| edge-suggestion | `ai-supplier-suggestion` sem chamador em src | PENDENTE | contracts/deploy only |
+| edge-suggestion | `ai-supplier-suggestion` sem chamador em src | CONCLUIDO (PR #207, merge 2026-11-20) — AISupplierSuggestion consulta edge real com fallback honesto | AISupplierSuggestion.tsx |
 
 ## Front - hooks (L07) mortos / parciais
 | ID | Item | Estado | Fonte |
