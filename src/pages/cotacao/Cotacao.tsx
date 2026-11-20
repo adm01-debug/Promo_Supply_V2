@@ -52,7 +52,7 @@ const Cotacao = () => {
   
   const { solicitacoes, loading: loadingSolicitacoes } = useSolicitacoes();
   const { fornecedores } = useFornecedores();
-  const { cotacoes, createCotacao } = useCotacoes({
+  const { cotacoes, createCotacao, selectCotacao } = useCotacoes({
     solicitacao_id: solicitacaoId || undefined,
   });
   
@@ -72,6 +72,15 @@ const Cotacao = () => {
 
   const adaptedCotacoes = useMemo(() => adaptCotacoesFromDB(cotacoes), [cotacoes]);
   const allCotacoes = useMemo(() => [...adaptedCotacoes, ...cotacoesAPI], [adaptedCotacoes, cotacoesAPI]);
+
+  const handleSelecionar = useCallback(async (id: string, justificativa?: string) => {
+    setFornecedorSelecionado(id);
+    // Persist only real DB cotacoes (uuid); simulated api-/manual- ids stay UI-only.
+    const isReal = cotacoes.some(c => c.id === id);
+    if (isReal && selectCotacao) {
+      await selectCotacao(id, justificativa);
+    }
+  }, [cotacoes, selectCotacao]);
 
   const handleAiAnalyze = useCallback(async () => {
     if (!solicitacao || allCotacoes.length === 0) return;
@@ -264,8 +273,8 @@ const Cotacao = () => {
                     <h3 className="font-black uppercase tracking-tight text-white text-lg">Quotation Benchmarking ({allCotacoes.length})</h3>
                   </div>
                   <div className="flex gap-3">
-                    <ComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={setFornecedorSelecionado} />
-                    <VisualComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={setFornecedorSelecionado} />
+                    <ComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
+                    <VisualComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
                   </div>
                 </div>
                 <div className="p-8">
@@ -273,7 +282,7 @@ const Cotacao = () => {
                     <RankingCotacoes 
                       cotacoes={allCotacoes}
                       quantidade={solicitacao.quantidade}
-                      onSelecionar={setFornecedorSelecionado}
+                      onSelecionar={handleSelecionar}
                       selecionado={fornecedorSelecionado}
                     />
                   ) : (
