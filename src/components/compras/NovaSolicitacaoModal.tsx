@@ -114,7 +114,11 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
         body: { input: neuralInput }
       });
       if (error) throw error;
-      setFormData(prev => ({ ...prev, ...data }));
+      const fields = (data?.fields ?? data) as Partial<NovaSolicitacaoData> | null | undefined;
+      if (!fields || typeof fields !== "object" || Array.isArray(fields)) {
+        throw new Error("Resposta IA sem campos preenchíveis");
+      }
+      setFormData(prev => ({ ...prev, ...fields }));
       toast.success("Dados preenchidos via IA com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar solicitação via IA.");
