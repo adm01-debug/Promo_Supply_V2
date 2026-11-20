@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8102f2fa0223a0f84f638ea13f3bfee977033861",
+  "commit": "2bfc15bbee4e87dd1ce71f2c40ae4978a6470760",
   "branch": "main",
-  "data_commit": "2026-11-20T18:38:02-03:00",
+  "data_commit": "2026-11-20T18:45:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2bfc15b",
+    "data": "2026-11-20",
+    "assunto": "fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)"
+   },
    {
     "sha": "8102f2f",
     "data": "2026-11-20",
@@ -126,22 +131,17 @@
     "sha": "f691f17",
     "data": "2026-11-20",
     "assunto": "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin"
-   },
-   {
-    "sha": "d1f90e9",
-    "data": "2026-11-20",
-    "assunto": "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)"
    }
   ],
-  "arquivos_mudados_7d": 170,
+  "arquivos_mudados_7d": 173,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 29
+    "mudancas": 30
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "pasta": "package.json",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 166
+    "commits": 167
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1249,
   "arquivos_codigo": 777,
-  "linhas_codigo": 163890,
+  "linhas_codigo": 163900,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -424,7 +424,7 @@
   },
   "src/components": {
    "arquivos": 259,
-   "linhas": 48431
+   "linhas": 48433
   },
   "src/features": {
    "arquivos": 64,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 29155
+   "linhas": 29163
   },
   "src/routes": {
    "arquivos": 1,

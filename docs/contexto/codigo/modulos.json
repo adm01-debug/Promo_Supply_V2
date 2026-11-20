@@ -363,7 +363,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 17,
-   "linhas": 24593,
+   "linhas": 24595,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -6678,7 +6678,7 @@
    "modulo": "pages/relatorios",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 520,
+   "linhas": 528,
    "itens_menu": [
     "Relatórios"
    ],
@@ -6751,6 +6751,7 @@
     "date-fns",
     "framer-motion",
     "lucide-react",
+    "react-router-dom",
     "recharts"
    ]
   },

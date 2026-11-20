@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8102f2fa0223a0f84f638ea13f3bfee977033861` (2026-11-20T18:38:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2bfc15bbee4e87dd1ce71f2c40ae4978a6470760` (2026-11-20T18:45:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1249 |
 | arquivos_codigo | 777 |
-| linhas_codigo | 163890 |
+| linhas_codigo | 163900 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (16)
+- docs/pendencias/_indice.md (17)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
@@ -410,6 +410,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `2bfc15b` fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)
 - 2026-11-20 `8102f2f` fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)
 - 2026-11-20 `a0837ea` fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)
 - 2026-11-20 `0ef80b8` fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)
@@ -424,7 +425,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `a712aa3` fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)
 - 2026-11-20 `8fc7ca6` chore(docs): registra edge-sla-reve concluido na PR #187 (#188)
 - 2026-11-20 `619f974` fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)
-- 2026-11-20 `be6c7e0` chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

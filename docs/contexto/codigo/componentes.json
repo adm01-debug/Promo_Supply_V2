@@ -1609,7 +1609,7 @@
     "SupplierIntelligenceConsole"
    ],
    "export_default": null,
-   "linhas": 182,
+   "linhas": 184,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -5291,7 +5291,7 @@
     "Relatorios"
    ],
    "export_default": "Relatorios",
-   "linhas": 262,
+   "linhas": 266,
    "dominio": "pages/relatorios",
    "hooks_locais": [],
    "tabelas": [
@@ -5313,7 +5313,7 @@
     "VolumeChart"
    ],
    "export_default": null,
-   "linhas": 258,
+   "linhas": 262,
    "dominio": "pages/relatorios",
    "hooks_locais": [],
    "tabelas": [],
