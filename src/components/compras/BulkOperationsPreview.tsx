@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -79,6 +79,10 @@ export function BulkOperationsPreview({
   const [showPreview, setShowPreview] = useState(false);
   const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['affected']));
+  // Snapshot of pre-execution statuses for undo after a change-status action
+  const [undoSnapshot, setUndoSnapshot] = useState<Record<string, string> | null>(null);
+  // Ref mirror so the toast action closure sees the latest snapshot
+  const undoSnapshotRef = useRef<Record<string, string> | null>(null);
 
   const config = entityConfig[entityType];
   const EntityIcon = config.icon;
@@ -180,13 +184,32 @@ export function BulkOperationsPreview({
       setExecutionProgress(100);
 
       if (success) {
+        const snapshot = selectedAction.id === 'change-status' && targetStatus
+          ? affectedItems.reduce<Record<string, string>>((acc, item) => {
+              acc[item.id] = item.status;
+              return acc;
+            }, {})
+          : null;
+        setUndoSnapshot(snapshot);
+        undoSnapshotRef.current = snapshot;
         toast.success(
           `${affectedItems.length} ${config.label.toLowerCase()} atualizado(s) com sucesso!`,
           {
             description: `Ação: ${selectedAction.label}`,
             action: {
               label: 'Desfazer',
-              onClick: () => toast.info('Funcionalidade de desfazer em desenvolvimento'),
+              onClick: () => {
+                if (selectedAction.id === 'delete') {
+                  toast.info('A exclusao em massa e definitiva e nao pode ser desfeita.');
+                  return;
+                }
+                const snap = undoSnapshotRef.current;
+                if (!snap || Object.keys(snap).length === 0) {
+                  toast.info('Nada para desfazer.');
+                  return;
+                }
+                void handleUndo(snap);
+              },
             },
           }
         );
@@ -198,6 +221,36 @@ export function BulkOperationsPreview({
       });
     } finally {
       setIsExecuting(false);
+    }
+  };
+
+  // Restore previous statuses recorded in the snapshot by grouping ids per old status
+  const handleUndo = async (snapshot: Record<string, string>) => {
+    const groups = new Map<string, string[]>();
+    Object.entries(snapshot).forEach(([itemId, oldStatus]) => {
+      const list = groups.get(oldStatus) ?? [];
+      list.push(itemId);
+      groups.set(oldStatus, list);
+    });
+    try {
+      for (const [oldStatus, ids] of groups) {
+        const ok = await onExecute(
+          { id: 'change-status', label: 'Desfazer', icon: RefreshCw, targetStatus: oldStatus },
+          ids,
+          { targetStatus: oldStatus }
+        );
+        if (!ok) {
+          toast.error('Falha ao desfazer parte da operacao');
+          return;
+        }
+      }
+      toast.success('Operacao desfeita com sucesso');
+      setUndoSnapshot(null);
+      undoSnapshotRef.current = null;
+    } catch (error) {
+      toast.error('Erro ao desfazer a operacao', {
+        description: 'Tente novamente ou contate o suporte',
+      });
     }
   };
 
