@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useSLASettings, SLASettings } from '@/stores/slaSettingsStore';
+import { useAuth } from '@/features/auth';
 import { toast } from "@/lib/feedbackToast";
 import { SupplierThresholdConfig } from './sla-settings/SupplierThresholdConfig';
 
@@ -33,12 +34,25 @@ const DEFAULT_SETTINGS: SLASettings = {
 
 export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings, updateSettings, resetToDefaults } = useSLASettings();
+  const { profile } = useAuth();
   const [localSettings, setLocalSettings] = useState<SLASettings>(settings);
   const [open, setOpen] = useState(false);
 
+  // Email multi-tenant: quando o painel abre e ainda não há destinatário
+  // configurado (ou só o e-mail fixo antigo), sinaliza o e-mail real do usuário.
+  const seedEmailRecipients = (base: SLASettings): SLASettings => {
+    const email = profile?.email;
+    if (!email) return base;
+    const hasCustom = base.emailRecipients.some(
+      (r) => r !== 'compras@promobrindes.com.br'
+    );
+    if (base.emailRecipients.length > 0 && hasCustom) return base;
+    return { ...base, emailRecipients: [...base.emailRecipients, email] };
+  };
+
   const handleOpenChange = (isOpen: boolean) => {
     if (isOpen) {
-      setLocalSettings(settings);
+      setLocalSettings(seedEmailRecipients(settings));
     }
     setOpen(isOpen);
   };
@@ -266,7 +280,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <Label htmlFor="email-notifications">Notificações por Email (Mock)</Label>
+                <Label htmlFor="email-notifications">Notificações por Email</Label>
               </div>
               <Switch
                 id="email-notifications"
