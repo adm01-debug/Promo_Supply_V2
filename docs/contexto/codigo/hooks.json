@@ -1191,8 +1191,9 @@
     "useRealtimeSubscription"
    ],
    "canais_realtime": [],
-   "usado_por": 8,
+   "usado_por": 9,
    "usado_por_arquivos": [
+    "src/components/compras/AISupplierSuggestion.tsx",
     "src/features/layout/components/SupplierChat.tsx",
     "src/pages/admin/PunchOutCatalogs.tsx",
     "src/pages/cotacao/Cotacao.tsx",

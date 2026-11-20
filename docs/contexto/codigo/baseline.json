@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
+  "commit": "01db1d03f01d2b887718926a79e410c15480ccf8",
   "branch": "main",
-  "data_commit": "2026-11-20T19:28:19-03:00",
+  "data_commit": "2026-11-20T19:53:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "01db1d0",
+    "data": "2026-11-20",
+    "assunto": "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)"
+   },
+   {
+    "sha": "0efc019",
+    "data": "2026-11-20",
+    "assunto": "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)"
+   },
    {
     "sha": "ec27cd4",
     "data": "2026-11-20",
@@ -121,27 +131,17 @@
     "sha": "3b8e89b",
     "data": "2026-11-20",
     "assunto": "chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)"
-   },
-   {
-    "sha": "a0f4bb2",
-    "data": "2026-11-20",
-    "assunto": "fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)"
-   },
-   {
-    "sha": "cc9dcee",
-    "data": "2026-11-20",
-    "assunto": "fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)"
    }
   ],
-  "arquivos_mudados_7d": 180,
+  "arquivos_mudados_7d": 181,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "pasta": "package.json",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 18
+    "mudancas": 19
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 170
+    "commits": 172
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1253,
   "arquivos_codigo": 781,
-  "linhas_codigo": 164501,
+  "linhas_codigo": 164618,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -424,7 +424,7 @@
   },
   "src/components": {
    "arquivos": 260,
-   "linhas": 48599
+   "linhas": 48716
   },
   "src/features": {
    "arquivos": 64,
@@ -693,7 +693,6 @@
    "Mais -> more"
   ],
   "edges_orfas": [
-   "ai-supplier-suggestion",
    "alert-dispatcher",
    "fiscal-orchestrator",
    "maintain-partitions",

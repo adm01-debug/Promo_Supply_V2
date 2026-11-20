@@ -1315,6 +1315,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -1601,6 +1602,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -2046,6 +2048,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -2202,6 +2205,7 @@
     "get_solicitacoes_kpis"
    ],
    "edges": [
+    "ai-supplier-suggestion",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -2294,6 +2298,7 @@
     "get_solicitacoes_kpis"
    ],
    "edges": [
+    "ai-supplier-suggestion",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -2626,6 +2631,7 @@
    ],
    "edges": [
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -3080,6 +3086,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -3420,6 +3427,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -3876,6 +3884,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4163,6 +4172,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4708,6 +4718,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "check-sla-alerts",
     "generate-contract-pdf",
     "guided-buying-ai",

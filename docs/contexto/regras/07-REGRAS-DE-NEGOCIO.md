@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ec27cd4fb8` · branch `main` · 2026-11-20 22:28 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `01db1d03f0` · branch `main` · 2026-11-20 22:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2097,6 +2097,8 @@ _nenhum item encontrado_
 | HTTP ${res.status} | `src/components/admin/InstallReportPanel.tsx` |
 | Erro ao resolver alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
 | ; import { ShieldCheck, ShieldAlert, RefreshCw, Lock, Search } from  | `src/components/auditoria/RlsCompliancePanel.tsx` |
+| Falha ao gerar sugestao de fornecedores:  | `src/components/compras/AISupplierSuggestion.tsx` |
+| Resposta invalida da edge de sugestao | `src/components/compras/AISupplierSuggestion.tsx` |
 | Erro ao desfazer a operacao | `src/components/compras/BulkOperationsPreview.tsx` |
 | Erro ao executar ação em massa | `src/components/compras/BulkOperationsPreview.tsx` |
 | Falha ao desfazer parte da operacao | `src/components/compras/BulkOperationsPreview.tsx` |
@@ -2296,9 +2298,7 @@ _nenhum item encontrado_
 | Informe a URL base do ERP | `src/pages/admin/ERPConnections.tsx` |
 | Informe a credencial de acesso | `src/pages/admin/ERPConnections.tsx` |
 | JSON inválido:  | `src/pages/admin/ERPConnections.tsx` |
-| Resposta vazia da edge de cifra | `src/pages/admin/ERPConnections.tsx` |
-| settings deve ser um objeto JSON | `src/pages/admin/ERPConnections.tsx` |
-| … +206 linhas — lista completa em `context.json` | |
+| … +208 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ec27cd4fb84fbd21469ee60f929270ca35e8f467` (2026-11-20T19:28:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `01db1d03f01d2b887718926a79e410c15480ccf8` (2026-11-20T19:53:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1253 |
 | arquivos_codigo | 781 |
-| linhas_codigo | 164501 |
+| linhas_codigo | 164618 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -71,15 +71,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
-| components/compras | 0 | 0 | 102 | 79 | 6 | 56 |
+| components/compras | 0 | 0 | 102 | 79 | 7 | 56 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
-| features/layout | 0 | 0 | 32 | 76 | 6 | 52 |
+| features/layout | 0 | 0 | 32 | 76 | 7 | 52 |
 | hooks | 0 | 0 | 61 | 56 | 6 | 59 |
-| lib | 0 | 0 | 24 | 53 | 5 | 47 |
+| lib | 0 | 0 | 24 | 53 | 6 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 18 |
@@ -89,33 +89,33 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 81 | 7 | 56 |
-| pages/catalogo-xbz | 1 | 1 | 9 | 78 | 7 | 52 |
+| pages/catalogo-spot | 1 | 1 | 6 | 81 | 8 | 56 |
+| pages/catalogo-xbz | 1 | 1 | 9 | 78 | 8 | 52 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
-| pages/configuracoes | 1 | 1 | 1 | 76 | 6 | 52 |
+| pages/configuracoes | 1 | 1 | 1 | 76 | 7 | 52 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
-| pages/cotacao | 1 | 2 | 2 | 14 | 1 | 14 |
+| pages/cotacao | 1 | 2 | 2 | 14 | 2 | 14 |
 | pages/dashboard | 3 | 2 | 2 | 28 | 2 | 26 |
 | pages/dev | 0 | 1 | 1 | 3 | 2 | 0 |
 | pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
 | pages/documentos | 1 | 1 | 1 | 2 | 2 | 2 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 7 |
-| pages/fornecedores | 3 | 2 | 3 | 10 | 2 | 10 |
+| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 10 |
 | pages/gerar-ordem | 0 | 1 | 2 | 8 | 1 | 9 |
 | pages/historico | 1 | 1 | 7 | 7 | 1 | 11 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 76 | 6 | 52 |
+| pages/licitacoes | 1 | 1 | 2 | 76 | 7 | 52 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
-| pages/orcamentos | 1 | 1 | 1 | 77 | 6 | 53 |
+| pages/orcamentos | 1 | 1 | 1 | 77 | 7 | 53 |
 | pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
 | pages/pedidos | 1 | 1 | 3 | 16 | 1 | 11 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 77 | 6 | 53 |
-| pages/qualificacao | 1 | 1 | 1 | 77 | 6 | 56 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 77 | 7 | 53 |
+| pages/qualificacao | 1 | 1 | 1 | 77 | 7 | 56 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 6 | 2 | 8 |
-| pages/seguranca | 1 | 1 | 1 | 83 | 9 | 67 |
+| pages/seguranca | 1 | 1 | 1 | 83 | 10 | 67 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
@@ -187,7 +187,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ai-demand-prediction` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ai-negotiation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ai-supplier-risk` — tabelas: -; chamada por 1 arquivo(s) do front
-- `ai-supplier-suggestion` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `ai-supplier-suggestion` — tabelas: -; chamada por 1 arquivo(s) do front
 - `alert-dispatcher` — tabelas: notifications, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `check-approval-escalations` — tabelas: approval_history, approval_steps, approval_workflows, notifications; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-cotacao-followup` — tabelas: cotacoes, notifications, profiles; chamada por 0 arquivo(s) do front, por SQL/cron
@@ -312,7 +312,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 7 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_orfas: 6 — ex.: alert-dispatcher, fiscal-orchestrator, maintain-partitions
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (18)
+- docs/pendencias/_indice.md (19)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
@@ -410,6 +410,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `01db1d0` feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)
+- 2026-11-20 `0efc019` chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)
 - 2026-11-20 `ec27cd4` fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)
 - 2026-11-20 `60860f7` chore(docs): marca edge-audit como concluido (PR #203) (#204)
 - 2026-11-20 `1f3af80` feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)
@@ -423,8 +425,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `044001f` fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)
 - 2026-11-20 `0c33e56` fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)
 - 2026-11-20 `7191493` feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)
-- 2026-11-20 `68c7c74` chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)
-- 2026-11-20 `2547016` fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

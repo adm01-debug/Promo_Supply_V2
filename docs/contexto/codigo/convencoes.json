@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)",
+   "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)",
    "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)",
    "chore(docs): marca edge-audit como concluido (PR #203) (#204)",
-   "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)",
-   "fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)",
-   "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)"
+   "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)"
   ]
  },
  "pr_template": null,

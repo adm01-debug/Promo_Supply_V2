@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
+  "sha": "01db1d03f01d2b887718926a79e410c15480ccf8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 22:28 UTC",
+  "generated_at": "2026-11-20 22:54 UTC",
   "files_total": 1254,
   "code_files": 1100,
-  "code_lines": 190461,
+  "code_lines": 190578,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b0af6a56f631ebdd",
+ "facts_hash": "df8f54d4bf604823",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34031,7 +34031,7 @@
   {
    "module": "src/components",
    "files": 260,
-   "lines": 48599,
+   "lines": 48716,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -39827,6 +39827,14 @@
    {
     "file": "src/components/auditoria/RlsCompliancePanel.tsx",
     "msg": ";\nimport { ShieldCheck, ShieldAlert, RefreshCw, Lock, Search } from "
+   },
+   {
+    "file": "src/components/compras/AISupplierSuggestion.tsx",
+    "msg": "Falha ao gerar sugestao de fornecedores: "
+   },
+   {
+    "file": "src/components/compras/AISupplierSuggestion.tsx",
+    "msg": "Resposta invalida da edge de sugestao"
    },
    {
     "file": "src/components/compras/BulkOperationsPreview.tsx",
@@ -89138,9 +89146,13 @@
   },
   "src/components/compras/AISupplierSuggestion.tsx": {
    "path": "src/components/compras/AISupplierSuggestion.tsx",
-   "lines": 69,
+   "lines": 186,
    "exports": [
     "const AISupplierSuggestion"
+   ],
+   "errors": [
+    "Falha ao gerar sugestao de fornecedores: ",
+    "Resposta invalida da edge de sugestao"
    ]
   },
   "src/components/compras/ActiveSourcingWidget.tsx": {
@@ -112464,10 +112476,28 @@
   }
  },
  "git": {
-  "sha": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
+  "sha": "01db1d03f01d2b887718926a79e410c15480ccf8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "01db1d0",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)",
+    "files": [
+     "src/components/compras/AISupplierSuggestion.tsx"
+    ]
+   },
+   {
+    "sha": "0efc019",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "ec27cd4",
     "date": "2026-11-20",
@@ -112764,30 +112794,12 @@
      "supabase/functions/process-invoice-idp/index.ts",
      "supabase/functions/webauthn-authenticate/index.ts"
     ]
-   },
-   {
-    "sha": "d1f90e9",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)",
-    "files": [
-     "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql"
-    ]
-   },
-   {
-    "sha": "dcd764b",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)",
-    "files": [
-     "docs/auditoria-implementacao-261120.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    13
+    14
    ],
    [
     "docs/pendencias/_ordem.md",
@@ -112804,6 +112816,10 @@
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     2
+   ],
+   [
+    "src/components/compras/AISupplierSuggestion.tsx",
+    1
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -112859,10 +112875,6 @@
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/lib/hubEvents.ts",
     1
    ]
   ]

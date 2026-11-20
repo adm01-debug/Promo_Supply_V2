@@ -72,6 +72,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "process-solicitacao-neural",
     "telemetry"
@@ -404,7 +405,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 17,
-   "linhas": 24595,
+   "linhas": 24712,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -500,6 +501,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -596,6 +598,7 @@
     "edges": [
      "ai-demand-prediction",
      "ai-supplier-risk",
+     "ai-supplier-suggestion",
      "generate-contract-pdf",
      "process-solicitacao-neural"
     ],
@@ -2010,6 +2013,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -2950,6 +2954,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "process-solicitacao-neural",
     "telemetry"
@@ -3995,6 +4000,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4210,6 +4216,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4479,6 +4486,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4700,6 +4708,7 @@
    ],
    "hooks_definidos": [],
    "edges": [
+    "ai-supplier-suggestion",
     "telemetry"
    ],
    "tabelas": [
@@ -5173,6 +5182,7 @@
    "hooks_definidos": [],
    "edges": [
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "telemetry"
    ],
    "tabelas": [
@@ -5528,6 +5538,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -5804,6 +5815,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -6189,6 +6201,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -6401,6 +6414,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -6909,6 +6923,7 @@
    "edges": [
     "ai-demand-prediction",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "check-sla-alerts",
     "generate-contract-pdf",
     "guided-buying-ai",
@@ -7341,6 +7356,7 @@
     "ai-demand-prediction",
     "ai-negotiation",
     "ai-supplier-risk",
+    "ai-supplier-suggestion",
     "check-sla-alerts",
     "dependency-health",
     "erp-credential-encrypt",

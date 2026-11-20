@@ -404,11 +404,15 @@
     "AISupplierSuggestion"
    ],
    "export_default": null,
-   "linhas": 69,
+   "linhas": 186,
    "dominio": "components/compras",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useFornecedores"
+   ],
    "tabelas": [],
-   "edges": [],
+   "edges": [
+    "ai-supplier-suggestion"
+   ],
    "usado_por": 2,
    "orfao": false
   },
@@ -3213,7 +3217,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 26,
+   "usado_por": 27,
    "orfao": false
   },
   {
