@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d14201cce04fe7e67dc6b0ff95d826d07cec7be6` (2026-11-19T21:24:06-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2a86602381f4b65e338f2cde244b35d9117337c4` (2026-11-19T21:34:33-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (702), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (701), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1237 |
-| arquivos_codigo | 773 |
-| linhas_codigo | 162239 |
+| arquivos_total | 1236 |
+| arquivos_codigo | 772 |
+| linhas_codigo | 162236 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,7 +44,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 86 |
 | componentes | 327 |
 | hooks | 89 |
-| edge_functions | 38 |
+| edge_functions | 37 |
 | tabelas | 163 |
 | migrations | 314 |
 | cron_jobs | 70 |
@@ -214,7 +214,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
-- `test-auto-delete` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `weekly-report` — tabelas: cotacoes, notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
@@ -311,7 +310,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 9 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_orfas: 8 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
 - edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
@@ -335,10 +334,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - bun.lock (8)
 - docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (6)
 - .github/workflows/deploy-edge-functions.yml (5)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (5)
 - scripts/automation.config.json (5)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
@@ -408,6 +407,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `2a86602` fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)
 - 2026-11-19 `d14201c` merge #162 (triagem automatizada)
 - 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
 - 2026-11-19 `6f6549b` fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)
@@ -422,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `8c4f685` docs: registra auditoria forense dos descartes sem trabalho perdido (#152)
 - 2026-11-18 `64b0a2a` docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)
 - 2026-11-18 `193c9b9` chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)
-- 2026-11-18 `76f3c8b` chore(deps): bump framer-motion from 12.43.0 to 14.14.0 (#148)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

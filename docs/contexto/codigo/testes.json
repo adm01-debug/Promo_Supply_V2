@@ -1855,7 +1855,6 @@
    "spot-api",
    "spot-proxy",
    "system-simulation",
-   "test-auto-delete",
    "webauthn-authenticate",
    "webauthn-register",
    "weekly-report",

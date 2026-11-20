@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 38,
+ "total": 37,
  "verify_jwt_false": [],
  "shared": [
   "supabase/functions/_shared/ai_gateway.ts",
@@ -1135,26 +1135,6 @@
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
    "testes": 1
-  },
-  {
-   "nome": "test-auto-delete",
-   "entrada": "supabase/functions/test-auto-delete/index.ts",
-   "arquivos": 1,
-   "linhas": 3,
-   "verify_jwt": true,
-   "metodos": [],
-   "tabelas": [],
-   "rpcs": [],
-   "env": [],
-   "buckets": [],
-   "chama_edges": [],
-   "hosts_externos": [],
-   "usa_shared": [],
-   "chamada_pelo_front": [],
-   "chamada_por_edges": [],
-   "chamada_por_sql_ou_cron": false,
-   "orfa": true,
-   "testes": 0
   },
   {
    "nome": "webauthn-authenticate",
