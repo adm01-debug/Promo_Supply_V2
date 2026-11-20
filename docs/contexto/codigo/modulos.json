@@ -6035,7 +6035,7 @@
    "modulo": "pages/portal-fornecedor",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 515,
+   "linhas": 556,
    "itens_menu": [],
    "telas": [
     "/portal-fornecedor"

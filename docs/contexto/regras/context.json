@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2102f2bc6c2f133cec2188f5124a114b9e3ec378",
+  "sha": "0ef80b8d7d2ca37047d440d29a9344d3922252f6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 21:17 UTC",
+  "generated_at": "2026-11-20 21:18 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 189166,
+  "code_lines": 189207,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "536abf42254c5d9f",
+ "facts_hash": "5f1c394f6b6f7e1c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34872,7 +34872,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28655,
+   "lines": 28696,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -40750,6 +40750,14 @@
    {
     "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
     "msg": "Erro ao atualizar produção: "
+   },
+   {
+    "file": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+    "msg": "Este fornecedor nao possui e-mail cadastrado. Adicione o e-mail antes de enviar o link."
+   },
+   {
+    "file": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+    "msg": "Falha ao enviar o link de acesso"
    },
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -103764,7 +103772,7 @@
   },
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": {
    "path": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
-   "lines": 389,
+   "lines": 430,
    "exports": [
     "function PortalFornecedor"
    ],
@@ -103784,6 +103792,10 @@
      "status"
     ]
    },
+   "errors": [
+    "Este fornecedor nao possui e-mail cadastrado. Adicione o e-mail antes de enviar o link.",
+    "Falha ao enviar o link de acesso"
+   ],
    "status_values": [
     {
      "field": "status",
@@ -112080,10 +112092,19 @@
   }
  },
  "git": {
-  "sha": "2102f2bc6c2f133cec2188f5124a114b9e3ec378",
+  "sha": "0ef80b8d7d2ca37047d440d29a9344d3922252f6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0ef80b8",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)",
+    "files": [
+     "src/pages/portal-fornecedor/PortalFornecedor.tsx"
+    ]
+   },
    {
     "sha": "2102f2b",
     "date": "2026-11-20",
@@ -112380,28 +112401,16 @@
      "docs/pendencias/fio-3-kanban-acompanhamento.md",
      "src/pages/acompanhamento/Acompanhamento.tsx"
     ]
-   },
-   {
-    "sha": "91b330c",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/_linha-de-base.md",
-     "docs/pendencias/_ordem.md",
-     "docs/pendencias/_regras-de-negocio.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
+    13
    ],
    [
     "docs/pendencias/_ordem.md",
-    7
+    6
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -112416,8 +112425,8 @@
     2
    ],
    [
-    "docs/pendencias/_regras-de-negocio.md",
-    2
+    "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+    1
    ],
    [
     "src/components/compras/BulkOperationsPreview.tsx",

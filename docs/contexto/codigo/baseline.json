@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2102f2bc6c2f133cec2188f5124a114b9e3ec378",
+  "commit": "0ef80b8d7d2ca37047d440d29a9344d3922252f6",
   "branch": "main",
-  "data_commit": "2026-11-20T18:16:38-03:00",
+  "data_commit": "2026-11-20T18:16:49-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0ef80b8",
+    "data": "2026-11-20",
+    "assunto": "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)"
+   },
    {
     "sha": "2102f2b",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "b425ff9",
     "data": "2026-11-20",
     "assunto": "chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)"
-   },
-   {
-    "sha": "4c7e836",
-    "data": "2026-11-20",
-    "assunto": "chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)"
    }
   ],
-  "arquivos_mudados_7d": 170,
+  "arquivos_mudados_7d": 171,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 163
+    "commits": 164
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1247,
   "arquivos_codigo": 775,
-  "linhas_codigo": 163206,
+  "linhas_codigo": 163247,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 28655
+   "linhas": 28696
   },
   "src/routes": {
    "arquivos": 1,

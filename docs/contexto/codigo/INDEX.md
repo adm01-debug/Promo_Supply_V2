@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2102f2bc6c2f133cec2188f5124a114b9e3ec378` (2026-11-20T18:16:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0ef80b8d7d2ca37047d440d29a9344d3922252f6` (2026-11-20T18:16:49-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 163206 |
+| linhas_codigo | 163247 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `0ef80b8` fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)
 - 2026-11-20 `2102f2b` fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)
 - 2026-11-20 `6de29ff` chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)
 - 2026-11-20 `5ae1935` fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `be6c7e0` chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)
 - 2026-11-20 `0243977` fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)
 - 2026-11-20 `d4690b5` fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)
-- 2026-11-20 `a0363dd` fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

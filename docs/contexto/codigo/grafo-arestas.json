@@ -3073,6 +3073,7 @@
    "src/features/auth/index.ts",
    "src/features/layout/components/MainLayout.tsx",
    "src/integrations/supabase/client.ts",
+   "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
    "src/pages/portal-fornecedor/portalFornecedorData.ts"
   ],

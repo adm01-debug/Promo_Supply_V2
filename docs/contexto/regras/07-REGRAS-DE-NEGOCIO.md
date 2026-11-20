@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2102f2bc6c` · branch `main` · 2026-11-20 21:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0ef80b8d7d` · branch `main` · 2026-11-20 21:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2286,7 +2286,7 @@ _nenhum item encontrado_
 | ; import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from  | `src/pages/admin/SSOConfig.tsx` |
 | Domínio já adicionado | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
-| … +192 linhas — lista completa em `context.json` | |
+| … +194 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
