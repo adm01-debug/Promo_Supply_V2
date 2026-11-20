@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a712aa381a968422e4542c14b214e354d072dcdb` (2026-11-20T16:52:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2547016cee77232a2329069d385257d0aa25bed1` (2026-11-20T16:53:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 162917 |
+| linhas_codigo | 162918 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `2547016` fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)
 - 2026-11-20 `a712aa3` fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)
 - 2026-11-20 `8fc7ca6` chore(docs): registra edge-sla-reve concluido na PR #187 (#188)
 - 2026-11-20 `619f974` fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `2e8e436` chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)
 - 2026-11-20 `f691f17` feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin
 - 2026-11-20 `d1f90e9` feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)
-- 2026-11-20 `dcd764b` docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

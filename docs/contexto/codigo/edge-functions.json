@@ -111,7 +111,7 @@
    "nome": "ai-supplier-risk",
    "entrada": "supabase/functions/ai-supplier-risk/index.ts",
    "arquivos": 1,
-   "linhas": 172,
+   "linhas": 173,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

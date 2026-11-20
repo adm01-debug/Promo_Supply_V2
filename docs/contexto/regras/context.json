@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a712aa381a968422e4542c14b214e354d072dcdb",
+  "sha": "2547016cee77232a2329069d385257d0aa25bed1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 19:52 UTC",
+  "generated_at": "2026-11-20 19:54 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 188877,
+  "code_lines": 188878,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b30eb4a4c746765b",
+ "facts_hash": "3dc8837afd023cb3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35273,7 +35273,7 @@
   {
    "module": "supabase/functions",
    "files": 79,
-   "lines": 14210,
+   "lines": 14211,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -107321,7 +107321,7 @@
   },
   "supabase/functions/ai-supplier-risk/index.ts": {
    "path": "supabase/functions/ai-supplier-risk/index.ts",
-   "lines": 172,
+   "lines": 173,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -112005,10 +112005,19 @@
   }
  },
  "git": {
-  "sha": "a712aa381a968422e4542c14b214e354d072dcdb",
+  "sha": "2547016cee77232a2329069d385257d0aa25bed1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2547016",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)",
+    "files": [
+     "supabase/functions/ai-supplier-risk/index.ts"
+    ]
+   },
    {
     "sha": "a712aa3",
     "date": "2026-11-20",
@@ -112303,15 +112312,6 @@
     "files": [
      ".github/workflows/deploy-edge-functions.yml"
     ]
-   },
-   {
-    "sha": "cbe4038",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(ci): exige execução real do Security RLS Audit com --strict (#159)",
-    "files": [
-     ".github/workflows/main.yml"
-    ]
    }
   ],
   "hot_files": [
@@ -112346,6 +112346,10 @@
    [
     "supabase/functions/test-auto-delete/index.ts",
     2
+   ],
+   [
+    "supabase/functions/ai-supplier-risk/index.ts",
+    1
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
@@ -112389,10 +112393,6 @@
    ],
    [
     "src/components/compras/AdvancedProcurementKPIs.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ExecutiveDashboard.tsx",
     1
    ]
   ]

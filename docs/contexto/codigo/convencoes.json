@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)",
    "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
    "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)",
    "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)",
-   "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)",
-   "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)"
+   "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)"
   ]
  },
  "pr_template": null,
