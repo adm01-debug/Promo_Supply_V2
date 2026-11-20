@@ -34,8 +34,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const logger = getLogger(req);
+
   try {
-    const logger = getLogger(req);
     // SECURITY: Validate user authentication
     const userId = await verifyAuthUser(req);
     // M-05: rate-limit por usuário (AI = custo de token elevado).
