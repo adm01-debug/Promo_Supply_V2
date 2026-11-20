@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2547016cee` · branch `main` · 2026-11-20 19:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7191493b3d` · branch `main` · 2026-11-20 20:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2285,8 +2285,8 @@ _nenhum item encontrado_
 | Domínio já adicionado | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
 | Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
-| Erro ao limpar dados antigos | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| … +188 linhas — lista completa em `context.json` | |
+| Informe nome e pelo menos um role em conflito. | `src/pages/admin/WorkflowAdmin.tsx` |
+| … +190 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2526,6 +2526,8 @@ _nenhum item encontrado_
 | exibia 14/06 para "2024-06-15" e recusava "hoje" no prazo de entrega. | `src/lib/utils.ts` |
 | **Validação Rigorosa:** Shared utilities para validação de esquemas \`zod\` em Edge Functions e chamadas RPC. | `src/pages/admin/DeveloperDocs.tsx` |
 | **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuário logado. | `src/pages/admin/DeveloperDocs.tsx` |
+| Dialog de Adicionar/Editar Regra SoD | `src/pages/admin/WorkflowAdmin.tsx` |
+| Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)",
+   "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)",
    "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)",
    "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
-   "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)",
-   "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)",
-   "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)"
+   "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)"
   ]
  },
  "pr_template": null,

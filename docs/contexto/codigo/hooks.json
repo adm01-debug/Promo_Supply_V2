@@ -304,7 +304,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 65,
+   "usado_por": 66,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/TenantSwitcher.tsx",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2547016cee77232a2329069d385257d0aa25bed1` (2026-11-20T16:53:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7191493b3d473bd839ba56b0404ce47f2f9e9294` (2026-11-20T17:09:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 162918 |
+| linhas_codigo | 163161 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -330,8 +330,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (12)
+- docs/pendencias/_indice.md (11)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
-- docs/pendencias/_indice.md (10)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
@@ -409,6 +409,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `7191493` feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)
+- 2026-11-20 `68c7c74` chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)
 - 2026-11-20 `2547016` fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)
 - 2026-11-20 `a712aa3` fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)
 - 2026-11-20 `8fc7ca6` chore(docs): registra edge-sla-reve concluido na PR #187 (#188)
@@ -422,8 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
 - 2026-11-20 `134e364` chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)
 - 2026-11-20 `2e8e436` chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)
-- 2026-11-20 `f691f17` feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin
-- 2026-11-20 `d1f90e9` feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

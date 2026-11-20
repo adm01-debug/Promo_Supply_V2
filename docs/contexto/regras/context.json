@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2547016cee77232a2329069d385257d0aa25bed1",
+  "sha": "7191493b3d473bd839ba56b0404ce47f2f9e9294",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 19:54 UTC",
+  "generated_at": "2026-11-20 20:11 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 188878,
+  "code_lines": 189121,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3dc8837afd023cb3",
+ "facts_hash": "888db935e682e06a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34873,7 +34873,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28412,
+   "lines": 28655,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37037,11 +37037,23 @@
     ]
    },
    "workflow_sod_rules": {
+    "update": [
+     "src/pages/admin/WorkflowAdmin.tsx"
+    ],
+    "insert": [
+     "src/pages/admin/WorkflowAdmin.tsx"
+    ],
     "select": [
      "src/pages/admin/WorkflowAdmin.tsx"
     ]
    },
    "workflow_templates": {
+    "update": [
+     "src/pages/admin/WorkflowAdmin.tsx"
+    ],
+    "insert": [
+     "src/pages/admin/WorkflowAdmin.tsx"
+    ],
     "select": [
      "src/pages/admin/WorkflowAdmin.tsx"
     ]
@@ -37761,6 +37773,12 @@
    "workflow_nodes": [
     "template_id",
     "type"
+   ],
+   "workflow_sod_rules": [
+    "id"
+   ],
+   "workflow_templates": [
+    "id"
    ],
    "xbz_carrinho_log": [
     "action",
@@ -40559,6 +40577,14 @@
     "msg": "Informe um domínio válido (ex: empresa.com)"
    },
    {
+    "file": "src/pages/admin/WorkflowAdmin.tsx",
+    "msg": "Informe nome e pelo menos um role em conflito."
+   },
+   {
+    "file": "src/pages/admin/WorkflowAdmin.tsx",
+    "msg": "Informe um nome e esteja autenticado."
+   },
+   {
     "file": "src/pages/admin-telemetria/AdminTelemetria.tsx",
     "msg": "Erro ao limpar dados antigos"
    },
@@ -41581,6 +41607,14 @@
    {
     "file": "src/pages/admin/DeveloperDocs.tsx",
     "text": "**Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \\`tenant_id\\` do usuário logado."
+   },
+   {
+    "file": "src/pages/admin/WorkflowAdmin.tsx",
+    "text": "Dialog de Adicionar/Editar Regra SoD"
+   },
+   {
+    "file": "src/pages/admin/WorkflowAdmin.tsx",
+    "text": "Dialog Adicionar/Editar Regra SoD */}"
    },
    {
     "file": "src/pages/auth/Auth.tsx",
@@ -101440,11 +101474,27 @@
   },
   "src/pages/admin/WorkflowAdmin.tsx": {
    "path": "src/pages/admin/WorkflowAdmin.tsx",
-   "lines": 248,
+   "lines": 491,
    "exports": [
     "default WorkflowAdmin"
    ],
    "tables": [
+    {
+     "table": "workflow_templates",
+     "op": "update"
+    },
+    {
+     "table": "workflow_templates",
+     "op": "insert"
+    },
+    {
+     "table": "workflow_sod_rules",
+     "op": "update"
+    },
+    {
+     "table": "workflow_sod_rules",
+     "op": "insert"
+    },
     {
      "table": "workflow_templates",
      "op": "select"
@@ -101454,8 +101504,24 @@
      "op": "select"
     }
    ],
+   "table_cols": {
+    "workflow_templates": [
+     "id"
+    ],
+    "workflow_sod_rules": [
+     "id"
+    ]
+   },
    "navigates": [
     "/auditoria"
+   ],
+   "errors": [
+    "Informe nome e pelo menos um role em conflito.",
+    "Informe um nome e esteja autenticado."
+   ],
+   "rule_comments": [
+    "Dialog de Adicionar/Editar Regra SoD",
+    "Dialog Adicionar/Editar Regra SoD */}"
    ]
   },
   "src/pages/admin/alertRunbooks.ts": {
@@ -112005,10 +112071,28 @@
   }
  },
  "git": {
-  "sha": "2547016cee77232a2329069d385257d0aa25bed1",
+  "sha": "7191493b3d473bd839ba56b0404ce47f2f9e9294",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7191493",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)",
+    "files": [
+     "src/pages/admin/WorkflowAdmin.tsx"
+    ]
+   },
+   {
+    "sha": "68c7c74",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "2547016",
     "date": "2026-11-20",
@@ -112294,30 +112378,12 @@
     "files": [
      "docs/mapa/MATRIZ_EDGE_TABELA.md"
     ]
-   },
-   {
-    "sha": "931bcdb",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "chore(ci): adiciona edge function dummy para provar delete automatico (#161)",
-    "files": [
-     "supabase/functions/test-auto-delete/index.ts"
-    ]
-   },
-   {
-    "sha": "6f6549b",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)",
-    "files": [
-     ".github/workflows/deploy-edge-functions.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    10
+    11
    ],
    [
     "docs/pendencias/_ordem.md",
@@ -112340,12 +112406,8 @@
     2
    ],
    [
-    ".github/workflows/deploy-edge-functions.yml",
-    2
-   ],
-   [
-    "supabase/functions/test-auto-delete/index.ts",
-    2
+    "src/pages/admin/WorkflowAdmin.tsx",
+    1
    ],
    [
     "supabase/functions/ai-supplier-risk/index.ts",
@@ -112393,6 +112455,10 @@
    ],
    [
     "src/components/compras/AdvancedProcurementKPIs.tsx",
+    1
+   ],
+   [
+    "src/components/compras/ExecutiveDashboard.tsx",
     1
    ]
   ]

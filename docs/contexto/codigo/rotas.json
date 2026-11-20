@@ -675,21 +675,43 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useAuth",
+    "useCallback",
+    "useContext",
+    "useEffect",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useMemo",
     "useNavigate",
     "useQuery",
+    "useQueryClient",
+    "useRef",
     "useState"
    ],
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
    "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
     "workflow_sod_rules",
     "workflow_templates"
    ],
-   "rpcs": [],
-   "edges": [],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "edges": [
+    "telemetry"
+   ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [],
-   "arquivos_puxados": 8
+   "papeis": [
+    "admin"
+   ],
+   "arquivos_puxados": 22
   },
   {
    "protegida": true,
