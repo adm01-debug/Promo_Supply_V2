@@ -6,7 +6,7 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 1. `seg-fio-entrada` - CONCLUIDO na PR #171: edge `process-solicitacao-neural` criado (JWT + rate limit + fallback), front consome `data.fields`, deploy confirmado.
 2. `fio-1` selecao de fornecedor na cotacao (backend trigger ja existe - diff front minimo; estende agendamento).
 3. `fio-3` Kanban -> usePedidos().updateStatus (front puro).
-4. `fio-2` - MERGEADO na PR #173. **DDL AINDA NAO APLICADO no banco prod** (paridade-banco.yml reabre: `funcoes: 168/1 AUSENTE`); pendente `supabase db push` com credencial do dono. Trigger SECURITY DEFINER promove solicitacoes.status p/ `aprovada`; validado em postgres ephemero (aprovada=2, pendente=1).
+4. `fio-2` - CONCLUIDO na PR #173 (merge) + DDL APLICADO em prod via Management API (2026-11-28): trigger `trg_workflow_approved_promotes_solicitacao` + funcao `auto_transition_solicitacao_on_workflow_approved` ativos, testado (aprovada=2, pendente=1). Paridade-banco verde (funcoes 168/0). Migracoes 17/11 registradas como applied (schema_migrations 14 registros).
 
 ## T2 - seguranca
 5. `seg-passkey` CONCLUIDO na PR #177: botao passkey desabilitado em `Auth.tsx` (fail-closed) + finish da edge `webauthn-authenticate` rejeita ate reescrever assinatura COSE.
