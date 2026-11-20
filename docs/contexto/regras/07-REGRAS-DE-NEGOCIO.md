@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2bfc15bbee` · branch `main` · 2026-11-20 21:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1f3af80004` · branch `main` · 2026-11-20 21:57 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -993,6 +993,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `user-action` | escreve | `src/hooks/useGlobalUndo.ts` |
 | `type` | `warning` | compara, escreve | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx`<br>`src/hooks/useApprovalNotifications.ts`<br>`src/stores/buyerAlertsStore.ts`<br>… +2 |
 | `type` | `weekly_report` | escreve | `supabase/functions/weekly-report/index.ts`<br>`supabase/functions/weekly-summary-report/index.ts` |
+| `overall_status` | `COMPLIANT` | escreve | `src/services/rlsAuditService.ts` |
+| `overall_status` | `NON_COMPLIANT` | compara | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | `status` | `AGUARDANDO_COTACAO` | compara, escreve | `src/components/compras/SolicitacaoCard.tsx`<br>`src/types/legacyTypes.ts` |
 | `status` | `Crítico` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `status` | `EM_COTACAO` | compara | `src/components/compras/SolicitacaoCard.tsx` |
@@ -1198,6 +1200,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | XbzTrendDirection | unknown \| degrading \| stable \| improving | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | AuditActionType | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel | `src/services/auditTypes.ts` |
 | AuditEntityType | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio | `src/services/auditTypes.ts` |
+| RlsSeverity | CRITICAL \| INFO \| OK | `src/services/rlsAuditService.ts` |
 | ALLOWED_OPERATIONS | "select", "insert", "update", "delete", "rpc", | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | CanonicalLogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logLevel.ts` |
 | LogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logger.ts` |
@@ -1733,6 +1736,7 @@ _nenhum item encontrado_
 | `timeFilter === "1h" ? 5 * 60 * 1000 : // 5 min` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
 | `timeFilter === "24h" ? 60 * 60 * 1000 : // 1 hour` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
 | `timeFilter === "6h" ? 30 * 60 * 1000 : // 30 min` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | `(new Date(sol.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)` | `src/components/compras/CriticalAlertsBar.tsx` |
 | `<Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>` | `src/components/compras/DeliveryCalendar.tsx` |
 | `<Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>` | `src/components/compras/DeliveryCalendar.tsx` |
@@ -2088,6 +2092,7 @@ _nenhum item encontrado_
 | Falha ao atualizar relatório | `src/components/admin/InstallReportPanel.tsx` |
 | HTTP ${res.status} | `src/components/admin/InstallReportPanel.tsx` |
 | Erro ao resolver alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
+| ; import { ShieldCheck, ShieldAlert, RefreshCw, Lock, Search } from  | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | Erro ao desfazer a operacao | `src/components/compras/BulkOperationsPreview.tsx` |
 | Erro ao executar ação em massa | `src/components/compras/BulkOperationsPreview.tsx` |
 | Falha ao desfazer parte da operacao | `src/components/compras/BulkOperationsPreview.tsx` |
@@ -2289,8 +2294,7 @@ _nenhum item encontrado_
 | JSON inválido:  | `src/pages/admin/ERPConnections.tsx` |
 | Resposta vazia da edge de cifra | `src/pages/admin/ERPConnections.tsx` |
 | settings deve ser um objeto JSON | `src/pages/admin/ERPConnections.tsx` |
-| Falha ao resolver alerta | `src/pages/admin/HealthDashboard.tsx` |
-| … +205 linhas — lista completa em `context.json` | |
+| … +206 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2468,6 +2472,7 @@ _nenhum item encontrado_
 | `invoke(` | `src/pages/admin/StorageMigration.tsx` |
 | `invoke(` | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
 | `invoke(` | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
+| `invoke(` | `src/services/rlsAuditService.ts` |
 | `sendEmail` | `supabase/functions/alert-dispatcher/index.ts` |
 | `notify` | `supabase/functions/send-push-notification/index.ts` |
 | `sendPush` | `supabase/functions/send-push-notification/index.ts` |

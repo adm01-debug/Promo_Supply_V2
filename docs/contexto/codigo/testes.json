@@ -1875,7 +1875,8 @@
    "xbz-sync-pedidos"
   ],
   "servicos": [
-   "src/services/auditTypes.ts"
+   "src/services/auditTypes.ts",
+   "src/services/rlsAuditService.ts"
   ]
  }
 }

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2bfc15bbee` · branch `main` · 2026-11-20 21:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1f3af80004` · branch `main` · 2026-11-20 21:57 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -207,6 +207,7 @@
 | `XbzTrendDirection` (TS) | unknown \| degrading \| stable \| improving |  | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `AuditActionType` (TS) | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel |  | `src/services/auditTypes.ts` |
 | `AuditEntityType` (TS) | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio |  | `src/services/auditTypes.ts` |
+| `RlsSeverity` (TS) | CRITICAL \| INFO \| OK |  | `src/services/rlsAuditService.ts` |
 | `ALLOWED_OPERATIONS` (TS) | "select", "insert", "update", "delete", "rpc", |  | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `CanonicalLogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logLevel.ts` |
 | `LogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logger.ts` |
@@ -238,6 +239,8 @@
 
 | Tipo | Problema | Onde |
 |---|---|---|
+| status | valor `NON_COMPLIANT` para `overall_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/auditoria/RlsCompliancePanel.tsx` |
+| status | valor `COMPLIANT` para `overall_status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/services/rlsAuditService.ts` |
 | status | valor `critical` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/AdvancedProcurementKPIs.tsx`<br>`compara:src/components/compras/BuyerPerformanceAlerts.tsx`<br>`compara:src/components/compras/PendingApprovalsList.tsx`<br>`compara:src/components/compras/PurchaseClimateWidget.tsx` |
 | status | valor `encontrado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`compara:src/pages/cotacao/cotacaoHelpers.ts`<br>`escreve:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/pages/cotacao/cotacaoHelpers.ts` |
 | status | valor `idle` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`compara:src/components/compras/NeuralFollowUpMonitor.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx` |

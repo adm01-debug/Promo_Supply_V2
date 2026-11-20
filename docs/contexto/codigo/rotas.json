@@ -809,29 +809,41 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useAuth",
     "useCallback",
+    "useContext",
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
+    "useMemo",
+    "useQuery",
+    "useRef",
     "useState"
    ],
    "hooks_locais": [
+    "useAuth",
     "useFeedback",
     "useFeedbackPreferences"
    ],
    "tabelas": [
-    "audit_logs"
+    "audit_logs",
+    "profiles",
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [
     "current_tenant_id"
    ],
    "edges": [
+    "run-audit",
     "telemetry"
    ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [],
-   "arquivos_puxados": 20
+   "papeis": [
+    "admin"
+   ],
+   "arquivos_puxados": 30
   },
   {
    "protegida": false,

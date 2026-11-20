@@ -6,7 +6,7 @@
    "src/pages (53)"
   ],
   "componentes": [
-   "src/components (213)",
+   "src/components (214)",
    "src/pages (78)",
    "src/features (33)"
   ],
@@ -46,7 +46,7 @@
  },
  "barrels_index": 4,
  "extensao_componentes": [
-  ".tsx (327)"
+  ".tsx (328)"
  ],
  "alias_imports": {
   "(raiz)": {
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)",
    "fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)",
    "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)",
    "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)",
-   "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)",
-   "fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)"
+   "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)"
   ]
  },
  "pr_template": null,

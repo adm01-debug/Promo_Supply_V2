@@ -140,6 +140,16 @@
   "src/components/atoms/PreloadLink.tsx": [
    "src/lib/haptics.ts"
   ],
+  "src/components/auditoria/RlsCompliancePanel.tsx": [
+   "src/components/ui/alert.tsx",
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/components/ui/input.tsx",
+   "src/components/ui/skeleton.tsx",
+   "src/components/ui/table.tsx",
+   "src/services/rlsAuditService.ts"
+  ],
   "src/components/compras/AISupplierSuggestion.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -2417,6 +2427,7 @@
    "src/pages/aprovacoes/aprovacoesData.ts"
   ],
   "src/pages/auditoria/Auditoria.tsx": [
+   "src/components/auditoria/RlsCompliancePanel.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
@@ -2425,6 +2436,7 @@
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
    "src/components/ui/table.tsx",
+   "src/features/auth/index.ts",
    "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
@@ -3370,6 +3382,9 @@
   ],
   "src/services/auditTypes.ts": [
    "src/integrations/supabase/types.ts"
+  ],
+  "src/services/rlsAuditService.ts": [
+   "src/integrations/supabase/client.ts"
   ],
   "src/stores/buyerAlertsStore.ts": [
    "src/integrations/supabase/client.ts"

@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 601,
- "arestas": 2688,
+ "nos": 603,
+ "arestas": 2699,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -10,19 +10,19 @@
   },
   {
    "arquivo": "src/components/ui/badge.tsx",
-   "importado_por": 174
+   "importado_por": 175
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 168
+   "importado_por": 169
   },
   {
    "arquivo": "src/components/ui/card.tsx",
-   "importado_por": 163
+   "importado_por": 164
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 130
+   "importado_por": 131
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
@@ -30,11 +30,11 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 72
+   "importado_por": 73
   },
   {
    "arquivo": "src/features/auth/index.ts",
-   "importado_por": 70
+   "importado_por": 71
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -54,11 +54,11 @@
   },
   {
    "arquivo": "src/components/ui/table.tsx",
-   "importado_por": 53
+   "importado_por": 54
   },
   {
    "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 40
+   "importado_por": 41
   },
   {
    "arquivo": "supabase/functions/_shared/security.ts",
@@ -121,11 +121,11 @@
    "importado_por": 15
   },
   {
-   "arquivo": "src/components/atoms/EliteButton.tsx",
-   "importado_por": 13
+   "arquivo": "src/components/ui/alert.tsx",
+   "importado_por": 14
   },
   {
-   "arquivo": "src/components/ui/alert.tsx",
+   "arquivo": "src/components/atoms/EliteButton.tsx",
    "importado_por": 13
   },
   {
@@ -217,7 +217,7 @@
   {
    "modulo": "components/ui",
    "depende_de": 2,
-   "importado_por": 58
+   "importado_por": 59
   },
   {
    "modulo": "hooks",
@@ -247,7 +247,7 @@
   {
    "modulo": "features/auth",
    "depende_de": 2,
-   "importado_por": 20
+   "importado_por": 21
   },
   {
    "modulo": "components/atoms",

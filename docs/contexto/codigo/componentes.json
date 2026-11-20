@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 327,
+ "total": 328,
  "orfaos": 12,
  "nomes_duplicados": {
   "AnimatedCounter": [
@@ -349,6 +349,20 @@
    "edges": [],
    "usado_por": 0,
    "orfao": true
+  },
+  {
+   "arquivo": "src/components/auditoria/RlsCompliancePanel.tsx",
+   "exports": [
+    "RlsCompliancePanel"
+   ],
+   "export_default": null,
+   "linhas": 166,
+   "dominio": "components/auditoria",
+   "hooks_locais": [],
+   "tabelas": [],
+   "edges": [],
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/compras/ActiveSourcingWidget.tsx",
@@ -2589,7 +2603,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 13,
+   "usado_por": 14,
    "orfao": false
   },
   {
@@ -2620,7 +2634,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 174,
+   "usado_por": 175,
    "orfao": false
   },
   {
@@ -2655,7 +2669,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 168,
+   "usado_por": 169,
    "orfao": false
   },
   {
@@ -2689,7 +2703,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 163,
+   "usado_por": 164,
    "orfao": false
   },
   {
@@ -3078,7 +3092,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 72,
+   "usado_por": 73,
    "orfao": false
   },
   {
@@ -3312,7 +3326,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 40,
+   "usado_por": 41,
    "orfao": false
   },
   {
@@ -3456,7 +3470,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 53,
+   "usado_por": 54,
    "orfao": false
   },
   {
@@ -4385,9 +4399,11 @@
     "Auditoria"
    ],
    "export_default": "Auditoria",
-   "linhas": 390,
+   "linhas": 394,
    "dominio": "pages/auditoria",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,

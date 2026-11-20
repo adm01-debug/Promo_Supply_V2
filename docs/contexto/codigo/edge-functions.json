@@ -958,7 +958,7 @@
    "nome": "run-audit",
    "entrada": "supabase/functions/run-audit/index.ts",
    "arquivos": 1,
-   "linhas": 100,
+   "linhas": 102,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -978,10 +978,12 @@
     "http.ts",
     "security.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/services/rlsAuditService.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {
