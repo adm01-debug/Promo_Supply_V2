@@ -1,1 +1,4 @@
 project_id = "lmypcdfsrgfftzhxawao"
+
+[functions.scim-v2]
+verify_jwt = false

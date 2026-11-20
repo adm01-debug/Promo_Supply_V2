@@ -6,6 +6,7 @@ import { XMLParser } from "https://esm.sh/fast-xml-parser@4.3.6";
 import { safeTruncate } from "../_shared/logLevel.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
+import { decryptPunchOutSecret } from "../_shared/punchout_crypto.ts";
 import { isPunchOutSessionExpired } from "./session.ts";
 import { buildSolicitacaoFromCart } from "./solicitation.ts";
 
@@ -33,7 +34,7 @@ function toArray<T>(v: T | T[] | undefined | null): T[] {
   return Array.isArray(v) ? v : [v];
 }
 
-function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; items: PunchOutItem[] } {
+function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; sharedSecret: string | null; items: PunchOutItem[] } {
   const parsed = xmlParser.parse(xml) as Record<string, unknown>;
   const cxml = (parsed?.cXML ?? parsed?.CXML ?? parsed) as Record<string, unknown>;
   const msg = (cxml?.Message as Record<string, unknown> | undefined) ?? {};
@@ -43,6 +44,25 @@ function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; i
   const defaultCurrency =
     ((header?.Total as Record<string, unknown> | undefined)?.Money as Record<string, unknown> | undefined)
       ?.["@_currency"] as string | undefined;
+
+  // cXML: o shared secret do PunchOut chega no `Header` (nó `Credential`) com
+  // `domain="SharedSecret"` e um `Identity`/`SharedSecret` com o valor. Também
+  // aceita o nó direto `SharedSecret` por robustez a variações de emissor.
+  let sharedSecret: string | null = null;
+  const rootHeader = (cxml?.Header as Record<string, unknown> | undefined) ?? {};
+  const creds = toArray(rootHeader?.Credential as unknown);
+  for (const c of creds) {
+    const r = c as Record<string, unknown>;
+    if (r?.["@_domain"] === "SharedSecret") {
+      const ident = (r?.Identity as Record<string, unknown> | undefined) ?? {};
+      sharedSecret = typeof ident?.["#text"] === "string" ? ident["#text"] : null;
+      break;
+    }
+  }
+  if (!sharedSecret) {
+    const direct = pom?.SharedSecret;
+    if (typeof direct === "string") sharedSecret = direct;
+  }
 
   const itemIns = toArray(pom?.ItemIn as unknown);
   const items: PunchOutItem[] = itemIns.slice(0, 500).map((raw) => {
@@ -69,7 +89,7 @@ function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; i
     };
   });
 
-  return { buyerCookie, items };
+  return { buyerCookie, sharedSecret, items };
 }
 
 serve(async (req) => {
@@ -110,26 +130,44 @@ serve(async (req) => {
     // HIGH-C4: proper XML parse (previously fragile regex + hardcoded mock cart
     // that ignored the actual PunchOut response — every solicitação was created
     // with the same fake item regardless of what the supplier returned).
-    let parsedMessage: { buyerCookie: string | null; items: PunchOutItem[] };
+    let parsedMessage: { buyerCookie: string | null; sharedSecret: string | null; items: PunchOutItem[] };
     try {
       parsedMessage = parsePunchOutOrderMessage(bodyText);
     } catch (parseErr) {
       throw new Error("Invalid PunchOut XML: " + (parseErr instanceof Error ? parseErr.message : "parse error"));
     }
-    const { buyerCookie, items: cartItems } = parsedMessage;
+    const { buyerCookie, sharedSecret, items: cartItems } = parsedMessage;
 
     if (!buyerCookie) throw new Error("BuyerCookie missing in response");
     if (cartItems.length === 0) throw new Error("PunchOut cart has no items");
 
     const { data: session, error: sessionError } = await supabaseClient
       .from("punchout_sessions")
-      .select("*")
+      .select("id, catalog_id, tenant_id, user_id, return_url, created_at, status, closed_at")
       .eq("buyer_cookie", buyerCookie)
       .eq("status", "opened")
       .is("closed_at", null)
       .single();
 
     if (sessionError || !session) throw new Error("Session not found");
+
+    // SEC-PUNCHOUT: autentica o fornecedor antes de criar a solicitação.
+    // A sessão guarda catalog_id; se o catálogo tem shared_secret_encrypted,
+    // o XML precisa apresentar o shared secret correto (fail-closed).
+    const { data: catalog, error: catalogError } = await supabaseClient
+      .from("punchout_catalogs")
+      .select("id, shared_secret_encrypted, is_active")
+      .eq("id", session.catalog_id)
+      .maybeSingle();
+
+    if (catalogError) throw new Error("Error loading catalog: " + catalogError.message);
+
+    if (catalog?.shared_secret_encrypted) {
+      const expected = await decryptPunchOutSecret(catalog.shared_secret_encrypted);
+      if (!expected || !sharedSecret || sharedSecret !== expected) {
+        throw new Error("SharedSecret mismatch");
+      }
+    }
 
     // Reject stale cookies so a stolen one can't be replayed days later to inject
     // solicitations. The query above already guarantees status === "opened" and
