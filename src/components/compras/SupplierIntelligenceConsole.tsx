@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const SupplierIntelligenceConsole = ({ suppliers }: Props) => {
+  const navigate = useNavigate();
   const matrixData = useMemo(() => {
     return suppliers.map(s => ({
       name: s.name,
@@ -170,7 +172,7 @@ export const SupplierIntelligenceConsole = ({ suppliers }: Props) => {
               deve subir 8% no próximo mês. Recomendamos antecipar pedidos com 
               <strong className="mx-1">{insights.topReliable?.name}</strong>."
             </p>
-            <Button variant="link" className="h-auto p-0 text-[10px] mt-2 text-primary font-bold">
+            <Button variant="link" className="h-auto p-0 text-[10px] mt-2 text-primary font-bold" onClick={() => navigate("/gerar-ordem")}>
               GERAR PEDIDO PREDITIVO <ArrowRight className="w-2 h-2 ml-1" />
             </Button>
           </div>

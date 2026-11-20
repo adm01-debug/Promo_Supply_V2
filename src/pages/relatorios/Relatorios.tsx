@@ -237,7 +237,11 @@ const Relatorios = () => {
                            <h3 className="text-lg font-black uppercase tracking-tight mb-2">Relatórios Customizados</h3>
                            <p className="text-xs text-muted-foreground leading-relaxed max-w-[200px]">Precisa de uma visão específica? Solicite ao suporte técnico ou use a API.</p>
                          </div>
-                         <EliteButton variant="outline" className="rounded-2xl px-8">ABRIR CHAMADO</EliteButton>
+                         <EliteButton variant="outline" className="rounded-2xl px-8" onClick={() => {
+  const subject = encodeURIComponent("Chamado - Relatorios Customizados (Promo Supply)");
+  const body = encodeURIComponent("Descreva aqui o relatorio/visao especifica que voce precisa:\n\n- Modulo: Relatorios\n- Tipo de visao: \n- Periodo: \n- Observacoes: ");
+  window.open(`mailto:compras@promobrindes.com.br?subject=${subject}&body=${body}`, "_self");
+}}>ABRIR CHAMADO</EliteButton>
                        </Card>
                     </div>
                   </div>
