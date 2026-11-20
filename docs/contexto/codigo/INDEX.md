@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6f6549b5112006be69fe0f3c55972bd5523aff57` (2026-11-19T20:54:13-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `931bcdb948c17da741a90a1fae349caaf6b061b5` (2026-11-19T20:56:54-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (701), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (702), SQL (316), Markdown (78), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1236 |
-| arquivos_codigo | 772 |
-| linhas_codigo | 162236 |
+| arquivos_total | 1237 |
+| arquivos_codigo | 773 |
+| linhas_codigo | 162239 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,7 +44,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 86 |
 | componentes | 327 |
 | hooks | 89 |
-| edge_functions | 37 |
+| edge_functions | 38 |
 | tabelas | 163 |
 | migrations | 314 |
 | cron_jobs | 70 |
@@ -214,6 +214,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
+- `test-auto-delete` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `weekly-report` — tabelas: cotacoes, notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
@@ -310,7 +311,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 8 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_orfas: 9 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
 - edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
@@ -407,6 +408,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
 - 2026-11-19 `6f6549b` fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)
 - 2026-11-19 `cbe4038` chore(ci): exige execução real do Security RLS Audit com --strict (#159)
 - 2026-11-19 `6994838` ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)
@@ -421,7 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `193c9b9` chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)
 - 2026-11-18 `76f3c8b` chore(deps): bump framer-motion from 12.43.0 to 14.14.0 (#148)
 - 2026-11-18 `3293856` fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)
-- 2026-11-18 `a1e0e53` chore(deps)(deps): bump lucide-react from 0.462.0 to 1.73.0 (#149)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

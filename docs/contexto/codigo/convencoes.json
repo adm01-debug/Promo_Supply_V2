@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(ci): adiciona edge function dummy para provar delete automatico (#161)",
    "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)",
    "chore(ci): exige execução real do Security RLS Audit com --strict (#159)",
    "ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)",
-   "security: remove migrate-helper que vazava service_role e DB URL em producao (#158)",
-   "Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103"
+   "security: remove migrate-helper que vazava service_role e DB URL em producao (#158)"
   ]
  },
  "pr_template": null,

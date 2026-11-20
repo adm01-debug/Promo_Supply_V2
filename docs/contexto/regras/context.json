@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6f6549b5112006be69fe0f3c55972bd5523aff57",
+  "sha": "931bcdb948c17da741a90a1fae349caaf6b061b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-19 23:54 UTC",
-  "files_total": 1237,
-  "code_files": 1090,
-  "code_lines": 188158,
+  "generated_at": "2026-11-19 23:59 UTC",
+  "files_total": 1238,
+  "code_files": 1091,
+  "code_lines": 188161,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "15b5142c16932d5b",
+ "facts_hash": "3e9463d94bc04643",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 356,
+   ".ts": 357,
    ".tsx": 345,
    ".sql": 316,
    ".mjs": 66,
@@ -31963,6 +31963,23 @@
     "idempotency": false
    },
    {
+    "name": "test-auto-delete",
+    "file": "supabase/functions/test-auto-delete/index.ts",
+    "methods": [
+     "POST?"
+    ],
+    "auth": "n/d",
+    "tables": [],
+    "env": [],
+    "external": [],
+    "invokes": [],
+    "doc": "Dummy de prova do delete automatico (passo 2 do plano aprovado).",
+    "errors": [],
+    "side_effects": [],
+    "webhook_events": [],
+    "idempotency": false
+   },
+   {
     "name": "webauthn-authenticate",
     "file": "supabase/functions/webauthn-authenticate/index.ts",
     "methods": [
@@ -35194,8 +35211,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 76,
-   "lines": 13856,
+   "files": 77,
+   "lines": 13859,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35353,6 +35370,7 @@
     "supabase/functions/system-simulation/index.ts",
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/telemetry/index.ts",
+    "supabase/functions/test-auto-delete/index.ts",
     "supabase/functions/tests/fuzzing_suite.ts",
     "supabase/functions/tests/integration_suite.ts",
     "supabase/functions/webauthn-authenticate/index.ts",
@@ -108949,6 +108967,11 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/test-auto-delete/index.ts": {
+   "path": "supabase/functions/test-auto-delete/index.ts",
+   "lines": 3,
+   "doc": "Dummy de prova do delete automatico (passo 2 do plano aprovado)."
+  },
   "supabase/functions/tests/fuzzing_suite.ts": {
    "path": "supabase/functions/tests/fuzzing_suite.ts",
    "lines": 65,
@@ -111442,10 +111465,19 @@
   }
  },
  "git": {
-  "sha": "6f6549b5112006be69fe0f3c55972bd5523aff57",
+  "sha": "931bcdb948c17da741a90a1fae349caaf6b061b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "931bcdb",
+    "date": "2026-11-19",
+    "author": "adm01-debug",
+    "subject": "chore(ci): adiciona edge function dummy para provar delete automatico (#161)",
+    "files": [
+     "supabase/functions/test-auto-delete/index.ts"
+    ]
+   },
    {
     "sha": "6f6549b",
     "date": "2026-11-19",
@@ -111752,16 +111784,6 @@
     "files": [
      "supabase/migrations/20261117200000_telemetria_retencao_unica_90_dias.sql"
     ]
-   },
-   {
-    "sha": "7ca6575",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(banco): remove cleanup_old_audit_logs orfa e quebrada (#128)",
-    "files": [
-     "DOCS/MELHORIAS_PENDENTES.md",
-     "supabase/migrations/20261117190000_remove_cleanup_old_audit_logs_quebrado.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -111802,6 +111824,10 @@
     2
    ],
    [
+    "supabase/functions/test-auto-delete/index.ts",
+    1
+   ],
+   [
     "supabase/config.toml",
     1
    ],
@@ -111839,10 +111865,6 @@
    ],
    [
     "src/lib/__tests__/pdfGenerator.test.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/queryClientConstants.test.ts",
     1
    ]
   ]
