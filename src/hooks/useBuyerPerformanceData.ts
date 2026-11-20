@@ -289,6 +289,14 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
           existing.descontos.push(Number(c.desconto_percentual) || 0);
           fornMap.set(c.fornecedor_id, existing);
         }
+        if (c.fornecedor_id && c.solicitacao_id) {
+          const sol = buyerSols.find(s => s.id === c.solicitacao_id && s.valor_estimado && s.valor_aprovado);
+          if (sol) {
+            const existing = fornMap.get(c.fornecedor_id) || { economia: 0, pedidos: 0, descontos: [] };
+            existing.economia += Math.max(0, Number(sol.valor_estimado) - Number(sol.valor_aprovado));
+            fornMap.set(c.fornecedor_id, existing);
+          }
+        }
       });
       const fornecedoresArr = Array.from(fornMap.entries())
         .map(([fId, data]) => ({
