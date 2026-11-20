@@ -13,6 +13,7 @@ export type SLAStatus = 'atrasado' | 'critico' | 'atencao' | 'no_prazo' | 'entre
 
 export interface AcompanhamentoPedido {
   id: string;
+  pedidoUuid: string | null;
   produto: string;
   quantidade: number;
   quantidadeReal: number;

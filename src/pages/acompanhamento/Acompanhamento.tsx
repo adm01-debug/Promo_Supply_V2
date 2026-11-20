@@ -22,6 +22,8 @@ import {
   Info,
   ChevronRight,
   TrendingUp,
+  FileText,
+  History,
   X
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -60,6 +62,10 @@ const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [pedidoDetalhes, setPedidoDetalhes] = useState<AcompanhamentoPedido | null>(null);
   const [viewMode, setViewMode] = useState<'lista' | 'kanban'>('lista');
+  const [detalheTipo, setDetalheTipo] = useState<'nfe' | 'logs' | null>(null);
+  useEffect(() => {
+    if (!pedidoDetalhes) setDetalheTipo(null);
+  }, [pedidoDetalhes]);
   const [filtroSLA, setFiltroSLA] = useState<'todos' | 'atrasados' | 'criticos' | 'atencao'>('todos');
 
   const accountDefaults = useMemo(() => ({
@@ -114,12 +120,44 @@ const Acompanhamento = () => {
     },
   });
 
+  const { data: fiscalDocs = [] } = useQuery({
+    queryKey: ['acompanhamento-fiscal-docs', pedidoDetalhes?.pedidoUuid],
+    queryFn: async () => {
+      if (!pedidoDetalhes?.pedidoUuid) return [];
+      const { data, error } = await supabase
+        .from('fiscal_documents')
+        .select('id, numero_nf, chave_acesso, pdf_url, xml_url, data_emissao, status, reconciliation_status')
+        .eq('pedido_id', pedidoDetalhes.pedidoUuid)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!pedidoDetalhes?.pedidoUuid && (detalheTipo === 'nfe' || detalheTipo === 'logs'),
+  });
+
+  const { data: fiscalLogs = [] } = useQuery({
+    queryKey: ['acompanhamento-fiscal-logs', pedidoDetalhes?.pedidoUuid],
+    queryFn: async () => {
+      if (!pedidoDetalhes?.pedidoUuid || fiscalDocs.length === 0) return [];
+      const ids = fiscalDocs.map(d => d.id);
+      const { data, error } = await supabase
+        .from('fiscal_events')
+        .select('id, type, action, status, created_at, protocol, error_message')
+        .in('document_id', ids)
+        .order('created_at', { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!pedidoDetalhes?.pedidoUuid && detalheTipo === 'logs' && fiscalDocs.length > 0,
+  });
+
   const pedidosState = useMemo<AcompanhamentoPedido[]>(() => {
     return pedidosDB.map(p => {
       const sol = solicitacoesDB.find(s => s.id === p.solicitacao_id);
       const forn = fornecedoresDB.find(f => f.id === p.fornecedor_id);
       return {
-        id: p.numero || p.id.slice(0, 8), produto: sol?.descricao || `Pedido ${p.numero}`,
+        id: p.numero || p.id.slice(0, 8), pedidoUuid: p.id, produto: sol?.descricao || `Pedido ${p.numero}`,
         quantidade: sol?.quantidade || 0, quantidadeReal: sol?.quantidade || 0,
         status: mapPedidoStatus(p.status), empresa: 'Promo Supply', vendedor: '',
         prazoEntrega: p.data_previsao || sol?.data_necessidade || new Date().toISOString(),
@@ -437,7 +475,7 @@ const Acompanhamento = () => {
         </div>
       </ElitePageWrapper>
 
-      <Dialog open={!!pedidoDetalhes} onOpenChange={() => setPedidoDetalhes(null)}>
+      <Dialog open={!!pedidoDetalhes} onOpenChange={() => { setDetalheTipo(null); setPedidoDetalhes(null); }}>
         <DialogContent className="max-w-2xl rounded-[2.5rem] border-none bg-card/95 backdrop-blur-2xl p-0 overflow-hidden shadow-2xl shadow-primary/20">
           <div className="bg-primary h-2 w-full" />
           <div className="p-8">
@@ -453,7 +491,7 @@ const Acompanhamento = () => {
                        <p className="text-[11px] font-black text-primary uppercase tracking-[0.2em] mt-2">Dossiê de Acompanhamento</p>
                      </div>
                    </div>
-                   <EliteButton variant="ghost" size="icon" onClick={() => setPedidoDetalhes(null)} className="h-12 w-12 rounded-2xl">
+                   <EliteButton variant="ghost" size="icon" onClick={() => { setDetalheTipo(null); setPedidoDetalhes(null); }} className="h-12 w-12 rounded-2xl">
                      <X className="w-6 h-6" />
                    </EliteButton>
                 </div>
@@ -479,9 +517,88 @@ const Acompanhamento = () => {
                 </div>
                 
                 <div className="flex gap-4">
-                   <EliteButton className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest">VISUALIZAR NF-E</EliteButton>
-                   <EliteButton variant="outline" className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest">HISTÓRICO DE LOGS</EliteButton>
+                   <EliteButton className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest"
+                     onClick={() => setDetalheTipo(detalheTipo === 'nfe' ? null : 'nfe')}>
+                     <FileText className="w-4 h-4 mr-2" /> VISUALIZAR NF-E
+                   </EliteButton>
+                   <EliteButton variant="outline" className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest"
+                     onClick={() => setDetalheTipo(detalheTipo === 'logs' ? null : 'logs')}>
+                     <History className="w-4 h-4 mr-2" /> HISTÓRICO DE LOGS
+                   </EliteButton>
                 </div>
+
+                {detalheTipo === 'nfe' && (
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Documentos Fiscais</h3>
+                    {fiscalDocs.length === 0 && (
+                      <Card className="p-6 rounded-3xl border-border/50 bg-background/40">
+                        <p className="text-sm text-muted-foreground">Nenhuma NF-e vinculada a este pedido.</p>
+                      </Card>
+                    )}
+                    {fiscalDocs.map(doc => (
+                      <Card key={doc.id} className="p-5 rounded-3xl border-border/50 bg-background/40">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <p className="text-sm font-black uppercase">NF-e {doc.numero_nf}</p>
+                            {doc.data_emissao && (
+                              <p className="text-xs text-muted-foreground">
+                                Emitida em {new Date(doc.data_emissao).toLocaleDateString('pt-BR')}
+                              </p>
+                            )}
+                            {doc.chave_acesso && (
+                              <p className="text-xs text-muted-foreground break-all">Chave: {doc.chave_acesso}</p>
+                            )}
+                            {doc.reconciliation_status && (
+                              <Badge variant={doc.reconciliation_status === 'aprovado' ? 'default' : doc.reconciliation_status === 'pendente' ? 'secondary' : 'destructive'}
+                                className="mt-2 border-none font-black text-[10px] uppercase">
+                                {doc.reconciliation_status}
+                              </Badge>
+                            )}
+                          </div>
+                          {doc.pdf_url && (
+                            <a href={doc.pdf_url} target="_blank" rel="noreferrer"
+                              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-xs font-black uppercase tracking-widest text-primary hover:bg-muted transition-colors">
+                              Abrir PDF
+                            </a>
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {detalheTipo === 'logs' && (
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Histórico de Logs</h3>
+                    {fiscalLogs.length === 0 && (
+                      <Card className="p-6 rounded-3xl border-border/50 bg-background/40">
+                        <p className="text-sm text-muted-foreground">Nenhum evento fiscal registrado para este pedido.</p>
+                      </Card>
+                    )}
+                    <div className="space-y-3">
+                      {fiscalLogs.map(ev => (
+                        <Card key={ev.id} className="p-4 rounded-3xl border-border/50 bg-background/40">
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="space-y-1">
+                              <p className="text-xs font-black uppercase">{ev.type} · {ev.action}</p>
+                              <p className="text-[11px] text-muted-foreground">
+                                {new Date(ev.created_at).toLocaleString('pt-BR')}
+                              </p>
+                              {ev.protocol && <p className="text-[11px] text-muted-foreground">Protocolo: {ev.protocol}</p>}
+                              {ev.error_message && (
+                                <p className="text-[11px] text-destructive">Erro: {ev.error_message}</p>
+                              )}
+                            </div>
+                            <Badge variant={ev.status === 'sucesso' || ev.status === 'sucess' || ev.status === 'success' ? 'default' : 'secondary'}
+                              className="border-none font-black text-[10px] uppercase">
+                              {ev.status}
+                            </Badge>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
