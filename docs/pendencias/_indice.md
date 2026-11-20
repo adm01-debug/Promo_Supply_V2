@@ -72,7 +72,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ui-acomp-logs | "HISTORICO DE LOGS" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:451` |
 | ui-spot-checkout | "Finalizar Pedido" SPOT so toast (compromisso financeiro - decisao do dono) | AGUARDANDO HUMANO | `CatalogoSpot.tsx:216` |
 | ui-bulk-undo | "Desfazer" em bulk so toast | CONCLUIDO | `BulkOperationsPreview.tsx:189` (PR #198) |
-| ui-erp-* | varios botoes ERP sem acao | PENDENTE | `ERPConnections.tsx:80,119,159,208,224` |
+| ui-erp-* | varios botoes ERP sem acao | CONCLUIDO (PR #201) | `ERPConnections.tsx` |
 | ui-workflow-* | WorkflowAdmin "Novo/Configurar/Regra/Editar" sem acao | CONCLUIDO (PR #193, merge 2026-11-20) | `WorkflowAdmin.tsx` â€” 4 botoes + dialogs de workflow e regra SoD |
 | ui-magiclink | "Ver via Magic Link" disabled fixo | CONCLUIDO | `PortalFornecedor.tsx:378` (PR #199) |
 | ui-pedidos-com | "E-MAIL CRIPTOGRAFADO"/"HUB"/"REDESPACHO" sem acao | CONCLUIDO | `PedidoDetailsDialog.tsx:193,196,430` (PR #200) |
