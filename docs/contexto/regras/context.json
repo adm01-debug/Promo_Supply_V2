@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a",
+  "sha": "3b8e89b4dab35549ac4459af046bf59cece778a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 18:53 UTC",
+  "generated_at": "2026-11-20 19:10 UTC",
   "files_total": 1248,
   "code_files": 1094,
   "code_lines": 188671,
@@ -111859,10 +111859,20 @@
   }
  },
  "git": {
-  "sha": "a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a",
+  "sha": "3b8e89b4dab35549ac4459af046bf59cece778a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3b8e89b",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "docs/pendencias/_ordem.md"
+    ]
+   },
    {
     "sha": "a0f4bb2",
     "date": "2026-11-20",
@@ -112155,29 +112165,20 @@
     "files": [
      "scripts/rls-audit.allowlist.json"
     ]
-   },
-   {
-    "sha": "8c4f685",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "docs: registra auditoria forense dos descartes sem trabalho perdido (#152)",
-    "files": [
-     "docs/agentes/auditoria-forense-descartes-261118.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    7
-   ],
-   [
     "docs/pendencias/_indice.md",
-    7
+    8
    ],
    [
     "docs/pendencias/_ordem.md",
-    6
+    7
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    7
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a0f4bb25bc4442fd44f95d8c931936bbaa3cc96a` (2026-11-20T15:52:52-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3b8e89b4dab35549ac4459af046bf59cece778a7` (2026-11-20T16:09:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -334,11 +334,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
+- docs/pendencias/_indice.md (8)
 - docs/ci/README.md (7)
-- docs/pendencias/_indice.md (7)
+- docs/pendencias/_ordem.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
-- docs/pendencias/_ordem.md (6)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `3b8e89b` chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)
 - 2026-11-20 `a0f4bb2` fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)
 - 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
 - 2026-11-20 `134e364` chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
 - 2026-11-20 `a19f3fa` fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)
 - 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
-- 2026-11-20 `3e84319` fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
