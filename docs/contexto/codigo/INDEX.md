@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2a86602381f4b65e338f2cde244b35d9117337c4` (2026-11-19T21:34:33-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1a7b20b5203b14e7c395cf3284f7d7ccf28d4e30` (2026-11-20T08:01:24-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -334,8 +334,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - bun.lock (8)
 - docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
+- .github/workflows/deploy-edge-functions.yml (6)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (6)
-- .github/workflows/deploy-edge-functions.yml (5)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
@@ -407,6 +407,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `1a7b20b` fix(ci): impede que $# de sed astringa o delete de edge functions (#164)
 - 2026-11-19 `2a86602` fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)
 - 2026-11-19 `d14201c` merge #162 (triagem automatizada)
 - 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
@@ -421,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-18 `b512d69` fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)
 - 2026-11-18 `8c4f685` docs: registra auditoria forense dos descartes sem trabalho perdido (#152)
 - 2026-11-18 `64b0a2a` docs(spot): registra estado ativo e saudável dos crons de sincronização (#138 obsoleta) (#151)
-- 2026-11-18 `193c9b9` chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

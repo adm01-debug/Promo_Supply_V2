@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2a86602381f4b65e338f2cde244b35d9117337c4",
+  "sha": "1a7b20b5203b14e7c395cf3284f7d7ccf28d4e30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 00:54 UTC",
+  "generated_at": "2026-11-20 11:02 UTC",
   "files_total": 1237,
   "code_files": 1090,
   "code_lines": 188158,
@@ -111442,10 +111442,19 @@
   }
  },
  "git": {
-  "sha": "2a86602381f4b65e338f2cde244b35d9117337c4",
+  "sha": "1a7b20b5203b14e7c395cf3284f7d7ccf28d4e30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1a7b20b",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)",
+    "files": [
+     ".github/workflows/deploy-edge-functions.yml"
+    ]
+   },
    {
     "sha": "2a86602",
     "date": "2026-11-19",
@@ -111753,15 +111762,6 @@
      "supabase/functions/_shared/logLevel.ts",
      "supabase/functions/telemetry/index.ts"
     ]
-   },
-   {
-    "sha": "dbb16b9",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "fix(banco): DEFAULT sentinela nas colunas da cadeia de hash de audit_logs (#133)",
-    "files": [
-     "supabase/migrations/20261117220000_audit_logs_hash_defaults.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -111774,12 +111774,12 @@
     6
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    ".github/workflows/deploy-edge-functions.yml",
     4
    ],
    [
-    ".github/workflows/deploy-edge-functions.yml",
-    3
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    4
    ],
    [
     ".github/workflows/main.yml",

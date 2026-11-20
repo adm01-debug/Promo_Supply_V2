@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)",
    "fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)",
    "merge #162 (triagem automatizada)",
    "chore(ci): adiciona edge function dummy para provar delete automatico (#161)",
-   "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)",
-   "chore(ci): exige execução real do Security RLS Audit com --strict (#159)"
+   "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)"
   ]
  },
  "pr_template": null,

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2a86602381f4b65e338f2cde244b35d9117337c4",
+  "commit": "1a7b20b5203b14e7c395cf3284f7d7ccf28d4e30",
   "branch": "main",
-  "data_commit": "2026-11-19T21:34:33-03:00",
+  "data_commit": "2026-11-20T08:01:24-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1a7b20b",
+    "data": "2026-11-20",
+    "assunto": "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)"
+   },
    {
     "sha": "2a86602",
     "data": "2026-11-19",
@@ -126,14 +131,9 @@
     "sha": "049f54c",
     "data": "2026-11-18",
     "assunto": "chore(ia): troca gateway Lovable por OpenRouter nas edges ai-* (#141)"
-   },
-   {
-    "sha": "bfc3e0e",
-    "data": "2026-11-18",
-    "assunto": "chore(db): sincroniza types.ts com colunas de auditoria do banco (#140)"
    }
   ],
-  "arquivos_mudados_7d": 226,
+  "arquivos_mudados_7d": 166,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -188,12 +188,12 @@
     "mudancas": 6
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "pasta": ".github/workflows/deploy-edge-functions.yml",
     "mudancas": 6
    },
    {
-    "pasta": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 5
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 6
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -222,12 +222,12 @@
     "mudancas": 6
    },
    {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "arquivo": ".github/workflows/deploy-edge-functions.yml",
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 5
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 6
    },
    {
     "arquivo": "AGENTS.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 130
+    "commits": 131
    },
    {
     "autor": "dependabot[bot]",
