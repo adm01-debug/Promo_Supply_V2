@@ -10,8 +10,8 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 
 ## T2 - seguranca
 5. `seg-passkey` CONCLUIDO na PR #177: botao passkey desabilitado em `Auth.tsx` (fail-closed) + finish da edge `webauthn-authenticate` rejeita ate reescrever assinatura COSE.
-6. `seg-scim` add NO_JWT + verify_jwt=false em config.toml (CI/workflow - regra 8: deixar PR aberta p/ dono).
-7. `seg-punchout` validar shared_secret_encrypted no receive.
+6. `seg-scim` CONCLUIDO na PR #180 (merge 2026-11-20 + deploy): `[functions.scim-v2] verify_jwt=false` em config.toml; edged prod scim-v2 verify_jwt=False v14.
+7. `seg-punchout` CONCLUIDO na PR #180 (merge 2026-11-20 + deploy): `punchout-receive/index.ts:155-176` valida `shared_secret_encrypted` de `punchout_catalogs`; edged prod v17 verify_jwt=False.
 
 ## T3 - fachadas que mentem
 8. `fake-invoice` CONCLUIDO na PR #177: process-invoice-idp agora determinístico (hash do arquivo) + campo `fonte=simulacao` + toast honesto no front.
