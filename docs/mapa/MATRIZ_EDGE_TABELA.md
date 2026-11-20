@@ -32,6 +32,7 @@
 | `migrate-storage-paths` | `profiles` |
 | `process-invoice-idp` | — |
 | `process-outbox` | `integration_outbox`, `system_alerts` |
+| `process-solicitacao-neural` | — |
 | `punchout-encrypt` | `user_tenants` |
 | `punchout-receive` | `profiles`, `punchout_sessions`, `solicitacoes` |
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
