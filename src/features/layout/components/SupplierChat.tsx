@@ -126,13 +126,20 @@ export function SupplierChat() {
 
   useEffect(() => {
     return onHubEvent<{ fornecedorId: string }>('chat:open-fornecedor', ({ payload }) => {
-      const contact = contacts.find((c) => c.fornecedorId === payload.fornecedorId);
-      if (contact) {
-        setSelectedContact(contact);
+      const fornecedor = fornecedores.find((f) => f.id === payload.fornecedorId);
+      if (fornecedor) {
+        setSelectedContact({
+          id: fornecedor.id,
+          fornecedorId: fornecedor.id,
+          name: fornecedor.nome_fantasia || fornecedor.razao_social,
+          company: fornecedor.razao_social,
+          online: contacts.some((c) => c.fornecedorId === fornecedor.id && c.online),
+          unreadCount: 0,
+        });
         setIsOpen(true);
       }
     });
-  }, [contacts]);
+  }, [contacts, fornecedores]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
