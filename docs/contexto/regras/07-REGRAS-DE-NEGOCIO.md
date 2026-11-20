@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `044001f488` · branch `main` · 2026-11-20 20:28 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5ae1935758` · branch `main` · 2026-11-20 20:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1771,6 +1771,7 @@ _nenhum item encontrado_
 | `syncTimeoutRef.current = setTimeout(syncPendingOperations, 2000);` | `src/hooks/useOfflineSync.ts` |
 | `expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h from now` | `src/hooks/usePasswordResetRequests.ts` |
 | `const PREFETCH_CACHE_TIME = 5 * 60 * 1000;` | `src/hooks/usePrefetch.ts` |
+| `const diff = (new Date(r.deliveryDate!).getTime() - new Date(r.purchaseDate).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/usePurchaseHistory.ts` |
 | `const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);` | `src/hooks/useSecurityLogs.ts` |
 | `const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);` | `src/hooks/useSecurityLogs.ts` |
 | `const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes` | `src/hooks/useSessionIdleTimeout.ts` |

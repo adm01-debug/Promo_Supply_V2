@@ -1892,7 +1892,8 @@
    "src/components/ui/toast.tsx"
   ],
   "src/hooks/useAccountFilters.ts": [
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
   ],
   "src/hooks/useAccountLockout.ts": [
    "src/integrations/supabase/client.ts",

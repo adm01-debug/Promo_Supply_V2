@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "044001f48828a1a8ab50a02b15c2ea4b53b2962d",
+  "sha": "5ae1935758fe110afc4864cf131b9139c8efbbf5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 20:28 UTC",
+  "generated_at": "2026-11-20 20:53 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 189123,
+  "code_lines": 189141,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "309f9c9d4da88b3a",
+ "facts_hash": "662dd8f1e3d4698d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34509,7 +34509,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12325,
+   "lines": 12343,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -55659,6 +55659,10 @@
    {
     "file": "src/hooks/usePrefetch.ts",
     "line": "const PREFETCH_CACHE_TIME = 5 * 60 * 1000;"
+   },
+   {
+    "file": "src/hooks/usePurchaseHistory.ts",
+    "line": "const diff = (new Date(r.deliveryDate!).getTime() - new Date(r.purchaseDate).getTime()) / (1000 * 60 * 60 * 24);"
    },
    {
     "file": "src/hooks/useSecurityLogs.ts",
@@ -96094,7 +96098,7 @@
   },
   "src/hooks/useAccountFilters.ts": {
    "path": "src/hooks/useAccountFilters.ts",
-   "lines": 232,
+   "lines": 233,
    "exports": [
     "function useAccountFilters"
    ],
@@ -96586,7 +96590,7 @@
   },
   "src/hooks/useBuyerPerformanceData.ts": {
    "path": "src/hooks/useBuyerPerformanceData.ts",
-   "lines": 362,
+   "lines": 370,
    "exports": [
     "interface BuyerData",
     "function useBuyerPerformanceData"
@@ -98223,7 +98227,7 @@
   },
   "src/hooks/usePurchaseHistory.ts": {
    "path": "src/hooks/usePurchaseHistory.ts",
-   "lines": 373,
+   "lines": 382,
    "exports": [
     "interface PurchaseRecord",
     "interface ProductHistory",
@@ -98344,6 +98348,9 @@
    ],
    "hooks": [
     "usePurchaseHistory"
+   ],
+   "temporal": [
+    "const diff = (new Date(r.deliveryDate!).getTime() - new Date(r.purchaseDate).getTime()) / (1000 * 60 * 60 * 24);"
    ]
   },
   "src/hooks/useRealPushNotifications.ts": {
@@ -112070,10 +112077,22 @@
   }
  },
  "git": {
-  "sha": "044001f48828a1a8ab50a02b15c2ea4b53b2962d",
+  "sha": "5ae1935758fe110afc4864cf131b9139c8efbbf5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5ae1935",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/hooks/useAccountFilters.ts",
+     "src/hooks/useBuyerPerformanceData.ts",
+     "src/hooks/usePurchaseHistory.ts"
+    ]
+   },
    {
     "sha": "044001f",
     "date": "2026-11-20",
@@ -112371,21 +112390,12 @@
      "docs/mapa/MATRIZ_EDGE_TABELA.md",
      "supabase/functions/test-auto-delete-reprova/index.ts"
     ]
-   },
-   {
-    "sha": "1a7b20b",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)",
-    "files": [
-     ".github/workflows/deploy-edge-functions.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    12
+    13
    ],
    [
     "docs/pendencias/_ordem.md",
@@ -112410,6 +112420,18 @@
    [
     "supabase/functions/test-auto-delete-reprova/index.ts",
     2
+   ],
+   [
+    "src/hooks/useAccountFilters.ts",
+    1
+   ],
+   [
+    "src/hooks/useBuyerPerformanceData.ts",
+    1
+   ],
+   [
+    "src/hooks/usePurchaseHistory.ts",
+    1
    ],
    [
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -112449,18 +112471,6 @@
    ],
    [
     "src/hooks/useAccountLockout.ts",
-    1
-   ],
-   [
-    "src/hooks/useCriticalAlertsBadge.ts",
-    1
-   ],
-   [
-    "src/hooks/useMFA.ts",
-    1
-   ],
-   [
-    "supabase/config.toml",
     1
    ]
   ]

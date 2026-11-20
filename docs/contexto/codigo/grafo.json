@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 599,
- "arestas": 2674,
+ "arestas": 2675,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -98,7 +98,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 20
+   "importado_por": 21
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
