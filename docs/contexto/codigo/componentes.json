@@ -434,7 +434,7 @@
     "BulkOperationsPreview"
    ],
    "export_default": null,
-   "linhas": 515,
+   "linhas": 568,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -807,7 +807,7 @@
     "EnhancedBulkActionsBar"
    ],
    "export_default": null,
-   "linhas": 286,
+   "linhas": 258,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],

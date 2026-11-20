@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6de29ff20d` · branch `main` · 2026-11-20 21:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2102f2bc6c` · branch `main` · 2026-11-20 21:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1737,7 +1737,6 @@ _nenhum item encontrado_
 | `await new Promise(resolve => setTimeout(resolve, 1000));` | `src/components/compras/DigitalSignature.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/components/compras/DigitalSignature.tsx` |
 | `expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),` | `src/components/compras/DigitalSignature.tsx` |
-| `setTimeout(() => setShowUndo(false), 8000);` | `src/components/compras/EnhancedBulkActionsBar.tsx` |
 | `await new Promise(r => setTimeout(r, 1000));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `await new Promise(r => setTimeout(r, 1200));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `await new Promise(r => setTimeout(r, 1500));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
@@ -2085,7 +2084,9 @@ _nenhum item encontrado_
 | Falha ao atualizar relatório | `src/components/admin/InstallReportPanel.tsx` |
 | HTTP ${res.status} | `src/components/admin/InstallReportPanel.tsx` |
 | Erro ao resolver alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
+| Erro ao desfazer a operacao | `src/components/compras/BulkOperationsPreview.tsx` |
 | Erro ao executar ação em massa | `src/components/compras/BulkOperationsPreview.tsx` |
+| Falha ao desfazer parte da operacao | `src/components/compras/BulkOperationsPreview.tsx` |
 | Erro ao enviar documento | `src/components/compras/ContractDetailsModal.tsx` |
 | Erro ao gerar PDF do contrato | `src/components/compras/ContractDetailsModal.tsx` |
 | Organização não identificada. Faça login novamente. | `src/components/compras/ContractDetailsModal.tsx` |
@@ -2285,9 +2286,7 @@ _nenhum item encontrado_
 | ; import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from  | `src/pages/admin/SSOConfig.tsx` |
 | Domínio já adicionado | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
-| Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
-| Informe nome e pelo menos um role em conflito. | `src/pages/admin/WorkflowAdmin.tsx` |
-| … +190 linhas — lista completa em `context.json` | |
+| … +192 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

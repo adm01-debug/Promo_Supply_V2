@@ -362,7 +362,6 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/dropdown-menu.tsx",
-   "src/lib/feedbackToast.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/EnhancedKpiCard.tsx": [
