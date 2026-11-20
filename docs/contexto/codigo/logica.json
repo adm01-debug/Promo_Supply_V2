@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 37,
+ "total": 38,
  "por_camada": {
   "integrations": 3,
-  "lib": 23,
+  "lib": 24,
   "python": 3,
   "schemas": 1,
   "services": 2,
@@ -601,6 +601,32 @@
     "components/navigation"
    ],
    "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/hubEvents.ts",
+   "camada": "lib",
+   "exports": [
+    "HubEvent",
+    "emitHubEvent",
+    "onHubEvent"
+   ],
+   "export_default": null,
+   "linhas": 22,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "features/layout",
+    "pages/pedidos"
+   ],
+   "coberto_por_testes": 0,
    "orfao": false
   },
   {

@@ -1315,7 +1315,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 335
+   "arquivos_puxados": 336
   },
   {
    "protegida": true,
@@ -1601,7 +1601,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 339
+   "arquivos_puxados": 340
   },
   {
    "protegida": true,
@@ -2045,7 +2045,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 331
+   "arquivos_puxados": 332
   },
   {
    "protegida": true,
@@ -3078,7 +3078,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 331
+   "arquivos_puxados": 332
   },
   {
    "protegida": true,
@@ -3418,7 +3418,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 332
+   "arquivos_puxados": 333
   },
   {
    "protegida": true,
@@ -3519,6 +3519,9 @@
     "useAuth",
     "useCallback",
     "useContext",
+    "useCreditosFornecedor",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
@@ -3543,6 +3546,9 @@
    ],
    "hooks_locais": [
     "useAuth",
+    "useCreditosFornecedor",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
     "useFeedback",
     "useFeedbackPreferences",
     "useFornecedores",
@@ -3558,6 +3564,9 @@
    ],
    "tabelas": [
     "audit_logs",
+    "creditos_fornecedor",
+    "devolucao_itens",
+    "devolucoes",
     "fornecedores",
     "pedido_itens",
     "pedidos",
@@ -3580,7 +3589,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 63
+   "arquivos_puxados": 67
   },
   {
    "protegida": true,
@@ -3865,7 +3874,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 330
+   "arquivos_puxados": 331
   },
   {
    "protegida": true,
@@ -4152,7 +4161,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 333
+   "arquivos_puxados": 334
   },
   {
    "protegida": true,
@@ -4700,7 +4709,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 352
+   "arquivos_puxados": 353
   },
   {
    "protegida": true,

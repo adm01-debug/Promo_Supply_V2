@@ -480,7 +480,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 337,
+   "linhas": 338,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",

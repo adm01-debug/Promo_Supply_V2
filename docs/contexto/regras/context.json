@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0ef80b8d7d2ca37047d440d29a9344d3922252f6",
+  "sha": "a0837eafbd25d5148b02efcc0c57b27a73167dab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 21:18 UTC",
-  "files_total": 1248,
-  "code_files": 1094,
-  "code_lines": 189207,
+  "generated_at": "2026-11-20 21:27 UTC",
+  "files_total": 1249,
+  "code_files": 1095,
+  "code_lines": 189277,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5f1c394f6b6f7e1c",
+ "facts_hash": "bb28636e6fe8f964",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 359,
+   ".ts": 360,
    ".tsx": 345,
    ".sql": 317,
    ".mjs": 66,
@@ -34340,7 +34340,7 @@
   {
    "module": "src/features/layout",
    "files": 36,
-   "lines": 5782,
+   "lines": 5800,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -34443,7 +34443,7 @@
   {
    "module": "src/features/pedidos",
    "files": 2,
-   "lines": 339,
+   "lines": 340,
    "tables": [
     "pedido_itens",
     "pedidos"
@@ -34759,8 +34759,8 @@
   },
   {
    "module": "src/lib",
-   "files": 50,
-   "lines": 6001,
+   "files": 51,
+   "lines": 6023,
    "tables": [
     "profiles"
    ],
@@ -34772,6 +34772,7 @@
     "feedbackToast.ts: toast",
     "filterClearReporter.ts: FilterFieldDescriptor, ClearReport, buildClearReport, formatClearReportDescription",
     "haptics.ts: haptics",
+    "hubEvents.ts: HubEvent, emitHubEvent, onHubEvent",
     "imageCompression.ts: CompressionOptions, CompressedImage, supportsWebP, compressImage, compressImages, getCompressedPreviewUrl",
     "logger.ts: logger",
     "paginatedFetch.ts: fetchAllRows",
@@ -34795,8 +34796,8 @@
     "exportData.ts: Utilitário de exportação de dados para CSV e Excel (XLSX via CSV com BOM). Suporta formatação BRL, datas pt-BR e nomes de colunas traduzidos.",
     "filterClearReporter.ts: Formats a snapshot of cleared filters into a human-readable description for toast notifications. Lists what was cleared (filters) and what was removed from local storage.",
     "haptics.ts: Utility for elite haptic feedback. Uses the vibration API with patterns optimized for UX.",
-    "imageCompression.ts: Image Compression and WebP Conversion Utility Provides automatic image optimization for better performance",
-    "logger.ts: Centralized logging utility for the frontend. Enforces structured logging and prevents sensitive data leak."
+    "hubEvents.ts: Canal global de eventos entre módulos da UI. Evita acoplamento direto (ex.: dialog de pedidos -> chat de fornecedores).",
+    "imageCompression.ts: Image Compression and WebP Conversion Utility Provides automatic image optimization for better performance"
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -34824,6 +34825,7 @@
     "src/lib/feedbackToast.ts",
     "src/lib/filterClearReporter.ts",
     "src/lib/haptics.ts",
+    "src/lib/hubEvents.ts",
     "src/lib/imageCompression.ts",
     "src/lib/logger.ts",
     "src/lib/paginatedFetch.ts",
@@ -34872,7 +34874,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28696,
+   "lines": 28725,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -40750,6 +40752,10 @@
    {
     "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
     "msg": "Erro ao atualizar produção: "
+   },
+   {
+    "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    "msg": "Fornecedor sem e-mail cadastrado no cadastro."
    },
    {
     "file": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
@@ -95225,7 +95231,7 @@
   },
   "src/features/layout/components/SupplierChat.tsx": {
    "path": "src/features/layout/components/SupplierChat.tsx",
-   "lines": 316,
+   "lines": 334,
    "exports": [
     "function SupplierChat"
    ],
@@ -95672,7 +95678,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 337,
+   "lines": 338,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -99440,6 +99446,16 @@
    ],
    "doc": "Utility for elite haptic feedback. Uses the vibration API with patterns optimized for UX."
   },
+  "src/lib/hubEvents.ts": {
+   "path": "src/lib/hubEvents.ts",
+   "lines": 22,
+   "exports": [
+    "type HubEvent",
+    "function emitHubEvent",
+    "function onHubEvent"
+   ],
+   "doc": "Canal global de eventos entre módulos da UI. Evita acoplamento direto (ex.: dialog de pedidos -> chat de fornecedores)."
+  },
   "src/lib/imageCompression.ts": {
    "path": "src/lib/imageCompression.ts",
    "lines": 211,
@@ -102781,7 +102797,7 @@
   },
   "src/pages/devolucoes/DevolucoesModals.tsx": {
    "path": "src/pages/devolucoes/DevolucoesModals.tsx",
-   "lines": 302,
+   "lines": 304,
    "exports": [
     "const MOTIVO_LABELS",
     "const RESOLUCAO_LABELS",
@@ -103725,7 +103741,7 @@
   },
   "src/pages/pedidos/PedidoDetailsDialog.tsx": {
    "path": "src/pages/pedidos/PedidoDetailsDialog.tsx",
-   "lines": 435,
+   "lines": 462,
    "exports": [
     "const PedidoDetailsDialog"
    ],
@@ -103746,7 +103762,8 @@
     ]
    },
    "errors": [
-    "Erro ao atualizar produção: "
+    "Erro ao atualizar produção: ",
+    "Fornecedor sem e-mail cadastrado no cadastro."
    ],
    "status_values": [
     {
@@ -112092,10 +112109,24 @@
   }
  },
  "git": {
-  "sha": "0ef80b8d7d2ca37047d440d29a9344d3922252f6",
+  "sha": "a0837eafbd25d5148b02efcc0c57b27a73167dab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a0837ea",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/features/layout/components/SupplierChat.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/lib/hubEvents.ts",
+     "src/pages/devolucoes/DevolucoesModals.tsx",
+     "src/pages/pedidos/PedidoDetailsDialog.tsx"
+    ]
+   },
    {
     "sha": "0ef80b8",
     "date": "2026-11-20",
@@ -112390,17 +112421,6 @@
     "files": [
      "src/pages/cotacao/Cotacao.tsx"
     ]
-   },
-   {
-    "sha": "a19f3fa",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/fio-3-kanban-acompanhamento.md",
-     "src/pages/acompanhamento/Acompanhamento.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -112413,16 +112433,36 @@
     6
    ],
    [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    3
+    "src/features/layout/components/SLASettingsPanel.tsx",
+    2
    ],
    [
-    "src/features/layout/components/SLASettingsPanel.tsx",
+    "src/pages/acompanhamento/Acompanhamento.tsx",
     2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "src/features/layout/components/SupplierChat.tsx",
+    1
+   ],
+   [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
+    "src/lib/hubEvents.ts",
+    1
+   ],
+   [
+    "src/pages/devolucoes/DevolucoesModals.tsx",
+    1
+   ],
+   [
+    "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    1
    ],
    [
     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
@@ -112462,26 +112502,6 @@
    ],
    [
     "src/stores/slaSettingsStore.ts",
-    1
-   ],
-   [
-    "src/pages/admin/WorkflowAdmin.tsx",
-    1
-   ],
-   [
-    "supabase/functions/ai-supplier-risk/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/alert-dispatcher/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-sla-alerts/index.ts",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     1
    ]
   ]

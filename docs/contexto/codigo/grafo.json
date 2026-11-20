@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 599,
- "arestas": 2675,
+ "nos": 600,
+ "arestas": 2678,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -265,12 +265,12 @@
    "importado_por": 2
   },
   {
-   "modulo": "pages/dashboard",
-   "depende_de": 10,
+   "modulo": "pages/pedidos",
+   "depende_de": 11,
    "importado_por": 2
   },
   {
-   "modulo": "pages/pedidos",
+   "modulo": "pages/dashboard",
    "depende_de": 10,
    "importado_por": 2
   },

@@ -1788,6 +1788,7 @@
    "src/hooks/useFornecedores.ts",
    "src/hooks/useFuseSearch.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/hubEvents.ts",
    "src/lib/logger.ts",
    "src/lib/realtime.ts",
    "src/lib/utils.ts"
@@ -3027,7 +3028,9 @@
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
    "src/lib/feedbackToast.ts",
-   "src/lib/utils.ts"
+   "src/lib/hubEvents.ts",
+   "src/lib/utils.ts",
+   "src/pages/devolucoes/DevolucoesModals.tsx"
   ],
   "src/pages/pedidos/Pedidos.tsx": [
    "src/components/atoms/EliteButton.tsx",

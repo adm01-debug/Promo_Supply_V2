@@ -16,7 +16,7 @@
    "src/components (10)"
   ],
   "servicos_logica": [
-   "src/lib (23)",
+   "src/lib (24)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)",
    "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)",
    "fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)",
    "chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)",
-   "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)",
-   "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)"
+   "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)"
   ]
  },
  "pr_template": null,

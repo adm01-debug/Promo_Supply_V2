@@ -1876,7 +1876,7 @@
    "modulo": "features/layout",
    "arquivos": 32,
    "testes": 4,
-   "linhas": 5054,
+   "linhas": 5072,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2118,7 +2118,7 @@
    "modulo": "features/pedidos",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 339,
+   "linhas": 340,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2841,9 +2841,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 23,
+   "arquivos": 24,
    "testes": 0,
-   "linhas": 2112,
+   "linhas": 2134,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4891,7 +4891,7 @@
    "modulo": "pages/devolucoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 545,
+   "linhas": 547,
    "itens_menu": [
     "Devoluções"
    ],
@@ -4948,6 +4948,7 @@
    },
    "importado_por_outros_modulos": [
     "lib",
+    "pages/pedidos",
     "routes"
    ],
    "depende_de_modulos": [
@@ -5947,7 +5948,7 @@
    "modulo": "pages/pedidos",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 841,
+   "linhas": 868,
    "itens_menu": [
     "Pedidos"
    ],
@@ -5958,6 +5959,9 @@
    "componentes": 3,
    "hooks_locais": [
     "useAuth",
+    "useCreditosFornecedor",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
     "useFeedback",
     "useFeedbackPreferences",
     "useFornecedores",
@@ -5977,6 +5981,9 @@
    ],
    "tabelas": [
     "audit_logs",
+    "creditos_fornecedor",
+    "devolucao_itens",
+    "devolucoes",
     "fornecedores",
     "pedido_itens",
     "pedidos",
@@ -6022,7 +6029,8 @@
     "features/pedidos",
     "hooks",
     "integrations/supabase",
-    "lib"
+    "lib",
+    "pages/devolucoes"
    ],
    "pacotes_externos": [
     "@tanstack/react-query",

@@ -4014,7 +4014,7 @@
     "SupplierChat"
    ],
    "export_default": null,
-   "linhas": 316,
+   "linhas": 334,
    "dominio": "features/layout",
    "hooks_locais": [
     "useAuth",
@@ -4803,7 +4803,7 @@
     "RESOLUCAO_LABELS"
    ],
    "export_default": null,
-   "linhas": 302,
+   "linhas": 304,
    "dominio": "pages/devolucoes",
    "hooks_locais": [
     "useDevolucoes",
@@ -4811,7 +4811,7 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -5134,7 +5134,7 @@
     "PedidoDetailsDialog"
    ],
    "export_default": null,
-   "linhas": 435,
+   "linhas": 462,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "usePedidos"
