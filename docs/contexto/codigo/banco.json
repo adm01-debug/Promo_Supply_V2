@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 314,
+ "migrations": 315,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -185,6 +185,7 @@
   "auto_create_pagamento_on_delivery",
   "auto_transition_solicitacao_on_cotacao_approval",
   "auto_transition_solicitacao_on_pedido_created",
+  "auto_transition_solicitacao_on_workflow_approved",
   "auto_update_supplier_score_on_delivery",
   "calc_checklist_overall_score",
   "calculate_cotacao_scores",
@@ -376,6 +377,13 @@
    "evento": "update",
    "tabela": "approval_rules",
    "funcao": "update_approval_updated_at"
+  },
+  {
+   "nome": "trg_workflow_approved_promotes_solicitacao",
+   "quando": "after",
+   "evento": "update of status",
+   "tabela": "approval_workflows",
+   "funcao": "auto_transition_solicitacao_on_workflow_approved"
   },
   {
    "nome": "update_approval_workflows_updated_at",
@@ -3181,6 +3189,7 @@
     "check-approval-escalations"
    ],
    "triggers": [
+    "trg_workflow_approved_promotes_solicitacao",
     "update_approval_workflows_updated_at"
    ],
    "sem_rls": false,

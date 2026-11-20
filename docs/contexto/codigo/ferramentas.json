@@ -4,8 +4,8 @@
  "stack": {
   "linguagens": [
    "TypeScript (702)",
-   "SQL (316)",
-   "Markdown (84)",
+   "SQL (317)",
+   "Markdown (85)",
    "JavaScript (68)",
    "JSON (24)",
    "YAML (13)",
@@ -545,6 +545,11 @@
    "arquivo": "docs/AUTOMACAO_LOCAL.md",
    "titulo": "Automação local — Promo_Supply_V2",
    "linhas": 124
+  },
+  {
+   "arquivo": "docs/auditoria-implementacao-261120.md",
+   "titulo": "Auditoria: o que foi planejado × o que está implementado — Promo Supply V2",
+   "linhas": 1286
   },
   {
    "arquivo": "docs/prod-readiness.md",

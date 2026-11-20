@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25962f09a452370fb29027966aa6f1f1fb3f352f` (2026-11-20T11:12:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d1f90e970b8386cef795283b938efc96f7ec6e2e` (2026-11-20T11:44:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (702), SQL (316), Markdown (84), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (702), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1243 |
+| arquivos_total | 1245 |
 | arquivos_codigo | 773 |
 | linhas_codigo | 162413 |
 | rotas | 55 |
@@ -46,12 +46,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 38 |
 | tabelas | 163 |
-| migrations | 314 |
+| migrations | 315 |
 | cron_jobs | 70 |
 | testes | 175 |
 | workflows | 11 |
 | scripts | 49 |
-| docs_md | 84 |
+| docs_md | 85 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -62,7 +62,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
-- docs: (raiz) (4), docs (2)
+- docs: (raiz) (4), docs (3)
 - nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (95%)","edge_functions":"kebab-case (97%)","tabelas":"snake_case (89%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
@@ -339,11 +339,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
+- docs/pendencias/_indice.md (5)
 - scripts/automation.config.json (5)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
 - docs/agentes/mapa-repo.md (4)
-- scripts/realtime-audit.ts (4)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -403,11 +403,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
+- `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
 - subpastas de docs/: docs/agentes (10), docs/pendencias (6), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-20 `d1f90e9` feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)
+- 2026-11-20 `dcd764b` docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)
+- 2026-11-20 `b425ff9` chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)
+- 2026-11-20 `4c7e836` chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)
 - 2026-11-20 `25962f0` feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)
 - 2026-11-20 `4d36709` chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)
 - 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
@@ -419,10 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `2a86602` fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)
 - 2026-11-19 `d14201c` merge #162 (triagem automatizada)
 - 2026-11-19 `931bcdb` chore(ci): adiciona edge function dummy para provar delete automatico (#161)
-- 2026-11-19 `6f6549b` fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)
-- 2026-11-19 `cbe4038` chore(ci): exige execução real do Security RLS Audit com --strict (#159)
-- 2026-11-19 `6994838` ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)
-- 2026-11-19 `cbb76bd` security: remove migrate-helper que vazava service_role e DB URL em producao (#158)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

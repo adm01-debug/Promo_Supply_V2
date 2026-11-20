@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `25962f09a4` · branch `main` · 2026-11-20 14:13 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d1f90e970b` · branch `main` · 2026-11-20 14:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -775,6 +775,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | z_audit_logs_hash | BEFORE INSERT | `audit_logs` | `audit_logs_encadear_hash` |  |
 | z_audit_logs_append_only | BEFORE UPDATE OR DELETE | `audit_logs` | `audit_logs_bloquear_alteracao` |  |
 | z_audit_logs_no_truncate | BEFORE TRUNCATE | `audit_logs` | `audit_logs_bloquear_truncate` |  |
+| trg_workflow_approved_promotes_solicitacao | AFTER UPDATE OF STATUS | `approval_workflows` | `auto_transition_solicitacao_on_workflow_approved` | `NEW.status = 'approved'` |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 

@@ -34,7 +34,7 @@
   ],
   "docs": [
    "(raiz) (4)",
-   "docs (2)"
+   "docs (3)"
   ]
  },
  "nomenclatura": {
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)",
-   "chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)",
-   "fix: persiste selecao de cotacao vencedora via selectCotacao (#169)",
-   "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)",
-   "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)"
+   "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)",
+   "docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)",
+   "chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)",
+   "chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)",
+   "feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)"
   ]
  },
  "pr_template": null,
