@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7191493b3d473bd839ba56b0404ce47f2f9e9294",
+  "sha": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 20:11 UTC",
+  "generated_at": "2026-11-20 20:19 UTC",
   "files_total": 1248,
   "code_files": 1094,
   "code_lines": 189121,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "888db935e682e06a",
+ "facts_hash": "5ca8727a50860419",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -66047,7 +66047,7 @@
    },
    {
     "file": "src/stores/__tests__/slaSettingsStore.test.ts",
-    "name": "has default email recipient"
+    "name": "starts with no fake email recipient (multi-tenant)"
    },
    {
     "file": "src/stores/__tests__/slaSettingsStore.test.ts",
@@ -105722,7 +105722,7 @@
     "has default criticalThresholdDays of 1",
     "has default checkIntervalMinutes of 1",
     "has default supplierSLAThreshold of 85",
-    "has default email recipient",
+    "starts with no fake email recipient (multi-tenant)",
     "starts with empty supplierAlertConfigs",
     "updateSettings",
     "updates a simple field",
@@ -112071,10 +112071,21 @@
   }
  },
  "git": {
-  "sha": "7191493b3d473bd839ba56b0404ce47f2f9e9294",
+  "sha": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0c33e56",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)",
+    "files": [
+     "src/features/layout/components/SLASettingsPanel.tsx",
+     "src/stores/__tests__/slaSettingsStore.test.ts",
+     "src/stores/slaSettingsStore.ts"
+    ]
+   },
    {
     "sha": "7191493",
     "date": "2026-11-20",
@@ -112369,15 +112380,6 @@
      "docs/mapa/MATRIZ_EDGE_TABELA.md",
      "supabase/functions/test-auto-delete/index.ts"
     ]
-   },
-   {
-    "sha": "d14201c",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "merge #162 (triagem automatizada)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md"
-    ]
    }
   ],
   "hot_files": [
@@ -112391,11 +112393,15 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    6
+    5
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     3
+   ],
+   [
+    "src/features/layout/components/SLASettingsPanel.tsx",
+    2
    ],
    [
     "docs/pendencias/_regras-de-negocio.md",
@@ -112404,6 +112410,14 @@
    [
     "supabase/functions/test-auto-delete-reprova/index.ts",
     2
+   ],
+   [
+    "src/stores/__tests__/slaSettingsStore.test.ts",
+    1
+   ],
+   [
+    "src/stores/slaSettingsStore.ts",
+    1
    ],
    [
     "src/pages/admin/WorkflowAdmin.tsx",
@@ -112447,18 +112461,6 @@
    ],
    [
     "supabase/functions/_shared/punchout_crypto.ts",
-    1
-   ],
-   [
-    "supabase/functions/punchout-receive/index.ts",
-    1
-   ],
-   [
-    "src/components/compras/AdvancedProcurementKPIs.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ExecutiveDashboard.tsx",
     1
    ]
   ]

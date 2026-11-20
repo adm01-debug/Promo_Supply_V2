@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7191493b3d473bd839ba56b0404ce47f2f9e9294",
+  "commit": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
   "branch": "main",
-  "data_commit": "2026-11-20T17:09:45-03:00",
+  "data_commit": "2026-11-20T17:18:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0c33e56",
+    "data": "2026-11-20",
+    "assunto": "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)"
+   },
    {
     "sha": "7191493",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "a19f3fa",
     "data": "2026-11-20",
     "assunto": "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)"
-   },
-   {
-    "sha": "91b330c",
-    "data": "2026-11-20",
-    "assunto": "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)"
    }
   ],
-  "arquivos_mudados_7d": 161,
+  "arquivos_mudados_7d": 163,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 158
+    "commits": 159
    },
    {
     "autor": "dependabot[bot]",

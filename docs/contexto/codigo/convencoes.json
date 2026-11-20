@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)",
    "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)",
    "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)",
    "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)",
-   "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
-   "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)"
+   "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)"
   ]
  },
  "pr_template": null,
