@@ -25,9 +25,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-20 06:45:00 | succeeded | 0.05 | DELETE 0 |
 | 2026-11-20 05:45:00 | succeeded | 0.05 | DELETE 0 |
 | 2026-11-20 04:45:00 | succeeded | 0.05 | DELETE 0 |
-| 2026-11-20 03:45:00 | succeeded | 0.04 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,27 +73,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 06:20:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 06:19:00 | succeeded | 0.05 | 1 row |
-| 2026-11-20 06:18:00 | succeeded | 0.01 | 1 row |
+| 2026-11-20 07:14:00 | succeeded | 0.01 | 1 row |
+| 2026-11-20 07:13:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 07:12:00 | succeeded | 0.04 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 06:15:00 | succeeded | 0.21 | 1 row |
-| 2026-11-20 06:00:00 | succeeded | 0.14 | 1 row |
-| 2026-11-20 05:45:00 | succeeded | 0.22 | 1 row |
+| 2026-11-20 07:00:00 | succeeded | 0.21 | 1 row |
+| 2026-11-20 06:45:00 | succeeded | 0.22 | 1 row |
+| 2026-11-20 06:30:00 | succeeded | 0.14 | 1 row |
 
 
 ## 23 · xbz-sync-pedidos-30min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-20 07:00:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 06:30:00 | succeeded | 0.01 | 1 row |
 | 2026-11-20 06:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-20 05:30:00 | succeeded | 0.01 | 1 row |
-| 2026-11-20 05:00:00 | succeeded | 0.02 | 1 row |
 
 
 ## 24 · xbz-sync-watchdog-hourly
@@ -125,9 +125,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-20 06:15:00 | succeeded | 0.02 | 1 row |
-| 2026-11-20 06:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-20 05:45:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 07:00:00 | succeeded | 0.01 | 1 row |
+| 2026-11-20 06:45:00 | succeeded | 0.02 | 1 row |
+| 2026-11-20 06:30:00 | succeeded | 0.02 | 1 row |
 
 
 ## 110 · limpa-historico-cron-semanal
