@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "619f974fe1613162a1092c50f990b16d085b001e",
+  "sha": "a712aa381a968422e4542c14b214e354d072dcdb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 19:42 UTC",
+  "generated_at": "2026-11-20 19:52 UTC",
   "files_total": 1248,
   "code_files": 1094,
   "code_lines": 188877,
@@ -112005,10 +112005,28 @@
   }
  },
  "git": {
-  "sha": "619f974fe1613162a1092c50f990b16d085b001e",
+  "sha": "a712aa381a968422e4542c14b214e354d072dcdb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a712aa3",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
+    "files": [
+     "supabase/functions/alert-dispatcher/index.ts"
+    ]
+   },
+   {
+    "sha": "8fc7ca6",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "619f974",
     "date": "2026-11-20",
@@ -112294,33 +112312,12 @@
     "files": [
      ".github/workflows/main.yml"
     ]
-   },
-   {
-    "sha": "6994838",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)",
-    "files": [
-     ".github/workflows/main.yml"
-    ]
-   },
-   {
-    "sha": "cbb76bd",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "security: remove migrate-helper que vazava service_role e DB URL em producao (#158)",
-    "files": [
-     ".github/workflows/deploy-edge-functions.yml",
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/config.toml",
-     "supabase/functions/migrate-helper/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    9
+    10
    ],
    [
     "docs/pendencias/_ordem.md",
@@ -112328,19 +112325,11 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    7
+    6
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     3
-   ],
-   [
-    ".github/workflows/deploy-edge-functions.yml",
-    3
-   ],
-   [
-    "supabase/config.toml",
-    2
    ],
    [
     "docs/pendencias/_regras-de-negocio.md",
@@ -112351,12 +112340,16 @@
     2
    ],
    [
+    ".github/workflows/deploy-edge-functions.yml",
+    2
+   ],
+   [
     "supabase/functions/test-auto-delete/index.ts",
     2
    ],
    [
-    ".github/workflows/main.yml",
-    2
+    "supabase/functions/alert-dispatcher/index.ts",
+    1
    ],
    [
     "supabase/functions/check-sla-alerts/index.ts",
@@ -112376,6 +112369,10 @@
    ],
    [
     "src/hooks/useMFA.ts",
+    1
+   ],
+   [
+    "supabase/config.toml",
     1
    ],
    [

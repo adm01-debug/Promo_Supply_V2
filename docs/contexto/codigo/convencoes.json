@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
+   "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)",
    "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)",
    "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)",
-   "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)",
-   "fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)",
-   "fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)"
+   "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)"
   ]
  },
  "pr_template": null,
