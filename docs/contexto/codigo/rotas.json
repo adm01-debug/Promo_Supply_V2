@@ -297,6 +297,7 @@
     "current_tenant_id"
    ],
    "edges": [
+    "erp-credential-encrypt",
     "erp-sync",
     "telemetry"
    ],
@@ -305,7 +306,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 17
+   "arquivos_puxados": 24
   },
   {
    "protegida": true,

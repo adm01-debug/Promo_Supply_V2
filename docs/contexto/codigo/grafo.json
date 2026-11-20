@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 600,
- "arestas": 2678,
+ "nos": 601,
+ "arestas": 2688,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 71
+   "importado_por": 72
   },
   {
    "arquivo": "src/features/auth/index.ts",
@@ -42,15 +42,15 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 57
+   "importado_por": 58
   },
   {
    "arquivo": "src/components/ui/select.tsx",
-   "importado_por": 56
+   "importado_por": 57
   },
   {
    "arquivo": "src/components/ui/table.tsx",
@@ -61,11 +61,11 @@
    "importado_por": 40
   },
   {
-   "arquivo": "src/components/ui/progress.tsx",
-   "importado_por": 35
+   "arquivo": "supabase/functions/_shared/security.ts",
+   "importado_por": 36
   },
   {
-   "arquivo": "supabase/functions/_shared/security.ts",
+   "arquivo": "src/components/ui/progress.tsx",
    "importado_por": 35
   },
   {
@@ -73,11 +73,11 @@
    "importado_por": 33
   },
   {
-   "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 30
+   "arquivo": "supabase/functions/_shared/http.ts",
+   "importado_por": 31
   },
   {
-   "arquivo": "supabase/functions/_shared/http.ts",
+   "arquivo": "src/components/ui/tooltip.tsx",
    "importado_por": 30
   },
   {
@@ -94,15 +94,15 @@
   },
   {
    "arquivo": "src/components/ui/textarea.tsx",
-   "importado_por": 23
+   "importado_por": 24
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 21
+   "importado_por": 22
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
-   "importado_por": 19
+   "importado_por": 20
   },
   {
    "arquivo": "src/hooks/use-toast.ts",

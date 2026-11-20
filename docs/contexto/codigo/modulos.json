@@ -3274,7 +3274,7 @@
    "modulo": "pages/admin",
    "arquivos": 14,
    "testes": 2,
-   "linhas": 5507,
+   "linhas": 5937,
    "itens_menu": [
     "Dep. Health",
     "Documentação",
@@ -3314,6 +3314,7 @@
    "hooks_definidos": [],
    "edges": [
     "dependency-health",
+    "erp-credential-encrypt",
     "erp-sync",
     "external-db-bridge",
     "health-dashboard",
@@ -3368,6 +3369,7 @@
    "diretos": {
     "edges": [
      "dependency-health",
+     "erp-credential-encrypt",
      "erp-sync",
      "external-db-bridge",
      "health-dashboard",
@@ -7288,6 +7290,7 @@
     "ai-supplier-risk",
     "check-sla-alerts",
     "dependency-health",
+    "erp-credential-encrypt",
     "erp-sync",
     "external-db-bridge",
     "generate-contract-pdf",

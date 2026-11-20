@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a0837eafbd25d5148b02efcc0c57b27a73167dab",
+  "commit": "8102f2fa0223a0f84f638ea13f3bfee977033861",
   "branch": "main",
-  "data_commit": "2026-11-20T18:27:20-03:00",
+  "data_commit": "2026-11-20T18:38:02-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8102f2f",
+    "data": "2026-11-20",
+    "assunto": "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)"
+   },
    {
     "sha": "a0837ea",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "d1f90e9",
     "data": "2026-11-20",
     "assunto": "feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)"
-   },
-   {
-    "sha": "dcd764b",
-    "data": "2026-11-20",
-    "assunto": "docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)"
    }
   ],
-  "arquivos_mudados_7d": 168,
+  "arquivos_mudados_7d": 170,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "pasta": "package.json",
@@ -152,12 +152,12 @@
     "mudancas": 12
    },
    {
-    "pasta": "supabase/functions/punchout-receive",
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 11
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 10
+    "pasta": "supabase/functions/punchout-receive",
+    "mudancas": 11
    },
    {
     "pasta": "docs/prod-readiness.md",
@@ -165,6 +165,10 @@
    },
    {
     "pasta": "scripts/ci/inventario-types",
+    "mudancas": 9
+   },
+   {
+    "pasta": "src/pages/admin",
     "mudancas": 9
    },
    {
@@ -177,10 +181,6 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 8
-   },
-   {
-    "pasta": "src/pages/admin",
     "mudancas": 8
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "package.json",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "docs/prod-readiness.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 165
+    "commits": 166
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1248,
-  "arquivos_codigo": 776,
-  "linhas_codigo": 163317,
+  "arquivos_total": 1249,
+  "arquivos_codigo": 777,
+  "linhas_codigo": 163890,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "modulos": 86,
   "componentes": 327,
   "hooks": 89,
-  "edge_functions": 38,
+  "edge_functions": 39,
   "tabelas": 163,
   "migrations": 315,
   "cron_jobs": 70,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 28725
+   "linhas": 29155
   },
   "src/routes": {
    "arquivos": 1,
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 79,
-   "linhas": 14211
+   "arquivos": 80,
+   "linhas": 14354
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -601,6 +601,10 @@
    "linhas": 672
   },
   {
+   "arquivo": "src/pages/admin/ERPConnections.tsx",
+   "linhas": 664
+  },
+  {
    "arquivo": "src/components/ui/sidebar.tsx",
    "linhas": 638
   },
@@ -639,10 +643,6 @@
   {
    "arquivo": "src/pages/sourcing/RFxCreate.tsx",
    "linhas": 522
-  },
-  {
-   "arquivo": "src/components/compras/ContractModal.tsx",
-   "linhas": 519
   }
  ],
  "qualidade": {
@@ -651,7 +651,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 27
+  "arquivos_acima_500_linhas": 28
  },
  "todos": [
   {

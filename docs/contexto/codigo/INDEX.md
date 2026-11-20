@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a0837eafbd25d5148b02efcc0c57b27a73167dab` (2026-11-20T18:27:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8102f2fa0223a0f84f638ea13f3bfee977033861` (2026-11-20T18:38:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (705), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (706), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1248 |
-| arquivos_codigo | 776 |
-| linhas_codigo | 163317 |
+| arquivos_total | 1249 |
+| arquivos_codigo | 777 |
+| linhas_codigo | 163890 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,7 +44,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 86 |
 | componentes | 327 |
 | hooks | 89 |
-| edge_functions | 38 |
+| edge_functions | 39 |
 | tabelas | 163 |
 | migrations | 315 |
 | cron_jobs | 70 |
@@ -82,7 +82,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib | 0 | 0 | 24 | 53 | 5 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
-| pages/admin | 10 | 11 | 14 | 7 | 10 | 18 |
+| pages/admin | 10 | 11 | 14 | 7 | 11 | 18 |
 | pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 11 |
 | pages/auditoria | 1 | 1 | 1 | 2 | 1 | 1 |
@@ -194,6 +194,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `check-expiry-alerts` — tabelas: cotacoes, notifications, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-sla-alerts` — tabelas: notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
+- `erp-credential-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `erp-sync` — tabelas: erp_connections, erp_sync_log; chamada por 1 arquivo(s) do front
 - `external-db-bridge` — tabelas: query_telemetry; chamada por 1 arquivo(s) do front
 - `fiscal-orchestrator` — tabelas: fiscal_events; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -297,7 +298,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
+- hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
 - webhooks recebidos: scim-v2
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
@@ -329,9 +330,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (15)
+- docs/pendencias/_indice.md (16)
 - package.json (12)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
@@ -409,6 +410,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `8102f2f` fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)
 - 2026-11-20 `a0837ea` fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)
 - 2026-11-20 `0ef80b8` fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)
 - 2026-11-20 `2102f2b` fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)
@@ -423,7 +425,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `8fc7ca6` chore(docs): registra edge-sla-reve concluido na PR #187 (#188)
 - 2026-11-20 `619f974` fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)
 - 2026-11-20 `be6c7e0` chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)
-- 2026-11-20 `0243977` fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

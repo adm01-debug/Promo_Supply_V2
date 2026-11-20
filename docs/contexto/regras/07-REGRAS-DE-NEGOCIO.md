@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a0837eafbd` · branch `main` · 2026-11-20 21:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8102f2fa02` · branch `main` · 2026-11-20 21:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1697,6 +1697,9 @@ _nenhum item encontrado_
 | `INTEGRATION_LOOKBACK_MS` | `6 * 60 * 60 * 1000` | `supabase/functions/check-sla-alerts/index.ts` |
 | `DISPATCH_WORKFLOW_FILE` | `"dependency-health.yml"` | `supabase/functions/dependency-health/index.ts` |
 | `FORBIDDEN_MESSAGE` | `"Forbidden: admin role required"` | `supabase/functions/dependency-health/index.ts` |
+| `ENC_LABEL` | `"erpcred"` | `supabase/functions/erp-credential-encrypt/index.ts` |
+| `ENC_VERSION` | `"v1"` | `supabase/functions/erp-credential-encrypt/index.ts` |
+| `KDF_ALGO` | `"aesgcm"` | `supabase/functions/erp-credential-encrypt/index.ts` |
 | `SEFAZ_TIMEOUT_MS` | `20_000` | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `SEFAZ_RETRIES` | `4` | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `MAX_RETRIES` | `5` | `supabase/functions/process-outbox/index.ts` |
@@ -1948,6 +1951,7 @@ _nenhum item encontrado_
 | 500 | `src/hooks/useSecurityLogs.ts` |
 | 50 | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | 10 | `src/pages/admin/ERPConnections.tsx` |
+| 50 | `src/pages/admin/ERPConnections.tsx` |
 | 20 | `src/pages/admin/FiscalDashboard.tsx` |
 | 10 | `src/pages/admin/HealthDashboard.tsx` |
 | 50 | `src/pages/admin/HealthDashboard.tsx` |
@@ -2275,18 +2279,18 @@ _nenhum item encontrado_
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
 | CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
 | HTTP ${res.status} | `src/pages/admin/DependencyHealth.tsx` |
+| Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
+| Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
+| Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
+| Erro ao salvar conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao sincronizar:  | `src/pages/admin/ERPConnections.tsx` |
+| Informe a URL base do ERP | `src/pages/admin/ERPConnections.tsx` |
+| Informe a credencial de acesso | `src/pages/admin/ERPConnections.tsx` |
+| JSON inválido:  | `src/pages/admin/ERPConnections.tsx` |
+| Resposta vazia da edge de cifra | `src/pages/admin/ERPConnections.tsx` |
+| settings deve ser um objeto JSON | `src/pages/admin/ERPConnections.tsx` |
 | Falha ao resolver alerta | `src/pages/admin/HealthDashboard.tsx` |
-| 🚨 ${sev}: ${row.alert_type ??  | `src/pages/admin/HealthDashboard.tsx` |
-| Erro ao iniciar PunchOut:  | `src/pages/admin/PunchOutCatalogs.tsx` |
-| Erro ao salvar catálogo:  | `src/pages/admin/PunchOutCatalogs.tsx` |
-| Informe o shared secret do fornecedor | `src/pages/admin/PunchOutCatalogs.tsx` |
-| Preencha fornecedor, setup URL e identidade | `src/pages/admin/PunchOutCatalogs.tsx` |
-| Resposta vazia da edge de cifra | `src/pages/admin/PunchOutCatalogs.tsx` |
-| ; import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from  | `src/pages/admin/SSOConfig.tsx` |
-| Domínio já adicionado | `src/pages/admin/SSOConfig.tsx` |
-| Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
-| … +195 linhas — lista completa em `context.json` | |
+| … +205 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2578,6 +2582,7 @@ _nenhum item encontrado_
 | Get pending steps that have exceeded their deadline | `supabase/functions/check-approval-escalations/index.ts` |
 | Check for steps approaching deadline (send warning) | `supabase/functions/check-approval-escalations/index.ts` |
 | 4 hours before deadline | `supabase/functions/check-approval-escalations/index.ts` |
+| com segredos PunchOut ou XBZ. O front envia o plaintext (HTTPS) apenas no | `supabase/functions/erp-credential-encrypt/index.ts` |
 | M-05: rate-limit 30 req/min por usuário (sync é operação pesada). | `supabase/functions/erp-sync/index.ts` |
 | integration is a stub and must be implemented per connection.type. | `supabase/functions/erp-sync/index.ts` |
 | Clamp de limit para evitar dump silencioso do DB externo. | `supabase/functions/external-db-bridge/index.ts` |

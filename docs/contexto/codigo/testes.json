@@ -1849,6 +1849,7 @@
    "check-approval-escalations",
    "check-cotacao-followup",
    "check-expiry-alerts",
+   "erp-credential-encrypt",
    "erp-sync",
    "external-db-bridge",
    "fiscal-orchestrator",

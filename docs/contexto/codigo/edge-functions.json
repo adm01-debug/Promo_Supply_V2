@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 38,
+ "total": 39,
  "verify_jwt_false": [
   "scim-v2"
  ],
@@ -398,6 +398,42 @@
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
    "testes": 1
+  },
+  {
+   "nome": "erp-credential-encrypt",
+   "entrada": "supabase/functions/erp-credential-encrypt/index.ts",
+   "arquivos": 1,
+   "linhas": 143,
+   "verify_jwt": true,
+   "metodos": [
+    "OPTIONS",
+    "POST"
+   ],
+   "tabelas": [
+    "user_tenants"
+   ],
+   "rpcs": [
+    "has_role"
+   ],
+   "env": [
+    "PSV2_ENCRYPTION_KEY",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
+   "buckets": [],
+   "chama_edges": [],
+   "hosts_externos": [],
+   "usa_shared": [
+    "http.ts",
+    "security.ts"
+   ],
+   "chamada_pelo_front": [
+    "src/pages/admin/ERPConnections.tsx"
+   ],
+   "chamada_por_edges": [],
+   "chamada_por_sql_ou_cron": false,
+   "orfa": false,
+   "testes": 0
   },
   {
    "nome": "erp-sync",

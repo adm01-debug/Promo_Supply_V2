@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (705)",
+   "TypeScript (706)",
    "SQL (317)",
    "Markdown (85)",
    "JavaScript (68)",
@@ -729,6 +729,10 @@
    },
    {
     "host": "api.pwnedpasswords.com",
+    "arquivos": 1
+   },
+   {
+    "host": "erp.empresa.com",
     "arquivos": 1
    },
    {
