@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   TrendingUp,
   DollarSign,
@@ -82,7 +82,14 @@ export const AdvancedProcurementKPIs = () => {
   const [period, setPeriod] = useState("30");
   const { targets, addAlert } = useKPITargetsStore();
   const { toast } = useToast();
-  const { metrics: realMetrics, top5Concentration: realTop5Concentration, topSuppliersBySpend, loading: realDataLoading } = useExecutiveDashboardData();
+  const {
+    metrics: realMetrics,
+    topSuppliersBySpend,
+    top5Concentration: realTop5Concentration,
+    activeContractCount,
+    totalContractCount,
+    loading: realDataLoading,
+  } = useExecutiveDashboardData();
 
   // Distribui os números reais do banco sobre o shape do módulo de KPI; enquanto
   // carrega, usa o baseline do módulo (mesmo shape) para não "fabricar" valores.
@@ -105,8 +112,8 @@ export const AdvancedProcurementKPIs = () => {
       contractCompliance: {
         ...mockKpiData.contractCompliance,
         percentage: realMetrics.contractCompliance.value,
-        contracts: realMetrics.totalContractCount,
-        compliant: realMetrics.activeContractCount,
+        contracts: totalContractCount,
+        compliant: activeContractCount,
       },
       poCycleTime: {
         ...mockKpiData.poCycleTime,
@@ -118,7 +125,7 @@ export const AdvancedProcurementKPIs = () => {
         suppliers,
       },
     };
-  }, [realMetrics, realTop5Concentration, topSuppliersBySpend, realDataLoading]);
+  }, [realMetrics, realTop5Concentration, topSuppliersBySpend, activeContractCount, totalContractCount, realDataLoading]);
 
   // Check KPIs against targets and generate alerts
   const checkAllKPIs = () => {

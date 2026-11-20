@@ -152,7 +152,28 @@ export function useExecutiveDashboardData() {
     const maverickSpend = offContractOrders.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
     const maverickPercentage = totalSpend > 0 ? (maverickSpend / totalSpend) * 100 : 0;
 
-    // Concentração real: share de spend por fornecedor (pedidos do período)
+    return {
+      totalSpend: { value: totalSpend, target: totalSpend * 1.02 },
+      savings: { value: savings, target: savings * 0.8 },
+      savingsPercent: Math.round(savingsPercent * 10) / 10,
+      ordersThisMonth: { value: ordersThisMonth, target: Math.max(ordersThisMonth, 10) },
+      avgCycleTime: { value: Math.round(avgCycleTime * 10) / 10, target: 5.0 },
+      supplierCount: { value: activeSuppliers, target: 50 },
+      pendingApprovals: { value: pendingWf.length, urgent: urgentWf.length },
+      overdueOrders: { value: overdue.length, critical: criticalOverdue.length },
+      contractCompliance: { value: contractCompliance, target: 90 },
+      maverickSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
+      tailSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
+    };
+  }, [pedidos, solicitacoes, fornecedores, contracts, workflows]);
+
+  // Resumo derivado do banco, fora do ExecutiveMetrics (shape estável dos testes)
+  const summary = useMemo(() => {
+    const ped = pedidos || [];
+    const cont = contracts || [];
+    const forn = fornecedores || [];
+    const totalSpend = ped.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
+
     const spendBySupplier = new Map<string, number>();
     ped.forEach((p) => {
       if (!p.fornecedor_id) return;
@@ -168,22 +189,13 @@ export function useExecutiveDashboardData() {
     const top5Concentration = totalSpend > 0 ? Math.round((top5Value / totalSpend) * 1000) / 10 : 0;
 
     return {
-      totalSpend: { value: totalSpend, target: totalSpend * 1.02 },
-      savings: { value: savings, target: savings * 0.8 },
-      savingsPercent: Math.round(savingsPercent * 10) / 10,
-      ordersThisMonth: { value: ordersThisMonth, target: Math.max(ordersThisMonth, 10) },
-      avgCycleTime: { value: Math.round(avgCycleTime * 10) / 10, target: 5.0 },
-      supplierCount: { value: activeSuppliers, target: 50 },
-      pendingApprovals: { value: pendingWf.length, urgent: urgentWf.length },
-      overdueOrders: { value: overdue.length, critical: criticalOverdue.length },
-      contractCompliance: { value: contractCompliance, target: 90 },
-      activeContractCount: activeContracts,
-      totalContractCount: totalContracts,
       totalSpend,
-      maverickSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
-      tailSpend: { value: Math.round(maverickSpend), percentage: Math.round(maverickPercentage * 10) / 10 },
+      activeContractCount: cont.filter(c => c.status === 'active').length,
+      totalContractCount: cont.length,
+      topSuppliersBySpend,
+      top5Concentration,
     };
-  }, [pedidos, solicitacoes, fornecedores, contracts, workflows]);
+  }, [pedidos, fornecedores, contracts]);
 
   // Spend by category
   const spendByCategory = useMemo(() => {
@@ -217,5 +229,14 @@ export function useExecutiveDashboardData() {
 
   const loading = l1 || l2 || l3 || l4 || l5 || l6;
 
-  return { metrics, spendByCategory, topSuppliers, topSuppliersBySpend, top5Concentration, loading };
+  return {
+    metrics,
+    spendByCategory,
+    topSuppliers,
+    topSuppliersBySpend: summary.topSuppliersBySpend,
+    top5Concentration: summary.top5Concentration,
+    activeContractCount: summary.activeContractCount,
+    totalContractCount: summary.totalContractCount,
+    loading,
+  };
 }
