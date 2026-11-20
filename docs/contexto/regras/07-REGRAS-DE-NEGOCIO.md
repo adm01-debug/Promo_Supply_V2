@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d4690b5ed1` · branch `main` · 2026-11-20 19:28 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0243977389` · branch `main` · 2026-11-20 19:37 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1102,7 +1102,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `sucesso` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `status` | `sugerido` | escreve, filtra | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `todas` | compara | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
-| `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +1 |
+| `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +2 |
 | `status` | `unknown` | compara | `src/pages/admin/DependencyHealth.tsx` |
 | `status` | `upcoming` | compara, escreve | `src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/StatusTimeline.tsx` |
 | `status` | `validada` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx` |

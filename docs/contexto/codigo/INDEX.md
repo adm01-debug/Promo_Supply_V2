@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d4690b5ed13ab92735603b88a1efec8dac2c5dcb` (2026-11-20T16:28:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `02439773892bef797c27b7314f963582e3c8b2fc` (2026-11-20T16:36:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 162847 |
+| linhas_codigo | 162907 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -342,8 +342,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
+- src/pages/acompanhamento/Acompanhamento.tsx (5)
 - supabase/functions/punchout-receive/index.ts (5)
-- .github/workflows/notifica-falha-main.yml (4)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `0243977` fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)
 - 2026-11-20 `d4690b5` fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)
 - 2026-11-20 `a0363dd` fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)
 - 2026-11-20 `3b8e89b` chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `4c7e836` chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)
 - 2026-11-20 `25962f0` feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)
 - 2026-11-20 `4d36709` chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)
-- 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

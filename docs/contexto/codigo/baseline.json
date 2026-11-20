@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d4690b5ed13ab92735603b88a1efec8dac2c5dcb",
+  "commit": "02439773892bef797c27b7314f963582e3c8b2fc",
   "branch": "main",
-  "data_commit": "2026-11-20T16:28:00-03:00",
+  "data_commit": "2026-11-20T16:36:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0243977",
+    "data": "2026-11-20",
+    "assunto": "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)"
+   },
    {
     "sha": "d4690b5",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "6f6549b",
     "data": "2026-11-19",
     "assunto": "fix(ci): deploy de edge functions deleta functions removidas do projeto (#160)"
-   },
-   {
-    "sha": "cbe4038",
-    "data": "2026-11-19",
-    "assunto": "chore(ci): exige execução real do Security RLS Audit com --strict (#159)"
    }
   ],
   "arquivos_mudados_7d": 159,
@@ -250,6 +250,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "mudancas": 5
+   },
+   {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 5
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "scripts/rls-audit.allowlist.json",
-    "mudancas": 4
-   },
-   {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 4
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 150
+    "commits": 151
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1247,
   "arquivos_codigo": 775,
-  "linhas_codigo": 162847,
+  "linhas_codigo": 162907,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 28352
+   "linhas": 28412
   },
   "src/routes": {
    "arquivos": 1,
@@ -597,6 +597,10 @@
    "linhas": 708
   },
   {
+   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+   "linhas": 672
+  },
+  {
    "arquivo": "src/components/ui/sidebar.tsx",
    "linhas": 638
   },
@@ -607,10 +611,6 @@
   {
    "arquivo": "src/hooks/useXbzIntegration.ts",
    "linhas": 615
-  },
-  {
-   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "linhas": 612
   },
   {
    "arquivo": "src/components/compras/ComparadorCotacoes.tsx",

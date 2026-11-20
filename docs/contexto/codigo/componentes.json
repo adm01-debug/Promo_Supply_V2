@@ -4092,7 +4092,7 @@
     "Acompanhamento"
    ],
    "export_default": "Acompanhamento",
-   "linhas": 612,
+   "linhas": 672,
    "dominio": "pages/acompanhamento",
    "hooks_locais": [
     "useAccountFilters",
