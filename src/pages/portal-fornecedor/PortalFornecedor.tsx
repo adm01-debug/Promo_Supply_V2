@@ -4,7 +4,7 @@ import { format } from "date-fns/format";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,
-  Star, Truck, BarChart3, ShieldCheck, Gavel
+  Star, Truck, BarChart3, ShieldCheck, Gavel, Loader2, Mail
 } from 'lucide-react';
 import { MainLayout } from '@/features/layout/components/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +20,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { cn, formatCurrency, formatDate } from '@/lib/utils';
+import { toast } from '@/lib/feedbackToast';
 import {
   usePortalFornecedorData,
   statusPedido,
@@ -30,6 +31,7 @@ export default function PortalFornecedor() {
   const { user } = useAuth();
   const [selectedFornecedorId, setSelectedFornecedorId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [sendingMagicLink, setSendingMagicLink] = useState(false);
 
   // First, load the list of fornecedores for selection
   const { data: fornecedoresList = [], isLoading: loadingList } = useQuery({
@@ -65,6 +67,28 @@ export default function PortalFornecedor() {
     const q = search.toLowerCase();
     return fornecedoresList.filter(f => f.razao_social.toLowerCase().includes(q) || (f.cnpj || '').includes(q));
   }, [fornecedoresList, search]);
+
+  // Sends a login link (OTP) to the supplier email so they can access the portal
+  const handleSendMagicLink = async () => {
+    if (!fornecedor?.email) {
+      toast.warning('Este fornecedor nao possui e-mail cadastrado. Adicione o e-mail antes de enviar o link.');
+      return;
+    }
+    setSendingMagicLink(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ email: fornecedor.email });
+      if (error) throw error;
+      toast.success('Link de acesso enviado por e-mail', {
+        description: `Enviado para ${fornecedor.email}`,
+      });
+    } catch (err) {
+      toast.error('Falha ao enviar o link de acesso', {
+        description: err instanceof Error ? err.message : 'Tente novamente',
+      });
+    } finally {
+      setSendingMagicLink(false);
+    }
+  };
 
   // If no supplier selected, show selector
   if (!selectedFornecedorId) {
@@ -375,7 +399,24 @@ export default function PortalFornecedor() {
                     <Gavel className="w-12 h-12 mx-auto mb-3 opacity-30" />
                     <h3 className="font-semibold text-lg text-foreground mb-1">Convites de Sourcing</h3>
                     <p className="max-w-xs mx-auto">Visualize RFPs, RFQs e Leilões Reversos para os quais este fornecedor foi convidado.</p>
-                    <Button variant="outline" className="mt-4" disabled>Ver via Magic Link</Button>
+                    <Button
+                      variant="outline"
+                      className="mt-4"
+                      onClick={() => void handleSendMagicLink()}
+                      disabled={sendingMagicLink}
+                    >
+                      {sendingMagicLink ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4" />
+                          Ver via Magic Link
+                        </>
+                      )}
+                    </Button>
                   </CardContent>
                 </Card>
               </TabsContent>
