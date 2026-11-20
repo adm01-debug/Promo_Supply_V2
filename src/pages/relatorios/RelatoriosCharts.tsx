@@ -9,6 +9,7 @@ import {
   MoreHorizontal,
   ChevronRight
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -192,14 +193,16 @@ export const DistributionCharts = ({ distribuicaoTipo, distribuicaoStatus }: { d
   </div>
 );
 
-export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerformance'] }) => (
+export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerformance'] }) => {
+  const navigate = useNavigate();
+  return (
   <Card className="rounded-[2rem] border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden shadow-2xl">
     <div className="p-8 border-b border-border/10 flex items-center justify-between">
       <div>
         <h3 className="text-xl font-black uppercase tracking-tight">Top Performance Partners</h3>
         <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1 opacity-80">Ranking Qualitativo e Quantitativo</p>
       </div>
-      <EliteButton variant="outline" size="sm" className="h-10 rounded-xl text-[9px] font-black">FULL REPORT</EliteButton>
+      <EliteButton variant="outline" size="sm" className="h-10 rounded-xl text-[9px] font-black" onClick={() => navigate("/supplier-performance")}>FULL REPORT</EliteButton>
     </div>
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -244,7 +247,7 @@ export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerf
                 </div>
               </td>
               <td className="text-right px-8">
-                 <EliteButton variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                 <EliteButton variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => navigate("/fornecedores")}>
                    <ChevronRight className="w-4 h-4" />
                  </EliteButton>
               </td>
@@ -254,4 +257,5 @@ export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerf
       </table>
     </div>
   </Card>
-);
+  );
+};

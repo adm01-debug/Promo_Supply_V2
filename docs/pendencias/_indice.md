@@ -76,7 +76,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ui-workflow-* | WorkflowAdmin "Novo/Configurar/Regra/Editar" sem acao | CONCLUIDO (PR #193, merge 2026-11-20) | `WorkflowAdmin.tsx` â€” 4 botoes + dialogs de workflow e regra SoD |
 | ui-magiclink | "Ver via Magic Link" disabled fixo | CONCLUIDO | `PortalFornecedor.tsx:378` (PR #199) |
 | ui-pedidos-com | "E-MAIL CRIPTOGRAFADO"/"HUB"/"REDESPACHO" sem acao | CONCLUIDO | `PedidoDetailsDialog.tsx:193,196,430` (PR #200) |
-| ui-exec-dash | carta executive/insights "GERAR PEDIDO PREDITIVO"/"FULL REPORT" sem acao | PENDENTE | Anexo A6 items 21-23,43 |
+| ui-exec-dash | carta executive/insights "GERAR PEDIDO PREDITIVO"/"FULL REPORT" sem acao | CONCLUIDO (PR #202) | Anexo A6 items 21-23,43 |
 
 ## Docs (A7) - promessas inexistentes
 | ID | Item | Estado | Fonte |
