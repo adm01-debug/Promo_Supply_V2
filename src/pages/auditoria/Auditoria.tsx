@@ -22,8 +22,11 @@ import { format } from "date-fns/format";
 import { cn } from '@/lib/utils';
 import { toast } from "@/lib/feedbackToast";
 import { exportToCSV } from "@/lib/exportData";
+import { useAuth } from "@/features/auth";
+import { RlsCompliancePanel } from "@/components/auditoria/RlsCompliancePanel";
 
 const Auditoria = () => {
+  const { isAdmin } = useAuth();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -95,6 +98,7 @@ const Auditoria = () => {
   return (
     
       <div className="space-y-6">
+        {isAdmin && <RlsCompliancePanel />}
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>

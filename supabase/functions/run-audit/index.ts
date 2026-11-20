@@ -87,7 +87,9 @@ serve(async (req) => {
 
     return new Response(JSON.stringify(complianceSummary, null, 2), {
       headers: buildResponseHeaders(corsHeaders),
-      status: criticalIssues.length === 0 ? 200 : 403,
+      // Always 200: the front-end consumes the JSON body as the report.
+      // overall_status inside the payload carries the compliance verdict.
+      status: 200,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
