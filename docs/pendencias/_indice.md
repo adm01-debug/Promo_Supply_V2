@@ -9,13 +9,13 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | fio-1 | Selecao de fornecedor na cotacao nao chamava `selectCotacao` | CONCLUIDO | `Cotacao.tsx` / `fio-1-cotacao-selecao.md` |
-| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | PR ABERTA (regra 8 - DDL prod, aguarda dono) | PR #173 - trigger `auto_transition_solicitacao_on_workflow_approved`; testado em postgres (aprovada=2, pendente=1) |
+| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | MERGEADO #173 (DDL NAO APLICADO no banco prod) | PR #173 - trigger `auto_transition_solicitacao_on_workflow_approved`; testado em postgres (aprovada=2, pendente=1). **Pendente `supabase db push` (credencial dono)** |
 | fio-3 | Kanban de acompanhamento era no-op (toast) | CONCLUIDO | `Acompanhamento.tsx:144-146,313` / `fio-3-kanban-acompanhamento.md` |
 
 ## Seguranca
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| seg-passkey | passkey login valida so `challenge`/`type` (bypass S-1) | PENDENTE | `webauthn-authenticate/index.ts:155-175`; desabilitar botao `Auth.tsx:45` |
+| seg-passkey | passkey login valida so `challenge`/`type` (bypass S-1) | CONCLUIDO (PR #177, fail-closed) | `webauthn-authenticate/index.ts` rejeita finish; botao `Auth.tsx` desabilitado. Verificacao COSE real: futuro |
 | seg-fio-entrada | `process-solicitacao-neural` invocado mas edge NAO EXISTE | CONCLUIDO | PR #171 (edge criado + front consome `data.fields`; deploy confirmado, GET no endpoint -> 401 sem JWT) |
 | seg-tenant-alerts | `useCriticalAlertsBadge` sem tenant/filtro | PENDENTE | `useCriticalAlertsBadge.ts:25-27` |
 | seg-mfa-bp | backup codes via `Math.random` | PENDENTE | `useMFA.ts:184` |
@@ -26,9 +26,9 @@ catalogo, Fase 2 execucao vertical por item.
 ## Dados ficticios / fachadas que mentem na tela (impacto negocio)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | PENDENTE | `process-invoice-idp/index.ts:53-72` |
-| fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | PENDENTE | `guided-buying-ai/index.ts:74-104` |
-| fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | PENDENTE | Anexo A3/L07 |
+| fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | CONCLUIDO (PR #177) | `process-invoice-idp/index.ts` determinístico por hash + `fonte=simulacao`; toast honesto em `DocumentosFiscais.tsx` |
+| fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinístico |
+| fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | PARCIAL (PR #177) | KPI SLA/card fabricado removido; KPI real via RPC. `useExecutiveDashboardData`, `kpiTargetsStore`, `slaSettingsStore` pendentes |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | PENDENTE | `slaSettingsStore.ts:37` |
 | fake-kpi-targets | `kpiTargetsStore` metas fixas sem origem | PENDENTE | `kpiTargetsStore.ts` |
 

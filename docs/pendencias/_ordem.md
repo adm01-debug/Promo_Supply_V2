@@ -6,17 +6,17 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 1. `seg-fio-entrada` - CONCLUIDO na PR #171: edge `process-solicitacao-neural` criado (JWT + rate limit + fallback), front consome `data.fields`, deploy confirmado.
 2. `fio-1` selecao de fornecedor na cotacao (backend trigger ja existe - diff front minimo; estende agendamento).
 3. `fio-3` Kanban -> usePedidos().updateStatus (front puro).
-4. `fio-2` - PR #173 aberta (aguardando dono, DDL prod): trigger SECURITY DEFINER promove solicitacoes.status p/ `aprovada`; validado em postgres ephemero (aprovada=2, pendente=1).
+4. `fio-2` - MERGEADO na PR #173. **DDL AINDA NAO APLICADO no banco prod** (paridade-banco.yml reabre: `funcoes: 168/1 AUSENTE`); pendente `supabase db push` com credencial do dono. Trigger SECURITY DEFINER promove solicitacoes.status p/ `aprovada`; validado em postgres ephemero (aprovada=2, pendente=1).
 
 ## T2 - seguranca
-5. `seg-passkey` desabilitar botao passkey em Auth.tsx (fail-closed) ate reescrever assinatura COSE.
+5. `seg-passkey` CONCLUIDO na PR #177: botao passkey desabilitado em `Auth.tsx` (fail-closed) + finish da edge `webauthn-authenticate` rejeita ate reescrever assinatura COSE.
 6. `seg-scim` add NO_JWT + verify_jwt=false em config.toml (CI/workflow - regra 8: deixar PR aberta p/ dono).
 7. `seg-punchout` validar shared_secret_encrypted no receive.
 
 ## T3 - fachadas que mentem
-8. `fake-invoice` rotular [documentacao/anexo] em process-invoice-idp.
-9. `fake-ai-guided` ligar callAIGateway ou desmontar assistente do MainLayout.
-10. `fake-*` dashboards/SLA/kpi-targets - esconder cards ou puxar de RPC real.
+8. `fake-invoice` CONCLUIDO na PR #177: process-invoice-idp agora determinístico (hash do arquivo) + campo `fonte=simulacao` + toast honesto no front.
+9. `fake-ai-guided` CONCLUIDO na PR #177: guided-buying-ai ligado ao `callAIGateway` (OpenRouter) real com fallback determinístico; historico incluido.
+10. `fake-*` dashboards - PARCIAL na PR #177: removido card `kpi-sla` e bloco SLA fabricado (85%/1.8d); KPI real via RPC `get_compras_dashboard_metrics` mantido. Ainda pendentes: `kpiTargetsStore.ts` metas fixas, `slaSettingsStore.ts:37` e-mail fixo multi-tenant, `useExecutiveDashboardData`.
 
 ## T4 - edge/pecas menores, docs, mortos
 11. edge-alert-sev, edge-sla-reve, edge-xbz-cron, edge-ai-risk, etc.
