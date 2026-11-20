@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePedidos } from "@/features/pedidos";
+import { useState } from "react";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,8 +16,10 @@ import { toast } from "@/lib/feedbackToast";
 import type { Database } from "@/integrations/supabase/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, formatCurrency } from "@/lib/utils";
+import { emitHubEvent } from "@/lib/hubEvents";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
+import { NovaDevolucaoModal } from "@/pages/devolucoes/DevolucoesModals";
 
 const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
@@ -46,6 +49,24 @@ interface Props {
 export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
   const { updateStatus } = usePedidos();
   const queryClient = useQueryClient();
+  const [showRedespachoModal, setShowRedespachoModal] = useState(false);
+
+  const handleOpenEmail = () => {
+    if (!pedido?.fornecedor?.email) {
+      toast.warning('Fornecedor sem e-mail cadastrado no cadastro.');
+      return;
+    }
+    const subject = encodeURIComponent(`Comunicação - Pedido ${pedido.numero}`);
+    const body = encodeURIComponent(
+      `Prezado(a) ${pedido.fornecedor.nome_fantasia || pedido.fornecedor.razao_social},\n\nReferente ao pedido ${pedido.numero}.\n\n`
+    );
+    window.open(`mailto:${pedido.fornecedor.email}?subject=${subject}&body=${body}`, '_self');
+  };
+
+  const handleOpenHub = () => {
+    if (!pedido?.fornecedor?.id) return;
+    emitHubEvent('chat:open-fornecedor', { fornecedorId: pedido.fornecedor.id });
+  };
   
   const handleUpdateStatus = async (newStatus: Pedido['status']) => {
     if (!pedido) return;
@@ -190,10 +211,10 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-3 pt-2">
-                             <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                             <Button variant="outline" onClick={handleOpenEmail} className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
                               <Mail className="w-3.5 h-3.5 mr-2" /> E-MAIL CRIPTOGRAFADO
                             </Button>
-                            <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                            <Button variant="outline" onClick={handleOpenHub} className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
                               <MessageCircle className="w-3.5 h-3.5 mr-2" /> HUB DE COMUNICAÇÃO
                             </Button>
                           </div>
@@ -427,9 +448,15 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
         <div className="p-8 pt-0 flex justify-end gap-3">
            <Button variant="ghost" onClick={() => onOpenChange(false)} className="rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5">FECHAR BRIEFING</Button>
-           <Button className="rounded-xl px-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none font-black text-[10px] uppercase tracking-widest shadow-lg shadow-violet-500/20">AUTORIZAR REDESPACHO</Button>
+           <Button onClick={() => setShowRedespachoModal(true)} className="rounded-xl px-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none font-black text-[10px] uppercase tracking-widest shadow-lg shadow-violet-500/20">AUTORIZAR REDESPACHO</Button>
         </div>
       </DialogContent>
+      <NovaDevolucaoModal
+        open={showRedespachoModal}
+        onClose={() => setShowRedespachoModal(false)}
+        pedidoId={pedido.id}
+        fornecedorId={pedido.fornecedor?.id}
+      />
     </Dialog>
   );
 };

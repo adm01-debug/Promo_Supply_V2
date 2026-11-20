@@ -30,12 +30,13 @@ export const RESOLUCAO_LABELS: Record<string, string> = {
   desconto_futuro: "Desconto em Pedido Futuro",
 };
 
-export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function NovaDevolucaoModal({ open, onClose, pedidoId, fornecedorId: initialFornecedor }:
+  { open: boolean; onClose: () => void; pedidoId?: string; fornecedorId?: string }) {
   const { createDevolucao } = useDevolucoes();
   const { fornecedores } = useFornecedores();
   const newItem = () => ({ _uid: generateUniqueKey(), descricao: "", quantidade: 1, valor_unitario: 0 });
   const [form, setForm] = useState({
-    fornecedor_id: "",
+    fornecedor_id: initialFornecedor || "",
     tipo: "devolucao" as const,
     motivo: "defeito",
     motivo_detalhe: "",
@@ -56,6 +57,7 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
     setSaving(true);
     const input: CreateDevolucaoInput = {
       fornecedor_id: form.fornecedor_id,
+      pedido_id: pedidoId,
       tipo: form.tipo,
       motivo: form.motivo,
       motivo_detalhe: form.motivo_detalhe || undefined,
