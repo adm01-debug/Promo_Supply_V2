@@ -4092,13 +4092,15 @@
     "Acompanhamento"
    ],
    "export_default": "Acompanhamento",
-   "linhas": 495,
+   "linhas": 612,
    "dominio": "pages/acompanhamento",
    "hooks_locais": [
     "useAccountFilters",
     "useRealtimeSubscription"
    ],
    "tabelas": [
+    "fiscal_documents",
+    "fiscal_events",
     "fornecedores",
     "pedidos",
     "solicitacoes"

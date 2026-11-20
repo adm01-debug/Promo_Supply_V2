@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a0363ddf55` · branch `main` · 2026-11-20 19:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d4690b5ed1` · branch `main` · 2026-11-20 19:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -276,6 +276,8 @@
 | status | valor `vencedora` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/useLicitacoes.ts` |
 | status | valor `homologada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/licitacoes/Licitacoes.tsx`<br>`escreve:src/hooks/useLicitacoes.ts` |
 | status | valor `returned` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/usePurchaseHistory.ts` |
+| status | valor `sucesso` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/acompanhamento/Acompanhamento.tsx` |
+| status | valor `sucess` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/acompanhamento/Acompanhamento.tsx` |
 | status | valor `empty` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/DependencyHealth.tsx`<br>`escreve:src/pages/admin/DependencyHealth.tsx`<br>`escreve:supabase/functions/dependency-health/index.ts` |
 | status | valor `queued` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/DependencyHealth.tsx`<br>`escreve:supabase/functions/dependency-health/index.ts` |
 | status | valor `authorized` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |

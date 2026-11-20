@@ -8755,7 +8755,7 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 2,
+   "usada_no_front": 3,
    "usada_em_edges": [],
    "triggers": [
     "update_fiscal_documents_updated_at"
@@ -8930,7 +8930,7 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [
     "fiscal-orchestrator"
    ],

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a0363ddf55` · branch `main` · 2026-11-20 19:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d4690b5ed1` · branch `main` · 2026-11-20 19:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1097,7 +1097,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `slow` | compara | `supabase/functions/external-db-bridge/index.ts` |
 | `status` | `solicitada` | escreve | `src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `succeeded` | compara | `supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql` |
-| `status` | `success` | compara, escreve | `src/components/compras/AdvancedProcurementKPIs.tsx`<br>`src/pages/admin-telemetria/AdminTelemetria.tsx`<br>`src/pages/admin/ERPConnections.tsx`<br>`src/pages/buyer/BuyerPerformanceDashboard.tsx`<br>`src/pages/buyer/buyerDashboardHelpers.tsx`<br>… +10 |
+| `status` | `success` | compara, escreve | `src/components/compras/AdvancedProcurementKPIs.tsx`<br>`src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/admin-telemetria/AdminTelemetria.tsx`<br>`src/pages/admin/ERPConnections.tsx`<br>`src/pages/buyer/BuyerPerformanceDashboard.tsx`<br>… +11 |
+| `status` | `sucess` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
+| `status` | `sucesso` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `status` | `sugerido` | escreve, filtra | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `todas` | compara | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +1 |
@@ -1139,10 +1141,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `state` | `suspended` | compara | `src/hooks/useFeedback.ts`<br>`src/lib/feedbackToast.ts` |
 | `bid_status` | `valid` | escreve | `src/integrations/supabase/types.ts` |
 | `tenant_status` | `active` | escreve | `src/integrations/supabase/types.ts` |
-| `supplier_status` | `bloqueado` | compara | `src/pages/compliance/complianceHelpers.ts` |
+| `reconciliation_status` | `aprovado` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `reconciliation_status` | `matched` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
+| `reconciliation_status` | `pendente` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `reconciliation_status` | `pending` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
 | `reconciliation_status` | `unmatched` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
+| `supplier_status` | `bloqueado` | compara | `src/pages/compliance/complianceHelpers.ts` |
 | `dispatch_status` | `suppressed_dedup` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
 | `sefaz_status` | `dispatch_error` | compara, escreve | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `v_old_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
@@ -1942,6 +1946,7 @@ _nenhum item encontrado_
 | 50 | `src/hooks/usePrefetch.ts` |
 | 100 | `src/hooks/useRealPushNotifications.ts` |
 | 500 | `src/hooks/useSecurityLogs.ts` |
+| 50 | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | 10 | `src/pages/admin/ERPConnections.tsx` |
 | 20 | `src/pages/admin/FiscalDashboard.tsx` |
 | 10 | `src/pages/admin/HealthDashboard.tsx` |
