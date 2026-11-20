@@ -323,6 +323,15 @@ export function usePurchaseHistory() {
         const returnedCount = records.filter((r) => r.status === "returned").length;
         const discounts = records.map((r) => r.discount).filter((d) => d > 0);
         const totalSpent = records.reduce((s, r) => s + r.totalPrice, 0);
+        const comEntrega = records.filter((r) => r.deliveryDate && r.purchaseDate);
+        const avgDeliveryDays = comEntrega.length > 0
+          ? Math.round(
+              comEntrega.reduce((s, r) => {
+                const diff = (new Date(r.deliveryDate!).getTime() - new Date(r.purchaseDate).getTime()) / (1000 * 60 * 60 * 24);
+                return s + diff;
+              }, 0) / comEntrega.length * 10
+            ) / 10
+          : 0;
         const productIds = new Set(records.map((r) => r.productId));
 
         // Monthly volume
@@ -347,7 +356,7 @@ export function usePurchaseHistory() {
           name: forn?.nome_fantasia || forn?.razao_social || "Desconhecido",
           cnpj: forn?.cnpj || "",
           category: forn?.segmento || undefined,
-          avgDeliveryDays: 0, // Would need tracking data
+          avgDeliveryDays,
           onTimeRate: delivered.length > 0 ? Math.round((onTimeCount / delivered.length) * 100) : 0,
           qualityScore: Number(forn?.avaliacao) || 0,
           totalOrders: records.length,

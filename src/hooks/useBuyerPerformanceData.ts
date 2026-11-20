@@ -219,7 +219,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       const entreguesNoPrazo = entregues.filter(p =>
         p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
       ).length;
-      const taxaSucesso = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : buyerPeds.length > 0 ? 80 : 0;
+      const taxaSucesso = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : 0;
 
       // Tempo medio - approx from pedido creation to entrega
       const pedidosComEntrega = buyerPeds.filter(p => p.data_entrega && p.data_emissao);
