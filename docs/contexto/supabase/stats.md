@@ -16,7 +16,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 |---|---|---|---|---|---|---|---|---|
 | public.spot_skus | ~3.8k | 14.0 MB | 13.2 MB | 640.0 KB | 0 | ~20 | ~15.1k | 2026-11-20 |
 | public.spot_produtos | ~1.3k | 8.0 MB | 1.0 MB | 736.0 KB | 0 | ~30 | ~5.1k | 2026-11-20 |
-| public.spot_estoque | ~3.8k | 1.4 MB | 752.0 KB | 616.0 KB | 0 | ~20 | ~826.9k | 2026-11-20 |
+| public.spot_estoque | ~3.8k | 1.4 MB | 752.0 KB | 616.0 KB | 0 | ~20 | ~845.8k | 2026-11-20 |
 | public.telemetry_logs | ~500 | 1.2 MB | 120.0 KB | 1.1 MB | 2 | ~210 | ~860 | 2026-09-07 |
 | public.system_alerts | ~420 | 784.0 KB | 88.0 KB | 656.0 KB | 0 | ~3.7k | ~4.7k | 2026-11-17 |
 | public.health_scan_runs | ~590 | 608.0 KB | 112.0 KB | 464.0 KB | ~20 | ~200 | ~3.5k | 2026-11-13 |
@@ -66,7 +66,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.contact_notes | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 5 | ~1.2k | ~40 |  |
 | public.contract_penalties | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 6 | ~40 | ~110 |  |
 | public.devolucoes | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 9 | ~60 | ~120 |  |
-| public.spot_api_sync_log | ~170 | 96.0 KB | 32.0 KB | 32.0 KB | 0 | ~950 | ~370 |  |
+| public.spot_api_sync_log | ~240 | 96.0 KB | 32.0 KB | 32.0 KB | 0 | ~950 | ~380 |  |
 | public.workflow_instances | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 3 | ~20 | 6 |  |
 | public.workflow_logs | 0 | 96.0 KB | 8.0 KB | 80.0 KB | 1 | ~20 | 8 |  |
 | public.spot_customization_options | 0 | 88.0 KB | 0 B | 64.0 KB | 0 | ~20 | ~100 | 2026-11-17 |
@@ -154,7 +154,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.qualification_requirements | 0 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | ~3k | ~8.3k |  |
 | public.role_permissions | 0 | 32.0 KB | 0 B | 32.0 KB | 0 | ~450 | ~440 |  |
 | public.sourcing_event_questions | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~20 | 2 |  |
-| public.spot_sessions | ~30 | 32.0 KB | 8.0 KB | 16.0 KB | 3 | ~690 | 1 |  |
+| public.spot_sessions | ~30 | 32.0 KB | 8.0 KB | 16.0 KB | 4 | ~700 | 1 |  |
 | public.user_organizations | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~10 | ~70 |  |
 | public.webauthn_credentials | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~10 | ~10 |  |
 | public.aliquotas_tributarias | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | 9 | 7 |  |
@@ -205,21 +205,21 @@ _nenhum_
 ## Consultas mais custosas (pg_stat_statements, desde o último reset)
 | role | chamadas (~) | total ms (~) | média ms | query |
 |---|---|---|---|---|
-| postgres | ~5.8k | ~96.7k | 16.75 | `SELECT public._invoke_edge_function($1)` |
-| postgres | ~100 | ~70.6k | 735.12 | `select public.xbz_sync_watchdog()` |
-| postgres | ~380 | ~69k | 179.32 | `SELECT public.refresh_mv_dashboard_kpis()` |
+| postgres | ~5.8k | ~97.8k | 16.75 | `SELECT public._invoke_edge_function($1)` |
+| postgres | ~100 | ~74.1k | 756.43 | `select public.xbz_sync_watchdog()` |
+| postgres | ~390 | ~70.1k | 179.77 | `SELECT public.refresh_mv_dashboard_kpis()` |
 | authenticator | ~80 | ~68.2k | 842.16 | `SELECT name FROM pg_timezone_names` |
-| service_role | ~1.8k | ~53.7k | 30.67 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
-| ci_snapshot | ~60 | ~49.2k | 768.20 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
+| service_role | ~1.8k | ~54.7k | 30.54 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
+| ci_snapshot | ~60 | ~49.6k | 763.45 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
 | authenticator | ~80 | ~23k | 284.05 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $2), oid) AS base_type FROM pg_type UNIO` |
-| ci_snapshot | ~60 | ~19.7k | 308.43 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
-| ci_snapshot | ~60 | ~19.3k | 302.04 | `SELECT n.nspname AS schema, c.relname AS "table", a.attnum AS position, a.attname AS name, format_type(a.atttypid, a.atttypmod) AS type, NOT a.attnotnull AS nullable, pg_get_expr(d.adbin, d.adrelid) AS "default", NULLIF(` |
-| ci_snapshot | ~70 | ~17.8k | 265.12 | `with tables as ( SELECT c.oid :: int8 AS id, nc.nspname AS schema, c.relname AS name, c.relrowsecurity AS rls_enabled, c.relforcerowsecurity AS rls_forced, CASE WHEN c.relreplident = $1 THEN $2 WHEN c.relreplident = $3 T` |
+| ci_snapshot | ~60 | ~20k | 308.22 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
+| ci_snapshot | ~60 | ~19.6k | 301.99 | `SELECT n.nspname AS schema, c.relname AS "table", a.attnum AS position, a.attname AS name, format_type(a.atttypid, a.atttypmod) AS type, NOT a.attnotnull AS nullable, pg_get_expr(d.adbin, d.adrelid) AS "default", NULLIF(` |
+| ci_snapshot | ~70 | ~18.2k | 267.55 | `with tables as ( SELECT c.oid :: int8 AS id, nc.nspname AS schema, c.relname AS name, c.relrowsecurity AS rls_enabled, c.relforcerowsecurity AS rls_forced, CASE WHEN c.relreplident = $1 THEN $2 WHEN c.relreplident = $3 T` |
 | service_role | ~30 | ~16.1k | 501.92 | `WITH pgrst_source AS (INSERT INTO "public"."spot_skus"("capacity", "color_code", "color_hex", "color_name", "handling_costs", "image_url", "no_replenishment", "price_tiers", "print_area", "product_reference", "raw", "siz` |
+| ci_snapshot | ~60 | ~9.5k | 146.50 | `SELECT n.nspname AS schema, p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, pg_get_function_result(p.oid) AS returns, l.lanname AS language, CASE p.prokind WHEN $1 THEN $2 WHEN $3 THEN $4 WHEN $5 TH` |
 | authenticator | ~80 | ~9.5k | 117.20 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $3), oid) AS base_type FROM pg_type UNIO` |
-| ci_snapshot | ~60 | ~9.4k | 146.32 | `SELECT n.nspname AS schema, p.proname AS name, pg_get_function_identity_arguments(p.oid) AS args, pg_get_function_result(p.oid) AS returns, l.lanname AS language, CASE p.prokind WHEN $1 THEN $2 WHEN $3 THEN $4 WHEN $5 TH` |
-| postgres | ~390 | ~6.6k | 17.18 | `SELECT public._invoke_spot_sync($1)` |
-| pgbouncer | ~90 | ~6.1k | 66.56 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
+| postgres | ~390 | ~6.8k | 17.35 | `SELECT public._invoke_spot_sync($1)` |
+| pgbouncer | ~90 | ~6.2k | 66.80 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
 
 
 ## Conexões
@@ -228,5 +228,6 @@ _nenhum_
 | authenticator | idle | 3 |
 | ci_snapshot | active | 1 |
 | pgbouncer | idle | 1 |
-| supabase_admin | idle | 3 |
+| supabase_admin | active | 1 |
+| supabase_admin | idle | 2 |
 | supabase_admin |  | 1 |
