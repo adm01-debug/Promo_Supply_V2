@@ -67,6 +67,8 @@ const Acompanhamento = () => {
     if (!pedidoDetalhes) setDetalheTipo(null);
   }, [pedidoDetalhes]);
   const [filtroSLA, setFiltroSLA] = useState<'todos' | 'atrasados' | 'criticos' | 'atencao'>('todos');
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos');
+  const [filtrosAbertos, setFiltrosAbertos] = useState(false);
 
   const accountDefaults = useMemo(() => ({
     searchTerm: "",
@@ -189,6 +191,10 @@ const Acompanhamento = () => {
     });
   }
 
+  if (filtroStatus !== 'todos') {
+    pedidosFiltrados = pedidosFiltrados.filter(p => p.status === filtroStatus);
+  }
+
   const queryClient = useQueryClient();
 
   const handleStatusChange = async (pedidoId: string, novoStatus: string) => {
@@ -265,7 +271,12 @@ const Acompanhamento = () => {
                   <LayoutGrid className="w-3 h-3 mr-2" /> KANBAN
                 </Button>
               </div>
-              <EliteButton variant="default" onClick={() => {}} className="h-11 px-6">
+              <EliteButton variant="default" onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ['acompanhamento-pedidos'] });
+                queryClient.invalidateQueries({ queryKey: ['acompanhamento-solicitacoes'] });
+                queryClient.invalidateQueries({ queryKey: ['acompanhamento-fornecedores'] });
+                toast.success('Dados atualizados');
+              }} className="h-11 px-6">
                  NOVA ATUALIZAÇÃO
               </EliteButton>
             </div>
@@ -365,7 +376,7 @@ const Acompanhamento = () => {
                 )}
               </div>
               
-              <EliteButton variant="outline" className="h-12 rounded-xl border-dashed">
+              <EliteButton variant="outline" className="h-12 rounded-xl border-dashed" onClick={() => setFiltrosAbertos(true)}>
                  <Filter className="w-4 h-4 mr-2" /> FILTROS AVANÇADOS
               </EliteButton>
             </div>
@@ -600,6 +611,55 @@ const Acompanhamento = () => {
                   </div>
                 )}
               </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={filtrosAbertos} onOpenChange={setFiltrosAbertos}>
+        <DialogContent className="sm:max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black uppercase tracking-widest">Filtros Avançados</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Status do Pedido</p>
+              <div className="flex flex-wrap gap-2">
+                {['todos', 'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_TRANSITO', 'ENTREGUE', 'CANCELADO'].map(status => (
+                  <EliteButton
+                    key={status}
+                    variant={filtroStatus === status ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFiltroStatus(status)}
+                    className="h-9 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    {status === 'todos' ? 'Todos' : getStatusLabel(status)}
+                  </EliteButton>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Filtro SLA</p>
+              <div className="flex flex-wrap gap-2">
+                {([['todos','Todos'],['atrasados','Atrasados'],['criticos','Críticos'],['atencao','Atenção']] as const).map(([key, label]) => (
+                  <EliteButton
+                    key={key}
+                    variant={filtroSLA === key ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFiltroSLA(key)}
+                    className="h-9 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    {label}
+                  </EliteButton>
+                ))}
+              </div>
+            </div>
+            {(filtroStatus !== 'todos' || filtroSLA !== 'todos') && (
+              <EliteButton variant="ghost" size="sm"
+                onClick={() => { setFiltroStatus('todos'); setFiltroSLA('todos'); }}
+                className="h-9 text-[10px] font-black uppercase tracking-widest w-full">
+                LIMPAR FILTROS
+              </EliteButton>
             )}
           </div>
         </DialogContent>
