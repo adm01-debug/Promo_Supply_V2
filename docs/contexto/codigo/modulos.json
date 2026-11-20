@@ -4632,7 +4632,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 561,
+   "linhas": 570,
    "itens_menu": [
     "Cotações"
    ],

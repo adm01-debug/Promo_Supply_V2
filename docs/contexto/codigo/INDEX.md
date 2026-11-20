@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a19f3fa65fc630103d60775c64cc5419b6746dc6` (2026-11-20T10:21:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8beaac214b55cb20eaa76490a26e4726cc95a0c9` (2026-11-20T10:30:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1241 |
 | arquivos_codigo | 772 |
-| linhas_codigo | 162268 |
+| linhas_codigo | 162277 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -407,6 +407,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
 - 2026-11-20 `a19f3fa` fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)
 - 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
 - 2026-11-20 `3e84319` fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)
@@ -421,7 +422,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `cbb76bd` security: remove migrate-helper que vazava service_role e DB URL em producao (#158)
 - 2026-11-19 `d897c77` Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103
 - 2026-11-19 `cfa585f` fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup
-- 2026-11-19 `69e604f` fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

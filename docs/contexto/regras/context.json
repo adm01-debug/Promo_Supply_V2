@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a19f3fa65fc630103d60775c64cc5419b6746dc6",
+  "sha": "8beaac214b55cb20eaa76490a26e4726cc95a0c9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 13:21 UTC",
+  "generated_at": "2026-11-20 13:31 UTC",
   "files_total": 1242,
   "code_files": 1090,
-  "code_lines": 188190,
+  "code_lines": 188199,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d59b23f4ffd241c7",
+ "facts_hash": "db6a652efb45be15",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34795,7 +34795,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28236,
+   "lines": 28245,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -102070,7 +102070,7 @@
   },
   "src/pages/cotacao/Cotacao.tsx": {
    "path": "src/pages/cotacao/Cotacao.tsx",
-   "lines": 373,
+   "lines": 382,
    "exports": [
     "default Cotacao"
    ],
@@ -111464,10 +111464,19 @@
   }
  },
  "git": {
-  "sha": "a19f3fa65fc630103d60775c64cc5419b6746dc6",
+  "sha": "8beaac214b55cb20eaa76490a26e4726cc95a0c9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8beaac2",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix: persiste selecao de cotacao vencedora via selectCotacao (#169)",
+    "files": [
+     "src/pages/cotacao/Cotacao.tsx"
+    ]
+   },
    {
     "sha": "a19f3fa",
     "date": "2026-11-20",
@@ -111773,15 +111782,6 @@
      "supabase/functions/ai-supplier-risk/index.ts",
      "supabase/functions/ai-supplier-suggestion/index.ts"
     ]
-   },
-   {
-    "sha": "bfc3e0e",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "chore(db): sincroniza types.ts com colunas de auditoria do banco (#140)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -111834,6 +111834,10 @@
     2
    ],
    [
+    "src/pages/cotacao/Cotacao.tsx",
+    1
+   ],
+   [
     "docs/pendencias/fio-3-kanban-acompanhamento.md",
     1
    ],
@@ -111859,10 +111863,6 @@
    ],
    [
     "supabase/functions/migrate-helper/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-cotacao-followup/index.ts",
     1
    ]
   ]
