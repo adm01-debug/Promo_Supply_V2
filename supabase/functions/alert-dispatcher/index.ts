@@ -244,7 +244,7 @@ serve(async (req) => {
   const { data: alerts, error } = await admin
     .from("system_alerts")
     .select("id, tenant_id, alert_type, severity, message, metadata, created_at")
-    .in("severity", ["HIGH", "CRITICAL"])
+    .in("severity", ["HIGH", "CRITICAL", "EMERGENCY", "high", "critical", "emergency"])
     .is("dispatched_at", null)
     .order("created_at", { ascending: true })
     .limit(50);
@@ -285,7 +285,7 @@ serve(async (req) => {
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
         _alert_type: alert.alert_type,
-        _severity: alert.severity,
+        _severity: alert.severity.toUpperCase(),
       });
       const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null; webhook_url: string | null; webhook_secret: string | null }>;
 
