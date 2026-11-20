@@ -6,7 +6,7 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 1. `seg-fio-entrada` - CONCLUIDO na PR #171: edge `process-solicitacao-neural` criado (JWT + rate limit + fallback), front consome `data.fields`, deploy confirmado.
 2. `fio-1` selecao de fornecedor na cotacao (backend trigger ja existe - diff front minimo; estende agendamento).
 3. `fio-3` Kanban -> usePedidos().updateStatus (front puro).
-4. `fio-2` aprovar workflow -> promover solicitacoes.status (migration + edge/RPC + trigger; requer chamada dono? additive, pode ir direto).
+4. `fio-2` - PR #173 aberta (aguardando dono, DDL prod): trigger SECURITY DEFINER promove solicitacoes.status p/ `aprovada`; validado em postgres ephemero (aprovada=2, pendente=1).
 
 ## T2 - seguranca
 5. `seg-passkey` desabilitar botao passkey em Auth.tsx (fail-closed) ate reescrever assinatura COSE.
