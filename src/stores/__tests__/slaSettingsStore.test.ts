@@ -17,7 +17,7 @@ const DEFAULT = {
   checkIntervalMinutes: 1,
   enableBrowserNotifications: true,
   enableEmailNotifications: true,
-  emailRecipients: ['compras@promobrindes.com.br'],
+  emailRecipients: [],
   supplierSLAThreshold: 85,
   enableSupplierAlerts: true,
   supplierAlertConfigs: [],
@@ -45,8 +45,8 @@ describe('initial state', () => {
     expect(getStore().settings.supplierSLAThreshold).toBe(85);
   });
 
-  it('has default email recipient', () => {
-    expect(getStore().settings.emailRecipients).toContain('compras@promobrindes.com.br');
+  it('starts with no fake email recipient (multi-tenant)', () => {
+    expect(getStore().settings.emailRecipients).toEqual([]);
   });
 
   it('starts with empty supplierAlertConfigs', () => {
