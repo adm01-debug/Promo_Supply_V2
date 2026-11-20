@@ -354,7 +354,8 @@ const Auth = () => {
                         type="button"
                         variant="outline"
                         className="h-11 rounded-2xl bg-white/[0.02] border-white/10 hover:bg-white/[0.06] hover:border-white/20 text-white font-medium text-sm"
-                        disabled={isPasskeyLoading || !loginEmail}
+                        disabled={true}
+                        title="Login por passkey desabilitado temporariamente por segurança (verificação de assinatura pendente). Use e-mail/senha."
                         onClick={async () => {
                           const target = loginEmail || passkeyEmail;
                           if (!target) {

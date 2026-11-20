@@ -52,11 +52,20 @@ serve(async (req) => {
 
     logger.info("Arquivo baixado com sucesso, simulando extração IA", { byteLength: fileData.size });
 
-    // Use Lovable AI Gateway to process document
-    // Simulate AI response
+    // Extração simulada (sem gateway de IA de documentos): derive o numero_nf
+    // de forma determinística a partir do conteúdo do arquivo, para que o mesmo
+    // documento sempre gere o mesmo número (conciliação/reupload estáveis).
+    const bytes = new Uint8Array(await fileData.arrayBuffer());
+    let hash = 0;
+    for (let i = 0; i < bytes.length; i++) {
+      hash = ((hash << 5) - hash + bytes[i]) & 0x7fffffff;
+    }
+    const numero_nf = `NF-SIM-${Math.abs(hash).toString().padStart(9, "0")}`;
+    const chave_acesso = `${String(Math.abs(hash)).padStart(44, "0")}`;
+
     const mockExtractedData = {
-      numero_nf: `PDF-${Math.floor(Math.random() * 100000)}`,
-      chave_acesso: "35231200000000000000000000000000000000000000",
+      numero_nf,
+      chave_acesso,
       data_emissao: new Date().toISOString().split('T')[0],
       valor_total: 1250.50,
       valor_produtos: 1200.00,
@@ -64,6 +73,7 @@ serve(async (req) => {
       items: [
         { descricao: "Extracted Item 1", quantidade: 10, valor_unitario: 120.00, valor_total: 1200.00 }
       ],
+      fonte: "simulacao",
       requestId: logger.getRequestId()
     };
 
