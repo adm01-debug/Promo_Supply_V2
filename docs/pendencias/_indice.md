@@ -30,7 +30,7 @@ catalogo, Fase 2 execucao vertical por item.
 | fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinÃ­stico |
 | fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | CONCLUIDO (PR #181, merge 2026-11-20) | KPI SLA/card fabricado removido; dashboard Executivo/KPIs usam dados reais via RPC; top-5 = 77.5% prod. `kpiTargetsStore` virou metas (objetivos), nao dados simulados |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | CONCLUIDO (PR #194, merge 2026-11-20) | default `emailRecipients: []` + seed via `profile.email` em `SLASettingsPanel.tsx` |
-| fake-kpi-targets | `kpiTargetsStore` metas fixas sem origem | PENDENTE | `kpiTargetsStore.ts` |
+| fake-kpi-targets | metas sao objetivos configuráveis (KPITargetsConfig + persist localStorage), não dados simulados | CONCLUIDO | `kpiTargetsStore.ts` |
 
 ## Edge functions (L10)
 | ID | Item | Estado | Fonte |
@@ -94,3 +94,4 @@ catalogo, Fase 2 execucao vertical por item.
 Nota: audit listou >150 itens NÃƒO IMPLEMENTADO e ~190 PARCIAL. Este cahier concentra os executaveis em ordem de
 impacto; detalhes completos estao em `auditoria-implementacao-261120.md` (Anexos A1-A7). Itens descartados so
 recebem registro quando gerada a decisao (evidencia de que ja funciona / escopo fora).
+
