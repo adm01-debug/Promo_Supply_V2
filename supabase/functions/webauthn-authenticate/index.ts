@@ -174,6 +174,14 @@ Deno.serve(async (req) => {
         throw new Error('Invalid credential type');
       }
 
+      // SECURITY: fail-closed. A autenticação por passkey não pode ser
+      // concluída enquanto a assinatura COSE (authResponse.signature) não for
+      // verificada contra a chave pública registrada. Sem essa verificação,
+      // qualquer um que possua o credential_id poderia autenticar sem provar
+      // posse da chave privada. Reativar apenas quando a verificação de
+      // assinatura estiver implementada e testada.
+      throw new Error('Login por passkey desabilitado: verificação de assinatura pendente. Use e-mail/senha.');
+
       // Update counter and last used
       const newCounter = (storedCred.counter || 0) + 1;
       await supabase

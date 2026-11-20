@@ -92,19 +92,64 @@ serve(async (req) => {
         \`\`\`
     `;
 
-    // Here we would call the Lovable AI Gateway (OpenAI/Anthropic)
-    // For now, we simulate a smart response.
-    
-    let aiResponse = "";
-    if (message.toLowerCase().includes("notebook") || message.toLowerCase().includes("computador")) {
-      aiResponse = "Entendi que você precisa de um Notebook. Temos opções no catálogo como 'Notebook Dell Latitude'. \n\nPosso iniciar uma solicitação de compra para você?";
-    } else if (message.toLowerCase().includes("caneta") || message.toLowerCase().includes("escritório")) {
-      aiResponse = "Temos diversos itens de papelaria. Recomendo o fornecedor 'Stricker' para estes itens. \n\nDeseja que eu monte o rascunho da solicitação?";
-    } else {
-      aiResponse = "Olá! Como posso ajudar você com suas compras hoje? Posso buscar itens no catálogo, encontrar fornecedores ou ajudar a criar novas solicitações.";
+    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+    if (!OPENROUTER_API_KEY) {
+      logger.error("OPENROUTER_API_KEY não configurada");
+      throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
-    return new Response(JSON.stringify({ response: aiResponse }), {
+    // Guided Buying usa o mesmo gateway unificado das outras edges de IA
+    // (OpenRouter, OpenAI-compatible) com circuit breaker + retry + fallback
+    // determinístico quando a IA está indisponível.
+    const { callAIGatewayWithFallback } = await import("../_shared/ai_gateway.ts");
+
+    const historyMessages = (history ?? []).map((m: { role?: string; content?: string }) => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.content ?? "",
+    }));
+
+    const aiResponseBody = await callAIGatewayWithFallback(
+      {
+        apiKey: OPENROUTER_API_KEY,
+        body: {
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...historyMessages,
+            { role: "user", content: message },
+          ],
+        },
+      },
+      (reason) => {
+        logger.warn("guided-buying-ai: usando fallback determinístico", { reason });
+        return {
+          response:
+            "Desculpe, o assistente de compras está temporariamente indisponível (IA offline). " +
+            "Você ainda pode pesquisar itens no catálogo ou abrir uma solicitação de compra. " +
+            "Recomendo aguardar alguns instantes e tentar novamente.",
+        };
+      },
+      corsHeaders,
+    );
+
+    if (aiResponseBody.usedFallback) {
+      return aiResponseBody.response;
+    }
+
+    if (!aiResponseBody.response.ok) {
+      const errorText = await aiResponseBody.response.text();
+      logger.error("AI Gateway error", { status: aiResponseBody.response.status, response: errorText });
+      throw new Error(`AI Gateway error: ${aiResponseBody.response.status}`);
+    }
+
+    const gatewayData = await aiResponseBody.response.json();
+    const content = gatewayData.choices?.[0]?.message?.content;
+
+    if (!content) {
+      throw new Error("No content in AI response");
+    }
+
+    return new Response(JSON.stringify({ response: content }), {
       headers: buildResponseHeaders(corsHeaders),
     });
 

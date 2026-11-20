@@ -22,6 +22,7 @@ interface ExtractedInvoiceData {
   valor_total: number;
   valor_produtos?: number | null;
   valor_frete?: number | null;
+  fonte?: string | null;
 }
 
 const LEGACY_TENANT_ID = "00000000-0000-0000-0000-000000000000";
@@ -157,7 +158,10 @@ const DocumentosFiscais = () => {
 
       if (dbError) throw dbError;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
-      toast.success(`Nota processada via IA com sucesso!`);
+      const fonteSimulada = extractedData.fonte === "simulacao";
+      toast.success(fonteSimulada
+        ? "Nota importada (extração simulada — revisar valores antes de conciliar)"
+        : "Nota processada via IA com sucesso!");
     } catch (err: unknown) {
       logger.error("fiscal_documents.pdf_upload_failed", { error: err });
       const message = err instanceof Error ? err.message : "Erro desconhecido";

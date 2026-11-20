@@ -5,7 +5,6 @@ import {
   Lightbulb, 
   TrendingUp, 
   TrendingDown, 
-  AlertTriangle, 
   ArrowRight,
   Zap,
   ShieldCheck,
@@ -50,21 +49,6 @@ export const DashboardInsights = () => {
         action: 'Revisar cotações em aberto',
         icon: Target,
         color: 'blue'
-      });
-    }
-
-    // Warning: SLA
-    if (kpis.taxaSlaReal < 85) {
-      const slaTrend = kpis.comparisons.sla.trend;
-      result.push({
-        id: '2',
-        type: 'warning',
-        title: 'Risco de Lead Time (SLA)',
-        description: `O cumprimento do SLA está em ${kpis.taxaSlaReal}%. ${slaTrend < 0 ? `Houve uma queda de ${Math.abs(Math.round(slaTrend))}%` : 'A tendência é de estabilidade'}, mas ainda abaixo da meta.`,
-        impact: 'Atrasos nas entregas podem impactar a operação.',
-        action: 'Analisar gargalos no SLA',
-        icon: AlertTriangle,
-        color: 'orange'
       });
     }
 

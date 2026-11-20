@@ -191,22 +191,6 @@ const ComprasDashboard = () => {
             />
           </InteractiveCard>
         );
-      case 'kpi-sla':
-        return (
-          <InteractiveCard>
-            <EnhancedKpiCard
-              title="Nível de Serviço (SLA)"
-              value={kpis.comparisons.sla.current}
-              previousValue={kpis.comparisons.sla.previous}
-              sparklineData={kpis.comparisons.sla.sparkline}
-              icon={BarChart3}
-              color="indigo"
-              subtitle={`${kpis.avgSla} dias (média) | ${kpis.comparisons.sla.current}% no prazo`}
-              format="number"
-              variant="default"
-            />
-          </InteractiveCard>
-        );
       case 'chart-pipeline':
         return (
           <Card className="p-6 h-full border-border/40 bg-card/50 backdrop-blur-sm">
@@ -365,7 +349,7 @@ const ComprasDashboard = () => {
         </motion.div>
 
         <EliteCardGrid columns={4} className="mb-8">
-          {['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].map(id => (
+          {['kpi-aguardando', 'kpi-volume', 'kpi-economia'].map(id => (
             <div key={id}>{getWidgetComponent(id)}</div>
           ))}
         </EliteCardGrid>
