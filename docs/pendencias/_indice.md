@@ -35,12 +35,12 @@ catalogo, Fase 2 execucao vertical por item.
 ## Edge functions (L10)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| edge-alert-sev | `alert-dispatcher` severidade `.in(["HIGH","CRITICAL"])` vs `critical`/`medium` + canal `webhook` fora do CHECK | PENDENTE | `alert-dispatcher/index.ts:247,337` |
+| edge-alert-sev | `alert-dispatcher` severidade `.in(["HIGH","CRITICAL"])` vs `critical`/`medium` + canal `webhook` fora do CHECK | CONCLUIDO (PR #189, merge 2026-11-20) | `alert-dispatcher/index.ts:247,337` |
 |  edge-sla-reve | `check-sla-alerts` regrediu - botao manual manda JWT usuario -> 401 | CONCLUIDO (PR #187, merge 2026-11-20) | `check-sla-alerts/index.ts:88` / `NotificationSettingsPanel.tsx:59` |
-| edge-xbz-cron | faltando `cron.schedule('xbz-sync-pedidos-30min')` | PENDENTE | `20260726151043:17,23,44` |
+| edge-xbz-cron | faltando `cron.schedule('xbz-sync-pedidos-30min')` | PR #191 ABERTA (regra 8 - DDL prod, aguardando dono) | `20260726151043:17,23,44` |
 | edge-spot | `spot-api` fora do deploy script | PENDENTE | deploy list vs workflow |
 | edge-erp | `erp-sync` stub 501 | PENDENTE (stub honesto) | `erp-sync/index.ts:74-105` |
-| edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | PENDENTE | `ai-supplier-risk/index.ts:37-38,162` |
+| edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | CONCLUIDO (PR #190, merge 2026-11-20) | `ai-supplier-risk/index.ts:37-38,162` |
 | edge-push | `send-push-notification` morta + VAPID nao usado | PENDENTE | `send-push-notification/index.ts:41-85` |
 | edge-audit | `run-audit` sem chamador | PENDENTE | run-audit/ |
 | edge-maintain | `maintain-partitions` morta | PENDENTE | seed `:37` |
