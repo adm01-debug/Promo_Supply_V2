@@ -1,4 +1,4 @@
-# Cahier de pendências — Promo_Supply_V2
+﻿# Cahier de pendÃªncias â€” Promo_Supply_V2
 
 Meta do objetivo: CADA item abaixo tem registro final em `docs/pendencias/<ID>-<slug>.md` com estado
 (CONCLUIDO / AGUARDANDO HUMANO / DESCARTADO), evidencia (arquivo:linha / diff / saida), camadas (DB/RLS/edge/UI),
@@ -26,8 +26,8 @@ catalogo, Fase 2 execucao vertical por item.
 ## Dados ficticios / fachadas que mentem na tela (impacto negocio)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | CONCLUIDO (PR #177) | `process-invoice-idp/index.ts` determinístico por hash + `fonte=simulacao`; toast honesto em `DocumentosFiscais.tsx` |
-| fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinístico |
+| fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | CONCLUIDO (PR #177) | `process-invoice-idp/index.ts` determinÃ­stico por hash + `fonte=simulacao`; toast honesto em `DocumentosFiscais.tsx` |
+| fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinÃ­stico |
 | fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | CONCLUIDO (PR #181, merge 2026-11-20) | KPI SLA/card fabricado removido; dashboard Executivo/KPIs usam dados reais via RPC; top-5 = 77.5% prod. `kpiTargetsStore` virou metas (objetivos), nao dados simulados |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | CONCLUIDO (PR #194, merge 2026-11-20) | default `emailRecipients: []` + seed via `profile.email` em `SLASettingsPanel.tsx` |
 | fake-kpi-targets | `kpiTargetsStore` metas fixas sem origem | PENDENTE | `kpiTargetsStore.ts` |
@@ -38,13 +38,13 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-alert-sev | `alert-dispatcher` severidade `.in(["HIGH","CRITICAL"])` vs `critical`/`medium` + canal `webhook` fora do CHECK | CONCLUIDO (PR #189, merge 2026-11-20) | `alert-dispatcher/index.ts:247,337` |
 |  edge-sla-reve | `check-sla-alerts` regrediu - botao manual manda JWT usuario -> 401 | CONCLUIDO (PR #187, merge 2026-11-20) | `check-sla-alerts/index.ts:88` / `NotificationSettingsPanel.tsx:59` |
 | edge-xbz-cron | faltando `cron.schedule('xbz-sync-pedidos-30min')` | PR #191 ABERTA (regra 8 - DDL prod, aguardando dono) | `20260726151043:17,23,44` |
-| edge-spot | `spot-api` fora do deploy script | CONCLUIDO — ACTIVE v14 em prod, deploy via `deploy-edge-functions.yml` (todo push em main com `supabase/functions/**`) | `spot-api/index.ts` + prod list API |
+| edge-spot | `spot-api` fora do deploy script | CONCLUIDO â€” ACTIVE v14 em prod, deploy via `deploy-edge-functions.yml` (todo push em main com `supabase/functions/**`) | `spot-api/index.ts` + prod list API |
 | edge-erp | `erp-sync` stub 501 | PENDENTE (stub honesto) | `erp-sync/index.ts:74-105` |
 | edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | CONCLUIDO (PR #190, merge 2026-11-20) | `ai-supplier-risk/index.ts:37-38,162` |
 | edge-push | `send-push-notification` morta + VAPID nao usado | PENDENTE | `send-push-notification/index.ts:41-85` |
 | edge-audit | `run-audit` sem chamador | PENDENTE | run-audit/ |
 | edge-maintain | `maintain-partitions` morta | PENDENTE | seed `:37` |
-| edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) — retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
+| edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) â€” retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
 | edge-bridge | `external-db-bridge` sem chamador prod | PENDENTE | so `validate-bridge.ts` |
 | edge-suggestion | `ai-supplier-suggestion` sem chamador em src | PENDENTE | contracts/deploy only |
 
@@ -55,11 +55,11 @@ catalogo, Fase 2 execucao vertical por item.
 | hk-fuse | `useFuseSearch` inteiro morto (so `normalizeText` usado) | PENDENTE | `useFuseSearch.ts:83,225,306,329` |
 | hk-offline | `useOfflineSync` fila vazia sempre | PENDENTE | `useOfflineSync.ts:98,282` |
 | hk-dlq | `useWorkflowDLQ` sem UI de retry | PENDENTE | `useWorkflowDLQ.ts:66,111,117,122` |
-| hk-badges | `useSidebarBadges` conta tabela errada (`workflow_approvals`) | CONCLUIDO — passa a contar `approval_workflows` por `organization_id` | `useSidebarBadges.ts:26` |
-| hk-permissions | `DependencyHealthBadge` usa `isAdmin` que nao existe -> nunca renderiza | CONCLUIDO — `useAuth().isAdmin` (fonte real), badge passa a renderizar para admin | `DependencyHealthBadge.tsx:102,116` |
-| hk-account-filter | `useAccountFilters` cast `as never` + error nao checado | PENDENTE | `useAccountFilters.ts:90,223` |
-| hk-buyer-perf | `useBuyerPerformanceData` taxa 80 literal + economia 0 | PENDENTE | `useBuyerPerformanceData.ts:222,281` |
-| hk-purchase-hist | avgDeliveryDays 0 hardcoded | PENDENTE | `usePurchaseHistory.ts:350` |
+| hk-badges | `useSidebarBadges` conta tabela errada (`workflow_approvals`) | CONCLUIDO â€” passa a contar `approval_workflows` por `organization_id` | `useSidebarBadges.ts:26` |
+| hk-permissions | `DependencyHealthBadge` usa `isAdmin` que nao existe -> nunca renderiza | CONCLUIDO â€” `useAuth().isAdmin` (fonte real), badge passa a renderizar para admin | `DependencyHealthBadge.tsx:102,116` |
+| hk-account-filter | `useAccountFilters` upsert tipado (sem cast never) | CONCLUIDO | `useAccountFilters.ts` |
+| hk-buyer-perf | `useBuyerPerformanceData` taxa real + economia por fornecedor | CONCLUIDO | `useBuyerPerformanceData.ts` |
+| hk-purchase-hist | avgDeliveryDays calculado por entrega real | CONCLUIDO | `usePurchaseHistory.ts` |
 | hk-push | `useRealPushNotifications` VAPID placeholder | PENDENTE | `useRealPushNotifications.ts:85-95` |
 | hk-idle | `useSessionIdleTimeout` catch vazio | PENDENTE | `useSessionIdleTimeout.ts:28-30` |
 
@@ -73,7 +73,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ui-spot-checkout | "Finalizar Pedido" SPOT so toast (compromisso financeiro - decisao do dono) | AGUARDANDO HUMANO | `CatalogoSpot.tsx:216` |
 | ui-bulk-undo | "Desfazer" em bulk so toast | PENDENTE | `BulkOperationsPreview.tsx:189` |
 | ui-erp-* | varios botoes ERP sem acao | PENDENTE | `ERPConnections.tsx:80,119,159,208,224` |
-| ui-workflow-* | WorkflowAdmin "Novo/Configurar/Regra/Editar" sem acao | CONCLUIDO (PR #193, merge 2026-11-20) | `WorkflowAdmin.tsx` — 4 botoes + dialogs de workflow e regra SoD |
+| ui-workflow-* | WorkflowAdmin "Novo/Configurar/Regra/Editar" sem acao | CONCLUIDO (PR #193, merge 2026-11-20) | `WorkflowAdmin.tsx` â€” 4 botoes + dialogs de workflow e regra SoD |
 | ui-magiclink | "Ver via Magic Link" disabled fixo | PENDENTE | `PortalFornecedor.tsx:378` |
 | ui-pedidos-com | "E-MAIL CRIPTOGRAFADO"/"HUB"/"REDESPACHO" sem acao | PENDENTE | `PedidoDetailsDialog.tsx:193,196,430` |
 | ui-exec-dash | carta executive/insights "GERAR PEDIDO PREDITIVO"/"FULL REPORT" sem acao | PENDENTE | Anexo A6 items 21-23,43 |
@@ -91,6 +91,6 @@ catalogo, Fase 2 execucao vertical por item.
 | doc-security | SECURITY.md OBSOLETO (14 WARNs vs 154 secdef) | PENDENTE | SECURITY.md:274 |
 | doc-secdef | get_user_role/has_permission classificados sem chamador | DESCARTADO (da lista de quebra) | secdef-classificacao.md:638 |
 
-Nota: audit listou >150 itens NÃO IMPLEMENTADO e ~190 PARCIAL. Este cahier concentra os executaveis em ordem de
+Nota: audit listou >150 itens NÃƒO IMPLEMENTADO e ~190 PARCIAL. Este cahier concentra os executaveis em ordem de
 impacto; detalhes completos estao em `auditoria-implementacao-261120.md` (Anexos A1-A7). Itens descartados so
 recebem registro quando gerada a decisao (evidencia de que ja funciona / escopo fora).
