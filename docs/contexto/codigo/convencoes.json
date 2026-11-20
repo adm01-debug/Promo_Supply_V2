@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)",
    "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)",
    "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)",
    "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)",
-   "chore(docs): marca edge-audit como concluido (PR #203) (#204)",
-   "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)"
+   "chore(docs): marca edge-audit como concluido (PR #203) (#204)"
   ]
  },
  "pr_template": null,

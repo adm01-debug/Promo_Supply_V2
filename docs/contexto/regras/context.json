@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "01db1d03f01d2b887718926a79e410c15480ccf8",
+  "sha": "271df2754a9b05f3bd8f5ca6bc5c02007cb39d9b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 22:54 UTC",
+  "generated_at": "2026-11-20 23:11 UTC",
   "files_total": 1254,
   "code_files": 1100,
   "code_lines": 190578,
@@ -112476,10 +112476,19 @@
   }
  },
  "git": {
-  "sha": "01db1d03f01d2b887718926a79e410c15480ccf8",
+  "sha": "271df2754a9b05f3bd8f5ca6bc5c02007cb39d9b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "271df27",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "01db1d0",
     "date": "2026-11-20",
@@ -112779,27 +112788,12 @@
      "docs/pendencias/_ordem.md",
      "docs/pendencias/_regras-de-negocio.md"
     ]
-   },
-   {
-    "sha": "f691f17",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assinatura (#177)",
-    "files": [
-     "src/components/compras/DashboardInsights.tsx",
-     "src/pages/auth/Auth.tsx",
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "supabase/functions/guided-buying-ai/index.ts",
-     "supabase/functions/process-invoice-idp/index.ts",
-     "supabase/functions/webauthn-authenticate/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
+    15
    ],
    [
     "docs/pendencias/_ordem.md",
