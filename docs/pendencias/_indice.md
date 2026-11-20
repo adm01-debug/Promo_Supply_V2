@@ -20,15 +20,15 @@ catalogo, Fase 2 execucao vertical por item.
 | seg-tenant-alerts | `useCriticalAlertsBadge` sem tenant/filtro | PENDENTE | `useCriticalAlertsBadge.ts:25-27` |
 | seg-mfa-bp | backup codes via `Math.random` | PENDENTE | `useMFA.ts:184` |
 | seg-lockout | `useAccountLockout` fail-open | PENDENTE | `useAccountLockout.ts:50-83` |
-| seg-scim | `scim-v2` nao em NO_JWT, sem `verify_jwt=false` | PENDENTE | `deploy…sh:109` / `config.toml` |
-| seg-punchout | cXML shared_secret nunca validado | PENDENTE | `punchout-receive` vs `punchout-encrypt` |
+| seg-scim | `scim-v2` nao em NO_JWT, sem `verify_jwt=false` | CONCLUIDO (PR #180, merge 2026-11-20 + deploy) | `config.toml` [functions.scim-v2] verify_jwt=false; edged prod scim-v2 verify_jwt=False v14 |
+| seg-punchout | cXML shared_secret nunca validado | CONCLUIDO (PR #180, merge 2026-11-20 + deploy) | `punchout-receive/index.ts:155-176` valida `shared_secret_encrypted` de `punchout_catalogs`; edged prod v17 verify_jwt=False |
 
 ## Dados ficticios / fachadas que mentem na tela (impacto negocio)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | CONCLUIDO (PR #177) | `process-invoice-idp/index.ts` determinístico por hash + `fonte=simulacao`; toast honesto em `DocumentosFiscais.tsx` |
 | fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinístico |
-| fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | PARCIAL (PR #177) | KPI SLA/card fabricado removido; KPI real via RPC. `useExecutiveDashboardData`, `kpiTargetsStore`, `slaSettingsStore` pendentes |
+| fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | CONCLUIDO (PR #181, merge 2026-11-20) | KPI SLA/card fabricado removido; dashboard Executivo/KPIs usam dados reais via RPC; top-5 = 77.5% prod. `kpiTargetsStore` virou metas (objetivos), nao dados simulados |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | PENDENTE | `slaSettingsStore.ts:37` |
 | fake-kpi-targets | `kpiTargetsStore` metas fixas sem origem | PENDENTE | `kpiTargetsStore.ts` |
 
