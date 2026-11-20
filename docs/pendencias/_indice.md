@@ -10,7 +10,7 @@ catalogo, Fase 2 execucao vertical por item.
 |---|---|---|---|
 | fio-1 | Selecao de fornecedor na cotacao nao chama `selectCotacao` | PENDENTE | `useCotacoes.ts:144` / `Cotacao.tsx:55` |
 | fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | PENDENTE | `useApprovalWorkflow.ts:201-226` + `20261113122616:91` |
-| fio-3 | Kanban de acompanhamento e no-op (toast) | PENDENTE | `Acompanhamento.tsx:144-146,313` |
+| fio-3 | Kanban de acompanhamento era no-op (toast) | CONCLUIDO | `Acompanhamento.tsx:144-146,313` / `fio-3-kanban-acompanhamento.md` |
 
 ## Seguranca
 | ID | Item | Estado | Fonte |
