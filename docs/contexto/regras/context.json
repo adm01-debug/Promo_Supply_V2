@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b1513317b16f7ee8848e4eedf073f224a1614511",
+  "sha": "3e84319c3448e199463dc1034fea86f1ae45ad2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 11:16 UTC",
-  "files_total": 1238,
-  "code_files": 1091,
-  "code_lines": 188162,
+  "generated_at": "2026-11-20 11:20 UTC",
+  "files_total": 1237,
+  "code_files": 1090,
+  "code_lines": 188158,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "f981778292e07ed0",
+ "facts_hash": "15b5142c16932d5b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 357,
+   ".ts": 356,
    ".tsx": 345,
    ".sql": 316,
    ".mjs": 66,
@@ -31963,23 +31963,6 @@
     "idempotency": false
    },
    {
-    "name": "test-auto-delete-reprova",
-    "file": "supabase/functions/test-auto-delete-reprova/index.ts",
-    "methods": [
-     "POST?"
-    ],
-    "auth": "n/d",
-    "tables": [],
-    "env": [],
-    "external": [],
-    "invokes": [],
-    "doc": "Dummy de prova: será publicada e depois removida para comprovar o delete automático de edge functions no caminho push.",
-    "errors": [],
-    "side_effects": [],
-    "webhook_events": [],
-    "idempotency": false
-   },
-   {
     "name": "webauthn-authenticate",
     "file": "supabase/functions/webauthn-authenticate/index.ts",
     "methods": [
@@ -35211,8 +35194,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 77,
-   "lines": 13860,
+   "files": 76,
+   "lines": 13856,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35370,7 +35353,6 @@
     "supabase/functions/system-simulation/index.ts",
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/telemetry/index.ts",
-    "supabase/functions/test-auto-delete-reprova/index.ts",
     "supabase/functions/tests/fuzzing_suite.ts",
     "supabase/functions/tests/integration_suite.ts",
     "supabase/functions/webauthn-authenticate/index.ts",
@@ -108967,11 +108949,6 @@
    ],
    "uses_service_role": true
   },
-  "supabase/functions/test-auto-delete-reprova/index.ts": {
-   "path": "supabase/functions/test-auto-delete-reprova/index.ts",
-   "lines": 4,
-   "doc": "Dummy de prova: será publicada e depois removida para comprovar o delete automático de edge functions no caminho push."
-  },
   "supabase/functions/tests/fuzzing_suite.ts": {
    "path": "supabase/functions/tests/fuzzing_suite.ts",
    "lines": 65,
@@ -111465,10 +111442,20 @@
   }
  },
  "git": {
-  "sha": "b1513317b16f7ee8848e4eedf073f224a1614511",
+  "sha": "3e84319c3448e199463dc1034fea86f1ae45ad2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3e84319",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "supabase/functions/test-auto-delete-reprova/index.ts"
+    ]
+   },
    {
     "sha": "b151331",
     "date": "2026-11-20",
@@ -111770,23 +111757,13 @@
     "files": [
      "supabase/migrations/20261117230000_retencao_fonte_unica.sql"
     ]
-   },
-   {
-    "sha": "efc2e5f",
-    "date": "2026-11-17",
-    "author": "adm01-debug",
-    "subject": "feat(recebimento): gera pedido complementar com o saldo do recebimento parcial (#137)",
-    "files": [
-     "src/components/compras/ReceivingModal.tsx",
-     "src/pages/recebimento/RecebimentoOffline.tsx",
-     "src/pages/recebimento/ReceivingFormView.tsx",
-     "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
-     "src/pages/recebimento/pedidoComplementar.ts",
-     "src/pages/recebimento/recebimentoHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    6
+   ],
    [
     "bun.lock",
     6
@@ -111794,10 +111771,6 @@
    [
     "package.json",
     6
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    5
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",
@@ -111810,6 +111783,10 @@
    [
     "scripts/rls-audit.allowlist.json",
     3
+   ],
+   [
+    "supabase/functions/test-auto-delete-reprova/index.ts",
+    2
    ],
    [
     "supabase/functions/test-auto-delete/index.ts",
@@ -111826,10 +111803,6 @@
    [
     "src/pages/admin/DeveloperDocs.tsx",
     2
-   ],
-   [
-    "supabase/functions/test-auto-delete-reprova/index.ts",
-    1
    ],
    [
     "supabase/config.toml",
