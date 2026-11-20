@@ -34,7 +34,7 @@ const DEFAULT_SETTINGS: SLASettings = {
   checkIntervalMinutes: 1,
   enableBrowserNotifications: true,
   enableEmailNotifications: true,
-  emailRecipients: ['compras@promobrindes.com.br'],
+  emailRecipients: [],
   supplierSLAThreshold: 85,
   enableSupplierAlerts: true,
   supplierAlertConfigs: [],
