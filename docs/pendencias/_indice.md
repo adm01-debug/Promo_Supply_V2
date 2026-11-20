@@ -41,7 +41,7 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-spot | `spot-api` fora do deploy script | CONCLUIDO â€” ACTIVE v14 em prod, deploy via `deploy-edge-functions.yml` (todo push em main com `supabase/functions/**`) | `spot-api/index.ts` + prod list API |
 | edge-erp | `erp-sync` stub 501 | PENDENTE (stub honesto) | `erp-sync/index.ts:74-105` |
 | edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | CONCLUIDO (PR #190, merge 2026-11-20) | `ai-supplier-risk/index.ts:37-38,162` |
-| edge-push | `send-push-notification` morta + VAPID nao usado | PENDENTE | `send-push-notification/index.ts:41-85` |
+| edge-push | `send-push-notification` usa VAPID (JWT ES256) + cifragem aes128gcm (RFC 8291) | CONCLUIDO | #205 / `webpush.ts` |
 | edge-audit | `run-audit` sem chamador | CONCLUIDO (PR #203, merge 2026-11-11) — painel Compliance RLS em /auditoria (admin) | run-audit/ + RlsCompliancePanel.tsx |
 | edge-maintain | `maintain-partitions` morta | PENDENTE | seed `:37` |
 | edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) â€” retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
