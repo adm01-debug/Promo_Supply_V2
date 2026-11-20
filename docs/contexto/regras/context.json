@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
+  "sha": "044001f48828a1a8ab50a02b15c2ea4b53b2962d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 20:19 UTC",
+  "generated_at": "2026-11-20 20:28 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 189121,
+  "code_lines": 189123,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5ca8727a50860419",
+ "facts_hash": "309f9c9d4da88b3a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34509,7 +34509,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12323,
+   "lines": 12325,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34566,8 +34566,7 @@
     "system_alerts",
     "user_filter_preferences",
     "user_tour_preferences",
-    "webauthn_credentials",
-    "workflow_approvals"
+    "webauthn_credentials"
    ],
    "exports": [
     "approvalWorkflowTypes.ts: ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalWorkflowRelations, ApprovalWorkflowWithRelations, ApprovalStep",
@@ -35707,6 +35706,7 @@
     "select": [
      "src/components/compras/CriticalAlertsBar.tsx",
      "src/hooks/useApprovalWorkflow.ts",
+     "src/hooks/useSidebarBadges.ts",
      "src/tests/integration/supabase-db.test.ts"
     ],
     "insert": [
@@ -37003,9 +37003,6 @@
     ]
    },
    "workflow_approvals": {
-    "select": [
-     "src/hooks/useSidebarBadges.ts"
-    ],
     "update": [
      "supabase/functions/workflow-engine/index.ts"
     ]
@@ -37758,10 +37755,8 @@
     "status"
    ],
    "workflow_approvals": [
-    "id",
     "instance_id",
-    "node_id",
-    "status"
+    "node_id"
    ],
    "workflow_edges": [
     "source_node_id",
@@ -98611,7 +98606,7 @@
   },
   "src/hooks/useSidebarBadges.ts": {
    "path": "src/hooks/useSidebarBadges.ts",
-   "lines": 40,
+   "lines": 42,
    "exports": [
     "interface SidebarBadges",
     "function useSidebarBadges"
@@ -98630,25 +98625,29 @@
      "op": "select"
     },
     {
-     "table": "workflow_approvals",
+     "table": "approval_workflows",
      "op": "select"
     }
    ],
    "table_cols": {
     "solicitacoes": [
      "id",
+     "organization_id",
      "status"
     ],
     "cotacoes": [
      "id",
+     "organization_id",
      "status"
     ],
     "pagamentos": [
      "id",
+     "organization_id",
      "status"
     ],
-    "workflow_approvals": [
+    "approval_workflows": [
      "id",
+     "organization_id",
      "status"
     ]
    },
@@ -112071,10 +112070,21 @@
   }
  },
  "git": {
-  "sha": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
+  "sha": "044001f48828a1a8ab50a02b15c2ea4b53b2962d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "044001f",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/components/admin/DependencyHealthBadge.tsx",
+     "src/hooks/useSidebarBadges.ts"
+    ]
+   },
    {
     "sha": "0c33e56",
     "date": "2026-11-20",
@@ -112370,22 +112380,12 @@
     "files": [
      ".github/workflows/deploy-edge-functions.yml"
     ]
-   },
-   {
-    "sha": "2a86602",
-    "date": "2026-11-19",
-    "author": "adm01-debug",
-    "subject": "fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/functions/test-auto-delete/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    11
+    12
    ],
    [
     "docs/pendencias/_ordem.md",
@@ -112393,7 +112393,7 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    5
+    4
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -112410,6 +112410,14 @@
    [
     "supabase/functions/test-auto-delete-reprova/index.ts",
     2
+   ],
+   [
+    "src/components/admin/DependencyHealthBadge.tsx",
+    1
+   ],
+   [
+    "src/hooks/useSidebarBadges.ts",
+    1
    ],
    [
     "src/stores/__tests__/slaSettingsStore.test.ts",
@@ -112453,14 +112461,6 @@
    ],
    [
     "supabase/config.toml",
-    1
-   ],
-   [
-    "supabase/functions/_shared/punchout_crypto.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/punchout_crypto.ts",
     1
    ]
   ]

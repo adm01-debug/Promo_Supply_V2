@@ -78,7 +78,7 @@
   "src/components/admin/DependencyHealthBadge.tsx": [
    "src/components/ui/button.tsx",
    "src/components/ui/tooltip.tsx",
-   "src/hooks/usePermissions.ts",
+   "src/features/auth/index.ts",
    "src/lib/utils.ts"
   ],
   "src/components/admin/InstallReportHelp.tsx": [
@@ -2108,6 +2108,7 @@
    "src/lib/feedbackToast.ts"
   ],
   "src/hooks/useSidebarBadges.ts": [
+   "src/features/auth/index.ts",
    "src/integrations/supabase/client.ts"
   ],
   "src/hooks/useSpotIntegration.ts": [

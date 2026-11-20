@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0c33e569d2f5670ab67e8fa86c86a7c3c0563cce` (2026-11-20T17:18:37-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `044001f48828a1a8ab50a02b15c2ea4b53b2962d` (2026-11-20T17:28:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 163161 |
+| linhas_codigo | 163163 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -70,15 +70,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
-| components/admin | 0 | 0 | 9 | 5 | 1 | 7 |
-| components/compras | 0 | 0 | 102 | 80 | 6 | 59 |
+| components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
+| components/compras | 0 | 0 | 102 | 79 | 6 | 56 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
-| features/layout | 0 | 0 | 32 | 77 | 6 | 55 |
-| hooks | 0 | 0 | 61 | 56 | 6 | 60 |
+| features/layout | 0 | 0 | 32 | 76 | 6 | 52 |
+| hooks | 0 | 0 | 61 | 56 | 6 | 59 |
 | lib | 0 | 0 | 23 | 53 | 5 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
@@ -89,10 +89,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 82 | 7 | 59 |
-| pages/catalogo-xbz | 1 | 1 | 9 | 79 | 7 | 55 |
+| pages/catalogo-spot | 1 | 1 | 6 | 81 | 7 | 56 |
+| pages/catalogo-xbz | 1 | 1 | 9 | 78 | 7 | 52 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
-| pages/configuracoes | 1 | 1 | 1 | 77 | 6 | 55 |
+| pages/configuracoes | 1 | 1 | 1 | 76 | 6 | 52 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
 | pages/cotacao | 1 | 2 | 2 | 14 | 1 | 14 |
 | pages/dashboard | 3 | 2 | 2 | 28 | 2 | 26 |
@@ -104,18 +104,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/gerar-ordem | 0 | 1 | 2 | 8 | 1 | 9 |
 | pages/historico | 1 | 1 | 7 | 7 | 1 | 11 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 77 | 6 | 55 |
+| pages/licitacoes | 1 | 1 | 2 | 76 | 6 | 52 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
-| pages/orcamentos | 1 | 1 | 1 | 78 | 6 | 56 |
+| pages/orcamentos | 1 | 1 | 1 | 77 | 6 | 53 |
 | pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
 | pages/pedidos | 1 | 1 | 3 | 13 | 1 | 8 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 78 | 6 | 56 |
-| pages/qualificacao | 1 | 1 | 1 | 78 | 6 | 59 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 77 | 6 | 53 |
+| pages/qualificacao | 1 | 1 | 1 | 77 | 6 | 56 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 6 | 2 | 8 |
-| pages/seguranca | 1 | 1 | 1 | 83 | 9 | 68 |
+| pages/seguranca | 1 | 1 | 1 | 83 | 9 | 67 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
@@ -329,8 +329,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
+- docs/pendencias/_indice.md (12)
 - package.json (12)
-- docs/pendencias/_indice.md (11)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `044001f` fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)
 - 2026-11-20 `0c33e56` fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)
 - 2026-11-20 `7191493` feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)
 - 2026-11-20 `68c7c74` chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `3b8e89b` chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)
 - 2026-11-20 `a0f4bb2` fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)
 - 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
-- 2026-11-20 `134e364` chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

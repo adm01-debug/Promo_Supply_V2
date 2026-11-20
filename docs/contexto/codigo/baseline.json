@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0c33e569d2f5670ab67e8fa86c86a7c3c0563cce",
+  "commit": "044001f48828a1a8ab50a02b15c2ea4b53b2962d",
   "branch": "main",
-  "data_commit": "2026-11-20T17:18:37-03:00",
+  "data_commit": "2026-11-20T17:28:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "044001f",
+    "data": "2026-11-20",
+    "assunto": "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)"
+   },
    {
     "sha": "0c33e56",
     "data": "2026-11-20",
@@ -126,18 +131,17 @@
     "sha": "8beaac2",
     "data": "2026-11-20",
     "assunto": "fix: persiste selecao de cotacao vencedora via selectCotacao (#169)"
-   },
-   {
-    "sha": "a19f3fa",
-    "data": "2026-11-20",
-    "assunto": "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)"
    }
   ],
-  "arquivos_mudados_7d": 163,
+  "arquivos_mudados_7d": 165,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
     "mudancas": 27
+   },
+   {
+    "pasta": "docs/pendencias/_indice.md",
+    "mudancas": 12
    },
    {
     "pasta": "package.json",
@@ -146,10 +150,6 @@
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 12
-   },
-   {
-    "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 11
    },
    {
     "pasta": "supabase/functions/punchout-receive",
@@ -198,12 +198,12 @@
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": "package.json",
+    "arquivo": "docs/pendencias/_indice.md",
     "mudancas": 12
    },
    {
-    "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 11
+    "arquivo": "package.json",
+    "mudancas": 12
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 159
+    "commits": 160
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1247,
   "arquivos_codigo": 775,
-  "linhas_codigo": 163161,
+  "linhas_codigo": 163163,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -432,7 +432,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12323
+   "linhas": 12325
   },
   "src/i18n": {
    "arquivos": 1,

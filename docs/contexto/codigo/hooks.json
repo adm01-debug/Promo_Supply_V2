@@ -304,9 +304,10 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 66,
+   "usado_por": 68,
    "usado_por_arquivos": [
     "src/App.tsx",
+    "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/admin/TenantSwitcher.tsx",
     "src/components/compras/BuyerPerformancePanel.tsx",
     "src/components/compras/ContractDetailsModal.tsx",
@@ -334,8 +335,7 @@
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/hooks/useApprovalRules.ts",
     "src/hooks/useApprovalWorkflow.ts",
-    "src/hooks/useBudgetManagement.ts",
-    "src/hooks/useBuyerPerformanceData.ts"
+    "src/hooks/useBudgetManagement.ts"
    ],
    "coberto_por_testes": 2
   },
@@ -1629,9 +1629,8 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/security/PermissionGate.tsx",
     "src/components/security/PermissionMatrix.tsx"
    ],
@@ -1948,17 +1947,19 @@
    "hooks_exportados": [
     "useSidebarBadges"
    ],
-   "linhas": 40,
+   "linhas": 42,
    "dominio": "hooks",
    "tabelas": [
+    "approval_workflows",
     "cotacoes",
     "pagamentos",
-    "solicitacoes",
-    "workflow_approvals"
+    "solicitacoes"
    ],
    "rpcs": [],
    "edges": [],
-   "hooks_internos": [],
+   "hooks_internos": [
+    "useAuth"
+   ],
    "canais_realtime": [],
    "usado_por": 1,
    "usado_por_arquivos": [

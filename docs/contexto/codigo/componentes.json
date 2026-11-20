@@ -150,7 +150,7 @@
    "linhas": 212,
    "dominio": "components/admin",
    "hooks_locais": [
-    "usePermissions"
+    "useAuth"
    ],
    "tabelas": [],
    "edges": [],

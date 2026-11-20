@@ -222,7 +222,6 @@
     "useAuth",
     "useFeedback",
     "useFeedbackPreferences",
-    "usePermissions",
     "useToast"
    ],
    "hooks_definidos": [],
@@ -230,9 +229,7 @@
     "telemetry"
    ],
    "tabelas": [
-    "permissions",
     "profiles",
-    "role_permissions",
     "system_alerts",
     "telemetry_logs",
     "user_roles",
@@ -423,7 +420,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -506,13 +502,11 @@
     "pedido_itens",
     "pedidos",
     "penalty_escalation_config",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
     "qualification_history",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -526,8 +520,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -1938,7 +1931,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -2017,12 +2009,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -2034,8 +2024,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -2293,7 +2282,7 @@
    "modulo": "hooks",
    "arquivos": 61,
    "testes": 0,
-   "linhas": 10786,
+   "linhas": 10788,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2502,8 +2491,7 @@
     "user_roles",
     "user_tenants",
     "user_tour_preferences",
-    "webauthn_credentials",
-    "workflow_approvals"
+    "webauthn_credentials"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -2595,8 +2583,7 @@
      "system_alerts",
      "user_filter_preferences",
      "user_tour_preferences",
-     "webauthn_credentials",
-     "workflow_approvals"
+     "webauthn_credentials"
     ],
     "rpcs": [
      "check_budget_availability",
@@ -3912,7 +3899,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -3998,12 +3984,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -4019,8 +4003,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -4140,7 +4123,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -4217,12 +4199,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -4234,8 +4214,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -4414,7 +4393,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -4489,12 +4467,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -4506,8 +4482,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -5466,7 +5441,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -5541,12 +5515,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -5558,8 +5530,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -5746,7 +5717,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -5822,12 +5792,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -5839,8 +5807,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -6125,7 +6092,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePortalFornecedorData",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -6203,12 +6169,10 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -6221,8 +6185,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -6343,7 +6306,6 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
-    "usePermissions",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -6419,14 +6381,12 @@
     "payment_history",
     "pedido_itens",
     "pedidos",
-    "permissions",
     "produto_fornecedores",
     "produtos",
     "profiles",
     "push_subscriptions",
     "qualification_history",
     "qualification_requirements",
-    "role_permissions",
     "solicitacoes",
     "sourcing_event_criteria",
     "sourcing_event_lots",
@@ -6440,8 +6400,7 @@
     "user_filter_preferences",
     "user_roles",
     "user_tenants",
-    "user_tour_preferences",
-    "workflow_approvals"
+    "user_tour_preferences"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -6962,8 +6921,7 @@
     "user_roles",
     "user_tenants",
     "user_tour_preferences",
-    "webauthn_credentials",
-    "workflow_approvals"
+    "webauthn_credentials"
    ],
    "rpcs": [
     "check_budget_availability",
@@ -7434,7 +7392,6 @@
     "user_tour_preferences",
     "v_system_health_overview",
     "webauthn_credentials",
-    "workflow_approvals",
     "workflow_sod_rules",
     "workflow_templates"
    ],
