@@ -1,4 +1,4 @@
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret, getAuthUser } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
@@ -85,8 +85,18 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  // Invocacao por cron (pg_net) usa CRON_SECRET; o botao manual do front
+  // envia o JWT do usuario autenticado. Aceitamos ambas: cron autorizado ou
+  // usuario valido (ex: membro logado acionando a verificacao na UI).
+  let authorized = false;
   const cronDenied = verifyCronSecret(req);
-  if (cronDenied) return cronDenied;
+  if (!cronDenied) {
+    authorized = true;
+  } else {
+    const { user } = await getAuthUser(req);
+    if (user) authorized = true;
+  }
+  if (!authorized) return cronDenied;
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
