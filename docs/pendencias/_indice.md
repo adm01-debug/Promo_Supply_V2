@@ -9,7 +9,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | fio-1 | Selecao de fornecedor na cotacao nao chamava `selectCotacao` | CONCLUIDO | `Cotacao.tsx` / `fio-1-cotacao-selecao.md` |
-| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | PENDENTE | `useApprovalWorkflow.ts:201-226` + `20261113122616:91` |
+| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | PR ABERTA (regra 8 - DDL prod, aguarda dono) | PR #173 - trigger `auto_transition_solicitacao_on_workflow_approved`; testado em postgres (aprovada=2, pendente=1) |
 | fio-3 | Kanban de acompanhamento era no-op (toast) | CONCLUIDO | `Acompanhamento.tsx:144-146,313` / `fio-3-kanban-acompanhamento.md` |
 
 ## Seguranca
