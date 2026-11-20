@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-import { fetchWithTimeout } from "../_shared/http.ts";
+import { sendWebPush } from "./webpush.ts";
 interface PushPayload {
   title: string;
   message: string;
@@ -13,11 +13,6 @@ interface PushPayload {
   action_url?: string;
   action_label?: string;
   user_ids?: string[];
-}
-
-function base64UrlEncode(input: Uint8Array): string {
-  const base64 = btoa(String.fromCharCode(...input));
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 async function verifyAuthUser(req: Request): Promise<string> {
@@ -38,67 +33,25 @@ async function verifyAuthUser(req: Request): Promise<string> {
   return user.id;
 }
 
-async function generateVapidAuth(endpoint: string, vapidPublicKey: string, vapidPrivateKey: string): Promise<{ authorization: string; cryptoKey: string }> {
-  const urlObj = new URL(endpoint);
-  const audience = `${urlObj.protocol}//${urlObj.host}`;
-  
-  const header = { typ: 'JWT', alg: 'ES256' };
-  const payload = {
-    aud: audience,
-    exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,
-    sub: 'mailto:admin@sistema-compras.com'
-  };
-
-  const headerB64 = base64UrlEncode(new TextEncoder().encode(JSON.stringify(header)));
-  const payloadB64 = base64UrlEncode(new TextEncoder().encode(JSON.stringify(payload)));
-  const unsignedToken = `${headerB64}.${payloadB64}`;
-
-  const privateKeyData = Uint8Array.from(atob(vapidPrivateKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
-  
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    privateKeyData,
-    { name: 'ECDSA', namedCurve: 'P-256' },
-    false,
-    ['sign']
-  );
-
-  const signature = await crypto.subtle.sign(
-    { name: 'ECDSA', hash: 'SHA-256' },
-    cryptoKey,
-    new TextEncoder().encode(unsignedToken)
-  );
-
-  const signatureB64 = base64UrlEncode(new Uint8Array(signature));
-  const jwt = `${unsignedToken}.${signatureB64}`;
-
-  return {
-    authorization: `vapid t=${jwt}, k=${vapidPublicKey}`,
-    cryptoKey: vapidPublicKey
-  };
-}
-
 async function sendPushToSubscription(
   subscription: { endpoint: string; p256dh: string; auth: string },
   payload: { title: string; body: string; icon?: string; tag?: string; data?: Record<string, unknown> },
-  _vapidPublicKey: string,
-  _vapidPrivateKey: string
+  vapidPublicKey: string,
+  vapidPrivateKey: string
 ): Promise<boolean> {
   try {
     const payloadString = JSON.stringify(payload);
-    
-    const response = await fetchWithTimeout(subscription.endpoint, {
-      timeoutMs: 10000,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'TTL': '86400',
-      },
-      body: payloadString,
-    });
 
-    if (!response.ok) {
-      console.error(`Push failed for ${subscription.endpoint}: ${response.status}`);
+    // VAPID (JWT ES256) + cifragem aes128gcm (RFC 8291). Sem esses headers o
+    // push nao chega ao dispositivo — antes era um POST JSON sem Authorization.
+    const success = await sendWebPush(
+      { endpoint: subscription.endpoint, p256dh: subscription.p256dh, auth: subscription.auth },
+      payloadString,
+      { publicKey: vapidPublicKey, privateKey: vapidPrivateKey }
+    );
+
+    if (!success) {
+      console.error(`Push failed for ${subscription.endpoint}`);
       return false;
     }
 
