@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1f3af8000498eb6c5cd7ff8eb499edfd38d12043` (2026-11-20T18:56:56-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `60860f7d2846591542053af5c294abe866cd1bf2` (2026-11-20T19:01:36-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (17)
+- docs/pendencias/_indice.md (18)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
@@ -410,6 +410,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `60860f7` chore(docs): marca edge-audit como concluido (PR #203) (#204)
 - 2026-11-20 `1f3af80` feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)
 - 2026-11-20 `2bfc15b` fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)
 - 2026-11-20 `8102f2f` fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)
@@ -424,7 +425,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `68c7c74` chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)
 - 2026-11-20 `2547016` fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)
 - 2026-11-20 `a712aa3` fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)
-- 2026-11-20 `8fc7ca6` chore(docs): registra edge-sla-reve concluido na PR #187 (#188)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

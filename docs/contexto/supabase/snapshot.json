@@ -40133,6 +40133,10 @@
               "hits": 1
             },
             {
+              "file": "supabase/functions/erp-credential-encrypt/index.ts",
+              "hits": 2
+            },
+            {
               "file": "supabase/functions/health-dashboard/index.ts",
               "hits": 1
             },
@@ -40235,13 +40239,9 @@
             {
               "file": "supabase/migrations/20260317221930_6ff9ef15-fd95-46cf-a510-b191668eeadb.sql",
               "hits": 37
-            },
-            {
-              "file": "supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql",
-              "hits": 4
             }
           ],
-          "code_total_files": 76,
+          "code_total_files": 77,
           "cron": [],
           "db": [
             "public.count_legacy_storage_urls",

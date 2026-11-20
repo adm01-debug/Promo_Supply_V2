@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(docs): marca edge-audit como concluido (PR #203) (#204)",
    "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)",
    "fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)",
    "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)",
-   "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)",
-   "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)"
+   "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)"
   ]
  },
  "pr_template": null,

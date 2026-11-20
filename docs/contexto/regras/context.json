@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "1f3af8000498eb6c5cd7ff8eb499edfd38d12043",
+  "sha": "60860f7d2846591542053af5c294abe866cd1bf2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 21:57 UTC",
+  "generated_at": "2026-11-20 22:10 UTC",
   "files_total": 1252,
   "code_files": 1098,
   "code_lines": 190063,
@@ -112425,10 +112425,19 @@
   }
  },
  "git": {
-  "sha": "1f3af8000498eb6c5cd7ff8eb499edfd38d12043",
+  "sha": "60860f7d2846591542053af5c294abe866cd1bf2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "60860f7",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(docs): marca edge-audit como concluido (PR #203) (#204)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "1f3af80",
     "date": "2026-11-20",
@@ -112733,16 +112742,6 @@
      "docs/pendencias/_indice.md",
      "docs/pendencias/_ordem.md"
     ]
-   },
-   {
-    "sha": "4c7e836",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/_ordem.md"
-    ]
    }
   ],
   "hot_files": [
@@ -112752,7 +112751,7 @@
    ],
    [
     "docs/pendencias/_ordem.md",
-    6
+    5
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
