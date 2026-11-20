@@ -179,10 +179,18 @@ export const useMFA = () => {
     mutationFn: async () => {
       if (!user) throw new Error('User not authenticated');
 
-      // Generate 10 random backup codes
-      const codes = Array.from({ length: 10 }, () =>
-        Math.random().toString(36).substring(2, 8).toUpperCase()
-      );
+      // Generate 10 cryptographically-secure backup codes (8 alnum chars each)
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const codes: string[] = [];
+      const arr = new Uint32Array(4);
+      for (let i = 0; i < 10; i++) {
+        window.crypto.getRandomValues(arr);
+        let code = '';
+        for (let j = 0; j < 8; j++) {
+          code += chars[arr[j % 4] % chars.length];
+        }
+        codes.push(code);
+      }
 
       await supabase.from('mfa_settings').update({
         backup_codes: codes,

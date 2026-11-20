@@ -49,7 +49,7 @@ export const useAccountLockout = () => {
 
       if (error) {
         logger.error('Error checking lockout:', { error: error });
-        return { locked: false, remainingSeconds: 0 };
+        return { locked: true, remainingSeconds: 30 };
       }
 
       const result = data as { locked: boolean; remaining_seconds: number; locked_until?: string };
@@ -67,7 +67,7 @@ export const useAccountLockout = () => {
       return status;
     } catch (error) {
       logger.error('Error checking lockout:', { error: error });
-      return { locked: false, remainingSeconds: 0 };
+      return { locked: true, remainingSeconds: 30 };
     }
   }, []);
 
