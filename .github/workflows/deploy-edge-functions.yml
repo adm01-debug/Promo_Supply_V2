@@ -137,7 +137,7 @@ jobs:
           # ("Nada a deployar") e a function continuava viva em producao - foi o
           # caso do migrate-helper, HTTP 200 meses apos a remocao do codigo-fonte.
           antigas="$(git ls-tree -r --name-only "${base}" "${raiz}" 2>/dev/null \
-                      | sed -n "s#^${raiz}/\([^/]*\)/index\.ts$#\1#p" | sort -u || true)"
+                      | sed -n 's#^'"${raiz}"'/\([^/]*\)/index\.ts$#\1#p' | sort -u || true)"
           if [[ -n "${antigas}" ]]; then
             sumiram="$(comm -23 <(printf '%s\n' "${antigas}") <(printf '%s\n' "${validas}") || true)"
             removidas="$(comm -12 <(printf '%s\n' "${sumiram}") <(printf '%s\n' "${selecao}") || true)"
