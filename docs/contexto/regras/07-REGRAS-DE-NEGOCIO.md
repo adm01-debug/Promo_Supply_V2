@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `134e364d36` · branch `main` · 2026-11-20 18:14 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cc9dceed57` · branch `main` · 2026-11-20 18:34 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1610,9 +1610,7 @@ _nenhum item encontrado_
 | `x: -380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `x: 380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });` | `src/features/layout/components/AdvancedSearch.tsx` |
-| `maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)` | `src/hooks/useExecutiveDashboardData.ts` |
 | `savings: { value: savings, target: savings * 0.8 },` | `src/hooks/useExecutiveDashboardData.ts` |
-| `tailSpend: { value: totalSpend * 0.12, percentage: 12.0 }, // Simulated tail spend (low value, high volume)` | `src/hooks/useExecutiveDashboardData.ts` |
 | `gainNode.gain.linearRampToValueAtTime(volume * 0.3, startTime + 0.01);` | `src/hooks/useFeedback.ts` |
 | `// Explicit columns: drops ~30% payload vs `*` on wide table.` | `src/hooks/useProdutos.ts` |
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |

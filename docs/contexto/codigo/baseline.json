@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "134e364d364b2d651a9a8b7ad3e3217188748d39",
+  "commit": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
   "branch": "main",
-  "data_commit": "2026-11-20T14:14:45-03:00",
+  "data_commit": "2026-11-20T15:33:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "cc9dcee",
+    "data": "2026-11-20",
+    "assunto": "fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)"
+   },
    {
     "sha": "134e364",
     "data": "2026-11-20",
@@ -126,18 +131,13 @@
     "sha": "cfa585f",
     "data": "2026-11-19",
     "assunto": "fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup"
-   },
-   {
-    "sha": "69e604f",
-    "data": "2026-11-19",
-    "assunto": "fix(audit): allowlist da política Authenticated can view versions de entity_versions (#155)"
    }
   ],
-  "arquivos_mudados_7d": 152,
+  "arquivos_mudados_7d": 156,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 25
+    "mudancas": 27
    },
    {
     "pasta": "package.json",
@@ -234,15 +234,15 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/pendencias/_ordem.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "AGENTS.md",
     "mudancas": 5
    },
    {
     "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 5
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 145
+    "commits": 146
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1245,
   "arquivos_codigo": 773,
-  "linhas_codigo": 162449,
+  "linhas_codigo": 162562,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -424,15 +424,15 @@
   },
   "src/components": {
    "arquivos": 259,
-   "linhas": 48358
+   "linhas": 48406
   },
   "src/features": {
    "arquivos": 64,
-   "linhas": 8459
+   "linhas": 8473
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12254
+   "linhas": 12305
   },
   "src/i18n": {
    "arquivos": 1,
@@ -621,6 +621,10 @@
    "linhas": 564
   },
   {
+   "arquivo": "src/components/compras/AdvancedProcurementKPIs.tsx",
+   "linhas": 531
+  },
+  {
    "arquivo": "src/components/compras/EnhancedPedidoTimeline.tsx",
    "linhas": 524
   },
@@ -639,10 +643,6 @@
   {
    "arquivo": "src/pages/buyer/BuyerPerformanceDashboard.tsx",
    "linhas": 511
-  },
-  {
-   "arquivo": "src/components/compras/PriceComparator.tsx",
-   "linhas": 504
   }
  ],
  "qualidade": {
@@ -651,7 +651,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 25
+  "arquivos_acima_500_linhas": 26
  },
  "todos": [
   {

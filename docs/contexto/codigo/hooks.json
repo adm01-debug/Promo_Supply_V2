@@ -303,7 +303,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 64,
+   "usado_por": 65,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/TenantSwitcher.tsx",
@@ -326,6 +326,7 @@
     "src/features/auth/components/ProtectedRoute.tsx",
     "src/features/cotacoes/hooks/useCotacoes.ts",
     "src/features/layout/components/AppSidebar.tsx",
+    "src/features/layout/components/SLASettingsPanel.tsx",
     "src/features/layout/components/SupplierChat.tsx",
     "src/features/layout/components/UserMenu.tsx",
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -333,8 +334,7 @@
     "src/hooks/useApprovalRules.ts",
     "src/hooks/useApprovalWorkflow.ts",
     "src/hooks/useBudgetManagement.ts",
-    "src/hooks/useBuyerPerformanceData.ts",
-    "src/hooks/useContactNotes.ts"
+    "src/hooks/useBuyerPerformanceData.ts"
    ],
    "coberto_por_testes": 2
   },
@@ -1064,7 +1064,7 @@
    "hooks_exportados": [
     "useExecutiveDashboardData"
    ],
-   "linhas": 192,
+   "linhas": 243,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -1075,8 +1075,9 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
+    "src/components/compras/AdvancedProcurementKPIs.tsx",
     "src/components/compras/ExecutiveDashboard.tsx",
     "src/components/compras/executive/ExecutiveAIInsights.tsx"
    ],

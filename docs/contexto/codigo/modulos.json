@@ -365,7 +365,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 17,
-   "linhas": 24520,
+   "linhas": 24568,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1881,7 +1881,7 @@
    "modulo": "features/layout",
    "arquivos": 32,
    "testes": 4,
-   "linhas": 5040,
+   "linhas": 5054,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2290,7 +2290,7 @@
    "modulo": "hooks",
    "arquivos": 61,
    "testes": 0,
-   "linhas": 10717,
+   "linhas": 10768,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -6704,6 +6704,8 @@
    "rotas_http": [],
    "componentes": 2,
    "hooks_locais": [
+    "useAuth",
+    "useExecutiveDashboardData",
     "useFeedback",
     "useFeedbackPreferences",
     "useKPITargetsStore",
@@ -6719,9 +6721,13 @@
     "fornecedores",
     "pedido_itens",
     "pedidos",
-    "solicitacoes"
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [
+    "current_tenant_id",
     "get_cost_center_performance_report"
    ],
    "buckets": [],
@@ -6731,7 +6737,9 @@
     "VITE_SUPABASE_URL"
    ],
    "flags": [],
-   "papeis": [],
+   "papeis": [
+    "admin"
+   ],
    "diretos": {
     "edges": [],
     "tabelas": [

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `134e364d364b2d651a9a8b7ad3e3217188748d39` (2026-11-20T14:14:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cc9dceed57bf7472d8cece623d52f8e24a78a1bb` (2026-11-20T15:33:43-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1245 |
 | arquivos_codigo | 773 |
-| linhas_codigo | 162449 |
+| linhas_codigo | 162562 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -114,7 +114,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
-| pages/relatorios | 1 | 1 | 2 | 4 | 2 | 5 |
+| pages/relatorios | 1 | 1 | 2 | 6 | 2 | 8 |
 | pages/seguranca | 1 | 1 | 1 | 83 | 9 | 67 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
@@ -338,9 +338,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_indice.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
+- docs/pendencias/_ordem.md (6)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
-- docs/pendencias/_ordem.md (5)
 - scripts/automation.config.json (5)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
 - 2026-11-20 `134e364` chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)
 - 2026-11-20 `2e8e436` chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)
 - 2026-11-20 `f691f17` feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
 - 2026-11-20 `3e84319` fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)
 - 2026-11-20 `b151331` feat(ci): dummy para reprovar delete automatico no push (#165)
-- 2026-11-20 `1a7b20b` fix(ci): impede que $# de sed astringa o delete de edge functions (#164)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

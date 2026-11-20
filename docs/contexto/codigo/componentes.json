@@ -372,9 +372,10 @@
     "AdvancedProcurementKPIs"
    ],
    "export_default": null,
-   "linhas": 486,
+   "linhas": 531,
    "dominio": "components/compras",
    "hooks_locais": [
+    "useExecutiveDashboardData",
     "useKPITargetsStore",
     "useToast"
    ],
@@ -977,7 +978,7 @@
     "ExecutiveDashboard"
    ],
    "export_default": null,
-   "linhas": 342,
+   "linhas": 345,
    "dominio": "components/compras",
    "hooks_locais": [
     "useClearFiltersFlow",
@@ -3996,9 +3997,10 @@
     "SLASettingsPanel"
    ],
    "export_default": null,
-   "linhas": 300,
+   "linhas": 314,
    "dominio": "features/layout",
    "hooks_locais": [
+    "useAuth",
     "useSLASettings"
    ],
    "tabelas": [],

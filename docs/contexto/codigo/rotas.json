@@ -4285,18 +4285,24 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useAuth",
     "useCallback",
+    "useContext",
     "useEffect",
+    "useExecutiveDashboardData",
     "useFeedback",
     "useFeedbackPreferences",
     "useKPITargetsStore",
     "useMemo",
     "useNavigate",
     "useQuery",
+    "useRef",
     "useState",
     "useToast"
    ],
    "hooks_locais": [
+    "useAuth",
+    "useExecutiveDashboardData",
     "useFeedback",
     "useFeedbackPreferences",
     "useKPITargetsStore",
@@ -4307,9 +4313,13 @@
     "fornecedores",
     "pedido_itens",
     "pedidos",
-    "solicitacoes"
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [
+    "current_tenant_id",
     "get_cost_center_performance_report"
    ],
    "edges": [
@@ -4318,8 +4328,10 @@
    ],
    "canais_realtime": [],
    "flags": [],
-   "papeis": [],
-   "arquivos_puxados": 43
+   "papeis": [
+    "admin"
+   ],
+   "arquivos_puxados": 51
   },
   {
    "protegida": true,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "134e364d364b2d651a9a8b7ad3e3217188748d39",
+  "sha": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 18:14 UTC",
+  "generated_at": "2026-11-20 18:34 UTC",
   "files_total": 1246,
   "code_files": 1092,
-  "code_lines": 188409,
+  "code_lines": 188522,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0bf60d5a5ffb4911",
+ "facts_hash": "c12bb30c4552bc3a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34001,7 +34001,7 @@
   {
    "module": "src/components",
    "files": 259,
-   "lines": 48358,
+   "lines": 48406,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34335,7 +34335,7 @@
   {
    "module": "src/features/layout",
    "files": 36,
-   "lines": 5768,
+   "lines": 5782,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -34504,7 +34504,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12254,
+   "lines": 12305,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -51973,6 +51973,18 @@
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
     "field": "status",
+    "value": "active",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "status",
+    "value": "active",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "status",
     "value": "ativo",
     "kind": "compara"
    },
@@ -56288,15 +56300,7 @@
    },
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
-    "line": "maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)"
-   },
-   {
-    "file": "src/hooks/useExecutiveDashboardData.ts",
     "line": "savings: { value: savings, target: savings * 0.8 },"
-   },
-   {
-    "file": "src/hooks/useExecutiveDashboardData.ts",
-    "line": "tailSpend: { value: totalSpend * 0.12, percentage: 12.0 }, // Simulated tail spend (low value, high volume)"
    },
    {
     "file": "src/hooks/useFeedback.ts",
@@ -88784,7 +88788,7 @@
   },
   "src/components/compras/AdvancedProcurementKPIs.tsx": {
    "path": "src/components/compras/AdvancedProcurementKPIs.tsx",
-   "lines": 486,
+   "lines": 531,
    "exports": [
     "const AdvancedProcurementKPIs"
    ],
@@ -89593,7 +89597,7 @@
   },
   "src/components/compras/ExecutiveDashboard.tsx": {
    "path": "src/components/compras/ExecutiveDashboard.tsx",
-   "lines": 342,
+   "lines": 345,
    "exports": [
     "const ExecutiveDashboard"
    ],
@@ -95014,7 +95018,7 @@
   },
   "src/features/layout/components/SLASettingsPanel.tsx": {
    "path": "src/features/layout/components/SLASettingsPanel.tsx",
-   "lines": 300,
+   "lines": 314,
    "exports": [
     "const SLASettingsPanel"
    ],
@@ -96902,7 +96906,7 @@
   },
   "src/hooks/useExecutiveDashboardData.ts": {
    "path": "src/hooks/useExecutiveDashboardData.ts",
-   "lines": 192,
+   "lines": 243,
    "exports": [
     "interface ExecutiveMetrics",
     "function useExecutiveDashboardData"
@@ -96925,6 +96929,16 @@
     },
     {
      "field": "status",
+     "value": "active",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "active",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "ativo",
      "kind": "compara"
     }
@@ -96937,9 +96951,7 @@
     "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);"
    ],
    "percents": [
-    "maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)",
-    "savings: { value: savings, target: savings * 0.8 },",
-    "tailSpend: { value: totalSpend * 0.12, percentage: 12.0 }, // Simulated tail spend (low value, high volume)"
+    "savings: { value: savings, target: savings * 0.8 },"
    ]
   },
   "src/hooks/useFeedback.ts": {
@@ -111748,10 +111760,23 @@
   }
  },
  "git": {
-  "sha": "134e364d364b2d651a9a8b7ad3e3217188748d39",
+  "sha": "cc9dceed57bf7472d8cece623d52f8e24a78a1bb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cc9dcee",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)",
+    "files": [
+     "docs/pendencias/_ordem.md",
+     "src/components/compras/AdvancedProcurementKPIs.tsx",
+     "src/components/compras/ExecutiveDashboard.tsx",
+     "src/features/layout/components/SLASettingsPanel.tsx",
+     "src/hooks/useExecutiveDashboardData.ts"
+    ]
+   },
    {
     "sha": "134e364",
     "date": "2026-11-20",
@@ -112036,23 +112061,6 @@
     "files": [
      "docs/agentes/estado-spot-sync.md"
     ]
-   },
-   {
-    "sha": "193c9b9",
-    "date": "2026-11-18",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps)(deps-dev): bump the desenvolvimento group with 20 updates (#146)",
-    "files": [
-     "bun.lock",
-     "package-lock.json",
-     "package.json",
-     "postcss.config.js",
-     "src/index.css",
-     "src/lib/__tests__/pdfGenerator.test.ts",
-     "src/lib/__tests__/queryClientConstants.test.ts",
-     "src/test/setup.ts",
-     "tsconfig.app.json"
-    ]
    }
   ],
   "hot_files": [
@@ -112061,12 +112069,12 @@
     7
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "docs/pendencias/_ordem.md",
     6
    ],
    [
-    "docs/pendencias/_ordem.md",
-    5
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    6
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",
@@ -112091,6 +112099,22 @@
    [
     ".github/workflows/main.yml",
     2
+   ],
+   [
+    "src/components/compras/AdvancedProcurementKPIs.tsx",
+    1
+   ],
+   [
+    "src/components/compras/ExecutiveDashboard.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/SLASettingsPanel.tsx",
+    1
+   ],
+   [
+    "src/hooks/useExecutiveDashboardData.ts",
+    1
    ],
    [
     "src/components/compras/DashboardInsights.tsx",
@@ -112118,22 +112142,6 @@
    ],
    [
     "supabase/functions/webauthn-authenticate/index.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
-    1
-   ],
-   [
-    "docs/auditoria-implementacao-261120.md",
-    1
-   ],
-   [
-    "src/components/compras/NovaSolicitacaoModal.tsx",
-    1
-   ],
-   [
-    "supabase/functions/process-solicitacao-neural/index.ts",
     1
    ]
   ]

@@ -161,6 +161,7 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/select.tsx",
    "src/hooks/use-toast.ts",
+   "src/hooks/useExecutiveDashboardData.ts",
    "src/lib/utils.ts",
    "src/stores/kpiTargetsStore.ts"
   ],
@@ -1765,6 +1766,7 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/slider.tsx",
    "src/components/ui/switch.tsx",
+   "src/features/auth/index.ts",
    "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx",
    "src/lib/feedbackToast.ts",
    "src/stores/slaSettingsStore.ts"
