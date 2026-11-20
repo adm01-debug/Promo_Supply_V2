@@ -3,7 +3,7 @@
 Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois seguranca, estetica por ultimo.
 
 ## T1 - fundacao que destrava tudo (validar runtime)
-1. `seg-fio-entrada` - edge `process-solicitacao-neural` inexistente com chamador real -> criar edge honesta ou remover chamada (hoje o app quebra no submit da solicitacao? so mostra erro). Alta: e o ponto de entrada do fluxo principal.
+1. `seg-fio-entrada` - CONCLUIDO na PR #171: edge `process-solicitacao-neural` criado (JWT + rate limit + fallback), front consome `data.fields`, deploy confirmado.
 2. `fio-1` selecao de fornecedor na cotacao (backend trigger ja existe - diff front minimo; estende agendamento).
 3. `fio-3` Kanban -> usePedidos().updateStatus (front puro).
 4. `fio-2` aprovar workflow -> promover solicitacoes.status (migration + edge/RPC + trigger; requer chamada dono? additive, pode ir direto).

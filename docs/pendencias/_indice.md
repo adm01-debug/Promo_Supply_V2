@@ -16,7 +16,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | seg-passkey | passkey login valida so `challenge`/`type` (bypass S-1) | PENDENTE | `webauthn-authenticate/index.ts:155-175`; desabilitar botao `Auth.tsx:45` |
-| seg-fio-entrada | `process-solicitacao-neural` invocado mas edge NAO EXISTE | PENDENTE | `NovaSolicitacaoModal.tsx:113-114`; `ls functions` vazio |
+| seg-fio-entrada | `process-solicitacao-neural` invocado mas edge NAO EXISTE | CONCLUIDO | PR #171 (edge criado + front consome `data.fields`; deploy confirmado, GET no endpoint -> 401 sem JWT) |
 | seg-tenant-alerts | `useCriticalAlertsBadge` sem tenant/filtro | PENDENTE | `useCriticalAlertsBadge.ts:25-27` |
 | seg-mfa-bp | backup codes via `Math.random` | PENDENTE | `useMFA.ts:184` |
 | seg-lockout | `useAccountLockout` fail-open | PENDENTE | `useAccountLockout.ts:50-83` |
