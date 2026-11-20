@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)",
    "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)",
    "fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)",
    "feat(ci): dummy para reprovar delete automatico no push (#165)",
-   "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)",
-   "fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)"
+   "fix(ci): impede que $# de sed astringa o delete de edge functions (#164)"
   ]
  },
  "pr_template": null,

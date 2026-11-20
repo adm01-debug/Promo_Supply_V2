@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "91b330c71f14105bdd56eb8a56cf817976e2812b",
+  "sha": "a19f3fa65fc630103d60775c64cc5419b6746dc6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 13:13 UTC",
-  "files_total": 1241,
+  "generated_at": "2026-11-20 13:21 UTC",
+  "files_total": 1242,
   "code_files": 1090,
-  "code_lines": 188158,
+  "code_lines": 188190,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "15b5142c16932d5b",
+ "facts_hash": "d59b23f4ffd241c7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34795,7 +34795,7 @@
   {
    "module": "src/pages",
    "files": 122,
-   "lines": 28204,
+   "lines": 28236,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36337,6 +36337,7 @@
     ],
     "update": [
      "src/features/pedidos/hooks/usePedidos.ts",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/recebimento/RecebimentoOffline.tsx"
     ],
     "delete": [
@@ -40334,6 +40335,18 @@
    {
     "file": "src/lib/supabaseRpc.ts",
     "msg": ", params) as unknown as RpcResult<void>;\n}\n\nexport function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {\n  return supabase.rpc("
+   },
+   {
+    "file": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "msg": "Erro ao atualizar pedido: ${error.message}"
+   },
+   {
+    "file": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "msg": "Pedido #${pedidoId} não encontrado"
+   },
+   {
+    "file": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "msg": "Status inválido para o Kanban: ${novoStatus}"
    },
    {
     "file": "src/pages/admin/AlertDetail.tsx",
@@ -100222,7 +100235,7 @@
   },
   "src/pages/acompanhamento/Acompanhamento.tsx": {
    "path": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "lines": 463,
+   "lines": 495,
    "exports": [
     "default Acompanhamento"
    ],
@@ -100238,6 +100251,10 @@
     {
      "table": "fornecedores",
      "op": "select"
+    },
+    {
+     "table": "pedidos",
+     "op": "update"
     }
    ],
    "table_cols": {
@@ -100266,6 +100283,11 @@
      "razao_social"
     ]
    },
+   "errors": [
+    "Erro ao atualizar pedido: ${error.message}",
+    "Pedido #${pedidoId} não encontrado",
+    "Status inválido para o Kanban: ${novoStatus}"
+   ],
    "status_values": [
     {
      "field": "tipo",
@@ -111442,10 +111464,21 @@
   }
  },
  "git": {
-  "sha": "91b330c71f14105bdd56eb8a56cf817976e2812b",
+  "sha": "a19f3fa65fc630103d60775c64cc5419b6746dc6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a19f3fa",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "docs/pendencias/fio-3-kanban-acompanhamento.md",
+     "src/pages/acompanhamento/Acompanhamento.tsx"
+    ]
+   },
    {
     "sha": "91b330c",
     "date": "2026-11-20",
@@ -111749,24 +111782,9 @@
     "files": [
      "src/integrations/supabase/types.ts"
     ]
-   },
-   {
-    "sha": "e94b12f",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "feat(punchout): habilita cadastro e edição de catálogos (#139)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "src/pages/admin/PunchOutCatalogs.tsx",
-     "supabase/functions/punchout-encrypt/index.ts"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    6
-   ],
    [
     "bun.lock",
     6
@@ -111774,6 +111792,10 @@
    [
     "package.json",
     6
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    5
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",
@@ -111786,6 +111808,10 @@
    [
     "scripts/rls-audit.allowlist.json",
     3
+   ],
+   [
+    "docs/pendencias/_indice.md",
+    2
    ],
    [
     "supabase/functions/test-auto-delete-reprova/index.ts",
@@ -111808,7 +111834,11 @@
     2
    ],
    [
-    "docs/pendencias/_indice.md",
+    "docs/pendencias/fio-3-kanban-acompanhamento.md",
+    1
+   ],
+   [
+    "src/pages/acompanhamento/Acompanhamento.tsx",
     1
    ],
    [
@@ -111833,14 +111863,6 @@
    ],
    [
     "supabase/functions/check-cotacao-followup/index.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
-    1
-   ],
-   [
-    "docs/agentes/auditoria-forense-descartes-261118.md",
     1
    ]
   ]

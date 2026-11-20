@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `91b330c71f` · branch `main` · 2026-11-20 13:13 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a19f3fa65f` · branch `main` · 2026-11-20 13:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2248,6 +2248,9 @@ _nenhum item encontrado_
 | Could not get canvas context | `src/lib/imageCompression.ts` |
 | File is not an image | `src/lib/imageCompression.ts` |
 | , params) as unknown as RpcResult<void>; }  export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {   return supabase.rpc( | `src/lib/supabaseRpc.ts` |
+| Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
+| Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
+| Status inválido para o Kanban: ${novoStatus} | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | , id],     enabled: !!id,     queryFn: async () => {       const { data, error } = await supabase.functions.invoke<Payload>(          | `src/pages/admin/AlertDetail.tsx` |
 | Sem dados | `src/pages/admin/AlertDetail.tsx` |
 | Email inválido | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
@@ -2272,10 +2275,7 @@ _nenhum item encontrado_
 | Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao limpar dados antigos | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
 | Falha ao executar simulação de sistema. | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| Erro ao gerar PDF | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
-| Nenhum dado para exportar | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
-| ; import { FloatingInput } from  | `src/pages/auth/Auth.tsx` |
-| … +172 linhas — lista completa em `context.json` | |
+| … +175 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "91b330c71f14105bdd56eb8a56cf817976e2812b",
+  "commit": "a19f3fa65fc630103d60775c64cc5419b6746dc6",
   "branch": "main",
-  "data_commit": "2026-11-20T10:08:25-03:00",
+  "data_commit": "2026-11-20T10:21:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a19f3fa",
+    "data": "2026-11-20",
+    "assunto": "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)"
+   },
    {
     "sha": "91b330c",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "922f6df",
     "data": "2026-11-18",
     "assunto": "chore(deps): bump the producao-minor-patch group with 3 updates (#145)"
-   },
-   {
-    "sha": "2dc69d6",
-    "data": "2026-11-18",
-    "assunto": "chore(ci): bump the acoes group with 8 updates (#144)"
    }
   ],
-  "arquivos_mudados_7d": 170,
+  "arquivos_mudados_7d": 171,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 134
+    "commits": 135
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1240,
+  "arquivos_total": 1241,
   "arquivos_codigo": 772,
-  "linhas_codigo": 162236,
+  "linhas_codigo": 162268,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -335,7 +335,7 @@
   "testes": 175,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 82
+  "docs_md": 83
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 122,
-   "linhas": 28204
+   "linhas": 28236
   },
   "src/routes": {
    "arquivos": 1,
