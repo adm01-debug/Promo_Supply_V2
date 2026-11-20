@@ -33,7 +33,7 @@ import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/feedbackToast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import {
@@ -45,6 +45,16 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+// Kanban uses legacy (UI) status names; this maps them to the DB pedidos status.
+const KANBAN_TO_DB_STATUS: Record<string, string> = {
+  FORNECEDOR_SELECIONADO: 'pendente',
+  PEDIDO_GERADO: 'pendente',
+  AGUARDANDO_PAGAMENTO: 'aprovado',
+  PAGO: 'enviado',
+  EM_TRANSITO: 'em_transito',
+  ENTREGUE: 'entregue',
+};
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -141,8 +151,30 @@ const Acompanhamento = () => {
     });
   }
 
+  const queryClient = useQueryClient();
+
   const handleStatusChange = async (pedidoId: string, novoStatus: string) => {
-    toast.success(`Pedido #${pedidoId} atualizado para ${getStatusLabel(novoStatus)}`);
+    const dbStatus = KANBAN_TO_DB_STATUS[novoStatus];
+    if (!dbStatus) {
+      toast.error(`Status inválido para o Kanban: ${novoStatus}`);
+      return;
+    }
+    // pedidoId can be numero or a truncated uuid; find the real row to persist by PK.
+    const pedido = pedidosDB.find(
+      p => p.id === pedidoId || p.numero === pedidoId,
+    );
+    if (!pedido) {
+      toast.error(`Pedido #${pedidoId} não encontrado`);
+      return;
+    }
+    const { error } = await supabase.from('pedidos').update({ status: dbStatus }).eq('id', pedido.id);
+    if (error) {
+      toast.error(`Erro ao atualizar pedido: ${error.message}`);
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ['acompanhamento-pedidos'] });
+    queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+    toast.success(`Pedido #${pedido.numero ?? pedidoId} atualizado para ${getStatusLabel(novoStatus)}`);
   };
 
   if (isLoadingPedidos) {
