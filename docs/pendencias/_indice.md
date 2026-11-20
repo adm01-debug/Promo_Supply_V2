@@ -9,7 +9,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | fio-1 | Selecao de fornecedor na cotacao nao chamava `selectCotacao` | CONCLUIDO | `Cotacao.tsx` / `fio-1-cotacao-selecao.md` |
-| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | MERGEADO #173 (DDL NAO APLICADO no banco prod) | PR #173 - trigger `auto_transition_solicitacao_on_workflow_approved`; testado em postgres (aprovada=2, pendente=1). **Pendente `supabase db push` (credencial dono)** |
+| fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | CONCLUIDO #173 + DDL EM PROD (2026-11-28) | PR #173 - trigger `auto_transition_solicitacao_on_workflow_approved`; testado em postgres (aprovada=2, pendente=1). DDL aplicado via Management API; paridade-banco verde |
 | fio-3 | Kanban de acompanhamento era no-op (toast) | CONCLUIDO | `Acompanhamento.tsx:144-146,313` / `fio-3-kanban-acompanhamento.md` |
 
 ## Seguranca
