@@ -1027,8 +1027,8 @@
   {
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
-   "arquivos": 1,
-   "linhas": 253,
+   "arquivos": 2,
+   "linhas": 498,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1049,7 +1049,6 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
-    "http.ts",
     "logger.ts",
     "rate_limit.ts",
     "security.ts"
@@ -1058,7 +1057,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "spot-api",

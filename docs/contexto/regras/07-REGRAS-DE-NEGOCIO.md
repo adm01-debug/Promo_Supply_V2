@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `60860f7d28` · branch `main` · 2026-11-20 22:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ec27cd4fb8` · branch `main` · 2026-11-20 22:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1560,7 +1560,11 @@ _nenhum item encontrado_
   ```
   return `${currency} ${value.toFixed(2)}`;
   ```
-- **generateVapidAuth(endpoint: string, vapidPublicKey: string, vapidPrivateKey: string)** — `supabase/functions/send-push-notification/index.ts`
+- **computeIkm(authSecret: Bytes, ecdhSecret: Bytes, receiverPub: Bytes, senderPub: Bytes,)** — `supabase/functions/send-push-notification/webpush.ts`
+  ```
+  const info = concatBytes( new TextEncoder().encode("WebPush: info\0"), receiverPub, senderPub, ); const prk = await hmacSha256(authSecret, ecdhSecret); return hkdfExpand(prk, info, 32);
+  ```
+- **generateVapidAuth(endpoint: string, vapidPublicKey: string, vapidPrivateKey: string,)** — `supabase/functions/send-push-notification/webpush.ts`
   ```
   authorization: string; cryptoKey: string
   ```
@@ -1811,7 +1815,7 @@ _nenhum item encontrado_
 | `const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];` | `supabase/functions/check-sla-alerts/index.ts` |
 | `const twoDays = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];` | `supabase/functions/check-sla-alerts/index.ts` |
 | `.gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),` | `supabase/functions/health-dashboard/index.ts` |
-| `exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,` | `supabase/functions/send-push-notification/index.ts` |
+| `exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,` | `supabase/functions/send-push-notification/webpush.ts` |
 | `const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem` | `supabase/functions/spot-api/index.ts` |
 | `if (age < 30 * 60 * 1000) {` | `supabase/functions/spot-proxy/index.ts` |
 | `expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),` | `supabase/functions/webauthn-authenticate/index.ts` |

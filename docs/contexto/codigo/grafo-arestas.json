@@ -3586,10 +3586,10 @@
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/send-push-notification/index.ts": [
-   "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/send-push-notification/webpush.ts"
   ],
   "supabase/functions/spot-api/index.ts": [
    "supabase/functions/_shared/http.ts",

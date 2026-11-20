@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "60860f7d2846591542053af5c294abe866cd1bf2",
+  "commit": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
   "branch": "main",
-  "data_commit": "2026-11-20T19:01:36-03:00",
+  "data_commit": "2026-11-20T19:28:19-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ec27cd4",
+    "data": "2026-11-20",
+    "assunto": "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)"
+   },
    {
     "sha": "60860f7",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "cc9dcee",
     "data": "2026-11-20",
     "assunto": "fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)"
-   },
-   {
-    "sha": "134e364",
-    "data": "2026-11-20",
-    "assunto": "chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)"
    }
   ],
-  "arquivos_mudados_7d": 177,
+  "arquivos_mudados_7d": 180,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 169
+    "commits": 170
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1251,
-  "arquivos_codigo": 779,
-  "linhas_codigo": 164103,
+  "arquivos_total": 1253,
+  "arquivos_codigo": 781,
+  "linhas_codigo": 164501,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 315,
   "cron_jobs": 70,
-  "testes": 176,
+  "testes": 177,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 85
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 80,
-   "linhas": 14356
+   "arquivos": 82,
+   "linhas": 14754
   },
   "tailwind.config.ts": {
    "arquivos": 1,

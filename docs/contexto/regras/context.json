@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "60860f7d2846591542053af5c294abe866cd1bf2",
+  "sha": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 22:10 UTC",
-  "files_total": 1252,
-  "code_files": 1098,
-  "code_lines": 190063,
+  "generated_at": "2026-11-20 22:28 UTC",
+  "files_total": 1254,
+  "code_files": 1100,
+  "code_lines": 190461,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c63dabec8a4329e9",
+ "facts_hash": "b0af6a56f631ebdd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 362,
+   ".ts": 364,
    ".tsx": 346,
    ".sql": 317,
    ".mjs": 66,
@@ -35301,8 +35301,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 80,
-   "lines": 14356,
+   "files": 82,
+   "lines": 14754,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35380,7 +35380,8 @@
     "xbz_crypto.ts: encryptSecret, decryptSecret, maskSecret",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
-    "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart"
+    "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
+    "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth"
    ],
    "docs": [
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
@@ -35460,6 +35461,8 @@
     "supabase/functions/scim-v2/conformance.test.ts",
     "supabase/functions/scim-v2/index.ts",
     "supabase/functions/send-push-notification/index.ts",
+    "supabase/functions/send-push-notification/webpush.test.ts",
+    "supabase/functions/send-push-notification/webpush.ts",
     "supabase/functions/spot-api/index.ts",
     "supabase/functions/spot-proxy/index.ts",
     "supabase/functions/system-simulation/index.ts",
@@ -35472,9 +35475,7 @@
     "supabase/functions/weekly-report/index.ts",
     "supabase/functions/weekly-summary-report/index.ts",
     "supabase/functions/workflow-engine/fuzz.test.ts",
-    "supabase/functions/workflow-engine/index.ts",
-    "supabase/functions/xbz-proxy/index.ts",
-    "supabase/functions/xbz-sync-pedidos/index.ts"
+    "supabase/functions/workflow-engine/index.ts"
    ]
   },
   {
@@ -55596,9 +55597,15 @@
     "body": "return `${currency} ${value.toFixed(2)}`;"
    },
    {
-    "file": "supabase/functions/send-push-notification/index.ts",
+    "file": "supabase/functions/send-push-notification/webpush.ts",
+    "name": "computeIkm",
+    "params": "authSecret: Bytes, ecdhSecret: Bytes, receiverPub: Bytes, senderPub: Bytes,",
+    "body": "const info = concatBytes( new TextEncoder().encode(\"WebPush: info\\0\"), receiverPub, senderPub, ); const prk = await hmacSha256(authSecret, ecdhSecret); return hkdfExpand(prk, info, 32);"
+   },
+   {
+    "file": "supabase/functions/send-push-notification/webpush.ts",
     "name": "generateVapidAuth",
-    "params": "endpoint: string, vapidPublicKey: string, vapidPrivateKey: string",
+    "params": "endpoint: string, vapidPublicKey: string, vapidPrivateKey: string,",
     "body": "authorization: string; cryptoKey: string"
    },
    {
@@ -55954,7 +55961,7 @@
     "line": ".gte(\"created_at\", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),"
    },
    {
-    "file": "supabase/functions/send-push-notification/index.ts",
+    "file": "supabase/functions/send-push-notification/webpush.ts",
     "line": "exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,"
    },
    {
@@ -109592,7 +109599,7 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 253,
+   "lines": 206,
    "tables": [
     {
      "table": "push_subscriptions",
@@ -109623,21 +109630,53 @@
     "Não autorizado: token ausente",
     "Não autorizado: token inválido"
    ],
-   "calc_fns": [
-    {
-     "name": "generateVapidAuth",
-     "params": "endpoint: string, vapidPublicKey: string, vapidPrivateKey: string",
-     "body": "authorization: string; cryptoKey: string"
-    }
-   ],
-   "temporal": [
-    "exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,"
-   ],
    "side_effects": [
     "notify",
     "sendPush"
    ],
    "uses_service_role": true
+  },
+  "supabase/functions/send-push-notification/webpush.test.ts": {
+   "path": "supabase/functions/send-push-notification/webpush.test.ts",
+   "lines": 153,
+   "is_test": true,
+   "errors": [
+    "DER invalido",
+    "DER: esperava integer"
+   ],
+   "doc": "Deno tests for the Web Push module (VAPID + RFC 8291 aes128gcm).",
+   "side_effects": [
+    "fcm."
+   ]
+  },
+  "supabase/functions/send-push-notification/webpush.ts": {
+   "path": "supabase/functions/send-push-notification/webpush.ts",
+   "lines": 292,
+   "exports": [
+    "interface PushSubscriptionKeys",
+    "interface VapidKeys",
+    "function b64UrlEncode",
+    "function b64UrlDecode",
+    "function rawSignatureToDer",
+    "function generateVapidAuth",
+    "function encryptPayload",
+    "function sendWebPush"
+   ],
+   "calc_fns": [
+    {
+     "name": "computeIkm",
+     "params": "authSecret: Bytes, ecdhSecret: Bytes, receiverPub: Bytes, senderPub: Bytes,",
+     "body": "const info = concatBytes( new TextEncoder().encode(\"WebPush: info\\0\"), receiverPub, senderPub, ); const prk = await hmacSha256(authSecret, ecdhSecret); return hkdfExpand(prk, info, 32);"
+    },
+    {
+     "name": "generateVapidAuth",
+     "params": "endpoint: string, vapidPublicKey: string, vapidPrivateKey: string,",
+     "body": "authorization: string; cryptoKey: string"
+    }
+   ],
+   "temporal": [
+    "exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,"
+   ]
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
@@ -112425,10 +112464,21 @@
   }
  },
  "git": {
-  "sha": "60860f7d2846591542053af5c294abe866cd1bf2",
+  "sha": "ec27cd4fb84fbd21469ee60f929270ca35e8f467",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ec27cd4",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)",
+    "files": [
+     "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/send-push-notification/webpush.test.ts",
+     "supabase/functions/send-push-notification/webpush.ts"
+    ]
+   },
    {
     "sha": "60860f7",
     "date": "2026-11-20",
@@ -112732,26 +112782,16 @@
     "files": [
      "docs/auditoria-implementacao-261120.md"
     ]
-   },
-   {
-    "sha": "b425ff9",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/_ordem.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
+    13
    ],
    [
     "docs/pendencias/_ordem.md",
-    5
+    4
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -112764,6 +112804,18 @@
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     2
+   ],
+   [
+    "supabase/functions/send-push-notification/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-push-notification/webpush.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-push-notification/webpush.ts",
+    1
    ],
    [
     "src/components/auditoria/RlsCompliancePanel.tsx",
@@ -112811,18 +112863,6 @@
    ],
    [
     "src/lib/hubEvents.ts",
-    1
-   ],
-   [
-    "src/pages/devolucoes/DevolucoesModals.tsx",
-    1
-   ],
-   [
-    "src/pages/pedidos/PedidoDetailsDialog.tsx",
-    1
-   ],
-   [
-    "src/pages/portal-fornecedor/PortalFornecedor.tsx",
     1
    ]
   ]

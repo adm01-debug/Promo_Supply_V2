@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 176,
+ "total": 177,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 160
+  "unit": 161
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 22
+   "arquivos": 23
   },
   {
    "padrao": "tests-e2e/",
@@ -1472,6 +1472,15 @@
    "casos": 8
   },
   {
+   "arquivo": "supabase/functions/send-push-notification/webpush.test.ts",
+   "tipo": "unit",
+   "linhas": 153,
+   "testa": [
+    "supabase/functions/send-push-notification/webpush.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "supabase/functions/telemetry/index.test.ts",
    "tipo": "unit",
    "linhas": 121,
@@ -1720,7 +1729,8 @@
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
   "supabase/functions/check-sla-alerts/failures.ts": 1,
   "supabase/functions/punchout-receive/session.ts": 1,
-  "supabase/functions/punchout-receive/solicitation.ts": 1
+  "supabase/functions/punchout-receive/solicitation.ts": 1,
+  "supabase/functions/send-push-notification/webpush.ts": 1
  },
  "sem_teste": {
   "telas": [
@@ -1863,7 +1873,6 @@
    "process-solicitacao-neural",
    "punchout-encrypt",
    "punchout-setup",
-   "send-push-notification",
    "spot-api",
    "spot-proxy",
    "system-simulation",
