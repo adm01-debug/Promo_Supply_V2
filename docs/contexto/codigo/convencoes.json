@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)",
+   "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)",
    "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)",
    "fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)",
-   "fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)",
-   "chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)",
-   "fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)"
+   "fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)"
   ]
  },
  "pr_template": null,

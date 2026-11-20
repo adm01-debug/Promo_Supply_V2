@@ -325,7 +325,7 @@
    "nome": "check-sla-alerts",
    "entrada": "supabase/functions/check-sla-alerts/index.ts",
    "arquivos": 2,
-   "linhas": 373,
+   "linhas": 383,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

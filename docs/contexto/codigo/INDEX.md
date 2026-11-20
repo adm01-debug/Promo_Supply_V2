@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `02439773892bef797c27b7314f963582e3c8b2fc` (2026-11-20T16:36:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `619f974fe1613162a1092c50f990b16d085b001e` (2026-11-20T16:42:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 162907 |
+| linhas_codigo | 162917 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -331,10 +331,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/pendencias/_indice.md (9)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
-- docs/pendencias/_indice.md (8)
 - docs/ci/README.md (7)
 - docs/pendencias/_ordem.md (7)
 - .github/workflows/contexto.yml (6)
@@ -409,6 +409,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `619f974` fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)
+- 2026-11-20 `be6c7e0` chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)
 - 2026-11-20 `0243977` fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)
 - 2026-11-20 `d4690b5` fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)
 - 2026-11-20 `a0363dd` fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)
@@ -422,8 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `dcd764b` docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)
 - 2026-11-20 `b425ff9` chore: registra fio-2 (workflow approved -> status) como PR aberta (DDL prod) (#174)
 - 2026-11-20 `4c7e836` chore: registra seg-fio-entrada (edge neural) como CONCLUIDO (#172)
-- 2026-11-20 `25962f0` feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)
-- 2026-11-20 `4d36709` chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
