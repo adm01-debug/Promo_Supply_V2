@@ -8,7 +8,7 @@ catalogo, Fase 2 execucao vertical por item.
 ## Fios centrais do fluxo de compra (maior valor de negocio)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| fio-1 | Selecao de fornecedor na cotacao nao chama `selectCotacao` | PENDENTE | `useCotacoes.ts:144` / `Cotacao.tsx:55` |
+| fio-1 | Selecao de fornecedor na cotacao nao chamava `selectCotacao` | CONCLUIDO | `Cotacao.tsx` / `fio-1-cotacao-selecao.md` |
 | fio-2 | Aprovar workflow nunca promove `solicitacoes.status` | PENDENTE | `useApprovalWorkflow.ts:201-226` + `20261113122616:91` |
 | fio-3 | Kanban de acompanhamento era no-op (toast) | CONCLUIDO | `Acompanhamento.tsx:144-146,313` / `fio-3-kanban-acompanhamento.md` |
 
