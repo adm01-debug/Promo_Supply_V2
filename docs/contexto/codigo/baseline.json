@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
+  "commit": "2e8e4366c82bed3c100508219291cdc1478eee28",
   "branch": "main",
-  "data_commit": "2026-11-20T12:03:15-03:00",
+  "data_commit": "2026-11-20T12:06:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2e8e436",
+    "data": "2026-11-20",
+    "assunto": "chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)"
+   },
    {
     "sha": "f691f17",
     "data": "2026-11-20",
@@ -126,11 +131,6 @@
     "sha": "e238664",
     "data": "2026-11-19",
     "assunto": "fix(rls): restringe entity_versions a autenticados e allowlist de cron_heartbeats (#154)"
-   },
-   {
-    "sha": "b512d69",
-    "data": "2026-11-18",
-    "assunto": "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)"
    }
   ],
   "arquivos_mudados_7d": 172,
@@ -230,15 +230,15 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/pendencias/_indice.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "AGENTS.md",
     "mudancas": 5
    },
    {
     "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/pendencias/_indice.md",
     "mudancas": 5
    },
    {
@@ -255,6 +255,10 @@
    },
    {
     "arquivo": "docs/agentes/mapa-repo.md",
+    "mudancas": 4
+   },
+   {
+    "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 4
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/arsenal-auditoria/AUDITORIA_SISTEMA_PROMO_SUPPLY.md",
     "mudancas": 3
-   },
-   {
-    "arquivo": "docs/pendencias/_ordem.md",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 143
+    "commits": 144
    },
    {
     "autor": "dependabot[bot]",

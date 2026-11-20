@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
+  "sha": "2e8e4366c82bed3c100508219291cdc1478eee28",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 15:03 UTC",
+  "generated_at": "2026-11-20 15:12 UTC",
   "files_total": 1246,
   "code_files": 1092,
   "code_lines": 188409,
@@ -111748,10 +111748,21 @@
   }
  },
  "git": {
-  "sha": "f691f17c1d139a00f2a2d7cef9911c2599be2987",
+  "sha": "2e8e4366c82bed3c100508219291cdc1478eee28",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2e8e436",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "docs/pendencias/_ordem.md",
+     "docs/pendencias/_regras-de-negocio.md"
+    ]
+   },
    {
     "sha": "f691f17",
     "date": "2026-11-20",
@@ -112042,33 +112053,20 @@
      "bun.lock",
      "package.json"
     ]
-   },
-   {
-    "sha": "3293856",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)",
-    "files": [
-     "bun.lock",
-     "package.json",
-     "src/App.tsx",
-     "src/components/PrefetchLink.tsx",
-     "src/pages/admin/DeveloperDocs.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/pendencias/_indice.md",
+    6
+   ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     6
    ],
    [
-    "docs/pendencias/_indice.md",
-    5
-   ],
-   [
     "docs/pendencias/_ordem.md",
-    3
+    4
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",
@@ -112079,12 +112077,8 @@
     3
    ],
    [
-    "bun.lock",
-    3
-   ],
-   [
-    "package.json",
-    3
+    "docs/pendencias/_regras-de-negocio.md",
+    2
    ],
    [
     "supabase/functions/test-auto-delete-reprova/index.ts",
@@ -112096,6 +112090,14 @@
    ],
    [
     ".github/workflows/main.yml",
+    2
+   ],
+   [
+    "bun.lock",
+    2
+   ],
+   [
+    "package.json",
     2
    ],
    [
@@ -112132,10 +112134,6 @@
    ],
    [
     "docs/auditoria-implementacao-261120.md",
-    1
-   ],
-   [
-    "src/components/compras/NovaSolicitacaoModal.tsx",
     1
    ]
   ]

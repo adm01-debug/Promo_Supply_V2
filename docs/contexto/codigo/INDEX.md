@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f691f17c1d139a00f2a2d7cef9911c2599be2987` (2026-11-20T12:03:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2e8e4366c82bed3c100508219291cdc1478eee28` (2026-11-20T12:06:44-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -337,9 +337,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
+- docs/pendencias/_indice.md (6)
 - AGENTS.md (5)
 - docs/agentes/github-ci.md (5)
-- docs/pendencias/_indice.md (5)
 - scripts/automation.config.json (5)
 - .github/workflows/notifica-falha-main.yml (4)
 - .github/workflows/types-sync.yml (4)
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `2e8e436` chore(pendencias): registra estado real apos PR #177 e merge do fio-2 (#178)
 - 2026-11-20 `f691f17` feat(seg+fachadas): liga gateway IA, rotula invoice simulada, remove SLA fake, bloqueia passkey sem verifica??o de assin
 - 2026-11-20 `d1f90e9` feat: aprovar workflow de compras promove solicitacoes.status (fio-2) (#173)
 - 2026-11-20 `dcd764b` docs(auditoria): incorpora relatorio planejado x implementado 2026-11-20 (agente anterior) (#175)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `b151331` feat(ci): dummy para reprovar delete automatico no push (#165)
 - 2026-11-20 `1a7b20b` fix(ci): impede que $# de sed astringa o delete de edge functions (#164)
 - 2026-11-19 `2a86602` fix(ci): remove edge function dummy test-auto-delete (prova delete automatico 2/2) (#163)
-- 2026-11-19 `d14201c` merge #162 (triagem automatizada)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
