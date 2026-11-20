@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database, Json } from '@/integrations/supabase/types';
 
 type FiltersRecord = Record<string, unknown>;
+
+type FilterPrefsInsert = Database['public']['Tables']['user_filter_preferences']['Insert'];
 
 interface UseAccountFiltersResult<T extends FiltersRecord> {
   /** Current filter values (already merged with defaults) */
@@ -84,10 +87,9 @@ export function useAccountFilters<T extends FiltersRecord>(
             const merged = { ...defaults, ...legacy } as T;
             setFiltersState(merged);
             // Upsert into DB and remove legacy key
-            // user_filter_preferences is not in the generated type map — cast via unknown.
-            await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+            await supabase
               .from('user_filter_preferences')
-              .upsert([{ user_id: uid, scope, filters: merged }] as never, { onConflict: 'user_id,scope' });
+              .upsert([{ user_id: uid, scope, filters: merged as unknown as Json } satisfies FilterPrefsInsert], { onConflict: 'user_id,scope' });
             try {
               localStorage.removeItem(legacyStorageKey);
             } catch {
@@ -217,10 +219,9 @@ async function persist<T extends FiltersRecord>(
   legacyKey: string,
 ): Promise<void> {
   if (userId) {
-    // user_filter_preferences is not in the generated type map — cast via unknown.
-    await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+    await supabase
       .from('user_filter_preferences')
-      .upsert([{ user_id: userId, scope, filters }] as never, { onConflict: 'user_id,scope' });
+      .upsert([{ user_id: userId, scope, filters: filters as unknown as Json } satisfies FilterPrefsInsert], { onConflict: 'user_id,scope' });
   } else {
     try {
       localStorage.setItem(legacyKey, JSON.stringify(filters));

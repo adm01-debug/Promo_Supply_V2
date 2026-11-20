@@ -219,7 +219,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       const entreguesNoPrazo = entregues.filter(p =>
         p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
       ).length;
-      const taxaSucesso = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : buyerPeds.length > 0 ? 80 : 0;
+      const taxaSucesso = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : 0;
 
       // Tempo medio - approx from pedido creation to entrega
       const pedidosComEntrega = buyerPeds.filter(p => p.data_entrega && p.data_emissao);
@@ -288,6 +288,14 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
           const existing = fornMap.get(c.fornecedor_id) || { economia: 0, pedidos: 0, descontos: [] };
           existing.descontos.push(Number(c.desconto_percentual) || 0);
           fornMap.set(c.fornecedor_id, existing);
+        }
+        if (c.fornecedor_id && c.solicitacao_id) {
+          const sol = buyerSols.find(s => s.id === c.solicitacao_id && s.valor_estimado && s.valor_aprovado);
+          if (sol) {
+            const existing = fornMap.get(c.fornecedor_id) || { economia: 0, pedidos: 0, descontos: [] };
+            existing.economia += Math.max(0, Number(sol.valor_estimado) - Number(sol.valor_aprovado));
+            fornMap.set(c.fornecedor_id, existing);
+          }
         }
       });
       const fornecedoresArr = Array.from(fornMap.entries())
