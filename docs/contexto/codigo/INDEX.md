@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8beaac214b55cb20eaa76490a26e4726cc95a0c9` (2026-11-20T10:30:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25962f09a452370fb29027966aa6f1f1fb3f352f` (2026-11-20T11:12:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (701), SQL (316), Markdown (83), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (702), SQL (316), Markdown (84), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1241 |
-| arquivos_codigo | 772 |
-| linhas_codigo | 162277 |
+| arquivos_total | 1243 |
+| arquivos_codigo | 773 |
+| linhas_codigo | 162413 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,14 +44,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 86 |
 | componentes | 327 |
 | hooks | 89 |
-| edge_functions | 37 |
+| edge_functions | 38 |
 | tabelas | 163 |
 | migrations | 314 |
 | cron_jobs | 70 |
 | testes | 175 |
 | workflows | 11 |
 | scripts | 49 |
-| docs_md | 83 |
+| docs_md | 84 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -204,6 +204,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `migrate-storage-paths` — tabelas: profiles; chamada por 1 arquivo(s) do front
 - `process-invoice-idp` — tabelas: -; chamada por 1 arquivo(s) do front
 - `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `process-solicitacao-neural` — tabelas: -; chamada por 2 arquivo(s) do front
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `punchout-receive` — tabelas: profiles, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
@@ -301,7 +302,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (6), admin (5), system (4), assistant (1)
+- papéis no código: user (7), admin (5), system (5), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
 - feature flags: nenhuma
@@ -311,7 +312,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
 - edges_orfas: 8 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
-- edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
+- edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
 - tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
@@ -329,10 +330,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - package.json (12)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (8)
 - docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
@@ -403,10 +404,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `README.md` — Welcome to your Lovable project (59 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (10), docs/arsenal-auditoria (5), docs/pendencias (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (10), docs/pendencias (6), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-20 `25962f0` feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)
+- 2026-11-20 `4d36709` chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)
 - 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
 - 2026-11-20 `a19f3fa` fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)
 - 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
@@ -420,8 +423,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-19 `cbe4038` chore(ci): exige execução real do Security RLS Audit com --strict (#159)
 - 2026-11-19 `6994838` ci: injeta SUPABASE_DB_URL no Security RLS Audit (#157)
 - 2026-11-19 `cbb76bd` security: remove migrate-helper que vazava service_role e DB URL em producao (#158)
-- 2026-11-19 `d897c77` Merge pull request #156 from adm01-debug/claude/fix-alerta-resend-missing-261119-1103
-- 2026-11-19 `cfa585f` fix(edge): alerta explicito quando RESEND_API_KEY falta em check-cotacao-followup
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

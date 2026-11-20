@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8beaac214b` · branch `main` · 2026-11-20 13:31 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `25962f09a4` · branch `main` · 2026-11-20 14:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1130,8 +1130,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
 | `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`src/hooks/usePermissions.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>… +2 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
-| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts` |
-| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +1 |
+| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/process-solicitacao-neural/index.ts` |
+| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +2 |
 | `state` | `collapsed` | compara | `src/components/ui/sidebar.tsx` |
 | `state` | `expanded` | escreve | `src/components/ui/sidebar.tsx` |
 | `state` | `open` | compara | `supabase/functions/_shared/circuit_breaker.ts` |
@@ -1271,6 +1271,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **requestSchema** (`supabase/functions/guided-buying-ai/index.ts`, z.object):
   ```ts
   { message: z.string().min(1), history: z.array(z.any()).optional().default([]), context: z.record(z.any()).optional().default({}), }
+  ```
+- **NeuralDraftContract** (`supabase/functions/process-solicitacao-neural/index.ts`, z.object):
+  ```ts
+  { input: z.string().min(3, "Descreva a necessidade (minimo 3 caracteres)").max(3000), }
   ```
 - **ScimUserPostSchema** (`supabase/functions/scim-v2/index.ts`, z.object, encadeia refine):
   ```ts
@@ -2088,6 +2092,7 @@ _nenhum item encontrado_
 | Anexos não enviados: organização não identificada. Faça login novamente. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar solicitação:  | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao processar solicitação via IA. | `src/components/compras/NovaSolicitacaoModal.tsx` |
+| Resposta IA sem campos preenchíveis | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Você precisa estar logado em uma organização | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar regra | `src/components/compras/PenaltyEscalationConfigPanel.tsx` |
 | Erro ao aprovar solicitação | `src/components/compras/PendingApprovalsList.tsx` |
@@ -2274,8 +2279,7 @@ _nenhum item encontrado_
 | Erro ao salvar configuração:  | `src/pages/admin/SSOConfig.tsx` |
 | Informe um domínio válido (ex: empresa.com) | `src/pages/admin/SSOConfig.tsx` |
 | Erro ao limpar dados antigos | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| Falha ao executar simulação de sistema. | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
-| … +175 linhas — lista completa em `context.json` | |
+| … +181 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2572,6 +2576,10 @@ _nenhum item encontrado_
 | // Acesso: somente POST + usuário autenticado com role admin. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Dry-run: passe { dryRun: true } no body para apenas simular. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Prevent path traversal: filePath must be a relative path without .. | `supabase/functions/process-invoice-idp/index.ts` |
+| no banco: este edge apenas preenche o formulario. | `supabase/functions/process-solicitacao-neural/index.ts` |
+| * Mesmo padrao de auth/rate-limit/fallback do ai-supplier-suggestion (auth JWT | `supabase/functions/process-solicitacao-neural/index.ts` |
+| de usuario autenticado, rate limit por usuario, fallback deterministico). | `supabase/functions/process-solicitacao-neural/index.ts` |
+| Contrato de entrada: apenas o texto livre do usuario. | `supabase/functions/process-solicitacao-neural/index.ts` |
 | browser em formato legivel. O front envia o plaintext (HTTPS) apenas no | `supabase/functions/punchout-encrypt/index.ts` |
 | Deve estar no tenant corrente como admin ou coordinator (mesma regra da | `supabase/functions/punchout-encrypt/index.ts` |
 | M-05: rate limit por IP (webhooks anônimos). | `supabase/functions/punchout-receive/index.ts` |

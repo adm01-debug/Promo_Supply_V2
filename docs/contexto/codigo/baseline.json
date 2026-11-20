@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8beaac214b55cb20eaa76490a26e4726cc95a0c9",
+  "commit": "25962f09a452370fb29027966aa6f1f1fb3f352f",
   "branch": "main",
-  "data_commit": "2026-11-20T10:30:45-03:00",
+  "data_commit": "2026-11-20T11:12:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "25962f0",
+    "data": "2026-11-20",
+    "assunto": "feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)"
+   },
+   {
+    "sha": "4d36709",
+    "data": "2026-11-20",
+    "assunto": "chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)"
+   },
    {
     "sha": "8beaac2",
     "data": "2026-11-20",
@@ -121,23 +131,13 @@
     "sha": "3293856",
     "data": "2026-11-18",
     "assunto": "fix(encoding): corrige mojibake duplo-encode em App.tsx e PrefetchLink.tsx (#150)"
-   },
-   {
-    "sha": "a1e0e53",
-    "data": "2026-11-18",
-    "assunto": "chore(deps)(deps): bump lucide-react from 0.462.0 to 1.73.0 (#149)"
-   },
-   {
-    "sha": "a3c3c17",
-    "data": "2026-11-18",
-    "assunto": "chore(deps)(deps): bump react-router-dom from 6.30.6 to 7.18.5 (#147)"
    }
   ],
-  "arquivos_mudados_7d": 172,
+  "arquivos_mudados_7d": 174,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "pasta": "package.json",
@@ -150,6 +150,10 @@
    {
     "pasta": "supabase/functions/punchout-receive",
     "mudancas": 10
+   },
+   {
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 9
    },
    {
     "pasta": "docs/prod-readiness.md",
@@ -165,10 +169,6 @@
    },
    {
     "pasta": "bun.lock",
-    "mudancas": 8
-   },
-   {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 8
    },
    {
@@ -202,6 +202,10 @@
     "mudancas": 12
    },
    {
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 9
+   },
+   {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 9
    },
@@ -211,10 +215,6 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 8
    },
    {
@@ -286,22 +286,22 @@
     "mudancas": 3
    },
    {
+    "arquivo": "docs/pendencias/_indice.md",
+    "mudancas": 3
+   },
+   {
     "arquivo": "scripts/ai-context/README.md",
     "mudancas": 3
    },
    {
     "arquivo": "scripts/ai-context/cenarios.mjs",
     "mudancas": 3
-   },
-   {
-    "arquivo": "scripts/ai-context/gerar.unit.mjs",
-    "mudancas": 3
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 136
+    "commits": 138
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1241,
-  "arquivos_codigo": 772,
-  "linhas_codigo": 162277,
+  "arquivos_total": 1243,
+  "arquivos_codigo": 773,
+  "linhas_codigo": 162413,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,14 +328,14 @@
   "modulos": 86,
   "componentes": 327,
   "hooks": 89,
-  "edge_functions": 37,
+  "edge_functions": 38,
   "tabelas": 163,
   "migrations": 314,
   "cron_jobs": 70,
   "testes": 175,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 83
+  "docs_md": 84
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -424,7 +424,7 @@
   },
   "src/components": {
    "arquivos": 259,
-   "linhas": 48370
+   "linhas": 48374
   },
   "src/features": {
    "arquivos": 64,
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 76,
-   "linhas": 13856
+   "arquivos": 77,
+   "linhas": 13988
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -702,9 +702,7 @@
    "send-push-notification",
    "workflow-engine"
   ],
-  "edges_chamadas_sem_pasta": [
-   "process-solicitacao-neural"
-  ],
+  "edges_chamadas_sem_pasta": [],
   "tabelas_sem_rls": [],
   "tabelas_usadas_sem_definicao": [],
   "tabelas_com_drift_migration_vs_types": [

@@ -1117,7 +1117,7 @@
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 455,
+   "linhas": 459,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",

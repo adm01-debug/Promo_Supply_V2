@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: edge process-solicitacao-neural (preenche formulario via IA) (#171)",
+   "chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)",
    "fix: persiste selecao de cotacao vencedora via selectCotacao (#169)",
    "fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)",
-   "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)",
-   "fix(ci): remove dummy test-auto-delete-reprova para provar delete automatico (#166)",
-   "feat(ci): dummy para reprovar delete automatico no push (#165)"
+   "chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)"
   ]
  },
  "pr_template": null,

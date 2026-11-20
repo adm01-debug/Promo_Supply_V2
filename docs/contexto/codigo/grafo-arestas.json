@@ -3507,6 +3507,13 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/security.ts"
   ],
+  "supabase/functions/process-solicitacao-neural/index.ts": [
+   "supabase/functions/_shared/ai_gateway.ts",
+   "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/validation.ts"
+  ],
   "supabase/functions/punchout-encrypt/index.ts": [
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/security.ts"

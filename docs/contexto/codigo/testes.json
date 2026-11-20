@@ -1849,6 +1849,7 @@
    "migrate-storage-paths",
    "process-invoice-idp",
    "process-outbox",
+   "process-solicitacao-neural",
    "punchout-encrypt",
    "punchout-setup",
    "send-push-notification",

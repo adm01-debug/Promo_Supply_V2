@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 37,
+ "total": 38,
  "verify_jwt_false": [],
  "shared": [
   "supabase/functions/_shared/ai_gateway.ts",
@@ -758,6 +758,41 @@
    "testes": 0
   },
   {
+   "nome": "process-solicitacao-neural",
+   "entrada": "supabase/functions/process-solicitacao-neural/index.ts",
+   "arquivos": 1,
+   "linhas": 132,
+   "verify_jwt": true,
+   "metodos": [
+    "OPTIONS"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "env": [
+    "OPENROUTER_API_KEY",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
+   "buckets": [],
+   "chama_edges": [],
+   "hosts_externos": [],
+   "usa_shared": [
+    "ai_gateway.ts",
+    "http.ts",
+    "logger.ts",
+    "rate_limit.ts",
+    "validation.ts"
+   ],
+   "chamada_pelo_front": [
+    "src/components/compras/NovaSolicitacaoModal.tsx",
+    "src/pages/admin/DeveloperDocs.tsx"
+   ],
+   "chamada_por_edges": [],
+   "chamada_por_sql_ou_cron": false,
+   "orfa": false,
+   "testes": 0
+  },
+  {
    "nome": "punchout-encrypt",
    "entrada": "supabase/functions/punchout-encrypt/index.ts",
    "arquivos": 1,
@@ -1394,7 +1429,5 @@
    "testes": 0
   }
  ],
- "chamadas_sem_pasta": [
-  "process-solicitacao-neural"
- ]
+ "chamadas_sem_pasta": []
 }

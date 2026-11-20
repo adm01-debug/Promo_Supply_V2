@@ -3,9 +3,9 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (701)",
+   "TypeScript (702)",
    "SQL (316)",
-   "Markdown (83)",
+   "Markdown (84)",
    "JavaScript (68)",
    "JSON (24)",
    "YAML (13)",
@@ -558,11 +558,11 @@
    "arquivos_md": 10
   },
   {
-   "pasta": "docs/arsenal-auditoria",
-   "arquivos_md": 5
+   "pasta": "docs/pendencias",
+   "arquivos_md": 6
   },
   {
-   "pasta": "docs/pendencias",
+   "pasta": "docs/arsenal-auditoria",
    "arquivos_md": 5
   },
   {
@@ -777,7 +777,7 @@
   "papeis_no_codigo": [
    {
     "papel": "user",
-    "ocorrencias": 6
+    "ocorrencias": 7
    },
    {
     "papel": "admin",
@@ -785,7 +785,7 @@
    },
    {
     "papel": "system",
-    "ocorrencias": 4
+    "ocorrencias": 5
    },
    {
     "papel": "assistant",
