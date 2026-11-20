@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3b8e89b4dab35549ac4459af046bf59cece778a7` (2026-11-20T16:09:04-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a0363ddf554bb7700446bf92149d55019f59ecfc` (2026-11-20T16:20:44-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1247 |
 | arquivos_codigo | 775 |
-| linhas_codigo | 162711 |
+| linhas_codigo | 162729 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -409,6 +409,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-20 `a0363dd` fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)
 - 2026-11-20 `3b8e89b` chore(docs): registra seg-scim, seg-punchout e fake-dash como concluidos (#180,#181) (#182)
 - 2026-11-20 `a0f4bb2` fix(seg): autentica fornecedor no punchout-receive e libera SCIM sem JWT (#180)
 - 2026-11-20 `cc9dcee` fix(dashboards): dashboards com dados reais no lugar de fachadas simuladas (#181)
@@ -423,7 +424,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `4d36709` chore: registra fio-1 (selecao de cotacao) como CONCLUIDO (#170)
 - 2026-11-20 `8beaac2` fix: persiste selecao de cotacao vencedora via selectCotacao (#169)
 - 2026-11-20 `a19f3fa` fix(acomp): Kanban passa a persistir pedidos.status (era no-op) (#168)
-- 2026-11-20 `91b330c` chore(pendencias): catalogo Fase 1 do backlog a partir da auditoria 261120 (#167)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

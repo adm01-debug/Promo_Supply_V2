@@ -281,12 +281,13 @@
     "useContext"
    ],
    "canais_realtime": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_arquivos": [
     "src/features/auth/index.ts",
     "src/features/empresas/components/EmpresaSelector.tsx",
     "src/features/empresas/hooks/useEmpresaFilter.ts",
     "src/hooks/useApprovalNotifications.ts",
+    "src/hooks/useCriticalAlertsBadge.ts",
     "src/hooks/useRealtimeSubscription.ts"
    ],
    "coberto_por_testes": 0
@@ -927,7 +928,7 @@
    "hooks_exportados": [
     "useCriticalAlertsBadge"
    ],
-   "linhas": 89,
+   "linhas": 99,
    "dominio": "hooks",
    "tabelas": [
     "system_alerts"
@@ -935,6 +936,7 @@
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useCallback",
     "useEffect",
     "useState"
@@ -1401,7 +1403,7 @@
    "hooks_exportados": [
     "useMFA"
    ],
-   "linhas": 223,
+   "linhas": 231,
    "dominio": "hooks",
    "tabelas": [
     "mfa_settings"

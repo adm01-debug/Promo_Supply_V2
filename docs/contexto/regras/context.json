@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3b8e89b4dab35549ac4459af046bf59cece778a7",
+  "sha": "a0363ddf554bb7700446bf92149d55019f59ecfc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-20 19:10 UTC",
+  "generated_at": "2026-11-20 19:21 UTC",
   "files_total": 1248,
   "code_files": 1094,
-  "code_lines": 188671,
+  "code_lines": 188689,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "647221608fdddad9",
+ "facts_hash": "86b0444702f45e99",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34509,7 +34509,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12305,
+   "lines": 12323,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -96658,7 +96658,7 @@
   },
   "src/hooks/useCriticalAlertsBadge.ts": {
    "path": "src/hooks/useCriticalAlertsBadge.ts",
-   "lines": 89,
+   "lines": 99,
    "exports": [
     "function useCriticalAlertsBadge"
    ],
@@ -97549,7 +97549,7 @@
   },
   "src/hooks/useMFA.ts": {
    "path": "src/hooks/useMFA.ts",
-   "lines": 223,
+   "lines": 231,
    "exports": [
     "interface MFASettings",
     "const useMFA"
@@ -111859,10 +111859,21 @@
   }
  },
  "git": {
-  "sha": "3b8e89b4dab35549ac4459af046bf59cece778a7",
+  "sha": "a0363ddf554bb7700446bf92149d55019f59ecfc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a0363dd",
+    "date": "2026-11-20",
+    "author": "adm01-debug",
+    "subject": "fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)",
+    "files": [
+     "src/hooks/useAccountLockout.ts",
+     "src/hooks/useCriticalAlertsBadge.ts",
+     "src/hooks/useMFA.ts"
+    ]
+   },
    {
     "sha": "3b8e89b",
     "date": "2026-11-20",
@@ -112156,15 +112167,6 @@
      "scripts/rls-audit.allowlist.json",
      "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
     ]
-   },
-   {
-    "sha": "b512d69",
-    "date": "2026-11-18",
-    "author": "adm01-debug",
-    "subject": "fix(scripts): restaura excecoes *_read_authenticated no allowlist do rls-audit (#153)",
-    "files": [
-     "scripts/rls-audit.allowlist.json"
-    ]
    }
   ],
   "hot_files": [
@@ -112182,10 +112184,6 @@
    ],
    [
     ".github/workflows/deploy-edge-functions.yml",
-    3
-   ],
-   [
-    "scripts/rls-audit.allowlist.json",
     3
    ],
    [
@@ -112207,6 +112205,22 @@
    [
     ".github/workflows/main.yml",
     2
+   ],
+   [
+    "scripts/rls-audit.allowlist.json",
+    2
+   ],
+   [
+    "src/hooks/useAccountLockout.ts",
+    1
+   ],
+   [
+    "src/hooks/useCriticalAlertsBadge.ts",
+    1
+   ],
+   [
+    "src/hooks/useMFA.ts",
+    1
    ],
    [
     "supabase/functions/_shared/punchout_crypto.test.ts",
@@ -112234,18 +112248,6 @@
    ],
    [
     "src/hooks/useExecutiveDashboardData.ts",
-    1
-   ],
-   [
-    "src/components/compras/DashboardInsights.tsx",
-    1
-   ],
-   [
-    "src/pages/auth/Auth.tsx",
-    1
-   ],
-   [
-    "src/pages/dashboard/ComprasDashboard.tsx",
     1
    ]
   ]

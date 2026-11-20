@@ -1956,6 +1956,7 @@
    "src/lib/logger.ts"
   ],
   "src/hooks/useCriticalAlertsBadge.ts": [
+   "src/features/auth/hooks/useAuthContext.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/realtime.ts"
   ],
