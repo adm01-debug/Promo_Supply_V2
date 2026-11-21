@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d2b3b519bcc4b83ca6d92e5382ce048035c0b174",
+  "commit": "7598400ab9f2a154d2c29094f6d7be3f8c086298",
   "branch": "main",
-  "data_commit": "2026-11-21T08:45:32-03:00",
+  "data_commit": "2026-11-21T08:54:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7598400",
+    "data": "2026-11-21",
+    "assunto": "fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)"
+   },
    {
     "sha": "d2b3b51",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "be6c7e0",
     "data": "2026-11-20",
     "assunto": "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)"
-   },
-   {
-    "sha": "0243977",
-    "data": "2026-11-20",
-    "assunto": "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)"
    }
   ],
-  "arquivos_mudados_7d": 174,
+  "arquivos_mudados_7d": 171,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 175
+    "commits": 176
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1254,
   "arquivos_codigo": 781,
-  "linhas_codigo": 164623,
+  "linhas_codigo": 164622,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -484,7 +484,7 @@
   },
   "supabase/functions": {
    "arquivos": 82,
-   "linhas": 14759
+   "linhas": 14758
   },
   "tailwind.config.ts": {
    "arquivos": 1,
