@@ -1,4 +1,4 @@
-﻿# Cahier de pendÃªncias â€” Promo_Supply_V2
+# Cahier de pendÃªncias â€” Promo_Supply_V2
 
 Meta do objetivo: CADA item abaixo tem registro final em `docs/pendencias/<ID>-<slug>.md` com estado
 (CONCLUIDO / AGUARDANDO HUMANO / DESCARTADO), evidencia (arquivo:linha / diff / saida), camadas (DB/RLS/edge/UI),
@@ -54,7 +54,7 @@ catalogo, Fase 2 execucao vertical por item.
 | hk-dead | hooks orfaos (tree-shaken, sem barrel; remocao sem ganho de runtime) | DESCARTADO (arquivamento documentado - NAO remover; useBulkOperations ancorado por teste) | hk-dead-mortos.md |
 | hk-fuse | `useFuseSearch` inteiro morto (so `normalizeText` usado) | PENDENTE | `useFuseSearch.ts:83,225,306,329` |
 | hk-offline | `useOfflineSync` fila vazia sempre | PENDENTE | `useOfflineSync.ts:98,282` |
-| hk-dlq | `useWorkflowDLQ` sem UI de retry | PENDENTE | `useWorkflowDLQ.ts:66,111,117,122` |
+| hk-dlq | `useWorkflowDLQ` sem UI de retry | CONCLUIDO - WorkflowDLQPanel em Aprovacoes (retry/descartar/limpar) | `useApprovalWorkflow.ts` + `WorkflowDLQPanel.tsx` |
 | hk-badges | `useSidebarBadges` conta tabela errada (`workflow_approvals`) | CONCLUIDO â€” passa a contar `approval_workflows` por `organization_id` | `useSidebarBadges.ts:26` |
 | hk-permissions | `DependencyHealthBadge` usa `isAdmin` que nao existe -> nunca renderiza | CONCLUIDO â€” `useAuth().isAdmin` (fonte real), badge passa a renderizar para admin | `DependencyHealthBadge.tsx:102,116` |
 | hk-account-filter | `useAccountFilters` upsert tipado (sem cast never) | CONCLUIDO | `useAccountFilters.ts` |
