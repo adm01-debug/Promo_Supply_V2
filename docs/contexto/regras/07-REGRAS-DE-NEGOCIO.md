@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `502c3b5844` · branch `main` · 2026-11-21 22:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e39f3aa9e8` · branch `main` · 2026-11-21 22:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -999,6 +999,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `overall_status` | `COMPLIANT` | escreve | `src/services/rlsAuditService.ts` |
 | `overall_status` | `NON_COMPLIANT` | compara | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | `status` | `AGUARDANDO_COTACAO` | compara, escreve | `src/components/compras/SolicitacaoCard.tsx`<br>`src/types/legacyTypes.ts` |
+| `status` | `ALL` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `Crítico` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `status` | `EM_COTACAO` | compara | `src/components/compras/SolicitacaoCard.tsx` |
 | `status` | `ENTREGUE` | compara | `src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/SolicitacaoKanban.tsx` |
@@ -2346,7 +2347,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2680 testes em 138 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2681 testes em 138 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2364,10 +2365,10 @@ _nenhum item encontrado_
 | `src/pages/aprovacoes/__tests__/aprovacoesData.test.ts` | 39 | approvalHistory · has 4 items · every item has required fields · all ids are unique … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
+| `src/tests/spot/spotApi.test.ts` | 37 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts` | 36 | SUPPLIER_COLORS · has 6 supplier entries · includes XBZ Brindes · includes Stricker / Spot Gifts … |
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
-| `src/tests/spot/spotApi.test.ts` | 36 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
 | `src/pages/compliance/__tests__/complianceHelpers.test.ts` | 33 | actionTypeLabels · has entries for warning, standard_fine, double_fine, temp_block, permanent_block · each entry has label, color, and icon · warning label is  … |
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |

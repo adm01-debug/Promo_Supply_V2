@@ -1075,7 +1075,7 @@
    "nome": "spot-api",
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
-   "linhas": 643,
+   "linhas": 650,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

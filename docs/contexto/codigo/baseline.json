@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "502c3b5844fa6262f5f2f4cb76c31cbd1388667e",
+  "commit": "e39f3aa9e8d85a5953b2bd85e5b0369e690538ea",
   "branch": "main",
-  "data_commit": "2026-11-21T19:21:02-03:00",
+  "data_commit": "2026-11-21T19:33:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e39f3aa",
+    "data": "2026-11-21",
+    "assunto": "fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)"
+   },
    {
     "sha": "502c3b5",
     "data": "2026-11-21",
@@ -126,11 +131,6 @@
     "sha": "7a030e4",
     "data": "2026-11-21",
     "assunto": "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)"
-   },
-   {
-    "sha": "e2465ce",
-    "data": "2026-11-21",
-    "assunto": "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)"
    }
   ],
   "arquivos_mudados_7d": 227,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 216
+    "commits": 217
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1284,
   "arquivos_codigo": 799,
-  "linhas_codigo": 167035,
+  "linhas_codigo": 167047,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -484,7 +484,7 @@
   },
   "src/tests": {
    "arquivos": 11,
-   "linhas": 873
+   "linhas": 878
   },
   "src/types": {
    "arquivos": 3,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 90,
-   "linhas": 15864
+   "linhas": 15871
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -618,7 +618,7 @@
   },
   {
    "arquivo": "supabase/functions/spot-api/index.ts",
-   "linhas": 643
+   "linhas": 650
   },
   {
    "arquivo": "src/components/ui/sidebar.tsx",

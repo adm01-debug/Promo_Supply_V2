@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `502c3b5844` · branch `main` · 2026-11-21 22:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e39f3aa9e8` · branch `main` · 2026-11-21 22:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -300,6 +300,7 @@
 | status | valor `expirado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-approval-escalations/index.ts` |
 | status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
+| status | valor `ALL` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | status | valor `succeeded` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql` |
 | status | valor `blocked` para `qualification_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/scorecard/supplierScorecardData.ts`<br>`compara:src/pages/portal-fornecedor/PortalFornecedor.tsx` |

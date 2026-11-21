@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)",
    "fix(spot): permite getOrders no cron para popular spot_pedidos (#256)",
    "fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)",
    "test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)",
-   "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)",
-   "docs(pim): marca PR 2.1 concluída no checklist (#249)"
+   "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)"
   ]
  },
  "pr_template": null,
