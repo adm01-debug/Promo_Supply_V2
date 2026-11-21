@@ -131,13 +131,18 @@ jobs:
             exit 0
           fi
 
-          if ! grep -qiE 'permission denied for (function|schema|table) ' "${RUNNER_TEMP}/psql.err"; then
+          # Migrations que tocam o schema cron exigem a conexao como postgres.
+          # O canal psql e' ci_snapshot; quando a propria migration aborta por
+          # isso ("exige conexao como postgres"), ou quando falta privilegio de
+          # schema/objeto, o MESMO arquivo e' reaplicado pelo Management API -
+          # que roda como postgres. O psql nao e' reexecutado depois.
+          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser' "${RUNNER_TEMP}/psql.err"; then
             cat "${RUNNER_TEMP}/psql.err"
             echo "::error::psql falhou por motivo que nao e' privilegio. Nada aplicado."
             exit "${codigo}"
           fi
 
-          echo "psql sem privilegio no schema cron (esperado: role ci_snapshot). Aplicando pelo Management API."
+          echo "psql sem o role necessario (esperado: ci_snapshot). Aplicando pelo Management API."
           # Sonda: o Management API pode rodar com outro role. Registrar qual,
           # porque e' isso que decide se alter_job funciona.
           curl -sS -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
