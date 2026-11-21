@@ -19,6 +19,7 @@
 | Freight Quest CI/CD | [`main.yml`](../../.github/workflows/main.yml) | push em main/develop e pull_request para main | lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml | — | — |
 | Notifica falha na main | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | workflow_run (conclusao dos workflows deste repo na main) | issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main | a falha do workflow original fica sem issue de acompanhamento | o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main` | — | — |
 | Paridade migrations x banco (semanal) | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | toda segunda 09:00 UTC (06:00 em Sao Paulo), dispatch manual e push em main que toque o verificador ou a allowlist | o job roda scripts/ci/paridade-migrations-banco.sql no banco de producao e compara a saida com o que supabase/migrations/ declara | o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist | abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail | — | — |
+| Provisionar VAPID na edge de push | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar as chaves | a Management API responde 200 para o post de secrets e o GET seguinte lista VAPID_PUBLIC_KEY e VAPID_PRIVATE_KEY no projeto oficial | 403/erro da API deixa o job vermelho e NENHUMA chave e' gravada parcialmente (uma chamada, um payload) | o resumo do run lista os nomes das secrets publicadas (nunca os valores) e o ref do projeto | — | — |
 | types-sync | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch | src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2) | PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente | PR de types e issue de gate | — | — |
 
 ## Detalhe
@@ -100,6 +101,13 @@
 - **Quando falha:** o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist
 - **Quem é avisado:** abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail
 
+### Provisionar VAPID na edge de push (`provisionar-vapid.yml`)
+
+- **Gatilho:** dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar as chaves
+- **O que prova:** a Management API responde 200 para o post de secrets e o GET seguinte lista VAPID_PUBLIC_KEY e VAPID_PRIVATE_KEY no projeto oficial
+- **Quando falha:** 403/erro da API deixa o job vermelho e NENHUMA chave e' gravada parcialmente (uma chamada, um payload)
+- **Quem é avisado:** o resumo do run lista os nomes das secrets publicadas (nunca os valores) e o ref do projeto
+
 ### types-sync (`types-sync.yml`)
 
 - **Gatilho:** push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch
@@ -134,6 +142,9 @@
 | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | **issue-aberta-depois-do-verde** | a issue nao fecha sozinha; quem corrigiu fecha a issue (nenhum workflow sabe dizer que a causa raiz foi resolvida) |
 | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | **objeto-renomeado** | politica/indice que mudou de nome nao esta "faltando"; registre a excecao na allowlist com o nome novo como motivo |
 | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | **secret-ausente** | sem SUPABASE_DB_URL o job falha fechado de proposito -- relatar paridade sem ler o banco seria mentira |
+| [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **sem-eco-de-valor** | a chave privada nunca aparece no log; o workflow imprime apenas nomes |
+| [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **sem-rotacao** | reprovisionar a MESMA chave e' idempotente; rotacionar exige publicar de novo e reinstalar o PWA em cada dispositivo, por isso nao roda sozinho |
+| [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **secret-ausente** | sem SUPABASE_ACCESS_TOKEN/VITE_SUPABASE_PROJECT_ID e sem os valores VAPID o job falha fechado |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **banco-pulado** | sem o secret SUPABASE_DB_URL o job sai VERDE com aviso no agendamento e no push; no workflow_dispatch falha de proposito, para a pessoa ver |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **sem-pr-novo** | "nada mudou" quando o PR de sync ja esta aberto com o mesmo types.ts — create-pull-request nao cria commit identico |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **debounce** | se o PR de sync tem commit com menos de 20 min, o run e pulado (cadencia horaria + push nao deve empilhar commit) |
