@@ -88,7 +88,10 @@ migration, não há banco local e o `.env` do repo aponta para produção.
    `git show origin/contexto:docs/contexto/supabase/lints.md` (fonte dona do schema ao vivo) e rode
    `npm run test:rls` ciente de que ele fala com produção.
 8. `src/integrations/supabase/types.ts` é **gerado** pelo `types-sync.yml` a partir do banco oficial —
-   nunca edite à mão; mexeu em DDL, espere o PR `automation/types-sync` ou rode `scripts/types-sync/gen-types.sh`.
+   nunca edite à mão; mexeu em DDL, espere o PR `automation/types-sync` ou rode `scripts/types-sync/gen-types.sh`
+   com `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF` (Management API, o mesmo motor que gerou o arquivo).
+   Sem o token o script cai em `--db-url`, que introspecta o Postgres direto e gera um arquivo diferente —
+   é a causa do PR de types reaparecendo toda hora.
 
 Sessões paralelas commitam no mesmo repo e falam com o mesmo banco: re-sync antes de editar e confira
 PRs abertas antes de tocar `supabase/`.

@@ -20,6 +20,7 @@ const ARQS = [GEN, 'scripts/types-sync/local-pg-proxy.mjs', 'scripts/types-sync/
 const CA_REL = 'scripts/types-sync/certs/supabase-prod-ca-2021.crt';
 const TIPOS = 'export type Json = string\n\nexport type Database = {\n  public: {\n    Tables: {\n      t: {\n      }\n    }\n  }\n}\n';
 const URL_FALSA = 'postgresql://postgres.abcdefghijklmnopqrst:S3nh4-Sup3r-S3cr3t4@aws-0-sa-east-1.pooler.supabase.com:6543/postgres';
+const REF_FALSO = 'abcdefghijklmnopqrst';
 const SHELLS = ['bash', 'dash'];
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -221,6 +222,53 @@ for (const sh of SHELLS) {
     fs.writeFileSync(out, 'ANTIGO');
     r = gen(raiz, sh, ['--local', out], { env: { FAKE_SUPABASE: 'falha' } });
     assert.notEqual(r.status, 0);
+    assert.equal(fs.readFileSync(out, 'utf8'), 'ANTIGO');
+    assert.deepEqual(r.lixo, []);
+  });
+
+  // Caminho canonico da producao: Management API via --project-id. E o unico que
+  // devolve exatamente os bytes de src/integrations/supabase/types.ts; --db-url
+  // (postgres-meta) produz um diff permanente. Ver o cabecalho do gen-types.sh.
+  tsh(sh, 'Management API: token + SUPABASE_PROJECT_REF -> "gen types typescript --project-id <ref> --schema public", sem tocar banco', () => {
+    const raiz = arvore();
+    const out = path.join(raiz, 'saida/t.ts');
+    const r = gen(raiz, sh, [out], { env: { SUPABASE_ACCESS_TOKEN: 'sbp_token_de_teste', SUPABASE_PROJECT_REF: REF_FALSO } });
+    assert.equal(r.status, 0, r.saida);
+    assert.deepEqual(r.argv, [`gen types typescript --project-id ${REF_FALSO} --schema public`], 'Management API nao aceita --db-url');
+    assert.equal(fs.readFileSync(out, 'utf8'), TIPOS);
+    assert.ok(!/Aviso: pgbouncer ausente/.test(r.stderr), 'o caminho da API nao passa pelo proxy local');
+    assert.ok(!r.saida.includes('sbp_token_de_teste') && !r.stdout.includes(REF_FALSO), 'credencial e ref nao vao para a saida');
+    assert.deepEqual(r.lixo, []);
+  });
+
+  tsh(sh, 'Management API: VITE_SUPABASE_PROJECT_ID serve de ref quando SUPABASE_PROJECT_REF falta', () => {
+    const raiz = arvore();
+    const out = path.join(raiz, 'saida/t.ts');
+    const r = gen(raiz, sh, [out], { env: { SUPABASE_ACCESS_TOKEN: 'sbp_token_de_teste', VITE_SUPABASE_PROJECT_ID: REF_FALSO } });
+    assert.equal(r.status, 0, r.saida);
+    assert.deepEqual(r.argv, [`gen types typescript --project-id ${REF_FALSO} --schema public`]);
+    assert.deepEqual(r.lixo, []);
+  });
+
+  tsh(sh, 'Management API: token sem ref -> exit 1, mensagem, nada chamado, nada gravado', () => {
+    const raiz = arvore();
+    const out = path.join(raiz, 'saida/t.ts');
+    const r = gen(raiz, sh, [out], { env: { SUPABASE_ACCESS_TOKEN: 'sbp_token_de_teste' } });
+    assert.equal(r.status, 1, r.saida);
+    assert.match(r.stderr, /SUPABASE_PROJECT_REF \(ou VITE_SUPABASE_PROJECT_ID\) nao definida/);
+    assert.deepEqual(r.argv, [], 'nao pode chamar o supabase sem ref');
+    assert.ok(!fs.existsSync(out));
+    assert.deepEqual(r.lixo, []);
+  });
+
+  tsh(sh, 'Management API: falha 3x -> exit 1 sem sobrescrever a saida; a API tem prioridade sobre o modo --db-url', () => {
+    const raiz = arvore();
+    const out = path.join(raiz, 'saida/t.ts');
+    fs.writeFileSync(out, 'ANTIGO');
+    const r = gen(raiz, sh, [out], { env: { SUPABASE_ACCESS_TOKEN: 'sbp_token_de_teste', SUPABASE_PROJECT_REF: REF_FALSO, SUPABASE_DB_URL: URL_FALSA, FAKE_SUPABASE: 'falha' } });
+    assert.equal(r.status, 1, r.saida);
+    assert.equal(r.argv.length, 3);
+    for (const argv of r.argv) assert.match(argv, /--project-id/, 'com token, o modo --db-url nao pode ser usado');
     assert.equal(fs.readFileSync(out, 'utf8'), 'ANTIGO');
     assert.deepEqual(r.lixo, []);
   });
