@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `22af7a5c3ff8bdff118a0c710687db53ae492c5c` (2026-11-21T10:04:22-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195` (2026-11-21T10:09:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -331,7 +331,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (23)
+- docs/pendencias/_indice.md (24)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `7b6d6f8` docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)
 - 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
 - 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
 - 2026-11-21 `af0e42f` chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `ec27cd4` fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)
 - 2026-11-20 `60860f7` chore(docs): marca edge-audit como concluido (PR #203) (#204)
 - 2026-11-20 `1f3af80` feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)
-- 2026-11-20 `2bfc15b` fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

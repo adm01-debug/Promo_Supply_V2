@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "22af7a5c3ff8bdff118a0c710687db53ae492c5c",
+  "sha": "7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 13:04 UTC",
+  "generated_at": "2026-11-21 13:10 UTC",
   "files_total": 1261,
   "code_files": 1103,
   "code_lines": 190800,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "727781acaef36e16",
+ "facts_hash": "e4dd7f47369bdc6d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -85944,7 +85944,7 @@
   ]
  },
  "manual": [],
- "readme": "# Welcome to your Lovable project\n\n## 📑 Promo Supply - Gestão de Compras\n\nPromo Supply é um sistema completo de gestão de compras, fornecedores e contratos empresariais, focado em eficiência, transparência e blindagem operacional.\n\n### 🚀 Tecnologias\n- **Vite** + **React** + **TypeScript**\n- **Tailwind CSS** + **shadcn/ui**\n- **Supabase** (Auth, DB, Storage, Edge Functions)\n- **TanStack Query** (Caching & State)\n- **i18next** (Multi-idioma: PT-BR, EN, ES)\n- **Framer Motion** (Animações fluidas)\n\n### 🛠️ Estrutura do Projeto\n- `src/components`: Componentes modulares e reutilizáveis\n- `src/pages`: Páginas da aplicação e dashboards\n- `src/hooks`: Lógica de negócio e integração com API em hooks customizados\n- `src/lib`: Utilitários, configurações de segurança e helpers globais\n- `supabase`: Esquema do banco de dados, migrações e funções de borda\n- `DOCS/`: Central de documentação técnica detalhada\n\n### 📘 Documentação Técnica\nPara uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:\n- [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.\n- [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.\n- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/README.md) - Histórico de decisões críticas do projeto.\n\nA documentação também está disponível dentro do sistema no painel administrativo.\n\n\n### 🔒 Segurança e Compliance\n- **RBAC:** Controle de acesso baseado em perfis (Admin, Coordenador, Comprador, Financeiro, Viewer).\n- **Audit Log:** Rastreabilidade total de ações críticas via `auditService`.\n- **MFA & Passkeys:** Suporte a autenticação multifator e chaves de acesso biométricas.\n- **Account Lockout:** Proteção contra ataques de força bruta.\n- **CSP & Headers:** Configurações rígidas de segurança no `index.html`.\n\n### ⚡ Desenvolvimento\n```sh\n# Instalação\nbun install\n\n# Execução (Dev)\nbun run dev\n\n# Build (Produção)\nbun run build\n\n# Testes\nbun run test\n```\n\n### 🌍 Internacionalização\nO sistema detecta automaticamente o idioma do navegador, persistindo a preferência do usuário no `localStorage`.\n\n---\nPronto para produção. Blindagem 10/10. 🚀",
+ "readme": "# Welcome to your Lovable project\n\n## 📑 Promo Supply - Gestão de Compras\n\nPromo Supply é um sistema completo de gestão de compras, fornecedores e contratos empresariais, focado em eficiência, transparência e blindagem operacional.\n\n### 🚀 Tecnologias\n- **Vite** + **React** + **TypeScript**\n- **Tailwind CSS** + **shadcn/ui**\n- **Supabase** (Auth, DB, Storage, Edge Functions)\n- **TanStack Query** (Caching & State)\n- **i18next** (Multi-idioma: PT-BR, EN, ES)\n- **Framer Motion** (Animações fluidas)\n\n### 🛠️ Estrutura do Projeto\n- `src/components`: Componentes modulares e reutilizáveis\n- `src/pages`: Páginas da aplicação e dashboards\n- `src/hooks`: Lógica de negócio e integração com API em hooks customizados\n- `src/lib`: Utilitários, configurações de segurança e helpers globais\n- `supabase`: Esquema do banco de dados, migrações e funções de borda\n- `DOCS/`: Central de documentação técnica detalhada\n\n### 📘 Documentação Técnica\nPara uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:\n- [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.\n- [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.\n- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/) - Histórico de decisões críticas do projeto.\n\nA documentação também está disponível dentro do sistema no painel administrativo.\n\n\n### 🔒 Segurança e Compliance\n- **RBAC:** Controle de acesso baseado em perfis (Admin, Coordenador, Comprador, Financeiro, Viewer).\n- **Audit Log:** Rastreabilidade total de ações críticas via `auditService`.\n- **MFA & Passkeys:** Suporte a autenticação multifator e chaves de acesso biométricas.\n- **Account Lockout:** Proteção contra ataques de força bruta.\n- **CSP & Headers:** Configurações rígidas de segurança no `index.html`.\n\n### ⚡ Desenvolvimento\n```sh\n# Instalação\nbun install\n\n# Execução (Dev)\nbun run dev\n\n# Build (Produção)\nbun run build\n\n# Testes\nbun run test\n```\n\n### 🌍 Internacionalização\nO sistema detecta automaticamente o idioma do navegador, persistindo a preferência do usuário no `localStorage`.\n\n---\nStatus: sistema em produção ativa com evolução contínua (veja `DOCS/pendencias/_indice.md` para o catálogo de pendências e `docs/pendencias/` para detalhes).",
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
@@ -112630,10 +112630,22 @@
   }
  },
  "git": {
-  "sha": "22af7a5c3ff8bdff118a0c710687db53ae492c5c",
+  "sha": "7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7b6d6f8",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)",
+    "files": [
+     "DOCS/ARCHITECTURE_GUIDE.md",
+     "DOCS/ENGINEERING_EXCELLENCE.md",
+     "README.md",
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "22af7a5",
     "date": "2026-11-21",
@@ -112932,15 +112944,6 @@
     "files": [
      "supabase/functions/check-sla-alerts/index.ts"
     ]
-   },
-   {
-    "sha": "be6c7e0",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
@@ -112959,6 +112962,18 @@
    [
     "supabase/functions/ai-supplier-risk/index.ts",
     2
+   ],
+   [
+    "DOCS/ARCHITECTURE_GUIDE.md",
+    1
+   ],
+   [
+    "DOCS/ENGINEERING_EXCELLENCE.md",
+    1
+   ],
+   [
+    "README.md",
+    1
    ],
    [
     "src/components/compras/approval/WorkflowDLQPanel.tsx",
@@ -113010,18 +113025,6 @@
    ],
    [
     "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
-    1
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
-    1
-   ],
-   [
-    "src/components/compras/AISupplierSuggestion.tsx",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
     1
    ]
   ]
