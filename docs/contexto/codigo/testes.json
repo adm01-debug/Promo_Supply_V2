@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 178,
+ "total": 179,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 162
+  "unit": 163
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 105
+   "arquivos": 106
   },
   {
    "padrao": "outro",
@@ -1088,6 +1088,15 @@
    "casos": 8
   },
   {
+   "arquivo": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+   "tipo": "unit",
+   "linhas": 58,
+   "testa": [
+    "src/pages/catalogo-xbz/xbzHelpers.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/pages/compliance/__tests__/complianceHelpers.test.ts",
    "tipo": "unit",
    "linhas": 241,
@@ -1426,11 +1435,12 @@
   {
    "arquivo": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
    "tipo": "unit",
-   "linhas": 67,
+   "linhas": 142,
    "testa": [
-    "supabase/functions/_shared/xbz_catalog_cache.ts"
+    "supabase/functions/_shared/xbz_catalog_cache.ts",
+    "supabase/functions/_shared/xbz_client.ts"
    ],
-   "casos": 6
+   "casos": 9
   },
   {
    "arquivo": "supabase/functions/check-sla-alerts/failures_test.ts",
@@ -1704,7 +1714,7 @@
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
-  "src/pages/catalogo-xbz/xbzHelpers.ts": 1,
+  "src/pages/catalogo-xbz/xbzHelpers.ts": 2,
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,
@@ -1737,6 +1747,7 @@
   "supabase/functions/_shared/punchout_crypto.ts": 1,
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
+  "supabase/functions/_shared/xbz_client.ts": 1,
   "supabase/functions/check-sla-alerts/failures.ts": 1,
   "supabase/functions/punchout-receive/session.ts": 1,
   "supabase/functions/punchout-receive/solicitation.ts": 1,

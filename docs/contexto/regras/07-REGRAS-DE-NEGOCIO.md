@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a92239619a` · branch `main` · 2026-11-21 13:37 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3db64dff74` · branch `main` · 2026-11-21 13:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2322,7 +2322,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2683 testes em 130 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2692 testes em 131 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2416,6 +2416,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
+| `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
 | `tests-rls/rls-isolation.test.ts` | 9 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
@@ -2426,8 +2427,8 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
+| `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
-| `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 6 | mapProduto: normaliza campos principais · mapProduto: aceita chaves alternativas (Id / Descricao) · mapProduto: descarta itens sem produto_id válido · normalizeCatalogo: deduplica por produto_id e ignora lixo … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |

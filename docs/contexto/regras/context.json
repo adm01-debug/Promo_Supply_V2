@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a92239619a07fd18c8838213bb43108c78ea29b4",
+  "sha": "3db64dff74fcb5dde3010737aebe442318281253",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 13:37 UTC",
-  "files_total": 1261,
-  "code_files": 1103,
-  "code_lines": 190801,
+  "generated_at": "2026-11-21 13:39 UTC",
+  "files_total": 1262,
+  "code_files": 1104,
+  "code_lines": 191100,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bc2f66bd44f428a5",
+ "facts_hash": "b005a655e747e929",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 365,
+   ".ts": 366,
    ".tsx": 347,
    ".sql": 318,
    ".mjs": 66,
@@ -34542,7 +34542,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12389,
+   "lines": 12395,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34906,8 +34906,8 @@
   },
   {
    "module": "src/pages",
-   "files": 123,
-   "lines": 29201,
+   "files": 124,
+   "lines": 29302,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35089,6 +35089,7 @@
     "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts",
+    "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
     "src/pages/compliance/ComplianceDashboard.tsx",
     "src/pages/compliance/complianceHelpers.ts",
     "src/pages/compliance/__tests__/complianceHelpers.test.ts",
@@ -35114,8 +35115,7 @@
     "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
     "src/pages/gerar-ordem/GerarOrdem.tsx",
     "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
-    "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-    "src/pages/historico/HistoricoCompras.tsx"
+    "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts"
    ]
   },
   {
@@ -35309,7 +35309,7 @@
   {
    "module": "supabase/functions",
    "files": 82,
-   "lines": 14768,
+   "lines": 14960,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -64232,6 +64232,30 @@
     "name": "classifica variação pequena como estável"
    },
    {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "produtoView"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink)"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "usa QtdDisponivelExibicao ("
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "item sem IdProduto vira id 0 (botão "
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "parseXbzNumber"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    "name": "converte pt-BR e números"
+   },
+   {
     "file": "src/pages/compliance/__tests__/complianceHelpers.test.ts",
     "name": "actionTypeLabels"
    },
@@ -67109,15 +67133,27 @@
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: normaliza campos principais"
+    "name": "mapProduto: lê os nomes reais do consultaEstoque"
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    "name": "mapProduto: aceita chaves alternativas (Id / Descricao)"
+    "name": "mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+    "name": "mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+    "name": "mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes)"
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
     "name": "mapProduto: descarta itens sem produto_id válido"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+    "name": "toPascalKeys: converte chaves recursivamente e preserva arrays/primitivos"
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
@@ -99265,7 +99301,7 @@
   },
   "src/hooks/useXbzIntegration.ts": {
    "path": "src/hooks/useXbzIntegration.ts",
-   "lines": 615,
+   "lines": 621,
    "exports": [
     "interface XbzCatalogoResult",
     "interface XbzLoginInfo",
@@ -102671,7 +102707,7 @@
   },
   "src/pages/catalogo-xbz/xbzHelpers.ts": {
    "path": "src/pages/catalogo-xbz/xbzHelpers.ts",
-   "lines": 117,
+   "lines": 160,
    "exports": [
     "const XBZ_NULL_DATE_PREFIX",
     "interface XbzPermissions",
@@ -102687,6 +102723,9 @@
     "const XBZ_BUSCA_MIN",
     "function normalizeBusca",
     "function isBuscaValida",
+    "function parseXbzNumber",
+    "interface XbzProdutoView",
+    "function produtoView",
     "const XBZ_ENTREGA_TIPOS",
     "const XBZ_PAGAMENTO_TIPOS",
     "const XBZ_PERIODOS",
@@ -102831,6 +102870,19 @@
     "detecta degradação",
     "detecta melhora",
     "classifica variação pequena como estável"
+   ]
+  },
+  "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts": {
+   "path": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+   "lines": 58,
+   "is_test": true,
+   "tests": [
+    "produtoView",
+    "lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink)",
+    "usa QtdDisponivelExibicao (",
+    "item sem IdProduto vira id 0 (botão ",
+    "parseXbzNumber",
+    "converte pt-BR e números"
    ]
   },
   "src/pages/compliance/ComplianceDashboard.tsx": {
@@ -107563,7 +107615,7 @@
   },
   "supabase/functions/_shared/xbz_catalog_cache.test.ts": {
    "path": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-   "lines": 67,
+   "lines": 142,
    "is_test": true,
    "params": [
     {
@@ -107571,11 +107623,14 @@
      "value": "\"11111111-1111-1111-1111-111111111111\""
     }
    ],
-   "doc": "Testes do espelho de catálogo XBZ (normalização pura, sem rede/banco). Rodar: deno test supabase/functions/_shared/xbz_catalog_cache.test.ts",
+   "doc": "Testes do espelho de catálogo XBZ (normalização pura, sem rede/banco). Fixtures seguem o schema real observado em 21/11/2026 (DOCS/INTEGRACOES/XBZ.md §4.3). Rodar: deno test supabase/functions/_shared/xbz_catalog_cache.test.ts",
    "tests": [
-    "mapProduto: normaliza campos principais",
-    "mapProduto: aceita chaves alternativas (Id / Descricao)",
+    "mapProduto: lê os nomes reais do consultaEstoque",
+    "mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0",
+    "mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado",
+    "mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes)",
     "mapProduto: descarta itens sem produto_id válido",
+    "toPascalKeys: converte chaves recursivamente e preserva arrays/primitivos",
     "normalizeCatalogo: deduplica por produto_id e ignora lixo",
     "normalizeCatalogo: entrada não-array vira lista vazia",
     "normalizeCatalogo: preserva o payload bruto para auditoria"
@@ -107583,7 +107638,7 @@
   },
   "supabase/functions/_shared/xbz_catalog_cache.ts": {
    "path": "supabase/functions/_shared/xbz_catalog_cache.ts",
-   "lines": 171,
+   "lines": 199,
    "exports": [
     "interface XbzProdutoRow",
     "function mapProduto",
@@ -107615,11 +107670,11 @@
      "value": "500"
     }
    ],
-   "doc": "Cache/espelho do catálogo XBZ em `public.xbz_produtos`. Motivação: `consultaEstoque` é a única rota de catálogo e depende da disponibilidade da XBZ (porta 5001, circuit breaker de 30s). Espelhar cada resposta permite: - degradar com elegância (servir o último snapshot quando a XBZ cai); - pesquisar …"
+   "doc": "Cache/espelho do catálogo XBZ em `public.xbz_produtos`. Motivação: o catálogo (`mxbzConsultaEstoque`/`consultaEstoque`) depende da disponibilidade da XBZ (porta 5001, circuit breaker de 30s). Espelhar cada resposta permite: - degradar com elegância (servir o último snapshot quando a XBZ cai); - pesq …"
   },
   "supabase/functions/_shared/xbz_client.ts": {
    "path": "supabase/functions/_shared/xbz_client.ts",
-   "lines": 325,
+   "lines": 410,
    "exports": [
     "const XBZ_BASE",
     "const XBZ_TIMEOUT_MS",
@@ -107639,6 +107694,9 @@
     "interface XbzCatalogoFilters",
     "const XBZ_BUSCA_MIN",
     "function xbzConsultaEstoque",
+    "interface XbzCatalogoListas",
+    "interface XbzMxbzCatalogoFilters",
+    "function xbzMxbzConsultaEstoque",
     "function xbzCores",
     "function xbzGetSt",
     "function xbzCarrinhoGet",
@@ -107647,6 +107705,7 @@
     "function toNumber",
     "function toInt",
     "function toText",
+    "function toPascalKeys",
     "function isPago",
     "function parsePagamentoLabel"
    ],
@@ -110649,7 +110708,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 485,
+   "lines": 489,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -112637,10 +112696,26 @@
   }
  },
  "git": {
-  "sha": "a92239619a07fd18c8838213bb43108c78ea29b4",
+  "sha": "3db64dff74fcb5dde3010737aebe442318281253",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3db64df",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)",
+    "files": [
+     "src/hooks/useXbzIntegration.ts",
+     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
+     "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+     "src/pages/catalogo-xbz/xbzHelpers.ts",
+     "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+     "supabase/functions/_shared/xbz_catalog_cache.ts",
+     "supabase/functions/_shared/xbz_client.ts",
+     "supabase/functions/xbz-proxy/index.ts"
+    ]
+   },
    {
     "sha": "a922396",
     "date": "2026-11-21",
@@ -112944,21 +113019,32 @@
     "files": [
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "2547016",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)",
-    "files": [
-     "supabase/functions/ai-supplier-risk/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
     17
+   ],
+   [
+    "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
+    2
+   ],
+   [
+    "src/pages/catalogo-xbz/xbzHelpers.ts",
+    2
+   ],
+   [
+    "supabase/functions/_shared/xbz_catalog_cache.ts",
+    2
+   ],
+   [
+    "supabase/functions/_shared/xbz_client.ts",
+    2
+   ],
+   [
+    "supabase/functions/xbz-proxy/index.ts",
+    2
    ],
    [
     "README.md",
@@ -112973,8 +113059,16 @@
     2
    ],
    [
-    "supabase/functions/ai-supplier-risk/index.ts",
-    2
+    "src/hooks/useXbzIntegration.ts",
+    1
+   ],
+   [
+    "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+    1
    ],
    [
     "src/pages/admin/DeveloperDocs.tsx",
@@ -113006,34 +113100,6 @@
    ],
    [
     "docs/pendencias/_ordem.md",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/xbzHelpers.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_catalog_cache.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_client.ts",
-    1
-   ],
-   [
-    "supabase/functions/xbz-proxy/index.ts",
-    1
-   ],
-   [
-    "docs/pendencias/hk-dead-mortos.md",
     1
    ]
   ]

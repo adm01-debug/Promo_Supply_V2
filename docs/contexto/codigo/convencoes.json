@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (105)",
+   "co-localizado (__tests__) (106)",
    "outro (40)",
    "co-localizado (*.test) (23)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)",
    "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)",
    "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)",
    "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)",
-   "docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)",
-   "feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)"
+   "docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)"
   ]
  },
  "pr_template": null,

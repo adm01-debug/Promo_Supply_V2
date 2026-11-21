@@ -1406,7 +1406,7 @@
    "nome": "xbz-proxy",
    "entrada": "supabase/functions/xbz-proxy/index.ts",
    "arquivos": 1,
-   "linhas": 485,
+   "linhas": 489,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
