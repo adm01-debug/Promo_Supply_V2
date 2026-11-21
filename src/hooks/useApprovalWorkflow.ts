@@ -86,6 +86,7 @@ export const useApprovalWorkflow = () => {
     solicitacaoId: string,
     valor: number,
     categoriaId?: string,
+    fromDLQ = false,
   ): Promise<ApprovalWorkflow | null> => {
     if (!organizationId) return null;
     try {
@@ -174,15 +175,17 @@ export const useApprovalWorkflow = () => {
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error);
       logger.error('Error creating workflow', { error });
-      pushToDLQ('create_workflow', { solicitacaoId, valor, categoriaId, organizationId, userId: user?.id }, errMsg);
-      toast.error('Erro ao criar workflow de aprovação — salvo para reprocessamento');
+      if (!fromDLQ) {
+        pushToDLQ('create_workflow', { solicitacaoId, valor, categoriaId, organizationId, userId: user?.id }, errMsg);
+        toast.error('Erro ao criar workflow de aprovação — salvo para reprocessamento');
+      }
       return null;
     } finally { setLoading(false); }
   }, [user, rulesApi, fetchPendingWorkflows, organizationId, pushToDLQ]);
 
   // ── Step actions ─────────────────────────────────────────────────────────
 
-  const approveStep = useCallback(async (stepId: string, comentario?: string) => {
+  const approveStep = useCallback(async (stepId: string, comentario?: string, fromDLQ = false): Promise<boolean> => {
     try {
       setLoading(true);
       const { data: step, error: stepError } = await supabase.from('approval_steps')
@@ -230,15 +233,19 @@ export const useApprovalWorkflow = () => {
       toast.success('Aprovação registrada com sucesso');
       await fetchPendingSteps();
       await fetchPendingWorkflows();
+      return true;
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error);
       logger.error('Error approving step', { error });
-      pushToDLQ('approve_step', { stepId, comentario, userId: user?.id }, errMsg);
-      toast.error('Erro ao aprovar — salvo para reprocessamento');
+      if (!fromDLQ) {
+        pushToDLQ('approve_step', { stepId, comentario, userId: user?.id }, errMsg);
+        toast.error('Erro ao aprovar — salvo para reprocessamento');
+      }
+      return false;
     } finally { setLoading(false); }
   }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
 
-  const rejectStep = useCallback(async (stepId: string, comentario: string) => {
+  const rejectStep = useCallback(async (stepId: string, comentario: string, fromDLQ = false): Promise<boolean> => {
     try {
       setLoading(true);
       const { data: step, error: stepError } = await supabase.from('approval_steps')
@@ -259,13 +266,51 @@ export const useApprovalWorkflow = () => {
       toast.success('Rejeição registrada');
       await fetchPendingSteps();
       await fetchPendingWorkflows();
+      return true;
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error);
       logger.error('Error rejecting step', { error });
-      pushToDLQ('reject_step', { stepId, comentario, userId: user?.id }, errMsg);
-      toast.error('Erro ao rejeitar — salvo para reprocessamento');
+      if (!fromDLQ) {
+        pushToDLQ('reject_step', { stepId, comentario, userId: user?.id }, errMsg);
+        toast.error('Erro ao rejeitar — salvo para reprocessamento');
+      }
+      return false;
     } finally { setLoading(false); }
   }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
+
+  // ── Dead-letter queue retry ─────────────────────────────────────────────
+  // Re-dispatches a stored DLQ operation through the real action. Uses
+  // retryEntry's handler contract so success removes the entry and a failure
+  // increments retryCount/backoff (see useWorkflowDLQ).
+  const retryDLQEntry = useCallback(async (entryId: string): Promise<boolean> => {
+    const entries = dlqEntries;
+    const entry = entries.find(e => e.id === entryId);
+    if (!entry) return false;
+
+    const handler = async (payload: Record<string, unknown>): Promise<boolean> => {
+      switch (entry.type) {
+        case 'approve_step': {
+          const stepId = String(payload.stepId ?? '');
+          return approveStep(stepId, typeof payload.comentario === 'string' ? payload.comentario : undefined, true);
+        }
+        case 'reject_step': {
+          const stepId = String(payload.stepId ?? '');
+          return rejectStep(stepId, typeof payload.comentario === 'string' ? payload.comentario : '', true);
+        }
+        case 'create_workflow': {
+          const solicitacaoId = String(payload.solicitacaoId ?? '');
+          const valor = typeof payload.valor === 'number' ? payload.valor : 0;
+          const categoriaId = typeof payload.categoriaId === 'string' ? payload.categoriaId : undefined;
+          const result = await createWorkflow(solicitacaoId, valor, categoriaId, true);
+          return result !== null;
+        }
+        default:
+          return false;
+      }
+    };
+
+    return retryEntry(entryId, handler);
+  }, [dlqEntries, retryEntry, approveStep, rejectStep, createWorkflow]);
 
   // ── Escalation polling (local UX guard — server cron is the real enforcer) ─
 
@@ -355,5 +400,6 @@ export const useApprovalWorkflow = () => {
     checkEscalations,
     // Dead-letter queue
     workflowDLQ: { dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ },
+    retryDLQEntry,
   };
 };

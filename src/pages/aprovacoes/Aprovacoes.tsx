@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
 import { PendingApprovalsList } from "@/components/compras/PendingApprovalsList";
+import { WorkflowDLQPanel } from "@/components/compras/approval/WorkflowDLQPanel";
 import { useApprovalWorkflow } from "@/hooks/useApprovalWorkflow";
 import { 
   ClipboardCheck, 
@@ -113,6 +114,7 @@ const Aprovacoes = () => {
           </TabsList>
 
           <TabsContent value="pendentes">
+            <WorkflowDLQPanel />
             <PendingApprovalsList />
           </TabsContent>
 
