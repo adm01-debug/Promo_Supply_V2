@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `77024d9ca15c948097dc88b5338d46f6453fdf17` (2026-11-21T09:26:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `22af7a5c3ff8bdff118a0c710687db53ae492c5c` (2026-11-21T10:04:22-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (711), SQL (318), Markdown (88), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (712), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,15 +34,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1258 |
-| arquivos_codigo | 782 |
-| linhas_codigo | 164663 |
+| arquivos_total | 1260 |
+| arquivos_codigo | 783 |
+| linhas_codigo | 164823 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 48 |
 | modulos | 87 |
-| componentes | 328 |
+| componentes | 329 |
 | hooks | 89 |
 | edge_functions | 39 |
 | tabelas | 163 |
@@ -51,11 +51,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 178 |
 | workflows | 11 |
 | scripts | 49 |
-| docs_md | 88 |
+| docs_md | 89 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
-- componentes: src/components (214), src/pages (78), src/features (33)
+- componentes: src/components (215), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
 - testes: co-localizado (__tests__) (105), outro (40), co-localizado (*.test) (23)
@@ -71,7 +71,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
-| components/compras | 0 | 0 | 102 | 79 | 7 | 56 |
+| components/compras | 0 | 0 | 103 | 79 | 7 | 56 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
@@ -331,14 +331,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (21)
+- docs/pendencias/_indice.md (23)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - docs/prod-readiness.md (9)
 - .github/workflows/main.yml (8)
 - bun.lock (8)
+- docs/pendencias/_ordem.md (8)
 - docs/ci/README.md (7)
-- docs/pendencias/_ordem.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (5)
@@ -411,6 +411,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
+- 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
+- 2026-11-21 `af0e42f` chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)
 - 2026-11-21 `77024d9` fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)
 - 2026-11-21 `a09a77c` docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)
 - 2026-11-21 `7598400` fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)
@@ -423,9 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `60860f7` chore(docs): marca edge-audit como concluido (PR #203) (#204)
 - 2026-11-20 `1f3af80` feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)
 - 2026-11-20 `2bfc15b` fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)
-- 2026-11-20 `8102f2f` fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)
-- 2026-11-20 `a0837ea` fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)
-- 2026-11-20 `0ef80b8` fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

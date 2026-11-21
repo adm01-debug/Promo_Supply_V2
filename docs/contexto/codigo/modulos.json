@@ -403,13 +403,13 @@
   },
   {
    "modulo": "components/compras",
-   "arquivos": 102,
+   "arquivos": 103,
    "testes": 17,
-   "linhas": 24712,
+   "linhas": 24824,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
-   "componentes": 88,
+   "componentes": 89,
    "hooks_locais": [
     "useAccessibility",
     "useAccountFilters",
@@ -2329,7 +2329,7 @@
    "modulo": "hooks",
    "arquivos": 61,
    "testes": 0,
-   "linhas": 10806,
+   "linhas": 10852,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3545,7 +3545,7 @@
    "modulo": "pages/aprovacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 330,
+   "linhas": 332,
    "itens_menu": [
     "Aprovações"
    ],

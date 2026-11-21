@@ -856,6 +856,14 @@
    "src/features/solicitacoes/index.ts",
    "src/hooks/useApprovalWorkflow.ts"
   ],
+  "src/components/compras/approval/WorkflowDLQPanel.tsx": [
+   "src/components/ui/badge.tsx",
+   "src/components/ui/button.tsx",
+   "src/components/ui/card.tsx",
+   "src/hooks/useApprovalWorkflow.ts",
+   "src/hooks/useWorkflowDLQ.ts",
+   "src/lib/logger.ts"
+  ],
   "src/components/compras/contract/ContractDetailsTabs.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
@@ -2422,6 +2430,7 @@
   "src/pages/aprovacoes/Aprovacoes.tsx": [
    "src/components/compras/DynamicApprovalMatrix.tsx",
    "src/components/compras/PendingApprovalsList.tsx",
+   "src/components/compras/approval/WorkflowDLQPanel.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/select.tsx",

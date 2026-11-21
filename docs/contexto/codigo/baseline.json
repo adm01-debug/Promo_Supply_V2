@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "77024d9ca15c948097dc88b5338d46f6453fdf17",
+  "commit": "22af7a5c3ff8bdff118a0c710687db53ae492c5c",
   "branch": "main",
-  "data_commit": "2026-11-21T09:26:34-03:00",
+  "data_commit": "2026-11-21T10:04:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "22af7a5",
+    "data": "2026-11-21",
+    "assunto": "feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)"
+   },
+   {
+    "sha": "1b8ae1d",
+    "data": "2026-11-21",
+    "assunto": "docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)"
+   },
+   {
+    "sha": "af0e42f",
+    "data": "2026-11-21",
+    "assunto": "chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)"
+   },
    {
     "sha": "77024d9",
     "data": "2026-11-21",
@@ -116,32 +131,17 @@
     "sha": "68c7c74",
     "data": "2026-11-20",
     "assunto": "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)"
-   },
-   {
-    "sha": "2547016",
-    "data": "2026-11-20",
-    "assunto": "fix(edge): move logger para fora do try evitando ReferenceError no catch (#190)"
-   },
-   {
-    "sha": "a712aa3",
-    "data": "2026-11-20",
-    "assunto": "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)"
-   },
-   {
-    "sha": "8fc7ca6",
-    "data": "2026-11-20",
-    "assunto": "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)"
    }
   ],
-  "arquivos_mudados_7d": 180,
+  "arquivos_mudados_7d": 183,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 21
+    "mudancas": 23
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -180,15 +180,15 @@
     "mudancas": 8
    },
    {
+    "pasta": "docs/pendencias/_ordem.md",
+    "mudancas": 8
+   },
+   {
     "pasta": "src/lib/__tests__",
     "mudancas": 8
    },
    {
     "pasta": "docs/ci/README.md",
-    "mudancas": 7
-   },
-   {
-    "pasta": "docs/pendencias/_ordem.md",
     "mudancas": 7
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 21
+    "mudancas": 23
    },
    {
     "arquivo": "package.json",
@@ -222,11 +222,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 7
+    "arquivo": "docs/pendencias/_ordem.md",
+    "mudancas": 8
    },
    {
-    "arquivo": "docs/pendencias/_ordem.md",
+    "arquivo": "docs/ci/README.md",
     "mudancas": 7
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 178
+    "commits": 181
    },
    {
     "autor": "dependabot[bot]",
@@ -318,15 +318,15 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1258,
-  "arquivos_codigo": 782,
-  "linhas_codigo": 164663,
+  "arquivos_total": 1260,
+  "arquivos_codigo": 783,
+  "linhas_codigo": 164823,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 48,
   "modulos": 87,
-  "componentes": 328,
+  "componentes": 329,
   "hooks": 89,
   "edge_functions": 39,
   "tabelas": 163,
@@ -335,7 +335,7 @@
   "testes": 178,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 88
+  "docs_md": 89
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -423,8 +423,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 260,
-   "linhas": 48716
+   "arquivos": 261,
+   "linhas": 48828
   },
   "src/features": {
    "arquivos": 64,
@@ -432,7 +432,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12343
+   "linhas": 12389
   },
   "src/i18n": {
    "arquivos": 1,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 123,
-   "linhas": 29198
+   "linhas": 29200
   },
   "src/routes": {
    "arquivos": 1,

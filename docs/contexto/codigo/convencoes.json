@@ -6,7 +6,7 @@
    "src/pages (53)"
   ],
   "componentes": [
-   "src/components (214)",
+   "src/components (215)",
    "src/pages (78)",
    "src/features (33)"
   ],
@@ -46,7 +46,7 @@
  },
  "barrels_index": 4,
  "extensao_componentes": [
-  ".tsx (328)"
+  ".tsx (329)"
  ],
  "alias_imports": {
   "(raiz)": {
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)",
+   "docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)",
+   "chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)",
    "fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)",
-   "docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)",
-   "fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)",
-   "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)",
-   "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)"
+   "docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)"
   ]
  },
  "pr_template": null,

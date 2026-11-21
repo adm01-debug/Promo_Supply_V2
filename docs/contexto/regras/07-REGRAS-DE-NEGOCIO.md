@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `77024d9ca1` · branch `main` · 2026-11-21 12:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `22af7a5c3f` · branch `main` · 2026-11-21 13:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -914,6 +914,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `achievement` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `active` | escreve | `src/features/layout/components/MainLayout.tsx` |
 | `type` | `ai` | compara, escreve | `src/components/compras/SupplierInteractionLog.tsx`<br>`src/stores/dashboardLayoutStore.ts` |
+| `type` | `approve_step` | compara | `src/components/compras/approval/WorkflowDLQPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts` |
 | `type` | `array` | escreve | `supabase/functions/ai-negotiation/index.ts` |
 | `type` | `auction` | compara | `src/pages/sourcing/RFxDetails.tsx` |
 | `type` | `authentication` | escreve, filtra | `supabase/functions/webauthn-authenticate/index.ts` |
@@ -927,6 +928,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `cotacao_expiring` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `cotacao_followup` | escreve, filtra | `supabase/functions/check-cotacao-followup/index.ts`<br>`supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `create` | compara, escreve | `src/hooks/useOfflineSync.ts` |
+| `type` | `create_workflow` | compara | `src/hooks/useApprovalWorkflow.ts` |
 | `type` | `critical` | compara | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/hooks/useApprovalNotifications.ts` |
 | `type` | `delegation` | escreve | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | `type` | `delete` | compara | `src/hooks/useOfflineSync.ts` |
@@ -971,6 +973,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `purchase` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `record` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `registration` | escreve, filtra | `supabase/functions/webauthn-register/index.ts` |
+| `type` | `reject_step` | compara | `src/components/compras/approval/WorkflowDLQPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts` |
 | `type` | `reminder` | escreve | `supabase/functions/check-approval-escalations/index.ts` |
 | `type` | `rule` | compara, escreve | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | `type` | `savings` | escreve | `src/components/ui/celebration.tsx` |
