@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28421a94e3ba7cad7ab00724e015c63bd3aa34d8` (2026-11-21T14:39:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `545b30ae261faaa8760cbdb86cc9d9ad656ef706` (2026-11-21T14:41:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (14), Shell (7), CSS (6)
+- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1276 |
+| arquivos_total | 1277 |
 | arquivos_codigo | 796 |
 | linhas_codigo | 166369 |
 | rotas | 55 |
@@ -49,7 +49,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | migrations | 317 |
 | cron_jobs | 71 |
 | testes | 185 |
-| workflows | 12 |
+| workflows | 13 |
 | scripts | 49 |
 | docs_md | 90 |
 
@@ -334,8 +334,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_indice.md (29)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (12)
 - package.json (12)
+- docs/ci/README.md (10)
 - .github/workflows/main.yml (9)
-- docs/ci/README.md (9)
 - docs/prod-readiness.md (9)
 - bun.lock (8)
 - docs/pendencias/_ordem.md (8)
@@ -359,6 +359,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `main.yml` — Freight Quest CI/CD (pull_request, push)
 - `notifica-falha-main.yml` — Notifica falha na main (workflow_run)
 - `paridade-banco.yml` — Paridade migrations x banco (semanal) (push, schedule, workflow_dispatch; cron 0 9 * * 1)
+- `provisionar-vapid.yml` — Provisionar VAPID na edge de push (workflow_dispatch)
 - `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7 * * * *)
 
 ## Scripts npm
@@ -412,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
 - 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
 - 2026-11-21 `709f261` docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)
 - 2026-11-21 `aef9bff` feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)
@@ -426,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
 - 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
 - 2026-11-21 `79bf0bf` feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)
-- 2026-11-21 `38c50e5` fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

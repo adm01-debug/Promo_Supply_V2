@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "28421a94e3ba7cad7ab00724e015c63bd3aa34d8",
+  "sha": "545b30ae261faaa8760cbdb86cc9d9ad656ef706",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 17:41 UTC",
-  "files_total": 1277,
+  "generated_at": "2026-11-21 17:42 UTC",
+  "files_total": 1278,
   "code_files": 1117,
   "code_lines": 192452,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b61c25442c9d2426",
+ "facts_hash": "957615fcb7ce2188",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -241,6 +241,13 @@
     "triggers": [
      "push",
      "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/provisionar-vapid.yml",
+    "name": "Provisionar VAPID na edge de push",
+    "triggers": [
      "workflow_dispatch"
     ]
    },
@@ -112921,10 +112928,20 @@
   }
  },
  "git": {
-  "sha": "28421a94e3ba7cad7ab00724e015c63bd3aa34d8",
+  "sha": "545b30ae261faaa8760cbdb86cc9d9ad656ef706",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "545b30a",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)",
+    "files": [
+     ".github/workflows/provisionar-vapid.yml",
+     "docs/ci/README.md"
+    ]
+   },
    {
     "sha": "28421a9",
     "date": "2026-11-21",
@@ -113245,15 +113262,6 @@
     "files": [
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "01db1d0",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)",
-    "files": [
-     "src/components/compras/AISupplierSuggestion.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -113274,12 +113282,12 @@
     4
    ],
    [
-    "src/hooks/useXbzIntegration.ts",
+    "docs/ci/README.md",
     3
    ],
    [
-    "docs/ci/README.md",
-    2
+    "src/hooks/useXbzIntegration.ts",
+    3
    ],
    [
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
@@ -113304,6 +113312,10 @@
    [
     "docs/pendencias/edge-maintain.md",
     2
+   ],
+   [
+    ".github/workflows/provisionar-vapid.yml",
+    1
    ],
    [
     ".github/workflows/aplicar-migration-prod.yml",
@@ -113331,10 +113343,6 @@
    ],
    [
     "AGENTS.md",
-    1
-   ],
-   [
-    "docs/agentes/catalogo-e-fornecedores.md",
     1
    ]
   ]

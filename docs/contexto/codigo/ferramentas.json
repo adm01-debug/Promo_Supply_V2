@@ -8,7 +8,7 @@
    "Markdown (90)",
    "JavaScript (69)",
    "JSON (24)",
-   "YAML (14)",
+   "YAML (15)",
    "Shell (7)",
    "CSS (6)"
   ],
@@ -493,6 +493,30 @@
    ]
   },
   {
+   "arquivo": ".github/workflows/provisionar-vapid.yml",
+   "nome": "Provisionar VAPID na edge de push",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "provisionar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_ACCESS_TOKEN",
+    "VAPID_PRIVATE_KEY",
+    "VAPID_PUBLIC_KEY",
+    "VITE_SUPABASE_PROJECT_ID"
+   ],
+   "actions": []
+  },
+  {
    "arquivo": ".github/workflows/types-sync.yml",
    "nome": "types-sync",
    "gatilhos": [
@@ -687,6 +711,8 @@
    "SUPABASE_SERVICE_ROLE_KEY",
    "SUPABASE_URL",
    "TYPES_SYNC_PR_TOKEN",
+   "VAPID_PRIVATE_KEY",
+   "VAPID_PUBLIC_KEY",
    "VITE_SUPABASE_PROJECT_ID",
    "VITE_SUPABASE_PUBLISHABLE_KEY",
    "VITE_SUPABASE_URL"
