@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (108)",
+   "co-localizado (__tests__) (109)",
    "outro (40)",
    "co-localizado (*.test) (26)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(pwa): adiciona handler de push ao service worker (#234)",
    "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa",
    "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)",
    "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
-   "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)",
-   "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)"
+   "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)"
   ]
  },
  "pr_template": null,

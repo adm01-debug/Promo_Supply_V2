@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 184,
+ "total": 185,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 168
+  "unit": 169
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 108
+   "arquivos": 109
   },
   {
    "padrao": "outro",
@@ -886,6 +886,13 @@
     "src/lib/performance.ts"
    ],
    "casos": 19
+  },
+  {
+   "arquivo": "src/lib/__tests__/pushHandler.test.ts",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [],
+   "casos": 4
   },
   {
    "arquivo": "src/lib/__tests__/queryClient.test.ts",

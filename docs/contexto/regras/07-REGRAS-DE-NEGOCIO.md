@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f273a02db` · branch `main` · 2026-11-21 17:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7ad0b03c4d` · branch `main` · 2026-11-21 17:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -995,6 +995,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `user-action` | escreve | `src/hooks/useGlobalUndo.ts` |
 | `type` | `warning` | compara, escreve | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx`<br>`src/hooks/useApprovalNotifications.ts`<br>`src/stores/buyerAlertsStore.ts`<br>… +2 |
 | `type` | `weekly_report` | escreve | `supabase/functions/weekly-report/index.ts`<br>`supabase/functions/weekly-summary-report/index.ts` |
+| `type` | `window` | escreve | `public/push-handler.js` |
 | `overall_status` | `COMPLIANT` | escreve | `src/services/rlsAuditService.ts` |
 | `overall_status` | `NON_COMPLIANT` | compara | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | `status` | `AGUARDANDO_COTACAO` | compara, escreve | `src/components/compras/SolicitacaoCard.tsx`<br>`src/types/legacyTypes.ts` |
@@ -2346,7 +2347,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2658 testes em 136 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2663 testes em 137 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2460,6 +2461,7 @@ _nenhum item encontrado_
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |

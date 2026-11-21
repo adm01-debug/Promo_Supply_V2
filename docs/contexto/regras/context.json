@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
+  "sha": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 17:08 UTC",
-  "files_total": 1273,
-  "code_files": 1114,
-  "code_lines": 192109,
+  "generated_at": "2026-11-21 17:29 UTC",
+  "files_total": 1275,
+  "code_files": 1116,
+  "code_lines": 192221,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "43d872a0d3e083fd",
+ "facts_hash": "c313d2c703e1e8a5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,12 +249,12 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 374,
+   ".ts": 375,
    ".tsx": 348,
    ".sql": 319,
    ".mjs": 66,
    ".py": 5,
-   ".js": 2
+   ".js": 3
   },
   "monorepo_packages": [],
   "supabase_config": {
@@ -33791,7 +33791,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 852,
+   "lines": 857,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -33829,6 +33829,21 @@
     "vite.config.ts",
     "vitest.config.ts",
     "vitest.rls.config.ts"
+   ]
+  },
+  {
+   "module": "public",
+   "files": 1,
+   "lines": 71,
+   "tables": [],
+   "exports": [],
+   "docs": [
+    "push-handler.js: Handler de push do service worker (PWA). Por que este arquivo existe: o vite.config.ts usa a estrategia `generateSW` do Workbox (vite-plugin-pwa), que gera um SW focado em cache/offline. Esse SW nao trata o evento `push`, entao `registration.pushManager` existe e a subscription e gravada em push_sub …"
+   ],
+   "deps": [],
+   "imports_modules": [],
+   "file_list": [
+    "public/push-handler.js"
    ]
   },
   {
@@ -34849,8 +34864,8 @@
   },
   {
    "module": "src/lib",
-   "files": 51,
-   "lines": 6023,
+   "files": 52,
+   "lines": 6059,
    "tables": [
     "profiles"
    ],
@@ -34898,6 +34913,8 @@
     "dompurify",
     "jspdf",
     "jspdf-autotable",
+    "node:fs",
+    "node:path",
     "sonner",
     "tailwind-merge",
     "vitest"
@@ -34946,6 +34963,7 @@
     "src/lib/__tests__/paginatedFetch.test.ts",
     "src/lib/__tests__/pdfGenerator.test.ts",
     "src/lib/__tests__/performance.test.ts",
+    "src/lib/__tests__/pushHandler.test.ts",
     "src/lib/__tests__/queryClient.test.ts",
     "src/lib/__tests__/queryClientConstants.test.ts",
     "src/lib/__tests__/realtime.test.ts",
@@ -49580,6 +49598,12 @@
   ],
   "status_values": [
    {
+    "file": "public/push-handler.js",
+    "field": "type",
+    "value": "window",
+    "kind": "escreve"
+   },
+   {
     "file": "src/components/animations/motionVariants.ts",
     "field": "type",
     "value": "spring",
@@ -62462,6 +62486,26 @@
    {
     "file": "src/lib/__tests__/performance.test.ts",
     "name": "cleanup can be called multiple times without throwing"
+   },
+   {
+    "file": "src/lib/__tests__/pushHandler.test.ts",
+    "name": "service worker de push"
+   },
+   {
+    "file": "src/lib/__tests__/pushHandler.test.ts",
+    "name": "registra listener do evento push"
+   },
+   {
+    "file": "src/lib/__tests__/pushHandler.test.ts",
+    "name": "exibe a notificacao com titulo vindo do payload da edge"
+   },
+   {
+    "file": "src/lib/__tests__/pushHandler.test.ts",
+    "name": "abre a acao no clique e respeita action_url"
+   },
+   {
+    "file": "src/lib/__tests__/pushHandler.test.ts",
+    "name": "esta acoplado ao SW gerado pelo Workbox via importScripts"
    },
    {
     "file": "src/lib/__tests__/queryClient.test.ts",
@@ -75796,6 +75840,9 @@
    ],
    "usage": {
     "type": {
+     "window": [
+      "escreve:public/push-handler.js"
+     ],
      "spring": [
       "escreve:src/components/animations/motionVariants.ts",
       "escreve:src/components/compras/EnhancedPedidoTimeline.tsx",
@@ -86002,7 +86049,7 @@
   },
   "vite.config.ts": {
    "path": "vite.config.ts",
-   "lines": 326,
+   "lines": 331,
    "exports": [
     "default defineConfig"
    ],
@@ -86030,6 +86077,18 @@
     "default defineConfig"
    ],
    "doc": "Configuração dedicada dos testes de RLS — roda em Node (não jsdom) e sem setup de React, porque atinge o Supabase real via HTTP. Rodar: `bunx vitest run --config vitest.rls.config.ts`"
+  },
+  "public/push-handler.js": {
+   "path": "public/push-handler.js",
+   "lines": 71,
+   "status_values": [
+    {
+     "field": "type",
+     "value": "window",
+     "kind": "escreve"
+    }
+   ],
+   "doc": "Handler de push do service worker (PWA). Por que este arquivo existe: o vite.config.ts usa a estrategia `generateSW` do Workbox (vite-plugin-pwa), que gera um SW focado em cache/offline. Esse SW nao trata o evento `push`, entao `registration.pushManager` existe e a subscription e gravada em push_sub …"
   },
   "scripts/automation.mjs": {
    "path": "scripts/automation.mjs",
@@ -100609,6 +100668,18 @@
     "cleanup can be called multiple times without throwing"
    ]
   },
+  "src/lib/__tests__/pushHandler.test.ts": {
+   "path": "src/lib/__tests__/pushHandler.test.ts",
+   "lines": 36,
+   "is_test": true,
+   "tests": [
+    "service worker de push",
+    "registra listener do evento push",
+    "exibe a notificacao com titulo vindo do payload da edge",
+    "abre a acao no clique e respeita action_url",
+    "esta acoplado ao SW gerado pelo Workbox via importScripts"
+   ]
+  },
   "src/lib/__tests__/queryClient.test.ts": {
    "path": "src/lib/__tests__/queryClient.test.ts",
    "lines": 113,
@@ -112805,10 +112876,21 @@
   }
  },
  "git": {
-  "sha": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
+  "sha": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7ad0b03",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(pwa): adiciona handler de push ao service worker (#234)",
+    "files": [
+     "public/push-handler.js",
+     "src/lib/__tests__/pushHandler.test.ts",
+     "vite.config.ts"
+    ]
+   },
    {
     "sha": "5f273a0",
     "date": "2026-11-21",
@@ -113128,18 +113210,6 @@
     "files": [
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "1f3af80",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)",
-    "files": [
-     "src/components/auditoria/RlsCompliancePanel.tsx",
-     "src/pages/auditoria/Auditoria.tsx",
-     "src/services/rlsAuditService.ts",
-     "supabase/functions/run-audit/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113188,6 +113258,18 @@
     2
    ],
    [
+    "public/push-handler.js",
+    1
+   ],
+   [
+    "src/lib/__tests__/pushHandler.test.ts",
+    1
+   ],
+   [
+    "vite.config.ts",
+    1
+   ],
+   [
     "supabase/functions/_shared/external-bridge-allowlist.ts",
     1
    ],
@@ -113209,18 +113291,6 @@
    ],
    [
     "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_fiscal_cache.ts",
-    1
-   ],
-   [
-    "src/features/layout/components/CommandPalette.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/UserMenu.tsx",
     1
    ]
   ]

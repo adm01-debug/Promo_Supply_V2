@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
+  "commit": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
   "branch": "main",
-  "data_commit": "2026-11-21T14:07:28-03:00",
+  "data_commit": "2026-11-21T14:28:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7ad0b03",
+    "data": "2026-11-21",
+    "assunto": "feat(pwa): adiciona handler de push ao service worker (#234)"
+   },
    {
     "sha": "5f273a0",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "30e7b63",
     "data": "2026-11-21",
     "assunto": "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)"
-   },
-   {
-    "sha": "271df27",
-    "data": "2026-11-20",
-    "assunto": "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)"
    }
   ],
-  "arquivos_mudados_7d": 204,
+  "arquivos_mudados_7d": 207,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -180,6 +180,10 @@
     "mudancas": 9
    },
    {
+    "pasta": "src/lib/__tests__",
+    "mudancas": 9
+   },
+   {
     "pasta": "bun.lock",
     "mudancas": 8
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": "docs/pendencias/_ordem.md",
-    "mudancas": 8
-   },
-   {
-    "pasta": "src/features/layout",
     "mudancas": 8
    }
   ],
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 197
+    "commits": 198
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1272,
-  "arquivos_codigo": 793,
-  "linhas_codigo": 166026,
+  "arquivos_total": 1274,
+  "arquivos_codigo": 795,
+  "linhas_codigo": 166138,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 317,
   "cron_jobs": 71,
-  "testes": 184,
+  "testes": 185,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 90
@@ -349,6 +349,10 @@
   "postcss.config.js": {
    "arquivos": 1,
    "linhas": 7
+  },
+  "public/push-handler.js": {
+   "arquivos": 1,
+   "linhas": 71
   },
   "scripts/ai-context": {
    "arquivos": 3,
@@ -443,8 +447,8 @@
    "linhas": 10392
   },
   "src/lib": {
-   "arquivos": 50,
-   "linhas": 6003
+   "arquivos": 51,
+   "linhas": 6039
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -532,7 +536,7 @@
   },
   "vite.config.ts": {
    "arquivos": 1,
-   "linhas": 326
+   "linhas": 331
   },
   "vitest.config.ts": {
    "arquivos": 1,

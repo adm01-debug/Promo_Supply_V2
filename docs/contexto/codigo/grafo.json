@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 609,
+ "nos": 610,
  "arestas": 2727,
  "hubs": [
   {
@@ -185,6 +185,7 @@
   ]
  },
  "orfaos": [
+  "public/push-handler.js",
   "src/components/atoms/EliteImage.tsx",
   "src/components/atoms/PreloadLink.tsx",
   "src/components/compras/HistoricoComprasModal.tsx",
