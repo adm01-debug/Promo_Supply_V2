@@ -4219,10 +4219,12 @@
     "DeveloperDocs"
    ],
    "export_default": "DeveloperDocs",
-   "linhas": 406,
+   "linhas": 407,
    "dominio": "pages/admin",
    "hooks_locais": [],
-   "tabelas": [],
+   "tabelas": [
+    "solicitacoes"
+   ],
    "edges": [
     "external-db-bridge",
     "process-solicitacao-neural"

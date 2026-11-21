@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195",
+  "sha": "a92239619a07fd18c8838213bb43108c78ea29b4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 13:10 UTC",
+  "generated_at": "2026-11-21 13:37 UTC",
   "files_total": 1261,
   "code_files": 1103,
-  "code_lines": 190800,
+  "code_lines": 190801,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e4dd7f47369bdc6d",
+ "facts_hash": "bc2f66bd44f428a5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34907,7 +34907,7 @@
   {
    "module": "src/pages",
    "files": 123,
-   "lines": 29200,
+   "lines": 29201,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36712,7 +36712,8 @@
     ],
     "insert": [
      "src/components/compras/NovaSolicitacaoModal.tsx",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/pages/admin/DeveloperDocs.tsx"
     ],
     "ref": [
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
@@ -85944,7 +85945,7 @@
   ]
  },
  "manual": [],
- "readme": "# Welcome to your Lovable project\n\n## 📑 Promo Supply - Gestão de Compras\n\nPromo Supply é um sistema completo de gestão de compras, fornecedores e contratos empresariais, focado em eficiência, transparência e blindagem operacional.\n\n### 🚀 Tecnologias\n- **Vite** + **React** + **TypeScript**\n- **Tailwind CSS** + **shadcn/ui**\n- **Supabase** (Auth, DB, Storage, Edge Functions)\n- **TanStack Query** (Caching & State)\n- **i18next** (Multi-idioma: PT-BR, EN, ES)\n- **Framer Motion** (Animações fluidas)\n\n### 🛠️ Estrutura do Projeto\n- `src/components`: Componentes modulares e reutilizáveis\n- `src/pages`: Páginas da aplicação e dashboards\n- `src/hooks`: Lógica de negócio e integração com API em hooks customizados\n- `src/lib`: Utilitários, configurações de segurança e helpers globais\n- `supabase`: Esquema do banco de dados, migrações e funções de borda\n- `DOCS/`: Central de documentação técnica detalhada\n\n### 📘 Documentação Técnica\nPara uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:\n- [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.\n- [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.\n- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/) - Histórico de decisões críticas do projeto.\n\nA documentação também está disponível dentro do sistema no painel administrativo.\n\n\n### 🔒 Segurança e Compliance\n- **RBAC:** Controle de acesso baseado em perfis (Admin, Coordenador, Comprador, Financeiro, Viewer).\n- **Audit Log:** Rastreabilidade total de ações críticas via `auditService`.\n- **MFA & Passkeys:** Suporte a autenticação multifator e chaves de acesso biométricas.\n- **Account Lockout:** Proteção contra ataques de força bruta.\n- **CSP & Headers:** Configurações rígidas de segurança no `index.html`.\n\n### ⚡ Desenvolvimento\n```sh\n# Instalação\nbun install\n\n# Execução (Dev)\nbun run dev\n\n# Build (Produção)\nbun run build\n\n# Testes\nbun run test\n```\n\n### 🌍 Internacionalização\nO sistema detecta automaticamente o idioma do navegador, persistindo a preferência do usuário no `localStorage`.\n\n---\nStatus: sistema em produção ativa com evolução contínua (veja `DOCS/pendencias/_indice.md` para o catálogo de pendências e `docs/pendencias/` para detalhes).",
+ "readme": "# Welcome to your Lovable project\n\n## 📑 Promo Supply - Gestão de Compras\n\nPromo Supply é um sistema completo de gestão de compras, fornecedores e contratos empresariais, focado em eficiência, transparência e blindagem operacional.\n\n### 🚀 Tecnologias\n- **Vite** + **React** + **TypeScript**\n- **Tailwind CSS** + **shadcn/ui**\n- **Supabase** (Auth, DB, Storage, Edge Functions)\n- **TanStack Query** (Caching & State)\n- **i18next** (Multi-idioma: PT-BR, EN, ES)\n- **Framer Motion** (Animações fluidas)\n\n### 🛠️ Estrutura do Projeto\n- `src/components`: Componentes modulares e reutilizáveis\n- `src/pages`: Páginas da aplicação e dashboards\n- `src/features`: Domínios de negócio (aprovacoes, cotacoes, pedidos, solicitacoes, layout, etc.) com seus componentes e lógica\n- `src/hooks`: Lógica de negócio e integração com API em hooks customizados\n- `src/lib`: Utilitários, configurações de segurança e helpers globais\n- `supabase`: Esquema do banco de dados, migrações e funções de borda\n- `DOCS/`: Central de documentação técnica detalhada\n\n### 📘 Documentação Técnica\nPara uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:\n- [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.\n- [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.\n- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/) - Histórico de decisões críticas do projeto.\n\nA documentação também está disponível dentro do sistema no painel administrativo.\n\n\n### 🔒 Segurança e Compliance\n- **RBAC:** Controle de acesso baseado em perfis (Admin, Coordenador, Comprador, Financeiro, Viewer).\n- **Audit Log:** Rastreabilidade total de ações críticas via `auditService`.\n- **MFA & Passkeys:** Suporte a autenticação multifator e chaves de acesso biométricas.\n- **Account Lockout:** Proteção contra ataques de força bruta.\n- **CSP & Headers:** Configurações rígidas de segurança no `index.html`.\n\n### ⚡ Desenvolvimento\n```sh\n# Instalação\nbun install\n\n# Execução (Dev)\nbun run dev\n\n# Build (Produção)\nbun run build\n\n# Testes\nbun run test\n```\n\n### 🌍 Internacionalização\nO sistema detecta automaticamente o idioma do navegador, persistindo a preferência do usuário no `localStorage`.\n\n---\nStatus: sistema em produção ativa com evolução contínua (veja `DOCS/pendencias/_indice.md` para o catálogo de pendências e `docs/pendencias/` para detalhes).",
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
@@ -101475,9 +101476,15 @@
   },
   "src/pages/admin/DeveloperDocs.tsx": {
    "path": "src/pages/admin/DeveloperDocs.tsx",
-   "lines": 406,
+   "lines": 407,
    "exports": [
     "default DeveloperDocs"
+   ],
+   "tables": [
+    {
+     "table": "solicitacoes",
+     "op": "insert"
+    }
    ],
    "invokes": [
     "process-solicitacao-neural"
@@ -112630,10 +112637,39 @@
   }
  },
  "git": {
-  "sha": "7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195",
+  "sha": "a92239619a07fd18c8838213bb43108c78ea29b4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a922396",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)",
+    "files": [
+     "README.md",
+     "docs/pendencias/_indice.md",
+     "src/pages/admin/DeveloperDocs.tsx"
+    ]
+   },
+   {
+    "sha": "4bd5264",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
+   {
+    "sha": "2aeecf1",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "7b6d6f8",
     "date": "2026-11-21",
@@ -112917,39 +112953,16 @@
     "files": [
      "supabase/functions/ai-supplier-risk/index.ts"
     ]
-   },
-   {
-    "sha": "a712aa3",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(edge): normaliza severidade para capturar alertas critical/emergency lowercase (#189)",
-    "files": [
-     "supabase/functions/alert-dispatcher/index.ts"
-    ]
-   },
-   {
-    "sha": "8fc7ca6",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra edge-sla-reve concluido na PR #187 (#188)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
-   },
-   {
-    "sha": "619f974",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)",
-    "files": [
-     "supabase/functions/check-sla-alerts/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    15
+    17
+   ],
+   [
+    "README.md",
+    2
    ],
    [
     "docs/pendencias/edge-bridge.md",
@@ -112964,15 +112977,15 @@
     2
    ],
    [
+    "src/pages/admin/DeveloperDocs.tsx",
+    1
+   ],
+   [
     "DOCS/ARCHITECTURE_GUIDE.md",
     1
    ],
    [
     "DOCS/ENGINEERING_EXCELLENCE.md",
-    1
-   ],
-   [
-    "README.md",
     1
    ],
    [
@@ -113021,10 +113034,6 @@
    ],
    [
     "docs/pendencias/hk-dead-mortos.md",
-    1
-   ],
-   [
-    "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
     1
    ]
   ]

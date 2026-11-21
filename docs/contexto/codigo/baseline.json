@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7b6d6f8e5439fbeb9a2e6048d40d64296e7fe195",
+  "commit": "a92239619a07fd18c8838213bb43108c78ea29b4",
   "branch": "main",
-  "data_commit": "2026-11-21T10:09:41-03:00",
+  "data_commit": "2026-11-21T10:37:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a922396",
+    "data": "2026-11-21",
+    "assunto": "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)"
+   },
+   {
+    "sha": "4bd5264",
+    "data": "2026-11-21",
+    "assunto": "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)"
+   },
+   {
+    "sha": "2aeecf1",
+    "data": "2026-11-21",
+    "assunto": "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)"
+   },
    {
     "sha": "7b6d6f8",
     "data": "2026-11-21",
@@ -116,21 +131,6 @@
     "sha": "5ae1935",
     "data": "2026-11-20",
     "assunto": "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)"
-   },
-   {
-    "sha": "044001f",
-    "data": "2026-11-20",
-    "assunto": "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)"
-   },
-   {
-    "sha": "0c33e56",
-    "data": "2026-11-20",
-    "assunto": "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)"
-   },
-   {
-    "sha": "7191493",
-    "data": "2026-11-20",
-    "assunto": "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)"
    }
   ],
   "arquivos_mudados_7d": 186,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 24
+    "mudancas": 27
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -160,15 +160,15 @@
     "mudancas": 11
    },
    {
+    "pasta": "src/pages/admin",
+    "mudancas": 10
+   },
+   {
     "pasta": "docs/prod-readiness.md",
     "mudancas": 9
    },
    {
     "pasta": "scripts/ci/inventario-types",
-    "mudancas": 9
-   },
-   {
-    "pasta": "src/pages/admin",
     "mudancas": 9
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 24
+    "mudancas": 27
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 182
+    "commits": 185
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1260,
   "arquivos_codigo": 783,
-  "linhas_codigo": 164823,
+  "linhas_codigo": 164824,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -452,7 +452,7 @@
   },
   "src/pages": {
    "arquivos": 123,
-   "linhas": 29200
+   "linhas": 29201
   },
   "src/routes": {
    "arquivos": 1,

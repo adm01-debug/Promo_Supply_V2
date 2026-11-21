@@ -233,13 +233,15 @@
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
-    "useNeuralSolicitacao"
+    "useState"
    ],
    "hooks_locais": [
     "useFeedback",
     "useFeedbackPreferences"
    ],
-   "tabelas": [],
+   "tabelas": [
+    "solicitacoes"
+   ],
    "rpcs": [],
    "edges": [
     "external-db-bridge",
