@@ -7,36 +7,33 @@
  * autenticado poderia enumerar/mutar qualquer tabela do DB externo.
  *
  * Para adicionar um novo alvo:
- *   1. Registrar aqui com comentário explicando o caso de uso;
+ *   1. Registrar aqui com comentario explicando o caso de uso;
  *   2. Abrir PR com revisão de segurança;
  *   3. Refletir na doc `DeveloperDocs.tsx` (seção "Contratos").
  */
 
-/** Tabelas do DB externo que podem ser lidas/escritas pelo frontend. */
+/**
+ * Tabelas do DB externo que podem ser lidas pelo frontend.
+ *
+ * Único alvo autorizado hoje: as views de compra do PIM (Promo Gifts V4).
+ * O bridge é somente leitura — ver `ALLOWED_OPERATIONS` abaixo.
+ */
 export const ALLOWED_TABLES = new Set<string>([
-  // catálogo público (leitura)
-  "produtos_externos",
-  "fornecedores_externos",
-  "spot_pedidos_view",
   // vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge
   "v_compras_catalogo",       // PR 1.1 — catálogo de produtos para compras
   "v_compras_precos_faixa",   // PR 1.2 — faixas de preço de personalização
 ]);
 
-/** Funções (RPC) do DB externo que podem ser invocadas. */
-export const ALLOWED_RPCS = new Set<string>([
-  "get_saldo_credito",
-  "buscar_produto_por_sku",
-]);
+/**
+ * Funções (RPC) do DB externo que podem ser invocadas.
+ *
+ * Nenhuma RPC existe no contrato atual com o PIM — mantido vazio até que
+ * uma seja efetivamente registrada aqui com revisão de segurança.
+ */
+export const ALLOWED_RPCS = new Set<string>([]);
 
 /** Operações válidas — qualquer valor fora disso é rejeitado. */
-export const ALLOWED_OPERATIONS = [
-  "select",
-  "insert",
-  "update",
-  "delete",
-  "rpc",
-] as const;
+export const ALLOWED_OPERATIONS = ["select"] as const;
 export type BridgeOperation = (typeof ALLOWED_OPERATIONS)[number];
 
 /** Operadores de filtro válidos (evita `is`, `not.*`, `fts` etc. arbitrários). */
@@ -64,7 +61,7 @@ export function assertBridgeRequest(input: {
   limit?: number;
 }): BridgeAuthzResult {
   if (!ALLOWED_OPERATIONS.includes(input.operation as BridgeOperation)) {
-    return { ok: false, status: 400, reason: `operation "${input.operation}" not allowed` };
+    return { ok: false, status: 403, reason: `operation "${input.operation}" not allowed` };
   }
 
   if (input.operation === "rpc") {
