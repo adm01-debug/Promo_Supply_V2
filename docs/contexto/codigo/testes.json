@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 185,
+ "total": 186,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 169
+  "unit": 170
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 26
+   "arquivos": 27
   },
   {
    "padrao": "tests-e2e/",
@@ -1420,6 +1420,15 @@
    "casos": 22
   },
   {
+   "arquivo": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+   "tipo": "unit",
+   "linhas": 36,
+   "testa": [
+    "supabase/functions/_shared/external-bridge-allowlist.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "supabase/functions/_shared/integrity_test.ts",
    "tipo": "unit",
    "linhas": 96,
@@ -1792,6 +1801,7 @@
   "src/types/contract.ts": 1,
   "src/types/legacyTypes.ts": 1,
   "supabase/functions/_shared/contracts.ts": 3,
+  "supabase/functions/_shared/external-bridge-allowlist.ts": 1,
   "supabase/functions/_shared/fuzzSeed.ts": 2,
   "supabase/functions/_shared/fuzzer.ts": 2,
   "supabase/functions/_shared/logLevel.ts": 1,

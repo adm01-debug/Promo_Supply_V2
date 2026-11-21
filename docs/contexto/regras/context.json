@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "64c1922826120b62141e86e9abe7819fe5c82437",
+  "sha": "8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 19:09 UTC",
-  "files_total": 1283,
-  "code_files": 1120,
-  "code_lines": 192982,
+  "generated_at": "2026-11-21 19:13 UTC",
+  "files_total": 1284,
+  "code_files": 1121,
+  "code_lines": 193015,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9903d3c4c4a02341",
+ "facts_hash": "feed1597608e41c4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 376,
+   ".ts": 377,
    ".tsx": 348,
    ".sql": 321,
    ".mjs": 67,
@@ -35493,8 +35493,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 88,
-   "lines": 15661,
+   "files": 89,
+   "lines": 15694,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35585,8 +35585,8 @@
     "circuit_breaker.ts: INT-01: Circuit breaker leve em memória por instância de edge function. Estados: CLOSED → (falhas ≥ threshold) → OPEN → (após cooldown) → HALF_OPEN → CLOSED Uso: const cb = getBreaker(\"spot\", { failureThreshold: 5, cooldownMs: 30_000 }); if (!cb.canRequest()) throw new Error(\"circuit_open\"); try { c …",
     "contracts.ts: @ts-ignore - Deno remote import",
     "cronHealth.ts: F-052: Cron heartbeat utility. Call `recordCronHeartbeat` at the end of every cron edge function to register last-run state. Uses `upsert_cron_heartbeat` RPC (SECURITY DEFINER) so the service-role client can write without bypassing RLS explicitly. Usage: import { recordCronHeartbeat } from \"../_shar …",
-    "external-bridge-allowlist.ts: Allowlist de tabelas e RPCs autorizadas para o `external-db-bridge`. Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra objetos declarados aqui. Qualquer requisição fora dessa lista é rejeitada com 403 ANTES de tocar no banco externo — sem esta camada um usuário autenticado pode …",
-    "fuzzSeed.ts: Seed reprodutível para testes fuzz Deno. Reproduzir uma falha: FUZZ_SEED=123456789 deno test --allow-net --allow-env <arquivo>"
+    "external-bridge-allowlist.test.ts: Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "external-bridge-allowlist.ts: Allowlist de tabelas e RPCs autorizadas para o `external-db-bridge`. Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra objetos declarados aqui. Qualquer requisição fora dessa lista é rejeitada com 403 ANTES de tocar no banco externo — sem esta camada um usuário autenticado pode …"
    ],
    "deps": [
     "https:"
@@ -35597,6 +35597,7 @@
     "supabase/functions/_shared/circuit_breaker.ts",
     "supabase/functions/_shared/contracts.ts",
     "supabase/functions/_shared/cronHealth.ts",
+    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     "supabase/functions/_shared/external-bridge-allowlist.ts",
     "supabase/functions/_shared/fuzzSeed.ts",
     "supabase/functions/_shared/fuzzer.ts",
@@ -35671,8 +35672,7 @@
     "supabase/functions/system-simulation/index.ts",
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/telemetry/index.ts",
-    "supabase/functions/tests/fuzzing_suite.ts",
-    "supabase/functions/tests/integration_suite.ts"
+    "supabase/functions/tests/fuzzing_suite.ts"
    ]
   },
   {
@@ -39619,7 +39619,7 @@
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
     "name": "ALLOWED_OPERATIONS",
-    "values": "\"select\", \"insert\", \"update\", \"delete\", \"rpc\","
+    "values": "\"select\""
    },
    {
     "file": "supabase/functions/_shared/logLevel.ts",
@@ -42038,6 +42038,10 @@
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
     "text": "* Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
+    "text": "O bridge é somente leitura — ver `ALLOWED_OPERATIONS` abaixo."
    },
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -67166,6 +67170,22 @@
    {
     "file": "src/types/__tests__/legacyTypes.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: select em view do PIM na allowlist é permitido"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: tabela fora da allowlist retorna 403"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida)"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400"
    },
    {
     "file": "supabase/functions/_shared/logLevel.test.ts",
@@ -107122,9 +107142,21 @@
    ],
    "doc": "F-052: Cron heartbeat utility. Call `recordCronHeartbeat` at the end of every cron edge function to register last-run state. Uses `upsert_cron_heartbeat` RPC (SECURITY DEFINER) so the service-role client can write without bypassing RLS explicitly. Usage: import { recordCronHeartbeat } from \"../_shar …"
   },
+  "supabase/functions/_shared/external-bridge-allowlist.test.ts": {
+   "path": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+   "lines": 36,
+   "is_test": true,
+   "doc": "Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts",
+   "tests": [
+    "assertBridgeRequest: select em view do PIM na allowlist é permitido",
+    "assertBridgeRequest: tabela fora da allowlist retorna 403",
+    "assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida)",
+    "assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400"
+   ]
+  },
   "supabase/functions/_shared/external-bridge-allowlist.ts": {
    "path": "supabase/functions/_shared/external-bridge-allowlist.ts",
-   "lines": 103,
+   "lines": 100,
    "exports": [
     "const ALLOWED_TABLES",
     "const ALLOWED_RPCS",
@@ -107139,7 +107171,7 @@
    "enums": [
     {
      "name": "ALLOWED_OPERATIONS",
-     "values": "\"select\", \"insert\", \"update\", \"delete\", \"rpc\","
+     "values": "\"select\""
     }
    ],
    "params": [
@@ -107150,6 +107182,7 @@
    ],
    "rule_comments": [
     "* Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra",
+    "O bridge é somente leitura — ver `ALLOWED_OPERATIONS` abaixo.",
     "vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge",
     "Limite máximo por chamada — evita dump silencioso. */",
     "Resultado da validação; se `ok=false`, `reason` explica o motivo. */"
@@ -113023,10 +113056,20 @@
   }
  },
  "git": {
-  "sha": "64c1922826120b62141e86e9abe7819fe5c82437",
+  "sha": "8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8a61f8c",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)",
+    "files": [
+     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+     "supabase/functions/_shared/external-bridge-allowlist.ts"
+    ]
+   },
    {
     "sha": "64c1922",
     "date": "2026-11-21",
@@ -113342,24 +113385,12 @@
      "README.md",
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "22af7a5",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/components/compras/approval/WorkflowDLQPanel.tsx",
-     "src/hooks/useApprovalWorkflow.ts",
-     "src/pages/aprovacoes/Aprovacoes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    7
+    6
    ],
    [
     "docs/ci/README.md",
@@ -113382,6 +113413,10 @@
     3
    ],
    [
+    "supabase/functions/_shared/external-bridge-allowlist.ts",
+    2
+   ],
+   [
     ".github/workflows/aplicar-migration-prod.yml",
     2
    ],
@@ -113392,6 +113427,10 @@
    [
     "README.md",
     2
+   ],
+   [
+    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    1
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113427,14 +113466,6 @@
    ],
    [
     "src/pages/gerar-ordem/GerarOrdem.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/RecebimentoOffline.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/recebimentoHelpers.ts",
     1
    ]
   ]

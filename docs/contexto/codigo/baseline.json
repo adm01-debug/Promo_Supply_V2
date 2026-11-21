@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "64c1922826120b62141e86e9abe7819fe5c82437",
+  "commit": "8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37",
   "branch": "main",
-  "data_commit": "2026-11-21T16:07:11-03:00",
+  "data_commit": "2026-11-21T16:09:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8a61f8c",
+    "data": "2026-11-21",
+    "assunto": "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)"
+   },
    {
     "sha": "64c1922",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "38c50e5",
     "data": "2026-11-21",
     "assunto": "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)"
-   },
-   {
-    "sha": "3db64df",
-    "data": "2026-11-21",
-    "assunto": "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)"
    }
   ],
-  "arquivos_mudados_7d": 218,
+  "arquivos_mudados_7d": 219,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 26
+    "mudancas": 28
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 210
+    "commits": 211
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1282,
-  "arquivos_codigo": 797,
-  "linhas_codigo": 166793,
+  "arquivos_total": 1283,
+  "arquivos_codigo": 798,
+  "linhas_codigo": 166826,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 319,
   "cron_jobs": 71,
-  "testes": 185,
+  "testes": 186,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 92
@@ -491,8 +491,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 88,
-   "linhas": 15661
+   "arquivos": 89,
+   "linhas": 15694
   },
   "tailwind.config.ts": {
    "arquivos": 1,

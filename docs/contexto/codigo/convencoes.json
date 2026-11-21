@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (109)",
    "outro (40)",
-   "co-localizado (*.test) (26)"
+   "co-localizado (*.test) (27)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)",
    "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)",
    "chore(script): reconcilia produtos locais com o PIM (#244)",
    "fix(partitions): nao tratar tabela nao particionada como falha (#243)",
-   "fix(types): regenera types.ts com as colunas PIM de compras (#245)",
-   "feat: compra grava referencia do PIM e congela o item (#242)"
+   "fix(types): regenera types.ts com as colunas PIM de compras (#245)"
   ]
  },
  "pr_template": null,

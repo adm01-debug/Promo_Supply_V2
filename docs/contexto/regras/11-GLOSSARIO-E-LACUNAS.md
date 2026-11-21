@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `64c1922826` · branch `main` · 2026-11-21 19:09 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8a61f8c7bf` · branch `main` · 2026-11-21 19:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -208,7 +208,7 @@
 | `AuditActionType` (TS) | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel |  | `src/services/auditTypes.ts` |
 | `AuditEntityType` (TS) | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio |  | `src/services/auditTypes.ts` |
 | `RlsSeverity` (TS) | CRITICAL \| INFO \| OK |  | `src/services/rlsAuditService.ts` |
-| `ALLOWED_OPERATIONS` (TS) | "select", "insert", "update", "delete", "rpc", |  | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| `ALLOWED_OPERATIONS` (TS) | "select" |  | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `CanonicalLogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logLevel.ts` |
 | `LogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logger.ts` |
 | `Role` (TS) | admin \| coordinator \| buyer \| approver \| viewer |  | `supabase/functions/_shared/xbz_auth.ts` |

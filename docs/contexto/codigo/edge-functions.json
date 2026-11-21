@@ -11,6 +11,7 @@
   "supabase/functions/_shared/circuit_breaker.ts",
   "supabase/functions/_shared/contracts.ts",
   "supabase/functions/_shared/cronHealth.ts",
+  "supabase/functions/_shared/external-bridge-allowlist.test.ts",
   "supabase/functions/_shared/external-bridge-allowlist.ts",
   "supabase/functions/_shared/fuzzSeed.ts",
   "supabase/functions/_shared/fuzzer.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `64c1922826` · branch `main` · 2026-11-21 19:09 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8a61f8c7bf` · branch `main` · 2026-11-21 19:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1204,7 +1204,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | AuditActionType | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel | `src/services/auditTypes.ts` |
 | AuditEntityType | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio | `src/services/auditTypes.ts` |
 | RlsSeverity | CRITICAL \| INFO \| OK | `src/services/rlsAuditService.ts` |
-| ALLOWED_OPERATIONS | "select", "insert", "update", "delete", "rpc", | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| ALLOWED_OPERATIONS | "select" | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | CanonicalLogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logLevel.ts` |
 | LogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logger.ts` |
 | Role | admin \| coordinator \| buyer \| approver \| viewer | `supabase/functions/_shared/xbz_auth.ts` |
@@ -2347,7 +2347,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2663 testes em 137 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2667 testes em 138 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2473,6 +2473,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
+| `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 4 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
@@ -2597,6 +2598,7 @@ _nenhum item encontrado_
 | Used for automated permission validation. | `supabase/functions/_shared/contracts.ts` |
 | Non-blocking — log but never throw; heartbeat failure must not kill the cron run. | `supabase/functions/_shared/cronHealth.ts` |
 | * Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| O bridge é somente leitura — ver `ALLOWED_OPERATIONS` abaixo. | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | Limite máximo por chamada — evita dump silencioso. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | Resultado da validação; se `ok=false`, `reason` explica o motivo. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |

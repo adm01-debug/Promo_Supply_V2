@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `64c1922826120b62141e86e9abe7819fe5c82437` (2026-11-21T16:07:11-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37` (2026-11-21T16:09:40-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (724), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (725), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1282 |
-| arquivos_codigo | 797 |
-| linhas_codigo | 166793 |
+| arquivos_total | 1283 |
+| arquivos_codigo | 798 |
+| linhas_codigo | 166826 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 163 |
 | migrations | 319 |
 | cron_jobs | 71 |
-| testes | 185 |
+| testes | 186 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 92 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (26)
+- testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (27)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `8a61f8c` feat(bridge): allowlist aponta só para as views de compras do PIM (#248)
 - 2026-11-21 `64c1922` docs(pim): integra plano de compras-sem-catalogo com checklist (#247)
 - 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
 - 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `aef9bff` feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)
 - 2026-11-21 `7ad0b03` feat(pwa): adiciona handler de push ao service worker (#234)
 - 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
-- 2026-11-21 `b30b4cd` docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
