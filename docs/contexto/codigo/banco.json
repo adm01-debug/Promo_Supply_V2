@@ -11177,14 +11177,8 @@
    },
    "usada_no_front": 1,
    "usada_em_edges": [
-    "alert-dispatcher",
-    "check-approval-escalations",
-    "check-cotacao-followup",
-    "check-expiry-alerts",
-    "check-sla-alerts",
-    "send-push-notification",
-    "weekly-report",
-    "weekly-summary-report"
+    "_shared",
+    "check-cotacao-followup"
    ],
    "triggers": [],
    "sem_rls": false,
@@ -13347,6 +13341,7 @@
    },
    "usada_no_front": 6,
    "usada_em_edges": [
+    "_shared",
     "check-cotacao-followup",
     "migrate-storage-paths",
     "punchout-receive"

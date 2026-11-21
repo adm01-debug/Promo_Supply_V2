@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2b20c503fc7cb55addef185c92954923a55b9227` (2026-11-21T16:57:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `92004291af46a2bdf2ea7470ae4a553bd0058c34` (2026-11-21T17:13:28-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (725), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1283 |
-| arquivos_codigo | 798 |
-| linhas_codigo | 166900 |
+| arquivos_total | 1284 |
+| arquivos_codigo | 799 |
+| linhas_codigo | 166990 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -188,11 +188,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `ai-negotiation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ai-supplier-risk` — tabelas: -; chamada por 1 arquivo(s) do front
 - `ai-supplier-suggestion` — tabelas: -; chamada por 1 arquivo(s) do front
-- `alert-dispatcher` — tabelas: notifications, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `check-approval-escalations` — tabelas: approval_history, approval_steps, approval_workflows, notifications; chamada por 0 arquivo(s) do front, por SQL/cron
+- `alert-dispatcher` — tabelas: system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `check-approval-escalations` — tabelas: approval_history, approval_steps, approval_workflows; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-cotacao-followup` — tabelas: cotacoes, notifications, profiles; chamada por 0 arquivo(s) do front, por SQL/cron
-- `check-expiry-alerts` — tabelas: cotacoes, notifications, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
-- `check-sla-alerts` — tabelas: notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
+- `check-expiry-alerts` — tabelas: cotacoes, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `check-sla-alerts` — tabelas: pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
 - `erp-credential-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `erp-sync` — tabelas: erp_connections, erp_sync_log; chamada por 1 arquivo(s) do front
@@ -211,15 +211,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
-- `send-push-notification` — tabelas: notifications, push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `send-push-notification` — tabelas: push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
 - `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
-- `weekly-report` — tabelas: cotacoes, notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
-- `weekly-summary-report` — tabelas: cotacoes, notifications, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `weekly-report` — tabelas: cotacoes, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `weekly-summary-report` — tabelas: cotacoes, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `workflow-engine` — tabelas: workflow_approvals, workflow_edges, workflow_instances, workflow_logs, workflow_nodes; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `xbz-proxy` — tabelas: xbz_carrinho_log, xbz_credentials; chamada por 1 arquivo(s) do front
 - `xbz-sync-pedidos` — tabelas: system_alerts, xbz_credentials, xbz_pedido_status_history, xbz_pedidos; chamada por 0 arquivo(s) do front, por SQL/cron
@@ -332,7 +332,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (29)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (12)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (13)
 - package.json (12)
 - docs/ci/README.md (11)
 - .github/workflows/main.yml (9)
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `9200429` fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)
 - 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
 - 2026-11-21 `d7718b8` fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)
 - 2026-11-21 `ccdb17f` docs(pim): marca PR 2.1 concluída no checklist (#249)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `017aa0c` fix(docs): alinha contagem de workflows do README de CI com main (#241)
 - 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
 - 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
-- 2026-11-21 `709f261` docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

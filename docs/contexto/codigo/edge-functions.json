@@ -22,6 +22,7 @@
   "supabase/functions/_shared/logLevel.ts",
   "supabase/functions/_shared/logger.fuzz.test.ts",
   "supabase/functions/_shared/logger.ts",
+  "supabase/functions/_shared/notifications.ts",
   "supabase/functions/_shared/punchout_crypto.test.ts",
   "supabase/functions/_shared/punchout_crypto.ts",
   "supabase/functions/_shared/rate_limit.ts",
@@ -187,13 +188,12 @@
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
    "arquivos": 1,
-   "linhas": 394,
+   "linhas": 395,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
-    "notifications",
     "system_alerts"
    ],
    "rpcs": [
@@ -216,6 +216,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "http.ts",
+    "notifications.ts",
     "retry.ts",
     "security.ts"
    ],
@@ -229,7 +230,7 @@
    "nome": "check-approval-escalations",
    "entrada": "supabase/functions/check-approval-escalations/index.ts",
    "arquivos": 1,
-   "linhas": 254,
+   "linhas": 249,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -237,8 +238,7 @@
    "tabelas": [
     "approval_history",
     "approval_steps",
-    "approval_workflows",
-    "notifications"
+    "approval_workflows"
    ],
    "rpcs": [],
    "env": [
@@ -251,6 +251,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],
@@ -263,7 +264,7 @@
    "nome": "check-cotacao-followup",
    "entrada": "supabase/functions/check-cotacao-followup/index.ts",
    "arquivos": 1,
-   "linhas": 166,
+   "linhas": 171,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -288,6 +289,7 @@
     "cronHealth.ts",
     "http.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],
@@ -300,14 +302,13 @@
    "nome": "check-expiry-alerts",
    "entrada": "supabase/functions/check-expiry-alerts/index.ts",
    "arquivos": 1,
-   "linhas": 217,
+   "linhas": 212,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
     "cotacoes",
-    "notifications",
     "pagamentos",
     "user_roles"
    ],
@@ -322,6 +323,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],
@@ -334,13 +336,12 @@
    "nome": "check-sla-alerts",
    "entrada": "supabase/functions/check-sla-alerts/index.ts",
    "arquivos": 2,
-   "linhas": 383,
+   "linhas": 377,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
-    "notifications",
     "pagamentos",
     "pedidos",
     "solicitacoes",
@@ -357,6 +358,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [
@@ -1038,13 +1040,12 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 498,
+   "linhas": 499,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
-    "notifications",
     "push_subscriptions"
    ],
    "rpcs": [],
@@ -1060,6 +1061,7 @@
    "hosts_externos": [],
    "usa_shared": [
     "logger.ts",
+    "notifications.ts",
     "rate_limit.ts",
     "security.ts"
    ],
@@ -1303,14 +1305,13 @@
    "nome": "weekly-report",
    "entrada": "supabase/functions/weekly-report/index.ts",
    "arquivos": 1,
-   "linhas": 119,
+   "linhas": 120,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
     "cotacoes",
-    "notifications",
     "pagamentos",
     "pedidos",
     "solicitacoes",
@@ -1327,6 +1328,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],
@@ -1339,14 +1341,13 @@
    "nome": "weekly-summary-report",
    "entrada": "supabase/functions/weekly-summary-report/index.ts",
    "arquivos": 1,
-   "linhas": 116,
+   "linhas": 117,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
     "cotacoes",
-    "notifications",
     "pedidos",
     "solicitacoes",
     "user_roles"
@@ -1362,6 +1363,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "logger.ts",
+    "notifications.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],

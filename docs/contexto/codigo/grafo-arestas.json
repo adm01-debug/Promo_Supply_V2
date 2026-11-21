@@ -3497,28 +3497,33 @@
   "supabase/functions/alert-dispatcher/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/retry.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/check-approval-escalations/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/check-cotacao-followup/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/check-expiry-alerts/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/check-sla-alerts/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts",
    "supabase/functions/check-sla-alerts/failures.ts"
   ],
@@ -3627,6 +3632,7 @@
   ],
   "supabase/functions/send-push-notification/index.ts": [
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/rate_limit.ts",
    "supabase/functions/_shared/security.ts",
    "supabase/functions/send-push-notification/webpush.ts"
@@ -3674,11 +3680,13 @@
   "supabase/functions/weekly-report/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/weekly-summary-report/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/workflow-engine/index.ts": [

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2b20c503fc` · branch `main` · 2026-11-21 20:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `92004291af` · branch `main` · 2026-11-21 20:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2005,11 +2005,10 @@ _nenhum item encontrado_
 | 50 | `src/pages/portal-fornecedor/portalFornecedorData.ts` |
 | 50 | `src/pages/recompra/RecompraInteligente.tsx` |
 | 500 | `src/pages/recompra/RecompraInteligente.tsx` |
+| 1 | `supabase/functions/_shared/notifications.ts` |
 | 1 | `supabase/functions/_shared/xbz_auth.ts` |
 | 50 | `supabase/functions/alert-dispatcher/index.ts` |
 | 1 | `supabase/functions/check-cotacao-followup/index.ts` |
-| 1 | `supabase/functions/check-expiry-alerts/index.ts` |
-| 1 | `supabase/functions/check-sla-alerts/index.ts` |
 | 20 | `supabase/functions/check-sla-alerts/index.ts` |
 | 200 | `supabase/functions/check-sla-alerts/index.ts` |
 | 30 | `supabase/functions/dependency-health/index.ts` |

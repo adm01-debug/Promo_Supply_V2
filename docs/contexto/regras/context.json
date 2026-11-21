@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2b20c503fc7cb55addef185c92954923a55b9227",
+  "sha": "92004291af46a2bdf2ea7470ae4a553bd0058c34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 20:01 UTC",
-  "files_total": 1284,
-  "code_files": 1121,
-  "code_lines": 193089,
+  "generated_at": "2026-11-21 20:15 UTC",
+  "files_total": 1285,
+  "code_files": 1122,
+  "code_lines": 193179,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e68f6efb9c5d2a54",
+ "facts_hash": "26c35c0e25c2a334",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 377,
+   ".ts": 378,
    ".tsx": 348,
    ".sql": 321,
    ".mjs": 67,
@@ -31442,6 +31442,7 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "notifications",
+     "profiles",
      "system_alerts",
      "user_tenants"
     ],
@@ -31477,6 +31478,7 @@
      "approval_steps",
      "approval_workflows",
      "notifications",
+     "profiles",
      "telemetry_logs",
      "user_tenants"
     ],
@@ -31530,6 +31532,7 @@
      "cotacoes",
      "notifications",
      "pagamentos",
+     "profiles",
      "telemetry_logs",
      "user_roles",
      "user_tenants"
@@ -31557,6 +31560,7 @@
      "notifications",
      "pagamentos",
      "pedidos",
+     "profiles",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -31572,7 +31576,7 @@
     "errors": [],
     "side_effects": [],
     "webhook_events": [],
-    "idempotency": false
+    "idempotency": true
    },
    {
     "name": "dependency-health",
@@ -32087,6 +32091,7 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "notifications",
+     "profiles",
      "push_subscriptions",
      "telemetry_logs",
      "user_tenants"
@@ -32309,6 +32314,7 @@
      "notifications",
      "pagamentos",
      "pedidos",
+     "profiles",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -32337,6 +32343,7 @@
      "cotacoes",
      "notifications",
      "pedidos",
+     "profiles",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -35493,8 +35500,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 89,
-   "lines": 15764,
+   "files": 90,
+   "lines": 15854,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35560,6 +35567,7 @@
     "integrity_test.ts: runIntegrityTests",
     "logLevel.ts: CanonicalLogLevel, CANONICAL_LEVELS, DEFAULT_LEVEL, normalizeLevel, MAX_MESSAGE_LENGTH, MAX_CONTEXT_BYTES",
     "logger.ts: LogLevel, LogEntry, EdgeLogger",
+    "notifications.ts: NotificationTarget, NotificationResult, insertNotification, insertNotificationsBatch",
     "punchout_crypto.ts: decryptPunchOutSecret",
     "rate_limit.ts: RateLimitResult, RateLimitOptions, checkRateLimit, rateLimitedResponse",
     "retry.ts: RetryOptions, retry",
@@ -35608,6 +35616,7 @@
     "supabase/functions/_shared/logLevel.ts",
     "supabase/functions/_shared/logger.fuzz.test.ts",
     "supabase/functions/_shared/logger.ts",
+    "supabase/functions/_shared/notifications.ts",
     "supabase/functions/_shared/punchout_crypto.test.ts",
     "supabase/functions/_shared/punchout_crypto.ts",
     "supabase/functions/_shared/rate_limit.ts",
@@ -35671,8 +35680,7 @@
     "supabase/functions/spot-proxy/index.ts",
     "supabase/functions/system-simulation/index.ts",
     "supabase/functions/telemetry/index.test.ts",
-    "supabase/functions/telemetry/index.ts",
-    "supabase/functions/tests/fuzzing_suite.ts"
+    "supabase/functions/telemetry/index.ts"
    ]
   },
   {
@@ -36512,9 +36520,8 @@
    "notifications": {
     "select": [
      "src/hooks/useRealPushNotifications.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/check-expiry-alerts/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts"
+     "supabase/functions/_shared/notifications.ts",
+     "supabase/functions/check-cotacao-followup/index.ts"
     ],
     "update": [
      "src/hooks/useRealPushNotifications.ts"
@@ -36523,14 +36530,7 @@
      "src/hooks/useRealPushNotifications.ts"
     ],
     "insert": [
-     "supabase/functions/alert-dispatcher/index.ts",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/check-expiry-alerts/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/weekly-report/index.ts",
-     "supabase/functions/weekly-summary-report/index.ts"
+     "supabase/functions/_shared/notifications.ts"
     ]
    },
    "order_contracts": {
@@ -36724,6 +36724,7 @@
      "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "src/stores/buyerAlertsStore.ts",
+     "supabase/functions/_shared/notifications.ts",
      "supabase/functions/check-cotacao-followup/index.ts",
      "supabase/functions/migrate-storage-paths/index.ts",
      "supabase/functions/punchout-receive/index.ts"
@@ -75388,6 +75389,10 @@
     "limit": "500"
    },
    {
+    "file": "supabase/functions/_shared/notifications.ts",
+    "limit": "1"
+   },
+   {
     "file": "supabase/functions/_shared/xbz_auth.ts",
     "limit": "1"
    },
@@ -75397,14 +75402,6 @@
    },
    {
     "file": "supabase/functions/check-cotacao-followup/index.ts",
-    "limit": "1"
-   },
-   {
-    "file": "supabase/functions/check-expiry-alerts/index.ts",
-    "limit": "1"
-   },
-   {
-    "file": "supabase/functions/check-sla-alerts/index.ts",
     "limit": "1"
    },
    {
@@ -107516,6 +107513,54 @@
    "doc": "Centralized logging utility for Edge Functions. Enforces JSON structured logging for observability and persistence.",
    "uses_service_role": true
   },
+  "supabase/functions/_shared/notifications.ts": {
+   "path": "supabase/functions/_shared/notifications.ts",
+   "lines": 97,
+   "exports": [
+    "interface NotificationTarget",
+    "interface NotificationResult",
+    "function insertNotification",
+    "function insertNotificationsBatch"
+   ],
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "notifications",
+     "op": "select"
+    },
+    {
+     "table": "notifications",
+     "op": "insert"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "notifications",
+     "op": "insert"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "id",
+     "tenant_id"
+    ],
+    "notifications": [
+     "created_at",
+     "id",
+     "title",
+     "user_id"
+    ]
+   },
+   "doc": "deno-lint-ignore no-explicit-any",
+   "pagination": [
+    "1"
+   ]
+  },
   "supabase/functions/_shared/punchout_crypto.test.ts": {
    "path": "supabase/functions/_shared/punchout_crypto.test.ts",
    "lines": 57,
@@ -108376,7 +108421,7 @@
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 394,
+   "lines": 395,
    "tables": [
     {
      "table": "system_alerts",
@@ -108385,10 +108430,6 @@
     {
      "table": "system_alerts",
      "op": "update"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     },
     {
      "table": "system_alerts",
@@ -108466,7 +108507,7 @@
   },
   "supabase/functions/check-approval-escalations/index.ts": {
    "path": "supabase/functions/check-approval-escalations/index.ts",
-   "lines": 254,
+   "lines": 249,
    "tables": [
     {
      "table": "approval_steps",
@@ -108485,24 +108526,12 @@
      "op": "insert"
     },
     {
-     "table": "notifications",
-     "op": "insert"
-    },
-    {
      "table": "approval_steps",
      "op": "update"
     },
     {
-     "table": "notifications",
-     "op": "insert"
-    },
-    {
      "table": "approval_steps",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     },
     {
      "table": "approval_steps",
@@ -108575,7 +108604,7 @@
   },
   "supabase/functions/check-cotacao-followup/index.ts": {
    "path": "supabase/functions/check-cotacao-followup/index.ts",
-   "lines": 166,
+   "lines": 171,
    "tables": [
     {
      "table": "cotacoes",
@@ -108584,10 +108613,6 @@
     {
      "table": "notifications",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     },
     {
      "table": "profiles",
@@ -108647,7 +108672,7 @@
   },
   "supabase/functions/check-expiry-alerts/index.ts": {
    "path": "supabase/functions/check-expiry-alerts/index.ts",
-   "lines": 217,
+   "lines": 212,
    "tables": [
     {
      "table": "cotacoes",
@@ -108680,14 +108705,6 @@
     {
      "table": "cotacoes",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     }
    ],
    "table_cols": {
@@ -108697,6 +108714,7 @@
      "numero",
      "solicitacao_id",
      "status",
+     "tenant_id",
      "updated_at",
      "validade_proposta"
     ],
@@ -108706,16 +108724,11 @@
      "id",
      "numero",
      "status",
+     "tenant_id",
      "valor"
     ],
     "user_roles": [
      "role",
-     "user_id"
-    ],
-    "notifications": [
-     "created_at",
-     "id",
-     "title",
      "user_id"
     ]
    },
@@ -108790,9 +108803,6 @@
     "(new Date(pag.data_vencimento).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)",
     "const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();",
     "const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);"
-   ],
-   "pagination": [
-    "1"
    ],
    "uses_service_role": true
   },
@@ -108922,16 +108932,8 @@
   },
   "supabase/functions/check-sla-alerts/index.ts": {
    "path": "supabase/functions/check-sla-alerts/index.ts",
-   "lines": 325,
+   "lines": 319,
    "tables": [
-    {
-     "table": "notifications",
-     "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
-    },
     {
      "table": "pedidos",
      "op": "select"
@@ -108962,18 +108964,13 @@
     }
    ],
    "table_cols": {
-    "notifications": [
-     "created_at",
-     "id",
-     "title",
-     "user_id"
-    ],
     "pedidos": [
      "comprador_id",
      "data_previsao",
      "id",
      "numero",
-     "status"
+     "status",
+     "tenant_id"
     ],
     "solicitacoes": [
      "aprovador_id",
@@ -108981,6 +108978,7 @@
      "numero",
      "solicitante_id",
      "status",
+     "tenant_id",
      "titulo"
     ],
     "user_roles": [
@@ -108993,6 +108991,7 @@
      "id",
      "numero",
      "status",
+     "tenant_id",
      "valor"
     ]
    },
@@ -109074,7 +109073,6 @@
     "const twoDays = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];"
    ],
    "pagination": [
-    "1",
     "20",
     "200"
    ],
@@ -110210,15 +110208,11 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 206,
+   "lines": 207,
    "tables": [
     {
      "table": "push_subscriptions",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     },
     {
      "table": "push_subscriptions",
@@ -110797,7 +110791,7 @@
   },
   "supabase/functions/weekly-report/index.ts": {
    "path": "supabase/functions/weekly-report/index.ts",
-   "lines": 119,
+   "lines": 120,
    "tables": [
     {
      "table": "solicitacoes",
@@ -110818,10 +110812,6 @@
     {
      "table": "user_roles",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     }
    ],
    "table_cols": {
@@ -110905,7 +110895,7 @@
   },
   "supabase/functions/weekly-summary-report/index.ts": {
    "path": "supabase/functions/weekly-summary-report/index.ts",
-   "lines": 116,
+   "lines": 117,
    "tables": [
     {
      "table": "solicitacoes",
@@ -110926,10 +110916,6 @@
     {
      "table": "user_roles",
      "op": "select"
-    },
-    {
-     "table": "notifications",
-     "op": "insert"
     }
    ],
    "table_cols": {
@@ -113096,10 +113082,29 @@
   }
  },
  "git": {
-  "sha": "2b20c503fc7cb55addef185c92954923a55b9227",
+  "sha": "92004291af46a2bdf2ea7470ae4a553bd0058c34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9200429",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "scripts/ci/gerar-matriz-edge-tabela.mjs",
+     "supabase/functions/_shared/notifications.ts",
+     "supabase/functions/alert-dispatcher/index.ts",
+     "supabase/functions/check-approval-escalations/index.ts",
+     "supabase/functions/check-cotacao-followup/index.ts",
+     "supabase/functions/check-expiry-alerts/index.ts",
+     "supabase/functions/check-sla-alerts/index.ts",
+     "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/weekly-report/index.ts",
+     "supabase/functions/weekly-summary-report/index.ts"
+    ]
+   },
    {
     "sha": "2b20c50",
     "date": "2026-11-21",
@@ -113412,17 +113417,6 @@
      "supabase/functions/_shared/xbz_client.ts",
      "supabase/functions/xbz-proxy/index.ts"
     ]
-   },
-   {
-    "sha": "a922396",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)",
-    "files": [
-     "README.md",
-     "docs/pendencias/_indice.md",
-     "src/pages/admin/DeveloperDocs.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -113435,10 +113429,6 @@
     4
    ],
    [
-    "docs/pendencias/_indice.md",
-    3
-   ],
-   [
     "src/hooks/useXbzIntegration.ts",
     3
    ],
@@ -113449,6 +113439,10 @@
    [
     "supabase/functions/_shared/xbz_client.ts",
     3
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
@@ -113467,43 +113461,43 @@
     2
    ],
    [
+    "docs/pendencias/_indice.md",
+    2
+   ],
+   [
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
     2
    ],
    [
-    "scripts/ci/scripts-operacionais.unit.mjs",
+    "scripts/ci/gerar-matriz-edge-tabela.mjs",
     1
    ],
    [
-    "scripts/validate-bridge.ts",
+    "supabase/functions/_shared/notifications.ts",
     1
    ],
    [
-    "scripts/automation.config.json",
+    "supabase/functions/alert-dispatcher/index.ts",
     1
    ],
    [
-    "scripts/migracao/README.md",
+    "supabase/functions/check-approval-escalations/index.ts",
     1
    ],
    [
-    "scripts/migracao/reconcilia-produtos-pim.mjs",
+    "supabase/functions/check-cotacao-followup/index.ts",
     1
    ],
    [
-    "supabase/functions/maintain-partitions/index.ts",
+    "supabase/functions/check-expiry-alerts/index.ts",
     1
    ],
    [
-    "src/integrations/supabase/types.ts",
+    "supabase/functions/check-sla-alerts/index.ts",
     1
    ],
    [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/hooks/usePurchaseHistory.ts",
+    "supabase/functions/send-push-notification/index.ts",
     1
    ]
   ]
