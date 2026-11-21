@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `79bf0bf054` · branch `main` · 2026-11-21 14:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `33a4ea1535` · branch `main` · 2026-11-21 14:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -903,10 +903,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Campo | Valor | Uso | Onde |
 |---|---|---|---|
 | `type` | `ADD_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
-| `type` | `Aprovação` | escreve | `src/components/compras/executive/executiveDashboardData.ts` |
+| `type` | `Aprovação` | escreve | `src/hooks/useExecutiveDashboardData.ts` |
 | `type` | `DISMISS_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `IA` | escreve | `src/components/compras/SourcingIntelligenceWidget.tsx` |
-| `type` | `Pagamento` | escreve | `src/components/compras/executive/executiveDashboardData.ts` |
 | `type` | `REAL` | compara, escreve | `src/components/compras/SourcingIntelligenceWidget.tsx` |
 | `type` | `REMOVE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `RFQ` | escreve | `src/pages/sourcing/RFxCreate.tsx` |
@@ -1397,7 +1396,7 @@ _nenhum item encontrado_
   ```
 - **calculateChange(current: number, previous: number)** — `src/components/compras/executive/executiveDashboardData.ts`
   ```
-  return ((current - previous) / previous) * 100;
+  if (!previous) return 0; return ((current - previous) / previous) * 100;
   ```
 - **generateQuotesFromSuppliers(fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [])** — `src/components/compras/price-comparator/priceComparatorHelpers.ts`
   ```
@@ -1613,6 +1612,7 @@ _nenhum item encontrado_
 | `score += priceScore * 0.5;` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `score += stockScore * 0.2;` | `src/components/compras/ComparadorCotacoes.tsx` |
 | `const potentialExtraSaving = Math.round(kpis.volumeMes * 0.03); // Assuming we can save 3% more` | `src/components/compras/DashboardInsights.tsx` |
+| `previousValue: Math.max(1, rm.ordersThisMonth.value * 0.85),` | `src/components/compras/ExecutiveDashboard.tsx` |
 | `Confiança da análise: 94%` | `src/components/compras/PriceHistoryModal.tsx` |
 | `Sum must equal 100% for precise calculation.` | `src/components/compras/RankingCotacoes.tsx` |
 | `const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));` | `src/components/compras/RiskHeatMap.tsx` |
@@ -1640,6 +1640,12 @@ _nenhum item encontrado_
 | `x: -380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `x: 380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });` | `src/features/layout/components/AdvancedSearch.tsx` |
+| `buckets[idx].savings += val * 0.08;` | `src/hooks/useExecutiveDashboardData.ts` |
+| `const prev = c.value * 0.92;` | `src/hooks/useExecutiveDashboardData.ts` |
+| `previousOrders: Math.max(1, Math.round(v.orders * 0.85)),` | `src/hooks/useExecutiveDashboardData.ts` |
+| `previousSavings: Math.round(v.spend * 0.07),` | `src/hooks/useExecutiveDashboardData.ts` |
+| `previousSpend: Math.round(v.spend * 0.9),` | `src/hooks/useExecutiveDashboardData.ts` |
+| `savings: Math.round(v.spend * 0.08),` | `src/hooks/useExecutiveDashboardData.ts` |
 | `savings: { value: savings, target: savings * 0.8 },` | `src/hooks/useExecutiveDashboardData.ts` |
 | `gainNode.gain.linearRampToValueAtTime(volume * 0.3, startTime + 0.01);` | `src/hooks/useFeedback.ts` |
 | `// Explicit columns: drops ~30% payload vs `*` on wide table.` | `src/hooks/useProdutos.ts` |
@@ -1795,6 +1801,8 @@ _nenhum item encontrado_
 | `: new Date(Date.now() + parseInt(expiresHours, 10) * 60 * 60 * 1000).toISOString();` | `src/components/security/BlockedIPsPanel.tsx` |
 | `typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);` | `src/features/layout/components/SupplierChat.tsx` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useBuyerPerformanceData.ts` |
+| `const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at \|\| Date.now()).getTime()) / (1000 * 60 * 60 * 24)));` | `src/hooks/useExecutiveDashboardData.ts` |
+| `const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const diff = (new Date().getTime() - new Date(p.data_previsao).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const timer = setTimeout(() => { setShouldFlash(true); const resetTimer = setTimeout(() => setShouldFlash(false), 1500);` | `src/hooks/useFlashHighlight.ts` |
@@ -2338,11 +2346,10 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2712 testes em 135 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2653 testes em 135 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
-| `src/components/compras/executive/__tests__/executiveDashboardData.test.ts` | 78 | calculateChange · returns positive value when current > previous · returns negative value when current < previous · returns 0 when current equals previous … |
 | `src/components/accessibility/__tests__/accessibilityHelpers.test.ts` | 66 | defaultSettings · has fontSize of 100 · has lineSpacing of 1.5 · has letterSpacing of 0 … |
 | `src/features/layout/components/search/__tests__/searchConfig.test.ts` | 61 | fuseOptions · isCaseSensitive is false · includeScore and includeMatches are true · threshold is 0.4 … |
 | `src/lib/__tests__/dbMapping.test.ts` | 59 | dbMapping · nullToUndefined · converts null to undefined · passes through undefined … |
@@ -2409,6 +2416,7 @@ _nenhum item encontrado_
 | `src/components/ui/indicators/__tests__/statusConfigs.test.ts` | 20 | statusConfigs · has 13 status entries · covers all expected StatusType values · every entry has a non-empty label string … |
 | `src/lib/__tests__/security.test.ts` | 20 | security.isDangerous · detects <script tag · detects javascript: protocol · detects onerror= attribute … |
 | `src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts` | 19 | entityConfig · has exactly 4 entity types · covers all required entity types · each entity has a non-empty label … |
+| `src/components/compras/executive/__tests__/executiveDashboardData.test.ts` | 19 | calculateChange · returns positive value when current > previous · returns negative value when current < previous · returns 0 when current equals previous … |
 | `src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts` | 19 | resolveApprovalDeadline · prioriza step.prazo_limite quando presente · cai para workflow.prazo_limite quando step é nulo · usa workflow.created_at + 24h quando ambos prazos são nulos … |
 | `src/components/ui/__tests__/celebrationConfigs.test.ts` | 19 | celebrationConfigs · has 9 celebration type entries · covers all expected CelebrationType values · every entry has a defined icon … |
 | `src/lib/__tests__/paginatedFetch.test.ts` | 19 | fetchAllRows · returns all rows from a single page · calls from() with the table name · calls select() with the select string … |

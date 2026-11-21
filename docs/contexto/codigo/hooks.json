@@ -1067,7 +1067,7 @@
    "hooks_exportados": [
     "useExecutiveDashboardData"
    ],
-   "linhas": 243,
+   "linhas": 535,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -1078,11 +1078,13 @@
     "useQuery"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 5,
    "usado_por_arquivos": [
     "src/components/compras/AdvancedProcurementKPIs.tsx",
     "src/components/compras/ExecutiveDashboard.tsx",
-    "src/components/compras/executive/ExecutiveAIInsights.tsx"
+    "src/components/compras/executive/ExecutiveAIInsights.tsx",
+    "src/components/compras/executive/ExecutiveChartsRow.tsx",
+    "src/components/compras/executive/ExecutiveDrillDownModal.tsx"
    ],
    "coberto_por_testes": 0
   },

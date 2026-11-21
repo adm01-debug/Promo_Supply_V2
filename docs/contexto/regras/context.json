@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "79bf0bf054fbb13b1a7d1cd13c817a3941d34a09",
+  "sha": "33a4ea15355977b4abb48cbf021db1477fb3ee59",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 14:08 UTC",
+  "generated_at": "2026-11-21 14:39 UTC",
   "files_total": 1269,
   "code_files": 1111,
-  "code_lines": 191872,
+  "code_lines": 191724,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "35668b52757b1eca",
+ "facts_hash": "7d91940cc40989af",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34038,7 +34038,7 @@
   {
    "module": "src/components",
    "files": 261,
-   "lines": 48828,
+   "lines": 48388,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34114,7 +34114,7 @@
    ],
    "docs": [
     "PrefetchLink.tsx: Componente Link com prefetch automático de DADOS (React Query) e do CHUNK JS da rota destino, no hover/focus do usuário.",
-    "executiveDashboardData.ts: Mock data constants for the Executive Dashboard",
+    "executiveDashboardData.ts: Pure utilities for the Executive Dashboard (no fictional data). All derived data now comes from useExecutiveDashboardData.",
     "deadlineFallback.ts: Resolves the effective deadline for a pending approval step. Priority: 1. `stepPrazoLimite` — deadline set directly on the step 2. `workflowPrazoLimite` — deadline inherited from the parent workflow 3. `(workflowCreatedAt ?? stepCreatedAt) + 24h` — safe fallback Never returns \"now\", which would fals …",
     "kpiMockData.ts: Mock data and helper types for AdvancedProcurementKPIs",
     "slaAnalysisData.ts: Mock SLA data per supplier",
@@ -34542,7 +34542,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12437,
+   "lines": 12729,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34622,7 +34622,7 @@
     "useDashboardKPIs.ts: KPIComparison, PipelineData, DashboardKPIsExtended, useDashboardKPIs",
     "useDevolucoes.ts: Devolucao, DevolucaoItem, CreditoFornecedor, CreateDevolucaoInput, useDevolucoes, useCreditosFornecedor",
     "useEstoque.ts: EstoqueItem, Movimentacao, useEstoque",
-    "useExecutiveDashboardData.ts: ExecutiveMetrics, useExecutiveDashboardData",
+    "useExecutiveDashboardData.ts: ExecutiveMetrics, MonthlyPoint, ComparisonPoint, CategorySpendItem, SupplierItem, BuyerItem",
     "useFeedback.ts: FeedbackType, useFeedbackPreferences, hapticPatterns, SoundConfig, soundConfigs, useFeedback",
     "useFlashHighlight.ts: useFlashHighlight",
     "useFormDataProtection.ts: useFormDataProtection",
@@ -51061,30 +51061,6 @@
    {
     "file": "src/components/compras/executive/executiveDashboardData.ts",
     "field": "type",
-    "value": "Aprovação",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/executive/executiveDashboardData.ts",
-    "field": "type",
-    "value": "Aprovação",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/executive/executiveDashboardData.ts",
-    "field": "type",
-    "value": "Pagamento",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/executive/executiveDashboardData.ts",
-    "field": "type",
-    "value": "Aprovação",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/executive/executiveDashboardData.ts",
-    "field": "type",
     "value": "category",
     "kind": "escreve"
    },
@@ -52266,6 +52242,12 @@
    },
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "type",
+    "value": "Aprovação",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
     "field": "status",
     "value": "ativo",
     "kind": "compara"
@@ -52297,7 +52279,7 @@
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
     "field": "status",
-    "value": "ativo",
+    "value": "pending",
     "kind": "compara"
    },
    {
@@ -55426,7 +55408,7 @@
     "file": "src/components/compras/executive/executiveDashboardData.ts",
     "name": "calculateChange",
     "params": "current: number, previous: number",
-    "body": "return ((current - previous) / previous) * 100;"
+    "body": "if (!previous) return 0; return ((current - previous) / previous) * 100;"
    },
    {
     "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
@@ -55897,6 +55879,14 @@
    {
     "file": "src/hooks/useBuyerPerformanceData.ts",
     "line": "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at || Date.now()).getTime()) / (1000 * 60 * 60 * 24)));"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);"
    },
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
@@ -56585,6 +56575,10 @@
     "line": "const potentialExtraSaving = Math.round(kpis.volumeMes * 0.03); // Assuming we can save 3% more"
    },
    {
+    "file": "src/components/compras/ExecutiveDashboard.tsx",
+    "line": "previousValue: Math.max(1, rm.ordersThisMonth.value * 0.85),"
+   },
+   {
     "file": "src/components/compras/PriceHistoryModal.tsx",
     "line": "Confiança da análise: 94%"
    },
@@ -56691,6 +56685,30 @@
    {
     "file": "src/features/layout/components/AdvancedSearch.tsx",
     "line": "items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "buckets[idx].savings += val * 0.08;"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "const prev = c.value * 0.92;"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "previousOrders: Math.max(1, Math.round(v.orders * 0.85)),"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "previousSavings: Math.round(v.spend * 0.07),"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "previousSpend: Math.round(v.spend * 0.9),"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "savings: Math.round(v.spend * 0.08),"
    },
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
@@ -57736,11 +57754,7 @@
    },
    {
     "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "50% increase"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "100% increase (double)"
+    "name": "guards against division by zero"
    },
    {
     "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
@@ -57769,238 +57783,6 @@
    {
     "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
     "name": "returns a string"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "currentPeriodMetrics"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has totalSpend with value and target"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has savings exceeding target"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has ordersThisMonth above target"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "avgCycleTime is below target (good performance)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has pendingApprovals with urgent count"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "contractCompliance is above target"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "executiveMetrics"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "totalSpend change is positive (spend increased)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "savings change is positive (savings improved)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "avgCycleTime change is negative (improved - fewer days)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "overdueOrders change is negative (improved - fewer overdue)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has maverickSpend with value and percentage"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has savingsPercent"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "change is calculated correctly for savings"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "monthlyTrend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 6 months of data"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "months are Jul through Dez"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each entry has spend, savings, orders"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "savings is always less than spend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "comparisonTrend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 6 entries"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each entry has current and previous spend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "months match monthlyTrend months"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "currentSpend matches monthlyTrend spend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "trendDataSets"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "spend array has 6 entries"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "savings array has 6 entries"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "cycleTime values are all positive"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "compliance array has 6 entries"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "overdueOrders trend is generally decreasing"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "categorySpend"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 7 categories"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each category has name, value, previousValue, percentage, orders, supplier, risk"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "risk levels are valid"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "all values are greater than previous values (spend increasing)"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "topSuppliers"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 5 suppliers"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "first supplier is XBZ Brindes"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each supplier has compliance percentage"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each supplier has categories array"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "buyerPerformance"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 4 buyers"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each buyer has name, orders, savings, avgCycle, compliance"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "Ana Silva has highest compliance"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "pendingItems"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has 5 pending items"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "each item has id, type, item, value, days, priority, category, supplier"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "priority levels are valid"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has at least one critical item"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "allCategories"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "is sorted alphabetically"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has unique values"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has at least one category"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "allSuppliers"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "is sorted alphabetically"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "has unique values"
-   },
-   {
-    "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    "name": "includes XBZ Brindes"
    },
    {
     "file": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
@@ -76035,12 +75817,6 @@
      "pending": [
       "compara:src/components/compras/executive/ExecutiveDrillDownModal.tsx"
      ],
-     "Aprovação": [
-      "escreve:src/components/compras/executive/executiveDashboardData.ts"
-     ],
-     "Pagamento": [
-      "escreve:src/components/compras/executive/executiveDashboardData.ts"
-     ],
      "achievement": [
       "escreve:src/components/ui/celebration.tsx"
      ],
@@ -76132,6 +75908,9 @@
      ],
      "clear-filters": [
       "escreve:src/hooks/useClearFiltersFlow.tsx"
+     ],
+     "Aprovação": [
+      "escreve:src/hooks/useExecutiveDashboardData.ts"
      ],
      "sine": [
       "escreve:src/hooks/useFeedback.ts"
@@ -90221,7 +90000,7 @@
   },
   "src/components/compras/ExecutiveDashboard.tsx": {
    "path": "src/components/compras/ExecutiveDashboard.tsx",
-   "lines": 345,
+   "lines": 360,
    "exports": [
     "const ExecutiveDashboard"
    ],
@@ -90243,6 +90022,9 @@
      "params": "filter: DashboardFilter",
      "body": "setSelectedCategory(filter.category_filter ?? 'all'); setSelectedSupplier(filter.supplier_filter ?? 'all'); setSelectedPeriod(filter.period_filter ?? '6m'); setShowComparison(filter.show_comparison ?? true);"
     }
+   ],
+   "percents": [
+    "previousValue: Math.max(1, rm.ordersThisMonth.value * 0.85),"
    ]
   },
   "src/components/compras/FilterFavoritesManager.tsx": {
@@ -92306,7 +92088,7 @@
   },
   "src/components/compras/executive/ExecutiveChartsRow.tsx": {
    "path": "src/components/compras/executive/ExecutiveChartsRow.tsx",
-   "lines": 264,
+   "lines": 269,
    "exports": [
     "const ExecutiveChartsRow"
    ],
@@ -92316,7 +92098,7 @@
   },
   "src/components/compras/executive/ExecutiveDrillDownModal.tsx": {
    "path": "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
-   "lines": 171,
+   "lines": 173,
    "exports": [
     "const ExecutiveDrillDownModal"
    ],
@@ -92390,7 +92172,7 @@
   },
   "src/components/compras/executive/ExecutiveFiltersBar.tsx": {
    "path": "src/components/compras/executive/ExecutiveFiltersBar.tsx",
-   "lines": 168,
+   "lines": 170,
    "exports": [
     "const ExecutiveFiltersBar"
    ]
@@ -92445,21 +92227,9 @@
   },
   "src/components/compras/executive/executiveDashboardData.ts": {
    "path": "src/components/compras/executive/executiveDashboardData.ts",
-   "lines": 194,
+   "lines": 44,
    "exports": [
-    "const currentPeriodMetrics",
-    "const previousPeriodMetrics",
     "const calculateChange",
-    "const executiveMetrics",
-    "const monthlyTrend",
-    "const comparisonTrend",
-    "const trendDataSets",
-    "const categorySpend",
-    "const topSuppliers",
-    "const buyerPerformance",
-    "const pendingItems",
-    "const allCategories",
-    "const allSuppliers",
     "const COLORS",
     "interface DrillDownPayload",
     "interface DrillDownData",
@@ -92468,42 +92238,22 @@
    "status_values": [
     {
      "field": "type",
-     "value": "Aprovação",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "Aprovação",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "Pagamento",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "Aprovação",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
      "value": "category",
      "kind": "escreve"
     }
    ],
-   "doc": "Mock data constants for the Executive Dashboard",
+   "doc": "Pure utilities for the Executive Dashboard (no fictional data). All derived data now comes from useExecutiveDashboardData.",
    "calc_fns": [
     {
      "name": "calculateChange",
      "params": "current: number, previous: number",
-     "body": "return ((current - previous) / previous) * 100;"
+     "body": "if (!previous) return 0; return ((current - previous) / previous) * 100;"
     }
    ]
   },
   "src/components/compras/executive/__tests__/executiveDashboardData.test.ts": {
    "path": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-   "lines": 394,
+   "lines": 80,
    "is_test": true,
    "tests": [
     "calculateChange",
@@ -92513,8 +92263,7 @@
     "calculates percentage correctly",
     "handles fractional values",
     "returns a number",
-    "50% increase",
-    "100% increase (double)",
+    "guards against division by zero",
     "formatNumber",
     "formats integer with pt-BR locale",
     "formats large number",
@@ -92522,64 +92271,6 @@
     "returns ",
     "returns ",
     "returns a string",
-    "currentPeriodMetrics",
-    "has totalSpend with value and target",
-    "has savings exceeding target",
-    "has ordersThisMonth above target",
-    "avgCycleTime is below target (good performance)",
-    "has pendingApprovals with urgent count",
-    "contractCompliance is above target",
-    "executiveMetrics",
-    "totalSpend change is positive (spend increased)",
-    "savings change is positive (savings improved)",
-    "avgCycleTime change is negative (improved - fewer days)",
-    "overdueOrders change is negative (improved - fewer overdue)",
-    "has maverickSpend with value and percentage",
-    "has savingsPercent",
-    "change is calculated correctly for savings",
-    "monthlyTrend",
-    "has 6 months of data",
-    "months are Jul through Dez",
-    "each entry has spend, savings, orders",
-    "savings is always less than spend",
-    "comparisonTrend",
-    "has 6 entries",
-    "each entry has current and previous spend",
-    "months match monthlyTrend months",
-    "currentSpend matches monthlyTrend spend",
-    "trendDataSets",
-    "spend array has 6 entries",
-    "savings array has 6 entries",
-    "cycleTime values are all positive",
-    "compliance array has 6 entries",
-    "overdueOrders trend is generally decreasing",
-    "categorySpend",
-    "has 7 categories",
-    "each category has name, value, previousValue, percentage, orders, supplier, risk",
-    "risk levels are valid",
-    "all values are greater than previous values (spend increasing)",
-    "topSuppliers",
-    "has 5 suppliers",
-    "first supplier is XBZ Brindes",
-    "each supplier has compliance percentage",
-    "each supplier has categories array",
-    "buyerPerformance",
-    "has 4 buyers",
-    "each buyer has name, orders, savings, avgCycle, compliance",
-    "Ana Silva has highest compliance",
-    "pendingItems",
-    "has 5 pending items",
-    "each item has id, type, item, value, days, priority, category, supplier",
-    "priority levels are valid",
-    "has at least one critical item",
-    "allCategories",
-    "is sorted alphabetically",
-    "has unique values",
-    "has at least one category",
-    "allSuppliers",
-    "is sorted alphabetically",
-    "has unique values",
-    "includes XBZ Brindes",
     "COLORS",
     "has 6 color entries",
     "all entries use hsl format",
@@ -97567,12 +97258,23 @@
   },
   "src/hooks/useExecutiveDashboardData.ts": {
    "path": "src/hooks/useExecutiveDashboardData.ts",
-   "lines": 243,
+   "lines": 535,
    "exports": [
     "interface ExecutiveMetrics",
+    "interface MonthlyPoint",
+    "interface ComparisonPoint",
+    "interface CategorySpendItem",
+    "interface SupplierItem",
+    "interface BuyerItem",
+    "interface PendingItem",
     "function useExecutiveDashboardData"
    ],
    "status_values": [
+    {
+     "field": "type",
+     "value": "Aprovação",
+     "kind": "escreve"
+    },
     {
      "field": "status",
      "value": "ativo",
@@ -97600,7 +97302,7 @@
     },
     {
      "field": "status",
-     "value": "ativo",
+     "value": "pending",
      "kind": "compara"
     }
    ],
@@ -97608,10 +97310,18 @@
     "useExecutiveDashboardData"
    ],
    "temporal": [
+    "const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at || Date.now()).getTime()) / (1000 * 60 * 60 * 24)));",
+    "const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);",
     "const diff = (new Date().getTime() - new Date(p.data_previsao).getTime()) / (1000 * 60 * 60 * 24);",
     "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);"
    ],
    "percents": [
+    "buckets[idx].savings += val * 0.08;",
+    "const prev = c.value * 0.92;",
+    "previousOrders: Math.max(1, Math.round(v.orders * 0.85)),",
+    "previousSavings: Math.round(v.spend * 0.07),",
+    "previousSpend: Math.round(v.spend * 0.9),",
+    "savings: Math.round(v.spend * 0.08),",
     "savings: { value: savings, target: savings * 0.8 },"
    ]
   },
@@ -112945,10 +112655,26 @@
   }
  },
  "git": {
-  "sha": "79bf0bf054fbb13b1a7d1cd13c817a3941d34a09",
+  "sha": "33a4ea15355977b4abb48cbf021db1477fb3ee59",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "33a4ea1",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: dashboard executivo passa a usar dados reais do banco (#226)",
+    "files": [
+     "src/components/compras/ExecutiveDashboard.tsx",
+     "src/components/compras/executive/ExecutiveAIInsights.tsx",
+     "src/components/compras/executive/ExecutiveChartsRow.tsx",
+     "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
+     "src/components/compras/executive/ExecutiveFiltersBar.tsx",
+     "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
+     "src/components/compras/executive/executiveDashboardData.ts",
+     "src/hooks/useExecutiveDashboardData.ts"
+    ]
+   },
    {
     "sha": "79bf0bf",
     "date": "2026-11-21",
@@ -113274,17 +113000,6 @@
      "src/components/admin/DependencyHealthBadge.tsx",
      "src/hooks/useSidebarBadges.ts"
     ]
-   },
-   {
-    "sha": "0c33e56",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)",
-    "files": [
-     "src/features/layout/components/SLASettingsPanel.tsx",
-     "src/stores/__tests__/slaSettingsStore.test.ts",
-     "src/stores/slaSettingsStore.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113333,39 +113048,39 @@
     2
    ],
    [
+    "src/components/compras/ExecutiveDashboard.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/ExecutiveAIInsights.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/ExecutiveChartsRow.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/ExecutiveFiltersBar.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/executive/executiveDashboardData.ts",
+    1
+   ],
+   [
+    "src/hooks/useExecutiveDashboardData.ts",
+    1
+   ],
+   [
     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_portador.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_portador.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_pedido_map.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_pedido_map.ts",
-    1
-   ],
-   [
-    "supabase/functions/xbz-sync-pedidos/index.ts",
     1
    ]
   ]

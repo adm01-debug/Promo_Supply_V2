@@ -898,7 +898,7 @@
     "ExecutiveChartsRow"
    ],
    "export_default": null,
-   "linhas": 264,
+   "linhas": 269,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -912,7 +912,7 @@
     "ExecutiveDrillDownModal"
    ],
    "export_default": null,
-   "linhas": 171,
+   "linhas": 173,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -926,7 +926,7 @@
     "ExecutiveFiltersBar"
    ],
    "export_default": null,
-   "linhas": 168,
+   "linhas": 170,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1012,7 +1012,7 @@
     "ExecutiveDashboard"
    ],
    "export_default": null,
-   "linhas": 345,
+   "linhas": 360,
    "dominio": "components/compras",
    "hooks_locais": [
     "useClearFiltersFlow",

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: dashboard executivo passa a usar dados reais do banco (#226)",
    "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)",
    "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)",
    "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)",
-   "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)",
-   "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)"
+   "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)"
   ]
  },
  "pr_template": null,

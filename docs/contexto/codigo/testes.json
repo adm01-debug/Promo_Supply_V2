@@ -435,11 +435,11 @@
   {
    "arquivo": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
    "tipo": "unit",
-   "linhas": 394,
+   "linhas": 80,
    "testa": [
     "src/components/compras/executive/executiveDashboardData.ts"
    ],
-   "casos": 64
+   "casos": 16
   },
   {
    "arquivo": "src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts",
