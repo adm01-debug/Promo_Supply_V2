@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
-import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
+import { normalizeBusca, type XbzPermissions, type XbzPortador } from '@/pages/catalogo-xbz/xbzHelpers';
 
 /**
  * Tempo máximo (ms) que o cliente espera pelo `xbz-proxy`. O portal da XBZ é
@@ -27,6 +27,7 @@ const IDEMPOTENT_ACTIONS = new Set<string>([
   'entregaTipos',
   'pagamentoTipos',
   'credentialsStatus',
+  'portadorCarregar',
 ]);
 
 /** Tentativas extras (além da inicial) e base do backoff exponencial. */
@@ -493,6 +494,36 @@ export function useXbzIntegration() {
     [run],
   );
 
+  // -------------------------------------------------------------- portador
+  /** Portador ativo na XBZ ou `null` (a XBZ responde 204 quando não há nenhum). */
+  const getPortador = useCallback(
+    () => run<XbzPortador | null>('portadorCarregar', {}, { silent: true }),
+    [run],
+  );
+
+  /**
+   * Cadastra o motorista/placa para retirada; a XBZ revoga o anterior automaticamente.
+   * A XBZ pode responder com corpo vazio (`data: null`) — por isso o sucesso é
+   * medido pelo envelope, não pelo `data`. Devolve `true` em sucesso.
+   */
+  const autorizarPortador = useCallback(
+    async (p: { nome: string; rg: string; cpf: string; placa: string; detalhes: string }) => {
+      const envelope = await runEnvelope<XbzPortador | null>('portadorAutorizar', p);
+      if (envelope) toast.success('Portador autorizado na XBZ');
+      return envelope !== null;
+    },
+    [runEnvelope],
+  );
+
+  const revogarPortador = useCallback(
+    async () => {
+      const envelope = await runEnvelope<unknown>('portadorRevogar');
+      if (envelope) toast.success('Portador revogado na XBZ');
+      return envelope !== null;
+    },
+    [runEnvelope],
+  );
+
   const getVendedor = useCallback(
     () => run<{ nomeExibicao?: string; telefone?: string; whatsapp?: string; email?: string }>('vendedor'),
     [run],
@@ -608,6 +639,9 @@ export function useXbzIntegration() {
     login,
     getDashboard,
     getPessoaToken,
+    getPortador,
+    autorizarPortador,
+    revogarPortador,
     getVendedor,
     getPedidos,
     cancelarPedido,

@@ -71,9 +71,19 @@ function buildUrl(path: string, params: Record<string, QueryValue | QueryValue[]
   return url.toString();
 }
 
+interface RequestOptions {
+  /**
+   * Tolerante a corpo vazio (HTTP 204 → `null`) e a texto puro (vira `{ message }`).
+   * Usado pelo controller `expedicaoautorizacao`, que devolve 204 sem portador e
+   * texto no `Revogar`.
+   */
+  loose?: boolean;
+}
+
 async function request<T>(
   url: string,
   init: RequestInit = {},
+  opts: RequestOptions = {},
 ): Promise<XbzResult<T>> {
   if (!breaker.canRequest()) throw new XbzCircuitOpenError();
 
@@ -113,10 +123,15 @@ async function request<T>(
   breaker.recordSuccess();
 
   let data: T;
-  try {
-    data = text ? JSON.parse(text) as T : ({} as T);
-  } catch {
-    throw new XbzError(502, "Resposta da XBZ não é JSON válido", text.slice(0, 300));
+  if (!text.trim()) {
+    data = (opts.loose ? null : {}) as T;
+  } else {
+    try {
+      data = JSON.parse(text) as T;
+    } catch {
+      if (!opts.loose) throw new XbzError(502, "Resposta da XBZ não é JSON válido", text.slice(0, 300));
+      data = { message: text.trim().slice(0, 500) } as T;
+    }
   }
 
   return { data, status: res.status, stockConflict };
@@ -344,6 +359,54 @@ export function xbzCarrinhoWrite<T = unknown>(
     method,
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
+}
+
+// -------------------------------------------------- /api/expedicaoautorizacao/
+// Cadastro antecipado do portador (motorista/placa) para retirada. Substitui o
+// token de retirada (`GetPessoaToken`) a partir de 23/11/2026. 1 portador ativo
+// por cliente: `Autorizar` revoga o anterior automaticamente.
+
+export interface XbzPortadorInput {
+  MotoristaNome: string;
+  MotoristaRg: string;
+  /** Só dígitos (11). */
+  MotoristaCpf: string;
+  /** Normalizada: ABC1234 (antiga) ou ABC1D23 (Mercosul). */
+  VeiculoPlaca: string;
+  Detalhes: string;
+}
+
+/** Como a XBZ devolve o portador (camelCase no `Carregar`). */
+export interface XbzPortadorRecord {
+  motoristaNome?: string;
+  motoristaRg?: string;
+  motoristaCpf?: string;
+  veiculoPlaca?: string;
+  detalhes?: string;
+  cadastroData?: string;
+  [key: string]: unknown;
+}
+
+function expedicaoUrl(acao: string, c: XbzPortalCredentials) {
+  return buildUrl(`/api/expedicaoautorizacao/${acao}`, carrinhoAuth(c));
+}
+
+/** 200 com o portador ativo ou 204 (→ `data: null`) quando não há nenhum. */
+export function xbzPortadorCarregar(c: XbzPortalCredentials) {
+  return request<XbzPortadorRecord | null>(expedicaoUrl("Carregar", c), {}, { loose: true });
+}
+
+export function xbzPortadorAutorizar(c: XbzPortalCredentials, p: XbzPortadorInput) {
+  return request<XbzPortadorRecord | null>(
+    expedicaoUrl("Autorizar", c),
+    { method: "POST", body: JSON.stringify(p) },
+    { loose: true },
+  );
+}
+
+/** Revoga todas as autorizações do cliente; a XBZ responde texto. */
+export function xbzPortadorRevogar(c: XbzPortalCredentials) {
+  return request<{ message?: string } | null>(expedicaoUrl("Revogar", c), { method: "DELETE" }, { loose: true });
 }
 
 /** Cancela um pedido. Desde nov/2026 o portal usa **PUT** (v5 documentava GET → 405). */

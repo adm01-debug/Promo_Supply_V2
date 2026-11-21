@@ -5,8 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, Truck } from 'lucide-react';
 import { useXbzIntegration, type XbzPedidoRaw } from '@/hooks/useXbzIntegration';
+import { XbzPortadorDialog } from './XbzPortadorDialog';
 import {
   XBZ_FILTROS_FINANCEIROS, XBZ_PERIODOS, formatBRL, formatXbzDate,
   pagamentoStatusPedido, statusLogisticoLabel,
@@ -14,11 +15,14 @@ import {
 
 interface XbzPedidosTabProps {
   showPrices: boolean;
+  /** Pode cadastrar/revogar o portador de retirada (exige papel admin/coordinator no proxy). */
+  canManagePortador?: boolean;
 }
 
-export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
+export function XbzPedidosTab({ showPrices, canManagePortador = false }: XbzPedidosTabProps) {
   const { loading, getPedidos } = useXbzIntegration();
   const [pedidos, setPedidos] = useState<XbzPedidoRaw[]>([]);
+  const [portadorOpen, setPortadorOpen] = useState(false);
   const [periodo, setPeriodo] = useState(1);
   const [statusFinanceiro, setStatusFinanceiro] = useState(0);
   const [numero, setNumero] = useState('');
@@ -45,10 +49,21 @@ export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
             {totais.total} pedidos • {totais.pagos} pagos • {totais.pendentes} pendentes
           </CardDescription>
         </div>
-        <Button variant="outline" size="sm" onClick={load} disabled={loading} aria-label="Atualizar pedidos XBZ">
-          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />}
-          Atualizar
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPortadorOpen(true)}
+            aria-label="Portador de retirada na XBZ"
+          >
+            <Truck className="mr-2 h-4 w-4" aria-hidden="true" />
+            Portador de retirada
+          </Button>
+          <Button variant="outline" size="sm" onClick={load} disabled={loading} aria-label="Atualizar pedidos XBZ">
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />}
+            Atualizar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-4">
@@ -122,6 +137,8 @@ export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
           </TableBody>
         </Table>
       </CardContent>
+
+      <XbzPortadorDialog open={portadorOpen} onOpenChange={setPortadorOpen} canManage={canManagePortador} />
     </Card>
   );
 }

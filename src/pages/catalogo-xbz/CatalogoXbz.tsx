@@ -126,7 +126,7 @@ const CatalogoXbz = () => {
               </TabsContent>
 
               <TabsContent value="pedidos">
-                <XbzPedidosTab showPrices={showPrices} />
+                <XbzPedidosTab showPrices={showPrices} canManagePortador={canGenerateOrders} />
               </TabsContent>
             </Tabs>
 
