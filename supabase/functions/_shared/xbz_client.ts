@@ -346,6 +346,11 @@ export function xbzCarrinhoWrite<T = unknown>(
   });
 }
 
+/** Cancela um pedido. Desde nov/2026 o portal usa **PUT** (v5 documentava GET → 405). */
+export function xbzCancelarPedido(c: XbzPortalCredentials, pedidoNumero: string) {
+  return xbzCarrinhoWrite<unknown>("CancelarPedido", "PUT", c, undefined, { _pedido_numero: pedidoNumero });
+}
+
 // ------------------------------------------------------------- normalização
 
 /** Converte datas da XBZ tratando a sentinela 2000-01-01 como null. */

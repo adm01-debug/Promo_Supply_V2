@@ -95,18 +95,26 @@ export interface XbzDashboard {
   qtdProntoParaRetirada?: number;
 }
 
+/** Linha do `consultaPedidos` (80 campos, 1 por item — DOCS/INTEGRACOES/XBZ.md §4.2). */
 export interface XbzPedidoRaw {
   pedidoNumero?: string;
+  /** "P… (OC: …)" — usar `pedidoNumero`. */
   numero?: string;
-  ordemDeCompra?: string;
+  numeroPedidoInternoCliente?: string;
   dataEmissao?: string;
   idStatus?: number;
   statusLogistico?: string;
   idLoteDebitoStatus?: number;
   loteDebitoStatusCliente?: string;
-  pedidoValorTotal?: number;
+  /** Boolean direto (nov/2026); antes só por `idLoteDebitoStatus` 2/3. */
+  pago?: boolean;
+  valor?: number;
+  valorProdutos?: number;
   produtoNome?: string;
-  quantidade?: number;
+  produtoCodigoSistema?: string;
+  pedidoItemQuantidade?: number;
+  nfNumero?: string;
+  prontoParaRetirada?: boolean;
   [key: string]: unknown;
 }
 

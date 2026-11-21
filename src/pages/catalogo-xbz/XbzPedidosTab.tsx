@@ -9,7 +9,7 @@ import { Loader2, RefreshCw } from 'lucide-react';
 import { useXbzIntegration, type XbzPedidoRaw } from '@/hooks/useXbzIntegration';
 import {
   XBZ_FILTROS_FINANCEIROS, XBZ_PERIODOS, formatBRL, formatXbzDate,
-  pagamentoStatus, statusLogisticoLabel,
+  pagamentoStatusPedido, statusLogisticoLabel,
 } from './xbzHelpers';
 
 interface XbzPedidosTabProps {
@@ -31,8 +31,8 @@ export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
   useEffect(() => { void load(); }, [load]);
 
   const totais = useMemo(() => {
-    const pagos = pedidos.filter((p) => pagamentoStatus(p.idLoteDebitoStatus) === 'pago').length;
-    const pendentes = pedidos.filter((p) => pagamentoStatus(p.idLoteDebitoStatus) === 'pendente').length;
+    const pagos = pedidos.filter((p) => pagamentoStatusPedido(p) === 'pago').length;
+    const pendentes = pedidos.filter((p) => pagamentoStatusPedido(p) === 'pendente').length;
     return { pagos, pendentes, total: pedidos.length };
   }, [pedidos]);
 
@@ -95,7 +95,7 @@ export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
           </TableHeader>
           <TableBody>
             {pedidos.map((p, index) => {
-              const status = pagamentoStatus(p.idLoteDebitoStatus);
+              const status = pagamentoStatusPedido(p);
               return (
                 <TableRow key={String(p.pedidoNumero ?? p.numero ?? index)}>
                   <TableCell className="font-medium">{String(p.pedidoNumero ?? p.numero ?? '—')}</TableCell>
@@ -107,7 +107,7 @@ export function XbzPedidosTab({ showPrices }: XbzPedidosTabProps) {
                     </Badge>
                   </TableCell>
                   {showPrices ? (
-                    <TableCell className="text-right">{formatBRL(Number(p.pedidoValorTotal ?? NaN))}</TableCell>
+                    <TableCell className="text-right">{formatBRL(typeof p.valor === 'number' ? p.valor : null)}</TableCell>
                   ) : null}
                 </TableRow>
               );
