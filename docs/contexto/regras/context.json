@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
+  "sha": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 16:12 UTC",
+  "generated_at": "2026-11-21 17:08 UTC",
   "files_total": 1273,
   "code_files": 1114,
-  "code_lines": 192106,
+  "code_lines": 192109,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e092bb2952980d7a",
+ "facts_hash": "43d872a0d3e083fd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35366,7 +35366,7 @@
   {
    "module": "supabase/functions",
    "files": 88,
-   "lines": 15649,
+   "lines": 15652,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -41892,6 +41892,10 @@
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
     "text": "* Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
+    "text": "vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge"
    },
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -106910,7 +106914,7 @@
   },
   "supabase/functions/_shared/external-bridge-allowlist.ts": {
    "path": "supabase/functions/_shared/external-bridge-allowlist.ts",
-   "lines": 100,
+   "lines": 103,
    "exports": [
     "const ALLOWED_TABLES",
     "const ALLOWED_RPCS",
@@ -106936,6 +106940,7 @@
    ],
    "rule_comments": [
     "* Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra",
+    "vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge",
     "Limite máximo por chamada — evita dump silencioso. */",
     "Resultado da validação; se `ok=false`, `reason` explica o motivo. */"
    ],
@@ -112800,10 +112805,19 @@
   }
  },
  "git": {
-  "sha": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
+  "sha": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5f273a0",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa",
+    "files": [
+     "supabase/functions/_shared/external-bridge-allowlist.ts"
+    ]
+   },
    {
     "sha": "b30b4cd",
     "date": "2026-11-21",
@@ -113126,24 +113140,12 @@
      "src/services/rlsAuditService.ts",
      "supabase/functions/run-audit/index.ts"
     ]
-   },
-   {
-    "sha": "2bfc15b",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ui): conecta FULL REPORT, GERAR PEDIDO PREDITIVO, chevron e ABRIR CHAMADO a rotas/canal reais (#202)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/components/compras/SupplierIntelligenceConsole.tsx",
-     "src/pages/relatorios/Relatorios.tsx",
-     "src/pages/relatorios/RelatoriosCharts.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    12
+    11
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
@@ -113186,6 +113188,10 @@
     2
    ],
    [
+    "supabase/functions/_shared/external-bridge-allowlist.ts",
+    1
+   ],
+   [
     "AGENTS.md",
     1
    ],
@@ -113215,10 +113221,6 @@
    ],
    [
     "src/features/layout/components/UserMenu.tsx",
-    1
-   ],
-   [
-    ".github/workflows/main.yml",
     1
    ]
   ]

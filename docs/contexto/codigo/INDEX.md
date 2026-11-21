@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b30b4cda12d55e54b0b4a366faf2c58052ede759` (2026-11-21T13:05:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f273a02dbaaff8c2f4fc68c0f43b3db794220ab` (2026-11-21T14:07:28-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1272 |
 | arquivos_codigo | 793 |
-| linhas_codigo | 166023 |
+| linhas_codigo | 166026 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
 - 2026-11-21 `b30b4cd` docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)
 - 2026-11-21 `a441c3d` chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)
 - 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `a922396` chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)
 - 2026-11-21 `4bd5264` chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)
 - 2026-11-21 `2aeecf1` chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)
-- 2026-11-21 `7b6d6f8` docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

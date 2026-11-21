@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b30b4cda12` · branch `main` · 2026-11-21 16:12 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f273a02db` · branch `main` · 2026-11-21 17:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2593,6 +2593,7 @@ _nenhum item encontrado_
 | Used for automated permission validation. | `supabase/functions/_shared/contracts.ts` |
 | Non-blocking — log but never throw; heartbeat failure must not kill the cron run. | `supabase/functions/_shared/cronHealth.ts` |
 | * Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra | `supabase/functions/_shared/external-bridge-allowlist.ts` |
+| vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | Limite máximo por chamada — evita dump silencioso. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | Resultado da validação; se `ok=false`, `reason` explica o motivo. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | 1. Missing required fields | `supabase/functions/_shared/fuzzer.ts` |

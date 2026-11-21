@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
+  "commit": "5f273a02dbaaff8c2f4fc68c0f43b3db794220ab",
   "branch": "main",
-  "data_commit": "2026-11-21T13:05:05-03:00",
+  "data_commit": "2026-11-21T14:07:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5f273a0",
+    "data": "2026-11-21",
+    "assunto": "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa"
+   },
    {
     "sha": "b30b4cd",
     "data": "2026-11-21",
@@ -126,11 +131,6 @@
     "sha": "271df27",
     "data": "2026-11-20",
     "assunto": "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)"
-   },
-   {
-    "sha": "01db1d0",
-    "data": "2026-11-20",
-    "assunto": "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)"
    }
   ],
   "arquivos_mudados_7d": 204,
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 196
+    "commits": 197
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1272,
   "arquivos_codigo": 793,
-  "linhas_codigo": 166023,
+  "linhas_codigo": 166026,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -484,7 +484,7 @@
   },
   "supabase/functions": {
    "arquivos": 88,
-   "linhas": 15649
+   "linhas": 15652
   },
   "tailwind.config.ts": {
    "arquivos": 1,

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa",
    "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)",
    "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
    "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)",
-   "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)",
-   "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)"
+   "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)"
   ]
  },
  "pr_template": null,
