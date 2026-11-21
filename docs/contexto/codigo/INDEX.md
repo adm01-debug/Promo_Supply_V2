@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `33a4ea15355977b4abb48cbf021db1477fb3ee59` (2026-11-21T11:39:16-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ad13343425a7c30451b122e1926fc7bea5f4dcb4` (2026-11-21T11:53:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1268 |
 | arquivos_codigo | 791 |
-| linhas_codigo | 165747 |
+| linhas_codigo | 165751 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -323,7 +323,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
 - scripts_orfaos: 0
 - arquivos_nao_lidos_por_tamanho: 0
-- env_usadas_nao_declaradas: 0
+- env_usadas_nao_declaradas: 1 — ex.: VITE_VAPID_PUBLIC_KEY
 - ciclos_de_import: 2
 - possiveis_segredos_no_codigo: 3 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/pg.mjs:51
 
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
 - 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
 - 2026-11-21 `79bf0bf` feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)
 - 2026-11-21 `38c50e5` fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `77024d9` fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)
 - 2026-11-21 `a09a77c` docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)
 - 2026-11-21 `7598400` fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)
-- 2026-11-21 `d2b3b51` chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

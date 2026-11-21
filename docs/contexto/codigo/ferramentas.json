@@ -600,7 +600,8 @@
   ],
   "usadas_no_front": [
    "VITE_SUPABASE_PUBLISHABLE_KEY",
-   "VITE_SUPABASE_URL"
+   "VITE_SUPABASE_URL",
+   "VITE_VAPID_PUBLIC_KEY"
   ],
   "usadas_nas_edges": [
    "ALERT_EMAIL_FROM",
@@ -651,7 +652,9 @@
    "SUPABASE_PROJECT_REF",
    "SUPABASE_SNAPSHOT_PUBLICACAO"
   ],
-  "usadas_mas_nao_declaradas": [],
+  "usadas_mas_nao_declaradas": [
+   "VITE_VAPID_PUBLIC_KEY"
+  ],
   "secrets_em_workflows": [
    "E2E_TEST_EMAIL",
    "E2E_TEST_PASSWORD",

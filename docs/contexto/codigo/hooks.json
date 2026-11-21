@@ -1765,7 +1765,7 @@
    "hooks_exportados": [
     "useRealPushNotifications"
    ],
-   "linhas": 483,
+   "linhas": 487,
    "dominio": "hooks",
    "tabelas": [
     "notification_preferences",

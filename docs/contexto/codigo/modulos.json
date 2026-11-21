@@ -586,7 +586,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -1078,7 +1079,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -2094,7 +2096,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -2329,7 +2332,7 @@
    "modulo": "hooks",
    "arquivos": 61,
    "testes": 0,
-   "linhas": 11192,
+   "linhas": 11196,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2558,7 +2561,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -4088,7 +4092,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -4300,7 +4305,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -4569,7 +4575,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -5621,7 +5628,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -5899,7 +5907,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -6285,7 +6294,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -6501,7 +6511,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -7024,7 +7035,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [
@@ -7510,7 +7522,8 @@
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    "VITE_SUPABASE_URL"
+    "VITE_SUPABASE_URL",
+    "VITE_VAPID_PUBLIC_KEY"
    ],
    "flags": [],
    "papeis": [

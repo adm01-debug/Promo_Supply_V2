@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "33a4ea15355977b4abb48cbf021db1477fb3ee59",
+  "commit": "ad13343425a7c30451b122e1926fc7bea5f4dcb4",
   "branch": "main",
-  "data_commit": "2026-11-21T11:39:16-03:00",
+  "data_commit": "2026-11-21T11:53:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ad13343",
+    "data": "2026-11-21",
+    "assunto": "fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)"
+   },
    {
     "sha": "33a4ea1",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "8102f2f",
     "data": "2026-11-20",
     "assunto": "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)"
-   },
-   {
-    "sha": "a0837ea",
-    "data": "2026-11-20",
-    "assunto": "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)"
    }
   ],
-  "arquivos_mudados_7d": 198,
+  "arquivos_mudados_7d": 199,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 189
+    "commits": 190
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1268,
   "arquivos_codigo": 791,
-  "linhas_codigo": 165747,
+  "linhas_codigo": 165751,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -432,7 +432,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12729
+   "linhas": 12733
   },
   "src/i18n": {
    "arquivos": 1,
@@ -784,7 +784,9 @@
   ],
   "scripts_orfaos": [],
   "arquivos_nao_lidos_por_tamanho": [],
-  "env_usadas_nao_declaradas": [],
+  "env_usadas_nao_declaradas": [
+   "VITE_VAPID_PUBLIC_KEY"
+  ],
   "ciclos_de_import": 2,
   "possiveis_segredos_no_codigo": [
    "scripts/ci/inventario-types/banco.unit.mjs:18",

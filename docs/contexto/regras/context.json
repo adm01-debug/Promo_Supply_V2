@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "33a4ea15355977b4abb48cbf021db1477fb3ee59",
+  "sha": "ad13343425a7c30451b122e1926fc7bea5f4dcb4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 14:39 UTC",
+  "generated_at": "2026-11-21 14:53 UTC",
   "files_total": 1269,
   "code_files": 1111,
-  "code_lines": 191724,
+  "code_lines": 191729,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7d91940cc40989af",
+ "facts_hash": "1dddb1356b1cc19f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34002,7 +34002,7 @@
   {
    "module": "src",
    "files": 3,
-   "lines": 174,
+   "lines": 175,
    "tables": [],
    "exports": [
     "App.tsx: App"
@@ -34542,7 +34542,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12729,
+   "lines": 12733,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -38337,6 +38337,9 @@
     "supabase/functions/tests/integration_suite.ts",
     "supabase/functions/workflow-engine/fuzz.test.ts",
     "tests-rls/rls-isolation.test.ts"
+   ],
+   "VITE_VAPID_PUBLIC_KEY": [
+    "src/hooks/useRealPushNotifications.ts"
    ],
    "XBZ_ENCRYPTION_KEY": [
     "supabase/functions/_shared/xbz_crypto.ts"
@@ -88737,7 +88740,7 @@
   },
   "src/vite-env.d.ts": {
    "path": "src/vite-env.d.ts",
-   "lines": 28,
+   "lines": 29,
    "env": [
     "VITE_SUPABASE_URL"
    ],
@@ -98564,7 +98567,7 @@
   },
   "src/hooks/useRealPushNotifications.ts": {
    "path": "src/hooks/useRealPushNotifications.ts",
-   "lines": 483,
+   "lines": 487,
    "exports": [
     "interface Notification",
     "interface NotificationPreferences",
@@ -98618,6 +98621,9 @@
      "user_id"
     ]
    },
+   "env": [
+    "VITE_VAPID_PUBLIC_KEY"
+   ],
    "errors": [
     "Não foi possível salvar as preferências."
    ],
@@ -112655,10 +112661,20 @@
   }
  },
  "git": {
-  "sha": "33a4ea15355977b4abb48cbf021db1477fb3ee59",
+  "sha": "ad13343425a7c30451b122e1926fc7bea5f4dcb4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ad13343",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)",
+    "files": [
+     "src/hooks/useRealPushNotifications.ts",
+     "src/vite-env.d.ts"
+    ]
+   },
    {
     "sha": "33a4ea1",
     "date": "2026-11-21",
@@ -112989,23 +113005,12 @@
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/usePurchaseHistory.ts"
     ]
-   },
-   {
-    "sha": "044001f",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/components/admin/DependencyHealthBadge.tsx",
-     "src/hooks/useSidebarBadges.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    16
+    15
    ],
    [
     "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -113048,6 +113053,14 @@
     2
    ],
    [
+    "src/hooks/useRealPushNotifications.ts",
+    1
+   ],
+   [
+    "src/vite-env.d.ts",
+    1
+   ],
+   [
     "src/components/compras/ExecutiveDashboard.tsx",
     1
    ],
@@ -113073,14 +113086,6 @@
    ],
    [
     "src/components/compras/executive/executiveDashboardData.ts",
-    1
-   ],
-   [
-    "src/hooks/useExecutiveDashboardData.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/CatalogoXbz.tsx",
     1
    ]
   ]
