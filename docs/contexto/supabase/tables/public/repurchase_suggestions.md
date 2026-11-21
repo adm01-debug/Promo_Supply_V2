@@ -30,6 +30,7 @@
 | 12 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 13 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 14 | `tenant_id` | `uuid` | não | `current_tenant_id()` |  |  |
+| 15 | `pim_product_id` | `uuid` | sim |  |  |  |
 
 
 ## Constraints

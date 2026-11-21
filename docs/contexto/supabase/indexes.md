@@ -359,6 +359,7 @@ Uso e tamanho em `stats.md`.
 | public.payment_history | idx_payment_history_tenant_id | btree | tenant_id | não | sim |  |
 | public.payment_history | payment_history_pkey | btree | id | sim | sim |  |
 | public.pedido_itens | idx_pedido_itens_pedido_id | btree | pedido_id | não | sim |  |
+| public.pedido_itens | idx_pedido_itens_pim_product_id | btree | pim_product_id | não | sim |  |
 | public.pedido_itens | idx_pedido_itens_produto_id | btree | produto_id | não | sim |  |
 | public.pedido_itens | idx_pedido_itens_tenant | btree | tenant_id | não | sim |  |
 | public.pedido_itens | idx_pedido_itens_unspsc | btree | unspsc_code | não | sim |  |

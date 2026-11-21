@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)",
+   "chore(script): reconcilia produtos locais com o PIM (#244)",
    "fix(partitions): nao tratar tabela nao particionada como falha (#243)",
    "fix(types): regenera types.ts com as colunas PIM de compras (#245)",
-   "feat: compra grava referencia do PIM e congela o item (#242)",
-   "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)",
-   "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)"
+   "feat: compra grava referencia do PIM e congela o item (#242)"
   ]
  },
  "pr_template": null,

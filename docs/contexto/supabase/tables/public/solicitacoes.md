@@ -45,6 +45,8 @@
 | 27 | `cost_center_id` | `uuid` | sim |  |  |  |
 | 28 | `tenant_id` | `uuid` | não |  |  |  |
 | 29 | `produto_id` | `uuid` | sim |  |  |  |
+| 30 | `pim_product_id` | `uuid` | sim |  |  |  |
+| 31 | `pim_variant_id` | `uuid` | sim |  |  |  |
 
 
 ## Constraints

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3067e1139f24aab062f2c19827178ad3ab0c4b07",
+  "commit": "64c1922826120b62141e86e9abe7819fe5c82437",
   "branch": "main",
-  "data_commit": "2026-11-21T15:52:44-03:00",
+  "data_commit": "2026-11-21T16:07:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "64c1922",
+    "data": "2026-11-21",
+    "assunto": "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)"
+   },
+   {
+    "sha": "621a86c",
+    "data": "2026-11-21",
+    "assunto": "chore(script): reconcilia produtos locais com o PIM (#244)"
+   },
    {
     "sha": "3067e11",
     "data": "2026-11-21",
@@ -121,19 +131,9 @@
     "sha": "3db64df",
     "data": "2026-11-21",
     "assunto": "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)"
-   },
-   {
-    "sha": "a922396",
-    "data": "2026-11-21",
-    "assunto": "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)"
-   },
-   {
-    "sha": "4bd5264",
-    "data": "2026-11-21",
-    "assunto": "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)"
    }
   ],
-  "arquivos_mudados_7d": 215,
+  "arquivos_mudados_7d": 218,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -242,11 +242,11 @@
     "mudancas": 6
    },
    {
-    "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
+    "arquivo": "scripts/automation.config.json",
+    "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
+    "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 5
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 208
+    "commits": 210
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1279,
-  "arquivos_codigo": 796,
-  "linhas_codigo": 166425,
+  "arquivos_total": 1282,
+  "arquivos_codigo": 797,
+  "linhas_codigo": 166793,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -334,8 +334,8 @@
   "cron_jobs": 71,
   "testes": 185,
   "workflows": 13,
-  "scripts": 49,
-  "docs_md": 90
+  "scripts": 50,
+  "docs_md": 92
  },
  "por_pasta": {
   "eslint.config.js": {
@@ -393,6 +393,10 @@
   "scripts/maintenance": {
    "arquivos": 4,
    "linhas": 3045
+  },
+  "scripts/migracao": {
+   "arquivos": 1,
+   "linhas": 368
   },
   "scripts/realtime-audit.ts": {
    "arquivos": 1,
@@ -651,7 +655,7 @@
  ],
  "qualidade": {
   "any": 92,
-  "console_log": 80,
+  "console_log": 85,
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,

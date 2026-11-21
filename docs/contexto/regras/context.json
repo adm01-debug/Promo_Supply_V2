@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3067e1139f24aab062f2c19827178ad3ab0c4b07",
+  "sha": "64c1922826120b62141e86e9abe7819fe5c82437",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:53 UTC",
-  "files_total": 1280,
-  "code_files": 1119,
-  "code_lines": 192614,
+  "generated_at": "2026-11-21 19:09 UTC",
+  "files_total": 1283,
+  "code_files": 1120,
+  "code_lines": 192982,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "85e93b9a92156a05",
+ "facts_hash": "9903d3c4c4a02341",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -266,7 +266,7 @@
    ".ts": 376,
    ".tsx": 348,
    ".sql": 321,
-   ".mjs": 66,
+   ".mjs": 67,
    ".py": 5,
    ".js": 3
   },
@@ -33955,8 +33955,8 @@
   },
   {
    "module": "scripts",
-   "files": 78,
-   "lines": 28842,
+   "files": 79,
+   "lines": 29210,
    "tables": [
     "a",
     "a_tabela",
@@ -34167,6 +34167,7 @@
     "scripts/maintenance/maintenance.unit.mjs",
     "scripts/maintenance/run.mjs",
     "scripts/maintenance/typecheck.mjs",
+    "scripts/migracao/reconcilia-produtos-pim.mjs",
     "scripts/regras_negocio/generate.py",
     "scripts/regras_negocio/indice.py",
     "scripts/regras_negocio/test_generate.py",
@@ -39957,6 +39958,14 @@
    {
     "file": "scripts/maintenance/run.mjs",
     "msg": "pending_patch"
+   },
+   {
+    "file": "scripts/migracao/reconcilia-produtos-pim.mjs",
+    "msg": "falha ao consultar ${tabela} em ${baseUrl}: ${resp.status} ${resp.statusText} - ${await resp.text()}"
+   },
+   {
+    "file": "scripts/migracao/reconcilia-produtos-pim.mjs",
+    "msg": "variaveis de ambiente ausentes: ${faltando.join("
    },
    {
     "file": "scripts/supabase_snapshot/test_snapshot.py",
@@ -79581,6 +79590,7 @@
    "scripts/ci/check-bundle-secrets.unit.mjs",
    "scripts/ci/scripts-operacionais.unit.mjs",
    "scripts/inventario/gerar-banco.mjs",
+   "scripts/migracao/reconcilia-produtos-pim.mjs",
    "scripts/regras_negocio/generate.py",
    "scripts/regras_negocio/test_generate.py",
    "scripts/rls-audit.ts",
@@ -88507,6 +88517,19 @@
    "path": "scripts/maintenance/typecheck.mjs",
    "lines": 110,
    "doc": "!/usr/bin/env node"
+  },
+  "scripts/migracao/reconcilia-produtos-pim.mjs": {
+   "path": "scripts/migracao/reconcilia-produtos-pim.mjs",
+   "lines": 368,
+   "errors": [
+    "falha ao consultar ${tabela} em ${baseUrl}: ${resp.status} ${resp.statusText} - ${await resp.text()}",
+    "variaveis de ambiente ausentes: ${faltando.join("
+   ],
+   "rule_comments": [
+    "*   Script somente leitura: NAO escreve em nenhum banco. Gera um CSV local"
+   ],
+   "doc": "!/usr/bin/env node",
+   "uses_service_role": true
   },
   "scripts/regras_negocio/generate.py": {
    "path": "scripts/regras_negocio/generate.py",
@@ -113000,10 +113023,30 @@
   }
  },
  "git": {
-  "sha": "3067e1139f24aab062f2c19827178ad3ab0c4b07",
+  "sha": "64c1922826120b62141e86e9abe7819fe5c82437",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "64c1922",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)",
+    "files": [
+     "docs/pendencias/integracao-pim-promo-supply.md"
+    ]
+   },
+   {
+    "sha": "621a86c",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(script): reconcilia produtos locais com o PIM (#244)",
+    "files": [
+     "scripts/automation.config.json",
+     "scripts/migracao/README.md",
+     "scripts/migracao/reconcilia-produtos-pim.mjs"
+    ]
+   },
    {
     "sha": "3067e11",
     "date": "2026-11-21",
@@ -113311,33 +113354,12 @@
      "src/hooks/useApprovalWorkflow.ts",
      "src/pages/aprovacoes/Aprovacoes.tsx"
     ]
-   },
-   {
-    "sha": "1b8ae1d",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)",
-    "files": [
-     "DOCS/INTEGRACOES/XBZ.md"
-    ]
-   },
-   {
-    "sha": "af0e42f",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/_ordem.md",
-     "docs/pendencias/edge-bridge.md",
-     "docs/pendencias/edge-maintain.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    8
+    7
    ],
    [
     "docs/ci/README.md",
@@ -113372,6 +113394,22 @@
     2
    ],
    [
+    "docs/pendencias/integracao-pim-promo-supply.md",
+    1
+   ],
+   [
+    "scripts/automation.config.json",
+    1
+   ],
+   [
+    "scripts/migracao/README.md",
+    1
+   ],
+   [
+    "scripts/migracao/reconcilia-produtos-pim.mjs",
+    1
+   ],
+   [
     "supabase/functions/maintain-partitions/index.ts",
     1
    ],
@@ -113397,22 +113435,6 @@
    ],
    [
     "src/pages/recebimento/recebimentoHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/recompra/RecompraInteligente.tsx",
-    1
-   ],
-   [
-    "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261121160000_pim_refs_compras.sql",
-    1
-   ],
-   [
-    ".github/workflows/provisionar-vapid.yml",
     1
    ]
   ]

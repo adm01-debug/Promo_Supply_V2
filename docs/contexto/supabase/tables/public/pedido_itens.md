@@ -30,6 +30,11 @@
 | 12 | `unspsc_code` | `text` | sim |  |  |  |
 | 13 | `status_producao` | `status_producao_enum` | sim | `'pendente'::status_producao_enum` |  |  |
 | 14 | `data_previsao_producao` | `timestamp with time zone` | sim |  |  |  |
+| 15 | `pim_product_id` | `uuid` | sim |  |  |  |
+| 16 | `pim_variant_id` | `uuid` | sim |  |  |  |
+| 17 | `codigo_fornecedor` | `text` | sim |  |  |  |
+| 18 | `ncm` | `text` | sim |  |  |  |
+| 19 | `ipi_rate` | `numeric(8,4)` | sim |  |  |  |
 
 
 ## Constraints
@@ -55,6 +60,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_pedido_itens_pedido_id | btree | pedido_id | não | sim |  | `CREATE INDEX idx_pedido_itens_pedido_id ON public.pedido_itens USING btree (pedido_id)` |
+| idx_pedido_itens_pim_product_id | btree | pim_product_id | não | sim |  | `CREATE INDEX idx_pedido_itens_pim_product_id ON public.pedido_itens USING btree (pim_product_id)` |
 | idx_pedido_itens_produto_id | btree | produto_id | não | sim |  | `CREATE INDEX idx_pedido_itens_produto_id ON public.pedido_itens USING btree (produto_id)` |
 | idx_pedido_itens_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_pedido_itens_tenant ON public.pedido_itens USING btree (tenant_id)` |
 | idx_pedido_itens_unspsc | btree | unspsc_code | não | sim |  | `CREATE INDEX idx_pedido_itens_unspsc ON public.pedido_itens USING btree (unspsc_code)` |

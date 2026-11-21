@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3067e1139f24aab062f2c19827178ad3ab0c4b07` (2026-11-21T15:52:44-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `64c1922826120b62141e86e9abe7819fe5c82437` (2026-11-21T16:07:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (724), SQL (321), Markdown (90), JavaScript (69), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (724), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1279 |
-| arquivos_codigo | 796 |
-| linhas_codigo | 166425 |
+| arquivos_total | 1282 |
+| arquivos_codigo | 797 |
+| linhas_codigo | 166793 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -50,8 +50,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | cron_jobs | 71 |
 | testes | 185 |
 | workflows | 13 |
-| scripts | 49 |
-| docs_md | 90 |
+| scripts | 50 |
+| docs_md | 92 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -342,8 +342,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (6)
+- scripts/automation.config.json (6)
 - docs/agentes/github-ci.md (5)
-- scripts/automation.config.json (5)
 - src/pages/acompanhamento/Acompanhamento.tsx (5)
 - supabase/functions/punchout-receive/index.ts (5)
 
@@ -409,10 +409,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (11), docs/pendencias (9), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (11), docs/pendencias (10), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-21 `64c1922` docs(pim): integra plano de compras-sem-catalogo com checklist (#247)
+- 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
 - 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
 - 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
 - 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
@@ -426,8 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `7ad0b03` feat(pwa): adiciona handler de push ao service worker (#234)
 - 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
 - 2026-11-21 `b30b4cd` docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)
-- 2026-11-21 `a441c3d` chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)
-- 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

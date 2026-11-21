@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3067e1139f` · branch `main` · 2026-11-21 18:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `64c1922826` · branch `main` · 2026-11-21 19:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2107,6 +2107,8 @@ _nenhum item encontrado_
 | formatter fixture failed | `scripts/maintenance/maintenance.unit.mjs` |
 | blocked_network_sandbox | `scripts/maintenance/run.mjs` |
 | pending_patch | `scripts/maintenance/run.mjs` |
+| falha ao consultar ${tabela} em ${baseUrl}: ${resp.status} ${resp.statusText} - ${await resp.text()} | `scripts/migracao/reconcilia-produtos-pim.mjs` |
+| variaveis de ambiente ausentes: ${faltando.join( | `scripts/migracao/reconcilia-produtos-pim.mjs` |
 | O teste offline não permite consultas ao banco | `scripts/supabase_snapshot/test_snapshot.py` |
 | banco indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
 | catálogo indisponível na fixture | `scripts/supabase_snapshot/test_snapshot.py` |
@@ -2326,9 +2328,7 @@ _nenhum item encontrado_
 | Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao salvar conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao sincronizar:  | `src/pages/admin/ERPConnections.tsx` |
-| Informe a URL base do ERP | `src/pages/admin/ERPConnections.tsx` |
-| Informe a credencial de acesso | `src/pages/admin/ERPConnections.tsx` |
-| … +210 linhas — lista completa em `context.json` | |
+| … +212 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

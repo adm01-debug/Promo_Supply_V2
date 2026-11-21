@@ -27,6 +27,7 @@
 | 9 | `ultimo_inventario` | `timestamp with time zone` | sim |  |  |  |
 | 10 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
 | 11 | `updated_at` | `timestamp with time zone` | sim | `now()` |  |  |
+| 12 | `pim_product_id` | `uuid` | sim |  |  |  |
 
 
 ## Constraints

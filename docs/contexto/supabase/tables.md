@@ -53,7 +53,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.erp_connections](tables/public/erp_connections.md) | table | sim | 1 | 11 | não |  |
 | [public.erp_field_mappings](tables/public/erp_field_mappings.md) | table | sim | 1 | 7 | não |  |
 | [public.erp_sync_log](tables/public/erp_sync_log.md) | table | sim | 1 | 13 | não |  |
-| [public.estoque](tables/public/estoque.md) | table | sim | 4 | 11 | não |  |
+| [public.estoque](tables/public/estoque.md) | table | sim | 4 | 12 | não |  |
 | [public.estoque_movimentacoes](tables/public/estoque_movimentacoes.md) | table | sim | 2 | 11 | não |  |
 | [public.exchange_rates](tables/public/exchange_rates.md) | table | sim | 1 | 7 | não |  |
 | [public.financial_audit_logs](tables/public/financial_audit_logs.md) | table | sim | 1 | 9 | não |  |
@@ -79,7 +79,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.pagamentos](tables/public/pagamentos.md) | table | sim | 4 | 23 | sim |  |
 | [public.password_reset_requests](tables/public/password_reset_requests.md) | table | sim | 4 | 14 | não |  |
 | [public.payment_history](tables/public/payment_history.md) | table | sim | 2 | 9 | não |  |
-| [public.pedido_itens](tables/public/pedido_itens.md) | table | sim | 3 | 14 | não |  |
+| [public.pedido_itens](tables/public/pedido_itens.md) | table | sim | 3 | 19 | não |  |
 | [public.pedidos](tables/public/pedidos.md) | table | sim | 3 | 26 | sim |  |
 | [public.penalty_escalation_config](tables/public/penalty_escalation_config.md) | table | sim | 3 | 13 | não |  |
 | [public.permissions](tables/public/permissions.md) | table | sim | 2 | 6 | não |  |
@@ -94,7 +94,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.query_telemetry](tables/public/query_telemetry.md) | table | sim | 2 | 13 | não |  |
 | [public.rate_limit_logs](tables/public/rate_limit_logs.md) | table | sim | 2 | 10 | não |  |
 | [public.receiving_checklists](tables/public/receiving_checklists.md) | table | sim | 3 | 19 | não |  |
-| [public.repurchase_suggestions](tables/public/repurchase_suggestions.md) | table | sim | 2 | 14 | não |  |
+| [public.repurchase_suggestions](tables/public/repurchase_suggestions.md) | table | sim | 2 | 15 | não |  |
 | [public.role_permissions](tables/public/role_permissions.md) | table | sim | 2 | 5 | não |  |
 | [public.saved_filters](tables/public/saved_filters.md) | table | sim | 4 | 8 | não | Filtros salvos por usuários para diferentes entidades |
 | [public.savings_tracker](tables/public/savings_tracker.md) | table | sim | 1 | 14 | não |  |
@@ -102,7 +102,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.secret_rotation_schedule](tables/public/secret_rotation_schedule.md) | table | sim | 1 | 12 | não |  |
 | [public.security_definer_baseline](tables/public/security_definer_baseline.md) | table | sim | 1 | 8 | não |  |
 | [public.security_logs](tables/public/security_logs.md) | table | sim | 2 | 9 | não |  |
-| [public.solicitacoes](tables/public/solicitacoes.md) | table | sim | 9 | 29 | sim |  |
+| [public.solicitacoes](tables/public/solicitacoes.md) | table | sim | 9 | 31 | sim |  |
 | [public.sourcing_awards](tables/public/sourcing_awards.md) | table | sim | 1 | 13 | não |  |
 | [public.sourcing_event_criteria](tables/public/sourcing_event_criteria.md) | table | sim | 1 | 8 | não |  |
 | [public.sourcing_event_lots](tables/public/sourcing_event_lots.md) | table | sim | 1 | 12 | não |  |

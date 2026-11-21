@@ -8028,6 +8028,19 @@
       },
       {
         "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_product_id",
+        "nullable": true,
+        "position": 12,
+        "schema": "public",
+        "table": "estoque",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -12396,6 +12409,71 @@
       },
       {
         "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_product_id",
+        "nullable": true,
+        "position": 15,
+        "schema": "public",
+        "table": "pedido_itens",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_variant_id",
+        "nullable": true,
+        "position": 16,
+        "schema": "public",
+        "table": "pedido_itens",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "codigo_fornecedor",
+        "nullable": true,
+        "position": 17,
+        "schema": "public",
+        "table": "pedido_itens",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "ncm",
+        "nullable": true,
+        "position": 18,
+        "schema": "public",
+        "table": "pedido_itens",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "ipi_rate",
+        "nullable": true,
+        "position": 19,
+        "schema": "public",
+        "table": "pedido_itens",
+        "type": "numeric(8,4)"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -15035,6 +15113,19 @@
       },
       {
         "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_product_id",
+        "nullable": true,
+        "position": 15,
+        "schema": "public",
+        "table": "repurchase_suggestions",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -16238,6 +16329,32 @@
         "name": "produto_id",
         "nullable": true,
         "position": 29,
+        "schema": "public",
+        "table": "solicitacoes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_product_id",
+        "nullable": true,
+        "position": 30,
+        "schema": "public",
+        "table": "solicitacoes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "pim_variant_id",
+        "nullable": true,
+        "position": 31,
         "schema": "public",
         "table": "solicitacoes",
         "type": "uuid"
@@ -36424,9 +36541,13 @@
             {
               "file": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
               "hits": 10
+            },
+            {
+              "file": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [
             "18:outbox-worker-1min",
             "113:alert-dispatcher-1min",
@@ -52772,6 +52893,20 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_pedido_itens_pedido_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "pedido_itens"
+      },
+      {
+        "columns": [
+          "pim_product_id"
+        ],
+        "definition": "CREATE INDEX idx_pedido_itens_pim_product_id ON public.pedido_itens USING btree (pim_product_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_pedido_itens_pim_product_id",
         "predicate": null,
         "schema": "public",
         "table": "pedido_itens"
