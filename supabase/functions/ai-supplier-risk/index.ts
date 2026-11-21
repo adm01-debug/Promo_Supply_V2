@@ -35,7 +35,6 @@ Deno.serve(async (req) => {
   }
 
   const logger = getLogger(req);
-
   try {
     // SECURITY: Validate user authentication
     const userId = await verifyAuthUser(req);
