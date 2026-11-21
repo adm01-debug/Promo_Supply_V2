@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ad13343425a7c30451b122e1926fc7bea5f4dcb4` (2026-11-21T11:53:04-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e2465cebde83cdcb7578ec85091fee098c011066` (2026-11-21T12:02:39-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -331,14 +331,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (27)
+- docs/pendencias/_indice.md (28)
 - package.json (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
+- .github/workflows/main.yml (9)
 - docs/prod-readiness.md (9)
-- .github/workflows/main.yml (8)
 - bun.lock (8)
+- docs/ci/README.md (8)
 - docs/pendencias/_ordem.md (8)
-- docs/ci/README.md (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (5)
@@ -411,6 +411,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
+- 2026-11-21 `9ae679b` chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)
 - 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
 - 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
 - 2026-11-21 `79bf0bf` feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)
@@ -424,8 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
 - 2026-11-21 `af0e42f` chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)
 - 2026-11-21 `77024d9` fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)
-- 2026-11-21 `a09a77c` docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)
-- 2026-11-21 `7598400` fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

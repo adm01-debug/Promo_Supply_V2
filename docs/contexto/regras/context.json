@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ad13343425a7c30451b122e1926fc7bea5f4dcb4",
+  "sha": "e2465cebde83cdcb7578ec85091fee098c011066",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 14:53 UTC",
+  "generated_at": "2026-11-21 15:03 UTC",
   "files_total": 1269,
   "code_files": 1111,
   "code_lines": 191729,
@@ -112661,10 +112661,29 @@
   }
  },
  "git": {
-  "sha": "ad13343425a7c30451b122e1926fc7bea5f4dcb4",
+  "sha": "e2465cebde83cdcb7578ec85091fee098c011066",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e2465ce",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)",
+    "files": [
+     ".github/workflows/main.yml",
+     "docs/ci/README.md"
+    ]
+   },
+   {
+    "sha": "9ae679b",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "ad13343",
     "date": "2026-11-21",
@@ -112984,33 +113003,12 @@
      "src/components/compras/BulkOperationsPreview.tsx",
      "src/components/compras/EnhancedBulkActionsBar.tsx"
     ]
-   },
-   {
-    "sha": "6de29ff",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
-   },
-   {
-    "sha": "5ae1935",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/hooks/useAccountFilters.ts",
-     "src/hooks/useBuyerPerformanceData.ts",
-     "src/hooks/usePurchaseHistory.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    15
+    14
    ],
    [
     "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -113053,6 +113051,14 @@
     2
    ],
    [
+    ".github/workflows/main.yml",
+    1
+   ],
+   [
+    "docs/ci/README.md",
+    1
+   ],
+   [
     "src/hooks/useRealPushNotifications.ts",
     1
    ],
@@ -113078,14 +113084,6 @@
    ],
    [
     "src/components/compras/executive/ExecutiveFiltersBar.tsx",
-    1
-   ],
-   [
-    "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-    1
-   ],
-   [
-    "src/components/compras/executive/executiveDashboardData.ts",
     1
    ]
   ]

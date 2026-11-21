@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)",
+   "chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)",
    "fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)",
    "feat: dashboard executivo passa a usar dados reais do banco (#226)",
-   "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)",
-   "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)",
-   "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)"
+   "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)"
   ]
  },
  "pr_template": null,
