@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     logger = new EdgeLogger("maintain-partitions", requestId);
     logger.info("Starting partition maintenance...");
 
-    const results: Array<{ table: string; result: unknown; error?: string }> = [];
+    const results: Array<{ table: string; result: unknown; error?: string; skipped?: string }> = [];
 
     for (const cfg of PARTITIONED_TABLES) {
       const { data, error } = await supabase.rpc("maintain_monthly_partitions", {
@@ -41,7 +41,16 @@ Deno.serve(async (req) => {
         p_retain_months: cfg.retainMonths,
       });
 
-      if (error) {
+      // Nenhuma tabela e particionada hoje por decisao registrada no repo
+      // (supabase/migrations/20261117230000_retencao_fonte_unica.sql:87-100).
+      // O gatilho de reavaliacao e o cron scan-particoes-semanal. Ate la,
+      // "nao particionada" e o estado esperado, nao uma falha.
+      const notPartitioned = error?.code === "42P17" || /is not partitioned/.test(error?.message ?? "");
+
+      if (notPartitioned) {
+        logger.info(`Partition maintenance skipped for ${cfg.table}: not partitioned`);
+        results.push({ table: cfg.table, result: null, skipped: error!.message });
+      } else if (error) {
         logger.error(`Partition maintenance failed for ${cfg.table}`, { error: error.message });
         results.push({ table: cfg.table, result: null, error: error.message });
       } else {
