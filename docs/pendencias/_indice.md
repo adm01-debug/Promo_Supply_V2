@@ -43,15 +43,15 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | CONCLUIDO (PR #190, merge 2026-11-20) | `ai-supplier-risk/index.ts:37-38,162` |
 | edge-push | `send-push-notification` usa VAPID (JWT ES256) + cifragem aes128gcm (RFC 8291) | CONCLUIDO | #205 / `webpush.ts` |
 | edge-audit | `run-audit` sem chamador | CONCLUIDO (PR #203, merge 2026-11-11) — painel Compliance RLS em /auditoria (admin) | run-audit/ + RlsCompliancePanel.tsx |
-| edge-maintain | `maintain-partitions` morta | PENDENTE | seed `:37` |
+| edge-maintain | (edge completa, falta cron.schedule em prod) | CONCLUIDO (refutado - nao morto; edge real em maintain-partitions/index.ts + RPC maintain_monthly_partitions) | seed :37 + 20260719000004:9 |
 | edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) â€” retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
-| edge-bridge | `external-db-bridge` sem chamador prod | PENDENTE | so `validate-bridge.ts` |
+| edge-bridge | (integracao completa, falta EXTERNAL_DB_URL/KEY em prod) | CONCLUIDO (refutado - nao morto; JWT+allowlist+rate limit em external-db-bridge/index.ts, deploy :100) | validate-bridge.ts |
 | edge-suggestion | `ai-supplier-suggestion` sem chamador em src | CONCLUIDO (PR #207, merge 2026-11-20) — AISupplierSuggestion consulta edge real com fallback honesto | AISupplierSuggestion.tsx |
 
 ## Front - hooks (L07) mortos / parciais
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| hk-dead | `useBulkOperations/useFlashHighlight/useFormDataProtection/useFormDirty/useUnsavedChangesWarning` e exports orfaos | PENDENTE | Anexo A3 :696-701 |
+| hk-dead | hooks orfaos (tree-shaken, sem barrel; remocao sem ganho de runtime) | DESCARTADO (arquivamento documentado - NAO remover; useBulkOperations ancorado por teste) | hk-dead-mortos.md |
 | hk-fuse | `useFuseSearch` inteiro morto (so `normalizeText` usado) | PENDENTE | `useFuseSearch.ts:83,225,306,329` |
 | hk-offline | `useOfflineSync` fila vazia sempre | PENDENTE | `useOfflineSync.ts:98,282` |
 | hk-dlq | `useWorkflowDLQ` sem UI de retry | PENDENTE | `useWorkflowDLQ.ts:66,111,117,122` |
