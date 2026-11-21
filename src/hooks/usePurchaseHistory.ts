@@ -105,7 +105,7 @@ export function usePurchaseHistory() {
       if (pedidoIds.length === 0) return [];
       const { data, error } = await supabase
         .from("pedido_itens")
-        .select("id, pedido_id, descricao, produto_id, quantidade, valor_unitario, valor_total, quantidade_recebida")
+        .select("id, pedido_id, descricao, pim_product_id, codigo_fornecedor, quantidade, valor_unitario, valor_total, quantidade_recebida")
         .in("pedido_id", pedidoIds);
       if (error) throw error;
       return data || [];
@@ -126,34 +126,6 @@ export function usePurchaseHistory() {
     },
     enabled,
     staleTime: 300_000,
-  });
-
-  const { data: rawProdutos } = useQuery({
-    queryKey: ["purchase-history-produtos", organizationId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("produtos")
-        .select("id, codigo, nome, categoria_id, preco_medio, unidade")
-        .eq("organization_id", organizationId!);
-      if (error) throw error;
-      return data || [];
-    },
-    enabled,
-    staleTime: 300_000,
-  });
-
-  const { data: rawCategorias } = useQuery({
-    queryKey: ["purchase-history-categorias", organizationId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("categorias")
-        .select("id, nome")
-        .eq("organization_id", organizationId!);
-      if (error) throw error;
-      return data || [];
-    },
-    enabled,
-    staleTime: 600_000,
   });
 
   const { data: rawSolicitacoes } = useQuery({
@@ -189,14 +161,10 @@ export function usePurchaseHistory() {
     const pedidos = rawPedidos || [];
     const itens = rawItens || [];
     const fornecedores = rawFornecedores || [];
-    const produtos = rawProdutos || [];
-    const categorias = rawCategorias || [];
     const solicitacoes = rawSolicitacoes || [];
     const costCenters = rawCostCenters || [];
 
     const fornMap = new Map(fornecedores.map((f) => [f.id, f]));
-    const prodMap = new Map(produtos.map((p) => [p.id, p]));
-    const catMap = new Map(categorias.map((c) => [c.id, c.nome]));
     const solMap = new Map(solicitacoes.map((s) => [s.id, s]));
     const ccMap = new Map(costCenters.map((cc) => [cc.id, cc]));
     
@@ -252,14 +220,12 @@ export function usePurchaseHistory() {
         });
       } else {
         pedItens.forEach((item) => {
-          const prod = item.produto_id ? prodMap.get(item.produto_id) : null;
-          const catName = prod?.categoria_id ? catMap.get(prod.categoria_id) || "Geral" : "Geral";
           purchaseRecords.push({
             ...baseRecord,
             id: item.id,
-            productId: item.produto_id || item.id,
-            productName: prod?.nome || item.descricao || "Produto",
-            productCategory: catName,
+            productId: item.pim_product_id || item.id,
+            productName: item.descricao || "Produto",
+            productCategory: "Geral",
             quantity: item.quantidade,
             unitPrice: Number(item.valor_unitario) || 0,
             totalPrice: Number(item.valor_total) || 0,
@@ -290,10 +256,11 @@ export function usePurchaseHistory() {
           .sort((a, b) => a.purchaseDate.localeCompare(b.purchaseDate))
           .map((r) => ({ date: r.purchaseDate.substring(0, 7), price: r.unitPrice }));
 
+        const firstRecordCodigo = (records[0] as PurchaseRecord & { codigo_fornecedor?: string | null }).codigo_fornecedor;
         return {
           id: prodId,
           name: records[0].productName,
-          sku: prodMap.get(prodId)?.codigo || prodId.substring(0, 8),
+          sku: firstRecordCodigo || prodId.substring(0, 8),
           category: records[0].productCategory,
           avgPrice: prices.length > 0 ? prices.reduce((s, p) => s + p, 0) / prices.length : 0,
           minPrice: prices.length > 0 ? Math.min(...prices) : 0,
@@ -372,7 +339,7 @@ export function usePurchaseHistory() {
     );
 
     return { purchaseRecords, productsHistory, suppliersHistory, productCategories, costCenters };
-  }, [rawPedidos, rawItens, rawFornecedores, rawProdutos, rawCategorias, rawSolicitacoes, rawCostCenters]);
+  }, [rawPedidos, rawItens, rawFornecedores, rawSolicitacoes, rawCostCenters]);
 
   return {
     ...computed,

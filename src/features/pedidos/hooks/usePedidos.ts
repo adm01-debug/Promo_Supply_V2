@@ -41,6 +41,11 @@ export interface CreatePedidoInput {
     quantidade: number;
     unidade?: string;
     valor_unitario: number;
+    pim_product_id?: string;
+    pim_variant_id?: string;
+    codigo_fornecedor?: string;
+    ncm?: string;
+    ipi_rate?: number;
   }[];
 }
 
@@ -174,6 +179,11 @@ export function usePedidos(filters?: PedidoFilters) {
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
           tenant_id: organizationId,
+          pim_product_id: item.pim_product_id ?? null,
+          pim_variant_id: item.pim_variant_id ?? null,
+          codigo_fornecedor: item.codigo_fornecedor ?? null,
+          ncm: item.ncm ?? null,
+          ipi_rate: item.ipi_rate ?? null,
         }));
         await supabase.from('pedido_itens').insert(itensToInsert);
       }

@@ -15,6 +15,11 @@ export interface OrderItem {
   quantidade_recebida: number | null;
   unidade: string | null;
   valor_unitario: number;
+  pim_product_id?: string | null;
+  pim_variant_id?: string | null;
+  codigo_fornecedor?: string | null;
+  ncm?: string | null;
+  ipi_rate?: number | null;
 }
 
 export interface ReceivingEntry {
@@ -62,6 +67,11 @@ export interface PendingLine {
   unidade: string;
   valor_unitario: number;
   valor_total: number;
+  pim_product_id?: string | null;
+  pim_variant_id?: string | null;
+  codigo_fornecedor?: string | null;
+  ncm?: string | null;
+  ipi_rate?: number | null;
 }
 
 /** Itens com saldo a receber, ja com a quantidade restante calculada. */
@@ -78,6 +88,11 @@ export function buildPendingLines(
       unidade: item.unidade || "un",
       valor_unitario: item.valor_unitario,
       valor_total: remaining * item.valor_unitario,
+      pim_product_id: item.pim_product_id ?? null,
+      pim_variant_id: item.pim_variant_id ?? null,
+      codigo_fornecedor: item.codigo_fornecedor ?? null,
+      ncm: item.ncm ?? null,
+      ipi_rate: item.ipi_rate ?? null,
     }));
 }
 

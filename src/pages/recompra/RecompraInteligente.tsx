@@ -9,11 +9,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
 import { formatDate } from "@/lib/utils";
 import { useAuth } from "@/features/auth";
+import { useCatalogoPim } from "@/hooks/useCatalogoPim";
 
 const RecompraInteligente = () => {
   const queryClient = useQueryClient();
   const { tenantId, organizationId } = useAuth();
   const activeTenantId = tenantId ?? organizationId;
+  const { buscarProdutoPorId } = useCatalogoPim();
 
   const { data: suggestions, isLoading } = useQuery({
     queryKey: ["repurchase-suggestions", activeTenantId],
@@ -27,25 +29,24 @@ const RecompraInteligente = () => {
       if (error) throw error;
       if (!data || data.length === 0) return [];
 
-      // Fetch related produto/fornecedor names separately to avoid embed FK issues
-      const produtoIds = [...new Set(data.map((s: { produto_id?: string | null }) => s.produto_id).filter(Boolean))] as string[];
+      // Fetch fornecedor names localmente; produto vem do catalogo PIM via bridge
+      const pimProductIds = [...new Set(data.map((s: { pim_product_id?: string | null }) => s.pim_product_id).filter(Boolean))] as string[];
       const fornecedorIds = [...new Set(data.map((s: { fornecedor_id?: string | null }) => s.fornecedor_id).filter(Boolean))] as string[];
 
-      const [produtosRes, fornecedoresRes] = await Promise.all([
-        produtoIds.length
-          ? supabase.from("produtos").select("id, nome, codigo, unidade").in("id", produtoIds)
-          : Promise.resolve({ data: [] as Array<{ id: string; nome: string; codigo: string | null; unidade: string | null }>, error: null }),
+      const [pimProdutos, fornecedoresRes] = await Promise.all([
+        Promise.all(pimProductIds.map((id) => buscarProdutoPorId(id))),
         fornecedorIds.length
           ? supabase.from("fornecedores").select("id, razao_social, nome_fantasia").in("id", fornecedorIds)
           : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
       ]);
 
-      const produtosMap = new Map((produtosRes.data || []).map((p) => [p.id, p]));
+      const pimProdutosMap = new Map(pimProductIds.map((id, idx) => [id, pimProdutos[idx]]));
       const fornecedoresMap = new Map((fornecedoresRes.data || []).map((f) => [f.id, f]));
 
       type Row = {
         id: string;
-        produto_id?: string | null;
+        pim_product_id?: string | null;
+        descricao?: string | null;
         fornecedor_id?: string | null;
         quantidade_sugerida?: number;
         preco_estimado?: number | null;
@@ -55,13 +56,13 @@ const RecompraInteligente = () => {
         status?: string;
       };
       type Enriched = Row & {
-        produto: { id: string; nome: string; codigo: string | null; unidade: string | null } | null;
+        produto_nome: string;
         fornecedor: { id: string; razao_social: string; nome_fantasia: string | null } | null;
       };
 
       return (data as Row[]).map((s) => ({
         ...s,
-        produto: s.produto_id ? produtosMap.get(s.produto_id) ?? null : null,
+        produto_nome: (s.pim_product_id ? pimProdutosMap.get(s.pim_product_id)?.name : null) || s.descricao || "Produto",
         fornecedor: s.fornecedor_id ? fornecedoresMap.get(s.fornecedor_id) ?? null : null,
       })) as Enriched[];
     },
@@ -85,7 +86,7 @@ const RecompraInteligente = () => {
       // Group by product to find patterns
       type PedidoRef = { fornecedor_id: string | null; data_emissao: string | null; status: string | null } | null;
       type PedidoItemRow = {
-        produto_id: string | null;
+        pim_product_id: string | null;
         descricao: string | null;
         quantidade: number;
         valor_unitario: number | string;
@@ -93,7 +94,7 @@ const RecompraInteligente = () => {
       };
       type NewSuggestion = {
         tenant_id: string;
-        produto_id: string | null;
+        pim_product_id: string | null;
         fornecedor_id: string | null;
         quantidade_sugerida: number;
         preco_estimado: number;
@@ -106,7 +107,7 @@ const RecompraInteligente = () => {
       const rows = (pedidoItens ?? []) as unknown as PedidoItemRow[];
       const productMap = new Map<string, PedidoItemRow[]>();
       rows.forEach(pi => {
-        const key = pi.produto_id || pi.descricao;
+        const key = pi.pim_product_id || pi.descricao;
         if (!key) return;
         if (!productMap.has(key)) productMap.set(key, []);
         productMap.get(key)!.push(pi);
@@ -138,7 +139,7 @@ const RecompraInteligente = () => {
         if (nextDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) {
           newSuggestions.push({
             tenant_id: activeTenantId,
-            produto_id: sorted[0].produto_id ?? null,
+            pim_product_id: sorted[0].pim_product_id ?? null,
             fornecedor_id: sorted[sorted.length - 1].pedido?.fornecedor_id ?? null,
             quantidade_sugerida: avgQty,
             preco_estimado: Math.round(avgPrice * avgQty * 100) / 100,
@@ -277,13 +278,13 @@ const RecompraInteligente = () => {
               <TableBody>
                 {suggestions?.map(s => {
                   const row = s as typeof s & {
-                    produto?: { nome?: string | null } | null;
+                    produto_nome?: string;
                     fornecedor?: { razao_social?: string | null } | null;
                   };
                   const isOverdue = s.proxima_compra_estimada && new Date(s.proxima_compra_estimada) <= new Date();
                   return (
                     <TableRow key={s.id} className={isOverdue ? "bg-destructive/5" : ""}>
-                      <TableCell className="font-medium">{row.produto?.nome || "Produto"}</TableCell>
+                      <TableCell className="font-medium">{row.produto_nome || "Produto"}</TableCell>
                       <TableCell className="text-sm">{row.fornecedor?.razao_social || "-"}</TableCell>
                       <TableCell className="text-center">{s.quantidade_sugerida}</TableCell>
                       <TableCell className="text-right">R$ {Number(s.preco_estimado).toLocaleString("pt-BR")}</TableCell>
