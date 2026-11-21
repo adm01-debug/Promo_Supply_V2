@@ -25,6 +25,7 @@ import {
 } from "../_shared/xbz_auth.ts";
 import { encryptSecret } from "../_shared/xbz_crypto.ts";
 import { mirrorCatalogo, readCatalogoCacheWithMeta } from "../_shared/xbz_catalog_cache.ts";
+import { mirrorCores, mirrorFiscal } from "../_shared/xbz_fiscal_cache.ts";
 import { mascararPortador, montarPortador } from "../_shared/xbz_portador.ts";
 
 import {
@@ -197,6 +198,12 @@ async function handleAction(
   if (action === "cores") {
     requireRole(caller, READ_ROLES);
     const result = await xbzCores();
+    const cores = await mirrorCores(
+      admin,
+      result.data,
+      (message) => logger.warn("falha ao espelhar cores XBZ", { message }),
+    );
+    logger.info("cores XBZ espelhadas", { cores });
     return ok(result, requestId);
   }
 
@@ -332,7 +339,16 @@ async function handleAction(
     if (produtoId <= 0) throw new XbzError(400, "produtoId é obrigatório");
     const pessoaId = creds.row.pessoa_id ?? 0;
     if (pessoaId <= 0) throw new XbzError(412, "pessoaId da XBZ desconhecido — execute o teste de conexão");
-    return ok(await xbzGetSt(produtoId, pessoaId), requestId);
+    const result = await xbzGetSt(produtoId, pessoaId);
+    const espelhado = await mirrorFiscal(
+      admin,
+      caller.tenantId,
+      produtoId,
+      result.data,
+      (message) => logger.warn("falha ao espelhar ficha fiscal XBZ", { message }),
+    );
+    logger.info("ficha fiscal XBZ espelhada", { produtoId, espelhado });
+    return ok(result, requestId);
   }
 
   // --- Leituras do carrinho ---
