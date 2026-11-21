@@ -1,0 +1,26 @@
+name: Diagnostico de role no banco
+# docs:
+#   gatilho: workflow_dispatch (manual, temporario)
+#   prova: imprime current_user do canal Management API
+#   falha: token sem escopo de escrita no projeto
+#   avisa: ninguem
+on:
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Consultar current_user via Management API
+        env:
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          resposta=$(curl -sS -X POST \
+            "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"select current_user, session_user"}')
+          echo "resposta: ${resposta}"
