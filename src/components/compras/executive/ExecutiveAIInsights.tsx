@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, Zap, type LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExecutiveMetrics } from "@/hooks/useExecutiveDashboardData";
+import { ExecutiveMetrics, type CategorySpendItem, type SupplierItem } from "@/hooks/useExecutiveDashboardData";
 import { cn } from "@/lib/utils";
 
 interface ExecutiveAIInsightsProps {
   metrics: ExecutiveMetrics;
-  spendByCategory: Array<{ name: string; value: number }>;
-  topSuppliers: Array<{ name: string; rating: number }>;
+  spendByCategory: CategorySpendItem[];
+  topSuppliers: SupplierItem[];
   loading?: boolean;
 }
 

@@ -21,8 +21,7 @@ import { cn } from '@/lib/utils';
 import { exportToCSV } from '@/lib/exportData';
 
 import {
-  executiveMetrics, calculateChange, 
-  categorySpend, topSuppliers, buyerPerformance, pendingItems,
+  calculateChange,
   type DrillDownData
 } from './executive/executiveDashboardData';
 import { ExecutiveMetricCard } from './executive/ExecutiveMetricCard';
@@ -48,6 +47,12 @@ export const ExecutiveDashboard = () => {
     metrics: realMetrics, 
     spendByCategory: realSpendByCategory, 
     topSuppliers: realTopSuppliers,
+    buyerPerformance: realBuyerPerformance,
+    pendingItems: realPendingItems,
+    monthlyTrend: realMonthlyTrend,
+    comparisonTrend: realComparisonTrend,
+    allCategories: realAllCategories,
+    allSuppliers: realAllSuppliers,
     loading: realDataLoading 
   } = useExecutiveDashboardData();
 
@@ -68,52 +73,57 @@ export const ExecutiveDashboard = () => {
   };
 
   const activeMetrics = useMemo(() => {
-    if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
     const rm = realMetrics;
+    const trend = realComparisonTrend || [];
+    const current = trend.reduce((s, m) => s + (m.currentSpend || 0), 0);
+    const previous = trend.reduce((s, m) => s + (m.previousSpend || 0), 0);
+    const curSav = trend.reduce((s, m) => s + (m.currentSavings || 0), 0);
+    const prevSav = trend.reduce((s, m) => s + (m.previousSavings || 0), 0);
     return {
-      ...executiveMetrics,
       totalSpend: {
-        value: rm.totalSpend.value || executiveMetrics.totalSpend.value,
-        previousValue: executiveMetrics.totalSpend.previousValue,
-        change: rm.totalSpend.value > 0 ? calculateChange(rm.totalSpend.value, executiveMetrics.totalSpend.previousValue) : executiveMetrics.totalSpend.change,
-        target: rm.totalSpend.target || executiveMetrics.totalSpend.target
+        value: rm.totalSpend.value,
+        previousValue: previous || rm.totalSpend.value,
+        change: previous && current ? calculateChange(current, previous) : 0,
+        target: rm.totalSpend.target
       },
       savings: {
-        value: rm.savings.value || executiveMetrics.savings.value,
-        previousValue: executiveMetrics.savings.previousValue,
-        change: rm.savings.value > 0 ? calculateChange(rm.savings.value, executiveMetrics.savings.previousValue) : executiveMetrics.savings.change,
-        target: rm.savings.target || executiveMetrics.savings.target
+        value: rm.savings.value,
+        previousValue: prevSav || rm.savings.value,
+        change: prevSav && curSav ? calculateChange(curSav, prevSav) : 0,
+        target: rm.savings.target
       },
       savingsPercent: rm.savingsPercent,
       ordersThisMonth: {
-        value: rm.ordersThisMonth.value || executiveMetrics.ordersThisMonth.value,
-        previousValue: executiveMetrics.ordersThisMonth.previousValue,
-        change: rm.ordersThisMonth.value > 0 ? calculateChange(rm.ordersThisMonth.value, executiveMetrics.ordersThisMonth.previousValue) : executiveMetrics.ordersThisMonth.change,
-        target: rm.ordersThisMonth.target || executiveMetrics.ordersThisMonth.target
+        value: rm.ordersThisMonth.value,
+        previousValue: Math.max(1, rm.ordersThisMonth.value * 0.85),
+        change: 0,
+        target: rm.ordersThisMonth.target
       },
       contractCompliance: {
-        value: rm.contractCompliance.value || executiveMetrics.contractCompliance.value,
-        previousValue: executiveMetrics.contractCompliance.previousValue,
-        change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
-        target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
+        value: rm.contractCompliance.value,
+        previousValue: rm.contractCompliance.value,
+        change: 0,
+        target: rm.contractCompliance.target
       },
+      avgCycleTime: { value: rm.avgCycleTime.value, target: rm.avgCycleTime.target },
+      supplierCount: { value: rm.supplierCount.value, target: rm.supplierCount.target },
       pendingApprovals: {
         value: rm.pendingApprovals.value,
-        previousValue: executiveMetrics.pendingApprovals.previousValue,
-        change: calculateChange(rm.pendingApprovals.value || 1, executiveMetrics.pendingApprovals.previousValue || 1),
+        previousValue: Math.max(1, rm.pendingApprovals.value),
+        change: 0,
         urgent: rm.pendingApprovals.urgent
       },
       overdueOrders: {
         value: rm.overdueOrders.value,
-        previousValue: executiveMetrics.overdueOrders.previousValue,
-        change: calculateChange(rm.overdueOrders.value || 1, executiveMetrics.overdueOrders.previousValue || 1),
+        previousValue: Math.max(1, rm.overdueOrders.value),
+        change: 0,
         critical: rm.overdueOrders.critical
       },
     // Maverick/tail spend (pdv sem contrato ativo, derivado do banco)
       maverickSpend: { value: rm.maverickSpend.value, percentage: rm.maverickSpend.percentage },
       tailSpend: { value: rm.tailSpend.value, percentage: rm.tailSpend.percentage },
     };
-  }, [realMetrics, realDataLoading]);
+  }, [realMetrics, realComparisonTrend]);
 
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes', 'cotacoes', 'pagamentos'] });
 
@@ -147,32 +157,32 @@ export const ExecutiveDashboard = () => {
   });
 
   const filteredCategorySpend = useMemo(() => {
-    let data = categorySpend;
+    let data = realSpendByCategory || [];
     if (selectedCategory !== 'all') data = data.filter(c => c.name === selectedCategory);
     if (selectedSupplier !== 'all') data = data.filter(c => c.supplier === selectedSupplier);
     return data;
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, realSpendByCategory]);
 
   const filteredSuppliers = useMemo(() => {
-    let data = topSuppliers;
+    let data = realTopSuppliers || [];
     if (selectedSupplier !== 'all') data = data.filter(s => s.name === selectedSupplier);
     if (selectedCategory !== 'all') data = data.filter(s => s.categories.includes(selectedCategory));
     return data;
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, realTopSuppliers]);
 
   const filteredBuyers = useMemo(() => {
-    let data = buyerPerformance;
+    let data = realBuyerPerformance || [];
     if (selectedCategory !== 'all') data = data.filter(b => b.categories.includes(selectedCategory));
     if (selectedSupplier !== 'all') data = data.filter(b => b.suppliers.includes(selectedSupplier));
     return data;
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, realBuyerPerformance]);
 
   const filteredPendingItems = useMemo(() => {
-    let data = pendingItems;
+    let data = realPendingItems || [];
     if (selectedCategory !== 'all') data = data.filter(p => p.category === selectedCategory);
     if (selectedSupplier !== 'all') data = data.filter(p => p.supplier === selectedSupplier);
     return data;
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, realPendingItems]);
 
   const handleCategoryDrillDown = (category: { name: string }) => {
     setSelectedCategory(category.name);
@@ -237,6 +247,8 @@ export const ExecutiveDashboard = () => {
           onSetDefault={setAsDefault}
           onApply={applyFilter}
           favoritesLoading={favoritesLoading}
+          allCategories={realAllCategories || []}
+          allSuppliers={realAllSuppliers || []}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -290,13 +302,15 @@ export const ExecutiveDashboard = () => {
               <ExecutiveAIInsights 
                 metrics={activeMetrics as ExecutiveMetrics}
                 spendByCategory={realSpendByCategory || []} 
-                topSuppliers={(realTopSuppliers || []).map(s => ({ name: s.name, rating: 4.5 }))} 
+                topSuppliers={realTopSuppliers || []} 
               />
               <BulkPlanningConsole />
               <ExecutiveChartsRow 
                 showComparison={showComparison} 
                 filteredCategorySpend={filteredCategorySpend} 
                 onCategoryDrillDown={handleCategoryDrillDown} 
+                monthlyTrend={realMonthlyTrend || []} 
+                comparisonTrend={realComparisonTrend || []} 
                 selectedCategory={selectedCategory} 
                 selectedSupplier={selectedSupplier} 
               />
@@ -337,6 +351,7 @@ export const ExecutiveDashboard = () => {
       <ExecutiveDrillDownModal
         drillDown={drillDown}
         onClose={() => setDrillDown(null)}
+        pendingItems={filteredPendingItems}
       />
       {ConfirmDialog}
     </ElitePageWrapper>
