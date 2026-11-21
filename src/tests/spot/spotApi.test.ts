@@ -178,6 +178,11 @@ describe('spot-api: acoes do cron', () => {
     expect(extraiSet('CRON_ACTIONS')).not.toContain('createOrder');
   });
 
+  it('getOrders envia o parametro Status - a API SPOT responde ErrorCode 2 sem ele', () => {
+    const bloco = fonte.match(/callSpot<Record<string, unknown>>\(db, logger, "OrdersV1"[\s\S]{0,200}?\);/);
+    expect(bloco?.[0] ?? '').toMatch(/Status/);
+  });
+
   it('toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)', () => {
     const validas = extraiSet('VALID_ACTIONS');
     for (const a of extraiSet('CRON_ACTIONS')) expect(validas).toContain(a);

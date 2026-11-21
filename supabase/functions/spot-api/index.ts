@@ -541,7 +541,14 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
 }
 
 async function getOrders(db: SupabaseClient, logger: EdgeLogger) {
-  const response = await callSpot<Record<string, unknown>>(db, logger, "OrdersV1", "getOrders", { skipQuota: true });
+  // OrdersV1 exige o parametro `Status`; sem ele a API responde
+  // {"ErrorCode":2,"ErrorMessage":"There was a problem with your request."}
+  // (verificado contra ws.spotgifts.com.br em 2026-11-21). `ALL` traz todos
+  // os status e devolve ErrorCode null mesmo quando a conta nao tem pedidos.
+  const response = await callSpot<Record<string, unknown>>(db, logger, "OrdersV1", "getOrders", {
+    skipQuota: true,
+    query: { Status: "ALL" },
+  });
   const details = readOrdersDetails(response);
   const now = new Date().toISOString();
 
