@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aef9bffcf1a599c20346e2244d7423dff9226c8b` (2026-11-21T14:28:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28421a94e3ba7cad7ab00724e015c63bd3aa34d8` (2026-11-21T14:39:27-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (14), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1275 |
+| arquivos_total | 1276 |
 | arquivos_codigo | 796 |
 | linhas_codigo | 166369 |
 | rotas | 55 |
@@ -49,7 +49,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | migrations | 317 |
 | cron_jobs | 71 |
 | testes | 185 |
-| workflows | 11 |
+| workflows | 12 |
 | scripts | 49 |
 | docs_md | 90 |
 
@@ -331,13 +331,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (28)
+- docs/pendencias/_indice.md (29)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (12)
 - package.json (12)
 - .github/workflows/main.yml (9)
+- docs/ci/README.md (9)
 - docs/prod-readiness.md (9)
 - bun.lock (8)
-- docs/ci/README.md (8)
 - docs/pendencias/_ordem.md (8)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
@@ -348,6 +348,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - supabase/functions/punchout-receive/index.ts (5)
 
 ## Workflows
+- `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
 - `branch-hygiene-audit.yml` — Branch Hygiene Audit (schedule, workflow_dispatch; cron 34 9 * * 1)
 - `contexto.yml` — Contexto para agentes de IA (1h) (push, schedule, workflow_dispatch; cron 3 * * * *)
@@ -411,6 +412,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
+- 2026-11-21 `709f261` docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)
 - 2026-11-21 `aef9bff` feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)
 - 2026-11-21 `7ad0b03` feat(pwa): adiciona handler de push ao service worker (#234)
 - 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
@@ -424,8 +427,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
 - 2026-11-21 `79bf0bf` feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)
 - 2026-11-21 `38c50e5` fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)
-- 2026-11-21 `3db64df` fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)
-- 2026-11-21 `a922396` chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

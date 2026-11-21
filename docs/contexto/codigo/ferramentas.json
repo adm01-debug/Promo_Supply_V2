@@ -8,7 +8,7 @@
    "Markdown (90)",
    "JavaScript (69)",
    "JSON (24)",
-   "YAML (13)",
+   "YAML (14)",
    "Shell (7)",
    "CSS (6)"
   ],
@@ -135,6 +135,29 @@
   "vitest.config.ts"
  ],
  "workflows": [
+  {
+   "arquivo": ".github/workflows/aplicar-migration-prod.yml",
+   "nome": "Aplicar migration no banco de producao",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "aplicar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_DB_URL"
+   ],
+   "actions": [
+    "actions/checkout"
+   ]
+  },
   {
    "arquivo": ".github/workflows/automation-local.yml",
    "nome": "Automação local",
