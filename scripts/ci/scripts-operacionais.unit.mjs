@@ -266,6 +266,10 @@ test('stress CLI: porta fechada e servidor que não responde reprovam (timeout n
 /** Imita o contrato real da função (supabase/functions/external-db-bridge/index.ts). */
 function bridgeFalsa({ jwtValido = 'jwt-usuario', select = { status: 200, corpo: { data: [], count: null, meta: { durationMs: 3, status: 'ok' } } } } = {}) {
   const corpos = [];
+  // Allowlist e teto vem do MESMO arquivo que a funcao le: antes estavam fixos
+  // aqui e o mock recusava as views do PIM em 403, entao o teste validava um
+  // contrato que nao existia mais.
+  const contrato = bridge.lerContrato();
   const handler = (req, res) => {
     let bruto = '';
     req.on('data', (d) => { bruto += d; });
@@ -278,9 +282,9 @@ function bridgeFalsa({ jwtValido = 'jwt-usuario', select = { status: 200, corpo:
       if (auth !== `Bearer ${jwtValido}`) return responder(401, { error: 'Unauthorized' });
       const corpo = JSON.parse(bruto || '{}');
       corpos.push(corpo);
-      if (!['select', 'insert', 'update', 'delete', 'rpc'].includes(corpo.operation)) return responder(400, { error: `operation "${corpo.operation}" not allowed` });
-      if (!['produtos_externos', 'fornecedores_externos', 'spot_pedidos_view'].includes(corpo.table)) return responder(403, { error: `table "${corpo.table}" is not in allowlist` });
-      if (corpo.limit > 500) return responder(400, { error: 'limit exceeds 500' });
+      if (!['select'].includes(corpo.operation)) return responder(403, { error: `operation "${corpo.operation}" is not allowed` });
+      if (corpo.table !== contrato.tabela) return responder(403, { error: `table "${corpo.table}" is not in allowlist` });
+      if (corpo.limit > contrato.limiteMaximo) return responder(400, { error: `limit exceeds ${contrato.limiteMaximo}` });
       return responder(select.status, select.corpo);
     });
   };
@@ -324,7 +328,7 @@ test('bridge CLI: com JWT valida os 8 pontos e NUNCA envia operação de escrita
 test('bridge: "External database not configured" (500) é resposta válida; forma errada e 401 reprovam', async () => {
   const cenario = async (opcoes, jwt = 'jwt-usuario') => {
     const falsa = bridgeFalsa(opcoes);
-    return comServidor(falsa.handler, (base) => bridge.validar(bridge.criarPedir(base, 'anon', 5000), { anonKey: 'anon', userJwt: jwt, tabela: 'produtos_externos', limiteMaximo: 500 }));
+    return comServidor(falsa.handler, (base) => bridge.validar(bridge.criarPedir(base, 'anon', 5000), { anonKey: 'anon', userJwt: jwt, tabela: bridge.lerContrato().tabela, limiteMaximo: bridge.lerContrato().limiteMaximo }));
   };
   const estados = (checks) => checks.map((c) => c.estado);
 

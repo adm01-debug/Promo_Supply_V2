@@ -14,7 +14,7 @@
  * _shared/external-bridge-allowlist.ts) — SOMENTE leitura, nenhuma escrita no banco externo:
  *   público:      OPTIONS → 2xx · GET → 405 · POST só com a chave pública → 401 ·
  *                 POST sem Authorization → 401 (gateway)
- *   autenticado:  operação fora da lista → 400 · tabela fora da allowlist → 403 ·
+ *   autenticado:  operação fora da lista → 403 · tabela fora da allowlist → 403 ·
  *                 limit acima do teto → 400 · select limit 1 → 200 {data, count, meta}
  *                 (ou 500 "External database not configured", que é resposta válida do contrato)
  *
@@ -95,7 +95,7 @@ export async function validar(
   checks.push(espera("POST sem Authorization é 401", semAuth, semAuth.status === 401));
 
   const autenticados = [
-    "operação fora da lista é 400",
+    "operação fora da lista é 403",
     "tabela fora da allowlist é 403",
     `limit acima de ${limiteMaximo} é 400`,
     "select limit 1 devolve {data, count, meta}",
@@ -111,7 +111,7 @@ export async function validar(
     for (const nome of autenticados) checks.push({ nome, estado: "falhou", detalhe: "BRIDGE_USER_JWT recusado (401) — token expirado ou de outro projeto" });
     return checks;
   }
-  checks.push(espera(autenticados[0], sessao, sessao.status === 400 && /not allowed/i.test(erroDe(sessao))));
+  checks.push(espera(autenticados[0], sessao, sessao.status === 403 && /not allowed/i.test(erroDe(sessao))));
 
   const fora = await pedir("POST", { bearer: userJwt, corpo: { operation: "select", table: "__tabela_fora_da_allowlist__", limit: 1 } });
   checks.push(espera(autenticados[1], fora, fora.status === 403 && /allowlist/i.test(erroDe(fora))));
