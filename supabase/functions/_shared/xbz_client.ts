@@ -10,7 +10,8 @@
  *  - login sempre devolve HTTP 200 → validar por `Id > 0`
  *  - datas nulas chegam como "2000-01-01T00:00:00"
  *  - HTTP 425 no carrinho = conflito de estoque com corpo válido
- *  - `consultaEstoque` exige `busca` não vazio
+ *  - `consultaEstoque` exige `busca` com ao menos 3 caracteres (desde nov/2026;
+ *    termos curtos devolvem [] com HTTP 200 — o antigo hack `busca=a` morreu)
  */
 import { fetchWithTimeout } from "./http.ts";
 import { getBreaker } from "./circuit_breaker.ts";
@@ -208,9 +209,14 @@ export interface XbzCatalogoFilters {
   preco_maximo?: number;
 }
 
+/** Tamanho mínimo de `busca` aceito pela XBZ; abaixo disso ela devolve [] silenciosamente. */
+export const XBZ_BUSCA_MIN = 3;
+
 export function xbzConsultaEstoque(c: XbzPortalCredentials, f: XbzCatalogoFilters = {}) {
-  // ⚠️ `busca` vazio devolve []. "a" é o hack documentado para varrer o catálogo.
-  const busca = (f.busca ?? "").trim() || "a";
+  const busca = (f.busca ?? "").trim();
+  if (busca.length < XBZ_BUSCA_MIN) {
+    throw new XbzError(400, `Informe ao menos ${XBZ_BUSCA_MIN} caracteres para buscar no catálogo XBZ`);
+  }
   return request<Array<Record<string, unknown>>>(
     buildUrl("/api/ruiz/consultaEstoque", {
       ...ruizAuth(c),

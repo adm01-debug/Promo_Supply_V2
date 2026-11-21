@@ -28,6 +28,7 @@ import { mirrorCatalogo, readCatalogoCacheWithMeta } from "../_shared/xbz_catalo
 
 import {
   extractPermissions,
+  XBZ_BUSCA_MIN,
   XbzError,
   xbzCarrinhoGet,
   xbzCarrinhoWrite,
@@ -256,7 +257,10 @@ async function handleAction(
   if (action === "catalogo") {
     requireRole(caller, READ_ROLES);
     requirePortalPermission(creds, "WebConsultaProdutos");
-    const busca = String(body.busca ?? "").slice(0, 100);
+    const busca = String(body.busca ?? "").trim().slice(0, 100);
+    if (busca.length < XBZ_BUSCA_MIN) {
+      throw new XbzError(400, `Informe ao menos ${XBZ_BUSCA_MIN} caracteres para buscar no catálogo XBZ`);
+    }
     try {
       const result = await xbzConsultaEstoque(portal, {
         busca,

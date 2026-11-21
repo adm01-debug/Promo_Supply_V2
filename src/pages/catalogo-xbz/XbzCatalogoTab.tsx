@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, RefreshCw, Search, ShoppingCart, WifiOff } from 'lucide-react';
 import { useXbzIntegration, type XbzProdutoRaw } from '@/hooks/useXbzIntegration';
-import { formatBRL } from './xbzHelpers';
+import { formatBRL, isBuscaValida, XBZ_BUSCA_MIN } from './xbzHelpers';
 
 interface XbzCatalogoTabProps {
   canAddToCart: boolean;
@@ -26,7 +26,10 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
   const [isStale, setIsStale] = useState(false);
   const [syncedAt, setSyncedAt] = useState<string | null>(null);
 
+  const buscaValida = isBuscaValida(term);
+
   const handleSearch = useCallback(async () => {
+    if (!isBuscaValida(term)) return;
     const result = await buscarProdutosDetalhado(term);
     setSearched(true);
     setProdutos(result ? result.produtos.slice(0, 200) : []);
@@ -57,8 +60,8 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
       <CardHeader>
         <CardTitle>Catálogo XBZ</CardTitle>
         <CardDescription>
-          A XBZ exige um termo de busca. Deixe em branco para varrer o catálogo completo
-          (usa o termo padrão &quot;a&quot;, ~10 mil itens — resultados limitados a 200).
+          A XBZ exige um termo de busca com ao menos {XBZ_BUSCA_MIN} caracteres
+          (nome ou código amigável; busca por SKU não é suportada). Resultados limitados a 200.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -70,7 +73,7 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
             placeholder="Buscar por nome ou código amigável (ex.: caneta, 12487)"
             aria-label="Buscar produtos na XBZ"
           />
-          <Button onClick={handleSearch} disabled={loading}>
+          <Button onClick={handleSearch} disabled={loading || !buscaValida}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <Search className="mr-2 h-4 w-4" aria-hidden="true" />}
             Buscar
           </Button>

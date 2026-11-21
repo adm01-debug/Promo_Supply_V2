@@ -76,13 +76,15 @@ export function statusLogisticoLabel(idStatus: number | null | undefined, fallba
   return fallback?.trim() || 'Desconhecido';
 }
 
-/**
- * `consultaEstoque` devolve [] quando `busca` é vazio.
- * "a" é o termo documentado para varrer praticamente todo o catálogo.
- */
+/** Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */
+export const XBZ_BUSCA_MIN = 3;
+
 export function normalizeBusca(term: string | null | undefined): string {
-  const trimmed = (term ?? '').trim();
-  return trimmed.length > 0 ? trimmed.slice(0, 100) : 'a';
+  return (term ?? '').trim().slice(0, 100);
+}
+
+export function isBuscaValida(term: string | null | undefined): boolean {
+  return normalizeBusca(term).length >= XBZ_BUSCA_MIN;
 }
 
 /** Tipos de entrega do controller /api/carrinho/ (IDs divergem de /api/clientes/). */
