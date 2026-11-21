@@ -229,7 +229,12 @@ export function priceForQuantity(
 /** A resposta de pedidos usa a chave `OrdersDetails` (com S) — erro histórico de parse. */
 export function readOrdersDetails(payload: unknown): Array<Record<string, unknown>> {
   if (!payload || typeof payload !== "object") return [];
-  const record = payload as Record<string, unknown>;
+  let record = payload as Record<string, unknown>;
+  // OrderV1 (POST de criacao) envelopa a resposta em `OrderV1Result`; OrdersV1
+  // (listagem) responde plano. Sem desembrulhar, createOrder lia sempre [] e
+  // nunca gravava o pedido criado em spot_pedidos.
+  const wrapped = record.OrderV1Result;
+  if (wrapped && typeof wrapped === "object") record = wrapped as Record<string, unknown>;
   const details = record.OrdersDetails ?? record.OrderDetails;
   return Array.isArray(details) ? (details as Array<Record<string, unknown>>) : [];
 }
