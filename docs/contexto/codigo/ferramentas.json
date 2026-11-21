@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (710)",
    "SQL (318)",
-   "Markdown (85)",
+   "Markdown (88)",
    "JavaScript (68)",
    "JSON (24)",
    "YAML (13)",
@@ -564,7 +564,7 @@
   },
   {
    "pasta": "docs/pendencias",
-   "arquivos_md": 6
+   "arquivos_md": 9
   },
   {
    "pasta": "docs/arsenal-auditoria",

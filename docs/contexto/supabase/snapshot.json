@@ -36222,15 +36222,6 @@
         },
         {
           "active": true,
-          "command": "select public._invoke_xbz_sync()",
-          "database": "postgres",
-          "jobid": 23,
-          "jobname": "xbz-sync-pedidos-30min",
-          "schedule": "*/30 * * * *",
-          "username": "postgres"
-        },
-        {
-          "active": true,
           "command": "select public.xbz_sync_watchdog()",
           "database": "postgres",
           "jobid": 24,
@@ -36281,6 +36272,15 @@
           "jobid": 111,
           "jobname": "scan-particoes-semanal",
           "schedule": "45 4 * * 0",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_xbz_sync();",
+          "database": "postgres",
+          "jobid": 112,
+          "jobname": "xbz-sync-pedidos-30min",
+          "schedule": "*/30 * * * *",
           "username": "postgres"
         }
       ]
@@ -36424,11 +36424,15 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [
-            "23:xbz-sync-pedidos-30min"
+            "112:xbz-sync-pedidos-30min"
           ],
           "db": [],
           "triggers": [],
@@ -63603,6 +63607,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_23"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_24"
         }
       ]
     },

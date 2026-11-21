@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7598400ab9f2a154d2c29094f6d7be3f8c086298",
+  "commit": "a09a77c76853d0afd34b0783e5b9807b069b2d27",
   "branch": "main",
-  "data_commit": "2026-11-21T08:54:30-03:00",
+  "data_commit": "2026-11-21T09:04:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a09a77c",
+    "data": "2026-11-21",
+    "assunto": "docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)"
+   },
    {
     "sha": "7598400",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "619f974",
     "data": "2026-11-20",
     "assunto": "fix(edge): aceita chamada manual autenticada no check-sla-alerts alem do cron (#187)"
-   },
-   {
-    "sha": "be6c7e0",
-    "data": "2026-11-20",
-    "assunto": "chore(docs): registra fechamentos PR #183, #184 e #185 no catalogo de pendencias (#186)"
    }
   ],
-  "arquivos_mudados_7d": 171,
+  "arquivos_mudados_7d": 174,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "pasta": "package.json",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 176
+    "commits": 177
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1254,
+  "arquivos_total": 1257,
   "arquivos_codigo": 781,
   "linhas_codigo": 164622,
   "rotas": 55,
@@ -335,7 +335,7 @@
   "testes": 177,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 85
+  "docs_md": 88
  },
  "por_pasta": {
   "eslint.config.js": {
