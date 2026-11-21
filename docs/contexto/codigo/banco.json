@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 317,
+ "migrations": 318,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -8026,6 +8026,13 @@
      "default": null,
      "ref": null
     },
+    "pim_product_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "ponto_pedido": {
      "tipo": "numeric(15,3)",
      "nn": false,
@@ -8119,7 +8126,9 @@
     "updated_at": "string | null"
    },
    "drift": {
-    "so_na_migration": [],
+    "so_na_migration": [
+     "pim_product_id"
+    ],
     "so_no_types": []
    },
    "usada_no_front": 1,
@@ -11955,6 +11964,13 @@
   },
   "pedido_itens": {
    "colunas": {
+    "codigo_fornecedor": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "created_at": {
      "tipo": "timestamp with time zone",
      "nn": true,
@@ -11983,12 +11999,40 @@
      "default": "gen_random_uuid()",
      "ref": null
     },
+    "ipi_rate": {
+     "tipo": "numeric(8,4)",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "ncm": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "pedido_id": {
      "tipo": "uuid",
      "nn": false,
      "pk": false,
      "default": null,
      "ref": "pedidos"
+    },
+    "pim_product_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "pim_variant_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
     },
     "produto_id": {
      "tipo": "uuid",
@@ -12075,6 +12119,11 @@
      "unico": false
     },
     {
+     "nome": "idx_pedido_itens_pim_product_id",
+     "colunas": "pim_product_id",
+     "unico": false
+    },
+    {
      "nome": "idx_pedido_itens_produto_id",
      "colunas": "produto_id",
      "unico": false
@@ -12108,7 +12157,12 @@
    },
    "drift": {
     "so_na_migration": [
-     "status_producao"
+     "status_producao",
+     "pim_product_id",
+     "pim_variant_id",
+     "codigo_fornecedor",
+     "ncm",
+     "ipi_rate"
     ],
     "so_no_types": [
      "tenant_id"
@@ -14330,6 +14384,13 @@
      "default": "gen_random_uuid()",
      "ref": null
     },
+    "pim_product_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "preco_estimado": {
      "tipo": "numeric",
      "nn": false,
@@ -14448,7 +14509,9 @@
     "updated_at": "string"
    },
    "drift": {
-    "so_na_migration": [],
+    "so_na_migration": [
+     "pim_product_id"
+    ],
     "so_no_types": []
    },
    "usada_no_front": 1,
@@ -15435,6 +15498,20 @@
      "default": null,
      "ref": "organizations"
     },
+    "pim_product_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "pim_variant_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "prazo_entrega": {
      "tipo": "date",
      "nn": false,
@@ -15661,6 +15738,11 @@
      "unico": false
     },
     {
+     "nome": "idx_solicitacoes_pim_product_id",
+     "colunas": "pim_product_id",
+     "unico": false
+    },
+    {
      "nome": "idx_solicitacoes_produto_id",
      "colunas": "produto_id",
      "unico": false
@@ -15738,7 +15820,9 @@
      "prazo_entrega",
      "fornecedor_selecionado",
      "valor_unitario",
-     "valor_total"
+     "valor_total",
+     "pim_product_id",
+     "pim_variant_id"
     ],
     "so_no_types": []
    },

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `017aa0cdb35efdb67d68b5c3f7c769627fbb0d30` (2026-11-21T15:11:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3192276093a09d1134cf825c5cea715547bcb1c7` (2026-11-21T15:15:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (724), SQL (320), Markdown (90), JavaScript (69), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1277 |
+| arquivos_total | 1278 |
 | arquivos_codigo | 796 |
 | linhas_codigo | 166369 |
 | rotas | 55 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 317 |
+| migrations | 318 |
 | cron_jobs | 71 |
 | testes | 185 |
 | workflows | 13 |
@@ -317,7 +317,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
-- tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
+- tabelas_com_drift_migration_vs_types: 52 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 12 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `3192276` feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)
 - 2026-11-21 `017aa0c` fix(docs): alinha contagem de workflows do README de CI com main (#241)
 - 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
 - 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
 - 2026-11-21 `9ae679b` chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)
 - 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
-- 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

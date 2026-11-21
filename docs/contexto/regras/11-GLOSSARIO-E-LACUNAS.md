@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `017aa0cdb3` · branch `main` · 2026-11-21 18:18 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3192276093` · branch `main` · 2026-11-21 18:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -56,7 +56,7 @@
 | `erp_connections` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `erp_field_mappings` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `erp_sync_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
-| `estoque` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
+| `estoque` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
 | `estoque_movimentacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `exchange_rates` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | migration |
 | `financial_audit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
@@ -83,7 +83,7 @@
 | `pagamentos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 23 colunas | migration |
 | `password_reset_requests` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
 | `payment_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `pedido_itens` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
+| `pedido_itens` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
 | `pedidos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 26 colunas | migration |
 | `penalty_escalation_config` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `permissions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
@@ -98,7 +98,7 @@
 | `query_telemetry` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `rate_limit_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
 | `receiving_checklists` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
-| `repurchase_suggestions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
+| `repurchase_suggestions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 15 colunas | migration |
 | `role_permissions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
 | `saved_filters` | Filtros salvos por usuários para diferentes entidades | 8 colunas | migration |
 | `savings_tracker` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
@@ -106,7 +106,7 @@
 | `secret_rotation_schedule` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
 | `security_definer_baseline` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `security_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `solicitacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 29 colunas | migration |
+| `solicitacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 31 colunas | migration |
 | `sourcing_awards` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `sourcing_event_criteria` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `sourcing_event_lots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |

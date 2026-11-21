@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
+  "commit": "3192276093a09d1134cf825c5cea715547bcb1c7",
   "branch": "main",
-  "data_commit": "2026-11-21T15:11:00-03:00",
+  "data_commit": "2026-11-21T15:15:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3192276",
+    "data": "2026-11-21",
+    "assunto": "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)"
+   },
    {
     "sha": "017aa0c",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "1b8ae1d",
     "data": "2026-11-21",
     "assunto": "docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)"
-   },
-   {
-    "sha": "af0e42f",
-    "data": "2026-11-21",
-    "assunto": "chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)"
    }
   ],
-  "arquivos_mudados_7d": 210,
+  "arquivos_mudados_7d": 211,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 203
+    "commits": 204
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1277,
+  "arquivos_total": 1278,
   "arquivos_codigo": 796,
   "linhas_codigo": 166369,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 317,
+  "migrations": 318,
   "cron_jobs": 71,
   "testes": 185,
   "workflows": 13,
@@ -731,6 +731,7 @@
    "department_budgets",
    "devolucao_itens",
    "devolucoes",
+   "estoque",
    "fornecedores",
    "licitacao_lances",
    "licitacao_propostas",
@@ -744,6 +745,7 @@
    "produtos",
    "profiles",
    "receiving_checklists",
+   "repurchase_suggestions",
    "solicitacoes",
    "sourcing_awards",
    "sourcing_event_criteria",

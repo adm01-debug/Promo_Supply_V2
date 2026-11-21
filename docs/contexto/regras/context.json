@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
+  "sha": "3192276093a09d1134cf825c5cea715547bcb1c7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:18 UTC",
-  "files_total": 1278,
-  "code_files": 1117,
-  "code_lines": 192452,
+  "generated_at": "2026-11-21 18:19 UTC",
+  "files_total": 1279,
+  "code_files": 1118,
+  "code_lines": 192479,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "957615fcb7ce2188",
+ "facts_hash": "1e02a1b14bda5f81",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 376,
    ".tsx": 348,
-   ".sql": 319,
+   ".sql": 320,
    ".mjs": 66,
    ".py": 5,
    ".js": 3
@@ -618,6 +618,20 @@
       "fk": "produtos.id ON DELETE SET NULL",
       "generated": "",
       "src": "supabase/migrations/20260517185548_61b0689c-f08c-42a6-bbb2-c36a188ac536.sql"
+     },
+     {
+      "name": "pim_product_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "pim_variant_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
      }
     ],
     "constraints": [],
@@ -2648,6 +2662,41 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260517123005_23dd31d1-6cda-4234-9f92-7307db517b26.sql"
+     },
+     {
+      "name": "pim_product_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "pim_variant_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "codigo_fornecedor",
+      "type": "text",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "ncm",
+      "type": "text",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "ipi_rate",
+      "type": "numeric(8",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
      }
     ],
     "constraints": [],
@@ -5067,6 +5116,13 @@
       "fk": "tenants.id",
       "generated": "",
       "src": "supabase/migrations/20260619161254_feb9dc6d-ae96-4ca5-8962-230b4a264f99.sql"
+     },
+     {
+      "name": "pim_product_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
      }
     ],
     "constraints": [],
@@ -10547,6 +10603,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql"
+     },
+     {
+      "name": "pim_product_id",
+      "type": "uuid",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
      }
     ],
     "constraints": [
@@ -26303,6 +26366,22 @@
     "unique": true,
     "where": "",
     "src": "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql"
+   },
+   {
+    "name": "idx_pedido_itens_pim_product_id",
+    "table": "pedido_itens",
+    "columns": "pim_product_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+   },
+   {
+    "name": "idx_solicitacoes_pim_product_id",
+    "table": "solicitacoes",
+    "columns": "pim_product_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
    }
   ],
   "cron_jobs": [
@@ -26964,6 +27043,7 @@
    "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
    "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+   "supabase/migrations/20261121160000_pim_refs_compras.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35587,8 +35667,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 317,
-   "lines": 25860,
+   "files": 318,
+   "lines": 25887,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -112709,6 +112789,10 @@
    "path": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
    "lines": 105
   },
+  "supabase/migrations/20261121160000_pim_refs_compras.sql": {
+   "path": "supabase/migrations/20261121160000_pim_refs_compras.sql",
+   "lines": 27
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -112928,10 +113012,19 @@
   }
  },
  "git": {
-  "sha": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
+  "sha": "3192276093a09d1134cf825c5cea715547bcb1c7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3192276",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)",
+    "files": [
+     "supabase/migrations/20261121160000_pim_refs_compras.sql"
+    ]
+   },
    {
     "sha": "017aa0c",
     "date": "2026-11-21",
@@ -113253,15 +113346,6 @@
     "files": [
      "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql"
     ]
-   },
-   {
-    "sha": "30e7b63",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)",
-    "files": [
-     "supabase/functions/workflow-engine/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113314,6 +113398,10 @@
     2
    ],
    [
+    "supabase/migrations/20261121160000_pim_refs_compras.sql",
+    1
+   ],
+   [
     ".github/workflows/provisionar-vapid.yml",
     1
    ],
@@ -113339,10 +113427,6 @@
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.ts",
-    1
-   ],
-   [
-    "AGENTS.md",
     1
    ]
   ]
