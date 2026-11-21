@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/feedbackToast";
 
 const DOCS_CONTENT = {
-  architecture: `# Guia de Arquitetura - Freight Quest
+  architecture: `# Guia de Arquitetura - Promo Supply
 
 ## 🗺️ Mapa de Pastas e Responsabilidades
 
@@ -33,19 +33,20 @@ O projeto segue uma arquitetura modular baseada em React (Vite) e Supabase.
 3. **Serviço/Edge Function**: Executa a lógica pesada ou acessa o banco.
 4. **Estado (React Query/Context)**: Atualiza o cache e reflete na UI.
 
-### Exemplo Real (Solicitação Neural):
+### Exemplo Real (Solicitação por IA):
 \`\`\`typescript
 // No Componente: NovaSolicitacaoModal.tsx
-const { mutate } = useNeuralSolicitacao();
-mutate(data);
+const [isProcessingNeural, setIsProcessingNeural] = useState(false);
 
-// No Hook: useProdutos.ts (ou similar)
-const processNeural = async (payload) => {
-  const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
-    body: payload
-  });
-  return data;
-};
+// Dispara a IA para preencher campos da solicitação
+const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
+  body: payload
+});
+if (error) throw error;
+const fields = (data?.fields ?? data) as Partial<NovaSolicitacaoData>;
+
+// Persistência no banco
+await supabase.from('solicitacoes').insert({ ...fields, user_id: user.id });
 \`\`\`
 
 ---
@@ -252,7 +253,7 @@ const DeveloperDocs = () => {
               Documentação Técnica
             </h1>
             <p className="text-muted-foreground text-lg">
-              Central de arquitetura, decisões e guias de engenharia do Freight Quest.
+              Central de arquitetura, decisões e guias de engenharia do Promo Supply.
             </p>
           </div>
           <div className="flex gap-2">

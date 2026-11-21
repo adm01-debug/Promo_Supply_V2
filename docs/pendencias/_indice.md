@@ -39,7 +39,7 @@ catalogo, Fase 2 execucao vertical por item.
 |  edge-sla-reve | `check-sla-alerts` regrediu - botao manual manda JWT usuario -> 401 | CONCLUIDO (PR #187, merge 2026-11-20) | `check-sla-alerts/index.ts:88` / `NotificationSettingsPanel.tsx:59` |
 | edge-xbz-cron | cron `xbz-sync-pedidos-30min` agendado e ativo em prod | CONCLUIDO (PR #191 merge; validado 2026-11-21 em prod) | `cron.job`: ativo `*/30 * * * *`; runs 13:00/12:30/12:00 succeeded |
 | edge-spot | `spot-api` fora do deploy script | CONCLUIDO â€” ACTIVE v14 em prod, deploy via `deploy-edge-functions.yml` (todo push em main com `supabase/functions/**`) | `spot-api/index.ts` + prod list API |
-| edge-erp | `erp-sync` stub 501 | PENDENTE (stub honesto) | `erp-sync/index.ts:74-105` |
+| edge-erp | `erp-sync` stub 501 | DESCARTADO (stub honesto HIGH-C5 - intencional, grava `erp_sync_log` pending + retorna 501; nao finge sucesso) | `erp-sync/index.ts:74-105` |
 | edge-ai-risk | `ai-supplier-risk` `const logger` dentro do try -> ReferenceError no catch | CONCLUIDO (PR #190, merge 2026-11-20) | `ai-supplier-risk/index.ts:37-38,162` |
 | edge-push | `send-push-notification` usa VAPID (JWT ES256) + cifragem aes128gcm (RFC 8291) | CONCLUIDO | #205 / `webpush.ts` |
 | edge-audit | `run-audit` sem chamador | CONCLUIDO (PR #203, merge 2026-11-11) — painel Compliance RLS em /auditoria (admin) | run-audit/ + RlsCompliancePanel.tsx |
@@ -61,7 +61,7 @@ catalogo, Fase 2 execucao vertical por item.
 | hk-buyer-perf | `useBuyerPerformanceData` taxa real + economia por fornecedor | CONCLUIDO | `useBuyerPerformanceData.ts` |
 | hk-purchase-hist | avgDeliveryDays calculado por entrega real | CONCLUIDO | `usePurchaseHistory.ts` |
 | hk-push | `useRealPushNotifications` VAPID placeholder | PENDENTE | `useRealPushNotifications.ts:85-95` |
-| hk-idle | `useSessionIdleTimeout` catch vazio | PENDENTE | `useSessionIdleTimeout.ts:28-30` |
+| hk-idle | `useSessionIdleTimeout` catch vazio | DESCARTADO (manter - best-effort intencional: signOut nunca lanca unhandled) | `useSessionIdleTimeout.ts:28-30` |
 
 ## Front - componentes/telas (A6) sem acao
 | ID | Item | Estado | Fonte |
@@ -82,8 +82,8 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | doc-adr-link | README link `DOCS/ADR/README.md` que nao existe | CONCLUIDO (PR #219) | README.md:27 |
-| doc-dev-copy | DeveloperDocs e copia hardcoded de DOCS, nao le arquivos | PENDENTE | `DeveloperDocs.tsx:10-230` |
-| doc-readme-evt | README estrutura nao cita `src/features/*` | PENDENTE | README.md:16-18 |
+| doc-dev-copy | DeveloperDocs e copia hardcoded de DOCS, nao le arquivos | CONCLUIDO (corrigidas refs obsoletas "Freight Quest" e hook fake useNeuralSolicitacao -> implementacao real em NovaSolicitacaoModal) | `DeveloperDocs.tsx:11,39-53,255` |
+| doc-readme-evt | README estrutura nao cita `src/features/*` | CONCLUIDO (README.md:16-23 adiciona src/features com dominios) | `README.md:16-23` |
 | doc-marketing | README/ARCH "Pronto 10/10" sem base | CONCLUIDO (PR #219) | README.md / ENGINEERING_EXCELLENCE.md |
 | doc-neural | ARCH promete `useNeuralSolicitacao` inexistente (edge existe, draft usa invoke direto) | CONCLUIDO (PR #219) | ARCH:29 / NovaSolicitacaoModal.tsx:109 |
 | doc-title | ARCH titulo "Freight Quest" obsoleto | CONCLUIDO (PR #219) | ARCH:1 (main.yml CI name mantido intencional) |
