@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 611,
- "arestas": 2728,
+ "arestas": 2730,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -201,7 +201,6 @@
   "src/components/ui/sidebar.tsx",
   "src/components/ui/status-indicators.tsx",
   "src/hooks/useBulkOperations.ts",
-  "src/hooks/useCatalogoPim.ts",
   "src/hooks/useFlashHighlight.ts",
   "src/hooks/useFormDataProtection.ts",
   "src/hooks/useFormDirty.ts",
@@ -224,7 +223,7 @@
   {
    "modulo": "hooks",
    "depende_de": 9,
-   "importado_por": 43
+   "importado_por": 44
   },
   {
    "modulo": "routes",

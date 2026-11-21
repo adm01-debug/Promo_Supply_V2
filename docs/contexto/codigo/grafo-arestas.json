@@ -2890,6 +2890,7 @@
    "src/features/cotacoes/index.ts",
    "src/features/pedidos/index.ts",
    "src/hooks/use-toast.ts",
+   "src/hooks/useCatalogoPim.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts",
    "src/lib/pdfGenerator.ts",
@@ -3189,6 +3190,7 @@
    "src/components/ui/card.tsx",
    "src/components/ui/table.tsx",
    "src/features/auth/index.ts",
+   "src/hooks/useCatalogoPim.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts"

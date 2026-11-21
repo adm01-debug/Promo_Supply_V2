@@ -480,7 +480,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 338,
+   "linhas": 348,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
@@ -867,8 +867,11 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 0,
-   "usado_por_arquivos": [],
+   "usado_por": 2,
+   "usado_por_arquivos": [
+    "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "src/pages/recompra/RecompraInteligente.tsx"
+   ],
    "coberto_por_testes": 0
   },
   {
@@ -1750,15 +1753,13 @@
    "hooks_exportados": [
     "usePurchaseHistory"
    ],
-   "linhas": 382,
+   "linhas": 350,
    "dominio": "hooks",
    "tabelas": [
-    "categorias",
     "cost_centers",
     "fornecedores",
     "pedido_itens",
     "pedidos",
-    "produtos",
     "solicitacoes"
    ],
    "rpcs": [],

@@ -4279,7 +4279,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 7,
+   "usada_no_front": 6,
    "usada_em_edges": [],
    "triggers": [
     "update_categorias_updated_at"
@@ -13147,7 +13147,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 5,
+   "usada_no_front": 3,
    "usada_em_edges": [
     "guided-buying-ai"
    ],

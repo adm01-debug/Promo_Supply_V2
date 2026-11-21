@@ -1061,6 +1061,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -1169,6 +1170,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -1318,6 +1320,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -1331,7 +1334,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 337
+   "arquivos_puxados": 338
   },
   {
    "protegida": true,
@@ -1358,6 +1361,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -1463,6 +1467,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -1605,6 +1610,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -1618,7 +1624,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 342
+   "arquivos_puxados": 343
   },
   {
    "protegida": true,
@@ -1808,6 +1814,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -1911,6 +1918,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -2051,6 +2059,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -2063,7 +2072,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 333
+   "arquivos_puxados": 334
   },
   {
    "protegida": true,
@@ -2661,6 +2670,7 @@
    "hooks": [
     "useAuth",
     "useCallback",
+    "useCatalogoPim",
     "useContext",
     "useCotacoes",
     "useEffect",
@@ -2680,6 +2690,7 @@
    ],
    "hooks_locais": [
     "useAuth",
+    "useCatalogoPim",
     "useCotacoes",
     "useFeedback",
     "useFeedbackPreferences",
@@ -2705,6 +2716,7 @@
     "get_pedidos_kpis"
    ],
    "edges": [
+    "external-db-bridge",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -2712,7 +2724,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 36
+   "arquivos_puxados": 37
   },
   {
    "protegida": true,
@@ -2756,12 +2768,10 @@
     "useUndoStore"
    ],
    "tabelas": [
-    "categorias",
     "cost_centers",
     "fornecedores",
     "pedido_itens",
     "pedidos",
-    "produtos",
     "profiles",
     "solicitacoes",
     "user_filter_preferences",
@@ -2846,6 +2856,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -2949,6 +2960,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -3089,6 +3101,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -3101,7 +3114,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 333
+   "arquivos_puxados": 334
   },
   {
    "protegida": true,
@@ -3185,6 +3198,7 @@
     "useAutoImageCompression",
     "useBudgetManagement",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -3289,6 +3303,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useBudgetManagement",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -3430,6 +3445,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -3442,7 +3458,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 334
+   "arquivos_puxados": 335
   },
   {
    "protegida": true,
@@ -3641,6 +3657,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -3745,6 +3762,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -3887,6 +3905,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -3899,7 +3918,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 332
+   "arquivos_puxados": 333
   },
   {
    "protegida": true,
@@ -3926,6 +3945,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -4030,6 +4050,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -4175,6 +4196,7 @@
     "ai-demand-prediction",
     "ai-supplier-risk",
     "ai-supplier-suggestion",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4187,7 +4209,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 335
+   "arquivos_puxados": 336
   },
   {
    "protegida": true,
@@ -4262,6 +4284,7 @@
    "hooks": [
     "useAuth",
     "useCallback",
+    "useCatalogoPim",
     "useContext",
     "useEffect",
     "useFeedback",
@@ -4275,13 +4298,13 @@
    ],
    "hooks_locais": [
     "useAuth",
+    "useCatalogoPim",
     "useFeedback",
     "useFeedbackPreferences"
    ],
    "tabelas": [
     "fornecedores",
     "pedido_itens",
-    "produtos",
     "profiles",
     "repurchase_suggestions",
     "user_roles",
@@ -4291,6 +4314,7 @@
     "current_tenant_id"
    ],
    "edges": [
+    "external-db-bridge",
     "telemetry"
    ],
    "canais_realtime": [],
@@ -4298,7 +4322,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 17
+   "arquivos_puxados": 18
   },
   {
    "protegida": true,
@@ -4450,6 +4474,7 @@
     "useAuth",
     "useAutoImageCompression",
     "useCallback",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -4560,6 +4585,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useCatalogoPim",
     "useCelebration",
     "useClearFiltersFlow",
     "useCommandPalette",
@@ -4722,6 +4748,7 @@
     "ai-supplier-risk",
     "ai-supplier-suggestion",
     "check-sla-alerts",
+    "external-db-bridge",
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
@@ -4736,7 +4763,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 354
+   "arquivos_puxados": 355
   },
   {
    "protegida": true,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "625b45ac41392599a6b55023e2cb41cafdb12431",
+  "sha": "6ae4856270befa64a4dbd4c59f539c519aaf89ef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:20 UTC",
+  "generated_at": "2026-11-21 18:31 UTC",
   "files_total": 1280,
   "code_files": 1119,
-  "code_lines": 192558,
+  "code_lines": 192573,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6ca2d5953ec84e3e",
+ "facts_hash": "003a9fc69f780106",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34655,7 +34655,7 @@
   {
    "module": "src/features/pedidos",
    "files": 2,
-   "lines": 340,
+   "lines": 350,
    "tables": [
     "pedido_itens",
     "pedidos"
@@ -34721,7 +34721,7 @@
   {
    "module": "src/hooks",
    "files": 73,
-   "lines": 12964,
+   "lines": 12932,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35091,7 +35091,7 @@
   {
    "module": "src/pages",
    "files": 127,
-   "lines": 29615,
+   "lines": 29652,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36010,7 +36010,6 @@
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/useLicitacoes.ts",
      "src/hooks/useProdutos.ts",
-     "src/hooks/usePurchaseHistory.ts",
      "src/pages/dashboard/ComprasDashboard.tsx",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "src/pages/sourcing/RFxCreate.tsx"
@@ -36703,8 +36702,6 @@
     "select": [
      "src/components/compras/PriceComparator.tsx",
      "src/hooks/useProdutos.ts",
-     "src/hooks/usePurchaseHistory.ts",
-     "src/pages/recompra/RecompraInteligente.tsx",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "supabase/functions/guided-buying-ai/index.ts"
     ],
@@ -37720,10 +37717,11 @@
     "pagamento_id"
    ],
    "pedido_itens": [
+    "codigo_fornecedor",
     "descricao",
     "id",
     "pedido_id",
-    "produto_id",
+    "pim_product_id",
     "quantidade",
     "quantidade_recebida",
     "tenant_id",
@@ -96125,7 +96123,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 338,
+   "lines": 348,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -98745,7 +98743,7 @@
   },
   "src/hooks/usePurchaseHistory.ts": {
    "path": "src/hooks/usePurchaseHistory.ts",
-   "lines": 382,
+   "lines": 350,
    "exports": [
     "interface PurchaseRecord",
     "interface ProductHistory",
@@ -98763,14 +98761,6 @@
     },
     {
      "table": "fornecedores",
-     "op": "select"
-    },
-    {
-     "table": "produtos",
-     "op": "select"
-    },
-    {
-     "table": "categorias",
      "op": "select"
     },
     {
@@ -98799,10 +98789,11 @@
      "valor_total"
     ],
     "pedido_itens": [
+     "codigo_fornecedor",
      "descricao",
      "id",
      "pedido_id",
-     "produto_id",
+     "pim_product_id",
      "quantidade",
      "quantidade_recebida",
      "valor_total",
@@ -98817,20 +98808,6 @@
      "razao_social",
      "segmento",
      "status"
-    ],
-    "produtos": [
-     "categoria_id",
-     "codigo",
-     "id",
-     "nome",
-     "organization_id",
-     "preco_medio",
-     "unidade"
-    ],
-    "categorias": [
-     "id",
-     "nome",
-     "organization_id"
     ],
     "solicitacoes": [
      "centro_custo",
@@ -103891,7 +103868,7 @@
   },
   "src/pages/gerar-ordem/GerarOrdem.tsx": {
    "path": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "lines": 564,
+   "lines": 580,
    "exports": [
     "default GerarOrdem"
    ],
@@ -104660,7 +104637,7 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 408,
+   "lines": 413,
    "exports": [
     "function RecebimentoOffline"
    ],
@@ -104768,7 +104745,7 @@
   },
   "src/pages/recebimento/recebimentoHelpers.ts": {
    "path": "src/pages/recebimento/recebimentoHelpers.ts",
-   "lines": 88,
+   "lines": 103,
    "exports": [
     "interface PendingOrder",
     "interface OrderItem",
@@ -104833,17 +104810,13 @@
   },
   "src/pages/recompra/RecompraInteligente.tsx": {
    "path": "src/pages/recompra/RecompraInteligente.tsx",
-   "lines": 333,
+   "lines": 334,
    "exports": [
     "default RecompraInteligente"
    ],
    "tables": [
     {
      "table": "repurchase_suggestions",
-     "op": "select"
-    },
-    {
-     "table": "produtos",
      "op": "select"
     },
     {
@@ -104876,12 +104849,6 @@
      "id",
      "status",
      "tenant_id"
-    ],
-    "produtos": [
-     "codigo",
-     "id",
-     "nome",
-     "unidade"
     ],
     "fornecedores": [
      "id",
@@ -113033,10 +113000,24 @@
   }
  },
  "git": {
-  "sha": "625b45ac41392599a6b55023e2cb41cafdb12431",
+  "sha": "6ae4856270befa64a4dbd4c59f539c519aaf89ef",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6ae4856",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: compra grava referencia do PIM e congela o item (#242)",
+    "files": [
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/hooks/usePurchaseHistory.ts",
+     "src/pages/gerar-ordem/GerarOrdem.tsx",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/recebimentoHelpers.ts",
+     "src/pages/recompra/RecompraInteligente.tsx"
+    ]
+   },
    {
     "sha": "625b45a",
     "date": "2026-11-21",
@@ -113359,15 +113340,6 @@
      "docs/pendencias/edge-maintain.md",
      "docs/pendencias/hk-dead-mortos.md"
     ]
-   },
-   {
-    "sha": "7598400",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)",
-    "files": [
-     "supabase/functions/ai-supplier-risk/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113424,31 +113396,31 @@
     2
    ],
    [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
+    "src/hooks/usePurchaseHistory.ts",
+    1
+   ],
+   [
+    "src/pages/gerar-ordem/GerarOrdem.tsx",
+    1
+   ],
+   [
+    "src/pages/recebimento/RecebimentoOffline.tsx",
+    1
+   ],
+   [
+    "src/pages/recebimento/recebimentoHelpers.ts",
+    1
+   ],
+   [
+    "src/pages/recompra/RecompraInteligente.tsx",
+    1
+   ],
+   [
     "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261121160000_pim_refs_compras.sql",
-    1
-   ],
-   [
-    ".github/workflows/provisionar-vapid.yml",
-    1
-   ],
-   [
-    "src/hooks/useCatalogoPim.ts",
-    1
-   ],
-   [
-    "public/push-handler.js",
-    1
-   ],
-   [
-    "src/lib/__tests__/pushHandler.test.ts",
-    1
-   ],
-   [
-    "vite.config.ts",
     1
    ]
   ]

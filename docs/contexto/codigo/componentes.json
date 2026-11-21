@@ -4943,10 +4943,11 @@
     "GerarOrdem"
    ],
    "export_default": "GerarOrdem",
-   "linhas": 564,
+   "linhas": 580,
    "dominio": "pages/gerar-ordem",
    "hooks_locais": [
     "useAuth",
+    "useCatalogoPim",
     "useCotacoes",
     "usePedidos"
    ],
@@ -5275,7 +5276,7 @@
     "RecebimentoOffline"
    ],
    "export_default": "RecebimentoOffline",
-   "linhas": 408,
+   "linhas": 413,
    "dominio": "pages/recebimento",
    "hooks_locais": [
     "useAuth"
@@ -5308,15 +5309,15 @@
     "RecompraInteligente"
    ],
    "export_default": "RecompraInteligente",
-   "linhas": 333,
+   "linhas": 334,
    "dominio": "pages/recompra",
    "hooks_locais": [
-    "useAuth"
+    "useAuth",
+    "useCatalogoPim"
    ],
    "tabelas": [
     "fornecedores",
     "pedido_itens",
-    "produtos",
     "repurchase_suggestions"
    ],
    "edges": [],
