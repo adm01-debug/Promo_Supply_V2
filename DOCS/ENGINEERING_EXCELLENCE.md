@@ -4,7 +4,7 @@ Este projeto segue os mais altos padrões de engenharia sênior, com foco em per
 
 ---
 
-## 1. Frontend: Alta Performance e UX Fluida (Status: 10/10)
+## 1. Frontend: Alta Performance e UX Fluida
 
 ### 1.1 Otimização de Performance
 *   **Lazy Loading Global:** Todas as rotas e componentes pesados (gráficos, tabelas complexas) utilizam `React.lazy` e `Suspense`.
@@ -18,7 +18,7 @@ Este projeto segue os mais altos padrões de engenharia sênior, com foco em per
 
 ---
 
-## 2. Backend e Segurança: Resiliência e Compliance (Status: 10/10)
+## 2. Backend e Segurança: Resiliência e Compliance
 
 ### 2.1 Segurança em Camadas
 *   **Zero Trust RLS:** Políticas de Row Level Security garantem isolamento total entre tenants e acesso baseado em roles (RBAC).
@@ -31,7 +31,7 @@ Este projeto segue os mais altos padrões de engenharia sênior, com foco em per
 
 ---
 
-## 3. Qualidade de Código e QA (Status: 10/10)
+## 3. Qualidade de Código e QA
 
 ### 3.1 Testes Automatizados
 *   **Hooks Críticos:** Cobertura de testes unitários para `useAuth`, `usePermissions` e hooks de performance.
@@ -51,5 +51,5 @@ Este projeto segue os mais altos padrões de engenharia sênior, com foco em per
 3.  **Edge Cache:** Otimizar headers de cache para dados de baixa volatilidade.
 
 ---
-*Documento certificado por Engenharia de Software Sênior / PhD QA*
+*Guia de boas práticas de engenharia — revisão contínua conforme o catálogo de pendências (`docs/pendencias/_indice.md`).*
 

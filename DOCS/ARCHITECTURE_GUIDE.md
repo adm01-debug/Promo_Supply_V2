@@ -1,4 +1,4 @@
-# Guia de Arquitetura - Freight Quest
+# Guia de Arquitetura - Promo Supply
 
 ## 🗺️ Mapa de Pastas e Responsabilidades
 
@@ -23,19 +23,12 @@ O projeto segue uma arquitetura modular baseada em React (Vite) e Supabase.
 3. **Serviço/Edge Function**: Executa a lógica pesada ou acessa o banco.
 4. **Estado (React Query/Context)**: Atualiza o cache e reflete na UI.
 
-### Exemplo Real (Solicitação Neural):
+### Exemplo Real (Draft Neural — process-solicitacao-neural):
 ```typescript
 // No Componente: NovaSolicitacaoModal.tsx
-const { mutate } = useNeuralSolicitacao();
-mutate(data);
-
-// No Hook: useProdutos.ts (ou similar)
-const processNeural = async (payload) => {
-  const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
-    body: payload
-  });
-  return data;
-};
+const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
+  body: { input: neuralInput }
+});
 ```
 
 ---
