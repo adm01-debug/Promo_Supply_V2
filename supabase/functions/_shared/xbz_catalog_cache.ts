@@ -136,7 +136,7 @@ export async function readCatalogoCacheWithMeta(
     .order("last_synced_at", { ascending: false })
     .limit(limit);
 
-  if (term && term !== "a") {
+  if (term) {
     const pattern = `%${term.replace(/[%_,]/g, " ")}%`;
     query = query.or(
       `nome.ilike.${pattern},sku.ilike.${pattern},codigo_amigavel.ilike.${pattern},codigo_composto.ilike.${pattern}`,
