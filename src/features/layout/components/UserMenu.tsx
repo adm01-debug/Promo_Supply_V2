@@ -10,11 +10,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useNavigate } from "react-router-dom";
 import { useAuth } from '@/features/auth';
 import { roleLabels, roleColors } from '@/features/auth';
 import { cn } from '@/lib/utils';
 
 export const UserMenu = () => {
+  const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
 
   if (!user) return null;
@@ -72,11 +74,11 @@ export const UserMenu = () => {
           </>
         )}
 
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/seguranca')}>
           <User className="mr-2 h-4 w-4" />
           Meu Perfil
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/seguranca')}>
           <Settings className="mr-2 h-4 w-4" />
           Configurações
         </DropdownMenuItem>
