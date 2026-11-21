@@ -104,14 +104,57 @@ jobs:
           PGCONNECT_TIMEOUT: '30'
           PGOPTIONS: '-c statement_timeout=300000'
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
         run: |
           # psql sem --single-transaction deixaria o arquivo parcialmente aplicado
           # se um comando no meio falhasse. ON_ERROR_STOP + single-transaction e'
           # o que garante "tudo ou nada".
+          #
+          # SUPABASE_DB_URL conecta como ci_snapshot (role de leitura do
+          # paridade-banco.yml). Ela NAO tem privilegio no schema cron, entao
+          # migrations que chamam cron.schedule/alter_job falham com "permission
+          # denied". Nesse caso o MESMO arquivo e' aplicado pelo Management API,
+          # que executa como owner do projeto -- e o psql nao e' reexecutado
+          # depois, para nao aplicar duas vezes.
+          set +e
           psql "${SUPABASE_DB_URL}" \
             -v ON_ERROR_STOP=1 \
             --single-transaction \
-            -f "supabase/migrations/${{ inputs.migration }}"
+            -f "supabase/migrations/${{ inputs.migration }}" \
+            2> "${RUNNER_TEMP}/psql.err"
+          codigo=$?
+          set -e
+
+          if [[ ${codigo} -eq 0 ]]; then
+            echo "aplicado via psql."
+            exit 0
+          fi
+
+          if ! grep -qiE 'permission denied for (function|schema|table) ' "${RUNNER_TEMP}/psql.err"; then
+            cat "${RUNNER_TEMP}/psql.err"
+            echo "::error::psql falhou por motivo que nao e' privilegio. Nada aplicado."
+            exit "${codigo}"
+          fi
+
+          echo "psql sem privilegio no schema cron (esperado: role ci_snapshot). Aplicando pelo Management API."
+          # jq monta o JSON do arquivo, evitando escapar SQL a mao. O Management
+          # API roda o script inteiro em uma transacao implicita e devolve erro
+          # HTTP em qualquer falha, entao o "tudo ou nada" se mantem.
+          jq -Rs '{query: .}' "supabase/migrations/${{ inputs.migration }}" \
+            > "${RUNNER_TEMP}/corpo.json"
+          http=$(curl -sS -o "${RUNNER_TEMP}/resposta.json" -w '%{http_code}' \
+            -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data-binary @"${RUNNER_TEMP}/corpo.json")
+
+          if [[ "${http}" != "200" && "${http}" != "201" ]]; then
+            cat "${RUNNER_TEMP}/resposta.json"
+            echo "::error::Management API respondeu HTTP ${http}. Nada foi aplicado."
+            exit 1
+          fi
+          echo "aplicado via Management API (HTTP ${http})."
 
       - name: Fotografar o estado depois
         env:
