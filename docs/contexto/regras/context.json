@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc",
+  "sha": "0b8e547a20e94227e248fc185536e613ace2a0e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 22:42 UTC",
+  "generated_at": "2026-11-21 22:55 UTC",
   "files_total": 1286,
   "code_files": 1123,
-  "code_lines": 193260,
+  "code_lines": 193286,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7dc8823d4cd96ae5",
+ "facts_hash": "22e68126a6cd6a0d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35443,7 +35443,7 @@
   {
    "module": "src/tests",
    "files": 11,
-   "lines": 878,
+   "lines": 899,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35508,7 +35508,7 @@
   {
    "module": "supabase/functions",
    "files": 90,
-   "lines": 15871,
+   "lines": 15876,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -67104,6 +67104,22 @@
    {
     "file": "src/tests/spot/spotApi.test.ts",
     "name": "getOrders envia o parametro Status - a API SPOT responde ErrorCode 2 sem ele"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "readOrdersDetails desembrulha OrderV1Result do OrderV1"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "readOrdersDetails continua lendo a resposta plana do OrdersV1"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "readOrdersDetails aceita OrderDetails singular"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "readOrdersDetails devolve [] para payload sem detalhes"
    },
    {
     "file": "src/tests/spot/spotApi.test.ts",
@@ -106950,7 +106966,7 @@
   },
   "src/tests/spot/spotApi.test.ts": {
    "path": "src/tests/spot/spotApi.test.ts",
-   "lines": 190,
+   "lines": 211,
    "is_test": true,
    "errors": [
     "nao achei "
@@ -106992,6 +107008,10 @@
     "permite os tres syncs no cron",
     "mantem createOrder fora do cron — cria compromisso financeiro",
     "getOrders envia o parametro Status - a API SPOT responde ErrorCode 2 sem ele",
+    "readOrdersDetails desembrulha OrderV1Result do OrderV1",
+    "readOrdersDetails continua lendo a resposta plana do OrdersV1",
+    "readOrdersDetails aceita OrderDetails singular",
+    "readOrdersDetails devolve [] para payload sem detalhes",
     "toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)"
    ]
   },
@@ -107810,7 +107830,7 @@
   },
   "supabase/functions/_shared/spot_api.ts": {
    "path": "supabase/functions/_shared/spot_api.ts",
-   "lines": 262,
+   "lines": 267,
    "exports": [
     "const SPOT_DAILY_LIMITS",
     "const SPOT_QUOTA_RESERVE",
@@ -113147,10 +113167,20 @@
   }
  },
  "git": {
-  "sha": "2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc",
+  "sha": "0b8e547a20e94227e248fc185536e613ace2a0e4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0b8e547",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)",
+    "files": [
+     "src/tests/spot/spotApi.test.ts",
+     "supabase/functions/_shared/spot_api.ts"
+    ]
+   },
    {
     "sha": "2b94f6d",
     "date": "2026-11-21",
@@ -113444,22 +113474,6 @@
      "src/hooks/useRealPushNotifications.ts",
      "src/vite-env.d.ts"
     ]
-   },
-   {
-    "sha": "33a4ea1",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: dashboard executivo passa a usar dados reais do banco (#226)",
-    "files": [
-     "src/components/compras/ExecutiveDashboard.tsx",
-     "src/components/compras/executive/ExecutiveAIInsights.tsx",
-     "src/components/compras/executive/ExecutiveChartsRow.tsx",
-     "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
-     "src/components/compras/executive/ExecutiveFiltersBar.tsx",
-     "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
-     "src/components/compras/executive/executiveDashboardData.ts",
-     "src/hooks/useExecutiveDashboardData.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113469,7 +113483,7 @@
    ],
    [
     "src/tests/spot/spotApi.test.ts",
-    2
+    3
    ],
    [
     "supabase/functions/spot-api/index.ts",
@@ -113498,6 +113512,10 @@
    [
     "docs/pendencias/_indice.md",
     2
+   ],
+   [
+    "supabase/functions/_shared/spot_api.ts",
+    1
    ],
    [
     "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
@@ -113537,10 +113555,6 @@
    ],
    [
     "supabase/functions/weekly-report/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/weekly-summary-report/index.ts",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc",
+  "commit": "0b8e547a20e94227e248fc185536e613ace2a0e4",
   "branch": "main",
-  "data_commit": "2026-11-21T19:40:09-03:00",
+  "data_commit": "2026-11-21T19:53:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0b8e547",
+    "data": "2026-11-21",
+    "assunto": "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)"
+   },
    {
     "sha": "2b94f6d",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "a441c3d",
     "data": "2026-11-21",
     "assunto": "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)"
-   },
-   {
-    "sha": "199e4ed",
-    "data": "2026-11-21",
-    "assunto": "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)"
    }
   ],
-  "arquivos_mudados_7d": 228,
+  "arquivos_mudados_7d": 229,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "pasta": "docs/pendencias/_indice.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 218
+    "commits": 219
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1285,
   "arquivos_codigo": 799,
-  "linhas_codigo": 167047,
+  "linhas_codigo": 167073,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -484,7 +484,7 @@
   },
   "src/tests": {
    "arquivos": 11,
-   "linhas": 878
+   "linhas": 899
   },
   "src/types": {
    "arquivos": 3,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 90,
-   "linhas": 15871
+   "linhas": 15876
   },
   "tailwind.config.ts": {
    "arquivos": 1,

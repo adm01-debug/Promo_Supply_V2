@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc` (2026-11-21T19:40:09-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0b8e547a20e94227e248fc185536e613ace2a0e4` (2026-11-21T19:53:52-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1285 |
 | arquivos_codigo | 799 |
-| linhas_codigo | 167047 |
+| linhas_codigo | 167073 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -414,6 +414,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `0b8e547` fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)
 - 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
 - 2026-11-21 `e39f3aa` fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)
 - 2026-11-21 `502c3b5` fix(spot): permite getOrders no cron para popular spot_pedidos (#256)
@@ -428,7 +429,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
 - 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
 - 2026-11-21 `625b45a` fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)
-- 2026-11-21 `3192276` feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
