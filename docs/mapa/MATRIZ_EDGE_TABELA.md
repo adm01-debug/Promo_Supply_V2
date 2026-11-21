@@ -117,3 +117,4 @@
 | `_shared/telemetry.ts` | `telemetry_logs` |
 | `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
 | `_shared/xbz_catalog_cache.ts` | `xbz_produtos` |
+| `_shared/xbz_fiscal_cache.ts` | `xbz_cores`, `xbz_produto_fiscal` |
