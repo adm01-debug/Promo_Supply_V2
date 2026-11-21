@@ -35,6 +35,8 @@
   "supabase/functions/_shared/xbz_catalog_cache.ts",
   "supabase/functions/_shared/xbz_client.ts",
   "supabase/functions/_shared/xbz_crypto.ts",
+  "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+  "supabase/functions/_shared/xbz_fiscal_cache.ts",
   "supabase/functions/_shared/xbz_pedido_map.test.ts",
   "supabase/functions/_shared/xbz_pedido_map.ts",
   "supabase/functions/_shared/xbz_portador.test.ts",
@@ -1410,7 +1412,7 @@
    "nome": "xbz-proxy",
    "entrada": "supabase/functions/xbz-proxy/index.ts",
    "arquivos": 1,
-   "linhas": 517,
+   "linhas": 533,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1434,6 +1436,7 @@
     "xbz_catalog_cache.ts",
     "xbz_client.ts",
     "xbz_crypto.ts",
+    "xbz_fiscal_cache.ts",
     "xbz_portador.ts"
    ],
    "chamada_pelo_front": [

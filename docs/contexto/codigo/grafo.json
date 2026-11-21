@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 608,
- "arestas": 2725,
+ "nos": 609,
+ "arestas": 2727,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",

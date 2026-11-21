@@ -22325,12 +22325,14 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "_shared"
+   ],
    "triggers": [
     "trg_xbz_cores_updated"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "xbz_credentials": {
    "colunas": {
@@ -23045,12 +23047,14 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "_shared"
+   ],
    "triggers": [
     "trg_xbz_produto_fiscal_updated"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "xbz_produtos": {
    "colunas": {

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 183,
+ "total": 184,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 167
+  "unit": 168
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 25
+   "arquivos": 26
   },
   {
    "padrao": "tests-e2e/",
@@ -1461,6 +1461,15 @@
    "casos": 9
   },
   {
+   "arquivo": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+   "tipo": "unit",
+   "linhas": 95,
+   "testa": [
+    "supabase/functions/_shared/xbz_fiscal_cache.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "supabase/functions/_shared/xbz_pedido_map.test.ts",
    "tipo": "unit",
    "linhas": 145,
@@ -1784,6 +1793,7 @@
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
   "supabase/functions/_shared/xbz_client.ts": 1,
+  "supabase/functions/_shared/xbz_fiscal_cache.ts": 1,
   "supabase/functions/_shared/xbz_pedido_map.ts": 1,
   "supabase/functions/_shared/xbz_portador.ts": 1,
   "supabase/functions/check-sla-alerts/failures.ts": 1,

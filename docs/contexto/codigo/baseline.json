@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7a030e426cf5b08d4f30d603f15b1bdda0eb92a3",
+  "commit": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
   "branch": "main",
-  "data_commit": "2026-11-21T12:09:37-03:00",
+  "data_commit": "2026-11-21T12:21:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "199e4ed",
+    "data": "2026-11-21",
+    "assunto": "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)"
+   },
    {
     "sha": "7a030e4",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "ec27cd4",
     "data": "2026-11-20",
     "assunto": "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)"
-   },
-   {
-    "sha": "60860f7",
-    "data": "2026-11-20",
-    "assunto": "chore(docs): marca edge-audit como concluido (PR #203) (#204)"
    }
   ],
-  "arquivos_mudados_7d": 199,
+  "arquivos_mudados_7d": 201,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,19 +145,19 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 23
+    "mudancas": 25
    },
    {
     "pasta": "src/pages/catalogo-xbz",
     "mudancas": 14
    },
    {
-    "pasta": "package.json",
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 12
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 11
+    "pasta": "package.json",
+    "mudancas": 12
    },
    {
     "pasta": "supabase/functions/punchout-receive",
@@ -202,12 +202,12 @@
     "mudancas": 28
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 12
    },
    {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 11
+    "arquivo": "package.json",
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/main.yml",
@@ -258,6 +258,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "supabase/functions/xbz-proxy/index.ts",
+    "mudancas": 5
+   },
+   {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 4
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "supabase/config.toml",
     "mudancas": 4
-   },
-   {
-    "arquivo": "supabase/functions/_shared/xbz_client.ts",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 193
+    "commits": 194
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1268,
-  "arquivos_codigo": 791,
-  "linhas_codigo": 165751,
+  "arquivos_total": 1270,
+  "arquivos_codigo": 793,
+  "linhas_codigo": 166023,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 316,
   "cron_jobs": 71,
-  "testes": 183,
+  "testes": 184,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 89
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 86,
-   "linhas": 15377
+   "arquivos": 88,
+   "linhas": 15649
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -637,12 +637,12 @@
    "linhas": 535
   },
   {
-   "arquivo": "src/components/compras/AdvancedProcurementKPIs.tsx",
-   "linhas": 531
+   "arquivo": "supabase/functions/xbz-proxy/index.ts",
+   "linhas": 533
   },
   {
-   "arquivo": "src/components/compras/EnhancedPedidoTimeline.tsx",
-   "linhas": 524
+   "arquivo": "src/components/compras/AdvancedProcurementKPIs.tsx",
+   "linhas": 531
   }
  ],
  "qualidade": {

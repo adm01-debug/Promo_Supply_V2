@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7a030e426c` · branch `main` · 2026-11-21 15:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `199e4ed1b5` · branch `main` · 2026-11-21 15:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2346,7 +2346,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2653 testes em 135 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2658 testes em 136 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2460,6 +2460,7 @@ _nenhum item encontrado_
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |

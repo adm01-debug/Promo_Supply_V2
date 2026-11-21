@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7a030e426cf5b08d4f30d603f15b1bdda0eb92a3",
+  "sha": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 15:10 UTC",
-  "files_total": 1269,
-  "code_files": 1111,
-  "code_lines": 191729,
+  "generated_at": "2026-11-21 15:21 UTC",
+  "files_total": 1271,
+  "code_files": 1113,
+  "code_lines": 192001,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "1dddb1356b1cc19f",
+ "facts_hash": "d87c9ca934462123",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 372,
+   ".ts": 374,
    ".tsx": 348,
    ".sql": 318,
    ".mjs": 66,
@@ -32240,7 +32240,9 @@
      "user_roles",
      "user_tenants",
      "xbz_carrinho_log",
+     "xbz_cores",
      "xbz_credentials",
+     "xbz_produto_fiscal",
      "xbz_produtos"
     ],
     "env": [],
@@ -35308,8 +35310,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 86,
-   "lines": 15377,
+   "files": 88,
+   "lines": 15649,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35355,9 +35357,11 @@
     "workflow_logs",
     "workflow_nodes",
     "xbz_carrinho_log",
+    "xbz_cores",
     "xbz_credentials",
     "xbz_pedido_status_history",
     "xbz_pedidos",
+    "xbz_produto_fiscal",
     "xbz_produtos"
    ],
    "exports": [
@@ -35385,6 +35389,7 @@
     "xbz_catalog_cache.ts: XbzProdutoRow, mapProduto, normalizeCatalogo, mirrorCatalogo, readCatalogoCacheWithMeta, readCatalogoCache",
     "xbz_client.ts: XBZ_BASE, XBZ_TIMEOUT_MS, XBZ_NULL_DATE, XbzError, XbzCircuitOpenError, XbzPortalCredentials",
     "xbz_crypto.ts: encryptSecret, decryptSecret, maskSecret",
+    "xbz_fiscal_cache.ts: XbzFiscalRow, XbzCorRow, mapFiscal, normalizeCores, mirrorFiscal, mirrorCores",
     "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
     "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
@@ -35433,6 +35438,8 @@
     "supabase/functions/_shared/xbz_catalog_cache.ts",
     "supabase/functions/_shared/xbz_client.ts",
     "supabase/functions/_shared/xbz_crypto.ts",
+    "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "supabase/functions/_shared/xbz_fiscal_cache.ts",
     "supabase/functions/_shared/xbz_pedido_map.test.ts",
     "supabase/functions/_shared/xbz_pedido_map.ts",
     "supabase/functions/_shared/xbz_portador.test.ts",
@@ -35482,9 +35489,7 @@
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/telemetry/index.ts",
     "supabase/functions/tests/fuzzing_suite.ts",
-    "supabase/functions/tests/integration_suite.ts",
-    "supabase/functions/webauthn-authenticate/index.ts",
-    "supabase/functions/webauthn-register/index.ts"
+    "supabase/functions/tests/integration_suite.ts"
    ]
   },
   {
@@ -37123,6 +37128,11 @@
      "supabase/functions/xbz-proxy/index.ts"
     ]
    },
+   "xbz_cores": {
+    "upsert": [
+     "supabase/functions/_shared/xbz_fiscal_cache.ts"
+    ]
+   },
    "xbz_credentials": {
     "select": [
      "supabase/functions/_shared/xbz_auth.ts",
@@ -37147,6 +37157,11 @@
     ],
     "upsert": [
      "supabase/functions/xbz-sync-pedidos/index.ts"
+    ]
+   },
+   "xbz_produto_fiscal": {
+    "upsert": [
+     "supabase/functions/_shared/xbz_fiscal_cache.ts"
     ]
    },
    "xbz_produtos": {
@@ -39012,9 +39027,7 @@
    "user_organizations",
    "wal_rate_snapshots",
    "workflow_audit_log",
-   "workflow_tasks",
-   "xbz_cores",
-   "xbz_produto_fiscal"
+   "workflow_tasks"
   ],
   "columns_unknown": [
    {
@@ -67022,6 +67035,26 @@
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
     "name": "normalizeCatalogo: preserva o payload bruto para auditoria"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "name": "fiscal: mapeia os campos reais do getSt"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "name": "fiscal: aceita camelCase e numero em string pt-BR"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "name": "fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "name": "cores: normaliza, deduplica por id e descarta invalidas"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    "name": "cores: resposta que nao e lista vira lista vazia"
    },
    {
     "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
@@ -107664,6 +107697,47 @@
    ],
    "doc": "Criptografia AES-GCM para credenciais XBZ. As credenciais do portal XBZ (user/senha) e o token da API /clientes nunca são gravados em texto claro. A chave mestra vive apenas no secret `XBZ_ENCRYPTION_KEY` e nunca sai do servidor. Formato do ciphertext: base64( iv(12 bytes) || ciphertext+tag )."
   },
+  "supabase/functions/_shared/xbz_fiscal_cache.test.ts": {
+   "path": "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+   "lines": 95,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TENANT",
+     "value": "\"11111111-1111-4111-8111-111111111111\""
+    }
+   ],
+   "tests": [
+    "fiscal: mapeia os campos reais do getSt",
+    "fiscal: aceita camelCase e numero em string pt-BR",
+    "fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant",
+    "cores: normaliza, deduplica por id e descarta invalidas",
+    "cores: resposta que nao e lista vira lista vazia"
+   ]
+  },
+  "supabase/functions/_shared/xbz_fiscal_cache.ts": {
+   "path": "supabase/functions/_shared/xbz_fiscal_cache.ts",
+   "lines": 161,
+   "exports": [
+    "interface XbzFiscalRow",
+    "interface XbzCorRow",
+    "function mapFiscal",
+    "function normalizeCores",
+    "function mirrorFiscal",
+    "function mirrorCores"
+   ],
+   "tables": [
+    {
+     "table": "xbz_produto_fiscal",
+     "op": "upsert"
+    },
+    {
+     "table": "xbz_cores",
+     "op": "upsert"
+    }
+   ],
+   "doc": "Espelho da ficha fiscal (`getSt`) em `public.xbz_produto_fiscal` e da tabela de cores (`produtosCores`) em `public.xbz_cores`. Motivação: as duas tabelas existem desde a migration inicial e nenhuma rotina escrevia nelas. ST/IPI/MVA e o nome das cores só viviam na resposta da XBZ e sumiam ao sair da …"
+  },
   "supabase/functions/_shared/xbz_pedido_map.test.ts": {
    "path": "supabase/functions/_shared/xbz_pedido_map.test.ts",
    "lines": 145,
@@ -110678,7 +110752,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 517,
+   "lines": 533,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -112667,10 +112741,22 @@
   }
  },
  "git": {
-  "sha": "7a030e426cf5b08d4f30d603f15b1bdda0eb92a3",
+  "sha": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "199e4ed",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+     "supabase/functions/_shared/xbz_fiscal_cache.ts",
+     "supabase/functions/xbz-proxy/index.ts"
+    ]
+   },
    {
     "sha": "7a030e4",
     "date": "2026-11-21",
@@ -113000,21 +113086,16 @@
      "src/pages/devolucoes/DevolucoesModals.tsx",
      "src/pages/pedidos/PedidoDetailsDialog.tsx"
     ]
-   },
-   {
-    "sha": "0ef80b8",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)",
-    "files": [
-     "src/pages/portal-fornecedor/PortalFornecedor.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
     14
+   ],
+   [
+    "supabase/functions/xbz-proxy/index.ts",
+    5
    ],
    [
     "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -113025,12 +113106,12 @@
     4
    ],
    [
-    "supabase/functions/xbz-proxy/index.ts",
-    4
-   ],
-   [
     "src/hooks/useXbzIntegration.ts",
     3
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
    ],
    [
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
@@ -113057,6 +113138,14 @@
     2
    ],
    [
+    "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_fiscal_cache.ts",
+    1
+   ],
+   [
     "src/features/layout/components/CommandPalette.tsx",
     1
    ],
@@ -113078,18 +113167,6 @@
    ],
    [
     "src/vite-env.d.ts",
-    1
-   ],
-   [
-    "src/components/compras/ExecutiveDashboard.tsx",
-    1
-   ],
-   [
-    "src/components/compras/executive/ExecutiveAIInsights.tsx",
-    1
-   ],
-   [
-    "src/components/compras/executive/ExecutiveChartsRow.tsx",
     1
    ]
   ]

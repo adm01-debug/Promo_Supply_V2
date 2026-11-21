@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7a030e426cf5b08d4f30d603f15b1bdda0eb92a3` (2026-11-21T12:09:37-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `199e4ed1b5037b91c1f4d88fa470a87641aeb641` (2026-11-21T12:21:28-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (720), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (722), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1268 |
-| arquivos_codigo | 791 |
-| linhas_codigo | 165751 |
+| arquivos_total | 1270 |
+| arquivos_codigo | 793 |
+| linhas_codigo | 166023 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 163 |
 | migrations | 316 |
 | cron_jobs | 71 |
-| testes | 183 |
+| testes | 184 |
 | workflows | 11 |
 | scripts | 49 |
 | docs_md | 89 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (108), outro (40), co-localizado (*.test) (25)
+- testes: co-localizado (__tests__) (108), outro (40), co-localizado (*.test) (26)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -332,8 +332,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (28)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (12)
 - package.json (12)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - .github/workflows/main.yml (9)
 - docs/prod-readiness.md (9)
 - bun.lock (8)
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
 - 2026-11-21 `7a030e4` fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)
 - 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
 - 2026-11-21 `9ae679b` chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `7b6d6f8` docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)
 - 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
 - 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
-- 2026-11-21 `af0e42f` chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
