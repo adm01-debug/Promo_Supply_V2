@@ -60,7 +60,7 @@ catalogo, Fase 2 execucao vertical por item.
 | hk-account-filter | `useAccountFilters` upsert tipado (sem cast never) | CONCLUIDO | `useAccountFilters.ts` |
 | hk-buyer-perf | `useBuyerPerformanceData` taxa real + economia por fornecedor | CONCLUIDO | `useBuyerPerformanceData.ts` |
 | hk-purchase-hist | avgDeliveryDays calculado por entrega real | CONCLUIDO | `usePurchaseHistory.ts` |
-| hk-push | `useRealPushNotifications` VAPID placeholder | CONCLUIDO - VAPID vem do env (VITE_VAPID_PUBLIC_KEY); sem key nao registra (evita gravar endpoints inalcancaveis); falta SW com handler `push` (proximo passo) | #228 / `useRealPushNotifications.ts:85-95` |
+| hk-push | `useRealPushNotifications` VAPID placeholder | CONCLUIDO — VAPID vem do env (`VITE_VAPID_PUBLIC_KEY`); sem key não registra (evita gravar endpoints inalcançáveis); SW com handler `push` entregue (#234) | #228 + #234 / `useRealPushNotifications.ts:85-95`, `public/push-handler.js` |
 | hk-idle | `useSessionIdleTimeout` catch vazio | DESCARTADO (manter - best-effort intencional: signOut nunca lanca unhandled) | `useSessionIdleTimeout.ts:28-30` |
 
 ## Front - componentes/telas (A6) sem acao
