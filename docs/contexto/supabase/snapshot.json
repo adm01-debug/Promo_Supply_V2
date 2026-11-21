@@ -36366,15 +36366,6 @@
         },
         {
           "active": true,
-          "command": "SELECT public._invoke_spot_sync('syncStock');",
-          "database": "postgres",
-          "jobid": 33,
-          "jobname": "spot-api-sync-stock",
-          "schedule": "*/15 * * * *",
-          "username": "postgres"
-        },
-        {
-          "active": true,
           "command": "delete from cron.job_run_details where end_time < now() - interval '7 days'",
           "database": "postgres",
           "jobid": 110,
@@ -36471,6 +36462,24 @@
           "jobname": "weekly-summary-report-job",
           "schedule": "0 8 * * 1",
           "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_spot_sync('getOrders');",
+          "database": "postgres",
+          "jobid": 121,
+          "jobname": "spot-api-sync-orders-30min",
+          "schedule": "*/30 * * * *",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_spot_sync('syncStock');",
+          "database": "postgres",
+          "jobid": 122,
+          "jobname": "spot-api-sync-stock",
+          "schedule": "*/20 * * * *",
+          "username": "postgres"
         }
       ]
     },
@@ -36590,13 +36599,22 @@
             {
               "file": "supabase/migrations/20261112171742_cron_edge_projeto_correto_vault.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 3,
           "cron": [
             "31:spot-api-sync-catalog",
             "32:spot-api-sync-customization",
-            "33:spot-api-sync-stock"
+            "121:spot-api-sync-orders-30min",
+            "122:spot-api-sync-stock"
           ],
           "db": [],
           "triggers": [],

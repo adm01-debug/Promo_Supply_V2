@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "8b01dfef3d43875a366bd98967a5f28efe13f909",
+  "sha": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 22:57 UTC",
+  "generated_at": "2026-11-21 23:10 UTC",
   "files_total": 1287,
   "code_files": 1124,
   "code_lines": 193316,
@@ -113178,10 +113178,19 @@
   }
  },
  "git": {
-  "sha": "8b01dfef3d43875a366bd98967a5f28efe13f909",
+  "sha": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d528e0e",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)",
+    "files": [
+     "docs/agentes/estado-spot-sync.md"
+    ]
+   },
    {
     "sha": "8b01dfe",
     "date": "2026-11-21",
@@ -113475,15 +113484,6 @@
      ".github/workflows/main.yml",
      "docs/ci/README.md"
     ]
-   },
-   {
-    "sha": "9ae679b",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
@@ -113520,8 +113520,8 @@
     2
    ],
    [
-    "docs/pendencias/_indice.md",
-    2
+    "docs/agentes/estado-spot-sync.md",
+    1
    ],
    [
     "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8b01dfef3d43875a366bd98967a5f28efe13f909` (2026-11-21T19:54:01-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2` (2026-11-21T19:57:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -415,6 +415,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `d528e0e` docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)
 - 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
 - 2026-11-21 `0b8e547` fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)
 - 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
@@ -429,7 +430,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
 - 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
 - 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
-- 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

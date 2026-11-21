@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-21 23:10 UTC
+
+- **cron jobs** adicionado (2): `121:spot-api-sync-orders-30min`, `122:spot-api-sync-stock`
+- **cron jobs** removido (1): `33:spot-api-sync-stock`
+- **functions** alterado (1): `public._invoke_spot_sync(_action text)`
+
 ## 2026-11-21 19:09 UTC
 
 - **colunas** adicionado (9): `public.estoque.pim_product_id`, `public.pedido_itens.codigo_fornecedor`, `public.pedido_itens.ipi_rate`, `public.pedido_itens.ncm`, `public.pedido_itens.pim_product_id`, `public.pedido_itens.pim_variant_id`, `public.repurchase_suggestions.pim_product_id`, `public.solicitacoes.pim_product_id`, `public.solicitacoes.pim_variant_id`

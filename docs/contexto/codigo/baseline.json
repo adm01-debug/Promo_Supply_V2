@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8b01dfef3d43875a366bd98967a5f28efe13f909",
+  "commit": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
   "branch": "main",
-  "data_commit": "2026-11-21T19:54:01-03:00",
+  "data_commit": "2026-11-21T19:57:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d528e0e",
+    "data": "2026-11-21",
+    "assunto": "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)"
+   },
    {
     "sha": "8b01dfe",
     "data": "2026-11-21",
@@ -126,11 +131,6 @@
     "sha": "5f273a0",
     "data": "2026-11-21",
     "assunto": "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa"
-   },
-   {
-    "sha": "b30b4cd",
-    "data": "2026-11-21",
-    "assunto": "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)"
    }
   ],
   "arquivos_mudados_7d": 230,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 220
+    "commits": 221
    },
    {
     "autor": "dependabot[bot]",

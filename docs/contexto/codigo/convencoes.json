@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)",
    "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)",
    "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)",
    "feat(spot): versiona cron spot-api-sync-orders-30min (#258)",
-   "fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)",
-   "fix(spot): permite getOrders no cron para popular spot_pedidos (#256)"
+   "fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)"
   ]
  },
  "pr_template": null,

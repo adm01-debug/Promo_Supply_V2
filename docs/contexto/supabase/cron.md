@@ -17,7 +17,6 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 24 | xbz-sync-watchdog-hourly | `15 * * * *` | sim | postgres | postgres | `select public.xbz_sync_watchdog()` |
 | 31 | spot-api-sync-catalog | `10 3 * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncCatalog');` |
 | 32 | spot-api-sync-customization | `40 3 * * 1` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncCustomization');` |
-| 33 | spot-api-sync-stock | `*/15 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncStock');` |
 | 110 | limpa-historico-cron-semanal | `17 4 * * 0` | sim | postgres | postgres | `delete from cron.job_run_details where end_time < now() - interval '7 days'` |
 | 111 | scan-particoes-semanal | `45 4 * * 0` | sim | postgres | postgres | `SELECT public.scan_partition_candidates(1.0)` |
 | 112 | xbz-sync-pedidos-30min | `*/30 * * * *` | sim | postgres | postgres | `SELECT public._invoke_xbz_sync();` |
@@ -29,3 +28,5 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 118 | sla-alerts-check | `*/30 * * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-sla-alerts');` |
 | 119 | weekly-procurement-report | `0 11 * * 1` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('weekly-report');` |
 | 120 | weekly-summary-report-job | `0 8 * * 1` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('weekly-summary-report');` |
+| 121 | spot-api-sync-orders-30min | `*/30 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('getOrders');` |
+| 122 | spot-api-sync-stock | `*/20 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncStock');` |
