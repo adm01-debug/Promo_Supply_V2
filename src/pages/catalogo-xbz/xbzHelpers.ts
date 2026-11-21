@@ -87,6 +87,49 @@ export function isBuscaValida(term: string | null | undefined): boolean {
   return normalizeBusca(term).length >= XBZ_BUSCA_MIN;
 }
 
+/** Converte número no formato pt-BR da XBZ ("8.044", "12,50") ou numérico. */
+export function parseXbzNumber(value: unknown): number | null {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const n = Number(value.replace(/\./g, '').replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Campos do item de catálogo que a tela usa, lidos dos nomes reais da API (v6 §4.3). */
+export interface XbzProdutoView {
+  id: number;
+  sku: string;
+  nome: string;
+  cor: string | null;
+  preco: number | null;
+  /** `QtdDisponivel`, ou `QtdDisponivelExibicao` quando aquele vem 0 (observado 21/11/2026). */
+  quantidade: number | null;
+  vendaMinima: number;
+  multiplos: number;
+  disponivel: string;
+  imagem: string | null;
+}
+
+export function produtoView(p: Record<string, unknown>): XbzProdutoView {
+  const cor = p.CorPredominante && typeof p.CorPredominante === 'object'
+    ? (p.CorPredominante as Record<string, unknown>)
+    : null;
+  const qtd = parseXbzNumber(p.QtdDisponivel);
+  const qtdExibicao = parseXbzNumber(p.QtdDisponivelExibicao);
+  return {
+    id: Number(p.IdProduto ?? 0) || 0,
+    sku: String(p.CodigoXbz ?? ''),
+    nome: String(p.Nome ?? '—'),
+    cor: cor && cor.NomeCor ? String(cor.NomeCor) : null,
+    preco: parseXbzNumber(p.PrecoVenda),
+    quantidade: qtd !== null && qtd > 0 ? qtd : qtdExibicao ?? qtd,
+    vendaMinima: Number(p.VendaMinima ?? 1) || 1,
+    multiplos: Number(p.Multiplos ?? 1) || 1,
+    disponivel: String(p.Disponivel ?? '—'),
+    imagem: typeof p.ImageLink === 'string' && p.ImageLink ? p.ImageLink : null,
+  };
+}
+
 /** Tipos de entrega do controller /api/carrinho/ (IDs divergem de /api/clientes/). */
 export const XBZ_ENTREGA_TIPOS: Record<number, string> = {
   30: 'Transportadora indicada pelo cliente',

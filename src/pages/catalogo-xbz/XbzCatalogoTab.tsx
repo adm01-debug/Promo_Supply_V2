@@ -6,16 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, RefreshCw, Search, ShoppingCart, WifiOff } from 'lucide-react';
 import { useXbzIntegration, type XbzProdutoRaw } from '@/hooks/useXbzIntegration';
-import { formatBRL, isBuscaValida, XBZ_BUSCA_MIN } from './xbzHelpers';
+import { formatBRL, isBuscaValida, produtoView, XBZ_BUSCA_MIN } from './xbzHelpers';
 
 interface XbzCatalogoTabProps {
   canAddToCart: boolean;
   showPrices: boolean;
   onCartChanged?: () => void;
-}
-
-function produtoId(p: XbzProdutoRaw): number {
-  return Number(p.ProdutoId ?? p.Id ?? 0);
 }
 
 export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzCatalogoTabProps) {
@@ -48,10 +44,9 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
 
 
   const handleAdd = useCallback(async (produto: XbzProdutoRaw) => {
-    const id = produtoId(produto);
+    const { id, vendaMinima } = produtoView(produto);
     if (id <= 0) return;
-    const minimo = Number(produto.VendaMinima ?? 1) || 1;
-    const added = await adicionarItem(id, minimo);
+    const added = await adicionarItem(id, vendaMinima);
     if (added !== null) onCartChanged?.();
   }, [adicionarItem, onCartChanged]);
 
@@ -131,23 +126,27 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
               </TableRow>
             </TableHeader>
             <TableBody>
-              {produtos.map((p) => (
-                <TableRow key={`${produtoId(p)}-${String(p.Sku ?? '')}`}>
+              {produtos.map((p) => {
+                const v = produtoView(p);
+                return (
+                <TableRow key={`${v.id}-${v.sku}`}>
                   <TableCell>
-                    <span className="font-medium">{String(p.Nome ?? '—')}</span>
-                    <span className="block text-xs text-muted-foreground">{String(p.Sku ?? '')}</span>
+                    <span className="font-medium">{v.nome}</span>
+                    <span className="block text-xs text-muted-foreground">{v.sku}</span>
                   </TableCell>
-                  <TableCell>{String(p.NomeCor ?? '—')}</TableCell>
+                  <TableCell>{v.cor ?? '—'}</TableCell>
                   {showPrices ? (
-                    <TableCell className="text-right">{formatBRL(Number(p.Preco ?? NaN))}</TableCell>
+                    <TableCell className="text-right">{formatBRL(v.preco)}</TableCell>
                   ) : null}
-                  <TableCell className="text-right">{Number(p.Quantidade ?? 0)}</TableCell>
                   <TableCell className="text-right">
-                    {Number(p.VendaMinima ?? 1)} / {Number(p.Multiplos ?? 1)}
+                    {v.quantidade === null ? '—' : v.quantidade.toLocaleString('pt-BR')}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {v.vendaMinima} / {v.multiplos}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={String(p.Disponivel ?? '').toUpperCase() === 'SIM' ? 'default' : 'secondary'}>
-                      {String(p.Disponivel ?? '—')}
+                    <Badge variant={v.disponivel.toUpperCase() === 'SIM' ? 'default' : 'secondary'}>
+                      {v.disponivel}
                     </Badge>
                   </TableCell>
                   {canAddToCart ? (
@@ -156,15 +155,16 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
                         size="sm"
                         variant="outline"
                         onClick={() => handleAdd(p)}
-                        disabled={loading}
-                        aria-label={`Adicionar ${String(p.Nome ?? 'produto')} ao carrinho XBZ`}
+                        disabled={loading || v.id <= 0}
+                        aria-label={`Adicionar ${v.nome} ao carrinho XBZ`}
                       >
                         <ShoppingCart className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </TableCell>
                   ) : null}
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         ) : null}

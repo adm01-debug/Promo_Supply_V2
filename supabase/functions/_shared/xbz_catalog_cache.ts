@@ -1,7 +1,7 @@
 /**
  * Cache/espelho do catálogo XBZ em `public.xbz_produtos`.
  *
- * Motivação: `consultaEstoque` é a única rota de catálogo e depende da
+ * Motivação: o catálogo (`mxbzConsultaEstoque`/`consultaEstoque`) depende da
  * disponibilidade da XBZ (porta 5001, circuit breaker de 30s). Espelhar cada
  * resposta permite:
  *   - degradar com elegância (servir o último snapshot quando a XBZ cai);
@@ -34,16 +34,30 @@ export interface XbzProdutoRow {
   last_synced_at: string;
 }
 
+/**
+ * Lê a primeira chave presente. Aceita tanto PascalCase (`consultaEstoque`,
+ * `GetListaDeProdutos`) quanto camelCase (`mxbzConsultaEstoque` bruto).
+ */
 function pick(raw: Record<string, unknown>, ...keys: string[]): unknown {
   for (const key of keys) {
-    const value = raw[key];
-    if (value !== undefined && value !== null && value !== "") return value;
+    for (const k of [key, key.charAt(0).toLowerCase() + key.slice(1)]) {
+      const value = raw[k];
+      if (value !== undefined && value !== null && value !== "") return value;
+    }
   }
   return null;
 }
 
+function pickObject(raw: Record<string, unknown>, ...keys: string[]): Record<string, unknown> | null {
+  const value = pick(raw, ...keys);
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
 /**
- * Normaliza um item bruto do `consultaEstoque`.
+ * Normaliza um item bruto do catálogo XBZ (`consultaEstoque`, `mxbzConsultaEstoque`
+ * ou `/clientes/GetListaDeProdutos`). Nomes reais dos campos: DOCS/INTEGRACOES/XBZ.md §4.3.
  * Retorna `null` quando não há `produto_id` válido — a chave natural da tabela.
  */
 export function mapProduto(
@@ -51,25 +65,39 @@ export function mapProduto(
   raw: Record<string, unknown>,
   syncedAt = new Date().toISOString(),
 ): XbzProdutoRow | null {
-  const produtoId = toInt(pick(raw, "ProdutoId", "Produto_Id", "Id", "IdProduto"));
+  const produtoId = toInt(pick(raw, "IdProduto", "ProdutoId", "Id"));
   if (produtoId === null || produtoId <= 0) return null;
+
+  // Cor: `CorPredominante{Id,NomeCor}` no portal; `CorWebPrincipal(Id)` na API /clientes.
+  const cor = pickObject(raw, "CorPredominante");
+  const preco = toNumber(pick(raw, "PrecoVenda"));
+  const ipiTaxa = toNumber(pick(raw, "IpiTaxa"));
+
+  // Estoque: `QtdDisponivel` pode vir 0 com `QtdDisponivelExibicao` "8.044" (observado 21/11/2026);
+  // `QuantidadeDisponivel` é o nome na API /clientes.
+  const qtd = toInt(pick(raw, "QtdDisponivel"));
+  const qtdExibicao = toInt(pick(raw, "QtdDisponivelExibicao", "QuantidadeDisponivel"));
+  const quantidade = qtd !== null && qtd > 0 ? qtd : qtdExibicao ?? qtd;
 
   return {
     tenant_id: tenantId,
     produto_id: produtoId,
-    sku: toText(pick(raw, "Sku", "SKU", "Codigo")),
-    codigo_composto: toText(pick(raw, "CodigoComposto", "Codigo_Composto")),
-    codigo_amigavel: toText(pick(raw, "CodigoAmigavel", "Codigo_Amigavel")),
-    nome: toText(pick(raw, "Nome", "Descricao", "ProdutoNome")),
-    cor_id: toInt(pick(raw, "CorId", "Cor_Id", "IdCor")),
-    cor_nome: toText(pick(raw, "CorNome", "Cor", "Cor_Nome")),
-    preco: toNumber(pick(raw, "Preco", "PrecoUnitario", "Valor")),
-    preco_ipi: toNumber(pick(raw, "PrecoIpi", "Preco_IPI", "PrecoComIpi")),
-    quantidade_disponivel: toInt(pick(raw, "Quantidade", "QuantidadeDisponivel", "Estoque")),
-    disponivel: toText(pick(raw, "Disponivel", "Disponibilidade")),
-    venda_minima: toInt(pick(raw, "VendaMinima", "Venda_Minima")),
-    multiplos: toInt(pick(raw, "Multiplos", "Multiplo")),
-    imagem_url: toText(pick(raw, "Imagem", "ImagemUrl", "UrlImagem", "Foto")),
+    sku: toText(pick(raw, "CodigoXbz")),
+    codigo_composto: toText(pick(raw, "CodigoComposto")),
+    codigo_amigavel: toText(pick(raw, "CodigoAmigavel")),
+    nome: toText(pick(raw, "Nome")),
+    cor_id: toInt(cor ? pick(cor, "Id") : pick(raw, "CorWebPrincipalId")),
+    cor_nome: toText(cor ? pick(cor, "NomeCor") : pick(raw, "CorWebPrincipal")),
+    preco,
+    // Preço com IPI aplicado (a XBZ informa só a alíquota, em %).
+    preco_ipi: preco !== null && ipiTaxa !== null
+      ? Math.round(preco * (1 + ipiTaxa / 100) * 100) / 100
+      : null,
+    quantidade_disponivel: quantidade,
+    disponivel: toText(pick(raw, "Disponivel")),
+    venda_minima: toInt(pick(raw, "VendaMinima")),
+    multiplos: toInt(pick(raw, "Multiplos")),
+    imagem_url: toText(pick(raw, "ImageLink")),
     raw,
     last_synced_at: syncedAt,
   };
