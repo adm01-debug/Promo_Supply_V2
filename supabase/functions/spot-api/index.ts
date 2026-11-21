@@ -51,7 +51,17 @@ const VALID_ACTIONS: ReadonlySet<string> = new Set<Action>([
 ]);
 
 /** Ações que o cron pode disparar com a service role key (sem usuário). */
-const CRON_ACTIONS: ReadonlySet<string> = new Set<Action>(["syncCatalog", "syncCustomization", "syncStock"]);
+// `getOrders` entra na lista porque e a unica acao que popula `spot_pedidos`:
+// ate 2026-11-21 nenhum cron a chamava e a tabela ficou permanentemente vazia
+// (0 linhas com 1279 produtos sincronizados). E leitura idempotente (upsert por
+// `spot_order_id`), sem efeito financeiro — diferente de `createOrder`, que
+// segue fora da lista por criar compromisso de compra.
+const CRON_ACTIONS: ReadonlySet<string> = new Set<Action>([
+  "syncCatalog",
+  "syncCustomization",
+  "syncStock",
+  "getOrders",
+]);
 
 class HttpError extends Error {
   status: number;

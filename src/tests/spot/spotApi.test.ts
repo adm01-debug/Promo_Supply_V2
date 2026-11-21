@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
   SPOT_QUOTA_RESERVE,
   buildInternalReference,
@@ -145,5 +147,39 @@ describe('utilitários', () => {
     expect(batches).toHaveLength(3);
     expect(batches[2]).toHaveLength(1);
     expect(() => chunk(items, 0)).toThrow();
+  });
+});
+
+
+describe('spot-api: acoes do cron', () => {
+  const fonte = readFileSync(resolve(process.cwd(), 'supabase/functions/spot-api/index.ts'), 'utf8');
+
+  const extraiSet = (nome: string): string[] => {
+    const re = new RegExp('const ' + nome + '[^=]*= new Set<Action>\\(\\[([\\s\\S]*?)\\]\\)');
+    const m = fonte.match(re);
+    if (!m) throw new Error('nao achei ' + nome);
+    const acoes: string[] = [];
+    const re2 = /"([A-Za-z]+)"/g;
+    let x;
+    while ((x = re2.exec(m[1])) !== null) acoes.push(x[1]);
+    return acoes;
+  };
+
+  it('permite getOrders no cron — sem isso spot_pedidos fica vazio', () => {
+    expect(extraiSet('CRON_ACTIONS')).toContain('getOrders');
+  });
+
+  it('permite os tres syncs no cron', () => {
+    const cron = extraiSet('CRON_ACTIONS');
+    for (const a of ['syncCatalog', 'syncCustomization', 'syncStock']) expect(cron).toContain(a);
+  });
+
+  it('mantem createOrder fora do cron — cria compromisso financeiro', () => {
+    expect(extraiSet('CRON_ACTIONS')).not.toContain('createOrder');
+  });
+
+  it('toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)', () => {
+    const validas = extraiSet('VALID_ACTIONS');
+    for (const a of extraiSet('CRON_ACTIONS')) expect(validas).toContain(a);
   });
 });
