@@ -7,7 +7,7 @@
   ],
   "componentes": [
    "src/components (215)",
-   "src/pages (78)",
+   "src/pages (79)",
    "src/features (33)"
   ],
   "hooks": [
@@ -21,9 +21,9 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (107)",
+   "co-localizado (__tests__) (108)",
    "outro (40)",
-   "co-localizado (*.test) (24)"
+   "co-localizado (*.test) (25)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -46,7 +46,7 @@
  },
  "barrels_index": 4,
  "extensao_componentes": [
-  ".tsx (329)"
+  ".tsx (330)"
  ],
  "alias_imports": {
   "(raiz)": {
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)",
    "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)",
    "fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)",
    "chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)",
-   "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)",
-   "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)"
+   "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)"
   ]
  },
  "pr_template": null,

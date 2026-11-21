@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `38c50e56c9` · branch `main` · 2026-11-21 13:52 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `79bf0bf054` · branch `main` · 2026-11-21 14:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1495,6 +1495,14 @@ _nenhum item encontrado_
   ```
   if (!p.preco_referencia || !p.ultimo_preco || p.preco_referencia === 0) return null; return ((p.ultimo_preco - p.preco_referencia) / p.preco_referencia) * 100;
   ```
+- **cpfValido(valor: unknown)** — `src/pages/catalogo-xbz/xbzHelpers.ts`
+  ```
+  const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);
+  ```
+- **placaValida(valor: unknown)** — `src/pages/catalogo-xbz/xbzHelpers.ts`
+  ```
+  return /^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(normalizarPlaca(valor));
+  ```
 - **computeComplianceKPIs(data: ComplianceData[])** — `src/pages/compliance/complianceHelpers.ts`
   ```
   const infractors = data.filter(d => d.penalty_count > 0 || d.late_deliveries > 0 || d.rejected_count > 0); const compliant = data.filter(d => d.on_time_rate >= 95 && d.penalty_count === 0); const totalPenaltyValue = data.reduce((s, d) => s + Number(d.total_penalty_value), 0); const avgOnTimeRate = data.length > 0 ? data.reduce((s, d) => s + Number(d.on_time_rate), 0) / data.length : 0; return { infractors, compliant, totalPenaltyValue, avgOnTimeRate };
@@ -1550,6 +1558,14 @@ _nenhum item encontrado_
 - **validateMethod(req: Request, methods: string[])** — `supabase/functions/_shared/validation.ts`
   ```
   if (!methods.includes(req.method)) { throw new Error(`Method ${req.method} not allowed. Use: ${methods.join(', ')}`); }
+  ```
+- **cpfValido(valor: unknown)** — `supabase/functions/_shared/xbz_portador.ts`
+  ```
+  const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);
+  ```
+- **placaValida(valor: unknown)** — `supabase/functions/_shared/xbz_portador.ts`
+  ```
+  return /^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(normalizarPlaca(valor));
   ```
 - **scanTreeShakingViaGitHub(rawBase: string)** — `supabase/functions/dependency-health/index.ts`
   ```
@@ -2303,7 +2319,7 @@ _nenhum item encontrado_
 | Informe a URL base do ERP | `src/pages/admin/ERPConnections.tsx` |
 | Informe a credencial de acesso | `src/pages/admin/ERPConnections.tsx` |
 | JSON inválido:  | `src/pages/admin/ERPConnections.tsx` |
-| … +208 linhas — lista completa em `context.json` | |
+| … +209 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2322,7 +2338,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2701 testes em 133 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2712 testes em 135 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2427,6 +2443,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
+| `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
@@ -2435,6 +2452,7 @@ _nenhum item encontrado_
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
@@ -2592,6 +2610,7 @@ _nenhum item encontrado_
 | Flags de permissão retornadas pelo getToken — a UI deve respeitá-las. */ | `supabase/functions/_shared/xbz_client.ts` |
 | Tamanho mínimo de `busca` aceito pela XBZ; abaixo disso ela devolve [] silenciosamente. */ | `supabase/functions/_shared/xbz_client.ts` |
 | são gravados em texto claro. A chave mestra vive apenas no secret | `supabase/functions/_shared/xbz_crypto.ts` |
+| * Validação do portador (motorista/placa) para `/api/expedicaoautorizacao/Autorizar`. | `supabase/functions/_shared/xbz_portador.ts` |
 | Rule-based fallback: return empty-but-valid structure with a warning | `supabase/functions/ai-demand-prediction/index.ts` |
 | M-05: rate-limit — IA custa tokens; 20 req/min por usuário. | `supabase/functions/ai-negotiation/index.ts` |
 | Standardized validation with auto-telemetry | `supabase/functions/ai-negotiation/index.ts` |

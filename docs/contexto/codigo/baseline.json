@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "38c50e56c932e4935554792cad6c42da3e72fbab",
+  "commit": "79bf0bf054fbb13b1a7d1cd13c817a3941d34a09",
   "branch": "main",
-  "data_commit": "2026-11-21T10:52:11-03:00",
+  "data_commit": "2026-11-21T11:07:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "79bf0bf",
+    "data": "2026-11-21",
+    "assunto": "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)"
+   },
    {
     "sha": "38c50e5",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "0ef80b8",
     "data": "2026-11-20",
     "assunto": "fix(ui): habilita botao Ver via Magic Link com envio de OTP por e-mail (#199)"
-   },
-   {
-    "sha": "2102f2b",
-    "data": "2026-11-20",
-    "assunto": "fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)"
    }
   ],
-  "arquivos_mudados_7d": 191,
+  "arquivos_mudados_7d": 193,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,7 +145,11 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 20
+    "mudancas": 23
+   },
+   {
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 14
    },
    {
     "pasta": "package.json",
@@ -169,10 +173,6 @@
    },
    {
     "pasta": "scripts/ci/inventario-types",
-    "mudancas": 9
-   },
-   {
-    "pasta": "src/pages/catalogo-xbz",
     "mudancas": 9
    },
    {
@@ -278,6 +278,10 @@
     "mudancas": 4
    },
    {
+    "arquivo": "src/pages/catalogo-xbz/xbzHelpers.ts",
+    "mudancas": 4
+   },
+   {
     "arquivo": "src/pages/dashboard/ComprasDashboard.tsx",
     "mudancas": 4
    },
@@ -286,22 +290,18 @@
     "mudancas": 4
    },
    {
-    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
-    "mudancas": 3
+    "arquivo": "supabase/functions/_shared/xbz_client.ts",
+    "mudancas": 4
    },
    {
-    "arquivo": ".github/workflows/paridade-banco.yml",
-    "mudancas": 3
-   },
-   {
-    "arquivo": "docs/agentes/contexto-ia.md",
-    "mudancas": 3
+    "arquivo": "supabase/functions/xbz-proxy/index.ts",
+    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 187
+    "commits": 188
    },
    {
     "autor": "dependabot[bot]",
@@ -318,21 +318,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1264,
-  "arquivos_codigo": 787,
-  "linhas_codigo": 165367,
+  "arquivos_total": 1268,
+  "arquivos_codigo": 791,
+  "linhas_codigo": 165895,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 48,
   "modulos": 87,
-  "componentes": 329,
+  "componentes": 330,
   "hooks": 89,
   "edge_functions": 39,
   "tabelas": 163,
   "migrations": 316,
   "cron_jobs": 71,
-  "testes": 181,
+  "testes": 183,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 89
@@ -432,7 +432,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12403
+   "linhas": 12437
   },
   "src/i18n": {
    "arquivos": 1,
@@ -451,8 +451,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 125,
-   "linhas": 29326
+   "arquivos": 127,
+   "linhas": 29615
   },
   "src/routes": {
    "arquivos": 1,
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 84,
-   "linhas": 15172
+   "arquivos": 86,
+   "linhas": 15377
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -605,16 +605,16 @@
    "linhas": 664
   },
   {
+   "arquivo": "src/hooks/useXbzIntegration.ts",
+   "linhas": 663
+  },
+  {
    "arquivo": "src/components/ui/sidebar.tsx",
    "linhas": 638
   },
   {
    "arquivo": "supabase/functions/spot-api/index.ts",
    "linhas": 633
-  },
-  {
-   "arquivo": "src/hooks/useXbzIntegration.ts",
-   "linhas": 629
   },
   {
    "arquivo": "src/components/compras/ComparadorCotacoes.tsx",
@@ -651,7 +651,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 28
+  "arquivos_acima_500_linhas": 29
  },
  "todos": [
   {

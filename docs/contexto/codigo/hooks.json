@@ -2120,7 +2120,7 @@
    "hooks_exportados": [
     "useXbzIntegration"
    ],
-   "linhas": 629,
+   "linhas": 663,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -2134,7 +2134,7 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 8,
+   "usado_por": 9,
    "usado_por_arquivos": [
     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
     "src/pages/catalogo-xbz/XbzCarrinhoTab.tsx",
@@ -2142,6 +2142,7 @@
     "src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx",
     "src/pages/catalogo-xbz/XbzNetworkPanel.tsx",
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+    "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
     "src/pages/catalogo-xbz/xbzNetworkHealth.ts",
     "src/pages/dev/XbzNetworkPanelHarness.tsx"
    ],

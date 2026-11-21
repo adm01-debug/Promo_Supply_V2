@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "38c50e56c932e4935554792cad6c42da3e72fbab",
+  "sha": "79bf0bf054fbb13b1a7d1cd13c817a3941d34a09",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 13:52 UTC",
-  "files_total": 1265,
-  "code_files": 1107,
-  "code_lines": 191344,
+  "generated_at": "2026-11-21 14:08 UTC",
+  "files_total": 1269,
+  "code_files": 1111,
+  "code_lines": 191872,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "f43bc157e74bf992",
+ "facts_hash": "35668b52757b1eca",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,8 +249,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 369,
-   ".tsx": 347,
+   ".ts": 372,
+   ".tsx": 348,
    ".sql": 318,
    ".mjs": 66,
    ".py": 5,
@@ -34542,7 +34542,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12403,
+   "lines": 12437,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34906,8 +34906,8 @@
   },
   {
    "module": "src/pages",
-   "files": 125,
-   "lines": 29326,
+   "files": 127,
+   "lines": 29615,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35083,6 +35083,7 @@
     "src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx",
     "src/pages/catalogo-xbz/XbzNetworkPanel.tsx",
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+    "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
     "src/pages/catalogo-xbz/xbzHelpers.ts",
     "src/pages/catalogo-xbz/xbzNetworkHealth.ts",
     "src/pages/catalogo-xbz/xbzNetworkTrend.ts",
@@ -35090,6 +35091,7 @@
     "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+    "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
     "src/pages/compliance/ComplianceDashboard.tsx",
     "src/pages/compliance/complianceHelpers.ts",
@@ -35113,9 +35115,7 @@
     "src/pages/fornecedores/Fornecedores.tsx",
     "src/pages/fornecedores/SupplierPerformance.tsx",
     "src/pages/fornecedores/fornecedorHelpers.ts",
-    "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
-    "src/pages/gerar-ordem/GerarOrdem.tsx",
-    "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
+    "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts"
    ]
   },
   {
@@ -35308,8 +35308,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 84,
-   "lines": 15172,
+   "files": 86,
+   "lines": 15377,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35386,6 +35386,7 @@
     "xbz_client.ts: XBZ_BASE, XBZ_TIMEOUT_MS, XBZ_NULL_DATE, XbzError, XbzCircuitOpenError, XbzPortalCredentials",
     "xbz_crypto.ts: encryptSecret, decryptSecret, maskSecret",
     "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
+    "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
@@ -35434,6 +35435,8 @@
     "supabase/functions/_shared/xbz_crypto.ts",
     "supabase/functions/_shared/xbz_pedido_map.test.ts",
     "supabase/functions/_shared/xbz_pedido_map.ts",
+    "supabase/functions/_shared/xbz_portador.test.ts",
+    "supabase/functions/_shared/xbz_portador.ts",
     "supabase/functions/ai-demand-prediction/index.ts",
     "supabase/functions/ai-negotiation/index.ts",
     "supabase/functions/ai-supplier-risk/index.ts",
@@ -35481,9 +35484,7 @@
     "supabase/functions/tests/fuzzing_suite.ts",
     "supabase/functions/tests/integration_suite.ts",
     "supabase/functions/webauthn-authenticate/index.ts",
-    "supabase/functions/webauthn-register/index.ts",
-    "supabase/functions/weekly-report/index.ts",
-    "supabase/functions/weekly-summary-report/index.ts"
+    "supabase/functions/webauthn-register/index.ts"
    ]
   },
   {
@@ -40794,6 +40795,10 @@
     "msg": ">\n            <AlertDescription>{health.message}</AlertDescription>\n          </Alert>\n        ) : (\n          <p className="
    },
    {
+    "file": "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
+    "msg": ";\nimport { Loader2, Truck, UserX } from "
+   },
+   {
     "file": "src/pages/compliance/ComplianceDashboard.tsx",
     "msg": "Erro ao carregar dados de compliance"
    },
@@ -41920,6 +41925,10 @@
    {
     "file": "supabase/functions/_shared/xbz_crypto.ts",
     "text": "são gravados em texto claro. A chave mestra vive apenas no secret"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.ts",
+    "text": "* Validação do portador (motorista/placa) para `/api/expedicaoautorizacao/Autorizar`."
    },
    {
     "file": "supabase/functions/ai-demand-prediction/index.ts",
@@ -55564,6 +55573,18 @@
     "body": "if (!p.preco_referencia || !p.ultimo_preco || p.preco_referencia === 0) return null; return ((p.ultimo_preco - p.preco_referencia) / p.preco_referencia) * 100;"
    },
    {
+    "file": "src/pages/catalogo-xbz/xbzHelpers.ts",
+    "name": "cpfValido",
+    "params": "valor: unknown",
+    "body": "const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\\d)\\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/xbzHelpers.ts",
+    "name": "placaValida",
+    "params": "valor: unknown",
+    "body": "return /^[A-Z]{3}\\d[A-Z0-9]\\d{2}$/.test(normalizarPlaca(valor));"
+   },
+   {
     "file": "src/pages/compliance/complianceHelpers.ts",
     "name": "computeComplianceKPIs",
     "params": "data: ComplianceData[]",
@@ -55646,6 +55667,18 @@
     "name": "validateMethod",
     "params": "req: Request, methods: string[]",
     "body": "if (!methods.includes(req.method)) { throw new Error(`Method ${req.method} not allowed. Use: ${methods.join(', ')}`); }"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.ts",
+    "name": "cpfValido",
+    "params": "valor: unknown",
+    "body": "const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\\d)\\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.ts",
+    "name": "placaValida",
+    "params": "valor: unknown",
+    "body": "return /^[A-Z]{3}\\d[A-Z0-9]\\d{2}$/.test(normalizarPlaca(valor));"
    },
    {
     "file": "supabase/functions/dependency-health/index.ts",
@@ -64246,6 +64279,30 @@
     "name": "cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando "
    },
    {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "portador — CPF"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "valida pelo dígito verificador e rejeita sequências repetidas"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "formata e extrai dígitos"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "portador — placa"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "aceita padrão antigo e Mercosul, normalizando"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    "name": "formata com hífen só no padrão antigo"
+   },
+   {
     "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
     "name": "produtoView"
    },
@@ -67204,6 +67261,26 @@
    {
     "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
     "name": "normalizePedidos: entrada não-array vira lista vazia"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.test.ts",
+    "name": "cpfValido: dígito verificador e sequências repetidas"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.test.ts",
+    "name": "placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.test.ts",
+    "name": "montarPortador: normaliza para o formato da XBZ"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.test.ts",
+    "name": "montarPortador: rejeita nome curto, CPF e placa inválidos"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_portador.test.ts",
+    "name": "mascararPortador: oculta CPF/RG para a auditoria"
    },
    {
     "file": "supabase/functions/punchout-receive/session.test.ts",
@@ -99339,7 +99416,7 @@
   },
   "src/hooks/useXbzIntegration.ts": {
    "path": "src/hooks/useXbzIntegration.ts",
-   "lines": 629,
+   "lines": 663,
    "exports": [
     "interface XbzCatalogoResult",
     "interface XbzLoginInfo",
@@ -102721,7 +102798,7 @@
   },
   "src/pages/catalogo-xbz/XbzPedidosTab.tsx": {
    "path": "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
-   "lines": 128,
+   "lines": 145,
    "exports": [
     "function XbzPedidosTab"
    ],
@@ -102743,9 +102820,19 @@
     }
    ]
   },
+  "src/pages/catalogo-xbz/XbzPortadorDialog.tsx": {
+   "path": "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
+   "lines": 188,
+   "exports": [
+    "function XbzPortadorDialog"
+   ],
+   "errors": [
+    ";\nimport { Loader2, Truck, UserX } from "
+   ]
+  },
   "src/pages/catalogo-xbz/xbzHelpers.ts": {
    "path": "src/pages/catalogo-xbz/xbzHelpers.ts",
-   "lines": 166,
+   "lines": 217,
    "exports": [
     "const XBZ_NULL_DATE_PREFIX",
     "interface XbzPermissions",
@@ -102765,6 +102852,13 @@
     "function parseXbzNumber",
     "interface XbzProdutoView",
     "function produtoView",
+    "function somenteDigitos",
+    "function cpfValido",
+    "function formatarCpf",
+    "function normalizarPlaca",
+    "function placaValida",
+    "function formatarPlaca",
+    "interface XbzPortador",
     "const XBZ_ENTREGA_TIPOS",
     "const XBZ_PAGAMENTO_TIPOS",
     "const XBZ_PERIODOS",
@@ -102793,7 +102887,19 @@
    "rule_comments": [
     "Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */"
    ],
-   "doc": "Helpers puros da integração XBZ (frontend). Espelham as regras do documento de análise da API XBZ v5."
+   "doc": "Helpers puros da integração XBZ (frontend). Espelham as regras do documento de análise da API XBZ v5.",
+   "calc_fns": [
+    {
+     "name": "cpfValido",
+     "params": "valor: unknown",
+     "body": "const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\\d)\\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);"
+    },
+    {
+     "name": "placaValida",
+     "params": "valor: unknown",
+     "body": "return /^[A-Z]{3}\\d[A-Z0-9]\\d{2}$/.test(normalizarPlaca(valor));"
+    }
+   ]
   },
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": {
    "path": "src/pages/catalogo-xbz/xbzNetworkHealth.ts",
@@ -102919,6 +103025,19 @@
     "pagamentoStatusPedido",
     "usa o boolean ",
     "cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando "
+   ]
+  },
+  "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts": {
+   "path": "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+   "lines": 33,
+   "is_test": true,
+   "tests": [
+    "portador — CPF",
+    "valida pelo dígito verificador e rejeita sequências repetidas",
+    "formata e extrai dígitos",
+    "portador — placa",
+    "aceita padrão antigo e Mercosul, normalizando",
+    "formata com hífen só no padrão antigo"
    ]
   },
   "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts": {
@@ -107723,7 +107842,7 @@
   },
   "supabase/functions/_shared/xbz_client.ts": {
    "path": "supabase/functions/_shared/xbz_client.ts",
-   "lines": 415,
+   "lines": 478,
    "exports": [
     "const XBZ_BASE",
     "const XBZ_TIMEOUT_MS",
@@ -107750,6 +107869,11 @@
     "function xbzGetSt",
     "function xbzCarrinhoGet",
     "function xbzCarrinhoWrite",
+    "interface XbzPortadorInput",
+    "interface XbzPortadorRecord",
+    "function xbzPortadorCarregar",
+    "function xbzPortadorAutorizar",
+    "function xbzPortadorRevogar",
     "function xbzCancelarPedido",
     "function parseXbzDate",
     "function toNumber",
@@ -107847,6 +107971,50 @@
     "function normalizePedidos"
    ],
    "doc": "Normalização de uma linha do `/api/ruiz/consultaPedidos` (80 campos, 1 linha por item) para `public.xbz_pedidos`. Nomes reais dos campos: DOCS/INTEGRACOES/XBZ.md §4.2. Função pura (sem rede/banco) para ser testável."
+  },
+  "supabase/functions/_shared/xbz_portador.test.ts": {
+   "path": "supabase/functions/_shared/xbz_portador.test.ts",
+   "lines": 52,
+   "is_test": true,
+   "rule_comments": [
+    "* Testes da validação do portador (regras do `portador.js` do portal MinhaXBZ)."
+   ],
+   "doc": "Testes da validação do portador (regras do `portador.js` do portal MinhaXBZ). Rodar: deno test supabase/functions/_shared/xbz_portador.test.ts",
+   "tests": [
+    "cpfValido: dígito verificador e sequências repetidas",
+    "placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada",
+    "montarPortador: normaliza para o formato da XBZ",
+    "montarPortador: rejeita nome curto, CPF e placa inválidos",
+    "mascararPortador: oculta CPF/RG para a auditoria"
+   ]
+  },
+  "supabase/functions/_shared/xbz_portador.ts": {
+   "path": "supabase/functions/_shared/xbz_portador.ts",
+   "lines": 63,
+   "exports": [
+    "function somenteDigitos",
+    "function cpfValido",
+    "function normalizarPlaca",
+    "function placaValida",
+    "function mascararPortador",
+    "function montarPortador"
+   ],
+   "rule_comments": [
+    "* Validação do portador (motorista/placa) para `/api/expedicaoautorizacao/Autorizar`."
+   ],
+   "doc": "Validação do portador (motorista/placa) para `/api/expedicaoautorizacao/Autorizar`. Mesmas regras do `portador.js` do portal MinhaXBZ (CPF por dígito verificador; placa antiga ABC1234 ou Mercosul ABC1D23). Função pura para ser testável. ⚠️ CPF/RG são dado pessoal: este módulo só valida e normaliza — …",
+   "calc_fns": [
+    {
+     "name": "cpfValido",
+     "params": "valor: unknown",
+     "body": "const cpf = somenteDigitos(valor); if (cpf.length !== 11 || /^(\\d)\\1{10}$/.test(cpf)) return false; const digito = (quantidade: number) => { let soma = 0; for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i); const resto = (soma * 10) % 11; return resto === 10 ? 0 : resto; }; return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);"
+    },
+    {
+     "name": "placaValida",
+     "params": "valor: unknown",
+     "body": "return /^[A-Z]{3}\\d[A-Z0-9]\\d{2}$/.test(normalizarPlaca(valor));"
+    }
+   ]
   },
   "supabase/functions/ai-demand-prediction/index.ts": {
    "path": "supabase/functions/ai-demand-prediction/index.ts",
@@ -110788,7 +110956,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 490,
+   "lines": 517,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -112777,10 +112945,28 @@
   }
  },
  "git": {
-  "sha": "38c50e56c932e4935554792cad6c42da3e72fbab",
+  "sha": "79bf0bf054fbb13b1a7d1cd13c817a3941d34a09",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "79bf0bf",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)",
+    "files": [
+     "src/hooks/useXbzIntegration.ts",
+     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
+     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+     "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
+     "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+     "src/pages/catalogo-xbz/xbzHelpers.ts",
+     "supabase/functions/_shared/xbz_client.ts",
+     "supabase/functions/_shared/xbz_portador.test.ts",
+     "supabase/functions/_shared/xbz_portador.ts",
+     "supabase/functions/xbz-proxy/index.ts"
+    ]
+   },
    {
     "sha": "38c50e5",
     "date": "2026-11-21",
@@ -113099,15 +113285,6 @@
      "src/stores/__tests__/slaSettingsStore.test.ts",
      "src/stores/slaSettingsStore.ts"
     ]
-   },
-   {
-    "sha": "7191493",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "feat(ui): conecta os 4 botoes mortos do WorkflowAdmin (novo/editar workflow e regra SoD) (#193)",
-    "files": [
-     "src/pages/admin/WorkflowAdmin.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -113117,18 +113294,22 @@
    ],
    [
     "src/pages/catalogo-xbz/xbzHelpers.ts",
-    3
+    4
    ],
    [
     "supabase/functions/_shared/xbz_client.ts",
-    3
+    4
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
-    3
+    4
    ],
    [
     "src/hooks/useXbzIntegration.ts",
+    3
+   ],
+   [
+    "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
     2
    ],
    [
@@ -113152,7 +113333,23 @@
     2
    ],
    [
-    "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+    "src/pages/catalogo-xbz/CatalogoXbz.tsx",
+    1
+   ],
+   [
+    "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
+    1
+   ],
+   [
+    "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_portador.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_portador.ts",
     1
    ],
    [
@@ -113169,26 +113366,6 @@
    ],
    [
     "supabase/functions/xbz-sync-pedidos/index.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_catalog_cache.test.ts",
-    1
-   ],
-   [
-    "src/pages/admin/DeveloperDocs.tsx",
-    1
-   ],
-   [
-    "DOCS/ARCHITECTURE_GUIDE.md",
-    1
-   ],
-   [
-    "DOCS/ENGINEERING_EXCELLENCE.md",
     1
    ]
   ]

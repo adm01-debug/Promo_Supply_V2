@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 606,
- "arestas": 2713,
+ "nos": 608,
+ "arestas": 2724,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -14,7 +14,7 @@
   },
   {
    "arquivo": "src/components/ui/button.tsx",
-   "importado_por": 170
+   "importado_por": 171
   },
   {
    "arquivo": "src/components/ui/card.tsx",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 73
+   "importado_por": 74
   },
   {
    "arquivo": "src/features/auth/index.ts",
@@ -42,11 +42,11 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 60
+   "importado_por": 61
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 58
+   "importado_por": 59
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -94,7 +94,7 @@
   },
   {
    "arquivo": "src/components/ui/textarea.tsx",
-   "importado_por": 24
+   "importado_por": 25
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
@@ -117,12 +117,12 @@
    "importado_por": 16
   },
   {
-   "arquivo": "src/components/ui/dropdown-menu.tsx",
+   "arquivo": "src/components/ui/alert.tsx",
    "importado_por": 15
   },
   {
-   "arquivo": "src/components/ui/alert.tsx",
-   "importado_por": 14
+   "arquivo": "src/components/ui/dropdown-menu.tsx",
+   "importado_por": 15
   },
   {
    "arquivo": "src/components/atoms/EliteButton.tsx",
@@ -161,8 +161,8 @@
    "importado_por": 10
   },
   {
-   "arquivo": "src/features/solicitacoes/index.ts",
-   "importado_por": 9
+   "arquivo": "src/hooks/useXbzIntegration.ts",
+   "importado_por": 10
   }
  ],
  "ciclos": {
