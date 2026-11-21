@@ -2,6 +2,7 @@ import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 import { sendWebPush } from "./webpush.ts";
 interface PushPayload {
@@ -115,7 +116,7 @@ Deno.serve(async (req) => {
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
     for (const userId of uniqueUserIds) {
-      const { error: notifError } = await supabase.from('notifications').insert({
+      const { error: notifError } = await insertNotification(supabase, {
         user_id: userId,
         type,
         title,

@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { detectConsecutiveFailures } from "./failures.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 interface AlertResult {
   sla_warnings: number;
@@ -16,21 +17,11 @@ interface AlertResult {
 
 async function insertIfNotDuplicate(
   supabase: ReturnType<typeof createClient>,
-  notif: { user_id: string; type: string; title: string; message: string; priority: string; data?: Record<string, unknown>; action_url?: string; action_label?: string },
+  notif: { user_id: string; tenant_id?: string | null; type: string; title: string; message: string; priority: string; data?: Record<string, unknown>; action_url?: string; action_label?: string },
   today: string
 ): Promise<boolean> {
-  const { data: existing } = await supabase
-    .from('notifications')
-    .select('id')
-    .eq('user_id', notif.user_id)
-    .eq('title', notif.title)
-    .gte('created_at', today)
-    .limit(1);
-
-  if (existing && existing.length > 0) return false;
-
-  const { error } = await supabase.from('notifications').insert(notif);
-  return !error;
+  const res = await insertNotification(supabase, notif, { dedupeSince: today });
+  return res.ok;
 }
 
 
@@ -126,7 +117,7 @@ Deno.serve(async (req) => {
     // 1. Check for orders with SLA warnings (2 days or less)
     const { data: ordersWarning, error: ordersWarningError } = await supabase
       .from('pedidos')
-      .select('id, numero, data_previsao, fornecedor:fornecedores(razao_social), comprador_id')
+      .select('id, numero, data_previsao, fornecedor:fornecedores(razao_social), comprador_id, tenant_id')
       .in('status', ['pendente', 'aprovado', 'enviado', 'em_transito'])
       .lte('data_previsao', twoDays)
       .gt('data_previsao', today);
@@ -141,6 +132,7 @@ Deno.serve(async (req) => {
         if (order.comprador_id) {
           const sent = await insertIfNotDuplicate(supabase, {
             user_id: order.comprador_id,
+            tenant_id: order.tenant_id,
             type: 'sla_warning',
             title: `Alerta SLA: ${order.numero}`,
             message: `Pedido ${order.numero} vence em breve (${new Date(order.data_previsao!).toLocaleDateString('pt-BR')})`,
@@ -158,7 +150,7 @@ Deno.serve(async (req) => {
     // 2. Check for orders with critical SLA (today or overdue)
     const { data: ordersCritical, error: ordersCriticalError } = await supabase
       .from('pedidos')
-      .select('id, numero, data_previsao, fornecedor:fornecedores(razao_social), comprador_id')
+      .select('id, numero, data_previsao, fornecedor:fornecedores(razao_social), comprador_id, tenant_id')
       .in('status', ['pendente', 'aprovado', 'enviado', 'em_transito'])
       .lte('data_previsao', today);
 
@@ -173,6 +165,7 @@ Deno.serve(async (req) => {
           const isOverdue = new Date(order.data_previsao!) < new Date(today);
           const sent = await insertIfNotDuplicate(supabase, {
             user_id: order.comprador_id,
+            tenant_id: order.tenant_id,
             type: isOverdue ? 'sla_overdue' : 'sla_critical',
             title: isOverdue ? `SLA Vencido: ${order.numero}` : `SLA Crítico: ${order.numero}`,
             message: `Pedido ${order.numero} ${isOverdue ? 'está atrasado' : 'vence hoje'}!`,
@@ -190,7 +183,7 @@ Deno.serve(async (req) => {
     // 3. Check for pending approvals (solicitações)
     const { data: pendingApprovals, error: approvalsError } = await supabase
       .from('solicitacoes')
-      .select('id, numero, titulo, solicitante_id, aprovador_id')
+      .select('id, numero, titulo, solicitante_id, aprovador_id, tenant_id')
       .eq('status', 'pendente')
       .order('created_at', { ascending: true })
       .limit(20);
@@ -229,7 +222,7 @@ Deno.serve(async (req) => {
     // 4. Check for overdue payments
     const { data: overduePayments, error: paymentsError } = await supabase
       .from('pagamentos')
-      .select('id, numero, data_vencimento, valor, fornecedor:fornecedores(razao_social), created_by')
+      .select('id, numero, data_vencimento, valor, fornecedor:fornecedores(razao_social), created_by, tenant_id')
       .in('status', ['pendente', 'aprovado'])
       .lt('data_vencimento', today);
 
@@ -250,6 +243,7 @@ Deno.serve(async (req) => {
         for (const userId of financeIds) {
           const sent = await insertIfNotDuplicate(supabase, {
             user_id: userId,
+            tenant_id: payment.tenant_id,
             type: 'payment_overdue',
             title: `Pagamento Vencido: ${payment.numero}`,
             message: `Pagamento ${payment.numero} de R$ ${Number(payment.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} está vencido`,

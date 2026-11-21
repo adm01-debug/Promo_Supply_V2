@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
     // Find cotações pending for more than 48h without response
     const { data: staleCotacoes, error: fetchError } = await supabase
       .from("cotacoes")
-      .select("id, numero, fornecedor_id, solicitacao_id, created_at, valor_total, solicitacao:solicitacoes(titulo, solicitante_id)")
+      .select("id, numero, fornecedor_id, solicitacao_id, created_at, valor_total, solicitacao:solicitacoes(titulo, solicitante_id, tenant_id)")
       .eq("status", "pendente")
       .lt("created_at", cutoff48h);
 
@@ -67,8 +68,9 @@ Deno.serve(async (req) => {
       const message = `A cotação #${cotacao.numero} para "${titulo}" está pendente há mais de 48 horas. Considere contatar o fornecedor.`;
 
       // Send in-app notification
-      await supabase.from("notifications").insert({
+      const { error: notifError } = await insertNotification(supabase, {
         user_id: solicitanteId,
+        tenant_id: (cotacao.solicitacao as any)?.tenant_id,
         title: "Cotação sem resposta há 48h",
         message,
         type: "cotacao_followup",
@@ -76,6 +78,9 @@ Deno.serve(async (req) => {
         action_label: "Ver Cotação",
         action_url: `/cotacao?id=${cotacao.id}`,
       });
+      if (notifError) {
+        logger.warn("follow-up: notificacao nao criada", { error: String(notifError) });
+      }
       followUpsSent++;
 
       // Send email via Resend if configured

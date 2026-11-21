@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { EdgeLogger } from "../_shared/logger.ts";
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
@@ -119,9 +120,7 @@ Deno.serve(async (req) => {
         }
 
         // Create notification for the escalation target
-        const { error: notifError } = await supabase
-          .from('notifications')
-          .insert({
+        const { error: notifError } = await insertNotification(supabase, {
             user_id: rule.escalacao_para,
             type: 'escalation',
             priority: 'high',
@@ -154,9 +153,7 @@ Deno.serve(async (req) => {
           }
 
           // Create reminder notification
-          const { error: notifError } = await supabase
-            .from('notifications')
-            .insert({
+          const { error: notifError } = await insertNotification(supabase, {
               user_id: step.aprovador_id,
               type: 'reminder',
               priority: 'medium',
@@ -194,9 +191,7 @@ Deno.serve(async (req) => {
 
       for (const step of approachingSteps || []) {
         // Create warning notification
-        const { error: notifError } = await supabase
-          .from('notifications')
-          .insert({
+        const { error: notifError } = await insertNotification(supabase, {
             user_id: step.aprovador_id,
             type: 'warning',
             priority: 'medium',

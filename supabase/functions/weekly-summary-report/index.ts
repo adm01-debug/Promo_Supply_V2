@@ -2,6 +2,7 @@ import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -85,7 +86,7 @@ Deno.serve(async (req) => {
     const userIds = [...new Set((adminUsers || []).map((u) => u.user_id))];
 
     for (const userId of userIds) {
-      await supabase.from("notifications").insert({
+      await insertNotification(supabase, {
         user_id: userId,
         title: "Resumo Semanal de Compras",
         message: `Relatório Semanal: ${requestsCount} novas solicitações, R$ ${totalSpend.toLocaleString("pt-BR")} em pedidos aprovados e ${deliveredCount} entregues.`,

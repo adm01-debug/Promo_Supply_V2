@@ -30,7 +30,7 @@ export function tabelasDeShared(dirFuncoes) {
   const porHelper = new Map();
   for (const arq of listarTs(dir)) {
     const tabelas = [...extrairTabelas(readFileSync(arq, "utf8"))].sort();
-    if (tabelas.length > 0) porHelper.set(path.relative(dirFuncoes, arq), tabelas);
+    if (tabelas.length > 0) porHelper.set(path.relative(dirFuncoes, arq).split(path.sep).join("/"), tabelas);
   }
   return new Map([...porHelper.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
