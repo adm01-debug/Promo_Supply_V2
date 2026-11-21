@@ -512,6 +512,7 @@
     "security.ts"
    ],
    "chamada_pelo_front": [
+    "src/hooks/useCatalogoPim.ts",
     "src/pages/admin/DeveloperDocs.tsx"
    ],
    "chamada_por_edges": [],

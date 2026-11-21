@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
+  "sha": "aef9bffcf1a599c20346e2244d7423dff9226c8b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "generated_at": "2026-11-21 17:29 UTC",
-  "files_total": 1275,
-  "code_files": 1116,
-  "code_lines": 192221,
+  "files_total": 1276,
+  "code_files": 1117,
+  "code_lines": 192452,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c313d2c703e1e8a5",
+ "facts_hash": "04df05a221b5c6e4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 375,
+   ".ts": 376,
    ".tsx": 348,
    ".sql": 319,
    ".mjs": 66,
@@ -33351,6 +33351,10 @@
     "file": "src/hooks/useBuyerPerformanceData.ts"
    },
    {
+    "name": "useCatalogoPim",
+    "file": "src/hooks/useCatalogoPim.ts"
+   },
+   {
     "name": "useClearFiltersFlow",
     "file": "src/hooks/useClearFiltersFlow.tsx"
    },
@@ -34613,8 +34617,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 72,
-   "lines": 12733,
+   "files": 73,
+   "lines": 12964,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34686,6 +34690,7 @@
     "useBudgetManagement.ts: PerformanceReport, useBudgetManagement",
     "useBulkOperations.ts: useBulkOperations, solicitacoesStatusOptions, pedidosStatusOptions, pagamentosStatusOptions",
     "useBuyerPerformanceData.ts: BuyerData, useBuyerPerformanceData",
+    "useCatalogoPim.ts: PimProdutoCatalogo, PimPrecoFaixa, useCatalogoPim",
     "useClearFiltersFlow.tsx: useClearFiltersFlow",
     "useContactNotes.ts: ContactNote, CreateContactNoteInput, useContactNotes",
     "useCooldown.ts: useCooldown",
@@ -34712,10 +34717,10 @@
     "useNProgress.ts: useNProgress",
     "useNavigation.tsx: NavigationProvider, useNavigation",
     "useOfflineSync.ts: useOfflineSync",
-    "usePagamentos.ts: Pagamento, CreatePagamentoInput, PagamentoFilters, usePagamentos, usePagamentosKPIs",
-    "usePasswordResetRequests.ts: PasswordResetRequest, usePasswordResetRequests"
+    "usePagamentos.ts: Pagamento, CreatePagamentoInput, PagamentoFilters, usePagamentos, usePagamentosKPIs"
    ],
    "docs": [
+    "useCatalogoPim.ts: useCatalogoPim Hook para leitura do catálogo de produtos e faixas de preço de personalização diretamente do PIM (Promo Gifts V4) via edge function external-db-bridge. Nenhum dado de catálogo é armazenado no Promo Supply V2 — a fonte canônica é o banco do Promo Gifts V4, acessado via views públicas: …",
     "useImageCompression.ts: Hook for image compression with progress and status tracking",
     "useOfflineSync.ts: Hook para sincronização offline Gerencia o estado de conexão e sincronização de dados pendentes",
     "usePrefetch.ts: Hook para prefetch de dados críticos Melhora a percepção de velocidade pré-carregando dados quando o usuário hover em links Prefetch keys must match the live query keys used by feature hooks so that the populated cache is consumed instead of producing a separate entry."
@@ -34755,6 +34760,7 @@
     "src/hooks/useBudgetManagement.ts",
     "src/hooks/useBulkOperations.ts",
     "src/hooks/useBuyerPerformanceData.ts",
+    "src/hooks/useCatalogoPim.ts",
     "src/hooks/useClearFiltersFlow.tsx",
     "src/hooks/useContactNotes.ts",
     "src/hooks/useCooldown.ts",
@@ -40380,6 +40386,10 @@
     "msg": "Já existe orçamento para este centro de custo/período"
    },
    {
+    "file": "src/hooks/useCatalogoPim.ts",
+    "msg": "Resposta vazia do external-db-bridge"
+   },
+   {
     "file": "src/hooks/useContactNotes.ts",
     "msg": "Erro ao adicionar nota: "
    },
@@ -41730,6 +41740,14 @@
    {
     "file": "src/hooks/useBuyerPerformanceData.ts",
     "text": "Entregues no prazo"
+   },
+   {
+    "file": "src/hooks/useCatalogoPim.ts",
+    "text": "null = faixa aberta (sem limite superior) */"
+   },
+   {
+    "file": "src/hooks/useCatalogoPim.ts",
+    "text": "origem da regra, ex: 'spot_customization' */"
    },
    {
     "file": "src/hooks/useCooldown.ts",
@@ -97046,6 +97064,26 @@
     "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);"
    ]
   },
+  "src/hooks/useCatalogoPim.ts": {
+   "path": "src/hooks/useCatalogoPim.ts",
+   "lines": 231,
+   "exports": [
+    "interface PimProdutoCatalogo",
+    "interface PimPrecoFaixa",
+    "function useCatalogoPim"
+   ],
+   "errors": [
+    "Resposta vazia do external-db-bridge"
+   ],
+   "rule_comments": [
+    "null = faixa aberta (sem limite superior) */",
+    "origem da regra, ex: 'spot_customization' */"
+   ],
+   "doc": "useCatalogoPim Hook para leitura do catálogo de produtos e faixas de preço de personalização diretamente do PIM (Promo Gifts V4) via edge function external-db-bridge. Nenhum dado de catálogo é armazenado no Promo Supply V2 — a fonte canônica é o banco do Promo Gifts V4, acessado via views públicas: …",
+   "hooks": [
+    "useCatalogoPim"
+   ]
+  },
   "src/hooks/useClearFiltersFlow.tsx": {
    "path": "src/hooks/useClearFiltersFlow.tsx",
    "lines": 160,
@@ -112876,10 +112914,19 @@
   }
  },
  "git": {
-  "sha": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
+  "sha": "aef9bffcf1a599c20346e2244d7423dff9226c8b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "aef9bff",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)",
+    "files": [
+     "src/hooks/useCatalogoPim.ts"
+    ]
+   },
    {
     "sha": "7ad0b03",
     "date": "2026-11-21",
@@ -113201,21 +113248,12 @@
      "supabase/functions/send-push-notification/webpush.test.ts",
      "supabase/functions/send-push-notification/webpush.ts"
     ]
-   },
-   {
-    "sha": "60860f7",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): marca edge-audit como concluido (PR #203) (#204)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    11
+    10
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
@@ -113258,6 +113296,10 @@
     2
    ],
    [
+    "src/hooks/useCatalogoPim.ts",
+    1
+   ],
+   [
     "public/push-handler.js",
     1
    ],
@@ -113287,10 +113329,6 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
     1
    ]
   ]

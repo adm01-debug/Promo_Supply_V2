@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 89,
+ "total": 90,
  "hooks": [
   {
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
@@ -846,6 +846,29 @@
     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
     "src/pages/buyer/buyerDashboardHelpers.tsx"
    ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/hooks/useCatalogoPim.ts",
+   "hooks_exportados": [
+    "useCatalogoPim"
+   ],
+   "linhas": 231,
+   "dominio": "hooks",
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [
+    "external-db-bridge"
+   ],
+   "hooks_internos": [
+    "useCallback",
+    "useEffect",
+    "useRef",
+    "useState"
+   ],
+   "canais_realtime": [],
+   "usado_por": 0,
+   "usado_por_arquivos": [],
    "coberto_por_testes": 0
   },
   {

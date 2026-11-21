@@ -2330,9 +2330,9 @@
   },
   {
    "modulo": "hooks",
-   "arquivos": 61,
+   "arquivos": 62,
    "testes": 0,
-   "linhas": 11196,
+   "linhas": 11427,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2344,6 +2344,7 @@
     "useAutoImageCompression",
     "useBulkOperations",
     "useBuyerPerformanceData",
+    "useCatalogoPim",
     "useContactNotes",
     "useCooldown",
     "useCreditosFornecedor",
@@ -2407,6 +2408,7 @@
     "useBudgetManagement",
     "useBulkOperations",
     "useBuyerPerformanceData",
+    "useCatalogoPim",
     "useClearFiltersFlow",
     "useContactNotes",
     "useCooldown",
@@ -2475,6 +2477,7 @@
     "useXbzIntegration"
    ],
    "edges": [
+    "external-db-bridge",
     "guided-buying-ai",
     "spot-proxy",
     "telemetry",
@@ -2572,6 +2575,7 @@
    ],
    "diretos": {
     "edges": [
+     "external-db-bridge",
      "guided-buying-ai",
      "spot-proxy",
      "webauthn-authenticate",

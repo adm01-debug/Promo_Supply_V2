@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
+  "commit": "aef9bffcf1a599c20346e2244d7423dff9226c8b",
   "branch": "main",
-  "data_commit": "2026-11-21T14:28:26-03:00",
+  "data_commit": "2026-11-21T14:28:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "aef9bff",
+    "data": "2026-11-21",
+    "assunto": "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)"
+   },
    {
     "sha": "7ad0b03",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "d2b3b51",
     "data": "2026-11-21",
     "assunto": "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)"
-   },
-   {
-    "sha": "30e7b63",
-    "data": "2026-11-21",
-    "assunto": "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)"
    }
   ],
-  "arquivos_mudados_7d": 207,
+  "arquivos_mudados_7d": 208,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 198
+    "commits": 199
    },
    {
     "autor": "dependabot[bot]",
@@ -318,16 +318,16 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1274,
-  "arquivos_codigo": 795,
-  "linhas_codigo": 166138,
+  "arquivos_total": 1275,
+  "arquivos_codigo": 796,
+  "linhas_codigo": 166369,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 48,
   "modulos": 87,
   "componentes": 330,
-  "hooks": 89,
+  "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
   "migrations": 317,
@@ -435,8 +435,8 @@
    "linhas": 8492
   },
   "src/hooks": {
-   "arquivos": 72,
-   "linhas": 12733
+   "arquivos": 73,
+   "linhas": 12964
   },
   "src/i18n": {
    "arquivos": 1,

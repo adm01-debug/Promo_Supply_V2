@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731` (2026-11-21T14:28:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aef9bffcf1a599c20346e2244d7423dff9226c8b` (2026-11-21T14:28:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (723), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (724), SQL (319), Markdown (90), JavaScript (69), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,16 +34,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1274 |
-| arquivos_codigo | 795 |
-| linhas_codigo | 166138 |
+| arquivos_total | 1275 |
+| arquivos_codigo | 796 |
+| linhas_codigo | 166369 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 48 |
 | modulos | 87 |
 | componentes | 330 |
-| hooks | 89 |
+| hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
 | migrations | 317 |
@@ -56,7 +56,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Onde ficam as coisas
 - telas: src/pages (53)
 - componentes: src/components (215), src/pages (79), src/features (33)
-- hooks: src/hooks (60), src/features (11), src/components (10)
+- hooks: src/hooks (61), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
 - testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (26)
 - edge_functions: supabase/functions
@@ -78,7 +78,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 76 | 7 | 52 |
-| hooks | 0 | 0 | 61 | 56 | 6 | 59 |
+| hooks | 0 | 0 | 62 | 57 | 7 | 59 |
 | lib | 0 | 0 | 24 | 53 | 6 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
@@ -196,7 +196,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
 - `erp-credential-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `erp-sync` — tabelas: erp_connections, erp_sync_log; chamada por 1 arquivo(s) do front
-- `external-db-bridge` — tabelas: query_telemetry; chamada por 1 arquivo(s) do front
+- `external-db-bridge` — tabelas: query_telemetry; chamada por 2 arquivo(s) do front
 - `fiscal-orchestrator` — tabelas: fiscal_events; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `generate-contract-pdf` — tabelas: contract_items, contract_penalties, contracts; chamada por 1 arquivo(s) do front
 - `guided-buying-ai` — tabelas: fornecedores, produtos; chamada por 1 arquivo(s) do front
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `aef9bff` feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)
 - 2026-11-21 `7ad0b03` feat(pwa): adiciona handler de push ao service worker (#234)
 - 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
 - 2026-11-21 `b30b4cd` docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `38c50e5` fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)
 - 2026-11-21 `3db64df` fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)
 - 2026-11-21 `a922396` chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)
-- 2026-11-21 `4bd5264` chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

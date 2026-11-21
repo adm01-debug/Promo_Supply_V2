@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 610,
- "arestas": 2727,
+ "nos": 611,
+ "arestas": 2728,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 132
+   "importado_por": 133
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
@@ -201,6 +201,7 @@
   "src/components/ui/sidebar.tsx",
   "src/components/ui/status-indicators.tsx",
   "src/hooks/useBulkOperations.ts",
+  "src/hooks/useCatalogoPim.ts",
   "src/hooks/useFlashHighlight.ts",
   "src/hooks/useFormDataProtection.ts",
   "src/hooks/useFormDirty.ts",

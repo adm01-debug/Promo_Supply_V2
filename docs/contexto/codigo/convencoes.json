@@ -11,7 +11,7 @@
    "src/features (33)"
   ],
   "hooks": [
-   "src/hooks (60)",
+   "src/hooks (61)",
    "src/features (11)",
    "src/components (10)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)",
    "feat(pwa): adiciona handler de push ao service worker (#234)",
    "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa",
    "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)",
-   "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
-   "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)"
+   "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)"
   ]
  },
  "pr_template": null,

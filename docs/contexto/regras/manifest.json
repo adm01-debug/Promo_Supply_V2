@@ -3,7 +3,7 @@
  "versao": "1.4.0",
  "perfil": "regras",
  "gerado_em": "2026-11-21 17:29 UTC",
- "commit": "7ad0b03c4d5cd98903cb5ebafc14859b6f4a5731",
+ "commit": "aef9bffcf1a599c20346e2244d7423dff9226c8b",
  "fonte": "código + migrations/types + manual/ (regras de negócio)",
  "entrada": "07-REGRAS-DE-NEGOCIO.md",
  "arquivos": [

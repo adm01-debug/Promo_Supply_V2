@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7ad0b03c4d` · branch `main` · 2026-11-21 17:29 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `aef9bffcf1` · branch `main` · 2026-11-21 17:29 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2239,6 +2239,7 @@ _nenhum item encontrado_
 | Erro ao criar orçamento | `src/hooks/useBudgetManagement.ts` |
 | Erro ao remover orçamento | `src/hooks/useBudgetManagement.ts` |
 | Já existe orçamento para este centro de custo/período | `src/hooks/useBudgetManagement.ts` |
+| Resposta vazia do external-db-bridge | `src/hooks/useCatalogoPim.ts` |
 | Erro ao adicionar nota:  | `src/hooks/useContactNotes.ts` |
 | Erro ao atualizar nota:  | `src/hooks/useContactNotes.ts` |
 | Erro ao excluir nota:  | `src/hooks/useContactNotes.ts` |
@@ -2327,8 +2328,7 @@ _nenhum item encontrado_
 | Erro ao sincronizar:  | `src/pages/admin/ERPConnections.tsx` |
 | Informe a URL base do ERP | `src/pages/admin/ERPConnections.tsx` |
 | Informe a credencial de acesso | `src/pages/admin/ERPConnections.tsx` |
-| JSON inválido:  | `src/pages/admin/ERPConnections.tsx` |
-| … +209 linhas — lista completa em `context.json` | |
+| … +210 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2550,6 +2550,8 @@ _nenhum item encontrado_
 | Business logic lives in focused sub-hooks: | `src/hooks/useApprovalWorkflow.ts` |
 | Rule/delegation mutations | `src/hooks/useApprovalWorkflow.ts` |
 | Entregues no prazo | `src/hooks/useBuyerPerformanceData.ts` |
+| null = faixa aberta (sem limite superior) */ | `src/hooks/useCatalogoPim.ts` |
+| origem da regra, ex: 'spot_customization' */ | `src/hooks/useCatalogoPim.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |
