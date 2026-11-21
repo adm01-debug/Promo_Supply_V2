@@ -82,9 +82,13 @@ export function useRealPushNotifications() {
       let subscription = await registration.pushManager.getSubscription();
 
       if (!subscription) {
-        // For now, we'll use a placeholder VAPID key
-        // In production, this would come from your backend
-        const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+        // Real VAPID public key vem do env (VITE_VAPID_PUBLIC_KEY). Sem ele,
+        // nao registramos subscription: salvar com a chave demo (MDN) gravaria
+        // endpoints inalcancaveis no banco, pois o private key dessa demo nao
+        // existe no runtime. Push real exige a MESMA keypair do
+        // VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY das env da edge send-push-notification.
+        const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+        if (!vapidPublicKey) return;
 
         try {
           const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
