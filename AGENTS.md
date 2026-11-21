@@ -106,6 +106,26 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 - **Regras de domínio** — ler `docs/agentes/regras-dominio.md` antes de mexer em solicitação, cotação,
   aprovação, acompanhamento ou login/passkey.
 
+## Catálogo e fornecedores — ler `docs/agentes/catalogo-e-fornecedores.md` antes de tocar em produto, estoque ou preço
+- **Promo Supply V2 é compras. Produto, estoque e preço aparecem aqui, mas nascem no Promo Gifts V4**
+  (PIM, Supabase `doufsxqlfjyuvxuezpln`, repo `adm01-debug/Promo_Gifts_V4`). Compras consome por
+  leitura; **não** cadastra, **não** sincroniza, **não** espelha.
+- Vale para **todos** os fornecedores — XBZ, SPOT/Stricker, Asia Import, Só Marcas e os próximos. O PIM
+  já tem pipeline e cron de cada um; fornecedor novo é trabalho **no PIM**, não aqui.
+- Compras **usa** estoque e preço: exibe na busca, aplica mínimo/múltiplo, crédito, aprovação, cotação,
+  pedido e acompanhamento de liberação/entrega — e **congela** no documento o que foi comprado (nome,
+  código no fornecedor, preço, NCM, IPI). Congelamento é imutável e é exigência fiscal; cópia de
+  catálogo é proibida.
+- Caminho único de leitura: edge `external-db-bridge` → allowlist em `_shared/external-bridge-allowlist.ts`
+  → views `v_compras_catalogo` / `v_compras_precos_faixa` no PIM, com `EXTERNAL_DB_URL`/`EXTERNAL_DB_KEY`.
+  Só `select`, teto de 500 linhas, sem gravar o resultado. Nunca `service_role` do PIM, nunca FDW.
+- **Pare** se for criar tabela/cron/edge de catálogo aqui, chamar endpoint de catálogo de fornecedor
+  (XBZ `consultaEstoque`/`getSt`/`produtosCores`, SPOT `ws_products`/`ws_stocks`, Asia, Só Marcas) ou
+  cadastrar produto na mão. `produtos`, `produto_fornecedores`, `xbz_produtos`, `xbz_cores`,
+  `xbz_produto_fiscal` e as `spot_*` estão **em extinção**: existir não é autorização para usar.
+- A API do fornecedor, aqui, serve só para **transação**: credencial, carrinho, gerar/cancelar pedido,
+  portador/retirada e status do pedido.
+
 ## Stack e comandos — detalhe em `docs/agentes/mapa-repo.md`
 - Vite + React + TS (`src/`), Supabase (`supabase/functions/` Deno, `supabase/migrations/`), Playwright
   (`tests-e2e/`), Vitest (`src/**/__tests__/`, `tests-rls/`), i18next (pt/en/es), Zustand, TanStack Query.
