@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e2465cebde83cdcb7578ec85091fee098c011066` (2026-11-21T12:02:39-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7a030e426cf5b08d4f30d603f15b1bdda0eb92a3` (2026-11-21T12:09:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `7a030e4` fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)
 - 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
 - 2026-11-21 `9ae679b` chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)
 - 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
 - 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
 - 2026-11-21 `af0e42f` chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)
-- 2026-11-21 `77024d9` fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

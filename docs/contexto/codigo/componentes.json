@@ -3788,7 +3788,7 @@
     "CommandPalette"
    ],
    "export_default": "CommandPalette",
-   "linhas": 372,
+   "linhas": 370,
    "dominio": "features/layout",
    "hooks_locais": [
     "useCommandPalette"
@@ -4080,7 +4080,7 @@
     "UserMenu"
    ],
    "export_default": null,
-   "linhas": 97,
+   "linhas": 99,
    "dominio": "features/layout",
    "hooks_locais": [
     "useAuth"

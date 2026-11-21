@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e2465cebde83cdcb7578ec85091fee098c011066",
+  "commit": "7a030e426cf5b08d4f30d603f15b1bdda0eb92a3",
   "branch": "main",
-  "data_commit": "2026-11-21T12:02:39-03:00",
+  "data_commit": "2026-11-21T12:09:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7a030e4",
+    "data": "2026-11-21",
+    "assunto": "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)"
+   },
    {
     "sha": "e2465ce",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "60860f7",
     "data": "2026-11-20",
     "assunto": "chore(docs): marca edge-audit como concluido (PR #203) (#204)"
-   },
-   {
-    "sha": "1f3af80",
-    "data": "2026-11-20",
-    "assunto": "feat(auditoria): conecta edge run-audit ao painel de Compliance RLS (#203)"
    }
   ],
-  "arquivos_mudados_7d": 197,
+  "arquivos_mudados_7d": 199,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -192,7 +192,7 @@
     "mudancas": 8
    },
    {
-    "pasta": "src/lib/__tests__",
+    "pasta": "src/features/layout",
     "mudancas": 8
    }
   ],
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 192
+    "commits": 193
    },
    {
     "autor": "dependabot[bot]",
