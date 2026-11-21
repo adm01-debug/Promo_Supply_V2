@@ -41,13 +41,14 @@ imagem). Três critérios de corte:
 
 ### Fase 2 — Bridge somente leitura para o PIM
 
-- [ ] **PR 2.1** — `_shared/external-bridge-allowlist.ts`: `ALLOWED_TABLES`
+- [x] **PR 2.1** — `_shared/external-bridge-allowlist.ts`: `ALLOWED_TABLES`
       passa a ser só `{ "v_compras_catalogo", "v_compras_precos_faixa" }`;
       remove nomes fantasma (`produtos_externos`, `fornecedores_externos`,
       `spot_pedidos_view`) e RPCs inexistentes; `ALLOWED_OPERATIONS` restrito a
       `select`. Testes novos: tabela fora da allowlist → 403; `insert` em view
-      do PIM → 403; `limit` acima de 500 → 400.
-      Em andamento nesta sessão — ainda não há branch/PR aberta.
+      do PIM → 403; `limit` acima de 500 → 400. Mergeada: PR #248 (squash
+      `8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37`). Execução real de
+      `deno test` não verificada nesta sessão (sem runtime Deno disponível).
 - [ ] **PR 2.2** — `src/hooks/useCatalogoPim.ts` + `PriceComparator.tsx` /
       `SupplierEcosystemSection.tsx` passam a ler preço/catálogo via bridge.
   Bloqueada: depende do secret acima estar configurado para funcionar em
