@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 319,
+ "migrations": 320,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1453,6 +1453,11 @@
    "agenda": "*/30 * * * *",
    "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-sla-alerts"
+  },
+  {
+   "nome": "spot-api-sync-orders-30min",
+   "agenda": "*/30 * * * *",
+   "migration": "20261121225000_versiona_job_spot_sync_orders_30min.sql"
   },
   {
    "nome": "weekly-procurement-report",

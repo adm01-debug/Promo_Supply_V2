@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e39f3aa9e8d85a5953b2bd85e5b0369e690538ea",
+  "sha": "2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 22:33 UTC",
-  "files_total": 1285,
-  "code_files": 1122,
-  "code_lines": 193236,
+  "generated_at": "2026-11-21 22:42 UTC",
+  "files_total": 1286,
+  "code_files": 1123,
+  "code_lines": 193260,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2623e89098dc525b",
+ "facts_hash": "7dc8823d4cd96ae5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 321,
+   ".sql": 322,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -26708,6 +26708,12 @@
     "schedule": "0 8 * * 1",
     "body": "SELECT public._invoke_edge_function('weekly-summary-report');",
     "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "spot-api-sync-orders-30min",
+    "schedule": "*/30 * * * *",
+    "body": "SELECT public._invoke_spot_sync(",
+    "src": "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql"
    }
   ],
   "views": {
@@ -27045,6 +27051,7 @@
    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
    "supabase/migrations/20261121160000_pim_refs_compras.sql",
    "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
+   "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35685,8 +35692,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 319,
-   "lines": 25966,
+   "files": 320,
+   "lines": 25990,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -112917,6 +112924,10 @@
    "path": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
    "lines": 79
   },
+  "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql": {
+   "path": "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
+   "lines": 24
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113136,10 +113147,19 @@
   }
  },
  "git": {
-  "sha": "e39f3aa9e8d85a5953b2bd85e5b0369e690538ea",
+  "sha": "2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2b94f6d",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "feat(spot): versiona cron spot-api-sync-orders-30min (#258)",
+    "files": [
+     "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql"
+    ]
+   },
    {
     "sha": "e39f3aa",
     "date": "2026-11-21",
@@ -113440,24 +113460,6 @@
      "src/components/compras/executive/executiveDashboardData.ts",
      "src/hooks/useExecutiveDashboardData.ts"
     ]
-   },
-   {
-    "sha": "79bf0bf",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)",
-    "files": [
-     "src/hooks/useXbzIntegration.ts",
-     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
-     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
-     "src/pages/catalogo-xbz/XbzPortadorDialog.tsx",
-     "src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts",
-     "src/pages/catalogo-xbz/xbzHelpers.ts",
-     "supabase/functions/_shared/xbz_client.ts",
-     "supabase/functions/_shared/xbz_portador.test.ts",
-     "supabase/functions/_shared/xbz_portador.ts",
-     "supabase/functions/xbz-proxy/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113498,8 +113500,8 @@
     2
    ],
    [
-    "supabase/functions/xbz-proxy/index.ts",
-    2
+    "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
+    1
    ],
    [
     "scripts/ci/gerar-matriz-edge-tabela.mjs",

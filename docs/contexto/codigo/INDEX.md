@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e39f3aa9e8d85a5953b2bd85e5b0369e690538ea` (2026-11-21T19:33:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2b94f6dac4bbefe5b0d7706ffe5a64fd767588bc` (2026-11-21T19:40:09-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (321), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (322), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1284 |
+| arquivos_total | 1285 |
 | arquivos_codigo | 799 |
 | linhas_codigo | 167047 |
 | rotas | 55 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 319 |
-| cron_jobs | 71 |
+| migrations | 320 |
+| cron_jobs | 72 |
 | testes | 186 |
 | workflows | 13 |
 | scripts | 50 |
@@ -293,6 +293,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `security_definer_drift_quarterly` 0 4 1 1,4,7,10 * (20260712215549_fcc6489a-009e-4050-8955-9ac162d4f3dd.sql)
 - `sla-alert-check` 0 */4 * * * → edge check-sla-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
 - `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20261121153000_religa_crons_negocio_vault.sql)
+- `spot-api-sync-orders-30min` */30 * * * * (20261121225000_versiona_job_spot_sync_orders_30min.sql)
 - `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20261121153000_religa_crons_negocio_vault.sql)
 - `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20261121153000_religa_crons_negocio_vault.sql)
 - `xbz-sync-pedidos-30min` */30 * * * * (20261120165300_versiona_job_xbz_sync_30min.sql)
@@ -413,6 +414,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
 - 2026-11-21 `e39f3aa` fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)
 - 2026-11-21 `502c3b5` fix(spot): permite getOrders no cron para popular spot_pedidos (#256)
 - 2026-11-21 `9200429` fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)
@@ -427,7 +429,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
 - 2026-11-21 `625b45a` fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)
 - 2026-11-21 `3192276` feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)
-- 2026-11-21 `017aa0c` fix(docs): alinha contagem de workflows do README de CI com main (#241)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
