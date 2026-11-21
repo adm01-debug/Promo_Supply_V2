@@ -2,6 +2,7 @@ import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -72,14 +73,14 @@ Deno.serve(async (req) => {
     let notificationsSent = 0;
 
     for (const { user_id } of adminRoles || []) {
-      await supabase.from("notifications").insert({
+      const { ok } = await insertNotification(supabase, {
         user_id,
         title: "Relatório Semanal de Compras",
         message: reportMessage,
         type: "weekly_report",
         priority: "normal",
       });
-      notificationsSent++;
+      if (ok) notificationsSent++;
     }
 
     logger.info(`Weekly report sent to users`, { notificationsSent });

@@ -2,6 +2,7 @@ import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -29,7 +30,7 @@ Deno.serve(async (req) => {
     // 1. Find cotações expiring within 3 days
     const { data: expiringCotacoes, error: cotError } = await supabase
       .from("cotacoes")
-      .select("id, numero, validade_proposta, solicitacao_id, fornecedor_id")
+      .select("id, numero, validade_proposta, solicitacao_id, fornecedor_id, tenant_id")
       .in("status", ["pendente", "analisando"])
       .not("validade_proposta", "is", null)
       .lte("validade_proposta", thresholdStr)
@@ -61,7 +62,7 @@ Deno.serve(async (req) => {
     // 3. Find pagamentos near due date (3 days)
     const { data: dueSoonPagamentos, error: pagError } = await supabase
       .from("pagamentos")
-      .select("id, numero, data_vencimento, fornecedor_id, valor")
+      .select("id, numero, data_vencimento, fornecedor_id, valor, tenant_id")
       .in("status", ["pendente", "aprovado", "agendado"])
       .lte("data_vencimento", thresholdStr)
       .gte("data_vencimento", todayStr);
@@ -94,6 +95,7 @@ Deno.serve(async (req) => {
       message: string;
       type: string;
       priority: string;
+      tenant_id?: string | null;
     }> = [];
 
     // Get admin/coordinator user IDs for notifications
@@ -115,6 +117,7 @@ Deno.serve(async (req) => {
           title: `Cotação ${cotacao.numero} expira em ${daysLeft} dia(s)`,
           message: `A cotação ${cotacao.numero} expira em ${new Date(cotacao.validade_proposta!).toLocaleDateString("pt-BR")}. Tome uma decisão antes do vencimento.`,
           type: "cotacao_expiring",
+          tenant_id: cotacao.tenant_id,
           priority: daysLeft <= 1 ? "critical" : "high",
         });
       }
@@ -124,7 +127,7 @@ Deno.serve(async (req) => {
     const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
     const { data: staleCotacoes } = await supabase
       .from("cotacoes")
-      .select("id, numero, solicitacao_id, fornecedor_id, updated_at")
+      .select("id, numero, solicitacao_id, fornecedor_id, updated_at, tenant_id")
       .eq("status", "pendente")
       .lte("updated_at", fortyEightHoursAgo);
 
@@ -135,6 +138,7 @@ Deno.serve(async (req) => {
           title: `Follow-up necessário: Cotação ${cotacao.numero}`,
           message: `O fornecedor ainda não respondeu à cotação ${cotacao.numero} enviada há mais de 48h.`,
           type: "cotacao_followup",
+          tenant_id: cotacao.tenant_id,
           priority: "medium",
         });
       }
@@ -151,6 +155,7 @@ Deno.serve(async (req) => {
           title: `Pagamento ${pag.numero} vence em ${daysLeft} dia(s)`,
           message: `O pagamento ${pag.numero} no valor de R$ ${Number(pag.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} vence em ${new Date(pag.data_vencimento).toLocaleDateString("pt-BR")}.`,
           type: "payment_due",
+          tenant_id: pag.tenant_id,
           priority: daysLeft <= 1 ? "critical" : "high",
         });
       }
@@ -172,18 +177,8 @@ Deno.serve(async (req) => {
     // Insert notifications (deduplicate - check if similar notification exists today)
     let notificationsCreated = 0;
     for (const notif of notifications) {
-      const { data: existing } = await supabase
-        .from("notifications")
-        .select("id")
-        .eq("user_id", notif.user_id)
-        .eq("title", notif.title)
-        .gte("created_at", todayStr)
-        .limit(1);
-
-      if (!existing || existing.length === 0) {
-        await supabase.from("notifications").insert(notif);
-        notificationsCreated++;
-      }
+      const res = await insertNotification(supabase, notif, { dedupeSince: todayStr });
+      if (res.ok) notificationsCreated++;
     }
 
     const result = {

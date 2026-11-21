@@ -15,6 +15,7 @@
  *   - Falha isolada por assinatura não bloqueia demais fanouts
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { insertNotificationsBatch } from "../_shared/notifications.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
@@ -303,8 +304,8 @@ serve(async (req) => {
           action_label: "Ver detalhes",
           data: { alert_id: alert.id, severity: alert.severity, alert_type: alert.alert_type },
         }));
-        const { error: insErr } = await admin.from("notifications").insert(payload);
-        if (!insErr) inAppFanout = payload.length;
+        const { inserted } = await insertNotificationsBatch(admin, payload);
+        inAppFanout = inserted;
       }
 
       // Slack fan-out por assinatura (com retry) — dedup por URL
