@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a441c3dcf2022ac02a3ff3a527caa2a5aab639d6` (2026-11-21T12:36:06-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b30b4cda12d55e54b0b4a366faf2c58052ede759` (2026-11-21T13:05:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (722), SQL (319), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (722), SQL (319), Markdown (90), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1271 |
+| arquivos_total | 1272 |
 | arquivos_codigo | 793 |
 | linhas_codigo | 166023 |
 | rotas | 55 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 184 |
 | workflows | 11 |
 | scripts | 49 |
-| docs_md | 89 |
+| docs_md | 90 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -341,7 +341,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_ordem.md (8)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
-- AGENTS.md (5)
+- AGENTS.md (6)
 - docs/agentes/github-ci.md (5)
 - scripts/automation.config.json (5)
 - src/pages/acompanhamento/Acompanhamento.tsx (5)
@@ -400,17 +400,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (128 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (148 linhas)
 - `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (10), docs/pendencias (9), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (11), docs/pendencias (9), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
 
 
 ## Últimos commits
+- 2026-11-21 `b30b4cd` docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)
 - 2026-11-21 `a441c3d` chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)
 - 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
 - 2026-11-21 `7a030e4` fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `4bd5264` chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)
 - 2026-11-21 `2aeecf1` chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)
 - 2026-11-21 `7b6d6f8` docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)
-- 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

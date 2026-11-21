@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (722)",
    "SQL (319)",
-   "Markdown (89)",
+   "Markdown (90)",
    "JavaScript (68)",
    "JSON (24)",
    "YAML (13)",
@@ -524,7 +524,7 @@
   {
    "arquivo": "AGENTS.md",
    "titulo": "AGENTS.md — Promo Supply V2",
-   "linhas": 128
+   "linhas": 148
   },
   {
    "arquivo": "CLAUDE.md",
@@ -560,7 +560,7 @@
  "docs_em_subpastas": [
   {
    "pasta": "docs/agentes",
-   "arquivos_md": 10
+   "arquivos_md": 11
   },
   {
    "pasta": "docs/pendencias",

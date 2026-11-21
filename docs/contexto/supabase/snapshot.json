@@ -36348,9 +36348,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+              "hits": 10
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [
             "18:outbox-worker-1min"
           ],
@@ -38596,9 +38600,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],

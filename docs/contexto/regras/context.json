@@ -1,10 +1,10 @@
 {
  "meta": {
-  "sha": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
+  "sha": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 15:36 UTC",
-  "files_total": 1272,
+  "generated_at": "2026-11-21 16:12 UTC",
+  "files_total": 1273,
   "code_files": 1114,
   "code_lines": 192106,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
@@ -112800,10 +112800,20 @@
   }
  },
  "git": {
-  "sha": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
+  "sha": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b30b4cd",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)",
+    "files": [
+     "AGENTS.md",
+     "docs/agentes/catalogo-e-fornecedores.md"
+    ]
+   },
    {
     "sha": "a441c3d",
     "date": "2026-11-21",
@@ -113128,24 +113138,12 @@
      "src/pages/relatorios/Relatorios.tsx",
      "src/pages/relatorios/RelatoriosCharts.tsx"
     ]
-   },
-   {
-    "sha": "8102f2f",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ui): conecta os 5 botoes do painel ERP e cifra credenciais via edge (#201)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/pendencias/_indice.md",
-     "src/pages/admin/ERPConnections.tsx",
-     "supabase/functions/erp-credential-encrypt/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    13
+    12
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
@@ -113162,10 +113160,6 @@
    [
     "src/hooks/useXbzIntegration.ts",
     3
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
    ],
    [
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
@@ -113192,7 +113186,19 @@
     2
    ],
    [
+    "AGENTS.md",
+    1
+   ],
+   [
+    "docs/agentes/catalogo-e-fornecedores.md",
+    1
+   ],
+   [
     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+    1
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
     1
    ],
    [
@@ -113213,14 +113219,6 @@
    ],
    [
     ".github/workflows/main.yml",
-    1
-   ],
-   [
-    "docs/ci/README.md",
-    1
-   ],
-   [
-    "src/hooks/useRealPushNotifications.ts",
     1
    ]
   ]

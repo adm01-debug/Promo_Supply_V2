@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
+  "commit": "b30b4cda12d55e54b0b4a366faf2c58052ede759",
   "branch": "main",
-  "data_commit": "2026-11-21T12:36:06-03:00",
+  "data_commit": "2026-11-21T13:05:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b30b4cd",
+    "data": "2026-11-21",
+    "assunto": "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)"
+   },
    {
     "sha": "a441c3d",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "01db1d0",
     "data": "2026-11-20",
     "assunto": "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)"
-   },
-   {
-    "sha": "0efc019",
-    "data": "2026-11-20",
-    "assunto": "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)"
    }
   ],
-  "arquivos_mudados_7d": 202,
+  "arquivos_mudados_7d": 204,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -239,7 +239,7 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": "docs/agentes/github-ci.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 195
+    "commits": 196
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1271,
+  "arquivos_total": 1272,
   "arquivos_codigo": 793,
   "linhas_codigo": 166023,
   "rotas": 55,
@@ -335,7 +335,7 @@
   "testes": 184,
   "workflows": 11,
   "scripts": 49,
-  "docs_md": 89
+  "docs_md": 90
  },
  "por_pasta": {
   "eslint.config.js": {
