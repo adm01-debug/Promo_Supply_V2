@@ -68,7 +68,12 @@ serve(async (req) => {
         .eq('type', 'start')
         .single()
 
-      if (nodeError) throw nodeError
+      if (nodeError || !startNode) {
+        // Roll back the orphan instance before surfacing the error so we
+        // don't leak a running instance with no current_node_id.
+        await supabase.from('workflow_instances').delete().eq('id', instance.id);
+        throw nodeError ?? new Error('Start node not found');
+      }
 
       await supabase.from('workflow_logs').insert({
         instance_id: instance.id,
