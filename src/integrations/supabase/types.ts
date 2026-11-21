@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       account_lockouts: {
@@ -2976,6 +2981,7 @@ export type Database = {
           id: string
           localizacao: string
           organization_id: string
+          pim_product_id: string | null
           ponto_pedido: number | null
           produto_id: string
           quantidade_atual: number
@@ -2989,6 +2995,7 @@ export type Database = {
           id?: string
           localizacao?: string
           organization_id: string
+          pim_product_id?: string | null
           ponto_pedido?: number | null
           produto_id: string
           quantidade_atual?: number
@@ -3002,6 +3009,7 @@ export type Database = {
           id?: string
           localizacao?: string
           organization_id?: string
+          pim_product_id?: string | null
           ponto_pedido?: number | null
           produto_id?: string
           quantidade_atual?: number
@@ -4474,11 +4482,16 @@ export type Database = {
       }
       pedido_itens: {
         Row: {
+          codigo_fornecedor: string | null
           created_at: string
           data_previsao_producao: string | null
           descricao: string
           id: string
+          ipi_rate: number | null
+          ncm: string | null
           pedido_id: string | null
+          pim_product_id: string | null
+          pim_variant_id: string | null
           produto_id: string | null
           quantidade: number
           quantidade_recebida: number | null
@@ -4492,11 +4505,16 @@ export type Database = {
           valor_unitario: number
         }
         Insert: {
+          codigo_fornecedor?: string | null
           created_at?: string
           data_previsao_producao?: string | null
           descricao: string
           id?: string
+          ipi_rate?: number | null
+          ncm?: string | null
           pedido_id?: string | null
+          pim_product_id?: string | null
+          pim_variant_id?: string | null
           produto_id?: string | null
           quantidade?: number
           quantidade_recebida?: number | null
@@ -4510,11 +4528,16 @@ export type Database = {
           valor_unitario: number
         }
         Update: {
+          codigo_fornecedor?: string | null
           created_at?: string
           data_previsao_producao?: string | null
           descricao?: string
           id?: string
+          ipi_rate?: number | null
+          ncm?: string | null
           pedido_id?: string | null
+          pim_product_id?: string | null
+          pim_variant_id?: string | null
           produto_id?: string | null
           quantidade?: number
           quantidade_recebida?: number | null
@@ -5499,6 +5522,7 @@ export type Database = {
           fornecedor_id: string | null
           frequencia_dias: number | null
           id: string
+          pim_product_id: string | null
           preco_estimado: number | null
           produto_id: string | null
           proxima_compra_estimada: string | null
@@ -5515,6 +5539,7 @@ export type Database = {
           fornecedor_id?: string | null
           frequencia_dias?: number | null
           id?: string
+          pim_product_id?: string | null
           preco_estimado?: number | null
           produto_id?: string | null
           proxima_compra_estimada?: string | null
@@ -5531,6 +5556,7 @@ export type Database = {
           fornecedor_id?: string | null
           frequencia_dias?: number | null
           id?: string
+          pim_product_id?: string | null
           preco_estimado?: number | null
           produto_id?: string | null
           proxima_compra_estimada?: string | null
@@ -5883,6 +5909,8 @@ export type Database = {
           numero: string
           observacoes: string | null
           organization_id: string | null
+          pim_product_id: string | null
+          pim_variant_id: string | null
           prioridade: string
           produto_id: string | null
           quantidade: number
@@ -5914,6 +5942,8 @@ export type Database = {
           numero: string
           observacoes?: string | null
           organization_id?: string | null
+          pim_product_id?: string | null
+          pim_variant_id?: string | null
           prioridade?: string
           produto_id?: string | null
           quantidade?: number
@@ -5945,6 +5975,8 @@ export type Database = {
           numero?: string
           observacoes?: string | null
           organization_id?: string | null
+          pim_product_id?: string | null
+          pim_variant_id?: string | null
           prioridade?: string
           produto_id?: string | null
           quantidade?: number
@@ -10116,12 +10148,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -10145,11 +10177,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -10170,11 +10202,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -10195,11 +10227,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -10212,11 +10244,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
