@@ -4,10 +4,11 @@
 > `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.
 > Para mudar o que está aqui, mude o bloco no YAML.
 
-**11 workflows.**
+**12 workflows.**
 
 | Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |
 |---|---|---|---|---|---|---|---|
+| Aplicar migration no banco de producao | [`aplicar-migration-prod.yml`](../../.github/workflows/aplicar-migration-prod.yml) | dispatch manual, exigindo o nome exato do arquivo em supabase/migrations/ e a confirmacao APLICAR | o arquivo versionado no git roda inteiro em UMA transacao no banco de producao; erro em qualquer ponto desfaz tudo | nada e' commitado no banco (rollback) e o job fica vermelho com a linha do erro do Postgres | o resumo do run mostra o antes/depois de cron.job e a lista de jobs criados | — | — |
 | Automação local | [`automation-local.yml`](../../.github/workflows/automation-local.yml) | PR para main, push em main e execução manual. | Contratos estáticos e suites locais de automação em fixtures isoladas. | O job falha; nenhum patch, commit, publicação ou deploy é executado. | O check fica vermelho no GitHub para o autor da PR e mantenedores. | — | — |
 | Branch Hygiene Audit | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | agendado (segunda 09:34 UTC) e dispatch | branches podaveis, PRs paradas ha mais de 7 dias, versoes da toolchain e SLA dos alertas de code scanning | SLA vencido deixa o job vermelho e publica o diagnostico se o relatorio foi gerado | issue `[branch-hygiene]` (relatorio) e issue `[kpi-actions]` (custo do Actions) | — | — |
 | Contexto para agentes de IA (1h) | [`contexto.yml`](../../.github/workflows/contexto.yml) | push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada hora (minuto 3); dispatch | branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests | falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação | ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha) | — | — |
@@ -21,6 +22,13 @@
 | types-sync | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch | src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2) | PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente | PR de types e issue de gate | — | — |
 
 ## Detalhe
+
+### Aplicar migration no banco de producao (`aplicar-migration-prod.yml`)
+
+- **Gatilho:** dispatch manual, exigindo o nome exato do arquivo em supabase/migrations/ e a confirmacao APLICAR
+- **O que prova:** o arquivo versionado no git roda inteiro em UMA transacao no banco de producao; erro em qualquer ponto desfaz tudo
+- **Quando falha:** nada e' commitado no banco (rollback) e o job fica vermelho com a linha do erro do Postgres
+- **Quem é avisado:** o resumo do run mostra o antes/depois de cron.job e a lista de jobs criados
 
 ### Automação local (`automation-local.yml`)
 
@@ -106,6 +114,9 @@
 
 | Workflow | Situação | Por quê não é bug |
 |---|---|---|
+| [`aplicar-migration-prod.yml`](../../.github/workflows/aplicar-migration-prod.yml) | **transacao-unica** | migration nao roda em pedacos de proposito; meio aplicado seria pior que nao aplicado |
+| [`aplicar-migration-prod.yml`](../../.github/workflows/aplicar-migration-prod.yml) | **arquivo-nao-versionado** | arquivo fora de supabase/migrations/ ou com alteracao nao commitada e' recusado; o canal so aplica o que o git conhece |
+| [`aplicar-migration-prod.yml`](../../.github/workflows/aplicar-migration-prod.yml) | **secret-ausente** | sem SUPABASE_DB_URL o job falha fechado -- aplicar DDL "no escuro" nao e' opcao |
 | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | **code-scanning-vazio** | este repo nao tem code scanning ligado, entao a consulta devolve 403 "Code scanning is not enabled for this repository", o passo avisa e segue (o SLA passa a valer no dia em que o dono ligar) |
 | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | **nada-podavel** | relatorio sem nenhuma branch listada significa que nao ha branch patch-equivalente a main com mais de 7 dias |
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **sem-commit** | "nada mudou" no publicar significa que nenhuma das três fontes mudou desde a última publicação |
