@@ -16,11 +16,11 @@
 | `ai-negotiation` | — |
 | `ai-supplier-risk` | — |
 | `ai-supplier-suggestion` | — |
-| `alert-dispatcher` | `notifications`, `system_alerts` |
-| `check-approval-escalations` | `approval_history`, `approval_steps`, `approval_workflows`, `notifications` |
+| `alert-dispatcher` | `system_alerts` |
+| `check-approval-escalations` | `approval_history`, `approval_steps`, `approval_workflows` |
 | `check-cotacao-followup` | `cotacoes`, `notifications`, `profiles` |
-| `check-expiry-alerts` | `cotacoes`, `notifications`, `pagamentos`, `user_roles` |
-| `check-sla-alerts` | `notifications`, `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
+| `check-expiry-alerts` | `cotacoes`, `pagamentos`, `user_roles` |
+| `check-sla-alerts` | `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
 | `dependency-health` | `audit_logs`, `dependency_health`, `dependency_health_history` |
 | `erp-credential-encrypt` | `user_tenants` |
 | `erp-sync` | `erp_connections`, `erp_sync_log` |
@@ -39,7 +39,7 @@
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
-| `send-push-notification` | `notifications`, `push_subscriptions` |
+| `send-push-notification` | `push_subscriptions` |
 | `spot-api` | `spot_api_sync_log`, `spot_pedidos`, `spot_sessions`, `user_roles` |
 | `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles` |
 | `system-simulation` | — |
@@ -47,8 +47,8 @@
 | `tests` | — |
 | `webauthn-authenticate` | `webauthn_challenges`, `webauthn_credentials` |
 | `webauthn-register` | `webauthn_challenges`, `webauthn_credentials` |
-| `weekly-report` | `cotacoes`, `notifications`, `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
-| `weekly-summary-report` | `cotacoes`, `notifications`, `pedidos`, `solicitacoes`, `user_roles` |
+| `weekly-report` | `cotacoes`, `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
+| `weekly-summary-report` | `cotacoes`, `pedidos`, `solicitacoes`, `user_roles` |
 | `workflow-engine` | `workflow_approvals`, `workflow_edges`, `workflow_instances`, `workflow_logs`, `workflow_nodes` |
 | `xbz-proxy` | `xbz_carrinho_log`, `xbz_credentials` |
 | `xbz-sync-pedidos` | `system_alerts`, `xbz_credentials`, `xbz_pedido_status_history`, `xbz_pedidos` |
@@ -73,7 +73,7 @@
 | `fornecedores` | `guided-buying-ai` |
 | `health_scan_runs` | `health-dashboard` |
 | `integration_outbox` | `process-outbox` |
-| `notifications` | `alert-dispatcher`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `send-push-notification`, `weekly-report`, `weekly-summary-report` |
+| `notifications` | `check-cotacao-followup` |
 | `pagamentos` | `check-expiry-alerts`, `check-sla-alerts`, `weekly-report` |
 | `pedidos` | `check-sla-alerts`, `weekly-report`, `weekly-summary-report` |
 | `produtos` | `guided-buying-ai` |
@@ -113,6 +113,7 @@
 |---|---|
 | `_shared/idempotency.ts` | `webhook_events` |
 | `_shared/logger.ts` | `telemetry_logs` |
+| `_shared/notifications.ts` | `notifications`, `profiles` |
 | `_shared/security.ts` | `user_tenants` |
 | `_shared/telemetry.ts` | `telemetry_logs` |
 | `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
