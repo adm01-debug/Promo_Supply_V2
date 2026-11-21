@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3db64dff74fcb5dde3010737aebe442318281253",
+  "commit": "38c50e56c932e4935554792cad6c42da3e72fbab",
   "branch": "main",
-  "data_commit": "2026-11-21T10:38:03-03:00",
+  "data_commit": "2026-11-21T10:52:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "38c50e5",
+    "data": "2026-11-21",
+    "assunto": "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)"
+   },
    {
     "sha": "3db64df",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "2102f2b",
     "data": "2026-11-20",
     "assunto": "fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)"
-   },
-   {
-    "sha": "6de29ff",
-    "data": "2026-11-20",
-    "assunto": "chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)"
    }
   ],
-  "arquivos_mudados_7d": 189,
+  "arquivos_mudados_7d": 191,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 17
+    "mudancas": 20
    },
    {
     "pasta": "package.json",
@@ -172,6 +172,10 @@
     "mudancas": 9
    },
    {
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 9
+   },
+   {
     "pasta": ".github/workflows/main.yml",
     "mudancas": 8
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": "docs/ci/README.md",
-    "mudancas": 7
-   },
-   {
-    "pasta": "src/pages/recebimento",
     "mudancas": 7
    }
   ],
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 186
+    "commits": 187
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1261,
-  "arquivos_codigo": 784,
-  "linhas_codigo": 165123,
+  "arquivos_total": 1264,
+  "arquivos_codigo": 787,
+  "linhas_codigo": 165367,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 163,
   "migrations": 316,
   "cron_jobs": 71,
-  "testes": 179,
+  "testes": 181,
   "workflows": 11,
   "scripts": 49,
   "docs_md": 89
@@ -432,7 +432,7 @@
   },
   "src/hooks": {
    "arquivos": 72,
-   "linhas": 12395
+   "linhas": 12403
   },
   "src/i18n": {
    "arquivos": 1,
@@ -451,8 +451,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 124,
-   "linhas": 29302
+   "arquivos": 125,
+   "linhas": 29326
   },
   "src/routes": {
    "arquivos": 1,
@@ -483,8 +483,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 82,
-   "linhas": 14960
+   "arquivos": 84,
+   "linhas": 15172
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -614,7 +614,7 @@
   },
   {
    "arquivo": "src/hooks/useXbzIntegration.ts",
-   "linhas": 621
+   "linhas": 629
   },
   {
    "arquivo": "src/components/compras/ComparadorCotacoes.tsx",

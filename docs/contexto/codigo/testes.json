@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 179,
+ "total": 181,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 163
+  "unit": 165
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 106
+   "arquivos": 107
   },
   {
    "padrao": "outro",
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 23
+   "arquivos": 24
   },
   {
    "padrao": "tests-e2e/",
@@ -1088,6 +1088,15 @@
    "casos": 8
   },
   {
+   "arquivo": "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+   "tipo": "unit",
+   "linhas": 18,
+   "testa": [
+    "src/pages/catalogo-xbz/xbzHelpers.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
    "tipo": "unit",
    "linhas": 58,
@@ -1443,6 +1452,15 @@
    "casos": 9
   },
   {
+   "arquivo": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+   "tipo": "unit",
+   "linhas": 145,
+   "testa": [
+    "supabase/functions/_shared/xbz_pedido_map.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "supabase/functions/check-sla-alerts/failures_test.ts",
    "tipo": "unit",
    "linhas": 62,
@@ -1714,7 +1732,7 @@
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
-  "src/pages/catalogo-xbz/xbzHelpers.ts": 2,
+  "src/pages/catalogo-xbz/xbzHelpers.ts": 3,
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,
@@ -1748,6 +1766,7 @@
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
   "supabase/functions/_shared/xbz_client.ts": 1,
+  "supabase/functions/_shared/xbz_pedido_map.ts": 1,
   "supabase/functions/check-sla-alerts/failures.ts": 1,
   "supabase/functions/punchout-receive/session.ts": 1,
   "supabase/functions/punchout-receive/solicitation.ts": 1,

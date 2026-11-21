@@ -2120,7 +2120,7 @@
    "hooks_exportados": [
     "useXbzIntegration"
    ],
-   "linhas": 621,
+   "linhas": 629,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],

@@ -34,7 +34,9 @@
   "supabase/functions/_shared/xbz_catalog_cache.test.ts",
   "supabase/functions/_shared/xbz_catalog_cache.ts",
   "supabase/functions/_shared/xbz_client.ts",
-  "supabase/functions/_shared/xbz_crypto.ts"
+  "supabase/functions/_shared/xbz_crypto.ts",
+  "supabase/functions/_shared/xbz_pedido_map.test.ts",
+  "supabase/functions/_shared/xbz_pedido_map.ts"
  ],
  "edges": [
   {
@@ -1406,7 +1408,7 @@
    "nome": "xbz-proxy",
    "entrada": "supabase/functions/xbz-proxy/index.ts",
    "arquivos": 1,
-   "linhas": 489,
+   "linhas": 490,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1443,7 +1445,7 @@
    "nome": "xbz-sync-pedidos",
    "entrada": "supabase/functions/xbz-sync-pedidos/index.ts",
    "arquivos": 1,
-   "linhas": 236,
+   "linhas": 192,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1467,7 +1469,8 @@
     "logger.ts",
     "security.ts",
     "xbz_auth.ts",
-    "xbz_client.ts"
+    "xbz_client.ts",
+    "xbz_pedido_map.ts"
    ],
    "chamada_pelo_front": [],
    "chamada_por_edges": [],

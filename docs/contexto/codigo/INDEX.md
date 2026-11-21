@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3db64dff74fcb5dde3010737aebe442318281253` (2026-11-21T10:38:03-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `38c50e56c932e4935554792cad6c42da3e72fbab` (2026-11-21T10:52:11-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (713), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (716), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1261 |
-| arquivos_codigo | 784 |
-| linhas_codigo | 165123 |
+| arquivos_total | 1264 |
+| arquivos_codigo | 787 |
+| linhas_codigo | 165367 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 163 |
 | migrations | 316 |
 | cron_jobs | 71 |
-| testes | 179 |
+| testes | 181 |
 | workflows | 11 |
 | scripts | 49 |
 | docs_md | 89 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (78), src/features (33)
 - hooks: src/hooks (60), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (106), outro (40), co-localizado (*.test) (23)
+- testes: co-localizado (__tests__) (107), outro (40), co-localizado (*.test) (24)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `38c50e5` fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)
 - 2026-11-21 `3db64df` fix: catálogo XBZ lê os campos reais da API e migra para mxbzConsultaEstoque (#220)
 - 2026-11-21 `a922396` chore(docs): fecha catalogo edge-erp, hk-idle, doc-readme-evt e corrige DeveloperDocs (#219)
 - 2026-11-21 `4bd5264` chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `d2b3b51` chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)
 - 2026-11-21 `30e7b63` fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)
 - 2026-11-20 `271df27` chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)
-- 2026-11-20 `01db1d0` feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

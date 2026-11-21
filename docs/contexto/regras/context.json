@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3db64dff74fcb5dde3010737aebe442318281253",
+  "sha": "38c50e56c932e4935554792cad6c42da3e72fbab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 13:39 UTC",
-  "files_total": 1262,
-  "code_files": 1104,
-  "code_lines": 191100,
+  "generated_at": "2026-11-21 13:52 UTC",
+  "files_total": 1265,
+  "code_files": 1107,
+  "code_lines": 191344,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b005a655e747e929",
+ "facts_hash": "f43bc157e74bf992",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -249,7 +249,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 366,
+   ".ts": 369,
    ".tsx": 347,
    ".sql": 318,
    ".mjs": 66,
@@ -32272,7 +32272,7 @@
     "env": [],
     "external": [],
     "invokes": [],
-    "doc": "xbz-sync-pedidos — sincroniza pedidos da XBZ e detecta pagamento. Executado por pg_cron (30/30 min) e também sob demanda por admins. Detecta a transição `idLoteDebitoStatus` 0 → 2/3 (PENDENTE → PAGO), grava histórico e dispara alerta em `system_alerts`.",
+    "doc": "xbz-sync-pedidos — sincroniza pedidos da XBZ e detecta pagamento. Executado por pg_cron (30/30 min) e também sob demanda por admins. Detecta a transição PENDENTE → PAGO (`pago` boolean, fallback `idLoteDebitoStatus` 0 → 2/3), grava histórico e dispara alerta em `system_alerts` com severidade `high` …",
     "errors": [],
     "side_effects": [],
     "webhook_events": [],
@@ -34542,7 +34542,7 @@
   {
    "module": "src/hooks",
    "files": 72,
-   "lines": 12395,
+   "lines": 12403,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -34906,8 +34906,8 @@
   },
   {
    "module": "src/pages",
-   "files": 124,
-   "lines": 29302,
+   "files": 125,
+   "lines": 29326,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35089,6 +35089,7 @@
     "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts",
+    "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
     "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
     "src/pages/compliance/ComplianceDashboard.tsx",
     "src/pages/compliance/complianceHelpers.ts",
@@ -35114,8 +35115,7 @@
     "src/pages/fornecedores/fornecedorHelpers.ts",
     "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
     "src/pages/gerar-ordem/GerarOrdem.tsx",
-    "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
-    "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts"
+    "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
    ]
   },
   {
@@ -35308,8 +35308,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 82,
-   "lines": 14960,
+   "files": 84,
+   "lines": 15172,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35385,6 +35385,7 @@
     "xbz_catalog_cache.ts: XbzProdutoRow, mapProduto, normalizeCatalogo, mirrorCatalogo, readCatalogoCacheWithMeta, readCatalogoCache",
     "xbz_client.ts: XBZ_BASE, XBZ_TIMEOUT_MS, XBZ_NULL_DATE, XbzError, XbzCircuitOpenError, XbzPortalCredentials",
     "xbz_crypto.ts: encryptSecret, decryptSecret, maskSecret",
+    "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
@@ -35431,6 +35432,8 @@
     "supabase/functions/_shared/xbz_catalog_cache.ts",
     "supabase/functions/_shared/xbz_client.ts",
     "supabase/functions/_shared/xbz_crypto.ts",
+    "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "supabase/functions/_shared/xbz_pedido_map.ts",
     "supabase/functions/ai-demand-prediction/index.ts",
     "supabase/functions/ai-negotiation/index.ts",
     "supabase/functions/ai-supplier-risk/index.ts",
@@ -35480,9 +35483,7 @@
     "supabase/functions/webauthn-authenticate/index.ts",
     "supabase/functions/webauthn-register/index.ts",
     "supabase/functions/weekly-report/index.ts",
-    "supabase/functions/weekly-summary-report/index.ts",
-    "supabase/functions/workflow-engine/fuzz.test.ts",
-    "supabase/functions/workflow-engine/index.ts"
+    "supabase/functions/weekly-summary-report/index.ts"
    ]
   },
   {
@@ -37853,6 +37854,7 @@
    ],
    "xbz_pedidos": [
     "id_lote_debito_status",
+    "pago",
     "pedido_numero",
     "status_logistico",
     "tenant_id"
@@ -64232,6 +64234,18 @@
     "name": "classifica variação pequena como estável"
    },
    {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+    "name": "pagamentoStatusPedido"
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+    "name": "usa o boolean "
+   },
+   {
+    "file": "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+    "name": "cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando "
+   },
+   {
     "file": "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts",
     "name": "produtoView"
    },
@@ -67166,6 +67180,30 @@
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
     "name": "normalizeCatalogo: preserva o payload bruto para auditoria"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "mapPedido: lê os nomes reais do consultaPedidos (80 campos)"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "mapPedido: "
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "mapPedido: sem pedidoNumero usa o prefixo de "
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "mapPedido: nota fiscal e transportadora quando preenchidas"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "normalizePedidos: 1 linha por item → deduplica por pedido_numero e ignora lixo"
+   },
+   {
+    "file": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    "name": "normalizePedidos: entrada não-array vira lista vazia"
    },
    {
     "file": "supabase/functions/punchout-receive/session.test.ts",
@@ -99301,7 +99339,7 @@
   },
   "src/hooks/useXbzIntegration.ts": {
    "path": "src/hooks/useXbzIntegration.ts",
-   "lines": 621,
+   "lines": 629,
    "exports": [
     "interface XbzCatalogoResult",
     "interface XbzLoginInfo",
@@ -102707,7 +102745,7 @@
   },
   "src/pages/catalogo-xbz/xbzHelpers.ts": {
    "path": "src/pages/catalogo-xbz/xbzHelpers.ts",
-   "lines": 160,
+   "lines": 166,
    "exports": [
     "const XBZ_NULL_DATE_PREFIX",
     "interface XbzPermissions",
@@ -102717,6 +102755,7 @@
     "function isPagamentoConfirmado",
     "type PagamentoStatus",
     "function pagamentoStatus",
+    "function pagamentoStatusPedido",
     "function parsePagamentoLabel",
     "const XBZ_STATUS_LOGISTICO",
     "function statusLogisticoLabel",
@@ -102870,6 +102909,16 @@
     "detecta degradação",
     "detecta melhora",
     "classifica variação pequena como estável"
+   ]
+  },
+  "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts": {
+   "path": "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+   "lines": 18,
+   "is_test": true,
+   "tests": [
+    "pagamentoStatusPedido",
+    "usa o boolean ",
+    "cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando "
    ]
   },
   "src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts": {
@@ -107674,7 +107723,7 @@
   },
   "supabase/functions/_shared/xbz_client.ts": {
    "path": "supabase/functions/_shared/xbz_client.ts",
-   "lines": 410,
+   "lines": 415,
    "exports": [
     "const XBZ_BASE",
     "const XBZ_TIMEOUT_MS",
@@ -107701,6 +107750,7 @@
     "function xbzGetSt",
     "function xbzCarrinhoGet",
     "function xbzCarrinhoWrite",
+    "function xbzCancelarPedido",
     "function parseXbzDate",
     "function toNumber",
     "function toInt",
@@ -107767,6 +107817,36 @@
     "são gravados em texto claro. A chave mestra vive apenas no secret"
    ],
    "doc": "Criptografia AES-GCM para credenciais XBZ. As credenciais do portal XBZ (user/senha) e o token da API /clientes nunca são gravados em texto claro. A chave mestra vive apenas no secret `XBZ_ENCRYPTION_KEY` e nunca sai do servidor. Formato do ciphertext: base64( iv(12 bytes) || ciphertext+tag )."
+  },
+  "supabase/functions/_shared/xbz_pedido_map.test.ts": {
+   "path": "supabase/functions/_shared/xbz_pedido_map.test.ts",
+   "lines": 145,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TENANT",
+     "value": "\"11111111-1111-1111-1111-111111111111\""
+    }
+   ],
+   "doc": "Testes do mapeamento de `consultaPedidos` → `xbz_pedidos` (puro, sem rede/banco). Fixture: forma real observada em 21/11/2026 (DOCS/INTEGRACOES/XBZ.md §4.2). Rodar: deno test supabase/functions/_shared/xbz_pedido_map.test.ts",
+   "tests": [
+    "mapPedido: lê os nomes reais do consultaPedidos (80 campos)",
+    "mapPedido: ",
+    "mapPedido: sem pedidoNumero usa o prefixo de ",
+    "mapPedido: nota fiscal e transportadora quando preenchidas",
+    "normalizePedidos: 1 linha por item → deduplica por pedido_numero e ignora lixo",
+    "normalizePedidos: entrada não-array vira lista vazia"
+   ]
+  },
+  "supabase/functions/_shared/xbz_pedido_map.ts": {
+   "path": "supabase/functions/_shared/xbz_pedido_map.ts",
+   "lines": 105,
+   "exports": [
+    "interface XbzPedidoRow",
+    "function mapPedido",
+    "function normalizePedidos"
+   ],
+   "doc": "Normalização de uma linha do `/api/ruiz/consultaPedidos` (80 campos, 1 linha por item) para `public.xbz_pedidos`. Nomes reais dos campos: DOCS/INTEGRACOES/XBZ.md §4.2. Função pura (sem rede/banco) para ser testável."
   },
   "supabase/functions/ai-demand-prediction/index.ts": {
    "path": "supabase/functions/ai-demand-prediction/index.ts",
@@ -110708,7 +110788,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 489,
+   "lines": 490,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -110766,7 +110846,7 @@
   },
   "supabase/functions/xbz-sync-pedidos/index.ts": {
    "path": "supabase/functions/xbz-sync-pedidos/index.ts",
-   "lines": 236,
+   "lines": 192,
    "tables": [
     {
      "table": "xbz_pedidos",
@@ -110792,6 +110872,7 @@
    "table_cols": {
     "xbz_pedidos": [
      "id_lote_debito_status",
+     "pago",
      "pedido_numero",
      "status_logistico",
      "tenant_id"
@@ -110805,7 +110886,7 @@
    "rpc": [
     "verify_xbz_cron_key"
    ],
-   "doc": "xbz-sync-pedidos — sincroniza pedidos da XBZ e detecta pagamento. Executado por pg_cron (30/30 min) e também sob demanda por admins. Detecta a transição `idLoteDebitoStatus` 0 → 2/3 (PENDENTE → PAGO), grava histórico e dispara alerta em `system_alerts`."
+   "doc": "xbz-sync-pedidos — sincroniza pedidos da XBZ e detecta pagamento. Executado por pg_cron (30/30 min) e também sob demanda por admins. Detecta a transição PENDENTE → PAGO (`pago` boolean, fallback `idLoteDebitoStatus` 0 → 2/3), grava histórico e dispara alerta em `system_alerts` com severidade `high` …"
   },
   "supabase/migrations/20241231000000_saved_filters.sql": {
    "path": "supabase/migrations/20241231000000_saved_filters.sql",
@@ -112696,10 +112777,27 @@
   }
  },
  "git": {
-  "sha": "3db64dff74fcb5dde3010737aebe442318281253",
+  "sha": "38c50e56c932e4935554792cad6c42da3e72fbab",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "38c50e5",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix: pedidos XBZ leem os 80 campos reais, usam `pago`, alerta high e CancelarPedido via PUT (#222)",
+    "files": [
+     "src/hooks/useXbzIntegration.ts",
+     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+     "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+     "src/pages/catalogo-xbz/xbzHelpers.ts",
+     "supabase/functions/_shared/xbz_client.ts",
+     "supabase/functions/_shared/xbz_pedido_map.test.ts",
+     "supabase/functions/_shared/xbz_pedido_map.ts",
+     "supabase/functions/xbz-proxy/index.ts",
+     "supabase/functions/xbz-sync-pedidos/index.ts"
+    ]
+   },
    {
     "sha": "3db64df",
     "date": "2026-11-21",
@@ -113010,40 +113108,35 @@
     "files": [
      "src/pages/admin/WorkflowAdmin.tsx"
     ]
-   },
-   {
-    "sha": "68c7c74",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra edge-alert-sev (#189) e edge-ai-risk (#190) concluidos; xbz-cron (#191) aguardando regra 8 (#192)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    17
+    16
+   ],
+   [
+    "src/pages/catalogo-xbz/xbzHelpers.ts",
+    3
+   ],
+   [
+    "supabase/functions/_shared/xbz_client.ts",
+    3
+   ],
+   [
+    "supabase/functions/xbz-proxy/index.ts",
+    3
+   ],
+   [
+    "src/hooks/useXbzIntegration.ts",
+    2
    ],
    [
     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
     2
    ],
    [
-    "src/pages/catalogo-xbz/xbzHelpers.ts",
-    2
-   ],
-   [
     "supabase/functions/_shared/xbz_catalog_cache.ts",
-    2
-   ],
-   [
-    "supabase/functions/_shared/xbz_client.ts",
-    2
-   ],
-   [
-    "supabase/functions/xbz-proxy/index.ts",
     2
    ],
    [
@@ -113059,7 +113152,23 @@
     2
    ],
    [
-    "src/hooks/useXbzIntegration.ts",
+    "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
+    1
+   ],
+   [
+    "src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_pedido_map.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/xbz_pedido_map.ts",
+    1
+   ],
+   [
+    "supabase/functions/xbz-sync-pedidos/index.ts",
     1
    ],
    [
@@ -113080,26 +113189,6 @@
    ],
    [
     "DOCS/ENGINEERING_EXCELLENCE.md",
-    1
-   ],
-   [
-    "src/components/compras/approval/WorkflowDLQPanel.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
-    1
-   ],
-   [
-    "src/pages/aprovacoes/Aprovacoes.tsx",
-    1
-   ],
-   [
-    "DOCS/INTEGRACOES/XBZ.md",
-    1
-   ],
-   [
-    "docs/pendencias/_ordem.md",
     1
    ]
   ]

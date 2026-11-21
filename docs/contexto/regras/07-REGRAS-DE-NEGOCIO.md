@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3db64dff74` · branch `main` · 2026-11-21 13:39 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `38c50e56c9` · branch `main` · 2026-11-21 13:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2322,7 +2322,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2692 testes em 131 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2701 testes em 133 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2429,6 +2429,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
+| `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
@@ -2449,6 +2450,7 @@ _nenhum item encontrado_
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
+| `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `src/tests/contracts.test.ts` | 3 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes |

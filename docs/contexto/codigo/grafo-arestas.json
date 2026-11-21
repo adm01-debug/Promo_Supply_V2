@@ -3437,6 +3437,9 @@
    "supabase/functions/_shared/circuit_breaker.ts",
    "supabase/functions/_shared/http.ts"
   ],
+  "supabase/functions/_shared/xbz_pedido_map.ts": [
+   "supabase/functions/_shared/xbz_client.ts"
+  ],
   "supabase/functions/ai-demand-prediction/index.ts": [
    "supabase/functions/_shared/ai_gateway.ts",
    "supabase/functions/_shared/contracts.ts",
@@ -3677,7 +3680,8 @@
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/xbz_auth.ts",
-   "supabase/functions/_shared/xbz_client.ts"
+   "supabase/functions/_shared/xbz_client.ts",
+   "supabase/functions/_shared/xbz_pedido_map.ts"
   ]
  }
 }
