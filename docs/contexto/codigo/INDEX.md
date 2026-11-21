@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `92004291af46a2bdf2ea7470ae4a553bd0058c34` (2026-11-21T17:13:28-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `502c3b5844fa6262f5f2f4cb76c31cbd1388667e` (2026-11-21T19:21:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1284 |
 | arquivos_codigo | 799 |
-| linhas_codigo | 166990 |
+| linhas_codigo | 167035 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `502c3b5` fix(spot): permite getOrders no cron para popular spot_pedidos (#256)
 - 2026-11-21 `9200429` fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)
 - 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
 - 2026-11-21 `d7718b8` fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `3192276` feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)
 - 2026-11-21 `017aa0c` fix(docs): alinha contagem de workflows do README de CI com main (#241)
 - 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
-- 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

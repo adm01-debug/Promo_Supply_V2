@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `92004291af` · branch `main` · 2026-11-21 20:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `502c3b5844` · branch `main` · 2026-11-21 22:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2346,7 +2346,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2675 testes em 138 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2680 testes em 138 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2367,6 +2367,7 @@ _nenhum item encontrado_
 | `src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts` | 36 | SUPPLIER_COLORS · has 6 supplier entries · includes XBZ Brindes · includes Stricker / Spot Gifts … |
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
+| `src/tests/spot/spotApi.test.ts` | 36 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
 | `src/pages/compliance/__tests__/complianceHelpers.test.ts` | 33 | actionTypeLabels · has entries for warning, standard_fine, double_fine, temp_block, permanent_block · each entry has label, color, and icon · warning label is  … |
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
@@ -2375,7 +2376,6 @@ _nenhum item encontrado_
 | `src/stores/__tests__/slaSettingsStore.test.ts` | 32 | initial state · has default warningThresholdDays of 3 · has default criticalThresholdDays of 1 · has default checkIntervalMinutes of 1 … |
 | `src/schemas/__tests__/solicitacao.schema.test.ts` | 31 | solicitacaoSchema · accepts fully valid input · applies default observacoes as empty string · applies default centroCusto as empty string … |
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |
-| `src/tests/spot/spotApi.test.ts` | 31 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts` | 30 | mockPendingApprovals · has 3 items · each item has required string fields · each item has numeric fields … |
 | `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 30 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts` | 30 | historicoMensal · has 6 months of data · every item has mes, economia, volume, percentual, cotacoes · all economia values are positive … |

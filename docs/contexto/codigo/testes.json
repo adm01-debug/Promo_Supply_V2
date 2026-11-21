@@ -1404,11 +1404,11 @@
   {
    "arquivo": "src/tests/spot/spotApi.test.ts",
    "tipo": "unit",
-   "linhas": 150,
+   "linhas": 185,
    "testa": [
     "supabase/functions/_shared/spot_api.ts"
    ],
-   "casos": 23
+   "casos": 27
   },
   {
    "arquivo": "src/types/__tests__/legacyTypes.test.ts",
