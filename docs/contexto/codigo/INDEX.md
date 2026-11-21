@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0b8e547a20e94227e248fc185536e613ace2a0e4` (2026-11-21T19:53:52-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8b01dfef3d43875a366bd98967a5f28efe13f909` (2026-11-21T19:54:01-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (322), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (323), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1285 |
+| arquivos_total | 1286 |
 | arquivos_codigo | 799 |
 | linhas_codigo | 167073 |
 | rotas | 55 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 320 |
-| cron_jobs | 72 |
+| migrations | 321 |
+| cron_jobs | 73 |
 | testes | 186 |
 | workflows | 13 |
 | scripts | 50 |
@@ -294,6 +294,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `sla-alert-check` 0 */4 * * * → edge check-sla-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
 - `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20261121153000_religa_crons_negocio_vault.sql)
 - `spot-api-sync-orders-30min` */30 * * * * (20261121225000_versiona_job_spot_sync_orders_30min.sql)
+- `spot-api-sync-stock` */20 * * * * (20261121232500_corrige_quota_cron_spot_stock.sql)
 - `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20261121153000_religa_crons_negocio_vault.sql)
 - `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20261121153000_religa_crons_negocio_vault.sql)
 - `xbz-sync-pedidos-30min` */30 * * * * (20261120165300_versiona_job_xbz_sync_30min.sql)
@@ -414,6 +415,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
 - 2026-11-21 `0b8e547` fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)
 - 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
 - 2026-11-21 `e39f3aa` fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)
@@ -428,7 +430,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
 - 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
 - 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
-- 2026-11-21 `625b45a` fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

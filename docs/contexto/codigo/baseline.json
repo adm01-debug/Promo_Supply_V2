@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0b8e547a20e94227e248fc185536e613ace2a0e4",
+  "commit": "8b01dfef3d43875a366bd98967a5f28efe13f909",
   "branch": "main",
-  "data_commit": "2026-11-21T19:53:52-03:00",
+  "data_commit": "2026-11-21T19:54:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8b01dfe",
+    "data": "2026-11-21",
+    "assunto": "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)"
+   },
    {
     "sha": "0b8e547",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "b30b4cd",
     "data": "2026-11-21",
     "assunto": "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)"
-   },
-   {
-    "sha": "a441c3d",
-    "data": "2026-11-21",
-    "assunto": "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)"
    }
   ],
-  "arquivos_mudados_7d": 229,
+  "arquivos_mudados_7d": 230,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 219
+    "commits": 220
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1285,
+  "arquivos_total": 1286,
   "arquivos_codigo": 799,
   "linhas_codigo": 167073,
   "rotas": 55,
@@ -330,8 +330,8 @@
   "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 320,
-  "cron_jobs": 72,
+  "migrations": 321,
+  "cron_jobs": 73,
   "testes": 186,
   "workflows": 13,
   "scripts": 50,

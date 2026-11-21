@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)",
    "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)",
    "feat(spot): versiona cron spot-api-sync-orders-30min (#258)",
    "fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)",
-   "fix(spot): permite getOrders no cron para popular spot_pedidos (#256)",
-   "fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)"
+   "fix(spot): permite getOrders no cron para popular spot_pedidos (#256)"
   ]
  },
  "pr_template": null,

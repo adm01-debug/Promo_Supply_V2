@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0b8e547a20e94227e248fc185536e613ace2a0e4",
+  "sha": "8b01dfef3d43875a366bd98967a5f28efe13f909",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 22:55 UTC",
-  "files_total": 1286,
-  "code_files": 1123,
-  "code_lines": 193286,
+  "generated_at": "2026-11-21 22:57 UTC",
+  "files_total": 1287,
+  "code_files": 1124,
+  "code_lines": 193316,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "22e68126a6cd6a0d",
+ "facts_hash": "e45f70c79747c065",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 322,
+   ".sql": 323,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -26714,6 +26714,12 @@
     "schedule": "*/30 * * * *",
     "body": "SELECT public._invoke_spot_sync(",
     "src": "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql"
+   },
+   {
+    "job": "spot-api-sync-stock",
+    "schedule": "*/20 * * * *",
+    "body": "SELECT public._invoke_spot_sync(",
+    "src": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql"
    }
   ],
   "views": {
@@ -27052,6 +27058,7 @@
    "supabase/migrations/20261121160000_pim_refs_compras.sql",
    "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
    "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
+   "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35692,8 +35699,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 320,
-   "lines": 25990,
+   "files": 321,
+   "lines": 26020,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -112948,6 +112955,10 @@
    "path": "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
    "lines": 24
   },
+  "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql": {
+   "path": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
+   "lines": 30
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113167,10 +113178,19 @@
   }
  },
  "git": {
-  "sha": "0b8e547a20e94227e248fc185536e613ace2a0e4",
+  "sha": "8b01dfef3d43875a366bd98967a5f28efe13f909",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8b01dfe",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)",
+    "files": [
+     "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql"
+    ]
+   },
    {
     "sha": "0b8e547",
     "date": "2026-11-21",
@@ -113464,16 +113484,6 @@
     "files": [
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "ad13343",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)",
-    "files": [
-     "src/hooks/useRealPushNotifications.ts",
-     "src/vite-env.d.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113514,6 +113524,10 @@
     2
    ],
    [
+    "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
+    1
+   ],
+   [
     "supabase/functions/_shared/spot_api.ts",
     1
    ],
@@ -113551,10 +113565,6 @@
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/weekly-report/index.ts",
     1
    ]
   ]
