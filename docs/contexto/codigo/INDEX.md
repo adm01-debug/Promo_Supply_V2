@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `199e4ed1b5037b91c1f4d88fa470a87641aeb641` (2026-11-21T12:21:28-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a441c3dcf2022ac02a3ff3a527caa2a5aab639d6` (2026-11-21T12:36:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (722), SQL (318), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (722), SQL (319), Markdown (89), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1270 |
+| arquivos_total | 1271 |
 | arquivos_codigo | 793 |
 | linhas_codigo | 166023 |
 | rotas | 55 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 316 |
+| migrations | 317 |
 | cron_jobs | 71 |
 | testes | 184 |
 | workflows | 11 |
@@ -225,8 +225,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `xbz-sync-pedidos` — tabelas: system_alerts, xbz_credentials, xbz_pedido_status_history, xbz_pedidos; chamada por 0 arquivo(s) do front, por SQL/cron
 
 ## Cron jobs (pg_cron / vercel)
-- `alert-dispatcher-1min` * * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
-- `approval-escalation-check` */15 * * * * → edge check-approval-escalations (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `alert-dispatcher-1min` * * * * * (20261121153000_religa_crons_negocio_vault.sql)
+- `approval-escalation-check` */15 * * * * → edge check-approval-escalations (20261121153000_religa_crons_negocio_vault.sql)
 - `archive-audit-logs-old-partitions` 30 3 2 * * (20260712223354_e00522cc-ebe6-4957-bfef-dd6d115c4f5b.sql)
 - `archive-telemetry-logs-old-partitions` 45 3 3 * * (20260712223444_2608de7b-4f9c-4f50-a31a-d8f8834233e9.sql)
 - `check_secret_rotation_due_daily` 0 6 * * * (20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql)
@@ -246,15 +246,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `cleanup-temp-file-snapshots-daily` 20 3 * * * (20260712221049_be67ff27-0f0f-4271-9017-6ebe0acafe1b.sql)
 - `cleanup-wal-rate-snapshots-daily` 25 3 * * * (20260712221049_be67ff27-0f0f-4271-9017-6ebe0acafe1b.sql)
 - `cleanup-webhook-events-daily` 15 3 * * * (20260711183148_8694a780-0861-49f9-a337-d565e5e15ef4.sql)
-- `contract-expiry-check` 0 7 * * * → edge check-expiry-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
-- `cotacao-followup-check` 0 12 * * * → edge check-cotacao-followup (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `contract-expiry-check` 0 7 * * * → edge check-expiry-alerts (20261121153000_religa_crons_negocio_vault.sql)
+- `cotacao-followup-check` 0 12 * * * → edge check-cotacao-followup (20261121153000_religa_crons_negocio_vault.sql)
 - `cron-watchdog` */5 * * * * (20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql)
 - `ensure-audit-logs-next-partition` 0 4 25 * * (20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql)
 - `ensure-telemetry-logs-next-partition` 0 4 25 * * (20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql)
-- `expiry-alerts-check` 0 10 * * * → edge check-expiry-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `expiry-alerts-check` 0 10 * * * → edge check-expiry-alerts (20261121153000_religa_crons_negocio_vault.sql)
 - `lgpd_retention_daily` 15 3 * * * (20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql)
 - `limpa-historico-cron-semanal` 17 4 * * 0 (20261113124508_cron_limpa_historico_semanal.sql)
-- `outbox-worker-1min` * * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `outbox-worker-1min` * * * * * (20261121153000_religa_crons_negocio_vault.sql)
 - `pg-activity-watchdog` */2 * * * * (20260712110815_762ad29c-b3f7-4e44-a0ec-f6b624174ca3.sql)
 - `refresh-mv-dashboard-kpis` */15 * * * * (20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql)
 - `run-all-health-scans-hourly` 17 * * * * (20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql)
@@ -292,9 +292,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `scan-xid-wraparound-daily` 30 3 * * * (20260712194304_ad9d9443-9507-4e9f-8751-193ff290401e.sql)
 - `security_definer_drift_quarterly` 0 4 1 1,4,7,10 * (20260712215549_fcc6489a-009e-4050-8955-9ac162d4f3dd.sql)
 - `sla-alert-check` 0 */4 * * * → edge check-sla-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
-- `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
-- `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
-- `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql)
+- `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20261121153000_religa_crons_negocio_vault.sql)
+- `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20261121153000_religa_crons_negocio_vault.sql)
+- `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20261121153000_religa_crons_negocio_vault.sql)
 - `xbz-sync-pedidos-30min` */30 * * * * (20261120165300_versiona_job_xbz_sync_30min.sql)
 
 ## Integrações externas
@@ -411,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `a441c3d` chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)
 - 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
 - 2026-11-21 `7a030e4` fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)
 - 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
@@ -425,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `2aeecf1` chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)
 - 2026-11-21 `7b6d6f8` docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)
 - 2026-11-21 `22af7a5` feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)
-- 2026-11-21 `1b8ae1d` docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

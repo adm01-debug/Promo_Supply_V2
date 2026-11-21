@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
    "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)",
    "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)",
    "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)",
-   "chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)",
-   "fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)"
+   "chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)"
   ]
  },
  "pr_template": null,

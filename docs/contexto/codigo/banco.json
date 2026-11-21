@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 316,
+ "migrations": 317,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1111,12 +1111,12 @@
   {
    "nome": "alert-dispatcher-1min",
    "agenda": "* * * * *",
-   "migration": "20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql"
+   "migration": "20261121153000_religa_crons_negocio_vault.sql"
   },
   {
    "nome": "approval-escalation-check",
    "agenda": "*/15 * * * *",
-   "migration": "20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-approval-escalations"
   },
   {
@@ -1217,13 +1217,13 @@
   {
    "nome": "contract-expiry-check",
    "agenda": "0 7 * * *",
-   "migration": "20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-expiry-alerts"
   },
   {
    "nome": "cotacao-followup-check",
    "agenda": "0 12 * * *",
-   "migration": "20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-cotacao-followup"
   },
   {
@@ -1244,7 +1244,7 @@
   {
    "nome": "expiry-alerts-check",
    "agenda": "0 10 * * *",
-   "migration": "20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-expiry-alerts"
   },
   {
@@ -1260,7 +1260,7 @@
   {
    "nome": "outbox-worker-1min",
    "agenda": "* * * * *",
-   "migration": "20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql"
+   "migration": "20261121153000_religa_crons_negocio_vault.sql"
   },
   {
    "nome": "pg-activity-watchdog",
@@ -1451,19 +1451,19 @@
   {
    "nome": "sla-alerts-check",
    "agenda": "*/30 * * * *",
-   "migration": "20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "check-sla-alerts"
   },
   {
    "nome": "weekly-procurement-report",
    "agenda": "0 11 * * 1",
-   "migration": "20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "weekly-report"
   },
   {
    "nome": "weekly-summary-report-job",
    "agenda": "0 8 * * 1",
-   "migration": "20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql",
+   "migration": "20261121153000_religa_crons_negocio_vault.sql",
    "chama_edge": "weekly-summary-report"
   },
   {

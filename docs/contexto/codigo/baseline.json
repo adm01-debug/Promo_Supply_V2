@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
+  "commit": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
   "branch": "main",
-  "data_commit": "2026-11-21T12:21:28-03:00",
+  "data_commit": "2026-11-21T12:36:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a441c3d",
+    "data": "2026-11-21",
+    "assunto": "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)"
+   },
    {
     "sha": "199e4ed",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "0efc019",
     "data": "2026-11-20",
     "assunto": "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)"
-   },
-   {
-    "sha": "ec27cd4",
-    "data": "2026-11-20",
-    "assunto": "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)"
    }
   ],
-  "arquivos_mudados_7d": 201,
+  "arquivos_mudados_7d": 202,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 194
+    "commits": 195
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1270,
+  "arquivos_total": 1271,
   "arquivos_codigo": 793,
   "linhas_codigo": 166023,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 89,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 316,
+  "migrations": 317,
   "cron_jobs": 71,
   "testes": 184,
   "workflows": 11,

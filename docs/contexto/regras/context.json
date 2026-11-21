@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
+  "sha": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 15:21 UTC",
-  "files_total": 1271,
-  "code_files": 1113,
-  "code_lines": 192001,
+  "generated_at": "2026-11-21 15:36 UTC",
+  "files_total": 1272,
+  "code_files": 1114,
+  "code_lines": 192106,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d87c9ca934462123",
+ "facts_hash": "e092bb2952980d7a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -251,7 +251,7 @@
   "languages": {
    ".ts": 374,
    ".tsx": 348,
-   ".sql": 318,
+   ".sql": 319,
    ".mjs": 66,
    ".py": 5,
    ".js": 2
@@ -26561,6 +26561,60 @@
     "schedule": "*/30 * * * *",
     "body": "SELECT public._invoke_xbz_sync();",
     "src": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql"
+   },
+   {
+    "job": "alert-dispatcher-1min",
+    "schedule": "* * * * *",
+    "body": "SELECT public._invoke_edge_function('alert-dispatcher');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "outbox-worker-1min",
+    "schedule": "* * * * *",
+    "body": "SELECT public._invoke_edge_function('process-outbox');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "approval-escalation-check",
+    "schedule": "*/15 * * * *",
+    "body": "SELECT public._invoke_edge_function('check-approval-escalations');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "contract-expiry-check",
+    "schedule": "0 7 * * *",
+    "body": "SELECT public._invoke_edge_function('check-expiry-alerts');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "cotacao-followup-check",
+    "schedule": "0 12 * * *",
+    "body": "SELECT public._invoke_edge_function('check-cotacao-followup');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "expiry-alerts-check",
+    "schedule": "0 10 * * *",
+    "body": "SELECT public._invoke_edge_function('check-expiry-alerts');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "sla-alerts-check",
+    "schedule": "*/30 * * * *",
+    "body": "SELECT public._invoke_edge_function('check-sla-alerts');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "weekly-procurement-report",
+    "schedule": "0 11 * * 1",
+    "body": "SELECT public._invoke_edge_function('weekly-report');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+   },
+   {
+    "job": "weekly-summary-report-job",
+    "schedule": "0 8 * * 1",
+    "body": "SELECT public._invoke_edge_function('weekly-summary-report');",
+    "src": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
    }
   ],
   "views": {
@@ -26895,6 +26949,7 @@
    "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
    "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
    "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
+   "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35494,8 +35549,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 316,
-   "lines": 25755,
+   "files": 317,
+   "lines": 25860,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -112522,6 +112577,10 @@
    "path": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
    "lines": 17
   },
+  "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql": {
+   "path": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+   "lines": 105
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -112741,10 +112800,19 @@
   }
  },
  "git": {
-  "sha": "199e4ed1b5037b91c1f4d88fa470a87641aeb641",
+  "sha": "a441c3dcf2022ac02a3ff3a527caa2a5aab639d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a441c3d",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
+    "files": [
+     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
+    ]
+   },
    {
     "sha": "199e4ed",
     "date": "2026-11-21",
@@ -113072,26 +113140,12 @@
      "src/pages/admin/ERPConnections.tsx",
      "supabase/functions/erp-credential-encrypt/index.ts"
     ]
-   },
-   {
-    "sha": "a0837ea",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "fix(ui): integra e-mail, hub de comunicação e redespacho real no detalhe do pedido (#200)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/features/layout/components/SupplierChat.tsx",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/lib/hubEvents.ts",
-     "src/pages/devolucoes/DevolucoesModals.tsx",
-     "src/pages/pedidos/PedidoDetailsDialog.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
+    13
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
@@ -113138,6 +113192,10 @@
     2
    ],
    [
+    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+    1
+   ],
+   [
     "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
     1
    ],
@@ -113163,10 +113221,6 @@
    ],
    [
     "src/hooks/useRealPushNotifications.ts",
-    1
-   ],
-   [
-    "src/vite-env.d.ts",
     1
    ]
   ]
