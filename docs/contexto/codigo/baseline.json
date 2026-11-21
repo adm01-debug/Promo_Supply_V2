@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3192276093a09d1134cf825c5cea715547bcb1c7",
+  "commit": "625b45ac41392599a6b55023e2cb41cafdb12431",
   "branch": "main",
-  "data_commit": "2026-11-21T15:15:15-03:00",
+  "data_commit": "2026-11-21T15:19:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "625b45a",
+    "data": "2026-11-21",
+    "assunto": "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)"
+   },
    {
     "sha": "3192276",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "22af7a5",
     "data": "2026-11-21",
     "assunto": "feat(dlq): UI de retry para aprovacoes falhadas (WorkflowDLQPanel) (#215)"
-   },
-   {
-    "sha": "1b8ae1d",
-    "data": "2026-11-21",
-    "assunto": "docs: referência técnica da API XBZ v6 em DOCS/INTEGRACOES/XBZ.md (#214)"
    }
   ],
-  "arquivos_mudados_7d": 211,
+  "arquivos_mudados_7d": 212,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 204
+    "commits": 205
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1278,
+  "arquivos_total": 1279,
   "arquivos_codigo": 796,
   "linhas_codigo": 166369,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 318,
+  "migrations": 319,
   "cron_jobs": 71,
   "testes": 185,
   "workflows": 13,

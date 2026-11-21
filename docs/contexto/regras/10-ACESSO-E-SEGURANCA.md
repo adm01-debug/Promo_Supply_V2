@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3192276093` · branch `main` · 2026-11-21 18:19 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `625b45ac41` · branch `main` · 2026-11-21 18:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -432,6 +432,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated | select, insert, update, delete | `produto_fornecedores`, `repurchase_suggestions`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `alert_subscriptions`, `secret_rotation_schedule`, `xbz_credentials` |
 | grant | authenticated, service_role | execute | `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group` … +13 |
 | grant | authenticated, service_role | select | `cron_job_staleness` |
+| grant | ci_snapshot | execute | `_invoke_edge_function` |
 | grant | postgres | select | `mv_dashboard_kpis` |
 | grant | service_role | all | `telemetry_logs`, `system_alerts`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `webhook_events`, `integration_outbox`, `wal_rate_snapshots`, `checkpoint_snapshots` … +25 |
 | grant | service_role | execute | `update_estoque_saldo`, `exec_sql`, `exec_sql`, `log_security_event`, `log_audit_event`, `count_legacy_storage_urls`, `cleanup_expired_challenges`, `cleanup_old_telemetry`, `grant_tenant_access_on_insert`, `grant_tenant_access_on_insert`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +86 |

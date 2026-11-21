@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3192276093a09d1134cf825c5cea715547bcb1c7",
+  "sha": "625b45ac41392599a6b55023e2cb41cafdb12431",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:19 UTC",
-  "files_total": 1279,
-  "code_files": 1118,
-  "code_lines": 192479,
+  "generated_at": "2026-11-21 18:20 UTC",
+  "files_total": 1280,
+  "code_files": 1119,
+  "code_lines": 192558,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "1e02a1b14bda5f81",
+ "facts_hash": "6ca2d5953ec84e3e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 376,
    ".tsx": 348,
-   ".sql": 320,
+   ".sql": 321,
    ".mjs": 66,
    ".py": 5,
    ".js": 3
@@ -27044,6 +27044,7 @@
    "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
    "supabase/migrations/20261121160000_pim_refs_compras.sql",
+   "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -30885,6 +30886,14 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "ci_snapshot",
+    "src": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
    }
   ],
   "raises": [
@@ -35667,8 +35676,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 318,
-   "lines": 25887,
+   "files": 319,
+   "lines": 25966,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -83465,6 +83474,14 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "_invoke_edge_function",
+    "objkind": "function",
+    "roles": "ci_snapshot",
+    "src": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
    }
   ],
   "guards": [
@@ -112793,6 +112810,10 @@
    "path": "supabase/migrations/20261121160000_pim_refs_compras.sql",
    "lines": 27
   },
+  "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql": {
+   "path": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
+   "lines": 79
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113012,10 +113033,20 @@
   }
  },
  "git": {
-  "sha": "3192276093a09d1134cf825c5cea715547bcb1c7",
+  "sha": "625b45ac41392599a6b55023e2cb41cafdb12431",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "625b45a",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)",
+    "files": [
+     ".github/workflows/aplicar-migration-prod.yml",
+     "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
+    ]
+   },
    {
     "sha": "3192276",
     "date": "2026-11-21",
@@ -113337,15 +113368,6 @@
     "files": [
      "supabase/functions/ai-supplier-risk/index.ts"
     ]
-   },
-   {
-    "sha": "d2b3b51",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)",
-    "files": [
-     "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -113374,6 +113396,10 @@
     3
    ],
    [
+    ".github/workflows/aplicar-migration-prod.yml",
+    2
+   ],
+   [
     "src/pages/catalogo-xbz/XbzPedidosTab.tsx",
     2
    ],
@@ -113398,15 +113424,15 @@
     2
    ],
    [
+    "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261121160000_pim_refs_compras.sql",
     1
    ],
    [
     ".github/workflows/provisionar-vapid.yml",
-    1
-   ],
-   [
-    ".github/workflows/aplicar-migration-prod.yml",
     1
    ],
    [
@@ -113423,10 +113449,6 @@
    ],
    [
     "vite.config.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/external-bridge-allowlist.ts",
     1
    ]
   ]

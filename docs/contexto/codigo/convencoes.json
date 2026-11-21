@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)",
    "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)",
    "fix(docs): alinha contagem de workflows do README de CI com main (#241)",
    "ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)",
-   "ci(prod): cria canal manual para aplicar migration versionada em producao (#237)",
-   "docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)"
+   "ci(prod): cria canal manual para aplicar migration versionada em producao (#237)"
   ]
  },
  "pr_template": null,

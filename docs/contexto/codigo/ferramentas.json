@@ -4,7 +4,7 @@
  "stack": {
   "linguagens": [
    "TypeScript (724)",
-   "SQL (320)",
+   "SQL (321)",
    "Markdown (90)",
    "JavaScript (69)",
    "JSON (24)",
@@ -152,7 +152,9 @@
    "scripts_usados": [],
    "npm_scripts": [],
    "secrets": [
-    "SUPABASE_DB_URL"
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_DB_URL",
+    "VITE_SUPABASE_PROJECT_ID"
    ],
    "actions": [
     "actions/checkout"
