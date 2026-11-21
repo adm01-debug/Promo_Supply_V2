@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7187345d76fa4d99c2a8975c36e5dec7ba510934",
+  "commit": "3067e1139f24aab062f2c19827178ad3ab0c4b07",
   "branch": "main",
-  "data_commit": "2026-11-21T15:46:10-03:00",
+  "data_commit": "2026-11-21T15:52:44-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3067e11",
+    "data": "2026-11-21",
+    "assunto": "fix(partitions): nao tratar tabela nao particionada como falha (#243)"
+   },
    {
     "sha": "7187345",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "4bd5264",
     "data": "2026-11-21",
     "assunto": "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)"
-   },
-   {
-    "sha": "2aeecf1",
-    "data": "2026-11-21",
-    "assunto": "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)"
    }
   ],
-  "arquivos_mudados_7d": 214,
+  "arquivos_mudados_7d": 215,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 207
+    "commits": 208
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1279,
   "arquivos_codigo": 796,
-  "linhas_codigo": 166416,
+  "linhas_codigo": 166425,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 88,
-   "linhas": 15652
+   "linhas": 15661
   },
   "tailwind.config.ts": {
    "arquivos": 1,

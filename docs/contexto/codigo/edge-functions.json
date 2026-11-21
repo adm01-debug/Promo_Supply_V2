@@ -681,7 +681,7 @@
    "nome": "maintain-partitions",
    "entrada": "supabase/functions/maintain-partitions/index.ts",
    "arquivos": 1,
-   "linhas": 84,
+   "linhas": 93,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

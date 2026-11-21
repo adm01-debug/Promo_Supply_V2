@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(partitions): nao tratar tabela nao particionada como falha (#243)",
    "fix(types): regenera types.ts com as colunas PIM de compras (#245)",
    "feat: compra grava referencia do PIM e congela o item (#242)",
    "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)",
-   "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)",
-   "fix(docs): alinha contagem de workflows do README de CI com main (#241)"
+   "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)"
   ]
  },
  "pr_template": null,
