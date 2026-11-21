@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37` (2026-11-21T16:09:40-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2b20c503fc7cb55addef185c92954923a55b9227` (2026-11-21T16:57:07-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1283 |
 | arquivos_codigo | 798 |
-| linhas_codigo | 166826 |
+| linhas_codigo | 166900 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -413,6 +413,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
+- 2026-11-21 `d7718b8` fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)
+- 2026-11-21 `ccdb17f` docs(pim): marca PR 2.1 concluída no checklist (#249)
 - 2026-11-21 `8a61f8c` feat(bridge): allowlist aponta só para as views de compras do PIM (#248)
 - 2026-11-21 `64c1922` docs(pim): integra plano de compras-sem-catalogo com checklist (#247)
 - 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
@@ -425,9 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
 - 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
 - 2026-11-21 `709f261` docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)
-- 2026-11-21 `aef9bff` feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)
-- 2026-11-21 `7ad0b03` feat(pwa): adiciona handler de push ao service worker (#234)
-- 2026-11-21 `5f273a0` feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

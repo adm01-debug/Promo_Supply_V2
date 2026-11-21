@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)",
+   "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)",
+   "docs(pim): marca PR 2.1 concluída no checklist (#249)",
    "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)",
-   "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)",
-   "chore(script): reconcilia produtos locais com o PIM (#244)",
-   "fix(partitions): nao tratar tabela nao particionada como falha (#243)",
-   "fix(types): regenera types.ts com as colunas PIM de compras (#245)"
+   "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)"
   ]
  },
  "pr_template": null,

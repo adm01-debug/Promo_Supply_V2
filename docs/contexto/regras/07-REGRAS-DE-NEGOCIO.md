@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8a61f8c7bf` · branch `main` · 2026-11-21 19:13 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2b20c503fc` · branch `main` · 2026-11-21 20:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2347,7 +2347,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2667 testes em 138 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2675 testes em 138 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2435,6 +2435,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/tests/integration/supabase-db.test.ts` | 12 | required tables exist · approval_workflows has required columns · approval_steps has required columns · cron_heartbeats table is queryable … |
+| `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 12 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
@@ -2473,7 +2474,6 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
-| `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 4 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |

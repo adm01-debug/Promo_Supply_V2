@@ -240,7 +240,7 @@
   {
    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
    "tipo": "unit",
-   "linhas": 896,
+   "linhas": 900,
    "testa": [
     "scripts/db-explain-analyze.ts",
     "scripts/realtime-audit.ts",
@@ -1422,11 +1422,11 @@
   {
    "arquivo": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
    "tipo": "unit",
-   "linhas": 36,
+   "linhas": 106,
    "testa": [
     "supabase/functions/_shared/external-bridge-allowlist.ts"
    ],
-   "casos": 4
+   "casos": 12
   },
   {
    "arquivo": "supabase/functions/_shared/integrity_test.ts",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37",
+  "sha": "2b20c503fc7cb55addef185c92954923a55b9227",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 19:13 UTC",
+  "generated_at": "2026-11-21 20:01 UTC",
   "files_total": 1284,
   "code_files": 1121,
-  "code_lines": 193015,
+  "code_lines": 193089,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "feed1597608e41c4",
+ "facts_hash": "e68f6efb9c5d2a54",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33956,7 +33956,7 @@
   {
    "module": "scripts",
    "files": 79,
-   "lines": 29210,
+   "lines": 29214,
    "tables": [
     "a",
     "a_tabela",
@@ -35494,7 +35494,7 @@
   {
    "module": "supabase/functions",
    "files": 89,
-   "lines": 15694,
+   "lines": 15764,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -67188,6 +67188,38 @@
     "name": "assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400"
    },
    {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: update em view do PIM retorna 403 (operação não permitida)"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: delete em view do PIM retorna 403 (operação não permitida)"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: select sem table retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: countMode inválido retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: limit exatamente igual a MAX_SELECT_LIMIT é permitido (boundary)"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: filter operator fora da allowlist retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: filter aninhado sem campo operator é permitido"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: múltiplos filtros, um inválido entre válidos, retorna 400"
+   },
+   {
     "file": "supabase/functions/_shared/logLevel.test.ts",
     "name": "normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL"
    },
@@ -87574,7 +87606,7 @@
   },
   "scripts/ci/scripts-operacionais.unit.mjs": {
    "path": "scripts/ci/scripts-operacionais.unit.mjs",
-   "lines": 896,
+   "lines": 900,
    "channels": [
     " em uma linha)",
     " na mesma linha)",
@@ -107144,14 +107176,22 @@
   },
   "supabase/functions/_shared/external-bridge-allowlist.test.ts": {
    "path": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-   "lines": 36,
+   "lines": 106,
    "is_test": true,
    "doc": "Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts",
    "tests": [
     "assertBridgeRequest: select em view do PIM na allowlist é permitido",
     "assertBridgeRequest: tabela fora da allowlist retorna 403",
     "assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida)",
-    "assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400"
+    "assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400",
+    "assertBridgeRequest: update em view do PIM retorna 403 (operação não permitida)",
+    "assertBridgeRequest: delete em view do PIM retorna 403 (operação não permitida)",
+    "assertBridgeRequest: select sem table retorna 400",
+    "assertBridgeRequest: countMode inválido retorna 400",
+    "assertBridgeRequest: limit exatamente igual a MAX_SELECT_LIMIT é permitido (boundary)",
+    "assertBridgeRequest: filter operator fora da allowlist retorna 400",
+    "assertBridgeRequest: filter aninhado sem campo operator é permitido",
+    "assertBridgeRequest: múltiplos filtros, um inválido entre válidos, retorna 400"
    ]
   },
   "supabase/functions/_shared/external-bridge-allowlist.ts": {
@@ -113056,10 +113096,38 @@
   }
  },
  "git": {
-  "sha": "8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37",
+  "sha": "2b20c503fc7cb55addef185c92954923a55b9227",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2b20c50",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)",
+    "files": [
+     "supabase/functions/_shared/external-bridge-allowlist.test.ts"
+    ]
+   },
+   {
+    "sha": "d7718b8",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)",
+    "files": [
+     "scripts/ci/scripts-operacionais.unit.mjs",
+     "scripts/validate-bridge.ts"
+    ]
+   },
+   {
+    "sha": "ccdb17f",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "docs(pim): marca PR 2.1 concluída no checklist (#249)",
+    "files": [
+     "docs/pendencias/integracao-pim-promo-supply.md"
+    ]
+   },
    {
     "sha": "8a61f8c",
     "date": "2026-11-21",
@@ -113355,43 +113423,9 @@
      "docs/pendencias/_indice.md",
      "src/pages/admin/DeveloperDocs.tsx"
     ]
-   },
-   {
-    "sha": "4bd5264",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(catalogo): hk-fuse e hk-offline -> DESCARTADO (manter) (#218)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
-   },
-   {
-    "sha": "2aeecf1",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore: fecha edge-xbz-cron como CONCLUIDO (validado em prod) (#217)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
-   },
-   {
-    "sha": "7b6d6f8",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs: corrige promessas obsoletas no README/ARCH/ENGINEERING (#216)",
-    "files": [
-     "DOCS/ARCHITECTURE_GUIDE.md",
-     "DOCS/ENGINEERING_EXCELLENCE.md",
-     "README.md",
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "docs/pendencias/_indice.md",
-    6
-   ],
    [
     "docs/ci/README.md",
     4
@@ -113399,6 +113433,10 @@
    [
     "supabase/functions/xbz-proxy/index.ts",
     4
+   ],
+   [
+    "docs/pendencias/_indice.md",
+    3
    ],
    [
     "src/hooks/useXbzIntegration.ts",
@@ -113413,6 +113451,14 @@
     3
    ],
    [
+    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    2
+   ],
+   [
+    "docs/pendencias/integracao-pim-promo-supply.md",
+    2
+   ],
+   [
     "supabase/functions/_shared/external-bridge-allowlist.ts",
     2
    ],
@@ -113425,15 +113471,11 @@
     2
    ],
    [
-    "README.md",
-    2
-   ],
-   [
-    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "scripts/ci/scripts-operacionais.unit.mjs",
     1
    ],
    [
-    "docs/pendencias/integracao-pim-promo-supply.md",
+    "scripts/validate-bridge.ts",
     1
    ],
    [
@@ -113462,10 +113504,6 @@
    ],
    [
     "src/hooks/usePurchaseHistory.ts",
-    1
-   ],
-   [
-    "src/pages/gerar-ordem/GerarOrdem.tsx",
     1
    ]
   ]
