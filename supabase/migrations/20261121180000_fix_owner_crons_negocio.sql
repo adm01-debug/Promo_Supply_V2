@@ -6,10 +6,9 @@
 --   cron.schedule() grava como username do job o ROLE DA CONEXAO que executa a
 --   migration. A migration foi aplicada por aplicar-migration-prod.yml usando
 --   SUPABASE_DB_URL, cujo role e ci_snapshot (role de leitura do
---   paridade-banco.yml, membro de pg_read_all_data). ci_snapshot NAO tem
---   EXECUTE em public._invoke_edge_function - 20261112171300 revogou de
---   PUBLIC/anon e concedeu so a authenticated/service_role - logo todo disparo
---   falhava:
+--   paridade-banco.yml). ci_snapshot NAO tem EXECUTE em
+--   public._invoke_edge_function - 20261112171300 revogou de PUBLIC/anon e
+--   concedeu so a authenticated/service_role - logo todo disparo falhava:
 --
 --     ## 113 - alert-dispatcher-1min
 --     2026-11-21 17:41:00 | failed | ERROR: permission denied for function
@@ -19,26 +18,28 @@
 --   como postgres - 18 outbox-worker-1min (succeeded, 1 row) e
 --   112 xbz-sync-pedidos-30min (succeeded, 1 row).
 --
--- POR QUE NAO alter_job:
---   cron.alter_job(username => ...) responde
---   "XX000: must be superuser to alter username". O schema cron pertence a
---   supabase_admin e o role postgres - o unico que tem EXECUTE em
---   _invoke_edge_function - nao e superuser neste projeto. O owner de um job
---   so e definido na CRIACAO, como o role da conexao.
+-- POR QUE NAO alter_job NEM unschedule(nome):
+--   cron.alter_job(username => ...) responde "XX000: must be superuser to
+--   alter username" - o schema cron pertence a supabase_admin e postgres nao e
+--   superuser aqui. O owner so e definido na CRIACAO, como o role da conexao.
+--   E cron.unschedule(nome) so enxerga jobs do proprio role: rodando como
+--   postgres, o job criado por ci_snapshot responde "could not find valid entry
+--   for job". Por isso o job e' localizado em cron.job por nome e removido com
+--   cron.unschedule(jobid), que aceita o id visto no catalogo.
 --
 -- DECISAO:
---   Recriar os 8 jobs com unschedule + schedule. Como este arquivo e aplicado
---   pelo canal Management API (role postgres), os jobs nascem com owner
---   postgres. Se rodar pelo psql (role ci_snapshot), a verificacao final
---   aborta e a transacao inteira sofre rollback - fail-closed, nenhum job fica
---   em estado pior. Agenda e comando sao os mesmos de 20261121153000.
---   Sem DDL de tabela, sem alteracao de dados de negocio.
+--   Recriar os 8 jobs com unschedule(jobid) + schedule. O arquivo e' aplicado
+--   pelo Management API, que conecta como postgres, entao os jobs nascem com
+--   owner postgres. Se rodar pelo psql (ci_snapshot), a guarda abaixo aborta e a
+--   transacao inteira sofre rollback - nenhum job fica em estado pior.
+--   Agenda e comando sao identicos aos de 20261121153000.
 -- ============================================================================
 
 DO $do$
 DECLARE
   v_role text := current_user;
   v_job record;
+  v_existente bigint;
   v_errados text;
   v_total int;
 BEGIN
@@ -58,10 +59,13 @@ BEGIN
       ('weekly-summary-report-job', '0 8 * * 1',   'weekly-summary-report')
     ) AS t(jobname, sched, edge)
   LOOP
-    IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = v_job.jobname) THEN
-      PERFORM cron.unschedule(v_job.jobname);
-      RAISE NOTICE 'job % removido para recriacao com owner postgres', v_job.jobname;
-    END IF;
+    FOR v_existente IN
+      SELECT jobid FROM cron.job WHERE jobname = v_job.jobname
+    LOOP
+      PERFORM cron.unschedule(v_existente);
+      RAISE NOTICE 'job % (id %) removido para recriacao com owner postgres',
+        v_job.jobname, v_existente;
+    END LOOP;
 
     PERFORM cron.schedule(
       v_job.jobname,
@@ -86,6 +90,6 @@ BEGIN
     RAISE EXCEPTION 'jobs de negocio ainda com owner errado: %', v_errados;
   END IF;
 
-  RAISE NOTICE 'ok: 8 jobs de negocio recriados com owner postgres';
+  RAISE NOTICE 'ok: 8 jobs de negocio com owner postgres';
 END;
 $do$;
