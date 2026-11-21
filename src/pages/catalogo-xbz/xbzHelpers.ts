@@ -51,6 +51,12 @@ export function pagamentoStatus(idLoteDebitoStatus: number | null | undefined): 
   return 'desconhecido';
 }
 
+/** Status de pagamento de uma linha do `consultaPedidos`: usa `pago` (boolean, nov/2026) e cai no `idLoteDebitoStatus`. */
+export function pagamentoStatusPedido(p: { pago?: unknown; idLoteDebitoStatus?: number | null }): PagamentoStatus {
+  if (typeof p.pago === 'boolean') return p.pago ? 'pago' : 'pendente';
+  return pagamentoStatus(p.idLoteDebitoStatus);
+}
+
 /** Extrai a data embutida em "PAGO (06/03/26 17:48:21)". */
 export function parsePagamentoLabel(label: unknown): Date | null {
   if (typeof label !== 'string') return null;

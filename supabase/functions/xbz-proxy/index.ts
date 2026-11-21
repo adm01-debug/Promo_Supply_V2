@@ -30,6 +30,7 @@ import {
   extractPermissions,
   XBZ_BUSCA_MIN,
   XbzError,
+  xbzCancelarPedido,
   xbzCarrinhoGet,
   xbzCarrinhoWrite,
   xbzMxbzConsultaEstoque,
@@ -377,7 +378,7 @@ async function handleAction(
       case "cancelarPedido": {
         const numero = String(body.numeroPedido ?? "").trim().slice(0, 30);
         if (!numero) throw new XbzError(400, "numeroPedido é obrigatório");
-        result = await xbzCarrinhoGet("CancelarPedido", portal, { _pedido_numero: numero });
+        result = await xbzCancelarPedido(portal, numero);
         break;
       }
       case "gerarPedidos": {
