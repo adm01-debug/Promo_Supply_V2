@@ -1366,7 +1366,7 @@
    "nome": "workflow-engine",
    "entrada": "supabase/functions/workflow-engine/index.ts",
    "arquivos": 1,
-   "linhas": 150,
+   "linhas": 155,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

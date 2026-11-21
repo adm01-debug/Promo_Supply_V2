@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "271df2754a9b05f3bd8f5ca6bc5c02007cb39d9b",
+  "commit": "30e7b633d1834398337c906080d9b28956d70d82",
   "branch": "main",
-  "data_commit": "2026-11-20T19:55:50-03:00",
+  "data_commit": "2026-11-21T08:33:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "30e7b63",
+    "data": "2026-11-21",
+    "assunto": "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)"
+   },
    {
     "sha": "271df27",
     "data": "2026-11-20",
@@ -126,14 +131,9 @@
     "sha": "d4690b5",
     "data": "2026-11-20",
     "assunto": "fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)"
-   },
-   {
-    "sha": "a0363dd",
-    "data": "2026-11-20",
-    "assunto": "fix(seg): isola alertas por tenant, lockout fail-closed e backup codes criptograficos (#183)"
    }
   ],
-  "arquivos_mudados_7d": 181,
+  "arquivos_mudados_7d": 173,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 173
+    "commits": 174
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1253,
   "arquivos_codigo": 781,
-  "linhas_codigo": 164618,
+  "linhas_codigo": 164623,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -484,7 +484,7 @@
   },
   "supabase/functions": {
    "arquivos": 82,
-   "linhas": 14754
+   "linhas": 14759
   },
   "tailwind.config.ts": {
    "arquivos": 1,

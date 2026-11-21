@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `271df2754a9b05f3bd8f5ca6bc5c02007cb39d9b` (2026-11-20T19:55:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `30e7b633d1834398337c906080d9b28956d70d82` (2026-11-21T08:33:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1253 |
 | arquivos_codigo | 781 |
-| linhas_codigo | 164618 |
+| linhas_codigo | 164623 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -410,6 +410,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `30e7b63` fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)
 - 2026-11-20 `271df27` chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)
 - 2026-11-20 `01db1d0` feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)
 - 2026-11-20 `0efc019` chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)
@@ -424,7 +425,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `6de29ff` chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)
 - 2026-11-20 `5ae1935` fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)
 - 2026-11-20 `044001f` fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)
-- 2026-11-20 `0c33e56` fix(sla): remove e-mail fixo global do default de notificacao (multi-tenant) (#194)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
