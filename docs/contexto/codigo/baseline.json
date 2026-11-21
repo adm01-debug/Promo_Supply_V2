@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "30e7b633d1834398337c906080d9b28956d70d82",
+  "commit": "d2b3b519bcc4b83ca6d92e5382ce048035c0b174",
   "branch": "main",
-  "data_commit": "2026-11-21T08:33:06-03:00",
+  "data_commit": "2026-11-21T08:45:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d2b3b51",
+    "data": "2026-11-21",
+    "assunto": "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)"
+   },
    {
     "sha": "30e7b63",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "0243977",
     "data": "2026-11-20",
     "assunto": "fix(ui): conecta botao nova atualizacao e filtros avancados no acompanhamento (#185)"
-   },
-   {
-    "sha": "d4690b5",
-    "data": "2026-11-20",
-    "assunto": "fix(ui): conecta visualizar NF-e e historico de logs no acompanhamento de pedidos (#184)"
    }
   ],
-  "arquivos_mudados_7d": 173,
+  "arquivos_mudados_7d": 174,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 174
+    "commits": 175
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1253,
+  "arquivos_total": 1254,
   "arquivos_codigo": 781,
   "linhas_codigo": 164623,
   "rotas": 55,
@@ -330,8 +330,8 @@
   "hooks": 89,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 315,
-  "cron_jobs": 70,
+  "migrations": 316,
+  "cron_jobs": 71,
   "testes": 177,
   "workflows": 11,
   "scripts": 49,

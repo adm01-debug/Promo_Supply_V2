@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)",
    "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)",
    "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)",
    "feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)",
-   "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)",
-   "fix(edge): envia push com VAPID e cifragem aes128gcm (RFC 8291) (#205)"
+   "chore(catalogo): marca edge-push como CONCLUIDO (#205) (#206)"
   ]
  },
  "pr_template": null,

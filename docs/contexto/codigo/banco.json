@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 315,
+ "migrations": 316,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1465,6 +1465,11 @@
    "agenda": "0 8 * * 1",
    "migration": "20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql",
    "chama_edge": "weekly-summary-report"
+  },
+  {
+   "nome": "xbz-sync-pedidos-30min",
+   "agenda": "*/30 * * * *",
+   "migration": "20261120165300_versiona_job_xbz_sync_30min.sql"
   }
  ],
  "buckets": [

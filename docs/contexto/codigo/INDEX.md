@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `30e7b633d1834398337c906080d9b28956d70d82` (2026-11-21T08:33:06-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d2b3b519bcc4b83ca6d92e5382ce048035c0b174` (2026-11-21T08:45:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (710), SQL (317), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
+- linguagens: TypeScript (710), SQL (318), Markdown (85), JavaScript (68), JSON (24), YAML (13), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1253 |
+| arquivos_total | 1254 |
 | arquivos_codigo | 781 |
 | linhas_codigo | 164623 |
 | rotas | 55 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 89 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 315 |
-| cron_jobs | 70 |
+| migrations | 316 |
+| cron_jobs | 71 |
 | testes | 177 |
 | workflows | 11 |
 | scripts | 49 |
@@ -295,6 +295,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
 - `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
 - `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql)
+- `xbz-sync-pedidos-30min` */30 * * * * (20261120165300_versiona_job_xbz_sync_30min.sql)
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
@@ -410,6 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `d2b3b51` chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)
 - 2026-11-21 `30e7b63` fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)
 - 2026-11-20 `271df27` chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)
 - 2026-11-20 `01db1d0` feat(edge): conecta AISupplierSuggestion a edge ai-supplier-suggestion real (#207)
@@ -424,7 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-20 `2102f2b` fix(ui): undo real em bulk change-status e remove desfazer fake da barra (#198)
 - 2026-11-20 `6de29ff` chore(docs): registra fake-kpi-targets concluido (metas configurableis, nao simuladas) (#197)
 - 2026-11-20 `5ae1935` fix(hooks): media de entrega real, taxa de sucesso honesta e filtros tipados (#196)
-- 2026-11-20 `044001f` fix(hooks): badges contam approval_workflows por org e health badge usa isAdmin real (#195)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

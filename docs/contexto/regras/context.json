@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "30e7b633d1834398337c906080d9b28956d70d82",
+  "sha": "d2b3b519bcc4b83ca6d92e5382ce048035c0b174",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 11:33 UTC",
-  "files_total": 1254,
-  "code_files": 1100,
-  "code_lines": 190583,
+  "generated_at": "2026-11-21 11:46 UTC",
+  "files_total": 1255,
+  "code_files": 1101,
+  "code_lines": 190600,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d328883acbdaccf9",
+ "facts_hash": "0c8845b48ad59975",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -251,7 +251,7 @@
   "languages": {
    ".ts": 364,
    ".tsx": 346,
-   ".sql": 317,
+   ".sql": 318,
    ".mjs": 66,
    ".py": 5,
    ".js": 2
@@ -26555,6 +26555,12 @@
     "schedule": "45 4 * * 0",
     "body": "SELECT public.scan_partition_candidates(1.0)",
     "src": "supabase/migrations/20261117170000_corrige_alertas_sistema_e_agenda_scan_particoes.sql"
+   },
+   {
+    "job": "xbz-sync-pedidos-30min",
+    "schedule": "*/30 * * * *",
+    "body": "SELECT public._invoke_xbz_sync();",
+    "src": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql"
    }
   ],
   "views": {
@@ -26888,6 +26894,7 @@
    "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
    "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql",
    "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
+   "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -35480,8 +35487,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 315,
-   "lines": 25738,
+   "files": 316,
+   "lines": 25755,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -112264,6 +112271,10 @@
    "path": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql",
    "lines": 38
   },
+  "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql": {
+   "path": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
+   "lines": 17
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -112483,10 +112494,19 @@
   }
  },
  "git": {
-  "sha": "30e7b633d1834398337c906080d9b28956d70d82",
+  "sha": "d2b3b519bcc4b83ca6d92e5382ce048035c0b174",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d2b3b51",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)",
+    "files": [
+     "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql"
+    ]
+   },
    {
     "sha": "30e7b63",
     "date": "2026-11-21",
@@ -112783,26 +112803,12 @@
      "src/features/layout/components/SLASettingsPanel.tsx",
      "src/hooks/useExecutiveDashboardData.ts"
     ]
-   },
-   {
-    "sha": "134e364",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra fio-2 DDL aplicado em prod e migracoes 17/11 como applied (#179)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/_ordem.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
-   ],
-   [
-    "docs/pendencias/_ordem.md",
-    3
+    13
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -112815,6 +112821,14 @@
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     2
+   ],
+   [
+    "docs/pendencias/_ordem.md",
+    2
+   ],
+   [
+    "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
+    1
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
@@ -112870,10 +112884,6 @@
    ],
    [
     "supabase/functions/erp-credential-encrypt/index.ts",
-    1
-   ],
-   [
-    "src/features/layout/components/SupplierChat.tsx",
     1
    ]
   ]
