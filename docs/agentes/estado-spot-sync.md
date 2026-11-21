@@ -38,6 +38,42 @@ Fonte: `cron.job` + `cron.job_run_details` (Supabase produção).
 - ✅ Front: `src/pages/catalogo-spot/` (hook `useSpotCatalog.ts`) lê `spot_produtos` para exibir o catálogo.
 - ⚠️ Consumidor humano (já em produção para os clientes do sistema de compras).
 
+## Correções de 2026-11-21 (integração com a API WS)
+
+Três bugs em série impediam o sync de pedidos e um quarto silenciava a gravação do pedido criado:
+
+| # | sintoma | causa | correção |
+|---|---|---|---|
+| 1 | `getOrders` → **HTTP 403** | `getOrders` não estava na `CRON_ACTIONS` da edge `spot-api` | PR #256 — ação incluída na allowlist do cron |
+| 2 | `getOrders` → **HTTP 502** `ErrorCode:2` | `OrdersV1` exige o parâmetro `Status`; sem ele a API recusa | PR #257 — `query: { Status: "ALL" }` |
+| 3 | pedidos nunca sincronizados | não existia cron de pedidos | PR #258 — `spot-api-sync-orders-30min` (`*/30 * * * *`) |
+| 4 | `createOrder` lia `details: []` sempre | `OrderV1` envelopa a resposta em `{ OrderV1Result: {...} }` e `readOrdersDetails` lia só a raiz | PR #260 — desembrulho do envelope em `_shared/spot_api.ts` |
+| 5 | `quota_blocked` todo dia às 23:30/23:45 BRT | cron de estoque em `*/15` = 96 rodadas contra limite `Stocks: 96` | PR #261 — schedule para `*/20` (72/dia) |
+
+**Achado de negócio**: a conta SPOT não tem nenhum pedido — `Count:0` em `PROCESSING`, `SHIPPED`,
+`DELIVERED`, `CANCELED`, `EXPIRED`, `PENDING` e `ALL`. `spot_pedidos = 0` é reflexo fiel da origem,
+não falha de sync. Antes, os erros 403/502 mascaravam esse fato.
+
+### Estado dos crons após as correções
+
+| jobid | jobname | schedule | active |
+|---|---|---|---|
+| 31 | `spot-api-sync-catalog` | `10 3 * * *` | `true` |
+| 32 | `spot-api-sync-customization` | `40 3 * * 1` | `true` |
+| 122 | `spot-api-sync-stock` | `*/20 * * * *` | `true` (jobid mudou: 33 → 122 ao reagendar) |
+| 121 | `spot-api-sync-orders-30min` | `*/30 * * * *` | `true` |
+
+Verificação em produção: `_invoke_spot_sync `getOrders`` → **HTTP 200**
+`{"success":true,"action":"getOrders","orders":0}`; `spot_api_sync_log` com
+`endpoint=OrdersV1 action=getOrders status=success error_code=null`.
+
+### Pendência conhecida
+
+O `OrderV1` (criação de pedido) não tem contrato de payload documentado no repositório e as sondas
+com `destination` inventado devolvem `ErrorCode:2` genérico. O fluxo `ui-spot-checkout` continua
+sem ponte entre o carrinho do **portal** (`spot-proxy`, scraping HTML) e a **API** (`spot-api`,
+`OrderV1`). Não inventar payload de pedido — envolve compromisso financeiro.
+
 ## Histórico / decisões
 
 - 2026-11-13: PR #138 proposta como pausa dos crons SPOT quando a integração ainda falhava — **obsoleta, fechada sem merge**.
