@@ -57,10 +57,15 @@ export interface XbzResult<T> {
 
 type QueryValue = string | number | boolean | undefined | null;
 
-function buildUrl(path: string, params: Record<string, QueryValue>): string {
+function buildUrl(path: string, params: Record<string, QueryValue | QueryValue[]>): string {
   const url = new URL(`${XBZ_BASE}${path}`);
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) continue;
+    // Listas (`lista_cores_id=1&lista_cores_id=2`) são repetidas, como o portal faz.
+    if (Array.isArray(value)) {
+      for (const v of value) if (v !== undefined && v !== null) url.searchParams.append(key, String(v));
+      continue;
+    }
     url.searchParams.set(key, String(value));
   }
   return url.toString();
@@ -235,6 +240,70 @@ export function xbzConsultaEstoque(c: XbzPortalCredentials, f: XbzCatalogoFilter
   );
 }
 
+/** Filtros facetados do `mxbzConsultaEstoque` (ids repetíveis na query). */
+export interface XbzCatalogoListas {
+  lista_cores_id?: number[];
+  lista_departamentos_id?: number[];
+  lista_categorias_id?: number[];
+  lista_tipos_id?: number[];
+  lista_familias_materiais_id?: number[];
+  lista_materiais_id?: number[];
+  lista_temas_grupos_id?: number[];
+  lista_temas_subgrupos_id?: number[];
+  lista_temas_id?: number[];
+}
+
+export interface XbzMxbzCatalogoFilters extends XbzCatalogoListas {
+  busca?: string;
+  filtro_id?: number;
+  quantidade?: number;
+  preco_minimo?: number;
+  preco_maximo?: number;
+}
+
+function hasListas(f: XbzCatalogoListas): boolean {
+  return Object.entries(f).some(([k, v]) => k.startsWith("lista_") && Array.isArray(v) && v.length > 0);
+}
+
+/**
+ * Catálogo atual do portal (nov/2026). Mesmos 35 campos do `consultaEstoque`,
+ * mas em camelCase — aqui normalizados para PascalCase (`toPascalKeys`) para
+ * que o restante do sistema veja um único formato.
+ *
+ * Regras observadas em 21/11/2026: `busca=a` varre o catálogo inteiro;
+ * `busca=` vazio só devolve dados quando há algum `lista_*_id`.
+ */
+export async function xbzMxbzConsultaEstoque(c: XbzPortalCredentials, f: XbzMxbzCatalogoFilters = {}) {
+  const busca = (f.busca ?? "").trim();
+  if (!busca && !hasListas(f)) {
+    throw new XbzError(400, "Informe um termo de busca ou ao menos um filtro para consultar o catálogo XBZ");
+  }
+  const result = await request<Array<Record<string, unknown>>>(
+    buildUrl("/api/ruiz/mxbzConsultaEstoque", {
+      user: c.user,
+      passwd: c.password,
+      busca,
+      filtro_id: f.filtro_id ?? 0,
+      quantidade: f.quantidade ?? 0,
+      preco_minimo: f.preco_minimo ?? 0,
+      preco_maximo: f.preco_maximo ?? 0,
+      lista_cores_id: f.lista_cores_id,
+      lista_departamentos_id: f.lista_departamentos_id,
+      lista_categorias_id: f.lista_categorias_id,
+      lista_tipos_id: f.lista_tipos_id,
+      lista_familias_materiais_id: f.lista_familias_materiais_id,
+      lista_materiais_id: f.lista_materiais_id,
+      lista_temas_grupos_id: f.lista_temas_grupos_id,
+      lista_temas_subgrupos_id: f.lista_temas_subgrupos_id,
+      lista_temas_id: f.lista_temas_id,
+    }),
+  );
+  const data = Array.isArray(result.data)
+    ? result.data.map((item) => toPascalKeys(item) as Record<string, unknown>)
+    : [];
+  return { ...result, data };
+}
+
 /** Endpoint público — não exige autenticação. */
 export function xbzCores() {
   return request<Array<Record<string, unknown>>>(`${XBZ_BASE}/api/ruiz/produtosCores`);
@@ -305,6 +374,22 @@ export function toText(value: unknown): string | null {
   if (value === null || value === undefined) return null;
   const s = String(value).trim();
   return s ? s : null;
+}
+
+/**
+ * Converte recursivamente chaves camelCase → PascalCase (`idProduto` → `IdProduto`),
+ * como o portal faz (`chavesEmPascalCase`) com o retorno do `mxbzConsultaEstoque`.
+ * Arrays e primitivos passam intactos.
+ */
+export function toPascalKeys(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(toPascalKeys);
+  if (!value || typeof value !== "object") return value;
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    const key = k ? k.charAt(0).toUpperCase() + k.slice(1) : k;
+    out[key] = toPascalKeys(v);
+  }
+  return out;
 }
 
 /** `idLoteDebitoStatus`: 0 = pendente, 2/3 = pago. */

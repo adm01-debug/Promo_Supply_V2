@@ -32,7 +32,7 @@ import {
   XbzError,
   xbzCarrinhoGet,
   xbzCarrinhoWrite,
-  xbzConsultaEstoque,
+  xbzMxbzConsultaEstoque,
   xbzConsultaPedidos,
   xbzCores,
   xbzDashboard,
@@ -261,17 +261,21 @@ async function handleAction(
     if (busca.length < XBZ_BUSCA_MIN) {
       throw new XbzError(400, `Informe ao menos ${XBZ_BUSCA_MIN} caracteres para buscar no catálogo XBZ`);
     }
+    const lista = (v: unknown): number[] | undefined => {
+      const n = num(v, 0);
+      return n > 0 ? [n] : undefined;
+    };
     try {
-      const result = await xbzConsultaEstoque(portal, {
+      // Endpoint atual do portal (nov/2026); resposta normalizada para PascalCase.
+      const result = await xbzMxbzConsultaEstoque(portal, {
         busca,
-        cor_id: num(body.corId, 0),
         filtro_id: num(body.filtroId, 0),
-        web_tipo_id: num(body.tipoId, 0),
-        web_sub_tipo_id: num(body.subTipoId, 0),
-        tema_id: num(body.temaId, 0),
         quantidade: num(body.quantidade, 0),
         preco_minimo: num(body.precoMinimo, 0),
         preco_maximo: num(body.precoMaximo, 0),
+        lista_cores_id: lista(body.corId),
+        lista_tipos_id: lista(body.tipoId),
+        lista_temas_id: lista(body.temaId),
       });
 
       // Espelho best-effort: nunca compromete a resposta ao usuário.

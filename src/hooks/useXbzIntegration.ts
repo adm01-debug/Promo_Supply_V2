@@ -110,18 +110,24 @@ export interface XbzPedidoRaw {
   [key: string]: unknown;
 }
 
+/** Item do catálogo XBZ (campos reais — DOCS/INTEGRACOES/XBZ.md §4.3; o proxy normaliza para PascalCase). */
 export interface XbzProdutoRaw {
-  ProdutoId?: number;
-  Id?: number;
-  Sku?: string;
+  IdProduto?: number;
+  CodigoXbz?: string;
+  CodigoComposto?: string;
+  CodigoAmigavel?: string;
   Nome?: string;
-  NomeCor?: string;
-  Preco?: number;
-  Quantidade?: number;
+  CorPredominante?: { Id?: number; NomeCor?: string; SiglaCor?: string; UrlCor?: string } | null;
+  PrecoVenda?: number;
+  PrecoVendaFormatado?: string;
+  IpiTaxa?: number;
+  QtdDisponivel?: number;
+  /** String pt-BR ("8.044"); pode vir preenchida com `QtdDisponivel` = 0. */
+  QtdDisponivelExibicao?: string;
   Disponivel?: string;
   VendaMinima?: number;
   Multiplos?: number;
-  LinkImagem?: string;
+  ImageLink?: string;
   [key: string]: unknown;
 }
 
