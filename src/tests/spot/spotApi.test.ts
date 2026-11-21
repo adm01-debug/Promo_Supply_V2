@@ -183,6 +183,27 @@ describe('spot-api: acoes do cron', () => {
     expect(bloco?.[0] ?? '').toMatch(/Status/);
   });
 
+  it('readOrdersDetails desembrulha OrderV1Result do OrderV1', () => {
+    // OrderV1 devolve { OrderV1Result: { OrderDetails: [...] } }; o leitor plano
+    // lia [] e createOrder nunca gravava o pedido criado.
+    const envelopado = { OrderV1Result: { OrderDetails: [{ OrderStamp: 'ABC123' }] } };
+    expect(readOrdersDetails(envelopado)).toHaveLength(1);
+    expect(readOrdersDetails(envelopado)[0].OrderStamp).toBe('ABC123');
+  });
+
+  it('readOrdersDetails continua lendo a resposta plana do OrdersV1', () => {
+    const plano = { OrdersDetails: [{ OrderStamp: 'X1' }, { OrderStamp: 'X2' }] };
+    expect(readOrdersDetails(plano)).toHaveLength(2);
+  });
+
+  it('readOrdersDetails aceita OrderDetails singular', () => {
+    expect(readOrdersDetails({ OrderDetails: [{ OrderStamp: 'S1' }] })).toHaveLength(1);
+  });
+
+  it('readOrdersDetails devolve [] para payload sem detalhes', () => {
+    expect(readOrdersDetails({ ErrorCode: 2 })).toEqual([]);
+    expect(readOrdersDetails(null)).toEqual([]);
+  });
   it('toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)', () => {
     const validas = extraiSet('VALID_ACTIONS');
     for (const a of extraiSet('CRON_ACTIONS')) expect(validas).toContain(a);
