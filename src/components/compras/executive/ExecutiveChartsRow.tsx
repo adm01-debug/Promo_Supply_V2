@@ -14,7 +14,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { monthlyTrend, comparisonTrend, COLORS } from './executiveDashboardData';
+import { COLORS } from './executiveDashboardData';
+import type { MonthlyPoint, ComparisonPoint } from '@/hooks/useExecutiveDashboardData';
 import { cn, formatCurrency } from '@/lib/utils';
 
 interface TooltipEntry {
@@ -57,6 +58,8 @@ interface ExecutiveChartsRowProps {
   showComparison: boolean;
   filteredCategorySpend: Array<{ name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }>;
   onCategoryDrillDown: (category: { name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }) => void;
+  monthlyTrend: MonthlyPoint[];
+  comparisonTrend: ComparisonPoint[];
   selectedCategory: string;
   selectedSupplier: string;
 }
@@ -65,6 +68,8 @@ export const ExecutiveChartsRow = ({
   showComparison, 
   filteredCategorySpend, 
   onCategoryDrillDown,
+  monthlyTrend,
+  comparisonTrend,
   selectedCategory,
   selectedSupplier
 }: ExecutiveChartsRowProps) => {
@@ -83,7 +88,7 @@ export const ExecutiveChartsRow = ({
       currentSavings: item.currentSavings * multiplier,
       previousSavings: item.previousSavings * multiplier,
     }));
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, comparisonTrend]);
 
   const filteredMonthlyTrend = useMemo(() => {
     if (selectedCategory === 'all' && selectedSupplier === 'all') return monthlyTrend;
@@ -93,7 +98,7 @@ export const ExecutiveChartsRow = ({
       spend: item.spend * multiplier,
       savings: item.savings * multiplier,
     }));
-  }, [selectedCategory, selectedSupplier]);
+  }, [selectedCategory, selectedSupplier, monthlyTrend]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Filter, X, Search, Sparkles } from 'lucide-react';
 import { FilterFavoritesManager } from '../FilterFavoritesManager';
 import { type DashboardFilter } from '@/hooks/useDashboardFilters';
-import { allCategories, allSuppliers } from './executiveDashboardData';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -25,12 +24,15 @@ interface Props {
   onSetDefault: (id: string) => Promise<void>;
   onApply: (filter: DashboardFilter) => void;
   favoritesLoading: boolean;
+  allCategories: string[];
+  allSuppliers: string[];
 }
 
 export const ExecutiveFiltersBar = ({
   selectedCategory, selectedSupplier, onCategoryChange, onSupplierChange,
   hasActiveFilters, onClearFilters, favorites, currentFilters,
-  onSave, onDelete, onSetDefault, onApply, favoritesLoading
+  onSave, onDelete, onSetDefault, onApply, favoritesLoading,
+  allCategories = [], allSuppliers = []
 }: Props) => {
   return (
     <motion.div

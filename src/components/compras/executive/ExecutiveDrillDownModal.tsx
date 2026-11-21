@@ -2,15 +2,17 @@
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Target, Package, Users, DollarSign, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
-import { type DrillDownData, pendingItems } from './executiveDashboardData';
+import { type DrillDownData } from './executiveDashboardData';
 import { formatCurrency } from '@/lib/utils';
+import type { PendingItem } from '@/hooks/useExecutiveDashboardData';
 
 interface Props {
   drillDown: DrillDownData | null;
   onClose: () => void;
+  pendingItems: PendingItem[];
 }
 
-export const ExecutiveDrillDownModal = ({ drillDown, onClose }: Props) => {
+export const ExecutiveDrillDownModal = ({ drillDown, onClose, pendingItems = [] }: Props) => {
   return (
     <Dialog open={!!drillDown} onOpenChange={() => onClose()}>
       <DialogContent aria-describedby="dialog-desc" className="max-w-2xl bg-background/95 backdrop-blur-xl border-primary/10 shadow-2xl rounded-3xl overflow-hidden p-0">
