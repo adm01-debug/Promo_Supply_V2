@@ -5,7 +5,7 @@
 #   avisa: ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml
 # nao-e-bug:
 #   - nome-do-arquivo: o `name:` ainda e "Freight Quest CI/CD", herdado de outro projeto; renomear quebraria a lista de `workflows:` do notifica-falha-main.yml, que casa por nome
-#   - deno-faixa-flutuante: `deno-version: v1.x` nao e versao fixa de proposito, e por isso deno NAO esta em .github/toolchain.json
+#   - deno-faixa-flutuante: `deno-version: v2.x` nao e versao fixa de proposito, e por isso deno NAO esta em .github/toolchain.json. A faixa precisa ser v2.x: o runtime das edge functions e Deno 2.x e o codigo usa tipagem de TS >= 5.7 (Uint8Array generico), que o Deno 1.x rejeita com TS2315
 #   - e2e-com-placeholder: sem os secrets VITE_*, o E2E sobe o dev server com valores de placeholder e falha nos fluxos logados
 name: Freight Quest CI/CD
 
@@ -66,7 +66,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Install dependencies
         run: bun install
