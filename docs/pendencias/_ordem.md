@@ -20,6 +20,6 @@ Criterio: fundacao runtime/API primeiro, depois impacto no negocio, depois segur
 
 ## T4 - edge/pecas menores, docs, mortos
 11. edge-alert-sev, edge-sla-reve, edge-xbz-cron, edge-ai-risk, etc.
-12. docs (A7), mortos L07/L09 (limpeza sem risco).
+12. docs (A7), mortos L07/L09: L07 hooks -> ARQUIVADOS (nao remover; tree-shaken, ver hk-dead-mortos.md); L09 lib/stores -> PARCIAL, terminar cada um; nao ha "limpeza sem risco" a fazer.
 
 Cada item: branch proprio `claude/feat-<slug>-<AAMMDD-HHMM>`, battery verde, PR, squash-merge (regra 7) exceto CI/workflow/migration-prod (regra 8: deixar aberta p/ o dono).
