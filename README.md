@@ -24,7 +24,7 @@ Promo Supply é um sistema completo de gestão de compras, fornecedores e contra
 Para uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:
 - [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.
 - [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.
-- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/README.md) - Histórico de decisões críticas do projeto.
+- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/) - Histórico de decisões críticas do projeto.
 
 A documentação também está disponível dentro do sistema no painel administrativo.
 
@@ -55,4 +55,4 @@ bun run test
 O sistema detecta automaticamente o idioma do navegador, persistindo a preferência do usuário no `localStorage`.
 
 ---
-Pronto para produção. Blindagem 10/10. 🚀
+Status: sistema em produção ativa com evolução contínua (veja `DOCS/pendencias/_indice.md` para o catálogo de pendências e `docs/pendencias/` para detalhes).

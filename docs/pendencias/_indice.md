@@ -81,14 +81,14 @@ catalogo, Fase 2 execucao vertical por item.
 ## Docs (A7) - promessas inexistentes
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| doc-adr-link | README link `DOCS/ADR/README.md` que nao existe | PENDENTE | README.md:27 |
+| doc-adr-link | README link `DOCS/ADR/README.md` que nao existe | CONCLUIDO (PR #219) | README.md:27 |
 | doc-dev-copy | DeveloperDocs e copia hardcoded de DOCS, nao le arquivos | PENDENTE | `DeveloperDocs.tsx:10-230` |
 | doc-readme-evt | README estrutura nao cita `src/features/*` | PENDENTE | README.md:16-18 |
-| doc-marketing | README/ARCH "Pronto 10/10" sem base | PENDENTE (decisao) | README.md:58 |
-| doc-neural | ARCH promete `useNeuralSolicitacao` + edge inexistente | PENDENTE | ARCH:84-97 / NovaSolicitacaoModal.tsx:113 |
-| doc-title | ARCH titulo "Freight Quest" obsoleto | PENDENTE | ARCH:1 / main.yml:10 |
-| doc-backup | BACKUP_STRATEGY promete script/buckets/.env.production inexistentes | PENDENTE | BACKUP:398,426,373 |
-| doc-security | SECURITY.md OBSOLETO (14 WARNs vs 154 secdef) | PENDENTE | SECURITY.md:274 |
+| doc-marketing | README/ARCH "Pronto 10/10" sem base | CONCLUIDO (PR #219) | README.md / ENGINEERING_EXCELLENCE.md |
+| doc-neural | ARCH promete `useNeuralSolicitacao` inexistente (edge existe, draft usa invoke direto) | CONCLUIDO (PR #219) | ARCH:29 / NovaSolicitacaoModal.tsx:109 |
+| doc-title | ARCH titulo "Freight Quest" obsoleto | CONCLUIDO (PR #219) | ARCH:1 (main.yml CI name mantido intencional) |
+| doc-backup | BACKUP_STRATEGY ja honesto (script/buckets marcados como gap "to be created") | DESCARTADO (ja era honesto) | DOCS/BACKUP_STRATEGY.md:41,143 |
+| doc-security | SECURITY.md ja honesto (14 WARNs documentados como divida arquitetural) | DESCARTADO (ja era honesto) | DOCS/SECURITY.md:11,28-80 |
 | doc-secdef | get_user_role/has_permission classificados sem chamador | DESCARTADO (da lista de quebra) | secdef-classificacao.md:638 |
 
 Nota: audit listou >150 itens NÃƒO IMPLEMENTADO e ~190 PARCIAL. Este cahier concentra os executaveis em ordem de
