@@ -15,6 +15,7 @@ Promo Supply é um sistema completo de gestão de compras, fornecedores e contra
 ### 🛠️ Estrutura do Projeto
 - `src/components`: Componentes modulares e reutilizáveis
 - `src/pages`: Páginas da aplicação e dashboards
+- `src/features`: Domínios de negócio (aprovacoes, cotacoes, pedidos, solicitacoes, layout, etc.) com seus componentes e lógica
 - `src/hooks`: Lógica de negócio e integração com API em hooks customizados
 - `src/lib`: Utilitários, configurações de segurança e helpers globais
 - `supabase`: Esquema do banco de dados, migrações e funções de borda
