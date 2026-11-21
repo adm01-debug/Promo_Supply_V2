@@ -25,9 +25,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-21 14:45:00 | succeeded | 0.01 | DELETE 0 |
 | 2026-11-21 13:45:00 | succeeded | 0.04 | DELETE 0 |
 | 2026-11-21 12:45:00 | succeeded | 0.03 | DELETE 0 |
-| 2026-11-21 11:45:00 | succeeded | 0.01 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,27 +73,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-21 14:11:00 | succeeded | 0.02 | 1 row |
-| 2026-11-21 14:10:00 | succeeded | 0.01 | 1 row |
-| 2026-11-21 14:09:00 | succeeded | 0.03 | 1 row |
+| 2026-11-21 15:11:00 | succeeded | 0.06 | 1 row |
+| 2026-11-21 15:10:00 | succeeded | 0.02 | 1 row |
+| 2026-11-21 15:09:00 | succeeded | 0.03 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-21 14:00:00 | succeeded | 0.23 | 1 row |
-| 2026-11-21 13:45:00 | succeeded | 0.21 | 1 row |
-| 2026-11-21 13:30:00 | succeeded | 0.14 | 1 row |
+| 2026-11-21 15:00:00 | succeeded | 0.13 | 1 row |
+| 2026-11-21 14:45:00 | succeeded | 0.14 | 1 row |
+| 2026-11-21 14:30:00 | succeeded | 0.24 | 1 row |
 
 
 ## 24 · xbz-sync-watchdog-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-21 14:15:00 | succeeded | 0.83 | 1 row |
 | 2026-11-21 13:15:00 | succeeded | 1.20 | 1 row |
 | 2026-11-21 12:15:00 | succeeded | 1.21 | 1 row |
-| 2026-11-21 11:15:00 | succeeded | 0.87 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -116,9 +116,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-21 14:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-21 13:45:00 | succeeded | 0.02 | 1 row |
-| 2026-11-21 13:30:00 | succeeded | 0.03 | 1 row |
+| 2026-11-21 15:00:00 | succeeded | 0.01 | 1 row |
+| 2026-11-21 14:45:00 | succeeded | 0.02 | 1 row |
+| 2026-11-21 14:30:00 | succeeded | 0.02 | 1 row |
 
 
 ## 110 · limpa-historico-cron-semanal
@@ -137,6 +137,6 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-21 15:00:00 | succeeded | 0.01 | 1 row |
+| 2026-11-21 14:30:00 | succeeded | 0.02 | 1 row |
 | 2026-11-21 14:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-21 13:30:00 | succeeded | 0.02 | 1 row |
-| 2026-11-21 13:00:00 | succeeded | 0.01 | 1 row |
