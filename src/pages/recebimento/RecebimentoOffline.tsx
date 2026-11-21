@@ -77,7 +77,7 @@ export default function RecebimentoOffline() {
         .select(`
           id, numero, valor_total, status, data_previsao,
           fornecedor:fornecedores(razao_social),
-          pedido_itens(id, descricao, quantidade, quantidade_recebida, unidade, valor_unitario)
+          pedido_itens(id, descricao, quantidade, quantidade_recebida, unidade, valor_unitario, pim_product_id, pim_variant_id, codigo_fornecedor, ncm, ipi_rate)
         `)
         .in("status", ["aprovado", "enviado", "em_transito", "parcial"])
         .order("data_previsao", { ascending: true });
@@ -91,13 +91,18 @@ export default function RecebimentoOffline() {
         data_previsao: p.data_previsao,
         valor_total: p.valor_total || 0,
         status: p.status,
-        itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number }>).map((i) => ({
+        itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number; pim_product_id: string | null; pim_variant_id: string | null; codigo_fornecedor: string | null; ncm: string | null; ipi_rate: number | null }>).map((i) => ({
           id: i.id,
           descricao: i.descricao,
           quantidade: i.quantidade,
           quantidade_recebida: i.quantidade_recebida,
           unidade: i.unidade,
           valor_unitario: i.valor_unitario,
+          pim_product_id: i.pim_product_id,
+          pim_variant_id: i.pim_variant_id,
+          codigo_fornecedor: i.codigo_fornecedor,
+          ncm: i.ncm,
+          ipi_rate: i.ipi_rate,
         })),
       }));
 

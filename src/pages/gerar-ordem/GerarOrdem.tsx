@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePedidos } from "@/features/pedidos";
 import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
+import { useCatalogoPim } from "@/hooks/useCatalogoPim";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
 import { formatCurrency } from "@/lib/utils";
@@ -57,6 +58,7 @@ const GerarOrdem = () => {
 
   const { createPedido } = usePedidos();
   const { cotacoes } = useCotacoes({ solicitacao_id: solicitacaoId || undefined });
+  const { buscarProdutoPorId } = useCatalogoPim();
 
   // Fetch solicitacao from Supabase
   const { data: solicitacaoData } = useQuery({
@@ -74,6 +76,15 @@ const GerarOrdem = () => {
     enabled: !!solicitacaoId,
   });
 
+  const pimProductId = (solicitacaoData as { pim_product_id?: string | null } | null)?.pim_product_id ?? null;
+  const pimVariantId = (solicitacaoData as { pim_variant_id?: string | null } | null)?.pim_variant_id ?? null;
+
+  const { data: pimProduto } = useQuery({
+    queryKey: ['gerar-ordem-pim-produto', pimProductId],
+    queryFn: () => buscarProdutoPorId(pimProductId as string),
+    enabled: !!pimProductId,
+  });
+
   // Fetch fornecedores
   const { data: fornecedoresData = [] } = useQuery({
     queryKey: ['gerar-ordem-fornecedores'],
@@ -81,7 +92,7 @@ const GerarOrdem = () => {
       const { data, error } = await supabase
         .from('fornecedores')
         .select('id, razao_social, nome_fantasia, cnpj, email, telefone, tipo')
-        .eq('status', 'ativo');
+       .eq('status', 'ativo');
       if (error) throw error;
       return data || [];
     },
@@ -188,7 +199,12 @@ const GerarOrdem = () => {
           descricao: solicitacaoData.titulo || 'Produto',
           quantidade: solicitacaoData.quantidade || 1,
           unidade: solicitacaoData.unidade || 'un',
-          valor_unitario: solicitacao.valorUnitario
+          valor_unitario: solicitacao.valorUnitario,
+          pim_product_id: pimProductId ?? undefined,
+          pim_variant_id: pimVariantId ?? undefined,
+          codigo_fornecedor: pimProduto?.supplier_reference ?? undefined,
+          ncm: pimProduto?.ncm_code ?? undefined,
+          ipi_rate: pimProduto?.ipi_rate ?? undefined,
         }]
       });
 
