@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (104)",
+   "co-localizado (__tests__) (105)",
    "outro (40)",
    "co-localizado (*.test) (23)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)",
    "docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)",
    "fix(edge): evita ReferenceError no catch de ai-supplier-risk (#210)",
    "chore(infra): versiona cron job xbz-sync-pedidos-30min (estava manual em prod) (#191)",
-   "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)",
-   "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)"
+   "fix(edge): rollback de workflow_instances orfas no workflow-engine (#209)"
   ]
  },
  "pr_template": null,

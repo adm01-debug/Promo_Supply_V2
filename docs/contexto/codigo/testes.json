@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 177,
+ "total": 178,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 161
+  "unit": 162
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 104
+   "arquivos": 105
   },
   {
    "padrao": "outro",
@@ -1061,6 +1061,15 @@
    "casos": 22
   },
   {
+   "arquivo": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
+   "tipo": "unit",
+   "linhas": 26,
+   "testa": [
+    "src/pages/catalogo-xbz/xbzHelpers.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
    "tipo": "unit",
    "linhas": 41,
@@ -1695,6 +1704,7 @@
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
+  "src/pages/catalogo-xbz/xbzHelpers.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,

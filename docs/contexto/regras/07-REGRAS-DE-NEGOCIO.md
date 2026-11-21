@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a09a77c768` · branch `main` · 2026-11-21 12:16 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `77024d9ca1` · branch `main` · 2026-11-21 12:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1677,6 +1677,7 @@ _nenhum item encontrado_
 | `CI_COOLDOWN_MS` | `30_000` | `src/pages/admin/DependencyHealth.tsx` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
+| `XBZ_BUSCA_MIN` | `3` | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `MIN_SAMPLE` | `10` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `WARN_RATIO` | `0.3` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `TARGET_RATIO` | `0.5` | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
@@ -1699,6 +1700,7 @@ _nenhum item encontrado_
 | `XBZ_BASE` | `"https://api.minhaxbz.com.br:5001"` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_TIMEOUT_MS` | `15_000` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
+| `XBZ_BUSCA_MIN` | `3` | `supabase/functions/_shared/xbz_client.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
 | `INTEGRATION_FAILURE_THRESHOLD` | `3` | `supabase/functions/check-sla-alerts/index.ts` |
 | `INTEGRATION_LOOKBACK_MS` | `6 * 60 * 60 * 1000` | `supabase/functions/check-sla-alerts/index.ts` |
@@ -2317,7 +2319,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2679 testes em 129 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2683 testes em 130 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2434,6 +2436,7 @@ _nenhum item encontrado_
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
+| `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
@@ -2542,6 +2545,7 @@ _nenhum item encontrado_
 | Dialog de Adicionar/Editar Regra SoD | `src/pages/admin/WorkflowAdmin.tsx` |
 | Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
+| Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */ | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
@@ -2580,6 +2584,7 @@ _nenhum item encontrado_
 | Garante que a flag de permissão do portal XBZ está habilitada para o cliente. */ | `supabase/functions/_shared/xbz_auth.ts` |
 | - /api/clientes/  → header `cnpj` + `token`   (36 req/dia — apenas fallback) | `supabase/functions/_shared/xbz_client.ts` |
 | Flags de permissão retornadas pelo getToken — a UI deve respeitá-las. */ | `supabase/functions/_shared/xbz_client.ts` |
+| Tamanho mínimo de `busca` aceito pela XBZ; abaixo disso ela devolve [] silenciosamente. */ | `supabase/functions/_shared/xbz_client.ts` |
 | são gravados em texto claro. A chave mestra vive apenas no secret | `supabase/functions/_shared/xbz_crypto.ts` |
 | Rule-based fallback: return empty-but-valid structure with a warning | `supabase/functions/ai-demand-prediction/index.ts` |
 | M-05: rate-limit — IA custa tokens; 20 req/min por usuário. | `supabase/functions/ai-negotiation/index.ts` |

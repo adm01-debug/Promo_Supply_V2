@@ -4616,7 +4616,7 @@
     "XbzCatalogoTab"
    ],
    "export_default": null,
-   "linhas": 172,
+   "linhas": 175,
    "dominio": "pages/catalogo-xbz",
    "hooks_locais": [
     "useXbzIntegration"

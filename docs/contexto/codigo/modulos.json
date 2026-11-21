@@ -4122,8 +4122,8 @@
   {
    "modulo": "pages/catalogo-xbz",
    "arquivos": 9,
-   "testes": 2,
-   "linhas": 1158,
+   "testes": 3,
+   "linhas": 1163,
    "itens_menu": [
     "XBZ Brindes"
    ],
