@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `545b30ae261faaa8760cbdb86cc9d9ad656ef706` (2026-11-21T14:41:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `017aa0cdb35efdb67d68b5c3f7c769627fbb0d30` (2026-11-21T15:11:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_indice.md (29)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (12)
 - package.json (12)
-- docs/ci/README.md (10)
+- docs/ci/README.md (11)
 - .github/workflows/main.yml (9)
 - docs/prod-readiness.md (9)
 - bun.lock (8)
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `017aa0c` fix(docs): alinha contagem de workflows do README de CI com main (#241)
 - 2026-11-21 `545b30a` ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)
 - 2026-11-21 `28421a9` ci(prod): cria canal manual para aplicar migration versionada em producao (#237)
 - 2026-11-21 `709f261` docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `9ae679b` chore(catalogo): marca hk-push como CONCLUIDO (PR 228, VAPID via env) (#229)
 - 2026-11-21 `ad13343` fix(push): usa VAPID real do env em vez da chave demo MDN ao registrar subscriptions (#228)
 - 2026-11-21 `33a4ea1` feat: dashboard executivo passa a usar dados reais do banco (#226)
-- 2026-11-21 `79bf0bf` feat: portador de retirada (motorista/placa) na XBZ — Carregar/Autorizar/Revogar (#223)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(docs): alinha contagem de workflows do README de CI com main (#241)",
    "ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)",
    "ci(prod): cria canal manual para aplicar migration versionada em producao (#237)",
    "docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)",
-   "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)",
-   "feat(pwa): adiciona handler de push ao service worker (#234)"
+   "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)"
   ]
  },
  "pr_template": null,

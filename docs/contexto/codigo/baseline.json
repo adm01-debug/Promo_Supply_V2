@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "545b30ae261faaa8760cbdb86cc9d9ad656ef706",
+  "commit": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
   "branch": "main",
-  "data_commit": "2026-11-21T14:41:10-03:00",
+  "data_commit": "2026-11-21T15:11:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "017aa0c",
+    "data": "2026-11-21",
+    "assunto": "fix(docs): alinha contagem de workflows do README de CI com main (#241)"
+   },
    {
     "sha": "545b30a",
     "data": "2026-11-21",
@@ -126,11 +131,6 @@
     "sha": "af0e42f",
     "data": "2026-11-21",
     "assunto": "chore(catalogo): corrige docs de edge-maintain (INATIVO por decisao) e edge-bridge (bloqueado) (#213)"
-   },
-   {
-    "sha": "77024d9",
-    "data": "2026-11-21",
-    "assunto": "fix: catálogo XBZ exige busca com 3+ caracteres (hack busca=a passou a devolver []) (#212)"
    }
   ],
   "arquivos_mudados_7d": 210,
@@ -160,12 +160,12 @@
     "mudancas": 12
    },
    {
-    "pasta": "supabase/functions/punchout-receive",
+    "pasta": "docs/ci/README.md",
     "mudancas": 11
    },
    {
-    "pasta": "docs/ci/README.md",
-    "mudancas": 10
+    "pasta": "supabase/functions/punchout-receive",
+    "mudancas": 11
    },
    {
     "pasta": "src/pages/admin",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/ci/README.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": ".github/workflows/main.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 202
+    "commits": 203
    },
    {
     "autor": "dependabot[bot]",

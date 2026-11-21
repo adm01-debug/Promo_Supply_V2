@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "545b30ae261faaa8760cbdb86cc9d9ad656ef706",
+  "sha": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:00 UTC",
+  "generated_at": "2026-11-21 18:18 UTC",
   "files_total": 1278,
   "code_files": 1117,
   "code_lines": 192452,
@@ -112928,10 +112928,19 @@
   }
  },
  "git": {
-  "sha": "545b30ae261faaa8760cbdb86cc9d9ad656ef706",
+  "sha": "017aa0cdb35efdb67d68b5c3f7c769627fbb0d30",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "017aa0c",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(docs): alinha contagem de workflows do README de CI com main (#241)",
+    "files": [
+     "docs/ci/README.md"
+    ]
+   },
    {
     "sha": "545b30a",
     "date": "2026-11-21",
@@ -113253,25 +113262,20 @@
     "files": [
      "supabase/functions/workflow-engine/index.ts"
     ]
-   },
-   {
-    "sha": "271df27",
-    "date": "2026-11-20",
-    "author": "adm01-debug",
-    "subject": "chore(catalogo): marca edge-suggestion como CONCLUIDO (PR #207) (#208)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    10
+    9
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
     5
+   ],
+   [
+    "docs/ci/README.md",
+    4
    ],
    [
     "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -113280,10 +113284,6 @@
    [
     "supabase/functions/_shared/xbz_client.ts",
     4
-   ],
-   [
-    "docs/ci/README.md",
-    3
    ],
    [
     "src/hooks/useXbzIntegration.ts",
