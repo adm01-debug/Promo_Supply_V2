@@ -136,7 +136,7 @@ jobs:
           # isso ("exige conexao como postgres"), ou quando falta privilegio de
           # schema/objeto, o MESMO arquivo e' reaplicado pelo Management API -
           # que roda como postgres. O psql nao e' reexecutado depois.
-          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser' "${RUNNER_TEMP}/psql.err"; then
+          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser|sem permissao para conceder' "${RUNNER_TEMP}/psql.err"; then
             cat "${RUNNER_TEMP}/psql.err"
             echo "::error::psql falhou por motivo que nao e' privilegio. Nada aplicado."
             exit "${codigo}"
