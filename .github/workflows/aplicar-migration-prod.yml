@@ -138,6 +138,14 @@ jobs:
           fi
 
           echo "psql sem privilegio no schema cron (esperado: role ci_snapshot). Aplicando pelo Management API."
+          # Sonda: o Management API pode rodar com outro role. Registrar qual,
+          # porque e' isso que decide se alter_job funciona.
+          curl -sS -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"select current_user as canal_role, session_user as canal_session"}' \
+            || true
+          echo ""
           # jq monta o JSON do arquivo, evitando escapar SQL a mao. O Management
           # API roda o script inteiro em uma transacao implicita e devolve erro
           # HTTP em qualquer falha, entao o "tudo ou nada" se mantem.
@@ -150,7 +158,7 @@ jobs:
             --data-binary @"${RUNNER_TEMP}/corpo.json")
 
           if [[ "${http}" != "200" && "${http}" != "201" ]]; then
-            cat "${RUNNER_TEMP}/resposta.json"
+            jq -r '.message // .' "${RUNNER_TEMP}/resposta.json" 2>/dev/null || cat "${RUNNER_TEMP}/resposta.json"
             echo "::error::Management API respondeu HTTP ${http}. Nada foi aplicado."
             exit 1
           fi
