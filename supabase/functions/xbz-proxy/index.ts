@@ -25,6 +25,7 @@ import {
 } from "../_shared/xbz_auth.ts";
 import { encryptSecret } from "../_shared/xbz_crypto.ts";
 import { mirrorCatalogo, readCatalogoCacheWithMeta } from "../_shared/xbz_catalog_cache.ts";
+import { mascararPortador, montarPortador } from "../_shared/xbz_portador.ts";
 
 import {
   extractPermissions,
@@ -40,6 +41,9 @@ import {
   xbzGetSt,
   xbzLogin,
   xbzPessoaToken,
+  xbzPortadorAutorizar,
+  xbzPortadorCarregar,
+  xbzPortadorRevogar,
   type XbzResult,
 } from "../_shared/xbz_client.ts";
 
@@ -51,11 +55,12 @@ const READ_ACTIONS = new Set([
   "login", "dashboard", "pessoaToken", "vendedor", "creditoLimite", "empresasGrupo",
   "pedidos", "pedidoDetalhe", "catalogo", "cores", "fiscalSt",
   "carrinhoResumo", "carrinhoListar", "entregaTipos", "pagamentoTipos",
-  "credentialsStatus",
+  "credentialsStatus", "portadorCarregar",
 ]);
 
 const WRITE_ACTIONS = new Set([
   "itemLancar", "itemAlterar", "itemAlterarQuantidade", "itemRemover", "cancelarPedido",
+  "portadorAutorizar", "portadorRevogar",
 ]);
 
 const ORDER_ACTIONS = new Set(["gerarPedidos"]);
@@ -76,6 +81,8 @@ const VALID_ACTIONS = new Set([
 const ACTION_LIMITS: Record<string, { maxRequests: number; windowSeconds: number }> = {
   gerarPedidos: { maxRequests: 3, windowSeconds: 60 },
   cancelarPedido: { maxRequests: 5, windowSeconds: 60 },
+  portadorAutorizar: { maxRequests: 5, windowSeconds: 60 },
+  portadorRevogar: { maxRequests: 5, windowSeconds: 60 },
   saveCredentials: { maxRequests: 5, windowSeconds: 300 },
   testConnection: { maxRequests: 10, windowSeconds: 300 },
   login: { maxRequests: 20, windowSeconds: 60 },
@@ -231,8 +238,15 @@ async function handleAction(
   }
 
   if (action === "pessoaToken") {
+    // Legado: a XBZ substitui o token de retirada pelo portador (23/11/2026).
     requireRole(caller, READ_ROLES);
     return ok(await xbzPessoaToken(portal), requestId);
+  }
+
+  if (action === "portadorCarregar") {
+    requireRole(caller, READ_ROLES);
+    // 204 na XBZ → data: null (nenhum portador cadastrado).
+    return ok(await xbzPortadorCarregar(portal), requestId);
   }
 
   if (action === "pedidos" || action === "pedidoDetalhe") {
@@ -338,9 +352,12 @@ async function handleAction(
   }
 
   // --- Escritas ---
-  // Cancelar pedido é irreversível na XBZ: exige o mesmo nível de gerarPedidos.
-  const isOrderAction = ORDER_ACTIONS.has(action) || action === "cancelarPedido";
+  // Cancelar pedido e autorizar/revogar portador são irreversíveis ou liberam
+  // retirada de mercadoria na XBZ: exigem o mesmo nível de gerarPedidos.
+  const isOrderAction = ORDER_ACTIONS.has(action) || action === "cancelarPedido" || action.startsWith("portador");
   requireRole(caller, isOrderAction ? ORDER_ROLES : WRITE_ROLES);
+  // CPF/RG do motorista nunca vão para a auditoria em claro.
+  const auditPayload = action.startsWith("portador") ? mascararPortador(body) : body;
 
 
   try {
@@ -381,6 +398,16 @@ async function handleAction(
         result = await xbzCancelarPedido(portal, numero);
         break;
       }
+      case "portadorAutorizar": {
+        const montado = montarPortador(body);
+        if (!montado.ok) throw new XbzError(400, montado.erro);
+        result = await xbzPortadorAutorizar(portal, montado.portador);
+        break;
+      }
+      case "portadorRevogar": {
+        result = await xbzPortadorRevogar(portal);
+        break;
+      }
       case "gerarPedidos": {
         requirePortalPermission(creds, "WebPedidoEnviar");
         if (body.confirm !== true) {
@@ -415,7 +442,7 @@ async function handleAction(
       tenantId: caller.tenantId,
       userId: caller.userId,
       action,
-      payload: body,
+      payload: auditPayload,
       status: result.status,
       success: true,
     });
@@ -427,7 +454,7 @@ async function handleAction(
       tenantId: caller.tenantId,
       userId: caller.userId,
       action,
-      payload: body,
+      payload: auditPayload,
       status: xbzErr?.status,
       success: false,
       error: (err as Error).message,

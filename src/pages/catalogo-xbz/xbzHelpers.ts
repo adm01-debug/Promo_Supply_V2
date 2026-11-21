@@ -136,6 +136,57 @@ export function produtoView(p: Record<string, unknown>): XbzProdutoView {
   };
 }
 
+// ---------------------------------------------------------------- portador
+// Cadastro antecipado do motorista/placa para retirada na XBZ (substitui o token
+// de retirada a partir de 23/11/2026). Mesmas regras do `portador.js` do portal.
+
+export function somenteDigitos(valor: unknown): string {
+  return String(valor ?? '').replace(/\D/g, '');
+}
+
+export function cpfValido(valor: unknown): boolean {
+  const cpf = somenteDigitos(valor);
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  const digito = (quantidade: number) => {
+    let soma = 0;
+    for (let i = 0; i < quantidade; i += 1) soma += Number(cpf[i]) * (quantidade + 1 - i);
+    const resto = (soma * 10) % 11;
+    return resto === 10 ? 0 : resto;
+  };
+  return digito(9) === Number(cpf[9]) && digito(10) === Number(cpf[10]);
+}
+
+export function formatarCpf(valor: unknown): string {
+  const cpf = somenteDigitos(valor);
+  if (cpf.length !== 11) return String(valor ?? '');
+  return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(9)}`;
+}
+
+export function normalizarPlaca(valor: unknown): string {
+  return String(valor ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+}
+
+/** Padrão antigo (ABC1234) e Mercosul (ABC1D23). */
+export function placaValida(valor: unknown): boolean {
+  return /^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(normalizarPlaca(valor));
+}
+
+export function formatarPlaca(valor: unknown): string {
+  const placa = normalizarPlaca(valor);
+  return /^[A-Z]{3}\d{4}$/.test(placa) ? `${placa.slice(0, 3)}-${placa.slice(3)}` : placa;
+}
+
+/** Portador como a XBZ devolve no `expedicaoautorizacao/Carregar` (camelCase). */
+export interface XbzPortador {
+  motoristaNome?: string;
+  motoristaRg?: string;
+  motoristaCpf?: string;
+  veiculoPlaca?: string;
+  detalhes?: string;
+  cadastroData?: string;
+  [key: string]: unknown;
+}
+
 /** Tipos de entrega do controller /api/carrinho/ (IDs divergem de /api/clientes/). */
 export const XBZ_ENTREGA_TIPOS: Record<number, string> = {
   30: 'Transportadora indicada pelo cliente',
