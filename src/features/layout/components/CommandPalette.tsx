@@ -40,7 +40,6 @@ import {
   Bell,
   HelpCircle,
   Zap,
-  FileUp,
   Download,
   RefreshCw,
   type LucideIcon,
@@ -141,8 +140,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const actionItems: CommandItemType[] = React.useMemo(() => [
     { id: "nova-solicitacao", label: "Nova Solicitação", icon: Plus, action: () => navigate("/solicitacoes"), shortcut: "⌘N", keywords: ["criar", "adicionar"], group: "Ações Rápidas" },
     { id: "novo-fornecedor", label: "Cadastrar Fornecedor", icon: Factory, action: () => navigate("/fornecedores"), keywords: ["novo", "adicionar"], group: "Ações Rápidas" },
-    { id: "exportar", label: "Exportar Dados", icon: Download, action: () => {}, keywords: ["download", "excel"], group: "Ações Rápidas" },
-    { id: "importar", label: "Importar Dados", icon: FileUp, action: () => {}, keywords: ["upload", "csv"], group: "Ações Rápidas" },
+    { id: "exportar", label: "Exportar Dados", icon: Download, action: () => navigate("/relatorios"), keywords: ["download", "excel"], group: "Ações Rápidas" },
     { id: "atualizar", label: "Atualizar Dados", icon: RefreshCw, action: () => window.location.reload(), shortcut: "⌘⇧R", keywords: ["refresh", "recarregar"], group: "Ações Rápidas" },
   ].map(item => ({
     ...item,
@@ -162,9 +160,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       keywords: ["tema", "aparência"],
       group: "Configurações"
     },
-    { id: "notificacoes", label: "Notificações", icon: Bell, action: () => {}, keywords: ["alertas", "avisos"], group: "Configurações" },
-    { id: "perfil", label: "Meu Perfil", icon: User, action: () => {}, keywords: ["conta", "usuário"], group: "Configurações" },
-    { id: "ajuda", label: "Ajuda & Suporte", icon: HelpCircle, action: () => {}, shortcut: "⌘?", keywords: ["help", "faq"], group: "Configurações" },
+    { id: "notificacoes", label: "Notificações", icon: Bell, action: () => navigate("/seguranca"), keywords: ["alertas", "avisos"], group: "Configurações" },
+    { id: "perfil", label: "Meu Perfil", icon: User, action: () => navigate("/seguranca"), keywords: ["conta", "usuário"], group: "Configurações" },
+    { id: "ajuda", label: "Ajuda & Suporte", icon: HelpCircle, action: () => navigate("/admin/docs"), shortcut: "⌘?", keywords: ["help", "faq", "documentação", "docs"], group: "Configurações" },
     { id: "sair", label: "Sair", icon: LogOut, action: () => navigate("/auth"), shortcut: "⌘⇧Q", keywords: ["logout", "desconectar"], group: "Configurações" },
   ].map(item => ({
     ...item,
