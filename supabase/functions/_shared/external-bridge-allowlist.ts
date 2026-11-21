@@ -18,6 +18,9 @@ export const ALLOWED_TABLES = new Set<string>([
   "produtos_externos",
   "fornecedores_externos",
   "spot_pedidos_view",
+  // vistas do PIM (Promo Gifts V4) — somente leitura via external-db-bridge
+  "v_compras_catalogo",       // PR 1.1 — catálogo de produtos para compras
+  "v_compras_precos_faixa",   // PR 1.2 — faixas de preço de personalização
 ]);
 
 /** Funções (RPC) do DB externo que podem ser invocadas. */
