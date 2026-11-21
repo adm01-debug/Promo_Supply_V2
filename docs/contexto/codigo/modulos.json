@@ -2833,7 +2833,7 @@
    "modulo": "integrations/supabase",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 10353,
+   "linhas": 10385,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

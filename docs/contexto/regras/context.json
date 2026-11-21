@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6ae4856270befa64a4dbd4c59f539c519aaf89ef",
+  "sha": "7187345d76fa4d99c2a8975c36e5dec7ba510934",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 18:31 UTC",
+  "generated_at": "2026-11-21 18:48 UTC",
   "files_total": 1280,
   "code_files": 1119,
-  "code_lines": 192573,
+  "code_lines": 192605,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "003a9fc69f780106",
+ "facts_hash": "8322d6278f73e6e9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34950,7 +34950,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10392,
+   "lines": 10424,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -99782,7 +99782,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10333,
+   "lines": 10365,
    "exports": [
     "type Json",
     "type Database",
@@ -113000,10 +113000,19 @@
   }
  },
  "git": {
-  "sha": "6ae4856270befa64a4dbd4c59f539c519aaf89ef",
+  "sha": "7187345d76fa4d99c2a8975c36e5dec7ba510934",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7187345",
+    "date": "2026-11-21",
+    "author": "adm01-debug",
+    "subject": "fix(types): regenera types.ts com as colunas PIM de compras (#245)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "6ae4856",
     "date": "2026-11-21",
@@ -113328,24 +113337,12 @@
      "supabase/functions/_shared/xbz_client.ts",
      "supabase/functions/xbz-proxy/index.ts"
     ]
-   },
-   {
-    "sha": "a09a77c",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs(catalogo): arquiva hk-dead e refuta edges maintain/bridge como mortas (#211)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/edge-bridge.md",
-     "docs/pendencias/edge-maintain.md",
-     "docs/pendencias/hk-dead-mortos.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    9
+    8
    ],
    [
     "supabase/functions/xbz-proxy/index.ts",
@@ -113388,12 +113385,8 @@
     2
    ],
    [
-    "docs/pendencias/edge-bridge.md",
-    2
-   ],
-   [
-    "docs/pendencias/edge-maintain.md",
-    2
+    "src/integrations/supabase/types.ts",
+    1
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -113421,6 +113414,10 @@
    ],
    [
     "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261121160000_pim_refs_compras.sql",
     1
    ]
   ]

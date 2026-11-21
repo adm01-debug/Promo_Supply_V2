@@ -8119,6 +8119,7 @@
     "id": "string",
     "localizacao": "string",
     "organization_id": "string",
+    "pim_product_id": "string | null",
     "ponto_pedido": "number | null",
     "produto_id": "string",
     "quantidade_atual": "number",
@@ -8126,9 +8127,7 @@
     "updated_at": "string | null"
    },
    "drift": {
-    "so_na_migration": [
-     "pim_product_id"
-    ],
+    "so_na_migration": [],
     "so_no_types": []
    },
    "usada_no_front": 1,
@@ -12141,11 +12140,16 @@
    ],
    "criada_em": "20251220181110_c3da115e-7cad-4dc4-b147-3b888d4c332e.sql",
    "colunas_types": {
+    "codigo_fornecedor": "string | null",
     "created_at": "string",
     "data_previsao_producao": "string | null",
     "descricao": "string",
     "id": "string",
+    "ipi_rate": "number | null",
+    "ncm": "string | null",
     "pedido_id": "string | null",
+    "pim_product_id": "string | null",
+    "pim_variant_id": "string | null",
     "produto_id": "string | null",
     "quantidade": "number",
     "quantidade_recebida": "number | null",
@@ -12157,12 +12161,7 @@
    },
    "drift": {
     "so_na_migration": [
-     "status_producao",
-     "pim_product_id",
-     "pim_variant_id",
-     "codigo_fornecedor",
-     "ncm",
-     "ipi_rate"
+     "status_producao"
     ],
     "so_no_types": [
      "tenant_id"
@@ -14499,6 +14498,7 @@
     "fornecedor_id": "string | null",
     "frequencia_dias": "number | null",
     "id": "string",
+    "pim_product_id": "string | null",
     "preco_estimado": "number | null",
     "produto_id": "string | null",
     "proxima_compra_estimada": "string | null",
@@ -14509,9 +14509,7 @@
     "updated_at": "string"
    },
    "drift": {
-    "so_na_migration": [
-     "pim_product_id"
-    ],
+    "so_na_migration": [],
     "so_no_types": []
    },
    "usada_no_front": 1,
@@ -15797,6 +15795,8 @@
     "numero": "string",
     "observacoes": "string | null",
     "organization_id": "string | null",
+    "pim_product_id": "string | null",
+    "pim_variant_id": "string | null",
     "prioridade": "string",
     "produto_id": "string | null",
     "quantidade": "number",
@@ -15820,9 +15820,7 @@
      "prazo_entrega",
      "fornecedor_selecionado",
      "valor_unitario",
-     "valor_total",
-     "pim_product_id",
-     "pim_variant_id"
+     "valor_total"
     ],
     "so_no_types": []
    },

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6ae4856270befa64a4dbd4c59f539c519aaf89ef` (2026-11-21T15:31:18-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7187345d76fa4d99c2a8975c36e5dec7ba510934` (2026-11-21T15:46:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1279 |
 | arquivos_codigo | 796 |
-| linhas_codigo | 166384 |
+| linhas_codigo | 166416 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -317,7 +317,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
-- tabelas_com_drift_migration_vs_types: 52 — ex.: active_sessions, approval_delegations, approval_hierarchy
+- tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 12 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
@@ -413,6 +413,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
 - 2026-11-21 `6ae4856` feat: compra grava referencia do PIM e congela o item (#242)
 - 2026-11-21 `625b45a` fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)
 - 2026-11-21 `3192276` feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)
@@ -427,7 +428,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `a441c3d` chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)
 - 2026-11-21 `199e4ed` chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)
 - 2026-11-21 `7a030e4` fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)
-- 2026-11-21 `e2465ce` ci: CI roda Deno v2.x, o runtime real das edge functions (#227)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
