@@ -66,6 +66,11 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
+        // Camada de push sobre o SW gerado pelo Workbox. `generateSW` nao trata o
+        // evento `push`; sem este handler a subscription existe mas a notificacao
+        // enviada pela edge send-push-notification nao aparece com a aba fechada.
+        // Arquivo vive em public/ e o Workbox o concatena ao sw.js final.
+        importScripts: ['push-handler.js'],
         // Expanded to include woff (legacy), json (translation/config), and webp (images)
         globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp,woff,woff2,json}"],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
