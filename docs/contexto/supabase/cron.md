@@ -21,3 +21,11 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 110 | limpa-historico-cron-semanal | `17 4 * * 0` | sim | postgres | postgres | `delete from cron.job_run_details where end_time < now() - interval '7 days'` |
 | 111 | scan-particoes-semanal | `45 4 * * 0` | sim | postgres | postgres | `SELECT public.scan_partition_candidates(1.0)` |
 | 112 | xbz-sync-pedidos-30min | `*/30 * * * *` | sim | postgres | postgres | `SELECT public._invoke_xbz_sync();` |
+| 113 | alert-dispatcher-1min | `* * * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('alert-dispatcher');` |
+| 114 | approval-escalation-check | `*/15 * * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-approval-escalations');` |
+| 115 | contract-expiry-check | `0 7 * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-expiry-alerts');` |
+| 116 | cotacao-followup-check | `0 12 * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-cotacao-followup');` |
+| 117 | expiry-alerts-check | `0 10 * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-expiry-alerts');` |
+| 118 | sla-alerts-check | `*/30 * * * *` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('check-sla-alerts');` |
+| 119 | weekly-procurement-report | `0 11 * * 1` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('weekly-report');` |
+| 120 | weekly-summary-report-job | `0 8 * * 1` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('weekly-summary-report');` |

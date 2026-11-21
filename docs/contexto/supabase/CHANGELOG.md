@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-21 17:41 UTC
+
+- **cron jobs** adicionado (8): `113:alert-dispatcher-1min`, `114:approval-escalation-check`, `115:contract-expiry-check`, `116:cotacao-followup-check`, `117:expiry-alerts-check`, `118:sla-alerts-check`, `119:weekly-procurement-report`, `120:weekly-summary-report-job`
+- **functions** alterado (1): `public._invoke_edge_function(_name text)`
+
 ## 2026-11-21 16:12 UTC
 
 - **functions** alterado (2): `public._invoke_edge_function(_name text)`, `public.cron_watchdog()`

@@ -28,7 +28,7 @@ Gerado automaticamente a cada hora pelo workflow `contexto` (job `banco`). **Nã
 | índices | 701 |
 | tipos/enums | 18 |
 | extensões | 8 |
-| cron jobs | 17 |
+| cron jobs | 25 |
 | filas pgmq | 0 |
 | migrations | 14 |
 | buckets | 4 |

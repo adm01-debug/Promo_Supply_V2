@@ -36282,6 +36282,78 @@
           "jobname": "xbz-sync-pedidos-30min",
           "schedule": "*/30 * * * *",
           "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('alert-dispatcher');",
+          "database": "postgres",
+          "jobid": 113,
+          "jobname": "alert-dispatcher-1min",
+          "schedule": "* * * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('check-approval-escalations');",
+          "database": "postgres",
+          "jobid": 114,
+          "jobname": "approval-escalation-check",
+          "schedule": "*/15 * * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('check-expiry-alerts');",
+          "database": "postgres",
+          "jobid": 115,
+          "jobname": "contract-expiry-check",
+          "schedule": "0 7 * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('check-cotacao-followup');",
+          "database": "postgres",
+          "jobid": 116,
+          "jobname": "cotacao-followup-check",
+          "schedule": "0 12 * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('check-expiry-alerts');",
+          "database": "postgres",
+          "jobid": 117,
+          "jobname": "expiry-alerts-check",
+          "schedule": "0 10 * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('check-sla-alerts');",
+          "database": "postgres",
+          "jobid": 118,
+          "jobname": "sla-alerts-check",
+          "schedule": "*/30 * * * *",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('weekly-report');",
+          "database": "postgres",
+          "jobid": 119,
+          "jobname": "weekly-procurement-report",
+          "schedule": "0 11 * * 1",
+          "username": "ci_snapshot"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_edge_function('weekly-summary-report');",
+          "database": "postgres",
+          "jobid": 120,
+          "jobname": "weekly-summary-report-job",
+          "schedule": "0 8 * * 1",
+          "username": "ci_snapshot"
         }
       ]
     },
@@ -36356,7 +36428,15 @@
           ],
           "code_total_files": 3,
           "cron": [
-            "18:outbox-worker-1min"
+            "18:outbox-worker-1min",
+            "113:alert-dispatcher-1min",
+            "114:approval-escalation-check",
+            "115:contract-expiry-check",
+            "116:cotacao-followup-check",
+            "117:expiry-alerts-check",
+            "118:sla-alerts-check",
+            "119:weekly-procurement-report",
+            "120:weekly-summary-report-job"
           ],
           "db": [],
           "triggers": [],
