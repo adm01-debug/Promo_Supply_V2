@@ -52,8 +52,8 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | hk-dead | hooks orfaos (tree-shaken, sem barrel; remocao sem ganho de runtime) | DESCARTADO (arquivamento documentado - NAO remover; useBulkOperations ancorado por teste) | hk-dead-mortos.md |
-| hk-fuse | `useFuseSearch` inteiro morto (so `normalizeText` usado) | PENDENTE | `useFuseSearch.ts:83,225,306,329` |
-| hk-offline | `useOfflineSync` fila vazia sempre | PENDENTE | `useOfflineSync.ts:98,282` |
+| hk-fuse | `useFuseSearch` motor Fuse morto, mas `normalizeText` usado por 8 callers | DESCARTADO (manter como hk-dead — arquivo necessario, motor tree-shaken) | `normalizeText`: PendingApprovalsList, enhanced-search, AdvancedSearch, CommandPalette, searchConfig, SupplierChat |
+| hk-offline | `useOfflineSync` fila nunca alimentada em runtime, mas wired no OfflineIndicator | DESCARTADO (manter — condicao de origem: sync pendente; motor completo) | `OfflineIndicator.tsx:11` (isOnline/isSyncing/pendingCount/hasPendingOperations) |
 | hk-dlq | `useWorkflowDLQ` sem UI de retry | CONCLUIDO - WorkflowDLQPanel em Aprovacoes (retry/descartar/limpar) | `useApprovalWorkflow.ts` + `WorkflowDLQPanel.tsx` |
 | hk-badges | `useSidebarBadges` conta tabela errada (`workflow_approvals`) | CONCLUIDO â€” passa a contar `approval_workflows` por `organization_id` | `useSidebarBadges.ts:26` |
 | hk-permissions | `DependencyHealthBadge` usa `isAdmin` que nao existe -> nunca renderiza | CONCLUIDO â€” `useAuth().isAdmin` (fonte real), badge passa a renderizar para admin | `DependencyHealthBadge.tsx:102,116` |
