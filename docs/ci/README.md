@@ -145,7 +145,7 @@
 | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **sem-eco-de-valor** | a chave privada nunca aparece no log; o workflow imprime apenas nomes |
 | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **sem-rotacao** | reprovisionar a MESMA chave e' idempotente; rotacionar exige publicar de novo e reinstalar o PWA em cada dispositivo, por isso nao roda sozinho |
 | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **secret-ausente** | sem SUPABASE_ACCESS_TOKEN/VITE_SUPABASE_PROJECT_ID e sem os valores VAPID o job falha fechado |
-| [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **banco-pulado** | sem o secret SUPABASE_DB_URL o job sai VERDE com aviso no agendamento e no push; no workflow_dispatch falha de proposito, para a pessoa ver |
+| [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **banco-pulado** | sem o secret SUPABASE_ACCESS_TOKEN o job sai VERDE com aviso no agendamento e no push; no workflow_dispatch falha de proposito, para a pessoa ver |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **sem-pr-novo** | "nada mudou" quando o PR de sync ja esta aberto com o mesmo types.ts — create-pull-request nao cria commit identico |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **debounce** | se o PR de sync tem commit com menos de 20 min, o run e pulado (cadencia horaria + push nao deve empilhar commit) |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **TYPES_SYNC_PR_TOKEN ausente** | esperado — o workflow usa GITHUB_TOKEN; o passo "Destravar os checks" aprova os runs com actions:write |

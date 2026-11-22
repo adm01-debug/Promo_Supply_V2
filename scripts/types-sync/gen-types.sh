@@ -2,11 +2,27 @@
 # gen-types.sh [--local] [output_path]
 # Gera src/integrations/supabase/types.ts a partir do schema do banco.
 #
-# Modo padrao: introspecta o banco oficial via --db-url.
-#   Requer: SUPABASE_DB_URL no ambiente (porta 5432 ou 6543 session-mode —
-#           nao pooler em transaction mode, que o postgres-meta nao suporta).
-#   Uso local: SUPABASE_DB_URL="postgresql://..." sh scripts/types-sync/gen-types.sh
+# Modo padrao: introspecta o banco oficial pela Management API (--project-id).
+#   Requer: SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF (ou
+#           VITE_SUPABASE_PROJECT_ID) no ambiente.
+#   Uso local: SUPABASE_ACCESS_TOKEN="sbp_..." SUPABASE_PROJECT_REF=abcdefghijklmnopqrst sh scripts/types-sync/gen-types.sh
 #   Uso em CI: .github/workflows/types-sync.yml
+#
+#   POR QUE Management API e nao --db-url: sao motores de introspeccao
+#   diferentes. O endpoint oficial (GET /v1/projects/{ref}/types/typescript)
+#   emite o bloco __InternalSupabase e os parenteses de
+#   "extends (DefaultSchema... = {"; a introspeccao direta do Postgres pela
+#   postgres-meta (o que --db-url faz) nao emite nenhum dos dois. O types.ts
+#   commitado veio do endpoint, entao gerar por --db-url produz um diff
+#   permanente (+10/-15 em 11 hunks) a cada run. Provado byte a byte:
+#   --project-id e o endpoint devolvem os mesmos 316989 bytes do arquivo
+#   commitado; --db-url devolve 316772.
+#
+# Modo legado (--db-url): escolhido quando SUPABASE_ACCESS_TOKEN NAO esta no
+#   ambiente. Mantido para uso manual de quem so tem a credencial de banco.
+#   Requer SUPABASE_DB_URL (porta 5432 ou 6543 session-mode — nao pooler em
+#   transaction mode, que o postgres-meta nao suporta). Neste modo o arquivo
+#   gerado NAO e identico ao oficial.
 #
 # Modo --local: introspecta um Postgres LOCAL (supabase db start), que aplica
 #   as migrations de supabase/migrations num volume novo. Reflete so o que esta
@@ -27,7 +43,12 @@
 # rede que a CLI gera a cada execucao. NAO e correcao de timeout de conexao.
 set -e
 
-MODE=db-url
+MODE=api
+# Sem token da Management API o script cai no caminho legado (--db-url), que
+# exige SUPABASE_DB_URL.
+if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+  MODE=db-url
+fi
 if [ "${1:-}" = "--local" ]; then
   MODE=local
   shift
@@ -66,7 +87,19 @@ retry_gen_types() {
   return 1
 }
 
-if [ "$MODE" = local ]; then
+if [ "$MODE" = api ]; then
+  # Caminho canonico: a CLI fala com a Management API e recebe o que o endpoint
+  # oficial entrega. Nao sobe container, entao a credencial de banco nunca sai
+  # deste processo e o proxy local (pgbouncer) e dispensavel aqui.
+  PROJECT_REF="${SUPABASE_PROJECT_REF:-${VITE_SUPABASE_PROJECT_ID:-}}"
+  if [ -z "$PROJECT_REF" ]; then
+    echo "Erro: SUPABASE_PROJECT_REF (ou VITE_SUPABASE_PROJECT_ID) nao definida no ambiente." >&2
+    exit 1
+  fi
+  retry_gen_types \
+    --project-id "$PROJECT_REF" \
+    --schema public
+elif [ "$MODE" = local ]; then
   supabase gen types typescript \
     --local \
     --schema public \

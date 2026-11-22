@@ -1,12 +1,12 @@
 // Cenarios de scripts/types-sync/identidade-banco.mjs, local-pg-proxy.mjs e do passo
-// "Exigir credencial do banco oficial" do types-sync.yml (o heredoc node e extraido do YAML e executado).
+// "Exigir credencial da Management API oficial" do types-sync.yml (o bloco run e extraido do YAML e executado).
 // So node (o caso do umask 000 tambem usa bash e fica skip sem ele).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { REPO, FERRAMENTAS, pastaNova, repoFalso, requer, rodar, importar } from './lib.mjs';
+import { REPO, FERRAMENTAS, acha, pastaNova, repoFalso, requer, rodar, importar } from './lib.mjs';
 
 const ID = 'scripts/types-sync/identidade-banco.mjs';
 const PROXY = 'scripts/types-sync/local-pg-proxy.mjs';
@@ -268,58 +268,82 @@ test('proxy: raiz permitida inclui o tmp do sistema (como o gen-types.sh usa: mk
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-// ---------------- passo "Exigir credencial do banco oficial" do workflow ----------------
-function heredocDoWorkflow() {
+// ---------------- passo "Exigir credencial da Management API oficial" do workflow ----------------
+// O bloco run do passo e extraido do YAML e executado de verdade, num repo de mentira com o
+// supabase/config.toml que o cenario quiser.
+const PASSO_YAML = (() => {
   const yaml = fs.readFileSync(path.join(REPO, '.github/workflows/types-sync.yml'), 'utf8').split('\n');
-  const ini = yaml.findIndex((l) => l.includes("node --input-type=module <<'NODE'"));
-  const fim = yaml.findIndex((l, i) => i > ini && l.trim() === 'NODE');
-  return yaml.slice(ini + 1, fim).map((l) => l.replace(/^ {10}/, '')).join('\n');
-}
-const passo = (env) => {
-  const ghEnv = path.join(pastaNova('ghenv'), 'env');
-  fs.writeFileSync(ghEnv, '');
-  const limpo = { ...process.env }; delete limpo.SUPABASE_DB_URL; delete limpo.PROJECT_REF_ESPERADO;
-  // o heredoc importa './scripts/types-sync/identidade-banco.mjs' relativo ao cwd
-  const r = rodar(process.execPath, ['--input-type=module'], { cwd: REPO, input: heredocDoWorkflow(), env: { ...limpo, GITHUB_ENV: ghEnv, ...env } });
-  return { ...r, ghEnv: fs.readFileSync(ghEnv, 'utf8') };
-};
+  const ini = yaml.findIndex((l) => l.includes('- name: Exigir credencial da Management API oficial'));
+  if (ini < 0) throw new Error('passo "Exigir credencial da Management API oficial" ausente do types-sync.yml');
+  const run = yaml.findIndex((l, i) => i > ini && l.trim() === 'run: |');
+  if (run < 0) throw new Error('passo sem "run: |"');
+  const resto = yaml.slice(run + 1);
+  const depois = resto.findIndex((l) => /^ {6}- /.test(l));
+  return resto.slice(0, depois < 0 ? undefined : depois).map((l) => l.replace(/^ {10}/, '')).join('\n');
+})();
+const SEM_BASH_PASSO = requer(FERRAMENTAS.bash, 'bash ausente no PATH');
+const TOKEN_TESTE = 'sbp_t0k3n_d3_t3st3_na0_p0d3_v4z4r';
 
-test('workflow/Exigir credencial: aprovado grava URL endurecida + PGSSLMODE no GITHUB_ENV e mascara a URL', () => {
-  const SENHA = "S3nh4 '@:%";
-  const r = passo({ SUPABASE_DB_URL: pooler(SENHA), PROJECT_REF_ESPERADO: REF });
+function passo({ refConfig = REF, refEsperado = REF, token = TOKEN_TESTE, evento = 'push', semConfig = false } = {}) {
+  const raiz = pastaNova('cred');
+  if (!semConfig) {
+    fs.mkdirSync(path.join(raiz, 'supabase'), { recursive: true });
+    fs.writeFileSync(path.join(raiz, 'supabase/config.toml'), 'project_id = "' + refConfig + '"\n');
+  }
+  const ghEnv = path.join(raiz, 'ghenv');
+  fs.writeFileSync(ghEnv, '');
+  const env = { ...process.env, GITHUB_ENV: ghEnv, EVENTO: evento, PROJECT_REF_ESPERADO: refEsperado };
+  delete env.SUPABASE_ACCESS_TOKEN;
+  if (token) env.SUPABASE_ACCESS_TOKEN = token;
+  const r = rodar(FERRAMENTAS.bash, ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', PASSO_YAML], { cwd: raiz, env });
+  return { ...r, ghEnv: fs.readFileSync(ghEnv, 'utf8') };
+}
+
+test('workflow/Exigir credencial: aprovado grava SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_REF no GITHUB_ENV e mascara o token', { skip: SEM_BASH_PASSO }, () => {
+  const r = passo();
   assert.equal(r.status, 0, r.saida);
-  const linhas = r.ghEnv.split('\n');
-  assert.equal(linhas.length, 3);
-  assert.match(linhas[0], /^SUPABASE_DB_URL=postgres:\/\/.*sslmode=verify-full&sslrootcert=scripts%2Ftypes-sync%2Fcerts%2Fsupabase-prod-ca-2021\.crt$/);
-  assert.equal(linhas[1], 'PGSSLMODE=verify-full');
-  const url = linhas[0].slice('SUPABASE_DB_URL='.length);
-  assert.equal(m.parseConnection(url).password, SENHA);
+  const linhasEnv = r.ghEnv.trim().split('\n');
+  assert.equal(linhasEnv.length, 2);
+  assert.equal(linhasEnv[0], 'SUPABASE_ACCESS_TOKEN=' + TOKEN_TESTE);
+  assert.equal(linhasEnv[1], 'SUPABASE_PROJECT_REF=' + REF);
   const saida = r.stdout.split('\n');
-  assert.equal(saida[0], `::add-mask::${url}`);
-  assert.match(saida[1], /^OK: identidade do projeto conferida/);
-  assert.equal(r.stdout.split(url).length, 2, 'a URL so aparece na linha do add-mask');
+  assert.equal(saida[0], '::add-mask::' + TOKEN_TESTE);
+  assert.match(saida[1], /^OK: identidade do projeto conferida \(abcdefghijklmnopqrst\)/);
+  assert.equal(r.stdout.split(TOKEN_TESTE).length, 2, 'o token so aparece na linha do add-mask');
 });
 
-test('workflow/Exigir credencial: projeto errado, TLS rebaixado, URL invalida -> exit 1, GITHUB_ENV intacto, sem vazar', () => {
-  const SENHA = 'S3nh4-Sup3r-S3cr3t4';
+test('workflow/Exigir credencial: sem token -> SYNC_SKIPPED, verde no push e vermelho no dispatch; nada vaza', { skip: SEM_BASH_PASSO }, () => {
+  const push = passo({ token: '' });
+  assert.equal(push.status, 0, push.saida);
+  assert.equal(push.ghEnv.trim(), 'SYNC_SKIPPED=1');
+  assert.match(push.stdout, /^::warning::Secret SUPABASE_ACCESS_TOKEN nao definido/);
+
+  const dispatch = passo({ token: '', evento: 'workflow_dispatch' });
+  assert.equal(dispatch.status, 1, dispatch.saida);
+  assert.equal(dispatch.ghEnv.trim(), 'SYNC_SKIPPED=1');
+});
+
+test('workflow/Exigir credencial: ref divergente, ref invalido ou config.toml ausente -> exit 1, GITHUB_ENV intacto, sem vazar', { skip: SEM_BASH_PASSO }, () => {
   const casos = [
-    { SUPABASE_DB_URL: pooler(SENHA), PROJECT_REF_ESPERADO: OUTRO },
-    { SUPABASE_DB_URL: pooler(SENHA, '?sslmode=require'), PROJECT_REF_ESPERADO: REF },
-    { SUPABASE_DB_URL: `postgresql://u:${SENHA}@exemplo.com/db`, PROJECT_REF_ESPERADO: REF },
-    { SUPABASE_DB_URL: `lixo ${SENHA}`, PROJECT_REF_ESPERADO: REF },
-    { SUPABASE_DB_URL: pooler(SENHA), PROJECT_REF_ESPERADO: 'curto' },
+    { refEsperado: OUTRO },
+    // ref com formato invalido: o esperado acompanha para exercitar a checagem de formato
+    { refConfig: 'curto', refEsperado: 'curto' },
+    { refConfig: 'ABCDEFGHIJKLMNOPQRST', refEsperado: 'ABCDEFGHIJKLMNOPQRST' },
+    { refConfig: '1' + REF.slice(1), refEsperado: '1' + REF.slice(1) },
+    { semConfig: true },
   ];
-  for (const env of casos) {
-    const r = passo(env);
-    assert.equal(r.status, 1, r.saida.replace(SENHA, '<<VAZOU>>'));
-    assert.equal(r.ghEnv, '');
-    assert.match(r.stderr, /^ERRO: /);
-    for (const proibido of [SENHA, REF, OUTRO, 'aws-0-sa-east-1', 'exemplo.com']) assert.ok(!r.saida.includes(proibido), proibido);
+  for (const caso of casos) {
+    const r = passo(caso);
+    assert.equal(r.status, 1, JSON.stringify(caso) + ': ' + r.saida.replace(TOKEN_TESTE, '<<VAZOU>>'));
+    assert.equal(r.ghEnv, '', JSON.stringify(caso));
+    assert.match(r.saida, /^::error::/);
+    // o ref errado aparece na mensagem de erro de proposito; o token nunca pode aparecer
+    assert.ok(!r.saida.includes(TOKEN_TESTE), 'token vazou');
   }
 });
 
-test('workflow/Exigir credencial: sem VITE_SUPABASE_PROJECT_ID segue com ::warning:: (identidade nao comprovada)', () => {
-  const r = passo({ SUPABASE_DB_URL: pooler('abc12345'), PROJECT_REF_ESPERADO: '' });
+test('workflow/Exigir credencial: VITE_SUPABASE_PROJECT_ID ausente nao bloqueia (config.toml manda)', { skip: SEM_BASH_PASSO }, () => {
+  const r = passo({ refEsperado: '' });
   assert.equal(r.status, 0, r.saida);
-  assert.match(r.stdout, /^::warning::VITE_SUPABASE_PROJECT_ID nao configurado/);
+  assert.match(r.ghEnv, new RegExp('^SUPABASE_PROJECT_REF=' + REF + '$', 'm'));
 });
