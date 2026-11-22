@@ -2,6 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useAuth } from '@/features/auth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
+import {
+  deriveKpiSnapshot,
+  type KpiSnapshot,
+  type QuarterRow,
+} from '@/components/compras/procurement-kpis/deriveKpiSnapshot';
+
+const QUARTER_LABELS = ['Q1', 'Q2', 'Q3', 'Q4'];
+const round1 = (value: number) => Math.round(value * 10) / 10;
 
 export interface ExecutiveMetrics {
   totalSpend: { value: number; target: number };
@@ -84,16 +92,32 @@ const startOfMonth = () => {
   return d.toISOString();
 };
 
-export function useExecutiveDashboardData() {
+export function useExecutiveDashboardData(options?: { periodDays?: number }) {
   const { organizationId } = useAuth();
+  const periodDays = options?.periodDays && options.periodDays > 0 ? options.periodDays : null;
+  const cutoffDate = useMemo(
+    () => (periodDays ? new Date(Date.now() - periodDays * 86_400_000).toISOString().slice(0, 10) : null),
+    [periodDays],
+  );
+  const scopeByDate = useMemo(() => {
+    return <T,>(rows: T[], pick: (row: T) => string | null | undefined): T[] => {
+      if (!cutoffDate) return rows;
+      return rows.filter((row) => {
+        const value = pick(row);
+        return Boolean(value) && (value as string).slice(0, 10) >= cutoffDate;
+      });
+    };
+  }, [cutoffDate]);
+
   const { data: pedidos, isLoading: l1 } = useQuery({
     queryKey: ['exec-pedidos', organizationId],
     queryFn: () => {
       if (!organizationId) return [];
-      return fetchAllRows<{ id: string; status: string; valor_total: number; fornecedor_id: string | null; data_emissao: string; data_previsao: string | null; data_entrega: string | null; comprador_id: string | null; numero: string; created_at: string }>('pedidos', 'id, status, valor_total, fornecedor_id, data_emissao, data_previsao, data_entrega, comprador_id, numero, created_at', {
+      return fetchAllRows<{ id: string; status: string; valor_total: number; fornecedor_id: string | null; data_emissao: string; data_previsao: string | null; data_entrega: string | null; comprador_id: string | null; numero: string; created_at: string; solicitacao_id: string | null }>('pedidos', 'id, status, valor_total, fornecedor_id, data_emissao, data_previsao, data_entrega, comprador_id, numero, created_at, solicitacao_id', {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
+    select: (rows) => scopeByDate(rows, (r) => r.data_emissao || r.created_at),
     staleTime: 30_000,
   });
 
@@ -105,6 +129,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
+    select: (rows) => scopeByDate(rows, (r) => r.created_at),
     staleTime: 30_000,
   });
 
@@ -123,7 +148,7 @@ export function useExecutiveDashboardData() {
     queryKey: ['exec-contracts', organizationId],
     queryFn: () => {
       if (!organizationId) return [];
-      return fetchAllRows<{ id: string; status: string; supplier_id: string | null; total_value: number }>('contracts', 'id, status, supplier_id, total_value', {
+      return fetchAllRows<{ id: string; status: string; supplier_id: string | null; total_value: number; start_date: string | null; end_date: string | null }>('contracts', 'id, status, supplier_id, total_value, start_date, end_date', {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
@@ -161,6 +186,30 @@ export function useExecutiveDashboardData() {
       });
     },
     staleTime: 120_000,
+  });
+
+  const { data: fiscalDocs, isLoading: l8 } = useQuery({
+    queryKey: ['exec-fiscal-documents', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; status: string; reconciliation_status: string | null; valor_total: number | null; data_emissao: string | null }>('fiscal_documents', 'id, status, reconciliation_status, valor_total, data_emissao', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
+    select: (rows) => scopeByDate(rows, (r) => r.data_emissao),
+    staleTime: 60_000,
+  });
+
+  const { data: savingsRows, isLoading: l9 } = useQuery({
+    queryKey: ['exec-savings-tracker', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; type: string; baseline_value: number | null; negotiated_value: number | null; actual_saving: number | null; realized_date: string | null }>('savings_tracker', 'id, type, baseline_value, negotiated_value, actual_saving, realized_date', {
+        filters: [{ column: 'tenant_id', operator: 'eq', value: organizationId }]
+      });
+    },
+    select: (rows) => scopeByDate(rows, (r) => r.realized_date),
+    staleTime: 60_000,
   });
 
   const nameByUser = useMemo(() => {
@@ -267,14 +316,41 @@ export function useExecutiveDashboardData() {
     const top5Value = topSuppliersBySpend.reduce((sum, s) => sum + s.value, 0);
     const top5Concentration = totalSpend > 0 ? Math.round((top5Value / totalSpend) * 1000) / 10 : 0;
 
+    // Pedidos sem contrato ativo, agrupados por categoria da solicitação de origem.
+    const activeContractSupplierIds = new Set(
+      cont.filter(c => c.status === 'active' && c.supplier_id).map(c => c.supplier_id as string)
+    );
+    const solById = new Map((solicitacoes || []).map(s => [s.id, s]));
+    const catNameById = new Map((categorias || []).map(c => [c.id, c.nome]));
+    const offContractByCategoryMap = new Map<string, number>();
+    let maverickValue = 0;
+    ped.forEach((p) => {
+      if (!p.fornecedor_id || activeContractSupplierIds.has(p.fornecedor_id)) return;
+      const value = Number(p.valor_total) || 0;
+      maverickValue += value;
+      const sol = p.solicitacao_id ? solById.get(p.solicitacao_id) : undefined;
+      const catName = (sol?.categoria_id && catNameById.get(sol.categoria_id)) || 'Sem Categoria';
+      offContractByCategoryMap.set(catName, (offContractByCategoryMap.get(catName) || 0) + value);
+    });
+    const offContractByCategory = [...offContractByCategoryMap.entries()].map(([name, value]) => ({ name, value }));
+
+    const today = new Date().toISOString().split('T')[0];
+    const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
     return {
       totalSpend,
       activeContractCount: cont.filter(c => c.status === 'active').length,
       totalContractCount: cont.length,
       topSuppliersBySpend,
       top5Concentration,
+      top5ConcentrationValue: top5Value,
+      maverickSpend: Math.round(maverickValue),
+      maverickPercentage: totalSpend > 0 ? Math.round((maverickValue / totalSpend) * 1000) / 10 : 0,
+      offContractByCategory,
+      expiringContractCount: cont.filter(c => c.status === 'active' && c.end_date && c.end_date >= today && c.end_date <= in30Days).length,
+      expiredContractCount: cont.filter(c => c.end_date && c.end_date < today).length,
     };
-  }, [pedidos, fornecedores, contracts]);
+  }, [pedidos, solicitacoes, fornecedores, contracts, categorias]);
 
   // Spend by category (enriched)
   const spendByCategory = useMemo<CategorySpendItem[]>(() => {
@@ -513,10 +589,66 @@ export function useExecutiveDashboardData() {
   const allCategories = spendByCategory.map(c => c.name);
   const allSuppliers = Array.from(new Set(topSuppliers.map(s => s.name)));
 
-  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7;
+  // Snapshot dos KPIs avançados, 100% derivado do banco (sem baseline fictício).
+  const kpiSnapshot = useMemo<KpiSnapshot>(() => {
+    const docs = fiscalDocs || [];
+    const savingsList = savingsRows || [];
+    const totalInvoices = docs.length;
+    const reconciledInvoices = docs.filter(d => d.reconciliation_status === 'reconciled').length;
+
+    // Realizado por trimestre a partir de savings_tracker (usa realized_date; sem data cai no trimestre corrente).
+    const now = new Date();
+    const quarterOf = (iso: string | null) => {
+      const d = iso ? new Date(iso) : now;
+      if (Number.isNaN(d.getTime())) return now.getFullYear() * 4 + Math.floor(now.getMonth() / 3);
+      return d.getFullYear() * 4 + Math.floor(d.getMonth() / 3);
+    };
+    const currentQuarter = quarterOf(null);
+    const quarterKeys = [3, 2, 1, 0].map(offset => currentQuarter - offset);
+    const realizedByQuarter = new Map<number, number>();
+    let savingsActual = 0;
+    savingsList.forEach(row => {
+      const amount = Number(row.actual_saving) || 0;
+      savingsActual += amount;
+      const key = quarterOf(row.realized_date);
+      realizedByQuarter.set(key, (realizedByQuarter.get(key) || 0) + amount);
+    });
+    const projectedPerQuarter = Math.round((metrics.savings.value + savingsActual) / 4);
+    const savingsByQuarter: QuarterRow[] = quarterKeys.map((key, index) => ({
+      quarter: QUARTER_LABELS[index],
+      projected: projectedPerQuarter,
+      realized: Math.round(realizedByQuarter.get(key) || 0),
+    }));
+
+    return deriveKpiSnapshot({
+      totalSpend: summary.totalSpend,
+      maverickSpend: summary.maverickSpend,
+      maverickPercentage: summary.maverickPercentage,
+      offContractByCategory: summary.offContractByCategory,
+      contractCompliancePct: metrics.contractCompliance.value,
+      activeContractCount: summary.activeContractCount,
+      totalContractCount: summary.totalContractCount,
+      expiringContractCount: summary.expiringContractCount,
+      expiredContractCount: summary.expiredContractCount,
+      avgCycleDays: metrics.avgCycleTime.value,
+      cycleTrend: monthlyTrend.map(m => ({ month: m.month, days: m.orders > 0 ? round1(m.spend / m.orders) : 0 })),
+      savings: metrics.savings.value,
+      savingsPercent: metrics.savingsPercent,
+      top5Concentration: summary.top5Concentration,
+      topSuppliersBySpend: summary.topSuppliersBySpend,
+      invoicesTotal: totalInvoices,
+      invoicesReconciled: reconciledInvoices,
+      savingsBaseline: metrics.savings.value,
+      savingsActual,
+      savingsByQuarter,
+    });
+  }, [fiscalDocs, savingsRows, summary, metrics, monthlyTrend]);
+
+  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7 || l8 || l9;
 
   return {
     metrics,
+    kpiSnapshot,
     spendByCategory,
     topSuppliers,
     monthlyTrend,
