@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a23aea582416b53051a74db0ccaabc23dd4c884d` (2026-11-22T15:05:42-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cba314585b08ce09eec8018f3acd90d95cb23f67` (2026-11-22T15:21:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1306 |
 | arquivos_codigo | 813 |
-| linhas_codigo | 169470 |
+| linhas_codigo | 169473 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `cba3145` fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)
 - 2026-11-22 `a23aea5` fix(palette): "Sair" do Command Palette encerra a sessao (#294)
 - 2026-11-22 `53725ba` fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)
 - 2026-11-22 `ad0c42d` fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `47920c1` fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)
 - 2026-11-22 `acd4583` fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)
 - 2026-11-22 `6b0ce59` feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)
-- 2026-11-22 `cb9b3e6` fix(edge): spot-proxy volta a passar no deno check (#280)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

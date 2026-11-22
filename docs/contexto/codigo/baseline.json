@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a23aea582416b53051a74db0ccaabc23dd4c884d",
+  "commit": "cba314585b08ce09eec8018f3acd90d95cb23f67",
   "branch": "main",
-  "data_commit": "2026-11-22T15:05:42-03:00",
+  "data_commit": "2026-11-22T15:21:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "cba3145",
+    "data": "2026-11-22",
+    "assunto": "fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)"
+   },
    {
     "sha": "a23aea5",
     "data": "2026-11-22",
@@ -126,11 +131,6 @@
     "sha": "640e5d2",
     "data": "2026-11-22",
     "assunto": "fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)"
-   },
-   {
-    "sha": "ffe439a",
-    "data": "2026-11-22",
-    "assunto": "fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)"
    }
   ],
   "arquivos_mudados_7d": 275,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 251
+    "commits": 252
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1306,
   "arquivos_codigo": 813,
-  "linhas_codigo": 169470,
+  "linhas_codigo": 169473,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30201
+   "linhas": 30204
   },
   "src/routes": {
    "arquivos": 1,
@@ -638,7 +638,7 @@
   },
   {
    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "linhas": 580
+   "linhas": 583
   },
   {
    "arquivo": "src/components/compras/BulkOperationsPreview.tsx",
