@@ -18,6 +18,7 @@ import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { insertNotification } from "../_shared/notifications.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import {
+  acaoAprovacao,
   buildMensagem,
   buildTitulo,
   diasDeEspera,
@@ -181,11 +182,14 @@ Deno.serve(async (req) => {
     }
 
     // Trilha auditavel do workflow; sem tenant nao ha como gravar (NOT NULL).
+    // `approval_history.acao` tem CHECK: created|approved|rejected|escalated|
+    // delegated|reminder_sent|cancelled. Escalonamento usa `escalated`; o
+    // alerta ao comprador e um lembrete, entao usa `reminder_sent`.
     let auditoriaRegistrada = false;
     if (tenantId) {
       const { error: histErr } = await admin.from("approval_history").insert({
         solicitacao_id: sol.id,
-        acao: target === "gerencia" ? "escalonamento_gerencia" : "alerta_comprador",
+        acao: acaoAprovacao(target),
         usuario_id: actorId,
         usuario_nome: userData.user.email ?? null,
         detalhes: {

@@ -104,3 +104,24 @@ export function buildTitulo(target: EscalationTarget, referencia: string): strin
     ? `Escalonamento: solicitacao #${referencia}`
     : `Acao necessaria: solicitacao #${referencia}`;
 }
+// `approval_history.acao` tem CHECK no banco:
+//   created | approved | rejected | escalated | delegated | reminder_sent | cancelled
+// Um valor inventado (ex.: "escalonamento_gerencia") faz o insert falhar com
+// 23514 e a trilha auditavel do escalonamento se perde em silencio. Este teste
+// trava o mapeamento para o erro nao voltar.
+export const ACOES_APROVACAO_VALIDAS = [
+  "created",
+  "approved",
+  "rejected",
+  "escalated",
+  "delegated",
+  "reminder_sent",
+  "cancelled",
+] as const;
+
+export type AcaoAprovacao = typeof ACOES_APROVACAO_VALIDAS[number];
+
+/** Acao registrada em approval_history para cada alvo do escalonamento. */
+export function acaoAprovacao(target: EscalationTarget): AcaoAprovacao {
+  return target === "gerencia" ? "escalated" : "reminder_sent";
+}
