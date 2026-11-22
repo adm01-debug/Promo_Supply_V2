@@ -127,7 +127,13 @@ export function PriceComparator() {
         if (cotacoesError) {
           logger.error('Erro ao carregar cotacoes registradas', { error: cotacoesError });
         } else if (cotacoes) {
-          quotedPrices = cotacoes;
+          quotedPrices = cotacoes
+            .filter(c => c.fornecedor_id !== null)
+            .map(c => ({
+              fornecedor_id: c.fornecedor_id as string,
+              valor_unitario: c.valor_unitario,
+              prazo_entrega: c.prazo_entrega,
+            }));
         }
       }
 
@@ -298,7 +304,7 @@ export function PriceComparator() {
                           <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
                           <p className="text-xl font-black text-white tracking-tight">
                             {selectedQuotes.length ? (
-                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
+                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + (q.totalPrice ?? 0), 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
                             ) : '—'}
                           </p>
                         </div>
