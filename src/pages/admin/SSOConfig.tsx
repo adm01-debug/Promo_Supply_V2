@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Key, Globe, Plus, Trash2, Check, AlertTriangle, ExternalLink, Users } from 'lucide-react';
+import { Shield, Key, Globe, Plus, Trash2, Check, AlertTriangle, ExternalLink, Users, Copy } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -19,6 +19,7 @@ export default function SSOConfig() {
   const queryClient = useQueryClient();
   const [newDomain, setNewDomain] = useState('');
   const [isAddingDomain, setIsAddingDomain] = useState(false);
+  const [newScimToken, setNewScimToken] = useState('');
 
   const { data: configs, isLoading } = useQuery({
     queryKey: ['sso_configurations', tenantId],
@@ -54,6 +55,7 @@ export default function SSOConfig() {
   });
 
   const samlConfig = configs?.find(c => c.protocol === 'saml');
+  const scimConfigured = !!samlConfig?.scim_token_hash;
 
   // Hydrate the IdP metadata URL field from server data once it loads.
   // Kept above the admin guard so the hook count stays stable when
@@ -91,6 +93,28 @@ export default function SSOConfig() {
     });
     setNewDomain('');
     setIsAddingDomain(false);
+  };
+
+  // O SCIM autentica por hash do token (scim-v2 compara sha256 do Bearer com
+  // sso_configurations.scim_token_hash). O token em claro aparece uma vez so.
+  const generateScimToken = async () => {
+    if (!tenantId) { toast.error('Empresa não identificada'); return; }
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    const token = 'scim_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+    const hash = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
+    const { error } = await supabase.from('sso_configurations').upsert({
+      tenant_id: tenantId,
+      protocol: 'saml',
+      // email_domains é NOT NULL sem default: precisa vir no insert inicial.
+      email_domains: samlConfig?.email_domains ?? [],
+      scim_token_hash: hash,
+    } as never, { onConflict: 'tenant_id,protocol' });
+    if (error) { toast.error('Erro ao gerar token SCIM: ' + error.message); return; }
+    setNewScimToken(token);
+    queryClient.invalidateQueries({ queryKey: ['sso_configurations'] });
+    toast.success('Token SCIM gerado: copie agora, ele nao sera exibido de novo');
   };
 
   const removeDomain = (domain: string) => {
@@ -205,15 +229,34 @@ export default function SSOConfig() {
                 <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-mono text-muted-foreground">Base URL</span>
-                    <Badge variant="outline" className="text-[10px] uppercase">Read-only</Badge>
+                    <Badge variant={scimConfigured ? "default" : "outline"} className="text-[10px] uppercase">{scimConfigured ? "Ativo" : "Sem token"}</Badge>
                   </div>
                   <code className="text-xs break-all block p-2 bg-background rounded border">
                     {window.location.origin}/functions/v1/scim-v2
                   </code>
-                  <div className="mt-4">
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Key className="h-3 w-3 mr-2" /> Gerar Token SCIM
+                  <div className="mt-4 space-y-3">
+                    <Button variant="outline" size="sm" className="w-full" onClick={generateScimToken}>
+                      <Key className="h-3 w-3 mr-2" /> {scimConfigured ? "Gerar novo Token SCIM" : "Gerar Token SCIM"}
                     </Button>
+                    {newScimToken && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Token (visivel apenas agora)</Label>
+                        <code className="text-xs break-all block p-2 bg-background rounded border">{newScimToken}</code>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => { void navigator.clipboard.writeText(newScimToken); toast.success("Token copiado"); }}
+                        >
+                          <Copy className="h-3 w-3 mr-2" /> Copiar
+                        </Button>
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {scimConfigured
+                        ? "Token ativo. Gerar um novo invalida o anterior imediatamente."
+                        : "Nenhum token ativo. O IdP recebe 401 ate gerar um."}
+                    </p>
                   </div>
                 </div>
               </div>

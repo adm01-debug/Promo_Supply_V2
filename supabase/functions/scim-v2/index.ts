@@ -94,29 +94,20 @@ serve(async (req) => {
     if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
 
     const token = authHeader.slice("Bearer ".length).trim();
-
-    // Fail closed: the SCIM bearer token must match the configured secret before
-    // any service-role operation is allowed. Without this, any presented token
-    // would grant full user management access.
-    const expectedToken = Deno.env.get("SCIM_BEARER_TOKEN");
-    if (!expectedToken) {
-      console.error("SCIM_BEARER_TOKEN is not configured; rejecting request");
-      return new Response(JSON.stringify({ error: "SCIM not configured" }), {
-        status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (!token || !timingSafeEqual(token, expectedToken)) {
+    if (!token) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Dois caminhos de credencial: o token por tenant (hash em sso_configurations,
+    // gerado em Configurações > SSO) e o token global legado (SCIM_BEARER_TOKEN).
     const tokenHash = await sha256Hex(token);
     const { data: configs, error: configError } = await supabaseAdmin
       .from("sso_configurations")
@@ -130,7 +121,17 @@ serve(async (req) => {
       typeof config.scim_token_hash === "string" && safeEqual(config.scim_token_hash, tokenHash)
     );
 
-    if (!isTokenValid) {
+    // Fail closed: the SCIM bearer token must match either a tenant hash or the
+    // configured secret before any service-role operation is allowed.
+    const expectedToken = Deno.env.get("SCIM_BEARER_TOKEN");
+    if (!expectedToken && !isTokenValid) {
+      console.error("SCIM has no credential configured; rejecting request");
+      return new Response(JSON.stringify({ error: "SCIM not configured" }), {
+        status: 503,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!isTokenValid && !(expectedToken && timingSafeEqual(token, expectedToken))) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: buildResponseHeaders(corsHeaders),
