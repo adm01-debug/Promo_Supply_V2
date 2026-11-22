@@ -49,20 +49,33 @@ imagem). Três critérios de corte:
       do PIM → 403; `limit` acima de 500 → 400. Mergeada: PR #248 (squash
       `8a61f8c7bfefec90b0a8a1ab1bae86c6f6aadf37`). Execução real de
       `deno test` não verificada nesta sessão (sem runtime Deno disponível).
-- [ ] **PR 2.2** — `src/hooks/useCatalogoPim.ts` + `PriceComparator.tsx` /
-      `SupplierEcosystemSection.tsx` passam a ler preço/catálogo via bridge.
-  Bloqueada: depende do secret acima estar configurado para funcionar em
-  runtime (o código pode ser escrito antes, mas não valida sem o secret).
+- [x] **PR 2.2 (parcial)** — `useCatalogoPim.ts` **entregue** (PR #235) e já
+      consumido por `GerarOrdem.tsx:61` e `RecompraInteligente.tsx:18`, ambos
+      degradando com fallback (`RecompraInteligente.tsx:65` cai para
+      `descricao`; `GerarOrdem.tsx:205-207` usa `pimProduto?.`).
+      **Ainda fora da ponte:** `PriceComparator.tsx:68,97` lê `produtos` e
+      `produto_fornecedores` locais. Não migrar antes do secret existir — em
+      produção o bridge responde 500 `External database not configured`
+      (`external-db-bridge/index.ts:174-179`), então a troca transformaria uma
+      fonte que funciona (12 linhas em `produtos`) em lista vazia.
+  Verificado em 22/11/2026: `EXTERNAL_DB_URL`/`EXTERNAL_DB_KEY` **ausentes** dos
+  16 secrets do projeto `lmypcdfsrgfftzhxawao` (Management API).
 
 ### Fase 3 — Colunas de compra no Promo Supply V2 🔒
 
-- [ ] **PR 3.1** — DDL em `lmypcdfsrgfftzhxawao`: colunas `pim_product_id`,
-      `pim_variant_id` e campos de congelamento em `solicitacoes`,
-      `pedido_itens`, `repurchase_suggestions`, `estoque`.
-  Bloqueada: regra 8 (DDL em produção) e nenhum MCP disponível aqui tem
-  acesso de escrita SQL a `lmypcdfsrgfftzhxawao`.
-- [ ] **PR 3.2** — wiring das colunas acima nos caminhos de escrita e leitura.
-  Depende da PR 3.1 existir.
+- [x] **PR 3.1** — **Aplicada em produção.** Conferido no schema real em
+      22/11/2026: `solicitacoes(pim_product_id, pim_variant_id)`,
+      `pedido_itens(pim_product_id, pim_variant_id)`,
+      `repurchase_suggestions(pim_product_id)`, `estoque(pim_product_id)`.
+      O congelamento do item no momento da compra usa
+      `pedido_itens.codigo_fornecedor / ncm / ipi_rate` (PR #242).
+  A observação antiga ("nenhum MCP com escrita SQL") está obsoleta: a
+  Management API aplica migration neste projeto (usada nas PRs #261 e #264).
+- [x] **PR 3.2** — **Entregue.** Leitura/escrita usando as colunas:
+      `GerarOrdem.tsx:79-86` resolve o produto por `pim_product_id` e
+      `:205-207` congela `codigo_fornecedor/ncm/ipi_rate` no item.
+      **Pendente só o backfill** (`estoque.pim_product_id` está 0 de 24 linhas,
+      `pedido_itens` idem) — é a PR 4.2 abaixo, não wiring.
 
 ### Fase 4 — Migração dos dados existentes
 
