@@ -29,6 +29,7 @@ import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "@/lib/feedbackToast";
 import { usePurchaseHistory, type PurchaseRecord } from "@/hooks/usePurchaseHistory";
+import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 
 import { COLORS } from "./HistoricoHelpers";
 import { HistoricoProdutosTab } from "./HistoricoProdutosTab";
@@ -45,6 +46,8 @@ interface DrilldownData {
 
 const HistoricoCompras = () => {
   const { purchaseRecords, productsHistory, suppliersHistory, productCategories, isLoading } = usePurchaseHistory();
+  // Desfazer/refazer global (pilha do undoStore). Antes o botao so dava toast.
+  const { undo: undoGlobal, canUndo } = useGlobalUndo();
 
   const [activeTab, setActiveTab] = useState("sourcing");
   const [searchTerm, setSearchTerm] = useState("");
@@ -211,7 +214,14 @@ const HistoricoCompras = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => toast.success("Ação desfeita com sucesso (Neural Undo)")} className="hover:bg-amber-500/10 hover:text-amber-600 transition-all">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void undoGlobal()}
+            disabled={!canUndo()}
+            title={canUndo() ? "Desfaz a última ação registrada" : "Nada para desfazer"}
+            className="hover:bg-amber-500/10 hover:text-amber-600 transition-all"
+          >
             <X className="w-4 h-4 mr-2" /> Desfazer Global
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport} className="hover:bg-primary/5">
