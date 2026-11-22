@@ -24,6 +24,18 @@ export interface SpotCartItem {
   name?: string;
 }
 
+export interface SpotAddress {
+  id: string;
+  label: string;
+}
+
+/** Retorno da action `checkout` do `spot-proxy` (página de destino do carrinho no portal SPOT). */
+export interface SpotCheckoutInfo {
+  hash: string;
+  addresses: SpotAddress[];
+  checkoutUrl: string;
+}
+
 export interface SpotOrder {
   id: string;
   status: string;
@@ -165,7 +177,8 @@ export function useSpotIntegration() {
 
   const getCheckoutInfo = useCallback(async (addressId?: string) => {
     return withLoading(async () => {
-      return await callSpotProxy('checkout', { addressId });
+      const data = await callSpotProxy('checkout', { addressId });
+      return data as SpotCheckoutInfo;
     });
   }, [withLoading]);
 

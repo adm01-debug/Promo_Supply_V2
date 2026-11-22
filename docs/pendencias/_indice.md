@@ -76,7 +76,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ui-acomp-filtros | "FILTROS AVANCADOS" sem acao | CONCLUIDO (PR #185, merge 2026-11-20) | `Acompanhamento.tsx:298` |
 | ui-acomp-nfe | "VISUALIZAR NF-E" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:450` |
 | ui-acomp-logs | "HISTORICO DE LOGS" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:451` |
-| ui-spot-checkout | "Finalizar Pedido" SPOT so toast (compromisso financeiro - decisao do dono) | AGUARDANDO HUMANO | `CatalogoSpot.tsx:216` |
+| ui-spot-checkout | "Finalizar Pedido" SPOT so toast (compromisso financeiro - decisao do dono) | CONCLUIDO (2026-11-22) | `CatalogoSpot.tsx` — botao chama `getCheckoutInfo()` (action `checkout`), abre dialog com total, enderecos cadastrados e `ExternalLink` para a pagina de destino da SPOT (`openExternalSpotUrl`, allowlist de host). Confirmacao final do pedido continua no portal do fornecedor por decisao de negocio. Teste: `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` (2 casos) |
 | ui-bulk-undo | "Desfazer" em bulk so toast | CONCLUIDO | `BulkOperationsPreview.tsx:189` (PR #198) |
 | ui-erp-* | varios botoes ERP sem acao | CONCLUIDO (PR #201) | `ERPConnections.tsx` |
 | ui-workflow-* | WorkflowAdmin "Novo/Configurar/Regra/Editar" sem acao | CONCLUIDO (PR #193, merge 2026-11-20) | `WorkflowAdmin.tsx` â€” 4 botoes + dialogs de workflow e regra SoD |
