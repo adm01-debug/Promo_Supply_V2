@@ -25,9 +25,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-22 21:45:00 | succeeded | 0.03 | DELETE 0 |
 | 2026-11-22 20:45:00 | succeeded | 0.03 | DELETE 0 |
 | 2026-11-22 19:45:00 | succeeded | 0.04 | DELETE 0 |
-| 2026-11-22 18:45:00 | succeeded | 0.02 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,27 +73,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:10:00 | succeeded | 0.02 | 1 row |
-| 2026-11-22 21:09:00 | succeeded | 0.01 | 1 row |
-| 2026-11-22 21:08:00 | succeeded | 0.03 | 1 row |
+| 2026-11-22 22:11:00 | succeeded | 0.02 | 1 row |
+| 2026-11-22 22:10:00 | succeeded | 0.01 | 1 row |
+| 2026-11-22 22:09:00 | succeeded | 0.02 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:00:00 | succeeded | 0.23 | 1 row |
-| 2026-11-22 20:45:00 | succeeded | 0.22 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.22 | 1 row |
+| 2026-11-22 22:00:00 | succeeded | 0.23 | 1 row |
+| 2026-11-22 21:45:00 | succeeded | 0.24 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.25 | 1 row |
 
 
 ## 24 · xbz-sync-watchdog-hourly
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-22 21:15:00 | succeeded | 0.03 | 1 row |
 | 2026-11-22 20:15:00 | succeeded | 0.04 | 1 row |
 | 2026-11-22 19:15:00 | succeeded | 0.03 | 1 row |
-| 2026-11-22 18:15:00 | succeeded | 0.03 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -130,27 +130,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-22 22:00:00 | succeeded | 0.06 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.03 | 1 row |
 | 2026-11-22 21:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.03 | 1 row |
-| 2026-11-22 20:00:00 | succeeded | 0.04 | 1 row |
 
 
 ## 113 · alert-dispatcher-1min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:10:00 | succeeded | 0.02 | 1 row |
-| 2026-11-22 21:09:00 | succeeded | 0.01 | 1 row |
-| 2026-11-22 21:08:00 | succeeded | 0.03 | 1 row |
+| 2026-11-22 22:11:00 | succeeded | 0.01 | 1 row |
+| 2026-11-22 22:10:00 | succeeded | 0.01 | 1 row |
+| 2026-11-22 22:09:00 | succeeded | 0.02 | 1 row |
 
 
 ## 114 · approval-escalation-check
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-22 20:45:00 | succeeded | 0.04 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.02 | 1 row |
+| 2026-11-22 22:00:00 | succeeded | 0.05 | 1 row |
+| 2026-11-22 21:45:00 | succeeded | 0.01 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.03 | 1 row |
 
 
 ## 115 · contract-expiry-check
@@ -178,9 +178,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-22 22:00:00 | succeeded | 0.05 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.03 | 1 row |
 | 2026-11-22 21:00:00 | succeeded | 0.02 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.03 | 1 row |
-| 2026-11-22 20:00:00 | succeeded | 0.04 | 1 row |
 
 
 ## 119 · weekly-procurement-report
@@ -197,24 +197,24 @@ _nenhum_
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-22 22:00:00 | succeeded | 0.06 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.03 | 1 row |
 | 2026-11-22 21:00:00 | succeeded | 0.03 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.02 | 1 row |
-| 2026-11-22 20:00:00 | succeeded | 0.04 | 1 row |
 
 
 ## 122 · spot-api-sync-stock
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-22 20:40:00 | succeeded | 0.03 | 1 row |
-| 2026-11-22 20:20:00 | succeeded | 0.03 | 1 row |
+| 2026-11-22 22:00:00 | succeeded | 0.06 | 1 row |
+| 2026-11-22 21:40:00 | succeeded | 0.03 | 1 row |
+| 2026-11-22 21:20:00 | succeeded | 0.03 | 1 row |
 
 
 ## 123 · cron-watchdog-15min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-22 21:00:00 | succeeded | 0.48 | 1 row |
-| 2026-11-22 20:45:00 | succeeded | 0.52 | 1 row |
-| 2026-11-22 20:30:00 | succeeded | 0.45 | 1 row |
+| 2026-11-22 22:00:00 | succeeded | 0.45 | 1 row |
+| 2026-11-22 21:45:00 | succeeded | 0.47 | 1 row |
+| 2026-11-22 21:30:00 | succeeded | 0.55 | 1 row |
