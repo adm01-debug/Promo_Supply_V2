@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Target, TrendingUp, Briefcase, CheckCircle2, AlertCircle, Clock, Filter } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 const SourcingPipeline = () => {
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -55,6 +54,26 @@ const SourcingPipeline = () => {
 
   const totalNegotiatedSaving = savings?.reduce((acc, s) => acc + (Number(s.actual_saving) || 0), 0) || 0;
 
+  /** Agregados reais derivados de `sourcing_projects` — antes eram literais fixos. */
+  const pipeline = useMemo(() => {
+    const lista = projects ?? [];
+    const abertos = lista.filter((p) => p.status !== 'completed' && p.status !== 'cancelled');
+    const valorPipeline = abertos.reduce((acc, p) => acc + (Number(p.estimated_spend) || 0), 0);
+    const metas = abertos
+      .map((p) => Number(p.target_saving_pct))
+      .filter((v) => Number.isFinite(v) && v > 0);
+    const metaMedia = metas.length > 0 ? metas.reduce((a, b) => a + b, 0) / metas.length : null;
+    const categorias = new Set(lista.map((p) => p.category_id).filter(Boolean));
+    const emNegociacao = lista.filter((p) => p.status === 'negotiation').length;
+
+    return { abertos: abertos.length, valorPipeline, metaMedia, categorias: categorias.size, emNegociacao };
+  }, [projects]);
+
+  const metaLabel = (valor: number) =>
+    valor >= 1_000_000
+      ? `R$ ${(valor / 1_000_000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}M`
+      : `R$ ${valor.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`;
+
   return (
     
       <div className="space-y-6">
@@ -64,8 +83,15 @@ const SourcingPipeline = () => {
             <p className="text-muted-foreground">Gestão estratégica de categorias, funil de projetos e tracker de savings</p>
           </div>
         <div className="flex gap-2">
-          <Badge variant="outline" className="px-3 py-1 bg-primary/5"><Target className="w-3 h-3 mr-1" /> Meta Q2: R$ 2.5M</Badge>
-          <Badge variant="outline" className="px-3 py-1 text-green-500 border-green-500 bg-green-50">Realizado: R$ {totalNegotiatedSaving.toLocaleString()}</Badge>
+          <Badge variant="outline" className="px-3 py-1 bg-primary/5">
+            <Target className="w-3 h-3 mr-1" />
+            {pipeline.metaMedia !== null
+              ? `Meta média: ${pipeline.metaMedia.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`
+              : 'Meta média: sem projeto'}
+          </Badge>
+          <Badge variant="outline" className="px-3 py-1 text-green-500 border-green-500 bg-green-50">
+            Realizado: {metaLabel(totalNegotiatedSaving)}
+          </Badge>
         </div>
       </div>
 
@@ -76,8 +102,8 @@ const SourcingPipeline = () => {
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{projects?.filter(p => p.status !== 'completed' && p.status !== 'cancelled').length || 0}</div>
-            <p className="text-xs text-muted-foreground">8 em negociação final</p>
+            <div className="text-2xl font-bold">{pipeline.abertos}</div>
+            <p className="text-xs text-muted-foreground">{pipeline.emNegociacao} em negociação</p>
           </CardContent>
         </Card>
         <Card>
@@ -86,18 +112,24 @@ const SourcingPipeline = () => {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">R$ 12.4M</div>
-            <p className="text-xs text-muted-foreground">Oportunidades identificadas</p>
+            <div className="text-2xl font-bold">{metaLabel(pipeline.valorPipeline)}</div>
+            <p className="text-xs text-muted-foreground">Soma de estimated_spend dos projetos ativos</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Saving Target</CardTitle>
+            <CardTitle className="text-sm font-medium">Meta de Saving Médio</CardTitle>
             <Target className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">14.2%</div>
-            <p className="text-xs text-muted-foreground">vs 12.0% benchmark mercado</p>
+            <div className="text-2xl font-bold">
+              {pipeline.metaMedia !== null
+                ? `${pipeline.metaMedia.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`
+                : '—'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {pipeline.metaMedia !== null ? 'Média de target_saving_pct' : 'Nenhum alvo cadastrado'}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -106,8 +138,8 @@ const SourcingPipeline = () => {
             <Filter className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">Matriz de Kraljic atualizada</p>
+            <div className="text-2xl font-bold">{pipeline.categorias}</div>
+            <p className="text-xs text-muted-foreground">Categorias com projeto no pipeline</p>
           </CardContent>
         </Card>
       </div>
