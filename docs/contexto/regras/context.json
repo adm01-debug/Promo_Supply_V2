@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
+  "sha": "7bc46ac77dee055bad147f1d47b751dd371ea49a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-21 23:10 UTC",
-  "files_total": 1287,
-  "code_files": 1124,
-  "code_lines": 193316,
+  "generated_at": "2026-11-22 11:45 UTC",
+  "files_total": 1288,
+  "code_files": 1125,
+  "code_lines": 193427,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e45f70c79747c065",
+ "facts_hash": "6b6fee2bb9da9e47",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 323,
+   ".sql": 324,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -22262,17 +22262,18 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_last_success timestamptz; v_last_failure timestamptz; v_open_alert uuid; v_stale boolean; BEGIN SELECT max(d.end_time) INTO v_last_success FROM cron.job_run_details d JOIN cron.job j ON j.jobid = d.jobid WHERE j.jobname = 'xbz-sync-pedidos-30min' AND d.status = 'succeeded'; SELECT max(d.end_time) INTO v_last_failure FROM cron.job_run_details d JOIN cron.job j ON j.jobid = d.jobid WHERE j.jobname = 'xbz-sync-pedidos-30min' AND d.status <> 'succeeded'; v_stale := v_last_success IS NULL OR v_last_success < now() - interval '2 hours'; SELECT id INTO v_open_alert FROM public.system_alerts WHERE alert_type = 'xbz_sync_stalled' AND resolved_at IS NULL ORDER BY created_at DESC LIMIT 1; IF …",
+    "body": "DECLARE v_last_data timestamptz; v_pedidos int; v_cred_ativas int; v_open_alert uuid; v_stale boolean; v_motivo text; BEGIN SELECT count(*), max(last_synced_at) INTO v_pedidos, v_last_data FROM public.xbz_pedidos; SELECT count(*) INTO v_cred_ativas FROM public.xbz_credentials c WHERE c.deleted_at IS NULL AND coalesce(c.is_active, true); v_stale := v_pedidos = 0 OR v_last_data IS NULL OR v_last_data < now() - interval '2 hours'; v_motivo := CASE WHEN v_cred_ativas = 0 THEN 'sem_credencial' WHEN v_pedidos = 0 THEN 'sem_pedidos_ou_falha_api' WHEN v_stale THEN 'dados_desatualizados' ELSE 'ok' END; SELECT id INTO v_open_alert FROM public.system_alerts WHERE alert_type = 'xbz_sync_stalled' AND res …",
     "raises": [],
     "tables": [
-     "cron",
      "system_alerts",
-     "v_last_failure",
-     "v_last_success",
-     "v_open_alert"
+     "v_cred_ativas",
+     "v_open_alert",
+     "v_pedidos",
+     "xbz_credentials",
+     "xbz_pedidos"
     ]
    },
    "execute_read_query": {
@@ -27059,6 +27060,7 @@
    "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
    "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
    "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
+   "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -30908,6 +30910,22 @@
     "objkind": "function",
     "roles": "ci_snapshot",
     "src": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "xbz_sync_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "xbz_sync_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
    }
   ],
   "raises": [
@@ -35699,8 +35717,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 321,
-   "lines": 26020,
+   "files": 322,
+   "lines": 26131,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -56781,6 +56799,10 @@
     "line": "AND created_at > now() - interval '30 days'"
    },
    {
+    "file": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+    "line": "OR v_last_data < now() - interval '2 hours';"
+   },
+   {
     "file": "tests-e2e/global-setup.ts",
     "line": "await page.waitForSelector('input[type=\"email\"]', { timeout: 15_000 });"
    },
@@ -74719,17 +74741,18 @@
     "args": "",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_last_success timestamptz; v_last_failure timestamptz; v_open_alert uuid; v_stale boolean; BEGIN SELECT max(d.end_time) INTO v_last_success FROM cron.job_run_details d JOIN cron.job j ON j.jobid = d.jobid WHERE j.jobname = 'xbz-sync-pedidos-30min' AND d.status = 'succeeded'; SELECT max(d.end_time) INTO v_last_failure FROM cron.job_run_details d JOIN cron.job j ON j.jobid = d.jobid WHERE j.jobname = 'xbz-sync-pedidos-30min' AND d.status <> 'succeeded'; v_stale := v_last_success IS NULL OR v_last_success < now() - interval '2 hours'; SELECT id INTO v_open_alert FROM public.system_alerts WHERE alert_type = 'xbz_sync_stalled' AND resolved_at IS NULL ORDER BY created_at DESC LIMIT 1; IF …",
+    "body": "DECLARE v_last_data timestamptz; v_pedidos int; v_cred_ativas int; v_open_alert uuid; v_stale boolean; v_motivo text; BEGIN SELECT count(*), max(last_synced_at) INTO v_pedidos, v_last_data FROM public.xbz_pedidos; SELECT count(*) INTO v_cred_ativas FROM public.xbz_credentials c WHERE c.deleted_at IS NULL AND coalesce(c.is_active, true); v_stale := v_pedidos = 0 OR v_last_data IS NULL OR v_last_data < now() - interval '2 hours'; v_motivo := CASE WHEN v_cred_ativas = 0 THEN 'sem_credencial' WHEN v_pedidos = 0 THEN 'sem_pedidos_ou_falha_api' WHEN v_stale THEN 'dados_desatualizados' ELSE 'ok' END; SELECT id INTO v_open_alert FROM public.system_alerts WHERE alert_type = 'xbz_sync_stalled' AND res …",
     "raises": [],
     "tables": [
-     "cron",
      "system_alerts",
-     "v_last_failure",
-     "v_last_success",
-     "v_open_alert"
+     "v_cred_ativas",
+     "v_open_alert",
+     "v_pedidos",
+     "xbz_credentials",
+     "xbz_pedidos"
     ]
    },
    "execute_read_query": {
@@ -83602,6 +83625,22 @@
     "objkind": "function",
     "roles": "ci_snapshot",
     "src": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "xbz_sync_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "xbz_sync_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
    }
   ],
   "guards": [
@@ -112959,6 +112998,13 @@
    "path": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
    "lines": 30
   },
+  "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql": {
+   "path": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+   "lines": 111,
+   "temporal": [
+    "OR v_last_data < now() - interval '2 hours';"
+   ]
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113178,10 +113224,19 @@
   }
  },
  "git": {
-  "sha": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
+  "sha": "7bc46ac77dee055bad147f1d47b751dd371ea49a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7bc46ac",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)",
+    "files": [
+     "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
+    ]
+   },
    {
     "sha": "d528e0e",
     "date": "2026-11-21",
@@ -113474,25 +113529,15 @@
      "src/features/layout/components/CommandPalette.tsx",
      "src/features/layout/components/UserMenu.tsx"
     ]
-   },
-   {
-    "sha": "e2465ce",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "ci: CI roda Deno v2.x, o runtime real das edge functions (#227)",
-    "files": [
-     ".github/workflows/main.yml",
-     "docs/ci/README.md"
-    ]
    }
   ],
   "hot_files": [
    [
-    "docs/ci/README.md",
-    4
+    "src/tests/spot/spotApi.test.ts",
+    3
    ],
    [
-    "src/tests/spot/spotApi.test.ts",
+    "docs/ci/README.md",
     3
    ],
    [
@@ -113518,6 +113563,10 @@
    [
     ".github/workflows/aplicar-migration-prod.yml",
     2
+   ],
+   [
+    "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+    1
    ],
    [
     "docs/agentes/estado-spot-sync.md",
@@ -113561,10 +113610,6 @@
    ],
    [
     "supabase/functions/check-sla-alerts/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
     1
    ]
   ]

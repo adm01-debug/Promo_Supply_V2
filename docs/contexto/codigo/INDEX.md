@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2` (2026-11-21T19:57:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7bc46ac77dee055bad147f1d47b751dd371ea49a` (2026-11-22T08:44:33-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (323), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (324), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1286 |
+| arquivos_total | 1287 |
 | arquivos_codigo | 799 |
 | linhas_codigo | 167073 |
 | rotas | 55 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 321 |
+| migrations | 322 |
 | cron_jobs | 73 |
 | testes | 186 |
 | workflows | 13 |
@@ -415,6 +415,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `7bc46ac` fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)
 - 2026-11-21 `d528e0e` docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)
 - 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
 - 2026-11-21 `0b8e547` fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)
@@ -429,7 +430,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `64c1922` docs(pim): integra plano de compras-sem-catalogo com checklist (#247)
 - 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
 - 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
-- 2026-11-21 `7187345` fix(types): regenera types.ts com as colunas PIM de compras (#245)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

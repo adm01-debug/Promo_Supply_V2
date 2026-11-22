@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d528e0eea765ae1f3fb66f53f62ec7b8f07adfd2",
+  "commit": "7bc46ac77dee055bad147f1d47b751dd371ea49a",
   "branch": "main",
-  "data_commit": "2026-11-21T19:57:26-03:00",
+  "data_commit": "2026-11-22T08:44:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7bc46ac",
+    "data": "2026-11-22",
+    "assunto": "fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)"
+   },
    {
     "sha": "d528e0e",
     "data": "2026-11-21",
@@ -126,14 +131,9 @@
     "sha": "7ad0b03",
     "data": "2026-11-21",
     "assunto": "feat(pwa): adiciona handler de push ao service worker (#234)"
-   },
-   {
-    "sha": "5f273a0",
-    "data": "2026-11-21",
-    "assunto": "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa"
    }
   ],
-  "arquivos_mudados_7d": 230,
+  "arquivos_mudados_7d": 231,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 221
+    "commits": 222
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1286,
+  "arquivos_total": 1287,
   "arquivos_codigo": 799,
   "linhas_codigo": 167073,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 321,
+  "migrations": 322,
   "cron_jobs": 73,
   "testes": 186,
   "workflows": 13,
