@@ -36,6 +36,7 @@
     "useFeedbackPreferences",
     "useFornecedores",
     "useFornecedoresKPIs",
+    "useGlobalUndo",
     "useHapticFeedback",
     "useImageCompression",
     "useIsMobile",
@@ -67,6 +68,7 @@
     "useSwipeGesture",
     "useToast",
     "useUndoStore",
+    "useUndoableAction",
     "useUpcomingDeliveries",
     "useWorkflowDLQ"
    ],
@@ -2938,6 +2940,7 @@
     "useFeedbackPreferences",
     "useFornecedores",
     "useFornecedoresKPIs",
+    "useGlobalUndo",
     "useHapticFeedback",
     "useImageCompression",
     "useIsMobile",
@@ -2968,6 +2971,7 @@
     "useSwipeGesture",
     "useToast",
     "useUndoStore",
+    "useUndoableAction",
     "useUpcomingDeliveries",
     "useWorkflowDLQ"
    ],
@@ -5363,7 +5367,7 @@
    "modulo": "pages/historico",
    "arquivos": 7,
    "testes": 2,
-   "linhas": 1174,
+   "linhas": 1184,
    "itens_menu": [
     "Histórico"
    ],
@@ -5378,8 +5382,14 @@
     "useClearFiltersFlow",
     "useFeedback",
     "useFeedbackPreferences",
+    "useGlobalUndo",
+    "useHapticFeedback",
+    "useLongPress",
+    "usePullToRefresh",
     "usePurchaseHistory",
-    "useUndoStore"
+    "useSwipeGesture",
+    "useUndoStore",
+    "useUndoableAction"
    ],
    "hooks_definidos": [],
    "edges": [

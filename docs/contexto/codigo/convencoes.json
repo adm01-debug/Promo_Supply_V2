@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
+   "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)",
    "fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)",
    "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)",
-   "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)",
-   "fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)",
-   "fix(configuracoes): corrige centro de custo pai gravando string \"none\" em uuid (#291)"
+   "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)"
   ]
  },
  "pr_template": null,

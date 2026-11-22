@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "cba314585b08ce09eec8018f3acd90d95cb23f67",
+  "sha": "ec90e1edd0e2da3c6017fe461fc41ab1c095c4b8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 18:22 UTC",
+  "generated_at": "2026-11-22 18:47 UTC",
   "files_total": 1307,
   "code_files": 1142,
-  "code_lines": 196431,
+  "code_lines": 196441,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "14aef355544caf83",
+ "facts_hash": "eee90bc040772aec",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35266,7 +35266,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30204,
+   "lines": 30214,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -105052,7 +105052,7 @@
   },
   "src/pages/historico/HistoricoCompras.tsx": {
    "path": "src/pages/historico/HistoricoCompras.tsx",
-   "lines": 369,
+   "lines": 379,
    "exports": [
     "default HistoricoCompras"
    ],
@@ -114402,10 +114402,28 @@
   }
  },
  "git": {
-  "sha": "cba314585b08ce09eec8018f3acd90d95cb23f67",
+  "sha": "ec90e1edd0e2da3c6017fe461fc41ab1c095c4b8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ec90e1e",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
+    "files": [
+     "src/pages/historico/HistoricoCompras.tsx"
+    ]
+   },
+   {
+    "sha": "ff7a555",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "cba3145",
     "date": "2026-11-22",
@@ -114707,32 +114725,12 @@
      "docs/pendencias/_indice.md",
      "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
     ]
-   },
-   {
-    "sha": "23566a2",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
-    ]
-   },
-   {
-    "sha": "1cd652f",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "docs: checklist PIM e indice de pendencias refletem o estado real (#265)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/integracao-pim-promo-supply.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    14
+    13
    ],
    [
     "src/pages/cotacao/Cotacao.tsx",
@@ -114745,6 +114743,10 @@
    [
     "supabase/functions/spot-proxy/index.ts",
     2
+   ],
+   [
+    "src/pages/historico/HistoricoCompras.tsx",
+    1
    ],
    [
     "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -114804,10 +114806,6 @@
    ],
    [
     "src/components/compras/PriceComparator.tsx",
-    1
-   ],
-   [
-    "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
     1
    ]
   ]

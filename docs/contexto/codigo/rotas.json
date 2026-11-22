@@ -2763,13 +2763,19 @@
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
+    "useGlobalUndo",
+    "useHapticFeedback",
+    "useLongPress",
     "useMemo",
     "useNavigate",
+    "usePullToRefresh",
     "usePurchaseHistory",
     "useQuery",
     "useRef",
     "useState",
-    "useUndoStore"
+    "useSwipeGesture",
+    "useUndoStore",
+    "useUndoableAction"
    ],
    "hooks_locais": [
     "useAccountFilters",
@@ -2777,8 +2783,14 @@
     "useClearFiltersFlow",
     "useFeedback",
     "useFeedbackPreferences",
+    "useGlobalUndo",
+    "useHapticFeedback",
+    "useLongPress",
+    "usePullToRefresh",
     "usePurchaseHistory",
-    "useUndoStore"
+    "useSwipeGesture",
+    "useUndoStore",
+    "useUndoableAction"
    ],
    "tabelas": [
     "cost_centers",
@@ -2802,7 +2814,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 44
+   "arquivos_puxados": 46
   },
   {
    "protegida": true,

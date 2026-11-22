@@ -4971,11 +4971,12 @@
     "HistoricoCompras"
    ],
    "export_default": "HistoricoCompras",
-   "linhas": 369,
+   "linhas": 379,
    "dominio": "pages/historico",
    "hooks_locais": [
     "useAccountFilters",
     "useClearFiltersFlow",
+    "useGlobalUndo",
     "usePurchaseHistory"
    ],
    "tabelas": [],

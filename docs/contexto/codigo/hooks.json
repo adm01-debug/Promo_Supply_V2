@@ -1330,9 +1330,10 @@
     "useUndoStore"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/features/layout/components/MainLayout.tsx"
+    "src/features/layout/components/MainLayout.tsx",
+    "src/pages/historico/HistoricoCompras.tsx"
    ],
    "coberto_por_testes": 0
   },

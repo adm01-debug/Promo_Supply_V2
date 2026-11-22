@@ -2926,6 +2926,7 @@
    "src/components/ui/tabs.tsx",
    "src/hooks/useAccountFilters.ts",
    "src/hooks/useClearFiltersFlow.tsx",
+   "src/hooks/useGlobalUndo.ts",
    "src/hooks/usePurchaseHistory.ts",
    "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
