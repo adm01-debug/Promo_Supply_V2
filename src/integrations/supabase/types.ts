@@ -9522,6 +9522,15 @@ export type Database = {
         }
         Returns: Json
       }
+      get_compras_sla_metrics: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_period?: string
+          p_supplier_id?: string
+        }
+        Returns: Json
+      }
       get_cost_center_performance_report:
         | {
             Args: never
