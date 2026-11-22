@@ -5545,6 +5545,7 @@
    },
    "usada_no_front": 4,
    "usada_em_edges": [
+    "check-expiry-alerts",
     "generate-contract-pdf"
    ],
    "triggers": [

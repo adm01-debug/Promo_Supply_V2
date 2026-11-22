@@ -22,7 +22,7 @@
   ],
   "testes": [
    "co-localizado (__tests__) (109)",
-   "outro (40)",
+   "outro (41)",
    "co-localizado (*.test) (28)"
   ],
   "edge_functions": "supabase/functions",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)",
    "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)",
    "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)",
    "docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)",
-   "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)",
-   "fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)"
+   "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)"
   ]
  },
  "pr_template": null,

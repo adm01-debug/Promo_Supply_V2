@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "94f73a1a72e806e05f4f9d177b305baf91c4fe1f",
+  "sha": "8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 13:40 UTC",
-  "files_total": 1295,
-  "code_files": 1130,
-  "code_lines": 194390,
+  "generated_at": "2026-11-22 13:59 UTC",
+  "files_total": 1297,
+  "code_files": 1132,
+  "code_lines": 194705,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ac3a014ff7a2ceb6",
+ "facts_hash": "994a03dd40fa8e19",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 380,
+   ".ts": 382,
    ".tsx": 348,
    ".sql": 327,
    ".mjs": 67,
@@ -31683,6 +31683,7 @@
     ],
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
+     "contracts",
      "cotacoes",
      "notifications",
      "pagamentos",
@@ -35654,8 +35655,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 91,
-   "lines": 15991,
+   "files": 93,
+   "lines": 16306,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35737,6 +35738,7 @@
     "xbz_fiscal_cache.ts: XbzFiscalRow, XbzCorRow, mapFiscal, normalizeCores, mirrorFiscal, mirrorCores",
     "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
     "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
+    "contractExpiry.ts: ContractRenewalType, ContractRow, ContractAlert, DEFAULT_NOTICE_DAYS, RELEVANT_CONTRACT_STATUSES, startOfUtcDay",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
@@ -35799,6 +35801,8 @@
     "supabase/functions/alert-dispatcher/index.ts",
     "supabase/functions/check-approval-escalations/index.ts",
     "supabase/functions/check-cotacao-followup/index.ts",
+    "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
     "supabase/functions/check-expiry-alerts/index.ts",
     "supabase/functions/check-sla-alerts/failures.ts",
     "supabase/functions/check-sla-alerts/failures_test.ts",
@@ -35832,9 +35836,7 @@
     "supabase/functions/send-push-notification/webpush.test.ts",
     "supabase/functions/send-push-notification/webpush.ts",
     "supabase/functions/spot-api/index.ts",
-    "supabase/functions/spot-proxy/index.ts",
-    "supabase/functions/system-simulation/index.ts",
-    "supabase/functions/telemetry/index.test.ts"
+    "supabase/functions/spot-proxy/index.ts"
    ]
   },
   {
@@ -36257,6 +36259,7 @@
      "src/hooks/usePrefetch.ts",
      "src/pages/contratos/Contratos.tsx",
      "src/pages/portal-fornecedor/portalFornecedorData.ts",
+     "supabase/functions/check-expiry-alerts/index.ts",
      "supabase/functions/generate-contract-pdf/index.ts",
      "tests-rls/rls-isolation.test.ts"
     ]
@@ -37601,6 +37604,8 @@
     "end_date",
     "id",
     "organization_id",
+    "renewal_notice_days",
+    "renewal_type",
     "start_date",
     "status",
     "supplier_id",
@@ -39796,6 +39801,11 @@
     "file": "supabase/functions/_shared/xbz_client.ts",
     "name": "XBZ_PERMISSION_FLAGS",
     "values": "\"WebHabilitarAcessoPortal\", \"WebExibePreco\", \"WebExibeQuantidade\", \"WebIgnoraRestricoes\", \"WebConsultaProdutos\", \"WebConsultaPedidos\", \"WebExibePrecosPedidos\", \"WebCarrinhoInserir\", \"WebCarrinhoVisualizar\", \"WebPedidoEnviar\","
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "name": "ContractRenewalType",
+    "values": "automatic | manual"
    }
   ],
   "error_messages": [
@@ -42358,6 +42368,22 @@
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "text": "4 hours before deadline"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "text": "* Regras puras do alerta de vencimento de contrato."
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "text": "Dias inteiros entre hoje e o vencimento. Negativo = ja venceu. */"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "text": "- `pending_approval` nao alerta: ainda nao vale nada para o negocio"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+    "text": "Regras do alerta de vencimento de contrato."
    },
    {
     "file": "supabase/functions/erp-credential-encrypt/index.ts",
@@ -49740,6 +49766,11 @@
     "value": "\"v1\""
    },
    {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    "name": "DEFAULT_NOTICE_DAYS",
+    "value": "30"
+   },
+   {
     "file": "supabase/functions/check-sla-alerts/index.ts",
     "name": "INTEGRATION_FAILURE_THRESHOLD",
     "value": "3"
@@ -54907,6 +54938,18 @@
     "kind": "filtra"
    },
    {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+    "field": "status",
+    "value": "active",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+    "field": "status",
+    "value": "ativo",
+    "kind": "escreve"
+   },
+   {
     "file": "supabase/functions/check-expiry-alerts/index.ts",
     "field": "status",
     "value": "expirada",
@@ -54944,6 +54987,12 @@
    },
    {
     "file": "supabase/functions/check-expiry-alerts/index.ts",
+    "field": "type",
+    "value": "contract_expiring",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/index.ts",
     "field": "status",
     "value": "pendente",
     "kind": "filtra"
@@ -54976,6 +55025,12 @@
     "file": "supabase/functions/check-expiry-alerts/index.ts",
     "field": "status",
     "value": "pendente",
+    "kind": "filtra"
+   },
+   {
+    "file": "supabase/functions/check-expiry-alerts/index.ts",
+    "field": "status",
+    "value": "active",
     "kind": "filtra"
    },
    {
@@ -76558,6 +76613,9 @@
       "escreve:supabase/functions/check-expiry-alerts/index.ts",
       "escreve:supabase/functions/check-sla-alerts/index.ts"
      ],
+     "contract_expiring": [
+      "escreve:supabase/functions/check-expiry-alerts/index.ts"
+     ],
      "sla_warning": [
       "escreve:supabase/functions/check-sla-alerts/index.ts"
      ],
@@ -76669,7 +76727,9 @@
       "compara:src/components/compras/ContractDetailsModal.tsx",
       "compara:src/hooks/useExecutiveDashboardData.ts",
       "compara:src/pages/contratos/Contratos.tsx",
-      "compara:src/pages/portal-fornecedor/PortalFornecedor.tsx"
+      "compara:src/pages/portal-fornecedor/PortalFornecedor.tsx",
+      "escreve:supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+      "filtra:supabase/functions/check-expiry-alerts/index.ts"
      ],
      "draft": [
       "compara:src/pages/sourcing/RFxDetails.tsx",
@@ -76773,6 +76833,7 @@
       "compara:src/hooks/useDevolucoes.ts",
       "compara:src/hooks/useExecutiveDashboardData.ts",
       "compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx",
+      "escreve:supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
       "filtra:src/components/compras/PriceComparator.tsx",
       "filtra:src/components/compras/SupplierAlertsPanel.tsx",
       "filtra:src/components/compras/SupplierBonificationsPanel.tsx",
@@ -109056,9 +109117,64 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/check-expiry-alerts/contractExpiry.ts": {
+   "path": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+   "lines": 125,
+   "exports": [
+    "type ContractRenewalType",
+    "interface ContractRow",
+    "interface ContractAlert",
+    "const DEFAULT_NOTICE_DAYS",
+    "const RELEVANT_CONTRACT_STATUSES",
+    "function startOfUtcDay",
+    "function daysUntil",
+    "function priorityFor",
+    "function selectContractAlerts",
+    "function formatBrDate",
+    "function alertTitle",
+    "function alertMessage"
+   ],
+   "enums": [
+    {
+     "name": "ContractRenewalType",
+     "values": "automatic | manual"
+    }
+   ],
+   "params": [
+    {
+     "name": "DEFAULT_NOTICE_DAYS",
+     "value": "30"
+    }
+   ],
+   "rule_comments": [
+    "* Regras puras do alerta de vencimento de contrato.",
+    "Dias inteiros entre hoje e o vencimento. Negativo = ja venceu. */",
+    "- `pending_approval` nao alerta: ainda nao vale nada para o negocio"
+   ]
+  },
+  "supabase/functions/check-expiry-alerts/contractExpiry_test.ts": {
+   "path": "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+   "lines": 132,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "active",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "ativo",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "Regras do alerta de vencimento de contrato."
+   ],
+   "doc": "Regras do alerta de vencimento de contrato. Run: deno test --allow-env --allow-read supabase/functions/check-contract-expiry"
+  },
   "supabase/functions/check-expiry-alerts/index.ts": {
    "path": "supabase/functions/check-expiry-alerts/index.ts",
-   "lines": 212,
+   "lines": 270,
    "tables": [
     {
      "table": "cotacoes",
@@ -109091,6 +109207,10 @@
     {
      "table": "cotacoes",
      "op": "select"
+    },
+    {
+     "table": "contracts",
+     "op": "select"
     }
    ],
    "table_cols": {
@@ -109116,6 +109236,16 @@
     "user_roles": [
      "role",
      "user_id"
+    ],
+    "contracts": [
+     "contract_number",
+     "end_date",
+     "id",
+     "renewal_notice_days",
+     "renewal_type",
+     "status",
+     "tenant_id",
+     "title"
     ]
    },
    "env": [
@@ -109154,6 +109284,11 @@
      "kind": "escreve"
     },
     {
+     "field": "type",
+     "value": "contract_expiring",
+     "kind": "escreve"
+    },
+    {
      "field": "status",
      "value": "pendente",
      "kind": "filtra"
@@ -109181,6 +109316,11 @@
     {
      "field": "status",
      "value": "pendente",
+     "kind": "filtra"
+    },
+    {
+     "field": "status",
+     "value": "active",
      "kind": "filtra"
     }
    ],
@@ -113503,10 +113643,23 @@
   }
  },
  "git": {
-  "sha": "94f73a1a72e806e05f4f9d177b305baf91c4fe1f",
+  "sha": "8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8e9d432",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/pendencias/_indice.md",
+     "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+     "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+     "supabase/functions/check-expiry-alerts/index.ts"
+    ]
+   },
    {
     "sha": "94f73a1",
     "date": "2026-11-22",
@@ -113806,22 +113959,12 @@
      "src/pages/recebimento/recebimentoHelpers.ts",
      "src/pages/recompra/RecompraInteligente.tsx"
     ]
-   },
-   {
-    "sha": "625b45a",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(crons): concede EXECUTE para os 8 crons de negocio executarem (#239)",
-    "files": [
-     ".github/workflows/aplicar-migration-prod.yml",
-     "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    5
+    6
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113832,7 +113975,11 @@
     3
    ],
    [
-    ".github/workflows/aplicar-migration-prod.yml",
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
+   ],
+   [
+    "supabase/functions/check-expiry-alerts/index.ts",
     2
    ],
    [
@@ -113850,6 +113997,18 @@
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     2
+   ],
+   [
+    "supabase/functions/check-expiry-alerts/contractExpiry.ts",
+    1
+   ],
+   [
+    "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
+    1
+   ],
+   [
+    ".github/workflows/aplicar-migration-prod.yml",
+    1
    ],
    [
     "src/components/compras/AdvancedProcurementKPIs.tsx",
@@ -113881,22 +114040,6 @@
    ],
    [
     "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md",
-    1
-   ],
-   [
-    "docs/planos/PLANO_PROMO_SUPPLY_SO_COMPRAS_CATALOGO_NO_PROMO_GIFTS.md",
-    1
-   ],
-   [
-    "supabase/functions/_shared/notifications.test.ts",
-    1
-   ],
-   [
-    ".github/workflows/types-sync.yml",
-    1
-   ],
-   [
-    "docs/agentes/banco.md",
     1
    ]
   ]

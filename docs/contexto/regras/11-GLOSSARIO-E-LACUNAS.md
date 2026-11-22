@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `94f73a1a72` · branch `main` · 2026-11-22 13:40 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8e9d432776` · branch `main` · 2026-11-22 13:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -214,6 +214,7 @@
 | `LogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logger.ts` |
 | `Role` (TS) | admin \| coordinator \| buyer \| approver \| viewer |  | `supabase/functions/_shared/xbz_auth.ts` |
 | `XBZ_PERMISSION_FLAGS` (TS) | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", |  | `supabase/functions/_shared/xbz_client.ts` |
+| `ContractRenewalType` (TS) | automatic \| manual |  | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 
 ## Dados de referência (seed — planos, categorias, perfis fixos)
 

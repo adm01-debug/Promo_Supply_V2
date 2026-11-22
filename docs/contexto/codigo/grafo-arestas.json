@@ -3520,7 +3520,8 @@
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/notifications.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/check-expiry-alerts/contractExpiry.ts"
   ],
   "supabase/functions/check-sla-alerts/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `94f73a1a72e806e05f4f9d177b305baf91c4fe1f` (2026-11-22T10:39:57-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb` (2026-11-22T10:57:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (728), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (730), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1294 |
-| arquivos_codigo | 801 |
-| linhas_codigo | 167432 |
+| arquivos_total | 1296 |
+| arquivos_codigo | 803 |
+| linhas_codigo | 167747 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 187 |
+| testes | 188 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 94 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (28)
+- testes: co-localizado (__tests__) (109), outro (41), co-localizado (*.test) (28)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -191,7 +191,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `alert-dispatcher` — tabelas: system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `check-approval-escalations` — tabelas: approval_history, approval_steps, approval_workflows; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-cotacao-followup` — tabelas: cotacoes, notifications, profiles; chamada por 0 arquivo(s) do front, por SQL/cron
-- `check-expiry-alerts` — tabelas: cotacoes, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `check-expiry-alerts` — tabelas: contracts, cotacoes, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-sla-alerts` — tabelas: pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
 - `erp-credential-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
@@ -334,8 +334,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (34)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (13)
+- docs/pendencias/_indice.md (35)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (14)
 - docs/ci/README.md (12)
 - package.json (12)
 - .github/workflows/main.yml (9)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `8e9d432` fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)
 - 2026-11-22 `94f73a1` fix(ci): fallback do canal de migration reconhece erro de ownership (#246)
 - 2026-11-22 `e469807` fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)
 - 2026-11-22 `0cb5045` docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `1cd652f` docs: checklist PIM e indice de pendencias refletem o estado real (#265)
 - 2026-11-22 `7bc46ac` fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)
 - 2026-11-21 `d528e0e` docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)
-- 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

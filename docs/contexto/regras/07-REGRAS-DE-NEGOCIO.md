@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `94f73a1a72` · branch `main` · 2026-11-22 13:40 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8e9d432776` · branch `main` · 2026-11-22 13:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -923,6 +923,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `chart` | escreve | `src/stores/dashboardLayoutStore.ts` |
 | `type` | `clear-filters` | escreve | `src/hooks/useClearFiltersFlow.tsx` |
 | `type` | `context` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
+| `type` | `contract_expiring` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `contratos` | compara, escreve | `src/features/layout/components/AdvancedSearch.tsx`<br>`src/features/layout/components/search/SearchResultsList.tsx` |
 | `type` | `cotacao_expiring` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `cotacao_followup` | escreve, filtra | `supabase/functions/check-cotacao-followup/index.ts`<br>`supabase/functions/check-expiry-alerts/index.ts` |
@@ -1009,14 +1010,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `PROCESSING` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `SUBSCRIBED` | compara | `src/features/layout/components/SupplierChat.tsx` |
 | `status` | `aceito` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
-| `status` | `active` | compara | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx` |
+| `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +1 |
 | `status` | `analyzing` | compara | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `applied` | compara | `src/components/compras/contract/ContractDetailsTabs.tsx`<br>`supabase/functions/generate-contract-pdf/index.ts` |
 | `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts`<br>`supabase/functions/weekly-report/index.ts`<br>`supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql`<br>… +1 |
 | `status` | `aprovado` | compara, escreve, filtra | `src/components/compras/OrderPreviewModal.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/usePagamentos.ts`<br>`src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/recebimento/RecebimentoOffline.tsx` |
 | `status` | `atencao` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
-| `status` | `ativo` | compara, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +12 |
+| `status` | `ativo` | compara, escreve, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +13 |
 | `status` | `atrasado` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts` |
 | `status` | `atual` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx` |
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
@@ -1211,6 +1212,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | LogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logger.ts` |
 | Role | admin \| coordinator \| buyer \| approver \| viewer | `supabase/functions/_shared/xbz_auth.ts` |
 | XBZ_PERMISSION_FLAGS | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", | `supabase/functions/_shared/xbz_client.ts` |
+| ContractRenewalType | automatic \| manual | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 
 ## F. Validações de entrada
 
@@ -1739,6 +1741,7 @@ _nenhum item encontrado_
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_BUSCA_MIN` | `3` | `supabase/functions/_shared/xbz_client.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
+| `DEFAULT_NOTICE_DAYS` | `30` | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | `INTEGRATION_FAILURE_THRESHOLD` | `3` | `supabase/functions/check-sla-alerts/index.ts` |
 | `INTEGRATION_LOOKBACK_MS` | `6 * 60 * 60 * 1000` | `supabase/functions/check-sla-alerts/index.ts` |
 | `DISPATCH_WORKFLOW_FILE` | `"dependency-health.yml"` | `supabase/functions/dependency-health/index.ts` |
@@ -2651,6 +2654,10 @@ _nenhum item encontrado_
 | Get pending steps that have exceeded their deadline | `supabase/functions/check-approval-escalations/index.ts` |
 | Check for steps approaching deadline (send warning) | `supabase/functions/check-approval-escalations/index.ts` |
 | 4 hours before deadline | `supabase/functions/check-approval-escalations/index.ts` |
+| * Regras puras do alerta de vencimento de contrato. | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
+| Dias inteiros entre hoje e o vencimento. Negativo = ja venceu. */ | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
+| - `pending_approval` nao alerta: ainda nao vale nada para o negocio | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
+| Regras do alerta de vencimento de contrato. | `supabase/functions/check-expiry-alerts/contractExpiry_test.ts` |
 | com segredos PunchOut ou XBZ. O front envia o plaintext (HTTPS) apenas no | `supabase/functions/erp-credential-encrypt/index.ts` |
 | M-05: rate-limit 30 req/min por usuário (sync é operação pesada). | `supabase/functions/erp-sync/index.ts` |
 | integration is a stub and must be implemented per connection.type. | `supabase/functions/erp-sync/index.ts` |

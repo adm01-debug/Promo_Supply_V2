@@ -302,13 +302,14 @@
   {
    "nome": "check-expiry-alerts",
    "entrada": "supabase/functions/check-expiry-alerts/index.ts",
-   "arquivos": 1,
-   "linhas": 212,
+   "arquivos": 2,
+   "linhas": 395,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
+    "contracts",
     "cotacoes",
     "pagamentos",
     "user_roles"
@@ -331,7 +332,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "check-sla-alerts",

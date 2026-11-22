@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "94f73a1a72e806e05f4f9d177b305baf91c4fe1f",
+  "commit": "8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb",
   "branch": "main",
-  "data_commit": "2026-11-22T10:39:57-03:00",
+  "data_commit": "2026-11-22T10:57:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8e9d432",
+    "data": "2026-11-22",
+    "assunto": "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)"
+   },
    {
     "sha": "94f73a1",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "8a61f8c",
     "data": "2026-11-21",
     "assunto": "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)"
-   },
-   {
-    "sha": "64c1922",
-    "data": "2026-11-21",
-    "assunto": "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)"
    }
   ],
-  "arquivos_mudados_7d": 246,
+  "arquivos_mudados_7d": 248,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,19 +141,19 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "pasta": "supabase/functions/_shared",
     "mudancas": 33
    },
    {
-    "pasta": "src/pages/catalogo-xbz",
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 14
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 13
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 14
    },
    {
     "pasta": "docs/ci/README.md",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 234
+    "commits": 235
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1294,
-  "arquivos_codigo": 801,
-  "linhas_codigo": 167432,
+  "arquivos_total": 1296,
+  "arquivos_codigo": 803,
+  "linhas_codigo": 167747,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 325,
   "cron_jobs": 74,
-  "testes": 187,
+  "testes": 188,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 94
@@ -491,8 +491,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 91,
-   "linhas": 15991
+   "arquivos": 93,
+   "linhas": 16306
   },
   "tailwind.config.ts": {
    "arquivos": 1,
