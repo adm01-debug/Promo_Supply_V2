@@ -24,6 +24,7 @@
 | `dependency-health` | `audit_logs`, `dependency_health`, `dependency_health_history` |
 | `erp-credential-encrypt` | `user_tenants` |
 | `erp-sync` | `erp_connections`, `erp_sync_log` |
+| `escalate-solicitacao` | `approval_history`, `pedidos`, `profiles`, `solicitacoes`, `user_roles` |
 | `external-db-bridge` | `query_telemetry` |
 | `fiscal-orchestrator` | `fiscal_events` |
 | `generate-contract-pdf` | `contract_items`, `contract_penalties`, `contracts` |
@@ -57,7 +58,7 @@
 
 | Tabela | Funções |
 |---|---|
-| `approval_history` | `check-approval-escalations` |
+| `approval_history` | `check-approval-escalations`, `escalate-solicitacao` |
 | `approval_steps` | `check-approval-escalations` |
 | `approval_workflows` | `check-approval-escalations` |
 | `audit_logs` | `dependency-health`, `health-dashboard` |
@@ -75,21 +76,21 @@
 | `integration_outbox` | `process-outbox` |
 | `notifications` | `check-cotacao-followup` |
 | `pagamentos` | `check-expiry-alerts`, `check-sla-alerts`, `weekly-report` |
-| `pedidos` | `check-sla-alerts`, `weekly-report`, `weekly-summary-report` |
+| `pedidos` | `check-sla-alerts`, `escalate-solicitacao`, `weekly-report`, `weekly-summary-report` |
 | `produtos` | `guided-buying-ai` |
-| `profiles` | `check-cotacao-followup`, `migrate-storage-paths`, `punchout-receive` |
+| `profiles` | `check-cotacao-followup`, `escalate-solicitacao`, `migrate-storage-paths`, `punchout-receive` |
 | `punchout_catalogs` | `punchout-receive`, `punchout-setup` |
 | `punchout_sessions` | `punchout-receive`, `punchout-setup` |
 | `push_subscriptions` | `send-push-notification` |
 | `query_telemetry` | `external-db-bridge` |
-| `solicitacoes` | `check-sla-alerts`, `punchout-receive`, `weekly-report`, `weekly-summary-report` |
+| `solicitacoes` | `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `weekly-report`, `weekly-summary-report` |
 | `spot_api_sync_log` | `spot-api` |
 | `spot_pedidos` | `spot-api`, `spot-proxy` |
 | `spot_sessions` | `spot-api`, `spot-proxy` |
 | `sso_configurations` | `scim-v2` |
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
-| `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
+| `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
 | `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
