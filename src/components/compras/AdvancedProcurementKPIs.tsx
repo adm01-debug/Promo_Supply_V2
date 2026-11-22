@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import {
   TrendingUp,
   DollarSign,
@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -45,7 +46,7 @@ import { KPITargetsConfig } from "./KPITargetsConfig";
 import { useToast } from "@/hooks/use-toast";
 
 import { useExecutiveDashboardData } from "@/hooks/useExecutiveDashboardData";
-import { kpiData as mockKpiData, KPI_COLORS as COLORS } from "./procurement-kpis/kpiMockData";
+import { KPI_COLORS as COLORS } from "./procurement-kpis/kpiColors";
 
 const TrendBadge = ({ current, previous }: { current: number; previous: number }) => {
   if (!previous) {
@@ -82,50 +83,12 @@ export const AdvancedProcurementKPIs = () => {
   const [period, setPeriod] = useState("30");
   const { targets, addAlert } = useKPITargetsStore();
   const { toast } = useToast();
-  const {
-    metrics: realMetrics,
-    topSuppliersBySpend,
-    top5Concentration: realTop5Concentration,
-    activeContractCount,
-    totalContractCount,
-    loading: realDataLoading,
-  } = useExecutiveDashboardData();
+  const { kpiSnapshot, loading } = useExecutiveDashboardData({
+    periodDays: Number(period) > 0 ? Number(period) : undefined,
+  });
 
-  // Distribui os números reais do banco sobre o shape do módulo de KPI; enquanto
-  // carrega, usa o baseline do módulo (mesmo shape) para não "fabricar" valores.
-  const kpiData = useMemo(() => {
-    if (realDataLoading) return mockKpiData;
-    const maverick = realMetrics.maverickSpend;
-    const total = realMetrics.totalSpend.value;
-    const suppliers = topSuppliersBySpend.map((s) => ({
-      name: s.name,
-      percentage: total > 0 && s.value > 0 ? Math.round((s.value / total) * 1000) / 10 : 0,
-    }));
-    return {
-      ...mockKpiData,
-      maverickSpend: {
-        ...mockKpiData.maverickSpend,
-        total: Math.round(total),
-        maverick: Math.round(maverick.value),
-        percentage: maverick.percentage,
-      },
-      contractCompliance: {
-        ...mockKpiData.contractCompliance,
-        percentage: realMetrics.contractCompliance.value,
-        contracts: totalContractCount,
-        compliant: activeContractCount,
-      },
-      poCycleTime: {
-        ...mockKpiData.poCycleTime,
-        current: realMetrics.avgCycleTime.value,
-      },
-      supplierConcentration: {
-        ...mockKpiData.supplierConcentration,
-        top5Percentage: realTop5Concentration || mockKpiData.supplierConcentration.top5Percentage,
-        suppliers,
-      },
-    };
-  }, [realMetrics, realTop5Concentration, topSuppliersBySpend, activeContractCount, totalContractCount, realDataLoading]);
+  // Todos os KPIs vem de useExecutiveDashboardData (banco). Nao existe baseline ficticio.
+  const kpiData = kpiSnapshot;
 
   // Check KPIs against targets and generate alerts
   const checkAllKPIs = () => {
@@ -188,6 +151,25 @@ export const AdvancedProcurementKPIs = () => {
       )} />
     );
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <Skeleton className="h-10 w-[160px]" />
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-9 w-[140px]" />
+            <Skeleton className="h-9 w-[120px]" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="h-40 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
