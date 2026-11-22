@@ -19,7 +19,7 @@
 | `alert-dispatcher` | `system_alerts` |
 | `check-approval-escalations` | `approval_history`, `approval_steps`, `approval_workflows` |
 | `check-cotacao-followup` | `cotacoes`, `notifications`, `profiles` |
-| `check-expiry-alerts` | `cotacoes`, `pagamentos`, `user_roles` |
+| `check-expiry-alerts` | `contracts`, `cotacoes`, `pagamentos`, `user_roles` |
 | `check-sla-alerts` | `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
 | `dependency-health` | `audit_logs`, `dependency_health`, `dependency_health_history` |
 | `erp-credential-encrypt` | `user_tenants` |
@@ -63,7 +63,7 @@
 | `audit_logs` | `dependency-health`, `health-dashboard` |
 | `contract_items` | `generate-contract-pdf` |
 | `contract_penalties` | `generate-contract-pdf` |
-| `contracts` | `generate-contract-pdf` |
+| `contracts` | `check-expiry-alerts`, `generate-contract-pdf` |
 | `cotacoes` | `check-cotacao-followup`, `check-expiry-alerts`, `weekly-report`, `weekly-summary-report` |
 | `dependency_health` | `dependency-health` |
 | `dependency_health_history` | `dependency-health` |
