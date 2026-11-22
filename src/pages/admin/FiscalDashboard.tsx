@@ -4,10 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, Send, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 const FiscalDashboard = () => {
+  const monthStart = useMemo(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  }, []);
+
   const { data: events, isLoading } = useQuery({
     queryKey: ["fiscal-events"],
     queryFn: async () => {
@@ -19,6 +25,34 @@ const FiscalDashboard = () => {
 
       if (error) throw error;
       return data;
+    },
+  });
+
+  /** Agregados reais do mês corrente — substituem os números fixos que existiam aqui. */
+  const { data: kpis } = useQuery({
+    queryKey: ["fiscal-kpis-mes", monthStart.toISOString()],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("fiscal_events")
+        .select("status, created_at, processed_at")
+        .gte("created_at", monthStart.toISOString());
+
+      if (error) throw error;
+
+      const autorizadas = data.filter((e) => e.status === "authorized").length;
+      const pendentes = data.filter((e) => e.status === "pending").length;
+      const erros = data.filter((e) => e.status === "error" || e.status === "denied").length;
+
+      const latencias = data
+        .filter((e) => e.processed_at)
+        .map((e) => (new Date(e.processed_at as string).getTime() - new Date(e.created_at).getTime()) / 1000)
+        .filter((s) => Number.isFinite(s) && s >= 0);
+
+      const latenciaMedia = latencias.length > 0
+        ? (latencias.reduce((acc, s) => acc + s, 0) / latencias.length).toFixed(1)
+        : null;
+
+      return { autorizadas, pendentes, erros, latenciaMedia };
     },
   });
 
@@ -45,8 +79,12 @@ const FiscalDashboard = () => {
           <p className="text-muted-foreground">Monitoramento de documentos fiscais eletrônicos (NFe, NFSe, CTe, MDFe)</p>
         </div>
         <div className="flex gap-2">
-          <Badge variant="outline" className="px-3 py-1">SEFAZ: Online</Badge>
-          <Badge variant="outline" className="px-3 py-1 text-green-500 border-green-500">Focus NFe: OK</Badge>
+          <Badge variant="outline" className="px-3 py-1">
+            SEFAZ: {kpis && kpis.erros > 0 ? 'Oscilação detectada' : 'Sem erros no mês'}
+          </Badge>
+          <Badge variant="outline" className="px-3 py-1">
+            Eventos no mês: {kpis ? kpis.autorizadas + kpis.pendentes + kpis.erros : 0}
+          </Badge>
         </div>
       </div>
 
@@ -57,8 +95,8 @@ const FiscalDashboard = () => {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">128</div>
-            <p className="text-xs text-muted-foreground">+12% em relação ao mês anterior</p>
+            <div className="text-2xl font-bold">{kpis?.autorizadas ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Eventos com status authorized</p>
           </CardContent>
         </Card>
         <Card>
@@ -67,8 +105,8 @@ const FiscalDashboard = () => {
             <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
-            <p className="text-xs text-muted-foreground">Processamento automático ativo</p>
+            <div className="text-2xl font-bold">{kpis?.pendentes ?? 0}</div>
+            <p className="text-xs text-muted-foreground">Aguardando retorno do provedor</p>
           </CardContent>
         </Card>
         <Card>
@@ -77,8 +115,10 @@ const FiscalDashboard = () => {
             <AlertCircle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2</div>
-            <p className="text-xs text-destructive">Ação manual necessária</p>
+            <div className="text-2xl font-bold">{kpis?.erros ?? 0}</div>
+            <p className="text-xs text-destructive">
+              {kpis && kpis.erros > 0 ? 'Ação manual necessária' : 'Nenhuma rejeição no mês'}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -87,8 +127,12 @@ const FiscalDashboard = () => {
             <Send className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.4s</div>
-            <p className="text-xs text-muted-foreground">Latência SEFAZ em tempo real</p>
+            <div className="text-2xl font-bold">
+              {kpis?.latenciaMedia ? `${kpis.latenciaMedia}s` : '—'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {kpis?.latenciaMedia ? 'created_at → processed_at' : 'Sem evento processado no mês'}
+            </p>
           </CardContent>
         </Card>
       </div>
