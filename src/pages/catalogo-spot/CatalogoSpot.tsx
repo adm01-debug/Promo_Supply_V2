@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { MainLayout } from '@/features/layout/components/MainLayout';
-import { useSpotIntegration, SpotOrder, SpotCartItem, SpotFinancialDoc } from '@/hooks/useSpotIntegration';
+import { useSpotIntegration, SpotOrder, SpotCartItem, SpotFinancialDoc, SpotCheckoutInfo } from '@/hooks/useSpotIntegration';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from '@/components/ui/dialog';
 import { toast } from '@/lib/feedbackToast';
 import {
   Search, ShoppingCart, Package, FileText, CreditCard, Loader2, Plug, Trash2, RefreshCw,
@@ -21,13 +24,15 @@ import { SpotCatalogTab } from './SpotCatalogTab';
 import { SpotSyncPanel } from './SpotSyncPanel';
 
 const CatalogoSpot = () => {
-  const { loading, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
+  const { loading, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart, getCheckoutInfo } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
   const [cart, setCart] = useState<{ items: SpotCartItem[]; total: number; itemCount: number } | null>(null);
   const [orders, setOrders] = useState<SpotOrder[]>([]);
   const [financialDocs, setFinancialDocs] = useState<{ documents: SpotFinancialDoc[]; hasOverdue: boolean } | null>(null);
   const [connected, setConnected] = useState(false);
   const [orderYear, setOrderYear] = useState(new Date().getFullYear().toString());
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutInfo, setCheckoutInfo] = useState<SpotCheckoutInfo | null>(null);
   const mountedRef = useRef(true);
 
   // Track mounted state
@@ -80,6 +85,26 @@ const CatalogoSpot = () => {
     const d = await testConnection();
     if (mountedRef.current && d?.success) setConnected(true);
   }, [testConnection]);
+
+  const handleOpenCheckout = useCallback(async () => {
+    const data = await getCheckoutInfo();
+    if (!mountedRef.current) return;
+    if (!data) return; // erro já exibido pelo hook
+    setCheckoutInfo(data);
+    setCheckoutOpen(true);
+  }, [getCheckoutInfo]);
+
+  const handleConfirmCheckout = useCallback(() => {
+    if (!checkoutInfo?.checkoutUrl) {
+      toast.error('SPOT não retornou a página de finalização do pedido');
+      return;
+    }
+    // O fechamento do pedido acontece no portal do fornecedor: enviamos o usuário
+    // para a página de destino com o carrinho já montado no backend.
+    openExternalSpotUrl(checkoutInfo.checkoutUrl);
+    setCheckoutOpen(false);
+    toast.success('Finalize o pedido na página da SPOT que foi aberta');
+  }, [checkoutInfo]);
 
   return (
     
@@ -213,7 +238,8 @@ const CatalogoSpot = () => {
                       <span className="text-lg font-bold">
                         Total: R$ {cart.total.toFixed(2)}
                       </span>
-                      <Button onClick={() => toast.info('Checkout SPOT — Em desenvolvimento')}>
+                      <Button onClick={handleOpenCheckout} disabled={loading}>
+                        {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CreditCard className="w-4 h-4 mr-2" />}
                         Finalizar Pedido
                       </Button>
                     </div>
@@ -343,6 +369,59 @@ const CatalogoSpot = () => {
             <SpotFinancialTab financialDocs={financialDocs} loading={loading} onRefresh={loadFinancial} />
           </TabsContent>
         </Tabs>
+
+        <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Finalizar pedido SPOT</DialogTitle>
+              <DialogDescription>
+                O carrinho será montado no portal da SPOT. A confirmação final do pedido é feita lá.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-2">
+              <div className="rounded-md border p-3 space-y-1">
+                <p className="text-sm text-muted-foreground">Total do carrinho</p>
+                <p className="text-xl font-bold">{formatCurrency(cart?.total ?? 0)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {cart?.itemCount ?? 0} {(cart?.itemCount ?? 0) === 1 ? 'item' : 'itens'}
+                </p>
+              </div>
+
+              {checkoutInfo && checkoutInfo.addresses.length > 0 ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Endereços cadastrados na SPOT</p>
+                  <ul className="space-y-1">
+                    {checkoutInfo.addresses.map(addr => (
+                      <li key={addr.id} className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                        <span>{addr.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-muted-foreground">
+                    O endereço de entrega é escolhido na página da SPOT.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>Nenhum endereço de entrega retornado pela SPOT. Confirme no portal.</span>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setCheckoutOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={handleConfirmCheckout} disabled={!checkoutInfo?.checkoutUrl}>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Abrir página da SPOT
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     
   );
