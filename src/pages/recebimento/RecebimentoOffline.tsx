@@ -32,6 +32,8 @@ import {
   saveOfflineEntries,
   getCachedOrders,
   saveCachedOrders,
+  statusFromReceived,
+  buildReceivingObservation,
 } from "./recebimentoHelpers";
 import { createComplementaryOrder } from "./pedidoComplementar";
 
@@ -190,11 +192,12 @@ export default function RecebimentoOffline() {
             .eq("id", item.item_id);
         }
 
-        const newStatus = isComplete ? "entregue" : totalReceived > 0 ? "parcial" : undefined;
+        const newStatus = statusFromReceived(selectedOrder.itens, receivedQty);
         if (newStatus) {
           await supabase.from("pedidos").update({
             status: newStatus,
-            ...(isComplete ? { data_entrega: new Date().toISOString().split("T")[0] } : {}),
+            observacoes: buildReceivingObservation(itemNotes, generalNote),
+            ...(newStatus === "entregue" ? { data_entrega: new Date().toISOString().split("T")[0] } : {}),
           }).eq("id", selectedOrder.id);
         }
 
@@ -249,9 +252,18 @@ export default function RecebimentoOffline() {
             .eq("id", item.item_id);
         }
 
-        const allComplete = entry.items.every(i => i.quantidade_recebida > 0);
-        const newStatus = allComplete ? "entregue" : "parcial";
-        await supabase.from("pedidos").update({ status: newStatus }).eq("id", entry.pedido_id);
+        const order = orders.find(o => o.id === entry.pedido_id);
+        // Sem o pedido em memoria nao da para comparar quantidade pedida x recebida:
+        // nesse caso o status fica como esta em vez de arriscar um "entregue".
+        const newStatus = order
+          ? statusFromReceived(order.itens, Object.fromEntries(entry.items.map(i => [i.item_id, i.quantidade_recebida])))
+          : undefined;
+        if (newStatus) {
+          await supabase.from("pedidos").update({
+            status: newStatus,
+            ...(newStatus === "entregue" ? { data_entrega: new Date().toISOString().split("T")[0] } : {}),
+          }).eq("id", entry.pedido_id);
+        }
 
         entry.synced = true;
         syncedCount++;
@@ -268,7 +280,7 @@ export default function RecebimentoOffline() {
       fetchOrders();
     }
     setSyncing(false);
-  }, [offlineEntries, isOnline, fetchOrders]);
+  }, [offlineEntries, isOnline, fetchOrders, orders]);
 
   useEffect(() => {
     if (isOnline && offlineEntries.some(e => !e.synced)) {
