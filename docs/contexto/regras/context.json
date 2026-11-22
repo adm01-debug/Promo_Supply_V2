@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2a98db83a9b40b52442ce4243a773e00cb10131b",
+  "sha": "d9c58bcba7a917b88831f55eb08ebc692ee14481",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 19:36 UTC",
-  "files_total": 1312,
-  "code_files": 1147,
-  "code_lines": 197335,
+  "generated_at": "2026-11-22 19:58 UTC",
+  "files_total": 1314,
+  "code_files": 1149,
+  "code_lines": 198198,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "81b015059b683b69",
+ "facts_hash": "e56902f89e5ae510",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 394,
+   ".ts": 396,
    ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
@@ -34423,7 +34423,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 48936,
+   "lines": 49229,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35180,8 +35180,8 @@
   },
   {
    "module": "src/lib",
-   "files": 54,
-   "lines": 6238,
+   "files": 56,
+   "lines": 6808,
    "tables": [
     "profiles"
    ],
@@ -35207,6 +35207,7 @@
     "safeTruncate.ts: safeTruncate",
     "secureStorage.ts: secureStorage",
     "security.ts: security",
+    "sourcingAnalytics.ts: SourcingRecordLike, SupplierLike, RepurchasePrediction, CategoryBenchmark, TrendPoint, productKeyOf",
     "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
@@ -35263,6 +35264,7 @@
     "src/lib/safeTruncate.ts",
     "src/lib/secureStorage.ts",
     "src/lib/security.ts",
+    "src/lib/sourcingAnalytics.ts",
     "src/lib/storageFiles.ts",
     "src/lib/supabaseQuery.ts",
     "src/lib/supabaseRpc.ts",
@@ -35291,6 +35293,7 @@
     "src/lib/__tests__/safeTruncate.test.ts",
     "src/lib/__tests__/secureStorage.test.ts",
     "src/lib/__tests__/security.test.ts",
+    "src/lib/__tests__/sourcingAnalytics.test.ts",
     "src/lib/__tests__/storageFiles.test.ts",
     "src/lib/__tests__/supabaseQuery.test.ts",
     "src/lib/__tests__/supabaseRpc.test.ts",
@@ -40434,6 +40437,14 @@
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
     "msg": "Nada para exportar"
+   },
+   {
+    "file": "src/components/compras/SourcingHistoryConsole.tsx",
+    "msg": "Sem base para análise"
+   },
+   {
+    "file": "src/components/compras/SourcingHistoryConsole.tsx",
+    "msg": "Sem base para varredura"
    },
    {
     "file": "src/components/compras/SupplierBonificationsPanel.tsx",
@@ -49829,6 +49840,11 @@
     "value": "10 * 60_000"
    },
    {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "name": "DAY_MS",
+    "value": "86_400_000"
+   },
+   {
     "file": "src/pages/admin/DependencyHealth.tsx",
     "name": "CI_COOLDOWN_MS",
     "value": "30_000"
@@ -51103,20 +51119,8 @@
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
     "field": "status",
-    "value": "Otimizado",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SourcingHistoryConsole.tsx",
-    "field": "status",
-    "value": "Otimizado",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SourcingHistoryConsole.tsx",
-    "field": "status",
-    "value": "Crítico",
-    "kind": "escreve"
+    "value": "delivered",
+    "kind": "compara"
    },
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
@@ -51145,7 +51149,13 @@
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
     "field": "status",
-    "value": "Crítico",
+    "value": "Critico",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/compras/SourcingHistoryConsole.tsx",
+    "field": "status",
+    "value": "Critico",
     "kind": "compara"
    },
    {
@@ -53294,6 +53304,12 @@
     "file": "src/lib/performance.ts",
     "field": "type",
     "value": "paint",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "field": "status",
+    "value": "Otimizado",
     "kind": "escreve"
    },
    {
@@ -56305,6 +56321,18 @@
     "body": "const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company }; const doc = new jsPDF(); const pageWidth = doc.internal.pageSize.getWidth(); /* Branding Colors */ const primaryColor = [13, 148, 136]; /* Teal-600 (approx) */ const secondaryColor = [71, 85, 105]; /* Slate-600 */ /* Header Background */ doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.rect(0, 0, pageWidth, 40, 'F'); /* Title */ doc.setFontSize(24); doc.setTextColor(255, 255, 255); doc.setFont(\"helv …"
    },
    {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "name": "round2",
+    "params": "value: number",
+    "body": "Math.round(value * 100) / 100;"
+   },
+   {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "name": "round1",
+    "params": "value: number",
+    "body": "Math.round(value * 10) / 10;"
+   },
+   {
     "file": "src/lib/supabaseRpc.ts",
     "name": "rpcGenerateSequentialNumber",
     "params": "supabase: SupabaseClient, params: { prefix: string; table_name: string },",
@@ -57444,15 +57472,7 @@
    },
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
-    "line": "A concentração de 65% no Sudeste sugere otimização de frete, mas eleva risco de ruptura local. Considere diversificação para o Sul."
-   },
-   {
-    "file": "src/components/compras/SourcingHistoryConsole.tsx",
-    "line": "Lead time médio subiu 15% para itens de infraestrutura."
-   },
-   {
-    "file": "src/components/compras/SourcingHistoryConsole.tsx",
-    "line": "{ date: '2', price: record.totalPrice * 0.95 },"
+    "line": "return qualidade * 0.4 + supplier.onTimeRate * 0.35 + preco * 0.25;"
    },
    {
     "file": "src/components/compras/SupplierAlertsPanel.tsx",
@@ -57569,6 +57589,14 @@
    {
     "file": "src/lib/feedbackToast.ts",
     "line": "gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);"
+   },
+   {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "line": "const indice = Math.max(0, Math.min(100, pontualidade * 0.45 + qualidade * 0.45 + (100 - devolucao) * 0.1));"
+   },
+   {
+    "file": "src/lib/sourcingAnalytics.ts",
+    "line": "const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);"
    },
    {
     "file": "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
@@ -63799,6 +63827,54 @@
    {
     "file": "src/lib/__tests__/security.test.ts",
     "name": "passes through safe HTML"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "sourcingAnalytics"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "calcula intervalo médio e próxima compra a partir das datas reais"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "não inventa previsão quando o item tem apenas uma compra"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "detecta tendência de preço unitário"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "agrupa o volume por mês e limita a janela pedida"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "classifica o benchmark por spread real de preço da categoria"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "calcula o health index apenas com fornecedores que têm pedidos"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "não divide por zero quando não há fornecedor com pedido"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "soma a economia real aplicando o desconto de cada registro"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "distribui o spend por categoria em percentual fechado"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "classifica a matriz de sourcing pelo gasto e número de fornecedores"
+   },
+   {
+    "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "name": "usa o nome normalizado como chave quando o produto não tem id"
    },
    {
     "file": "src/lib/__tests__/storageFiles.test.ts",
@@ -77459,14 +77535,6 @@
       "compara:src/components/compras/SolicitacaoCard.tsx",
       "escreve:src/types/legacyTypes.ts"
      ],
-     "Otimizado": [
-      "compara:src/components/compras/SourcingHistoryConsole.tsx",
-      "escreve:src/components/compras/SourcingHistoryConsole.tsx"
-     ],
-     "Crítico": [
-      "compara:src/components/compras/SourcingHistoryConsole.tsx",
-      "escreve:src/components/compras/SourcingHistoryConsole.tsx"
-     ],
      "delivered": [
       "compara:src/components/compras/SourcingHistoryConsole.tsx",
       "compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
@@ -77477,6 +77545,13 @@
       "compara:src/pages/historico/HistoricoRegistrosTab.tsx",
       "compara:src/pages/historico/HistoricoSourcingTab.tsx",
       "escreve:supabase/functions/process-outbox/index.ts"
+     ],
+     "Otimizado": [
+      "compara:src/components/compras/SourcingHistoryConsole.tsx",
+      "escreve:src/lib/sourcingAnalytics.ts"
+     ],
+     "Critico": [
+      "compara:src/components/compras/SourcingHistoryConsole.tsx"
      ],
      "read": [
       "compara:src/components/compras/SupplierInteractionLog.tsx",
@@ -86173,15 +86248,14 @@
     "msg": "valor `Otimizado` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/SourcingHistoryConsole.tsx",
-     "escreve:src/components/compras/SourcingHistoryConsole.tsx"
+     "escreve:src/lib/sourcingAnalytics.ts"
     ]
    },
    {
     "kind": "status",
-    "msg": "valor `Crítico` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "msg": "valor `Critico` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
-     "compara:src/components/compras/SourcingHistoryConsole.tsx",
-     "escreve:src/components/compras/SourcingHistoryConsole.tsx"
+     "compara:src/components/compras/SourcingHistoryConsole.tsx"
     ]
    },
    {
@@ -92212,28 +92286,20 @@
   },
   "src/components/compras/SourcingHistoryConsole.tsx": {
    "path": "src/components/compras/SourcingHistoryConsole.tsx",
-   "lines": 1031,
+   "lines": 1324,
    "exports": [
     "const SourcingHistoryConsole"
    ],
    "errors": [
-    "Nada para exportar"
+    "Nada para exportar",
+    "Sem base para análise",
+    "Sem base para varredura"
    ],
    "status_values": [
     {
      "field": "status",
-     "value": "Otimizado",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "Otimizado",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "Crítico",
-     "kind": "escreve"
+     "value": "delivered",
+     "kind": "compara"
     },
     {
      "field": "status",
@@ -92257,7 +92323,12 @@
     },
     {
      "field": "status",
-     "value": "Crítico",
+     "value": "Critico",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "Critico",
      "kind": "compara"
     }
    ],
@@ -92269,9 +92340,7 @@
     }
    ],
    "percents": [
-    "A concentração de 65% no Sudeste sugere otimização de frete, mas eleva risco de ruptura local. Considere diversificação para o Sul.",
-    "Lead time médio subiu 15% para itens de infraestrutura.",
-    "{ date: '2', price: record.totalPrice * 0.95 },"
+    "return qualidade * 0.4 + supplier.onTimeRate * 0.35 + preco * 0.25;"
    ]
   },
   "src/components/compras/SourcingIntelligenceWidget.tsx": {
@@ -101318,6 +101387,59 @@
     "Handles sanitization, security validation and audit logging."
    ]
   },
+  "src/lib/sourcingAnalytics.ts": {
+   "path": "src/lib/sourcingAnalytics.ts",
+   "lines": 414,
+   "exports": [
+    "interface SourcingRecordLike",
+    "interface SupplierLike",
+    "interface RepurchasePrediction",
+    "interface CategoryBenchmark",
+    "interface TrendPoint",
+    "const productKeyOf",
+    "function buildRepurchasePredictions",
+    "function buildMonthlyTrend",
+    "function buildCategoryBenchmark",
+    "function buildSourcingMatrix",
+    "function buildSupplierConcentration",
+    "function buildCategorySpend",
+    "function buildHealthIndex",
+    "function buildSavings",
+    "function buildSupplierPerformance",
+    "function buildSupplierTrend",
+    "function buildCategoryPriceIndex",
+    "function supplierLeadTimeLabel"
+   ],
+   "params": [
+    {
+     "name": "DAY_MS",
+     "value": "86_400_000"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "Otimizado",
+     "kind": "escreve"
+    }
+   ],
+   "calc_fns": [
+    {
+     "name": "round2",
+     "params": "value: number",
+     "body": "Math.round(value * 100) / 100;"
+    },
+    {
+     "name": "round1",
+     "params": "value: number",
+     "body": "Math.round(value * 10) / 10;"
+    }
+   ],
+   "percents": [
+    "const indice = Math.max(0, Math.min(100, pontualidade * 0.45 + qualidade * 0.45 + (100 - devolucao) * 0.1));",
+    "const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);"
+   ]
+  },
   "src/lib/storageFiles.ts": {
    "path": "src/lib/storageFiles.ts",
    "lines": 66,
@@ -102211,6 +102333,25 @@
     "returns empty string for falsy input",
     "returns a string",
     "passes through safe HTML"
+   ]
+  },
+  "src/lib/__tests__/sourcingAnalytics.test.ts": {
+   "path": "src/lib/__tests__/sourcingAnalytics.test.ts",
+   "lines": 156,
+   "is_test": true,
+   "tests": [
+    "sourcingAnalytics",
+    "calcula intervalo médio e próxima compra a partir das datas reais",
+    "não inventa previsão quando o item tem apenas uma compra",
+    "detecta tendência de preço unitário",
+    "agrupa o volume por mês e limita a janela pedida",
+    "classifica o benchmark por spread real de preço da categoria",
+    "calcula o health index apenas com fornecedores que têm pedidos",
+    "não divide por zero quando não há fornecedor com pedido",
+    "soma a economia real aplicando o desconto de cada registro",
+    "distribui o spend por categoria em percentual fechado",
+    "classifica a matriz de sourcing pelo gasto e número de fornecedores",
+    "usa o nome normalizado como chave quando o produto não tem id"
    ]
   },
   "src/lib/__tests__/storageFiles.test.ts": {
@@ -114765,10 +114906,21 @@
   }
  },
  "git": {
-  "sha": "2a98db83a9b40b52442ce4243a773e00cb10131b",
+  "sha": "d9c58bcba7a917b88831f55eb08ebc692ee14481",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d9c58bc",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat(sourcing): substitui dados ficticios por metricas reais no console (#306)",
+    "files": [
+     "src/components/compras/SourcingHistoryConsole.tsx",
+     "src/lib/__tests__/sourcingAnalytics.test.ts",
+     "src/lib/sourcingAnalytics.ts"
+    ]
+   },
    {
     "sha": "2a98db8",
     "date": "2026-11-22",
@@ -115079,21 +115231,16 @@
      "supabase/functions/_shared/notifications.test.ts",
      "supabase/functions/_shared/notifications.ts"
     ]
-   },
-   {
-    "sha": "7ba0757",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    11
+    10
+   ],
+   [
+    "src/components/compras/SourcingHistoryConsole.tsx",
+    2
    ],
    [
     "supabase/functions/escalate-solicitacao/index.ts",
@@ -115124,6 +115271,14 @@
     2
    ],
    [
+    "src/lib/__tests__/sourcingAnalytics.test.ts",
+    1
+   ],
+   [
+    "src/lib/sourcingAnalytics.ts",
+    1
+   ],
+   [
     "src/lib/__tests__/negotiationOutreach.test.ts",
     1
    ],
@@ -115133,10 +115288,6 @@
    ],
    [
     "src/pages/negociacao-ia/NegociacaoIA.tsx",
-    1
-   ],
-   [
-    "src/components/compras/SourcingHistoryConsole.tsx",
     1
    ],
    [
@@ -115161,14 +115312,6 @@
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/recebimento/recebimentoHelpers.ts",
     1
    ]
   ]

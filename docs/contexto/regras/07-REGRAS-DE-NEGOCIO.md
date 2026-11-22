@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a98db83a9` · branch `main` · 2026-11-22 19:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d9c58bcba7` · branch `main` · 2026-11-22 19:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1002,11 +1002,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `overall_status` | `NON_COMPLIANT` | compara | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | `status` | `AGUARDANDO_COTACAO` | compara, escreve | `src/components/compras/SolicitacaoCard.tsx`<br>`src/types/legacyTypes.ts` |
 | `status` | `ALL` | escreve | `supabase/functions/spot-api/index.ts` |
-| `status` | `Crítico` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx` |
+| `status` | `Critico` | compara | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `status` | `EM_COTACAO` | compara | `src/components/compras/SolicitacaoCard.tsx` |
 | `status` | `ENTREGUE` | compara | `src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/SolicitacaoKanban.tsx` |
 | `status` | `FORNECEDOR_SELECIONADO` | compara | `src/components/compras/SolicitacaoCard.tsx` |
-| `status` | `Otimizado` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx` |
+| `status` | `Otimizado` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx`<br>`src/lib/sourcingAnalytics.ts` |
 | `status` | `PENDENTE` | escreve | `src/types/legacyTypes.ts` |
 | `status` | `PROCESSING` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `SUBSCRIBED` | compara | `src/features/layout/components/SupplierChat.tsx` |
@@ -1464,6 +1464,14 @@ _nenhum item encontrado_
   ```
   const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company }; const doc = new jsPDF(); const pageWidth = doc.internal.pageSize.getWidth(); /* Branding Colors */ const primaryColor = [13, 148, 136]; /* Teal-600 (approx) */ const secondaryColor = [71, 85, 105]; /* Slate-600 */ /* Header Background */ doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]); doc.rect(0, 0, pageWidth, 40, 'F'); /* Title */ doc.setFontSize(24); doc.setTextColor(255, 255, 255); doc.setFont("helv …
   ```
+- **round2(value: number)** — `src/lib/sourcingAnalytics.ts`
+  ```
+  Math.round(value * 100) / 100;
+  ```
+- **round1(value: number)** — `src/lib/sourcingAnalytics.ts`
+  ```
+  Math.round(value * 10) / 10;
+  ```
 - **rpcGenerateSequentialNumber(supabase: SupabaseClient, params: { prefix: string; table_name: string },)** — `src/lib/supabaseRpc.ts`
   ```
   return supabase.rpc("generate_sequential_number", params) as unknown as RpcResult<string>;
@@ -1632,9 +1640,7 @@ _nenhum item encontrado_
 | `const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));` | `src/components/compras/RiskHeatMap.tsx` |
 | `const overallRisk = Math.round(financialRisk * 0.15 + operationalRisk * 0.25 + qualityRisk * 0.2 + deliveryRisk * 0.2 + concentrationRisk * 0.1 + geopoliticalRi …` | `src/components/compras/RiskHeatMap.tsx` |
 | `Predição Neural: 94% Confiança baseada em logística histórica.` | `src/components/compras/SolicitacaoCard.tsx` |
-| `A concentração de 65% no Sudeste sugere otimização de frete, mas eleva risco de ruptura local. Considere diversificação para o Sul.` | `src/components/compras/SourcingHistoryConsole.tsx` |
-| `Lead time médio subiu 15% para itens de infraestrutura.` | `src/components/compras/SourcingHistoryConsole.tsx` |
-| `{ date: '2', price: record.totalPrice * 0.95 },` | `src/components/compras/SourcingHistoryConsole.tsx` |
+| `return qualidade * 0.4 + supplier.onTimeRate * 0.35 + preco * 0.25;` | `src/components/compras/SourcingHistoryConsole.tsx` |
 | `.filter(f => f.limite_credito && f.saldo_comprometido && f.saldo_comprometido >= f.limite_credito * 0.8)` | `src/components/compras/SupplierAlertsPanel.tsx` |
 | `deve subir 8% no próximo mês. Recomendamos antecipar pedidos com` | `src/components/compras/SupplierIntelligenceConsole.tsx` |
 | `// Delivery time weight: 30%` | `src/components/compras/VisualComparadorCotacoes.tsx` |
@@ -1664,6 +1670,8 @@ _nenhum item encontrado_
 | `gainNode.gain.linearRampToValueAtTime(volume * 0.3, startTime + 0.01);` | `src/hooks/useFeedback.ts` |
 | `// Explicit columns: drops ~30% payload vs `*` on wide table.` | `src/hooks/useProdutos.ts` |
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |
+| `const indice = Math.max(0, Math.min(100, pontualidade * 0.45 + qualidade * 0.45 + (100 - devolucao) * 0.1));` | `src/lib/sourcingAnalytics.ts` |
+| `const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);` | `src/lib/sourcingAnalytics.ts` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
 | `* `%#COT-1 %` N?O casa `#COT-12 `. Os curingas do usu?rio s?o escapados para` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
@@ -1716,6 +1724,7 @@ _nenhum item encontrado_
 | `REFERENCE_STALE_TIME` | `5 * 60_000` | `src/lib/query-client.ts` |
 | `STATIC_STALE_TIME` | `30 * 60_000` | `src/lib/query-client.ts` |
 | `DEFAULT_GC_TIME` | `10 * 60_000` | `src/lib/query-client.ts` |
+| `DAY_MS` | `86_400_000` | `src/lib/sourcingAnalytics.ts` |
 | `CI_COOLDOWN_MS` | `30_000` | `src/pages/admin/DependencyHealth.tsx` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
@@ -2193,6 +2202,8 @@ _nenhum item encontrado_
 | ; import { cn } from  | `src/components/compras/SavingsGoalPanel.tsx` |
 | Request #${solicitacao.id} rejected | `src/components/compras/SolicitacaoCard.tsx` |
 | Nada para exportar | `src/components/compras/SourcingHistoryConsole.tsx` |
+| Sem base para análise | `src/components/compras/SourcingHistoryConsole.tsx` |
+| Sem base para varredura | `src/components/compras/SourcingHistoryConsole.tsx` |
 | Erro ao registrar bonificação | `src/components/compras/SupplierBonificationsPanel.tsx` |
 | Usuário não autenticado | `src/components/compras/SupplierBonificationsPanel.tsx` |
 | Erro na análise | `src/components/compras/SupplierRiskAnalysis.tsx` |
@@ -2358,9 +2369,7 @@ _nenhum item encontrado_
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
 | CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
-| HTTP ${res.status} | `src/pages/admin/DependencyHealth.tsx` |
-| Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
-| … +225 linhas — lista completa em `context.json` | |
+| … +227 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2379,7 +2388,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2710 testes em 145 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2722 testes em 146 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2467,6 +2476,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
+| `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
 | `src/tests/integration/supabase-db.test.ts` | 12 | required tables exist · approval_workflows has required columns · approval_steps has required columns · cron_heartbeats table is queryable … |
 | `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 12 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |

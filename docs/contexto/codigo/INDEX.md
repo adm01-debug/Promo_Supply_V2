@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2a98db83a9b40b52442ce4243a773e00cb10131b` (2026-11-22T16:36:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d9c58bcba7a917b88831f55eb08ebc692ee14481` (2026-11-22T16:58:22-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (745), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (747), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1311 |
-| arquivos_codigo | 818 |
-| linhas_codigo | 170377 |
+| arquivos_total | 1313 |
+| arquivos_codigo | 820 |
+| linhas_codigo | 171240 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 196 |
+| testes | 197 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 94 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
-- servicos_logica: src/lib (25), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (113), outro (43), co-localizado (*.test) (30)
+- servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (114), outro (43), co-localizado (*.test) (30)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -79,7 +79,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
 | hooks | 0 | 0 | 62 | 57 | 7 | 59 |
-| lib | 0 | 0 | 25 | 57 | 8 | 47 |
+| lib | 0 | 0 | 26 | 57 | 8 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 19 |
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `d9c58bc` feat(sourcing): substitui dados ficticios por metricas reais no console (#306)
 - 2026-11-22 `2a98db8` feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)
 - 2026-11-22 `32f87b2` feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)
 - 2026-11-22 `954238f` fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `0e453b0` fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)
 - 2026-11-22 `e81325a` docs(auditoria): marca L03 (spot-api no front) como concluido (#289)
 - 2026-11-22 `bc442e6` feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)
-- 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

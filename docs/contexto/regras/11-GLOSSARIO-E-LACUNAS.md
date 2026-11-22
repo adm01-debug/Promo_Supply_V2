@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a98db83a9` · branch `main` · 2026-11-22 19:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d9c58bcba7` · branch `main` · 2026-11-22 19:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -268,8 +268,8 @@
 | status | valor `EM_COTACAO` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SolicitacaoCard.tsx` |
 | status | valor `FORNECEDOR_SELECIONADO` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SolicitacaoCard.tsx` |
 | status | valor `AGUARDANDO_COTACAO` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SolicitacaoCard.tsx`<br>`escreve:src/types/legacyTypes.ts` |
-| status | valor `Otimizado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx`<br>`escreve:src/components/compras/SourcingHistoryConsole.tsx` |
-| status | valor `Crítico` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx`<br>`escreve:src/components/compras/SourcingHistoryConsole.tsx` |
+| status | valor `Otimizado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx`<br>`escreve:src/lib/sourcingAnalytics.ts` |
+| status | valor `Critico` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx` |
 | status | valor `read` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SupplierInteractionLog.tsx`<br>`compara:src/features/layout/components/chat/MessageBubble.tsx`<br>`escreve:src/components/compras/SupplierInteractionLog.tsx`<br>`escreve:src/features/layout/components/SupplierChat.tsx` |
 | status | valor `replied` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/compras/SupplierInteractionLog.tsx` |
 | status | valor `applied` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/contract/ContractDetailsTabs.tsx`<br>`compara:supabase/functions/generate-contract-pdf/index.ts` |

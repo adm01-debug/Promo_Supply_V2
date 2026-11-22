@@ -715,6 +715,7 @@
    "src/hooks/usePurchaseHistory.ts",
    "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
+   "src/lib/sourcingAnalytics.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/SourcingIntelligenceWidget.tsx": [

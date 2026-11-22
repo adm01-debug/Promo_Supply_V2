@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 196,
+ "total": 197,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 179
+  "unit": 180
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 113
+   "arquivos": 114
   },
   {
    "padrao": "outro",
@@ -986,6 +986,15 @@
    "casos": 18
   },
   {
+   "arquivo": "src/lib/__tests__/sourcingAnalytics.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "src/lib/sourcingAnalytics.ts"
+   ],
+   "casos": 11
+  },
+  {
    "arquivo": "src/lib/__tests__/storageFiles.test.ts",
    "tipo": "unit",
    "linhas": 69,
@@ -1853,6 +1862,7 @@
   "src/lib/safeTruncate.ts": 1,
   "src/lib/secureStorage.ts": 1,
   "src/lib/security.ts": 1,
+  "src/lib/sourcingAnalytics.ts": 1,
   "src/lib/storageFiles.ts": 1,
   "src/lib/supabaseQuery.ts": 1,
   "src/lib/supabaseRpc.ts": 1,
