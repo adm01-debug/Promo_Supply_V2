@@ -1,5 +1,11 @@
 import { corsHeaders, stripHtml } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
+import {
+  isLoginRedirect,
+  PORTAL_SESSION_TAG,
+  pickPortalSession,
+  type SpotSessionRow,
+} from "./sessions.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { getBreaker } from "../_shared/circuit_breaker.ts";
@@ -89,39 +95,37 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
   return userId;
 }
 
+// A tabela `spot_sessions` é compartilhada com a edge `spot-api`, que guarda ali o
+// token da API WS marcado com `metadata.tag = spot-api-token`. O portal guarda o
+// cookie PHPSESSID. Sem filtrar o tipo, esta função podia devolver o token da API
+// como se fosse cookie de portal e invalidar o token válido do `spot-api`.
+// Regras de seleção: sessions.ts (sessions_test.ts).
+
 // Get or create a valid SPOT session
 async function getSpotSession(supabase: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const { data: sessions } = await supabase
     .from("spot_sessions")
-    .select("*")
+    .select("id, session_cookie, is_valid, last_used_at, metadata")
     .eq("is_valid", true)
+    .contains("metadata", { tag: PORTAL_SESSION_TAG })
     .order("last_used_at", { ascending: false })
     .limit(10);
 
-  if (sessions && sessions.length > 0) {
-    const [latestSession, ...staleSessions] = sessions;
+  const pick = pickPortalSession((sessions ?? []) as SpotSessionRow[], Date.now());
 
-    if (staleSessions.length > 0) {
-      await supabase
-        .from("spot_sessions")
-        .update({ is_valid: false })
-        .in("id", staleSessions.map((session) => session.id));
-    }
-
-    const age = Date.now() - new Date(latestSession.last_used_at).getTime();
-    if (age < 30 * 60 * 1000) {
-      await supabase
-        .from("spot_sessions")
-        .update({ last_used_at: new Date().toISOString() })
-        .eq("id", latestSession.id);
-      return latestSession.session_cookie;
-    }
-
-    // Mark expired session as invalid
+  if (pick.invalidateIds.length > 0) {
     await supabase
       .from("spot_sessions")
       .update({ is_valid: false })
-      .eq("id", latestSession.id);
+      .in("id", pick.invalidateIds);
+  }
+
+  if (pick.cookie && pick.reuseId) {
+    await supabase
+      .from("spot_sessions")
+      .update({ last_used_at: new Date().toISOString() })
+      .eq("id", pick.reuseId);
+    return pick.cookie;
   }
 
   return await loginToSpot(supabase);
@@ -200,17 +204,19 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     throw new Error(`SPOT login falhou com status ${status}`);
   }
 
-  // Invalidate all old sessions before storing new one
+  // Invalidate all old portal sessions before storing new one
   await supabase
     .from("spot_sessions")
     .update({ is_valid: false })
-    .eq("is_valid", true);
+    .eq("is_valid", true)
+    .contains("metadata", { tag: PORTAL_SESSION_TAG });
 
   // Store new session
   const cookie = `PHPSESSID=${sessionId}`;
   await supabase.from("spot_sessions").insert({
     session_cookie: cookie,
     is_valid: true,
+    metadata: { tag: PORTAL_SESSION_TAG },
   });
 
     spotBreaker.recordSuccess();
@@ -243,12 +249,13 @@ async function spotFetch(
 
   // If redirected to login, re-authenticate
   const location = res.headers.get("location") || "";
-  if (location.includes("login") || location.includes("area-reservada")) {
-    // Invalidate all sessions
+  if (isLoginRedirect(location)) {
+    // Invalidate only portal sessions — nunca o token da API WS (`spot-api`).
     await supabase
       .from("spot_sessions")
       .update({ is_valid: false })
-      .eq("is_valid", true);
+      .eq("is_valid", true)
+      .contains("metadata", { tag: PORTAL_SESSION_TAG });
 
     const newCookie = await loginToSpot(supabase);
     return fetch(url, {
