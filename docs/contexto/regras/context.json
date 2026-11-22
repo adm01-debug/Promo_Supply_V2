@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "23566a22580b999a2595710b7b47e5afc116d304",
+  "sha": "495ab36c290597dc32ac43f49fc1520804385d3a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 12:04 UTC",
-  "files_total": 1289,
-  "code_files": 1126,
-  "code_lines": 193592,
+  "generated_at": "2026-11-22 12:09 UTC",
+  "files_total": 1290,
+  "code_files": 1127,
+  "code_lines": 193840,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6673bbfe563bdc36",
+ "facts_hash": "bd525c96c7002d1a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 325,
+   ".sql": 326,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -20783,13 +20783,15 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712221545_8154e7d9-83f7-4b82-b8d8-d3a6bca15333.sql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.level = 'error'::public.log_level THEN INSERT INTO public.system_alerts (tenant_id, alert_type, severity, message, metadata) VALUES (NEW.tenant_id, 'SYSTEM_ERROR', 'HIGH', NEW.message, NEW.context); END IF; RETURN NEW; END;",
+    "body": "DECLARE v_alert_id UUID; BEGIN IF NEW.level = 'error'::public.log_level THEN SELECT id INTO v_alert_id FROM public.system_alerts WHERE alert_type = 'SYSTEM_ERROR' AND resolved_at IS NULL AND message = NEW.message AND tenant_id IS NOT DISTINCT FROM NEW.tenant_id ORDER BY created_at DESC LIMIT 1; IF v_alert_id IS NULL THEN INSERT INTO public.system_alerts (tenant_id, alert_type, severity, message, metadata) VALUES ( NEW.tenant_id, 'SYSTEM_ERROR', 'HIGH', NEW.message, COALESCE(NEW.context, '{}'::jsonb) || jsonb_build_object('occurrences', 1, 'last_seen', now()) ); ELSE UPDATE public.system_alerts SET metadata = COALESCE(metadata, '{}'::jsonb) || jsonb_build_object( 'occurrences', COALESCE((meta …",
     "raises": [],
     "tables": [
-     "system_alerts"
+     "NEW",
+     "system_alerts",
+     "v_alert_id"
     ]
    },
    "count_legacy_storage_urls": {
@@ -20951,10 +20953,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 3600 END WHEN split_part(v_job.schedule, ' ', 2) ~ '^\\* …",
+    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 360 …",
     "raises": [],
     "tables": [
      "LATERAL",
@@ -22470,6 +22472,21 @@
     "raises": [],
     "tables": [
      "solicitacoes"
+    ]
+   },
+   "resolve_stale_system_error_alerts": {
+    "args": "",
+    "returns": "int",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_resolved INT; BEGIN WITH stale AS ( UPDATE public.system_alerts SET resolved_at = now() WHERE alert_type = 'SYSTEM_ERROR' AND resolved_at IS NULL AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours' RETURNING 1 ) SELECT count(*) INTO v_resolved FROM stale; RETURN v_resolved; END;",
+    "raises": [],
+    "tables": [
+     "stale",
+     "system_alerts",
+     "v_resolved"
     ]
    },
    "Returns": {
@@ -27068,6 +27085,7 @@
    "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
    "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+   "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -30949,6 +30967,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "resolve_stale_system_error_alerts",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "resolve_stale_system_error_alerts",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
    }
   ],
   "raises": [
@@ -35740,8 +35774,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 323,
-   "lines": 26296,
+   "files": 324,
+   "lines": 26544,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -56826,6 +56860,10 @@
     "line": "OR v_last_data < now() - interval '2 hours';"
    },
    {
+    "file": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    "line": "AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'"
+   },
+   {
     "file": "tests-e2e/global-setup.ts",
     "line": "await page.waitForSelector('input[type=\"email\"]', { timeout: 15_000 });"
    },
@@ -73285,13 +73323,15 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260712221545_8154e7d9-83f7-4b82-b8d8-d3a6bca15333.sql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.level = 'error'::public.log_level THEN INSERT INTO public.system_alerts (tenant_id, alert_type, severity, message, metadata) VALUES (NEW.tenant_id, 'SYSTEM_ERROR', 'HIGH', NEW.message, NEW.context); END IF; RETURN NEW; END;",
+    "body": "DECLARE v_alert_id UUID; BEGIN IF NEW.level = 'error'::public.log_level THEN SELECT id INTO v_alert_id FROM public.system_alerts WHERE alert_type = 'SYSTEM_ERROR' AND resolved_at IS NULL AND message = NEW.message AND tenant_id IS NOT DISTINCT FROM NEW.tenant_id ORDER BY created_at DESC LIMIT 1; IF v_alert_id IS NULL THEN INSERT INTO public.system_alerts (tenant_id, alert_type, severity, message, metadata) VALUES ( NEW.tenant_id, 'SYSTEM_ERROR', 'HIGH', NEW.message, COALESCE(NEW.context, '{}'::jsonb) || jsonb_build_object('occurrences', 1, 'last_seen', now()) ); ELSE UPDATE public.system_alerts SET metadata = COALESCE(metadata, '{}'::jsonb) || jsonb_build_object( 'occurrences', COALESCE((meta …",
     "raises": [],
     "tables": [
-     "system_alerts"
+     "NEW",
+     "system_alerts",
+     "v_alert_id"
     ]
    },
    "count_legacy_storage_urls": {
@@ -73453,10 +73493,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 3600 END WHEN split_part(v_job.schedule, ' ', 2) ~ '^\\* …",
+    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 360 …",
     "raises": [],
     "tables": [
      "LATERAL",
@@ -74972,6 +75012,21 @@
     "raises": [],
     "tables": [
      "solicitacoes"
+    ]
+   },
+   "resolve_stale_system_error_alerts": {
+    "args": "",
+    "returns": "int",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_resolved INT; BEGIN WITH stale AS ( UPDATE public.system_alerts SET resolved_at = now() WHERE alert_type = 'SYSTEM_ERROR' AND resolved_at IS NULL AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours' RETURNING 1 ) SELECT count(*) INTO v_resolved FROM stale; RETURN v_resolved; END;",
+    "raises": [],
+    "tables": [
+     "stale",
+     "system_alerts",
+     "v_resolved"
     ]
    },
    "Returns": {
@@ -79889,6 +79944,7 @@
    "record_failed_login",
    "refresh_mv_dashboard_kpis",
    "resolve_alert",
+   "resolve_stale_system_error_alerts",
    "run_all_health_scans",
    "sanitize_audit_metadata",
    "sanitize_session_token",
@@ -83680,6 +83736,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "resolve_stale_system_error_alerts",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "resolve_stale_system_error_alerts",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
    }
   ],
   "guards": [
@@ -113048,6 +113120,13 @@
    "path": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
    "lines": 165
   },
+  "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql": {
+   "path": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+   "lines": 248,
+   "temporal": [
+    "AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'"
+   ]
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113267,10 +113346,20 @@
   }
  },
  "git": {
-  "sha": "23566a22580b999a2595710b7b47e5afc116d304",
+  "sha": "495ab36c290597dc32ac43f49fc1520804385d3a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "495ab36",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
+    ]
+   },
    {
     "sha": "23566a2",
     "date": "2026-11-22",
@@ -113561,21 +113650,12 @@
      "AGENTS.md",
      "docs/agentes/catalogo-e-fornecedores.md"
     ]
-   },
-   {
-    "sha": "a441c3d",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(crons): religa crons de negocio via _invoke_edge_function do Vault (#231)",
-    "files": [
-     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    3
+    4
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113604,6 +113684,10 @@
    [
     ".github/workflows/aplicar-migration-prod.yml",
     2
+   ],
+   [
+    "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    1
    ],
    [
     "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
@@ -113647,10 +113731,6 @@
    ],
    [
     "supabase/functions/check-approval-escalations/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-cotacao-followup/index.ts",
     1
    ]
   ]

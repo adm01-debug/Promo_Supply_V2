@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 323,
+ "migrations": 324,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -266,6 +266,7 @@
   "record_failed_login",
   "refresh_mv_dashboard_kpis",
   "resolve_alert",
+  "resolve_stale_system_error_alerts",
   "run_all_health_scans",
   "sanitize_audit_metadata",
   "sanitize_session_token",

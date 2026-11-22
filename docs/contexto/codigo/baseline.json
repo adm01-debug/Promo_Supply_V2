@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "23566a22580b999a2595710b7b47e5afc116d304",
+  "commit": "495ab36c290597dc32ac43f49fc1520804385d3a",
   "branch": "main",
-  "data_commit": "2026-11-22T09:04:22-03:00",
+  "data_commit": "2026-11-22T09:08:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "495ab36",
+    "data": "2026-11-22",
+    "assunto": "fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)"
+   },
    {
     "sha": "23566a2",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "28421a9",
     "data": "2026-11-21",
     "assunto": "ci(prod): cria canal manual para aplicar migration versionada em producao (#237)"
-   },
-   {
-    "sha": "709f261",
-    "data": "2026-11-21",
-    "assunto": "docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)"
    }
   ],
-  "arquivos_mudados_7d": 232,
+  "arquivos_mudados_7d": 233,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 224
+    "commits": 225
    },
    {
     "autor": "dependabot[bot]",
@@ -318,7 +318,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1288,
+  "arquivos_total": 1289,
   "arquivos_codigo": 799,
   "linhas_codigo": 167073,
   "rotas": 55,
@@ -330,7 +330,7 @@
   "hooks": 90,
   "edge_functions": 39,
   "tabelas": 163,
-  "migrations": 323,
+  "migrations": 324,
   "cron_jobs": 74,
   "testes": 186,
   "workflows": 13,

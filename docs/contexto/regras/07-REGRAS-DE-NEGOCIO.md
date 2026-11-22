@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `23566a2258` · branch `main` · 2026-11-22 12:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `495ab36c29` · branch `main` · 2026-11-22 12:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1966,6 +1966,7 @@ _nenhum item encontrado_
 | `WHERE created_at < now() - interval '90 days'` | `supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql` |
 | `AND created_at > now() - interval '30 days'` | `supabase/migrations/20261117170000_corrige_alertas_sistema_e_agenda_scan_particoes.sql` |
 | `OR v_last_data < now() - interval '2 hours';` | `supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql` |
+| `AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'` | `supabase/migrations/20261122140000_dedupe_system_error_alerts.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 
