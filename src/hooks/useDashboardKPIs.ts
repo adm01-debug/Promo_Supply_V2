@@ -210,6 +210,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   return { 
     kpis: data || fallbackKPIs,
+    // Espelha os campos mais consumidos na raiz do retorno, para o consumidor
+    // nao precisar cavar em `kpis` (e para o SLA novo ficar visivel).
+    avgSla: (data || fallbackKPIs).avgSla,
+    taxaSlaReal: (data || fallbackKPIs).taxaSlaReal,
+    comparisons: (data || fallbackKPIs).comparisons,
     pipeline: data?.pipeline || fallbackKPIs.pipeline,
     urgentItems: data?.urgentItems || [],
     loading: isLoading,
