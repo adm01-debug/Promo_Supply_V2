@@ -259,6 +259,16 @@ export const useApprovalWorkflow = () => {
       await supabase.from('approval_workflows').update({ status: 'rejected', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
       await supabase.from('approval_steps').update({ status: 'skipped', comentario: 'Workflow rejected at previous step' })
         .eq('workflow_id', step.workflow_id).eq('status', 'pending');
+      // O trigger do banco só promove para 'aprovada' quando o workflow é aprovado;
+      // sem este update a solicitação ficaria 'pendente' para sempre após uma rejeição.
+      const { data: workflow } = await supabase.from('approval_workflows')
+        .select('solicitacao_id').eq('id', step.workflow_id).single();
+      if (workflow?.solicitacao_id) {
+        await supabase.from('solicitacoes')
+          .update({ status: 'rejeitada', updated_at: new Date().toISOString() })
+          .eq('id', workflow.solicitacao_id)
+          .in('status', ['pendente', 'em_cotacao']);
+      }
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',
         usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario },
