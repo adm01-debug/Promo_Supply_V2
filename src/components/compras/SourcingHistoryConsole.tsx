@@ -16,6 +16,7 @@ import {
   Lock, SearchCode
 } from "lucide-react";
 import { usePurchaseHistory, type PurchaseRecord, type SupplierHistory } from "@/hooks/usePurchaseHistory";
+import { exportToCSV } from "@/lib/exportData";
 import { cn, formatCurrency } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
@@ -91,6 +92,57 @@ export const SourcingHistoryConsole = () => {
     }
   };
 
+  const toDossierRows = (records: PurchaseRecord[]) =>
+    records.map((r) => ({
+      pedido: r.orderNumber,
+      produto: r.productName,
+      categoria: r.productCategory,
+      fornecedor: r.supplierName,
+      solicitacao: r.solicitacaoTitle || "Demanda Direta",
+      centro_custo: r.costCenterName || r.centroCusto || "Geral",
+      departamento: r.departamento || "",
+      quantidade: r.quantity,
+      preco_unitario: r.unitPrice,
+      total: r.totalPrice,
+      status: r.status,
+      data_compra: r.purchaseDate,
+    }));
+
+  const dossierColumns = [
+    { key: "pedido", label: "Pedido" },
+    { key: "produto", label: "Produto" },
+    { key: "categoria", label: "Categoria" },
+    { key: "fornecedor", label: "Fornecedor" },
+    { key: "solicitacao", label: "Solicitação" },
+    { key: "centro_custo", label: "Centro de Custo" },
+    { key: "departamento", label: "Departamento" },
+    { key: "quantidade", label: "Qtd" },
+    { key: "preco_unitario", label: "Preço Unitário", formatter: (v: unknown) => formatCurrency(Number(v)) },
+    { key: "total", label: "Total", formatter: (v: unknown) => formatCurrency(Number(v)) },
+    { key: "status", label: "Status" },
+    { key: "data_compra", label: "Data da Compra" },
+  ];
+
+  const exportarDossier = (records: PurchaseRecord[], nomeArquivo: string, escopo: string) => {
+    if (records.length === 0) {
+      toast.warning("Nada para exportar", {
+        description: "Nenhum registro corresponde ao filtro atual.",
+      });
+      return;
+    }
+
+    exportToCSV(
+      toDossierRows(records) as unknown as Record<string, unknown>[],
+      dossierColumns,
+      nomeArquivo
+    );
+    setLastActions((prev) => [...prev, `Dossier exportado (${records.length} registros)`]);
+    toast.success("Dossier exportado", {
+      description: `${records.length} registro(s) de ${escopo} no arquivo CSV.`,
+      icon: <FileText className="w-4 h-4" />,
+    });
+  };
+
   const getReliabilityColor = (score: number) => {
     if (score >= 4.5) return "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
     if (score >= 3.5) return "text-blue-500 bg-blue-500/10 border-blue-500/20";
@@ -128,10 +180,7 @@ export const SourcingHistoryConsole = () => {
             <Button 
               size="sm" 
               className="gap-2 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/40"
-              onClick={() => toast.success("Dossier Sourcing Elite v10.0 Exportado", {
-                description: "O documento contém análise de Kraljic, Radar de Performance e Matriz Geográfica.",
-                icon: <FileText className="w-4 h-4" />
-              })}
+              onClick={() => exportarDossier(filteredRecords, "dossier-sourcing-elite", "sourcing filtrado")}
             >
               <Download className="w-4 h-4" /> Exportar Dossier Elite 10/10
             </Button>
@@ -243,8 +292,17 @@ export const SourcingHistoryConsole = () => {
               <span>{filteredRecords.length} resultados encontrados. Deseja realizar ações em massa?</span>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.info("Modo de Seleção Ativado")}>Selecionar Tudo</Button>
-              <Button size="sm" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.success("Dossier Consolidado Gerado")}>Gerar Dossier Combinado</Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-[10px] uppercase font-bold"
+                onClick={() => {
+                  const cats = Array.from(new Set(filteredRecords.map((r) => r.productCategory)));
+                  setSelectedCategories(cats);
+                  setShowFilters(true);
+                }}
+              >Selecionar Tudo</Button>
+              <Button size="sm" className="h-7 text-[10px] uppercase font-bold" onClick={() => exportarDossier(filteredRecords, "dossier-sourcing-combinado", "resultados da busca")}>Gerar Dossier Combinado</Button>
             </div>
 
           </div>
