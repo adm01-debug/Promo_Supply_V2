@@ -26,7 +26,7 @@ catalogo, Fase 2 execucao vertical por item.
 ## Dados ficticios / fachadas que mentem na tela (impacto negocio)
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
-| fake-invoice | `process-invoice-idp` devolve NF por `Math.random` | CONCLUIDO (PR #177) | `process-invoice-idp/index.ts` determinÃ­stico por hash + `fonte=simulacao`; toast honesto em `DocumentosFiscais.tsx` |
+| fake-invoice | `process-invoice-idp` fabricava NF com valor fixo de R$ 1.250,50 e chave de zeros | CONCLUIDO (PR #283) | `process-invoice-idp` chama `callAIGateway` (OpenRouter, `google/gemini-2.5-flash`) com o PDF/imagem em base64; `extraction.ts` normaliza e devolve `null` + `campos_ausentes` em vez de inventar. Sem `OPENROUTER_API_KEY` ou com gateway fora responde 503 `fonte=indisponivel`. Front grava `status: pendente` (nao `validada`) e recusa gravar quando numero ou valor total nao foram lidos |
 | fake-ai-guided | `guided-buying-ai` responde por if/else literais, montado em todo app | CONCLUIDO (PR #177) | `guided-buying-ai/index.ts` usa `callAIGateway` real com fallback determinÃ­stico |
 | fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | CONCLUIDO (PR #181, merge 2026-11-20) | KPI SLA/card fabricado removido; dashboard Executivo/KPIs usam dados reais via RPC; top-5 = 77.5% prod. `kpiTargetsStore` virou metas (objetivos), nao dados simulados |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | CONCLUIDO (PR #194, merge 2026-11-20) | default `emailRecipients: []` + seed via `profile.email` em `SLASettingsPanel.tsx` |

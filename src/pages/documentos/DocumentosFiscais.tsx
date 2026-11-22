@@ -16,13 +16,15 @@ import { logger } from "@/lib/logger";
 type FiscalDocumentInsert = Database["public"]["Tables"]["fiscal_documents"]["Insert"];
 
 interface ExtractedInvoiceData {
-  numero_nf: string;
+  numero_nf: string | null;
   chave_acesso?: string | null;
   data_emissao?: string | null;
-  valor_total: number;
+  valor_total: number | null;
   valor_produtos?: number | null;
   valor_frete?: number | null;
-  fonte?: string | null;
+  fonte?: "ia" | "indisponivel" | "simulacao" | null;
+  campos_ausentes?: string[];
+  requer_revisao?: boolean;
 }
 
 const LEGACY_TENANT_ID = "00000000-0000-0000-0000-000000000000";
@@ -141,6 +143,15 @@ const DocumentosFiscais = () => {
       if (extractionError) throw extractionError;
       if (!extractedData) throw new Error("IA não retornou dados extraídos");
 
+      if (extractedData.fonte === "indisponivel" || !extractedData.numero_nf || extractedData.valor_total === null) {
+        throw new Error(
+          "Não foi possível ler os campos obrigatórios (número e valor total) da nota. " +
+          "Tente um arquivo mais legível ou importe o XML.",
+        );
+      }
+
+      const camposAusentes = extractedData.campos_ausentes ?? [];
+
       const payload: FiscalDocumentInsert = {
         numero_nf: extractedData.numero_nf,
         chave_acesso: extractedData.chave_acesso ?? null,
@@ -150,7 +161,8 @@ const DocumentosFiscais = () => {
         valor_frete: extractedData.valor_frete ?? null,
         source_type: 'pdf',
         file_path: filePath,
-        status: "validada",
+        // Extração por IA não valida nada: fica pendente até alguém revisar.
+        status: "pendente",
         uploaded_by: user?.id ?? null,
         tenant_id: LEGACY_TENANT_ID,
       };
@@ -158,10 +170,11 @@ const DocumentosFiscais = () => {
 
       if (dbError) throw dbError;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
-      const fonteSimulada = extractedData.fonte === "simulacao";
-      toast.success(fonteSimulada
-        ? "Nota importada (extração simulada — revisar valores antes de conciliar)"
-        : "Nota processada via IA com sucesso!");
+      toast.success(
+        camposAusentes.length > 0
+          ? `Nota ${extractedData.numero_nf} importada como pendente. Campos não lidos: ${camposAusentes.join(", ")}.`
+          : `Nota ${extractedData.numero_nf} importada como pendente de revisão.`,
+      );
     } catch (err: unknown) {
       logger.error("fiscal_documents.pdf_upload_failed", { error: err });
       const message = err instanceof Error ? err.message : "Erro desconhecido";
