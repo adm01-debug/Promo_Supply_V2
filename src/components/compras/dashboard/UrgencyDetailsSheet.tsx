@@ -28,7 +28,7 @@ import {
   Send
 } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -48,7 +48,40 @@ export const UrgencyDetailsSheet = ({
   onStatusUpdate 
 }: UrgencyDetailsSheetProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'details' | 'history'>('details');
+  const [escalando, setEscalando] = useState<'gerencia' | 'comprador' | null>(null);
+
+  /**
+   * Escalonamento e alerta ao comprador gravam notificação in-app real via
+   * edge `escalate-solicitacao`. Antes daqui os dois botões só exibiam toast,
+   * sem nenhum efeito no banco.
+   */
+  const notificar = useMutation({
+    mutationFn: async (target: 'gerencia' | 'comprador') => {
+      if (!itemId) throw new Error("Solicitação não identificada.");
+      setEscalando(target);
+      const { data, error } = await supabase.functions.invoke('escalate-solicitacao', {
+        body: { solicitacao_id: itemId, target },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || "Nenhum destinatário recebeu a notificação.");
+      return data as { destinatarios: number; notificacoes_criadas: number };
+    },
+    onSuccess: (data, target) => {
+      toast.success(
+        target === 'gerencia'
+          ? `Escalonamento enviado para ${data.notificacoes_criadas} gestor(es).`
+          : `Alerta enviado para ${data.notificacoes_criadas} comprador(es).`
+      );
+      void queryClient.invalidateQueries({ queryKey: ['solicitacao-detalhes', itemId] });
+    },
+    onError: (error: unknown) => {
+      logger.error('Falha ao notificar escalonamento', { error });
+      toast.error(error instanceof Error ? error.message : "Falha ao enviar a notificação.");
+    },
+    onSettled: () => setEscalando(null),
+  });
 
   const { data: item, isLoading } = useQuery({
     queryKey: ['solicitacao-detalhes', itemId],
@@ -214,9 +247,10 @@ export const UrgencyDetailsSheet = ({
                         size="sm" 
                         variant="destructive" 
                         className="h-8 text-[10px] font-black uppercase tracking-widest w-full"
-                        onClick={() => toast.info("Notificação de prioridade máxima enviada para a gerência")}
+                        onClick={() => notificar.mutate('gerencia')}
+                        disabled={escalando !== null}
                       >
-                        Escalar para Gerência
+                        {escalando === 'gerencia' ? 'Enviando...' : 'Escalar para Gerência'}
                       </Button>
                     </div>
                   )}
@@ -288,10 +322,11 @@ export const UrgencyDetailsSheet = ({
                   <Button 
                     variant="ghost" 
                     className="w-full h-10 text-xs text-muted-foreground gap-2"
-                    onClick={() => toast.success("Notificação enviada ao comprador")}
+                    onClick={() => notificar.mutate('comprador')}
+                    disabled={escalando !== null}
                   >
                     <Send className="w-3.5 h-3.5" />
-                    Alertar Comprador Responsável
+                    {escalando === 'comprador' ? 'Enviando alerta...' : 'Alertar Comprador Responsável'}
                   </Button>
                 </div>
               </div>
