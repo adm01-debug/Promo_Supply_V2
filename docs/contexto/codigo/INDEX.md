@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `640e5d2926ef038e14ca82e3327431194ace2b86` (2026-11-22T09:30:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4c78723596b5851e3c088df25a1b22aacf68868a` (2026-11-22T10:00:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (327), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (727), SQL (327), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1290 |
-| arquivos_codigo | 799 |
-| linhas_codigo | 167164 |
+| arquivos_total | 1291 |
+| arquivos_codigo | 800 |
+| linhas_codigo | 167279 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 186 |
+| testes | 187 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 92 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (27)
+- testes: co-localizado (__tests__) (109), outro (40), co-localizado (*.test) (28)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (33)
+- docs/pendencias/_indice.md (34)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (13)
 - docs/ci/README.md (12)
 - package.json (12)
@@ -416,6 +416,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `4c78723` fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)
+- 2026-11-22 `7ba0757` fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)
 - 2026-11-22 `640e5d2` fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)
 - 2026-11-22 `ffe439a` fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)
 - 2026-11-22 `74d01a2` fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)
@@ -429,8 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
 - 2026-11-21 `e39f3aa` fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)
 - 2026-11-21 `502c3b5` fix(spot): permite getOrders no cron para popular spot_pedidos (#256)
-- 2026-11-21 `9200429` fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)
-- 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

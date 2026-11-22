@@ -22,6 +22,7 @@
   "supabase/functions/_shared/logLevel.ts",
   "supabase/functions/_shared/logger.fuzz.test.ts",
   "supabase/functions/_shared/logger.ts",
+  "supabase/functions/_shared/notifications.test.ts",
   "supabase/functions/_shared/notifications.ts",
   "supabase/functions/_shared/punchout_crypto.test.ts",
   "supabase/functions/_shared/punchout_crypto.ts",

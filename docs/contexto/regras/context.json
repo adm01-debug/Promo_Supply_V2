@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "640e5d2926ef038e14ca82e3327431194ace2b86",
+  "sha": "4c78723596b5851e3c088df25a1b22aacf68868a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 12:30 UTC",
-  "files_total": 1291,
-  "code_files": 1128,
-  "code_lines": 194122,
+  "generated_at": "2026-11-22 13:01 UTC",
+  "files_total": 1292,
+  "code_files": 1129,
+  "code_lines": 194237,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "30b61b33aabdbdb1",
+ "facts_hash": "e98948e7edf0a182",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 378,
+   ".ts": 379,
    ".tsx": 348,
    ".sql": 327,
    ".mjs": 67,
@@ -35654,8 +35654,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 90,
-   "lines": 15876,
+   "files": 91,
+   "lines": 15991,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35770,6 +35770,7 @@
     "supabase/functions/_shared/logLevel.ts",
     "supabase/functions/_shared/logger.fuzz.test.ts",
     "supabase/functions/_shared/logger.ts",
+    "supabase/functions/_shared/notifications.test.ts",
     "supabase/functions/_shared/notifications.ts",
     "supabase/functions/_shared/punchout_crypto.test.ts",
     "supabase/functions/_shared/punchout_crypto.ts",
@@ -35833,8 +35834,7 @@
     "supabase/functions/spot-api/index.ts",
     "supabase/functions/spot-proxy/index.ts",
     "supabase/functions/system-simulation/index.ts",
-    "supabase/functions/telemetry/index.test.ts",
-    "supabase/functions/telemetry/index.ts"
+    "supabase/functions/telemetry/index.test.ts"
    ]
   },
   {
@@ -67515,6 +67515,22 @@
    {
     "file": "supabase/functions/_shared/logLevel.test.ts",
     "name": "context circular nao quebra a construcao da linha"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "insertNotification resolve tenant por user_id, nao pela PK"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "insertNotification nao consulta profiles quando tenant_id vem na origem"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "insertNotification devolve sem_tenant quando o perfil nao tem tenant"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "insertNotificationsBatch resolve tenants por user_id"
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
@@ -107890,9 +107906,24 @@
    "doc": "Centralized logging utility for Edge Functions. Enforces JSON structured logging for observability and persistence.",
    "uses_service_role": true
   },
+  "supabase/functions/_shared/notifications.test.ts": {
+   "path": "supabase/functions/_shared/notifications.test.ts",
+   "lines": 112,
+   "is_test": true,
+   "errors": [
+    ", title: "
+   ],
+   "doc": "Regressão: `insertNotification`/`insertNotificationsBatch` resolviam o `tenant_id` por `profiles.id` (PK própria) em vez de `profiles.user_id`. Em prod só 8 dos 12 perfis têm `id = user_id`, então o alerta era descartado como `sem_tenant` para os demais. Rodar: deno test supabase/functions/_shared/n …",
+   "tests": [
+    "insertNotification resolve tenant por user_id, nao pela PK",
+    "insertNotification nao consulta profiles quando tenant_id vem na origem",
+    "insertNotification devolve sem_tenant quando o perfil nao tem tenant",
+    "insertNotificationsBatch resolve tenants por user_id"
+   ]
+  },
   "supabase/functions/_shared/notifications.ts": {
    "path": "supabase/functions/_shared/notifications.ts",
-   "lines": 97,
+   "lines": 100,
    "exports": [
     "interface NotificationTarget",
     "interface NotificationResult",
@@ -107923,8 +107954,8 @@
    ],
    "table_cols": {
     "profiles": [
-     "id",
-     "tenant_id"
+     "tenant_id",
+     "user_id"
     ],
     "notifications": [
      "created_at",
@@ -113494,10 +113525,29 @@
   }
  },
  "git": {
-  "sha": "640e5d2926ef038e14ca82e3327431194ace2b86",
+  "sha": "4c78723596b5851e3c088df25a1b22aacf68868a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4c78723",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)",
+    "files": [
+     "supabase/functions/_shared/notifications.test.ts",
+     "supabase/functions/_shared/notifications.ts"
+    ]
+   },
+   {
+    "sha": "7ba0757",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)",
+    "files": [
+     "docs/pendencias/_indice.md"
+    ]
+   },
    {
     "sha": "640e5d2",
     "date": "2026-11-22",
@@ -113784,24 +113834,6 @@
      ".github/workflows/aplicar-migration-prod.yml",
      "docs/ci/README.md"
     ]
-   },
-   {
-    "sha": "709f261",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs(pendencias): hk-push concluido com SW de push entregue (#234) (#236)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
-   },
-   {
-    "sha": "aef9bff",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: hook useCatalogoPim lê catálogo e preços do PIM via external-db-bridge (#235)",
-    "files": [
-     "src/hooks/useCatalogoPim.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113822,6 +113854,10 @@
     3
    ],
    [
+    "supabase/functions/_shared/notifications.ts",
+    2
+   ],
+   [
     "src/integrations/supabase/types.ts",
     2
    ],
@@ -113836,6 +113872,10 @@
    [
     ".github/workflows/aplicar-migration-prod.yml",
     2
+   ],
+   [
+    "supabase/functions/_shared/notifications.test.ts",
+    1
    ],
    [
     ".github/workflows/types-sync.yml",
@@ -113875,14 +113915,6 @@
    ],
    [
     "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
-    1
-   ],
-   [
-    "docs/agentes/estado-spot-sync.md",
-    1
-   ],
-   [
-    "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
     1
    ]
   ]

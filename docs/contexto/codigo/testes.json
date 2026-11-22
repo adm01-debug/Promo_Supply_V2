@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 186,
+ "total": 187,
  "por_tipo": {
   "contrato": 5,
   "e2e": 9,
   "pytest": 2,
-  "unit": 170
+  "unit": 171
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 27
+   "arquivos": 28
   },
   {
    "padrao": "tests-e2e/",
@@ -1458,6 +1458,15 @@
    "casos": 16
   },
   {
+   "arquivo": "supabase/functions/_shared/notifications.test.ts",
+   "tipo": "unit",
+   "linhas": 112,
+   "testa": [
+    "supabase/functions/_shared/notifications.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "supabase/functions/_shared/punchout_crypto.test.ts",
    "tipo": "unit",
    "linhas": 57,
@@ -1806,6 +1815,7 @@
   "supabase/functions/_shared/fuzzer.ts": 2,
   "supabase/functions/_shared/logLevel.ts": 1,
   "supabase/functions/_shared/logger.ts": 1,
+  "supabase/functions/_shared/notifications.ts": 1,
   "supabase/functions/_shared/punchout_crypto.ts": 1,
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
