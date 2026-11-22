@@ -1,8 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+﻿import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
   saveOfflineEntries,
+  isLineComplete,
+  statusFromReceived,
+  buildReceivingObservation,
 } from '../recebimentoHelpers';
 import type { ReceivingEntry } from '../recebimentoHelpers';
 
@@ -16,7 +19,7 @@ const makeEntry = (overrides: Partial<ReceivingEntry> = {}): ReceivingEntry => (
   ...overrides,
 });
 
-// ─── OFFLINE_STORAGE_KEY ──────────────────────────────────────────────────────
+// â”€â”€â”€ OFFLINE_STORAGE_KEY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe('OFFLINE_STORAGE_KEY', () => {
   it('is a non-empty string', () => {
@@ -35,7 +38,7 @@ describe('OFFLINE_STORAGE_KEY', () => {
   });
 });
 
-// ─── getOfflineEntries ────────────────────────────────────────────────────────
+// â”€â”€â”€ getOfflineEntries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe('getOfflineEntries', () => {
   beforeEach(() => {
@@ -99,7 +102,7 @@ describe('getOfflineEntries', () => {
   });
 });
 
-// ─── saveOfflineEntries ───────────────────────────────────────────────────────
+// â”€â”€â”€ saveOfflineEntries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe('saveOfflineEntries', () => {
   beforeEach(() => {
@@ -173,5 +176,54 @@ describe('saveOfflineEntries', () => {
     const result = getOfflineEntries();
     expect(result[0].items[0].observacao).toBe('com avaria');
     expect(result[0].items[0].quantidade_recebida).toBe(10);
+  });
+});
+
+// ─── statusFromReceived / isLineComplete ────────────────────────────────────
+
+describe('statusFromReceived', () => {
+  const items = [
+    { id: 'A', quantidade: 100 },
+    { id: 'B', quantidade: 50 },
+  ];
+
+  it('marca parcial quando recebe 1 de 100 (nao entregue)', () => {
+    expect(statusFromReceived(items, { A: 1, B: 0 })).toBe('parcial');
+  });
+
+  it('so marca entregue quando todas as linhas cobrem a quantidade pedida', () => {
+    expect(statusFromReceived(items, { A: 100, B: 50 })).toBe('entregue');
+  });
+
+  it('marca parcial quando uma linha esta completa e a outra nao', () => {
+    expect(statusFromReceived(items, { A: 100, B: 10 })).toBe('parcial');
+  });
+
+  it('nao mexe no status quando nada foi recebido', () => {
+    expect(statusFromReceived(items, { A: 0, B: 0 })).toBeUndefined();
+  });
+
+  it('aceita recebimento acima do pedido como completo', () => {
+    expect(statusFromReceived(items, { A: 120, B: 50 })).toBe('entregue');
+  });
+
+  it('isLineComplete compara com a quantidade pedida, nao com zero', () => {
+    expect(isLineComplete({ quantidade: 10 }, 1)).toBe(false);
+    expect(isLineComplete({ quantidade: 10 }, 10)).toBe(true);
+  });
+});
+
+describe('buildReceivingObservation', () => {
+  it('devolve null quando nao ha observacao', () => {
+    expect(buildReceivingObservation({ A: '', B: '   ' }, '')).toBeNull();
+  });
+
+  it('consolida observacoes de itens e a geral', () => {
+    expect(buildReceivingObservation({ A: 'caixa amassada' }, 'entregar depois'))
+      .toBe('Itens: caixa amassada — entregar depois');
+  });
+
+  it('usa so a observacao geral quando nao ha nota por item', () => {
+    expect(buildReceivingObservation({}, 'faltou 1 unidade')).toBe('faltou 1 unidade');
   });
 });

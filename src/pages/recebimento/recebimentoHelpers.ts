@@ -96,6 +96,41 @@ export function buildPendingLines(
     }));
 }
 
+/**
+ * Uma linha so esta recebida quando a quantidade recebida cobre a pedida.
+ * Usar `> 0` marcava o pedido como `entregue` com 1 unidade de 100, e o trigger
+ * `trg_pedido_entregue_status` entao liberava pagamento e concluia a solicitacao.
+ */
+export function isLineComplete(item: { quantidade: number }, recebida: number): boolean {
+  return recebida >= item.quantidade;
+}
+
+/** Status do pedido apos o recebimento; `undefined` quando nada foi recebido. */
+export function statusFromReceived(
+  items: { id: string; quantidade: number }[],
+  receivedQty: Record<string, number>,
+): "entregue" | "parcial" | undefined {
+  const total = items.reduce((sum, item) => sum + (receivedQty[item.id] || 0), 0);
+  if (total <= 0) return undefined;
+  return items.every((item) => isLineComplete(item, receivedQty[item.id] || 0))
+    ? "entregue"
+    : "parcial";
+}
+
+/** Observacoes do recebimento consolidadas para a coluna `pedidos.observacoes`. */
+export function buildReceivingObservation(
+  itemNotes: Record<string, string>,
+  generalNote: string,
+): string | null {
+  const lines = Object.entries(itemNotes)
+    .map(([, note]) => note.trim())
+    .filter(Boolean);
+  const parts: string[] = [];
+  if (lines.length > 0) parts.push(`Itens: ${lines.join(" | ")}`);
+  if (generalNote.trim()) parts.push(generalNote.trim());
+  return parts.length > 0 ? parts.join(" — ") : null;
+}
+
 /** Data de previsao do pedido complementar: 7 dias a frente, em YYYY-MM-DD. */
 export function defaultForecastDate(now: Date = new Date()): string {
   return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
