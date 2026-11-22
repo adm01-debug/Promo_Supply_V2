@@ -47,6 +47,7 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-fiscal | `fiscal-orchestrator` resposta desonesta + sem retry worker | CONCLUIDO (PR #121) â€” retry SEFAZ com backoff + resposta honesta (`fiscal_events`, "agendado para reprocessamento"); item desatualizado | `fiscal-orchestrator/index.ts:28-63,130-165` |
 | edge-bridge | (integracao completa, falta EXTERNAL_DB_URL/KEY em prod) | CONCLUIDO (refutado - nao morto; JWT+allowlist+rate limit em external-db-bridge/index.ts, deploy :100) | validate-bridge.ts |
 | edge-suggestion | `ai-supplier-suggestion` sem chamador em src | CONCLUIDO (PR #207, merge 2026-11-20) — AISupplierSuggestion consulta edge real com fallback honesto | AISupplierSuggestion.tsx |
+| obs-cron-watchdog | `cron_watchdog()` filtrava 13 nomes de job (11 inexistentes) e **nunca foi agendado** — vigiava 2 de 26 jobs e mesmo esses nunca eram checados | CONCLUIDO (PR #266, 2026-11-22) | Medido em prod: `weekly-procurement-report`, `weekly-summary-report-job` e `cotacao-followup-check` agendados desde `20261121153000` e com `last_run = null`, sem alerta. Passa a vigiar todo job ativo, SLA derivado do `schedule` (3× período, mín. 10 min), dedupe por alerta aberto e auto-resolução. Job `123` `cron-watchdog-15min` ativo |
 
 ## Front - hooks (L07) mortos / parciais
 | ID | Item | Estado | Fonte |
