@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { adaptFornecedoresToLegacy, adaptCotacoesFromDB } from '../cotacaoHelpers';
+import { adaptFornecedoresToLegacy, adaptCotacoesFromDB, buildQuoteAnalysis, type CotacaoAPI } from '../cotacaoHelpers';
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
@@ -252,5 +252,72 @@ describe('adaptCotacoesFromDB', () => {
     expect(result).toHaveLength(2);
     expect(result[0].id).toBe('c1');
     expect(result[1].id).toBe('c2');
+  });
+});
+
+const makeQuote = (overrides: Partial<CotacaoAPI> = {}): CotacaoAPI => ({
+  id: 'q1',
+  fornecedor: 'Alpha',
+  fornecedor_id: 's1',
+  status: 'encontrado',
+  valorUnitario: 10,
+  quantidadeDisponivel: 10,
+  prazoEntrega: 5,
+  frete: 0,
+  freteInfo: 'Incluso',
+  condicaoPagamento: '30 dias',
+  total: 100,
+  ...overrides,
+});
+
+describe('buildQuoteAnalysis', () => {
+  it('retorna null quando nao ha cotacao com valor', () => {
+    expect(buildQuoteAnalysis([])).toBeNull();
+    expect(buildQuoteAnalysis([makeQuote({ total: 0 })])).toBeNull();
+  });
+
+  it('aponta o menor total e a economia calculada sobre a media real', () => {
+    const result = buildQuoteAnalysis([
+      makeQuote({ id: 'a', fornecedor: 'Alpha', fornecedor_id: 's1', total: 100 }),
+      makeQuote({ id: 'b', fornecedor: 'Beta', fornecedor_id: 's2', total: 200 }),
+    ]);
+    expect(result).not.toBeNull();
+    expect(result?.bestSupplierName).toBe('Alpha');
+    expect(result?.bestSupplierId).toBe('s1');
+    expect(result?.bestTotal).toBe(100);
+    expect(result?.averageTotal).toBe(150);
+    expect(result?.savingsVsAverage).toBe(50);
+    expect(result?.savingsVsAveragePercent).toBe(33.3);
+    expect(result?.registeredQuotes).toBe(2);
+  });
+
+  it('nao inventa economia quando so existe uma cotacao', () => {
+    const result = buildQuoteAnalysis([makeQuote({ total: 100 })]);
+    expect(result?.savingsVsAverage).toBe(0);
+    expect(result?.lines[0]).toContain('Sem base para comparar economia');
+  });
+
+  it('declara quantas cotacoes estao sem prazo em vez de afirmar cumprimento', () => {
+    const result = buildQuoteAnalysis([
+      makeQuote({ id: 'a', total: 100, prazoEntrega: 5 }),
+      makeQuote({ id: 'b', total: 200, prazoEntrega: 0 }),
+    ]);
+    expect(result?.withoutDeliveryDate).toBe(1);
+    expect(result?.lines.join(' ')).toContain('sem prazo de entrega informado');
+    expect(result?.lines.join(' ')).not.toContain('zero delivery delays');
+  });
+
+  it('informa o menor prazo quando todas as cotacoes tem prazo', () => {
+    const result = buildQuoteAnalysis([
+      makeQuote({ id: 'a', total: 100, prazoEntrega: 9 }),
+      makeQuote({ id: 'b', total: 200, prazoEntrega: 3 }),
+    ]);
+    expect(result?.withoutDeliveryDate).toBe(0);
+    expect(result?.lines[1]).toContain('menor e 3 dias');
+  });
+
+  it('e deterministico', () => {
+    const quotes = [makeQuote({ id: 'a', total: 100 }), makeQuote({ id: 'b', total: 200 })];
+    expect(buildQuoteAnalysis(quotes)).toEqual(buildQuoteAnalysis(quotes));
   });
 });

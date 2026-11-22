@@ -30,6 +30,62 @@ interface CotacaoRow {
   score_total?: number | null;
 }
 
+export interface QuoteAnalysis {
+  bestSupplierId: string | null;
+  bestSupplierName: string | null;
+  bestTotal: number | null;
+  averageTotal: number | null;
+  savingsVsAverage: number | null;
+  savingsVsAveragePercent: number | null;
+  registeredQuotes: number;
+  withoutDeliveryDate: number;
+  lines: string[];
+}
+
+/**
+ * Analise deterministica das cotacoes registradas. Nao chama IA nem inventa
+ * risco/prazo: so calcula o que os dados das cotacoes permitem afirmar.
+ */
+export function buildQuoteAnalysis(quotes: CotacaoAPI[]): QuoteAnalysis | null {
+  const valid = quotes.filter(q => Number.isFinite(q.total) && q.total > 0);
+  if (valid.length === 0) return null;
+
+  const sorted = [...valid].sort((a, b) => a.total - b.total);
+  const best = sorted[0];
+  const averageTotal = Number((valid.reduce((sum, q) => sum + q.total, 0) / valid.length).toFixed(2));
+  const savingsVsAverage = Number((averageTotal - best.total).toFixed(2));
+  const savingsVsAveragePercent =
+    averageTotal > 0 ? Number(((savingsVsAverage / averageTotal) * 100).toFixed(1)) : null;
+  const withoutDeliveryDate = valid.filter(q => !q.prazoEntrega || q.prazoEntrega <= 0).length;
+
+  const lines: string[] = [];
+  lines.push(
+    best.total === averageTotal
+      ? `Apenas **${best.fornecedor}** com cotacao registrada (R$ ${best.total.toFixed(2)}). Sem base para comparar economia.`
+      : `**${best.fornecedor}** tem o menor total registrado: R$ ${best.total.toFixed(2)} — ${savingsVsAveragePercent ?? 0}% abaixo da media das ${valid.length} cotacoes (R$ ${averageTotal.toFixed(2)}).`
+  );
+  if (withoutDeliveryDate > 0) {
+    lines.push(`${withoutDeliveryDate} de ${valid.length} cotacoes sem prazo de entrega informado — nao ha como afirmar cumprimento de prazo.`);
+  } else {
+    lines.push(`Todas as ${valid.length} cotacoes tem prazo informado; o menor e ${Math.min(...valid.map(q => q.prazoEntrega))} dias.`);
+  }
+  lines.push(
+    'Risco de entrega e historico do fornecedor nao entram nesta analise: use o SLA por fornecedor nos relatorios.'
+  );
+
+  return {
+    bestSupplierId: best.fornecedor_id ?? null,
+    bestSupplierName: best.fornecedor,
+    bestTotal: best.total,
+    averageTotal,
+    savingsVsAverage,
+    savingsVsAveragePercent,
+    registeredQuotes: valid.length,
+    withoutDeliveryDate,
+    lines,
+  };
+}
+
 export interface CotacaoAPI {
   id: string;
   fornecedor: string;
