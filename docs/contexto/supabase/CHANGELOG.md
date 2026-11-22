@@ -2,6 +2,19 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 12:16 UTC
+
+- **colunas** adicionado (3): `public.cron_watchdog_seen.first_seen`, `public.cron_watchdog_seen.jobid`, `public.cron_watchdog_seen.jobname`
+- **constraints** adicionado (1): `public.cron_watchdog_seen.cron_watchdog_seen_pkey`
+- **cron jobs** adicionado (1): `123:cron-watchdog-15min`
+- **functions** adicionado (1): `public.resolve_stale_system_error_alerts()`
+- **functions** alterado (4): `public._invoke_xbz_sync()`, `public.check_telemetry_alerts()`, `public.cron_watchdog()`, `public.xbz_sync_watchdog()`
+- **grants** adicionado (1): `public.cron_watchdog_seen:service_role`
+- **indexes** adicionado (1): `public.cron_watchdog_seen_pkey`
+- **lints** adicionado (1): `rls_no_policies:public.cron_watchdog_seen`
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_25`
+- **tabelas** adicionado (1): `public.cron_watchdog_seen`
+
 ## 2026-11-21 23:10 UTC
 
 - **cron jobs** adicionado (2): `121:spot-api-sync-orders-30min`, `122:spot-api-sync-stock`

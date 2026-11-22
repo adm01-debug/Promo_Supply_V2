@@ -197,6 +197,7 @@ Uso e tamanho em `stats.md`.
 | public.creditos_fornecedor | idx_creditos_fornecedor_utilizado_em_pagamento_id | btree | utilizado_em_pagamento_id | não | sim |  |
 | public.creditos_fornecedor | idx_creditos_status | btree | status | não | sim |  |
 | public.cron_heartbeats | cron_heartbeats_pkey | btree | job_name | sim | sim |  |
+| public.cron_watchdog_seen | cron_watchdog_seen_pkey | btree | jobid | sim | sim |  |
 | public.currencies | currencies_pkey | btree | code | sim | sim |  |
 | public.dashboard_filter_favorites | dashboard_filter_favorites_pkey | btree | id | sim | sim |  |
 | public.dashboard_filter_favorites | idx_dashboard_filters_org | btree | organization_id | não | sim |  |

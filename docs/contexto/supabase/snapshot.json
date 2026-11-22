@@ -6199,6 +6199,45 @@
         "generated": null,
         "identity": null,
         "is_enum": false,
+        "name": "jobid",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "cron_watchdog_seen",
+        "type": "integer"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "jobname",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "cron_watchdog_seen",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "first_seen",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "cron_watchdog_seen",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
         "name": "code",
         "nullable": false,
         "position": 1,
@@ -28478,6 +28517,23 @@
       },
       {
         "columns": [
+          "jobid"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (jobid)",
+        "name": "cron_watchdog_seen_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "cron_watchdog_seen",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "code"
         ],
         "deferrable": false,
@@ -36480,6 +36536,15 @@
           "jobname": "spot-api-sync-stock",
           "schedule": "*/20 * * * *",
           "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public.cron_watchdog();",
+          "database": "postgres",
+          "jobid": 123,
+          "jobname": "cron-watchdog-15min",
+          "schedule": "*/15 * * * *",
+          "username": "postgres"
         }
       ]
     },
@@ -36651,9 +36716,13 @@
             {
               "file": "supabase/migrations/20261120165300_versiona_job_xbz_sync_30min.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [
             "112:xbz-sync-pedidos-30min"
           ],
@@ -38024,9 +38093,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [
@@ -38044,7 +38117,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "250bb4f6683bbf93",
+        "definition_sha": "e9106caf5d584c2d",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -38823,10 +38896,16 @@
             {
               "file": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 3,
-          "cron": [],
+          "code_total_files": 4,
+          "cron": [
+            "123:cron-watchdog-15min"
+          ],
           "db": [],
           "triggers": [],
           "views": []
@@ -38836,7 +38915,7 @@
           "search_path=public, cron, extensions"
         ],
         "definition": null,
-        "definition_sha": "367ea7c10db77966",
+        "definition_sha": "97a00765266f3112",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -41309,6 +41388,43 @@
         "name": "resolve_alert",
         "owner": "postgres",
         "returns": "system_alerts",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+              "hits": 2
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [
+            "public.cron_watchdog"
+          ],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "9e085c581851465a",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "resolve_stale_system_error_alerts",
+        "owner": "postgres",
+        "returns": "integer",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -44471,7 +44587,7 @@
           "search_path=public, extensions, cron"
         ],
         "definition": null,
-        "definition_sha": "7093c3296826a575",
+        "definition_sha": "e6f0e128d715ca44",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -45505,6 +45621,12 @@
           "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "cron_heartbeats"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "cron_watchdog_seen"
         },
         {
           "grantee": "anon",
@@ -50621,6 +50743,20 @@
         "predicate": null,
         "schema": "public",
         "table": "cron_heartbeats"
+      },
+      {
+        "columns": [
+          "jobid"
+        ],
+        "definition": "CREATE UNIQUE INDEX cron_watchdog_seen_pkey ON public.cron_watchdog_seen USING btree (jobid)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "cron_watchdog_seen_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "cron_watchdog_seen"
       },
       {
         "columns": [
@@ -57835,6 +57971,12 @@
     ],
     "lints": [
       {
+        "code": "rls_no_policies",
+        "detail": "RLS ligado sem policies: inacessível via API (só service_role).",
+        "object": "public.cron_watchdog_seen",
+        "severity": "MÉDIA"
+      },
+      {
         "code": "extension_in_public",
         "detail": "Extensão instalada no schema public (recomendado: schema extensions).",
         "object": "btree_gist",
@@ -63848,6 +63990,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_24"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_25"
         }
       ]
     },
@@ -64765,6 +64912,21 @@
         "is_partition": false,
         "kind": "table",
         "name": "cron_heartbeats",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "cron_watchdog_seen",
         "owner": "postgres",
         "parent": null,
         "partition_bound": null,

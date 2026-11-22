@@ -30,3 +30,4 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 120 | weekly-summary-report-job | `0 8 * * 1` | sim | postgres | ci_snapshot | `SELECT public._invoke_edge_function('weekly-summary-report');` |
 | 121 | spot-api-sync-orders-30min | `*/30 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('getOrders');` |
 | 122 | spot-api-sync-stock | `*/20 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncStock');` |
+| 123 | cron-watchdog-15min | `*/15 * * * *` | sim | postgres | postgres | `SELECT public.cron_watchdog();` |

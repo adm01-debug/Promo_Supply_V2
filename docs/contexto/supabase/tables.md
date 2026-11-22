@@ -40,6 +40,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.cotacoes](tables/public/cotacoes.md) | table | sim | 3 | 32 | sim |  |
 | [public.creditos_fornecedor](tables/public/creditos_fornecedor.md) | table | sim | 2 | 16 | não |  |
 | [public.cron_heartbeats](tables/public/cron_heartbeats.md) | table | sim | 2 | 8 | não | Health monitoring for scheduled cron edge functions. Each job upserts a row after each run. |
+| [public.cron_watchdog_seen](tables/public/cron_watchdog_seen.md) | table | sim | 0 | 3 | não | Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico. |
 | [public.currencies](tables/public/currencies.md) | table | sim | 1 | 6 | não |  |
 | [public.dashboard_filter_favorites](tables/public/dashboard_filter_favorites.md) | table | sim | 4 | 11 | não |  |
 | [public.dashboard_layouts](tables/public/dashboard_layouts.md) | table | sim | 3 | 6 | não |  |

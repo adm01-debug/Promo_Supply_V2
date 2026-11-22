@@ -4,6 +4,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 
 | severidade | código | objeto | detalhe |
 |---|---|---|---|
+| MÉDIA | rls_no_policies | public.cron_watchdog_seen | RLS ligado sem policies: inacessível via API (só service_role). |
 | BAIXA | extension_in_public | btree_gist | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | fk_without_index | public.entity_versions.entity_versions_changed_by_fkey | FK sem índice nas colunas ['changed_by']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | fk_without_index | public.workflow_tasks.workflow_tasks_assigned_to_user_fkey | FK sem índice nas colunas ['assigned_to_user']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
