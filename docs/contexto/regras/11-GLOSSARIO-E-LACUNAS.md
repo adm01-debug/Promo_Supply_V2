@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d2c6d788b8` · branch `main` · 2026-11-22 16:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0051cc3174` · branch `main` · 2026-11-22 17:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -245,7 +245,7 @@
 | status | valor `NON_COMPLIANT` para `overall_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/auditoria/RlsCompliancePanel.tsx` |
 | status | valor `COMPLIANT` para `overall_status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/services/rlsAuditService.ts` |
 | status | valor `critical` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/AdvancedProcurementKPIs.tsx`<br>`compara:src/components/compras/BuyerPerformanceAlerts.tsx`<br>`compara:src/components/compras/PendingApprovalsList.tsx`<br>`compara:src/components/compras/PurchaseClimateWidget.tsx` |
-| status | valor `encontrado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`compara:src/pages/cotacao/cotacaoHelpers.ts`<br>`escreve:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/pages/cotacao/cotacaoHelpers.ts` |
+| status | valor `encontrado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/pages/cotacao/cotacaoHelpers.ts` |
 | status | valor `idle` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`compara:src/components/compras/NeuralFollowUpMonitor.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx` |
 | status | valor `searching` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx` |
 | status | valor `delayed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/DeliveryCalendar.tsx`<br>`compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
@@ -288,7 +288,6 @@
 | status | valor `queued` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/DependencyHealth.tsx`<br>`escreve:supabase/functions/dependency-health/index.ts` |
 | status | valor `authorized` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
 | status | valor `denied` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
-| status | valor `nao_encontrado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/cotacao/cotacaoHelpers.ts` |
 | status | valor `recebida_fornecedor` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `reposicao_enviada` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |

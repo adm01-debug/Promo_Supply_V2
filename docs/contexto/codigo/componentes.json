@@ -4769,7 +4769,7 @@
     "Cotacao"
    ],
    "export_default": "Cotacao",
-   "linhas": 382,
+   "linhas": 390,
    "dominio": "pages/cotacao",
    "hooks_locais": [
     "useAuth",

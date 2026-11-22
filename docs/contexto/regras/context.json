@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d2c6d788b883eee75060fbba8ffdebb168fd4db6",
+  "sha": "0051cc3174416f975b1a0058cdf35f020cd087b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 16:51 UTC",
+  "generated_at": "2026-11-22 17:01 UTC",
   "files_total": 1305,
   "code_files": 1140,
-  "code_lines": 195968,
+  "code_lines": 195956,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "52a6131f478ab840",
+ "facts_hash": "b782a781d01981c8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35262,7 +35262,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 29955,
+   "lines": 29943,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35280,7 +35280,6 @@
     "pedido_itens",
     "pedidos",
     "penalty_escalation_config",
-    "produto_fornecedores",
     "produtos",
     "profiles",
     "punchout_catalogs",
@@ -36297,6 +36296,7 @@
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/usePrefetch.ts",
      "src/hooks/useSidebarBadges.ts",
+     "src/pages/cotacao/cotacaoHelpers.ts",
      "src/pages/negociacao-ia/NegociacaoIA.tsx",
      "src/pages/portal-fornecedor/portalFornecedorData.ts",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
@@ -36859,8 +36859,7 @@
      "src/components/compras/ProductionRoutingEngine.tsx",
      "src/components/compras/SourcingIntelligenceWidget.tsx",
      "src/components/compras/SupplierEcosystemSection.tsx",
-     "src/hooks/useProdutoFornecedores.ts",
-     "src/pages/cotacao/cotacaoHelpers.ts"
+     "src/hooks/useProdutoFornecedores.ts"
     ],
     "insert": [
      "src/hooks/useProdutoFornecedores.ts"
@@ -37930,7 +37929,6 @@
     "id"
    ],
    "produto_fornecedores": [
-    "fornecedor_id",
     "id",
     "lead_time_estimado",
     "organization_id",
@@ -41222,6 +41220,10 @@
    {
     "file": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
     "msg": "Preencha nome e código"
+   },
+   {
+    "file": "src/pages/cotacao/Cotacao.tsx",
+    "msg": "Abra a solicitacao para buscar as cotacoes registradas"
    },
    {
     "file": "src/pages/devolucoes/DevolucoesModals.tsx",
@@ -53725,12 +53727,6 @@
    },
    {
     "file": "src/pages/cotacao/cotacaoHelpers.ts",
-    "field": "status",
-    "value": "nao_encontrado",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "field": "tipo",
     "value": "internacional",
     "kind": "compara"
@@ -53739,12 +53735,6 @@
     "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "field": "tipo",
     "value": "local",
-    "kind": "compara"
-   },
-   {
-    "file": "src/pages/cotacao/cotacaoHelpers.ts",
-    "field": "status",
-    "value": "encontrado",
     "kind": "compara"
    },
    {
@@ -56649,10 +56639,6 @@
    },
    {
     "file": "src/pages/cotacao/Cotacao.tsx",
-    "line": "await new Promise(resolve => setTimeout(resolve, 2000));"
-   },
-   {
-    "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "line": "await new Promise(resolve => setTimeout(resolve, 2000));"
    },
    {
@@ -76918,7 +76904,6 @@
      ],
      "encontrado": [
       "compara:src/components/compras/BuscaAutomatica.tsx",
-      "compara:src/pages/cotacao/cotacaoHelpers.ts",
       "escreve:src/components/compras/BuscaAutomatica.tsx",
       "escreve:src/pages/cotacao/cotacaoHelpers.ts"
      ],
@@ -77367,9 +77352,6 @@
      ],
      "backlog": [
       "compara:src/pages/admin/SourcingPipeline.tsx"
-     ],
-     "nao_encontrado": [
-      "escreve:src/pages/cotacao/cotacaoHelpers.ts"
      ],
      "rejeitada": [
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
@@ -85685,7 +85667,6 @@
     "msg": "valor `encontrado` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/BuscaAutomatica.tsx",
-     "compara:src/pages/cotacao/cotacaoHelpers.ts",
      "escreve:src/components/compras/BuscaAutomatica.tsx",
      "escreve:src/pages/cotacao/cotacaoHelpers.ts"
     ]
@@ -86019,13 +86000,6 @@
     "msg": "valor `denied` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/admin/FiscalDashboard.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `nao_encontrado` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:src/pages/cotacao/cotacaoHelpers.ts"
     ]
    },
    {
@@ -104070,9 +104044,12 @@
   },
   "src/pages/cotacao/Cotacao.tsx": {
    "path": "src/pages/cotacao/Cotacao.tsx",
-   "lines": 382,
+   "lines": 390,
    "exports": [
     "default Cotacao"
+   ],
+   "errors": [
+    "Abra a solicitacao para buscar as cotacoes registradas"
    ],
    "role_checks": [
     "coordinator"
@@ -104087,26 +104064,36 @@
   },
   "src/pages/cotacao/cotacaoHelpers.ts": {
    "path": "src/pages/cotacao/cotacaoHelpers.ts",
-   "lines": 188,
+   "lines": 168,
    "exports": [
     "interface CotacaoAPI",
     "interface LegacyFornecedor",
     "function adaptFornecedoresToLegacy",
     "function adaptCotacoesFromDB",
-    "function simulateAPISearch"
+    "function fetchRegisteredQuotes"
    ],
    "tables": [
     {
-     "table": "produto_fornecedores",
+     "table": "cotacoes",
      "op": "select"
     }
    ],
    "table_cols": {
-    "produto_fornecedores": [
+    "cotacoes": [
+     "condicao_pagamento",
      "fornecedor_id",
-     "lead_time_estimado",
-     "preco_custo",
-     "produto_id"
+     "id",
+     "prazo_entrega",
+     "quantidade",
+     "score_prazo",
+     "score_preco",
+     "score_qualidade",
+     "score_total",
+     "selecionada",
+     "solicitacao_id",
+     "valor_frete",
+     "valor_total",
+     "valor_unitario"
     ]
    },
    "status_values": [
@@ -104131,11 +104118,6 @@
      "kind": "escreve"
     },
     {
-     "field": "status",
-     "value": "nao_encontrado",
-     "kind": "escreve"
-    },
-    {
      "field": "tipo",
      "value": "internacional",
      "kind": "compara"
@@ -104144,15 +104126,7 @@
      "field": "tipo",
      "value": "local",
      "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "encontrado",
-     "kind": "compara"
     }
-   ],
-   "temporal": [
-    "await new Promise(resolve => setTimeout(resolve, 2000));"
    ]
   },
   "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts": {
@@ -114117,10 +114091,21 @@
   }
  },
  "git": {
-  "sha": "d2c6d788b883eee75060fbba8ffdebb168fd4db6",
+  "sha": "0051cc3174416f975b1a0058cdf35f020cd087b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0051cc3",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/pages/cotacao/Cotacao.tsx",
+     "src/pages/cotacao/cotacaoHelpers.ts"
+    ]
+   },
    {
     "sha": "d2c6d78",
     "date": "2026-11-22",
@@ -114436,22 +114421,12 @@
     "files": [
      "supabase/functions/_shared/external-bridge-allowlist.test.ts"
     ]
-   },
-   {
-    "sha": "d7718b8",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)",
-    "files": [
-     "scripts/ci/scripts-operacionais.unit.mjs",
-     "scripts/validate-bridge.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    12
+    13
    ],
    [
     "src/tests/spot/spotApi.test.ts",
@@ -114476,6 +114451,14 @@
    [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "src/pages/cotacao/Cotacao.tsx",
+    1
+   ],
+   [
+    "src/pages/cotacao/cotacaoHelpers.ts",
+    1
    ],
    [
     "src/components/compras/PriceComparator.tsx",
@@ -114519,14 +114502,6 @@
    ],
    [
     "supabase/functions/process-invoice-idp/index.ts",
-    1
-   ],
-   [
-    "src/pages/admin/FiscalDashboard.tsx",
-    1
-   ],
-   [
-    "src/pages/admin/SourcingPipeline.tsx",
     1
    ]
   ]

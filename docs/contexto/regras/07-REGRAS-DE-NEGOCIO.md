@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d2c6d788b8` · branch `main` · 2026-11-22 16:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0051cc3174` · branch `main` · 2026-11-22 17:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1067,7 +1067,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `idle` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `in_progress` | compara | `src/components/compras/ActiveSourcingWidget.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `in_transit` | compara | `src/components/compras/DeliveryCalendar.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
-| `status` | `nao_encontrado` | escreve | `src/pages/cotacao/cotacaoHelpers.ts` |
 | `status` | `negotiation` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `no_prazo` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `status` | `normal` | escreve | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
@@ -1838,7 +1837,6 @@ _nenhum item encontrado_
 | `staleTime: 5 * 60 * 1000,` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/pages/cotacao/Cotacao.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 2000));` | `src/pages/cotacao/Cotacao.tsx` |
-| `await new Promise(resolve => setTimeout(resolve, 2000));` | `src/pages/cotacao/cotacaoHelpers.ts` |
 | `setTimeout(() => setCopiado(null), 2000);` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | `case "30d": setDateRange({ from: subDays(today, 30), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
 | `case "7d": setDateRange({ from: subDays(today, 7), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
@@ -2345,7 +2343,7 @@ _nenhum item encontrado_
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
-| … +219 linhas — lista completa em `context.json` | |
+| … +220 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

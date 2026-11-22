@@ -6071,7 +6071,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 9,
+   "usada_no_front": 10,
    "usada_em_edges": [
     "check-cotacao-followup",
     "check-expiry-alerts",
@@ -12930,7 +12930,7 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 6,
+   "usada_no_front": 5,
    "usada_em_edges": [],
    "triggers": [
     "update_produto_fornecedores_updated_at"

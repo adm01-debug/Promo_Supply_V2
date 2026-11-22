@@ -4716,7 +4716,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 570,
+   "linhas": 558,
    "itens_menu": [
     "Cotações"
    ],
@@ -4785,7 +4785,7 @@
    "diretos": {
     "edges": [],
     "tabelas": [
-     "produto_fornecedores"
+     "cotacoes"
     ],
     "rpcs": []
    },
