@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b61b54dbf7799777c2c7ef7574c68edf80fffdc7",
+  "commit": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
   "branch": "main",
-  "data_commit": "2026-11-22T14:44:17-03:00",
+  "data_commit": "2026-11-22T14:53:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ad0c42d",
+    "data": "2026-11-22",
+    "assunto": "fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)"
+   },
    {
     "sha": "b61b54d",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "495ab36",
     "data": "2026-11-22",
     "assunto": "fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)"
-   },
-   {
-    "sha": "23566a2",
-    "data": "2026-11-22",
-    "assunto": "fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)"
    }
   ],
-  "arquivos_mudados_7d": 274,
+  "arquivos_mudados_7d": 275,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -168,6 +168,10 @@
     "mudancas": 12
    },
    {
+    "pasta": "src/pages/recebimento",
+    "mudancas": 12
+   },
+   {
     "pasta": "scripts/ci/inventario-types",
     "mudancas": 11
    },
@@ -185,10 +189,6 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 9
-   },
-   {
-    "pasta": "src/pages/recebimento",
     "mudancas": 9
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 248
+    "commits": 249
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1306,
   "arquivos_codigo": 813,
-  "linhas_codigo": 169359,
+  "linhas_codigo": 169458,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30102
+   "linhas": 30201
   },
   "src/routes": {
    "arquivos": 1,

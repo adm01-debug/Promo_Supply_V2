@@ -6590,7 +6590,7 @@
    "modulo": "pages/recebimento",
    "arquivos": 4,
    "testes": 2,
-   "linhas": 820,
+   "linhas": 867,
    "itens_menu": [
     "Recebimento"
    ],

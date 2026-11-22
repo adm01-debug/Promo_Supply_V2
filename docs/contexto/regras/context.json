@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b61b54dbf7799777c2c7ef7574c68edf80fffdc7",
+  "sha": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 17:44 UTC",
+  "generated_at": "2026-11-22 17:53 UTC",
   "files_total": 1307,
   "code_files": 1142,
-  "code_lines": 196317,
+  "code_lines": 196416,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "80b0abde6c5e8ba2",
+ "facts_hash": "bdbd5a2e1302b210",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35266,7 +35266,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30102,
+   "lines": 30201,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36834,8 +36834,7 @@
     ],
     "update": [
      "src/features/pedidos/hooks/usePedidos.ts",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/recebimento/RecebimentoOffline.tsx"
+     "src/pages/acompanhamento/Acompanhamento.tsx"
     ],
     "delete": [
      "src/features/pedidos/hooks/usePedidos.ts",
@@ -65844,6 +65843,50 @@
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
     "name": "round-trips items array with observacao values"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "statusFromReceived"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "marca parcial quando recebe 1 de 100 (nao entregue)"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "so marca entregue quando todas as linhas cobrem a quantidade pedida"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "marca parcial quando uma linha esta completa e a outra nao"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "nao mexe no status quando nada foi recebido"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "aceita recebimento acima do pedido como completo"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "isLineComplete compara com a quantidade pedida, nao com zero"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "buildReceivingObservation"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "devolve null quando nao ha observacao"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "consolida observacoes de itens e a geral"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "usa so a observacao geral quando nao ha nota por item"
    },
    {
     "file": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
@@ -105616,7 +105659,7 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 413,
+   "lines": 425,
    "exports": [
     "function RecebimentoOffline"
    ],
@@ -105639,7 +105682,7 @@
     },
     {
      "table": "pedidos",
-     "op": "update"
+     "op": "ref"
     }
    ],
    "table_cols": {
@@ -105724,7 +105767,7 @@
   },
   "src/pages/recebimento/recebimentoHelpers.ts": {
    "path": "src/pages/recebimento/recebimentoHelpers.ts",
-   "lines": 103,
+   "lines": 138,
    "exports": [
     "interface PendingOrder",
     "interface OrderItem",
@@ -105737,6 +105780,9 @@
     "function saveCachedOrders",
     "interface PendingLine",
     "function buildPendingLines",
+    "function isLineComplete",
+    "function statusFromReceived",
+    "function buildReceivingObservation",
     "function defaultForecastDate"
    ],
    "temporal": [
@@ -105759,7 +105805,7 @@
   },
   "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts": {
    "path": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-   "lines": 178,
+   "lines": 230,
    "is_test": true,
    "tests": [
     "OFFLINE_STORAGE_KEY",
@@ -105784,7 +105830,18 @@
     "round-trips timestamp correctly",
     "stores multiple entries correctly",
     "getOfflineEntries is idempotent (same result called twice)",
-    "round-trips items array with observacao values"
+    "round-trips items array with observacao values",
+    "statusFromReceived",
+    "marca parcial quando recebe 1 de 100 (nao entregue)",
+    "so marca entregue quando todas as linhas cobrem a quantidade pedida",
+    "marca parcial quando uma linha esta completa e a outra nao",
+    "nao mexe no status quando nada foi recebido",
+    "aceita recebimento acima do pedido como completo",
+    "isLineComplete compara com a quantidade pedida, nao com zero",
+    "buildReceivingObservation",
+    "devolve null quando nao ha observacao",
+    "consolida observacoes de itens e a geral",
+    "usa so a observacao geral quando nao ha nota por item"
    ]
   },
   "src/pages/recompra/RecompraInteligente.tsx": {
@@ -114310,10 +114367,21 @@
   }
  },
  "git": {
-  "sha": "b61b54dbf7799777c2c7ef7574c68edf80fffdc7",
+  "sha": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ad0c42d",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)",
+    "files": [
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+     "src/pages/recebimento/recebimentoHelpers.ts"
+    ]
+   },
    {
     "sha": "b61b54d",
     "date": "2026-11-22",
@@ -114624,16 +114692,6 @@
     "files": [
      "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql"
     ]
-   },
-   {
-    "sha": "0b8e547",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)",
-    "files": [
-     "src/tests/spot/spotApi.test.ts",
-     "supabase/functions/_shared/spot_api.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -114652,6 +114710,18 @@
    [
     "supabase/functions/spot-proxy/index.ts",
     2
+   ],
+   [
+    "src/pages/recebimento/RecebimentoOffline.tsx",
+    1
+   ],
+   [
+    "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    1
+   ],
+   [
+    "src/pages/recebimento/recebimentoHelpers.ts",
+    1
    ],
    [
     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
@@ -114703,18 +114773,6 @@
    ],
    [
     "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    1
-   ],
-   [
-    "src/components/compras/sla-analysis/slaAnalysisData.ts",
-    1
-   ],
-   [
-    "src/components/compras/sla-analysis/useSupplierSlaData.ts",
-    1
-   ],
-   [
-    "src/pages/documentos/DocumentosFiscais.tsx",
     1
    ]
   ]

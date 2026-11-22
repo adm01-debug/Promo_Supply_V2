@@ -5281,7 +5281,7 @@
     "RecebimentoOffline"
    ],
    "export_default": "RecebimentoOffline",
-   "linhas": 413,
+   "linhas": 425,
    "dominio": "pages/recebimento",
    "hooks_locais": [
     "useAuth"

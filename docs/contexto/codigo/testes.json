@@ -1251,11 +1251,11 @@
   {
    "arquivo": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 178,
+   "linhas": 230,
    "testa": [
     "src/pages/recebimento/recebimentoHelpers.ts"
    ],
-   "casos": 20
+   "casos": 29
   },
   {
    "arquivo": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",

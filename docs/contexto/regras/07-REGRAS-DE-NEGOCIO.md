@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b61b54dbf7` · branch `main` · 2026-11-22 17:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ad0c42d4d7` · branch `main` · 2026-11-22 17:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2376,7 +2376,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2678 testes em 143 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2689 testes em 143 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2398,6 +2398,7 @@ _nenhum item encontrado_
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
+| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 34 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/pages/compliance/__tests__/complianceHelpers.test.ts` | 33 | actionTypeLabels · has entries for warning, standard_fine, double_fine, temp_block, permanent_block · each entry has label, color, and icon · warning label is  … |
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |
@@ -2433,7 +2434,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/permissionsConstants.test.ts` | 23 | moduleLabels · has 11 module entries · covers all expected module keys · every label is a non-empty string … |
 | `src/lib/__tests__/queryClientConstants.test.ts` | 23 | DEFAULT_STALE_TIME · is 30 seconds in milliseconds · is a positive number · REFERENCE_STALE_TIME … |
 | `src/lib/__tests__/supabaseRpc.test.ts` | 23 | supabaseRpc typed wrappers · rpcCurrentTenantId → rpc( · rpcGenerateSequentialNumber → correct name and params · rpcCheckBudgetAvailability → correct name and params … |
-| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 23 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts` | 22 | generateQuotesFromSuppliers · passes product name and quantity through · returns one quote per supplier · quotes are sorted by totalPrice ascending when prices exist … |
 | `src/lib/__tests__/imageCompression.test.ts` | 22 | formatBytes · returns  · formats bytes under 1 KB as  · formats exactly 1 KB … |
 | `src/lib/__tests__/queryClient.test.ts` | 22 | stale-time constants · DEFAULT_STALE_TIME is 30 seconds (30_000 ms) · REFERENCE_STALE_TIME is 5 minutes (300_000 ms) · STATIC_STALE_TIME is 30 minutes (1_800_000 ms) … |
