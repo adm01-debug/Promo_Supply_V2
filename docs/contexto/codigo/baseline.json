@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c15161de29f208fb87ba5748699af2a1d3df8b37",
+  "commit": "954238f197a0536a984233113b832c947878e959",
   "branch": "main",
-  "data_commit": "2026-11-22T16:01:50-03:00",
+  "data_commit": "2026-11-22T16:21:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "954238f",
+    "data": "2026-11-22",
+    "assunto": "fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)"
+   },
    {
     "sha": "c15161d",
     "data": "2026-11-22",
@@ -126,11 +131,6 @@
     "sha": "0cb5045",
     "data": "2026-11-22",
     "assunto": "docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)"
-   },
-   {
-    "sha": "a51d0de",
-    "data": "2026-11-22",
-    "assunto": "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)"
    }
   ],
   "arquivos_mudados_7d": 280,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 255
+    "commits": 256
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1309,
   "arquivos_codigo": 816,
-  "linhas_codigo": 170015,
+  "linhas_codigo": 170053,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 102,
-   "linhas": 17459
+   "linhas": 17497
   },
   "tailwind.config.ts": {
    "arquivos": 1,

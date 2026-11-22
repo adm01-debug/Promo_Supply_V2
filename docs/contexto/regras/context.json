@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c15161de29f208fb87ba5748699af2a1d3df8b37",
+  "sha": "954238f197a0536a984233113b832c947878e959",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 19:02 UTC",
+  "generated_at": "2026-11-22 19:21 UTC",
   "files_total": 1310,
   "code_files": 1145,
-  "code_lines": 196973,
+  "code_lines": 197011,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "1cad341a8dc4c928",
+ "facts_hash": "94a3dbbdf1bd175d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35699,7 +35699,7 @@
   {
    "module": "supabase/functions",
    "files": 102,
-   "lines": 17459,
+   "lines": 17497,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -39891,6 +39891,11 @@
     "file": "supabase/functions/escalate-solicitacao/recipients.ts",
     "name": "EscalationTarget",
     "values": "gerencia | comprador"
+   },
+   {
+    "file": "supabase/functions/escalate-solicitacao/recipients.ts",
+    "name": "ACOES_APROVACAO_VALIDAS",
+    "values": "\"created\", \"approved\", \"rejected\", \"escalated\", \"delegated\", \"reminder_sent\", \"cancelled\","
    }
   ],
   "error_messages": [
@@ -68042,6 +68047,10 @@
    {
     "file": "supabase/functions/escalate-solicitacao/recipients.test.ts",
     "name": "diasDeEspera arredonda para cima e nunca fica negativo"
+   },
+   {
+    "file": "supabase/functions/escalate-solicitacao/recipients.test.ts",
+    "name": "acao em approval_history respeita o CHECK do banco"
    },
    {
     "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
@@ -110578,7 +110587,7 @@
   },
   "supabase/functions/escalate-solicitacao/index.ts": {
    "path": "supabase/functions/escalate-solicitacao/index.ts",
-   "lines": 233,
+   "lines": 237,
    "tables": [
     {
      "table": "solicitacoes",
@@ -110623,7 +110632,7 @@
   },
   "supabase/functions/escalate-solicitacao/recipients.test.ts": {
    "path": "supabase/functions/escalate-solicitacao/recipients.test.ts",
-   "lines": 158,
+   "lines": 170,
    "is_test": true,
    "params": [
     {
@@ -110647,12 +110656,13 @@
     "comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant",
     "comprador: sem tenant de referencia nao amplia escopo",
     "texto e assunto mudam por alvo",
-    "diasDeEspera arredonda para cima e nunca fica negativo"
+    "diasDeEspera arredonda para cima e nunca fica negativo",
+    "acao em approval_history respeita o CHECK do banco"
    ]
   },
   "supabase/functions/escalate-solicitacao/recipients.ts": {
    "path": "supabase/functions/escalate-solicitacao/recipients.ts",
-   "lines": 106,
+   "lines": 128,
    "exports": [
     "type AdminClient",
     "type EscalationTarget",
@@ -110660,7 +110670,10 @@
     "function diasDeEspera",
     "function resolveRecipients",
     "function buildMensagem",
-    "function buildTitulo"
+    "function buildTitulo",
+    "const ACOES_APROVACAO_VALIDAS",
+    "type AcaoAprovacao",
+    "function acaoAprovacao"
    ],
    "tables": [
     {
@@ -110693,6 +110706,10 @@
     {
      "name": "EscalationTarget",
      "values": "gerencia | comprador"
+    },
+    {
+     "name": "ACOES_APROVACAO_VALIDAS",
+     "values": "\"created\", \"approved\", \"rejected\", \"escalated\", \"delegated\", \"reminder_sent\", \"cancelled\","
     }
    ],
    "doc": "Resolucao de destinatarios do escalonamento. Extraida do handler da edge para poder ser testada sem subir servidor HTTP. Regras (derivadas do schema real de prod): - gerencia -> admin/coordinator do MESMO tenant da solicitacao - comprador -> comprador do pedido ligado a solicitacao; sem pedido ainda …",
@@ -114628,10 +114645,21 @@
   }
  },
  "git": {
-  "sha": "c15161de29f208fb87ba5748699af2a1d3df8b37",
+  "sha": "954238f197a0536a984233113b832c947878e959",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "954238f",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)",
+    "files": [
+     "supabase/functions/escalate-solicitacao/index.ts",
+     "supabase/functions/escalate-solicitacao/recipients.test.ts",
+     "supabase/functions/escalate-solicitacao/recipients.ts"
+    ]
+   },
    {
     "sha": "c15161d",
     "date": "2026-11-22",
@@ -114944,22 +114972,24 @@
      "scripts/types-sync/README.md",
      "scripts/types-sync/gen-types.sh"
     ]
-   },
-   {
-    "sha": "74d01a2",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    12
+    11
+   ],
+   [
+    "supabase/functions/escalate-solicitacao/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/escalate-solicitacao/recipients.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/escalate-solicitacao/recipients.ts",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -114979,18 +115009,6 @@
    ],
    [
     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-    1
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/recipients.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/recipients.ts",
     1
    ],
    [

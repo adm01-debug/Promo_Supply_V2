@@ -1576,11 +1576,11 @@
   {
    "arquivo": "supabase/functions/escalate-solicitacao/recipients.test.ts",
    "tipo": "unit",
-   "linhas": 158,
+   "linhas": 170,
    "testa": [
     "supabase/functions/escalate-solicitacao/recipients.ts"
    ],
-   "casos": 7
+   "casos": 8
   },
   {
    "arquivo": "supabase/functions/process-invoice-idp/extraction.test.ts",

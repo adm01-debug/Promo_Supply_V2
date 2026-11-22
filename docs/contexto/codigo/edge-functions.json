@@ -489,7 +489,7 @@
    "nome": "escalate-solicitacao",
    "entrada": "supabase/functions/escalate-solicitacao/index.ts",
    "arquivos": 2,
-   "linhas": 339,
+   "linhas": 365,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

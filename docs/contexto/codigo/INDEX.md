@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c15161de29f208fb87ba5748699af2a1d3df8b37` (2026-11-22T16:01:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `954238f197a0536a984233113b832c947878e959` (2026-11-22T16:21:13-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1309 |
 | arquivos_codigo | 816 |
-| linhas_codigo | 170015 |
+| linhas_codigo | 170053 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `954238f` fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)
 - 2026-11-22 `c15161d` feat: escala solicitacao e alerta comprador com notificacao real (#301)
 - 2026-11-22 `ec90e1e` fix: liga o Desfazer Global do historico ao undoStore real (#300)
 - 2026-11-22 `ff7a555` chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
 - 2026-11-22 `0051cc3` fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)
 - 2026-11-22 `d2c6d78` fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)
-- 2026-11-22 `752b1f5` fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

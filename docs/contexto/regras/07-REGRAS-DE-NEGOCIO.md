@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c15161de29` · branch `main` · 2026-11-22 19:02 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `954238f197` · branch `main` · 2026-11-22 19:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1217,6 +1217,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | XBZ_PERMISSION_FLAGS | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", | `supabase/functions/_shared/xbz_client.ts` |
 | ContractRenewalType | automatic \| manual | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | EscalationTarget | gerencia \| comprador | `supabase/functions/escalate-solicitacao/recipients.ts` |
+| ACOES_APROVACAO_VALIDAS | "created", "approved", "rejected", "escalated", "delegated", "reminder_sent", "cancelled", | `supabase/functions/escalate-solicitacao/recipients.ts` |
 
 ## F. Validações de entrada
 
@@ -2378,7 +2379,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2696 testes em 144 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2697 testes em 144 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2477,11 +2478,11 @@ _nenhum item encontrado_
 | `tests-rls/rls-isolation.test.ts` | 9 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
+| `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
-| `supabase/functions/escalate-solicitacao/recipients.test.ts` | 7 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |

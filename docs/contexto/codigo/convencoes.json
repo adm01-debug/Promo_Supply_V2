@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)",
    "feat: escala solicitacao e alerta comprador com notificacao real (#301)",
    "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
    "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)",
-   "fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)",
-   "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)"
+   "fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)"
   ]
  },
  "pr_template": null,
