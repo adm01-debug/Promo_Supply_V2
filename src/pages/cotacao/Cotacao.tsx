@@ -39,7 +39,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch, type CotacaoAPI } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, fetchRegisteredQuotes, type CotacaoAPI } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -104,12 +104,20 @@ const Cotacao = () => {
   }, [buscaStatus, cotacoesAPI, handleAiAnalyze]);
 
   const handleBuscarCotacoes = async () => {
+    if (!solicitacaoId) {
+      toast.error('Abra a solicitacao para buscar as cotacoes registradas');
+      return;
+    }
     setBuscaStatus('searching');
     try {
-      const results = await simulateAPISearch(fornecedores, solicitacao?.quantidade || 100, solicitacao?.produto_id || undefined);
+      const results = await fetchRegisteredQuotes(solicitacaoId, solicitacao?.quantidade || 100);
       setCotacoesAPI(results);
       setBuscaStatus('done');
-      toast.success(`${results.length} optimized quotes discovered`);
+      if (results.length > 0) {
+        toast.success(`${results.length} cotacoes registradas encontradas`);
+      } else {
+        toast.info('Nenhuma cotacao registrada para esta solicitacao');
+      }
     } catch {
       setBuscaStatus('idle');
     }
