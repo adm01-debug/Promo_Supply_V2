@@ -22,7 +22,7 @@
   ],
   "testes": [
    "co-localizado (__tests__) (112)",
-   "outro (42)",
+   "outro (43)",
    "co-localizado (*.test) (29)"
   ],
   "edge_functions": "supabase/functions",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)",
+   "docs(auditoria): marca L03 (spot-api no front) como concluido (#289)",
    "feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)",
    "fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)",
-   "fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)",
-   "fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)",
-   "fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)"
+   "fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)"
   ]
  },
  "pr_template": null,

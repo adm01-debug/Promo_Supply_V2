@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bc442e6f3777b7f0b79c3fb3c13d6659a4cb2785` (2026-11-22T14:13:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0e453b0f3d2b4a68d4c07544ba14358f8d2b99c9` (2026-11-22T14:30:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (738), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (740), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1304 |
-| arquivos_codigo | 811 |
-| linhas_codigo | 169150 |
+| arquivos_total | 1306 |
+| arquivos_codigo | 813 |
+| linhas_codigo | 169352 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 193 |
+| testes | 194 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 94 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (112), outro (42), co-localizado (*.test) (29)
+- testes: co-localizado (__tests__) (112), outro (43), co-localizado (*.test) (29)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -416,6 +416,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `0e453b0` fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)
+- 2026-11-22 `e81325a` docs(auditoria): marca L03 (spot-api no front) como concluido (#289)
 - 2026-11-22 `bc442e6` feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)
 - 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
 - 2026-11-22 `0051cc3` fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)
@@ -429,8 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `8e9d432` fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)
 - 2026-11-22 `94f73a1` fix(ci): fallback do canal de migration reconhece erro de ownership (#246)
 - 2026-11-22 `e469807` fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)
-- 2026-11-22 `0cb5045` docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)
-- 2026-11-22 `a51d0de` docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bc442e6f37` · branch `main` · 2026-11-22 17:13 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0e453b0f3d` · branch `main` · 2026-11-22 17:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1156,6 +1156,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tenant_status` | `active` | escreve | `src/integrations/supabase/types.ts` |
 | `supplier_status` | `bloqueado` | compara | `src/pages/compliance/complianceHelpers.ts` |
 | `dispatch_status` | `suppressed_dedup` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
+| `follow_up_status` | `notificado` | escreve | `supabase/functions/check-cotacao-followup/index.ts` |
 | `sefaz_status` | `dispatch_error` | compara, escreve | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `v_old_status` | `cancelada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `v_old_status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
@@ -1573,6 +1574,10 @@ _nenhum item encontrado_
   ```
   return /^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(normalizarPlaca(valor));
   ```
+- **shouldSendFollowUp(cotacao: StaleCotacaoRow, solicitanteId: string | null | undefined, ultimoFollowUpIso: string | null | undefined, now: D)** — `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts`
+  ```
+  if (!solicitanteId) return { shouldNotify: false, reason: "sem_destinatario" }; if (ultimoFollowUpIso) { const last = Date.parse(ultimoFollowUpIso); if (!Number.isNaN(last) && now.getTime() - last < dedupeHours * 60 * 60 * 1000) { return { shouldNotify: false, reason: "recente_duplicada" }; } } return { shouldNotify: true };
+  ```
 - **scanTreeShakingViaGitHub(rawBase: string)** — `supabase/functions/dependency-health/index.ts`
   ```
   if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent(`from "date-fns" repo:${or.owner}/${or.repo} path:src`); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: "application/vnd.github.text-match+json",
@@ -1659,6 +1664,9 @@ _nenhum item encontrado_
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
+| `* `%#COT-1 %` N?O casa `#COT-12 `. Os curingas do usu?rio s?o escapados para` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
+| `assertEquals(dedupePattern("COT%1", "id-1"), "%#COT\\%1 %");` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts` |
+| `assertEquals(p, "%#COT-1 %");` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts` |
 | `const jitter = delay * (Math.random() * 0.5 - 0.25);` | `supabase/functions/dependency-health/index.ts` |
 
 ## H. Parâmetros de negócio (constantes, prazos, limites)
@@ -1734,6 +1742,8 @@ _nenhum item encontrado_
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_BUSCA_MIN` | `3` | `supabase/functions/_shared/xbz_client.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
+| `FOLLOW_UP_AFTER_HOURS` | `48` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
+| `FOLLOW_UP_DEDUPE_HOURS` | `24` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `DEFAULT_NOTICE_DAYS` | `30` | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | `INTEGRATION_FAILURE_THRESHOLD` | `3` | `supabase/functions/check-sla-alerts/index.ts` |
 | `INTEGRATION_LOOKBACK_MS` | `6 * 60 * 60 * 1000` | `supabase/functions/check-sla-alerts/index.ts` |
@@ -1847,7 +1857,11 @@ _nenhum item encontrado_
 | `if (nextDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) {` | `src/pages/recompra/RecompraInteligente.tsx` |
 | `const h = Math.floor(diff / (1000 * 60 * 60));` | `src/pages/sourcing/AuctionRoom.tsx` |
 | `const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));` | `src/pages/sourcing/AuctionRoom.tsx` |
-| `const cutoff48h = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();` | `supabase/functions/check-cotacao-followup/index.ts` |
+| `if (!Number.isNaN(last) && now.getTime() - last < dedupeHours * 60 * 60 * 1000) {` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
+| `return new Date(now.getTime() - hours * 60 * 60 * 1000).toISOString();` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
+| `return now.getTime() - created >= hours * 60 * 60 * 1000;` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
+| `new Date(NOW.getTime() - (FOLLOW_UP_DEDUPE_HOURS + 1) * 60 * 60 * 1000).toISOString(),` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts` |
+| `new Date(NOW.getTime() - 2 * 60 * 60 * 1000).toISOString(),` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts` |
 | `(new Date(cotacao.validade_proposta!).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)` | `supabase/functions/check-expiry-alerts/index.ts` |
 | `(new Date(pag.data_vencimento).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)` | `supabase/functions/check-expiry-alerts/index.ts` |
 | `const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();` | `supabase/functions/check-expiry-alerts/index.ts` |

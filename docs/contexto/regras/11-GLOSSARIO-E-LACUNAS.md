@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bc442e6f37` · branch `main` · 2026-11-22 17:13 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0e453b0f3d` · branch `main` · 2026-11-22 17:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -317,6 +317,7 @@
 | status | valor `matched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `unmatched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/alert-dispatcher/index.ts` |
+| status | valor `notificado` para `follow_up_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-cotacao-followup/index.ts` |
 | status | valor `dispatch_error` para `sefaz_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/fiscal-orchestrator/index.ts`<br>`escreve:supabase/functions/fiscal-orchestrator/index.ts` |
 | status | valor `finalizada` para `v_old_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | status | valor `finalizada` para `v_new_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |

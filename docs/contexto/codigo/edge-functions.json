@@ -264,8 +264,8 @@
   {
    "nome": "check-cotacao-followup",
    "entrada": "supabase/functions/check-cotacao-followup/index.ts",
-   "arquivos": 1,
-   "linhas": 171,
+   "arquivos": 2,
+   "linhas": 292,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -297,7 +297,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "check-expiry-alerts",
