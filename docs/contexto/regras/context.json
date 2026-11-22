@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "acd45831a7c3fe166ff5d7c7705fe18ae8f2666f",
+  "sha": "47920c1d3ce67e73be1ee7060559ee5bdc4d22b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 16:10 UTC",
-  "files_total": 1302,
-  "code_files": 1137,
-  "code_lines": 195258,
+  "generated_at": "2026-11-22 16:19 UTC",
+  "files_total": 1304,
+  "code_files": 1139,
+  "code_lines": 195534,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "76a81b6663f20dba",
+ "facts_hash": "d2ed9efba00d539b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 384,
+   ".ts": 386,
    ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
@@ -32028,6 +32028,7 @@
      "user_tenants"
     ],
     "env": [
+     "OPENROUTER_API_KEY",
      "SUPABASE_SERVICE_ROLE_KEY",
      "SUPABASE_URL"
     ],
@@ -32035,7 +32036,9 @@
     "invokes": [],
     "doc": "",
     "errors": [
-     "filePath is required"
+     "ai_gateway_${response.status}",
+     "filePath is required",
+     "resposta_vazia_da_ia"
     ],
     "side_effects": [],
     "webhook_events": [],
@@ -35255,7 +35258,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 29942,
+   "lines": 29955,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35656,8 +35659,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 95,
-   "lines": 16497,
+   "files": 97,
+   "lines": 16760,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35741,6 +35744,7 @@
     "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
     "contractExpiry.ts: ContractRenewalType, ContractRow, ContractAlert, DEFAULT_NOTICE_DAYS, RELEVANT_CONTRACT_STATUSES, startOfUtcDay",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
+    "extraction.ts: ExtractedInvoice, SYSTEM_PROMPT, normalizeExtraction, faltamCamposObrigatorios, parseGatewayContent, extractionUnavailable",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
     "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth",
@@ -35820,6 +35824,8 @@
     "supabase/functions/health-dashboard/index.ts",
     "supabase/functions/maintain-partitions/index.ts",
     "supabase/functions/migrate-storage-paths/index.ts",
+    "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "supabase/functions/process-invoice-idp/extraction.ts",
     "supabase/functions/process-invoice-idp/index.ts",
     "supabase/functions/process-outbox/index.ts",
     "supabase/functions/process-solicitacao-neural/index.ts",
@@ -35836,9 +35842,7 @@
     "supabase/functions/scim-v2/index.ts",
     "supabase/functions/send-push-notification/index.ts",
     "supabase/functions/send-push-notification/webpush.test.ts",
-    "supabase/functions/send-push-notification/webpush.ts",
-    "supabase/functions/spot-api/index.ts",
-    "supabase/functions/spot-proxy/index.ts"
+    "supabase/functions/send-push-notification/webpush.ts"
    ]
   },
   {
@@ -38382,6 +38386,7 @@
     "supabase/functions/ai-supplier-risk/index.ts",
     "supabase/functions/ai-supplier-suggestion/index.ts",
     "supabase/functions/guided-buying-ai/index.ts",
+    "supabase/functions/process-invoice-idp/index.ts",
     "supabase/functions/process-solicitacao-neural/index.ts"
    ],
    "PATH": [
@@ -41242,6 +41247,10 @@
     "msg": "IA não retornou dados extraídos"
    },
    {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "msg": "Não foi possível ler os campos obrigatórios (número e valor total) da nota. "
+   },
+   {
     "file": "src/pages/estoque/GestaoEstoque.tsx",
     "msg": "Quantidade deve ser maior que zero"
    },
@@ -41482,8 +41491,20 @@
     "msg": ")\n        .eq("
    },
    {
+    "file": "supabase/functions/process-invoice-idp/extraction.ts",
+    "msg": "resposta_sem_json"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "msg": "ai_gateway_${response.status}"
+   },
+   {
     "file": "supabase/functions/process-invoice-idp/index.ts",
     "msg": "filePath is required"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "msg": "resposta_vazia_da_ia"
    },
    {
     "file": "supabase/functions/process-outbox/index.ts",
@@ -42424,6 +42445,18 @@
    {
     "file": "supabase/functions/migrate-storage-paths/index.ts",
     "text": "Dry-run: passe { dryRun: true } no body para apenas simular."
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.ts",
+    "text": "* Regra de ouro: nunca inventar valor. Quando o modelo não devolve um campo,"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.ts",
+    "text": "Campos sem os quais o documento não pode ser dado como conciliável. */"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "text": "Limite de 10 MB por documento — PDF/imagem de NF-e não passa disso. */"
    },
    {
     "file": "supabase/functions/process-invoice-idp/index.ts",
@@ -49828,6 +49861,16 @@
     "value": "4"
    },
    {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "name": "MAX_FILE_BYTES",
+    "value": "10 * 1024 * 1024"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "name": "MODEL",
+    "value": "\"google/gemini-2.5-flash\""
+   },
+   {
     "file": "supabase/functions/process-outbox/index.ts",
     "name": "MAX_RETRIES",
     "value": "5"
@@ -53761,7 +53804,7 @@
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "field": "status",
-    "value": "validada",
+    "value": "pendente",
     "kind": "escreve"
    },
    {
@@ -55407,6 +55450,36 @@
     "field": "role",
     "value": "user",
     "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "field": "role",
+    "value": "system",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "field": "role",
+    "value": "user",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "field": "type",
+    "value": "text",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "field": "type",
+    "value": "file",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/index.ts",
+    "field": "type",
+    "value": "image_url",
+    "kind": "escreve"
    },
    {
     "file": "supabase/functions/process-outbox/index.ts",
@@ -67727,6 +67800,30 @@
     "name": "mascararPortador: oculta CPF/RG para a auditoria"
    },
    {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "normaliza numeros e datas do formato brasileiro"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "nao inventa campo ausente e reporta no campos_ausentes"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "chave de acesso incompleta vira null em vez de zero-padded"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "identifica campos obrigatorios faltantes"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "parseGatewayContent tolera cerca markdown e texto ao redor"
+   },
+   {
+    "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
+    "name": "parseGatewayContent falha quando nao ha JSON"
+   },
+   {
     "file": "supabase/functions/punchout-receive/session.test.ts",
     "name": "sessao recem-criada nao expira"
    },
@@ -76551,10 +76648,12 @@
      "text": [
       "escreve:src/features/layout/components/SupplierChat.tsx",
       "escreve:src/features/layout/components/chat/ChatArea.tsx",
-      "escreve:src/features/layout/components/chat/MessageBubble.tsx"
+      "escreve:src/features/layout/components/chat/MessageBubble.tsx",
+      "escreve:supabase/functions/process-invoice-idp/index.ts"
      ],
      "file": [
-      "compara:src/features/layout/components/chat/MessageBubble.tsx"
+      "compara:src/features/layout/components/chat/MessageBubble.tsx",
+      "escreve:supabase/functions/process-invoice-idp/index.ts"
      ],
      "pages": [
       "compara:src/features/layout/components/search/SearchResultsList.tsx",
@@ -76717,6 +76816,9 @@
      ],
      "integration_failure": [
       "escreve:supabase/functions/check-sla-alerts/index.ts"
+     ],
+     "image_url": [
+      "escreve:supabase/functions/process-invoice-idp/index.ts"
      ],
      "normal": [
       "escreve:supabase/functions/system-simulation/index.ts"
@@ -76888,6 +76990,7 @@
       "compara:src/pages/portal-fornecedor/PortalFornecedor.tsx",
       "escreve:src/components/pedidos/PedidoMobileCard.tsx",
       "escreve:src/pages/acompanhamento/AcompanhamentoHelpers.ts",
+      "escreve:src/pages/documentos/DocumentosFiscais.tsx",
       "escreve:supabase/functions/punchout-receive/solicitation.ts",
       "filtra:src/components/mobile/BottomNavigation.tsx",
       "filtra:src/hooks/useSidebarBadges.ts",
@@ -77470,6 +77573,7 @@
       "escreve:supabase/functions/ai-supplier-risk/index.ts",
       "escreve:supabase/functions/ai-supplier-suggestion/index.ts",
       "escreve:supabase/functions/guided-buying-ai/index.ts",
+      "escreve:supabase/functions/process-invoice-idp/index.ts",
       "escreve:supabase/functions/process-solicitacao-neural/index.ts"
      ],
      "assistant": [
@@ -77481,6 +77585,7 @@
       "escreve:supabase/functions/ai-supplier-risk/index.ts",
       "escreve:supabase/functions/ai-supplier-suggestion/index.ts",
       "escreve:supabase/functions/guided-buying-ai/index.ts",
+      "escreve:supabase/functions/process-invoice-idp/index.ts",
       "escreve:supabase/functions/process-solicitacao-neural/index.ts"
      ]
     },
@@ -104260,7 +104365,7 @@
   },
   "src/pages/documentos/DocumentosFiscais.tsx": {
    "path": "src/pages/documentos/DocumentosFiscais.tsx",
-   "lines": 356,
+   "lines": 369,
    "exports": [
     "default DocumentosFiscais"
    ],
@@ -104308,7 +104413,8 @@
     "Erro ao processar XML. Verifique o formato do arquivo.",
     "Erro ao processar com IA: ",
     "Erro na conciliação",
-    "IA não retornou dados extraídos"
+    "IA não retornou dados extraídos",
+    "Não foi possível ler os campos obrigatórios (número e valor total) da nota. "
    ],
    "status_values": [
     {
@@ -104318,7 +104424,7 @@
     },
     {
      "field": "status",
-     "value": "validada",
+     "value": "pendente",
      "kind": "escreve"
     },
     {
@@ -110373,20 +110479,94 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/process-invoice-idp/extraction.test.ts": {
+   "path": "supabase/functions/process-invoice-idp/extraction.test.ts",
+   "lines": 67,
+   "is_test": true,
+   "tests": [
+    "normaliza numeros e datas do formato brasileiro",
+    "nao inventa campo ausente e reporta no campos_ausentes",
+    "chave de acesso incompleta vira null em vez de zero-padded",
+    "identifica campos obrigatorios faltantes",
+    "parseGatewayContent tolera cerca markdown e texto ao redor",
+    "parseGatewayContent falha quando nao ha JSON"
+   ]
+  },
+  "supabase/functions/process-invoice-idp/extraction.ts": {
+   "path": "supabase/functions/process-invoice-idp/extraction.ts",
+   "lines": 103,
+   "exports": [
+    "interface ExtractedInvoice",
+    "const SYSTEM_PROMPT",
+    "function normalizeExtraction",
+    "function faltamCamposObrigatorios",
+    "function parseGatewayContent",
+    "function extractionUnavailable"
+   ],
+   "errors": [
+    "resposta_sem_json"
+   ],
+   "rule_comments": [
+    "* Regra de ouro: nunca inventar valor. Quando o modelo não devolve um campo,",
+    "Campos sem os quais o documento não pode ser dado como conciliável. */"
+   ],
+   "doc": "Extração de dados de nota fiscal a partir de PDF/imagem. Regra de ouro: nunca inventar valor. Quando o modelo não devolve um campo, o campo sai `null` e `campos_ausentes` lista o que faltou — o front grava o documento como `pendente_revisao` em vez de `validada`."
+  },
   "supabase/functions/process-invoice-idp/index.ts": {
    "path": "supabase/functions/process-invoice-idp/index.ts",
-   "lines": 94,
+   "lines": 187,
    "storage": [
     "fiscal-documents"
    ],
    "env": [
+    "OPENROUTER_API_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
    "errors": [
-    "filePath is required"
+    "ai_gateway_${response.status}",
+    "filePath is required",
+    "resposta_vazia_da_ia"
+   ],
+   "params": [
+    {
+     "name": "MAX_FILE_BYTES",
+     "value": "10 * 1024 * 1024"
+    },
+    {
+     "name": "MODEL",
+     "value": "\"google/gemini-2.5-flash\""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "system",
+     "kind": "escreve"
+    },
+    {
+     "field": "role",
+     "value": "user",
+     "kind": "escreve"
+    },
+    {
+     "field": "type",
+     "value": "text",
+     "kind": "escreve"
+    },
+    {
+     "field": "type",
+     "value": "file",
+     "kind": "escreve"
+    },
+    {
+     "field": "type",
+     "value": "image_url",
+     "kind": "escreve"
+    }
    ],
    "rule_comments": [
+    "Limite de 10 MB por documento — PDF/imagem de NF-e não passa disso. */",
     "Prevent path traversal: filePath must be a relative path without .."
    ],
    "uses_service_role": true
@@ -113844,10 +114024,23 @@
   }
  },
  "git": {
-  "sha": "acd45831a7c3fe166ff5d7c7705fe18ae8f2666f",
+  "sha": "47920c1d3ce67e73be1ee7060559ee5bdc4d22b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "47920c1",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "supabase/functions/process-invoice-idp/extraction.test.ts",
+     "supabase/functions/process-invoice-idp/extraction.ts",
+     "supabase/functions/process-invoice-idp/index.ts"
+    ]
+   },
    {
     "sha": "acd4583",
     "date": "2026-11-22",
@@ -114154,25 +114347,12 @@
      "supabase/functions/_shared/external-bridge-allowlist.test.ts",
      "supabase/functions/_shared/external-bridge-allowlist.ts"
     ]
-   },
-   {
-    "sha": "64c1922",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs(pim): integra plano de compras-sem-catalogo com checklist (#247)",
-    "files": [
-     "docs/pendencias/integracao-pim-promo-supply.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    9
-   ],
-   [
-    "docs/pendencias/integracao-pim-promo-supply.md",
-    3
+    10
    ],
    [
     "src/tests/spot/spotApi.test.ts",
@@ -114195,12 +114375,32 @@
     2
    ],
    [
+    "docs/pendencias/integracao-pim-promo-supply.md",
+    2
+   ],
+   [
     "supabase/functions/spot-api/index.ts",
     2
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     2
+   ],
+   [
+    "src/pages/documentos/DocumentosFiscais.tsx",
+    1
+   ],
+   [
+    "supabase/functions/process-invoice-idp/extraction.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/process-invoice-idp/extraction.ts",
+    1
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
+    1
    ],
    [
     "src/pages/admin/FiscalDashboard.tsx",
@@ -114228,22 +114428,6 @@
    ],
    [
     "src/pages/catalogo-spot/CatalogoSpot.tsx",
-    1
-   ],
-   [
-    "supabase/functions/spot-proxy/sessions.ts",
-    1
-   ],
-   [
-    "supabase/functions/spot-proxy/sessions_test.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-expiry-alerts/contractExpiry.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
     1
    ]
   ]

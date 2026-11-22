@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `acd45831a7` · branch `main` · 2026-11-22 16:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `47920c1d3c` · branch `main` · 2026-11-22 16:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -937,12 +937,13 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `error` | escreve | `src/components/ui/undo-toast.tsx` |
 | `type` | `escalated` | compara | `src/hooks/useApprovalNotifications.ts` |
 | `type` | `escalation` | compara, escreve | `src/hooks/useApprovalNotifications.ts`<br>`supabase/functions/check-approval-escalations/index.ts` |
-| `type` | `file` | compara | `src/features/layout/components/chat/MessageBubble.tsx` |
+| `type` | `file` | compara, escreve | `src/features/layout/components/chat/MessageBubble.tsx`<br>`supabase/functions/process-invoice-idp/index.ts` |
 | `type` | `first-input` | escreve | `src/lib/performance.ts` |
 | `type` | `first-time` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `fornecedores` | compara, escreve | `src/features/layout/components/AdvancedSearch.tsx`<br>`src/features/layout/components/search/SearchResultsList.tsx` |
 | `type` | `function` | escreve | `supabase/functions/ai-negotiation/index.ts` |
 | `type` | `human` | escreve | `src/components/compras/SupplierInteractionLog.tsx` |
+| `type` | `image_url` | escreve | `supabase/functions/process-invoice-idp/index.ts` |
 | `type` | `info` | compara, escreve | `src/components/compras/DashboardInsights.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx` |
 | `type` | `integration_failure` | escreve | `supabase/functions/check-sla-alerts/index.ts` |
 | `type` | `kpi` | compara, escreve | `src/components/compras/DraggableDashboard.tsx`<br>`src/stores/dashboardLayoutStore.ts` |
@@ -990,7 +991,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `success` | compara, escreve | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/DashboardInsights.tsx`<br>`src/components/ui/celebration.tsx`<br>`src/components/ui/undo-toast.tsx` |
 | `type` | `supplier` | compara, escreve | `src/components/compras/ExecutiveDashboard.tsx`<br>`src/components/compras/executive/ExecutiveDrillDownModal.tsx` |
 | `type` | `system_alert` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
-| `type` | `text` | escreve | `src/features/layout/components/SupplierChat.tsx`<br>`src/features/layout/components/chat/ChatArea.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
+| `type` | `text` | escreve | `src/features/layout/components/SupplierChat.tsx`<br>`src/features/layout/components/chat/ChatArea.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx`<br>`supabase/functions/process-invoice-idp/index.ts` |
 | `type` | `triangle` | escreve | `src/hooks/useFeedback.ts` |
 | `type` | `update` | compara | `src/hooks/useOfflineSync.ts` |
 | `type` | `user-action` | escreve | `src/hooks/useGlobalUndo.ts` |
@@ -1077,7 +1078,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +9 |
+| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +10 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +13 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `processed` | escreve | `supabase/functions/_shared/idempotency.ts` |
@@ -1140,8 +1141,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
 | `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`src/hooks/usePermissions.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>… +2 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
-| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/guided-buying-ai/index.ts`<br>… +1 |
-| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +3 |
+| `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/guided-buying-ai/index.ts`<br>… +2 |
+| `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +4 |
 | `state` | `collapsed` | compara | `src/components/ui/sidebar.tsx` |
 | `state` | `expanded` | escreve | `src/components/ui/sidebar.tsx` |
 | `state` | `open` | compara | `supabase/functions/_shared/circuit_breaker.ts` |
@@ -1751,6 +1752,8 @@ _nenhum item encontrado_
 | `KDF_ALGO` | `"aesgcm"` | `supabase/functions/erp-credential-encrypt/index.ts` |
 | `SEFAZ_TIMEOUT_MS` | `20_000` | `supabase/functions/fiscal-orchestrator/index.ts` |
 | `SEFAZ_RETRIES` | `4` | `supabase/functions/fiscal-orchestrator/index.ts` |
+| `MAX_FILE_BYTES` | `10 * 1024 * 1024` | `supabase/functions/process-invoice-idp/index.ts` |
+| `MODEL` | `"google/gemini-2.5-flash"` | `supabase/functions/process-invoice-idp/index.ts` |
 | `MAX_RETRIES` | `5` | `supabase/functions/process-outbox/index.ts` |
 | `BATCH_SIZE` | `20` | `supabase/functions/process-outbox/index.ts` |
 | `ENC_LABEL` | `"enc"` | `supabase/functions/punchout-encrypt/index.ts` |
@@ -2347,7 +2350,7 @@ _nenhum item encontrado_
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
-| … +215 linhas — lista completa em `context.json` | |
+| … +219 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2366,7 +2369,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2675 testes em 142 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2681 testes em 143 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2476,6 +2479,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
+| `supabase/functions/process-invoice-idp/extraction.test.ts` | 6 | normaliza numeros e datas do formato brasileiro · nao inventa campo ausente e reporta no campos_ausentes · chave de acesso incompleta vira null em vez de zero-padded · identifica campos obrigatorios faltantes … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
@@ -2672,6 +2676,9 @@ _nenhum item encontrado_
 | Rate limit: geração de PDF é custosa (I/O + render). 20 req/min por usuário. | `supabase/functions/generate-contract-pdf/index.ts` |
 | // Acesso: somente POST + usuário autenticado com role admin. | `supabase/functions/migrate-storage-paths/index.ts` |
 | Dry-run: passe { dryRun: true } no body para apenas simular. | `supabase/functions/migrate-storage-paths/index.ts` |
+| * Regra de ouro: nunca inventar valor. Quando o modelo não devolve um campo, | `supabase/functions/process-invoice-idp/extraction.ts` |
+| Campos sem os quais o documento não pode ser dado como conciliável. */ | `supabase/functions/process-invoice-idp/extraction.ts` |
+| Limite de 10 MB por documento — PDF/imagem de NF-e não passa disso. */ | `supabase/functions/process-invoice-idp/index.ts` |
 | Prevent path traversal: filePath must be a relative path without .. | `supabase/functions/process-invoice-idp/index.ts` |
 | no banco: este edge apenas preenche o formulario. | `supabase/functions/process-solicitacao-neural/index.ts` |
 | * Mesmo padrao de auth/rate-limit/fallback do ai-supplier-suggestion (auth JWT | `supabase/functions/process-solicitacao-neural/index.ts` |

@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (112)",
    "outro (42)",
-   "co-localizado (*.test) (28)"
+   "co-localizado (*.test) (29)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)",
    "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)",
    "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)",
    "fix(edge): spot-proxy volta a passar no deno check (#280)",
-   "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)",
-   "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)"
+   "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)"
   ]
  },
  "pr_template": null,

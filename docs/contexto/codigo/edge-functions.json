@@ -751,8 +751,8 @@
   {
    "nome": "process-invoice-idp",
    "entrada": "supabase/functions/process-invoice-idp/index.ts",
-   "arquivos": 1,
-   "linhas": 94,
+   "arquivos": 2,
+   "linhas": 290,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -760,6 +760,7 @@
    "tabelas": [],
    "rpcs": [],
    "env": [
+    "OPENROUTER_API_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
@@ -769,6 +770,7 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
+    "ai_gateway.ts",
     "http.ts",
     "logger.ts",
     "security.ts"
@@ -779,7 +781,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "process-outbox",

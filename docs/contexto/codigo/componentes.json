@@ -4875,7 +4875,7 @@
     "DocumentosFiscais"
    ],
    "export_default": "DocumentosFiscais",
-   "linhas": 356,
+   "linhas": 369,
    "dominio": "pages/documentos",
    "hooks_locais": [],
    "tabelas": [

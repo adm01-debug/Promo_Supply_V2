@@ -3590,9 +3590,11 @@
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/process-invoice-idp/index.ts": [
+   "supabase/functions/_shared/ai_gateway.ts",
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/process-invoice-idp/extraction.ts"
   ],
   "supabase/functions/process-outbox/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
