@@ -114,13 +114,15 @@ const GerarOrdem = () => {
   };
 
   const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
-  
+
   const fornecedor = useMemo(() => {
     if (selectedCotacao?.fornecedor_id) {
       const found = fornecedoresData.find(f => f.id === selectedCotacao.fornecedor_id);
       if (found) return found;
     }
-    return fornecedoresData[0] || {
+    // Sem cotacao selecionada nao ha fornecedor definido. Cair no primeiro
+    // fornecedor ativo gerava OC para o fornecedor errado, sem aviso.
+    return {
       id: '',
       razao_social: 'Selecione um fornecedor',
       nome_fantasia: 'N/A',
@@ -551,7 +553,8 @@ const GerarOrdem = () => {
                 <Button 
                   onClick={finalizarOrdem} 
                   className="w-full gap-2 gradient-primary h-12 text-lg"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !fornecedor.id}
+                  title={!fornecedor.id ? 'Selecione uma cotacao com fornecedor definido para gerar a OC' : undefined}
                 >
                   {isSubmitting ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Gerando Ordem...</>
