@@ -543,15 +543,11 @@
    "scripts_usados": [
     "scripts/types-sync/check-remocoes-destrutivas.mjs",
     "scripts/types-sync/gen-types.sh",
-    "scripts/types-sync/identidade-banco.mjs",
-    "scripts/types-sync/install-pgbouncer.sh",
-    "scripts/types-sync/install-postgresql-client.sh",
     "scripts/types-sync/typecheck-ratchet.mjs"
    ],
    "npm_scripts": [],
    "secrets": [
-    "GITHUB_TOKEN",
-    "SUPABASE_DB_URL",
+    "SUPABASE_ACCESS_TOKEN",
     "TYPES_SYNC_PR_TOKEN",
     "VITE_SUPABASE_PROJECT_ID"
    ],
@@ -707,7 +703,6 @@
   "secrets_em_workflows": [
    "E2E_TEST_EMAIL",
    "E2E_TEST_PASSWORD",
-   "GITHUB_TOKEN",
    "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_DB_URL",
    "SUPABASE_SERVICE_ROLE_KEY",

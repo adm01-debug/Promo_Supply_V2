@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "74d01a21f9da4ea8cf34000595490d5a570aa616",
+  "commit": "ffe439a908f6870ea2d6dfeb82ae701aed50a129",
   "branch": "main",
-  "data_commit": "2026-11-22T09:22:34-03:00",
+  "data_commit": "2026-11-22T09:22:43-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ffe439a",
+    "data": "2026-11-22",
+    "assunto": "fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)"
+   },
    {
     "sha": "74d01a2",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "017aa0c",
     "data": "2026-11-21",
     "assunto": "fix(docs): alinha contagem de workflows do README de CI com main (#241)"
-   },
-   {
-    "sha": "545b30a",
-    "data": "2026-11-21",
-    "assunto": "ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)"
    }
   ],
-  "arquivos_mudados_7d": 234,
+  "arquivos_mudados_7d": 238,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -156,11 +156,15 @@
     "mudancas": 13
    },
    {
+    "pasta": "docs/ci/README.md",
+    "mudancas": 12
+   },
+   {
     "pasta": "package.json",
     "mudancas": 12
    },
    {
-    "pasta": "docs/ci/README.md",
+    "pasta": "scripts/ci/inventario-types",
     "mudancas": 11
    },
    {
@@ -177,10 +181,6 @@
    },
    {
     "pasta": "docs/prod-readiness.md",
-    "mudancas": 9
-   },
-   {
-    "pasta": "scripts/ci/inventario-types",
     "mudancas": 9
    },
    {
@@ -206,12 +206,12 @@
     "mudancas": 13
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "docs/ci/README.md",
     "mudancas": 12
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 11
+    "arquivo": "package.json",
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/main.yml",
@@ -246,6 +246,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": ".github/workflows/types-sync.yml",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 5
    },
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
-    "mudancas": 4
-   },
-   {
-    "arquivo": ".github/workflows/types-sync.yml",
     "mudancas": 4
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 226
+    "commits": 227
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1290,
   "arquivos_codigo": 799,
-  "linhas_codigo": 167073,
+  "linhas_codigo": 167145,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -368,7 +368,7 @@
   },
   "scripts/ci": {
    "arquivos": 43,
-   "linhas": 9937
+   "linhas": 10009
   },
   "scripts/db-explain-analyze.ts": {
    "arquivos": 1,
@@ -799,6 +799,7 @@
   "possiveis_segredos_no_codigo": [
    "scripts/ci/inventario-types/banco.unit.mjs:18",
    "scripts/ci/inventario-types/banco.unit.mjs:227",
+   "scripts/ci/inventario-types/identidade.unit.mjs:285",
    "scripts/ci/inventario-types/pg.mjs:51"
   ]
  },

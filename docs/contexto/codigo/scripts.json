@@ -518,7 +518,7 @@
   {
    "arquivo": "scripts/types-sync/gen-types.sh",
    "descricao": "gen-types.sh [--local] [output_path] Gera src/integrations/supabase/types.ts a partir do schema do banco.",
-   "linhas": 174,
+   "linhas": 207,
    "env": [],
    "npm_scripts": [],
    "workflows": [
@@ -532,9 +532,7 @@
    "linhas": 194,
    "env": [],
    "npm_scripts": [],
-   "workflows": [
-    "types-sync.yml"
-   ],
+   "workflows": [],
    "orfao": false
   },
   {
@@ -543,9 +541,7 @@
    "linhas": 37,
    "env": [],
    "npm_scripts": [],
-   "workflows": [
-    "types-sync.yml"
-   ],
+   "workflows": [],
    "orfao": false
   },
   {
@@ -554,9 +550,7 @@
    "linhas": 37,
    "env": [],
    "npm_scripts": [],
-   "workflows": [
-    "types-sync.yml"
-   ],
+   "workflows": [],
    "orfao": false
   },
   {

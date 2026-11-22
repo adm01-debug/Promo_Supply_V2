@@ -173,21 +173,21 @@
   {
    "arquivo": "scripts/ci/inventario-types/gentypes.unit.mjs",
    "tipo": "unit",
-   "linhas": 402,
+   "linhas": 450,
    "testa": [
     "scripts/ci/inventario-types/lib.mjs",
     "scripts/ci/inventario-types/pg.mjs"
    ],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "scripts/ci/inventario-types/identidade.unit.mjs",
    "tipo": "unit",
-   "linhas": 326,
+   "linhas": 350,
    "testa": [
     "scripts/ci/inventario-types/lib.mjs"
    ],
-   "casos": 18
+   "casos": 20
   },
   {
    "arquivo": "scripts/ci/inventario-types/repo.unit.mjs",

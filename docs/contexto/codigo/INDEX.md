@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `74d01a21f9da4ea8cf34000595490d5a570aa616` (2026-11-22T09:22:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ffe439a908f6870ea2d6dfeb82ae701aed50a129` (2026-11-22T09:22:43-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1290 |
 | arquivos_codigo | 799 |
-| linhas_codigo | 167073 |
+| linhas_codigo | 167145 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -328,7 +328,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - arquivos_nao_lidos_por_tamanho: 0
 - env_usadas_nao_declaradas: 1 — ex.: VITE_VAPID_PUBLIC_KEY
 - ciclos_de_import: 2
-- possiveis_segredos_no_codigo: 3 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/pg.mjs:51
+- possiveis_segredos_no_codigo: 4 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/identidade.unit.mjs:285
 
 ## Grafo de código (graphify)
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
@@ -336,8 +336,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (33)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (13)
+- docs/ci/README.md (12)
 - package.json (12)
-- docs/ci/README.md (11)
 - .github/workflows/main.yml (9)
 - docs/prod-readiness.md (9)
 - bun.lock (8)
@@ -346,9 +346,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (6)
 - scripts/automation.config.json (6)
+- .github/workflows/types-sync.yml (5)
 - docs/agentes/github-ci.md (5)
 - src/pages/acompanhamento/Acompanhamento.tsx (5)
-- supabase/functions/punchout-receive/index.ts (5)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `ffe439a` fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)
 - 2026-11-22 `74d01a2` fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)
 - 2026-11-22 `495ab36` fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)
 - 2026-11-22 `23566a2` fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `9200429` fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)
 - 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
 - 2026-11-21 `d7718b8` fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)
-- 2026-11-21 `ccdb17f` docs(pim): marca PR 2.1 concluída no checklist (#249)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

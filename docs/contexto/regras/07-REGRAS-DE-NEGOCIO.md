@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `74d01a21f9` · branch `main` · 2026-11-22 12:24 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ffe439a908` · branch `main` · 2026-11-22 12:25 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2072,6 +2072,8 @@ _nenhum item encontrado_
 | campo repetido no bloco # docs: ${m[1]} | `scripts/ci/render-workflow-docs.mjs` |
 | linha nao reconhecida no bloco # docs:  | `scripts/ci/render-workflow-docs.mjs` |
 | relation  | `scripts/ci/scripts-operacionais.unit.mjs` |
+| passo  | `scripts/ci/inventario-types/identidade.unit.mjs` |
+| passo sem  | `scripts/ci/inventario-types/identidade.unit.mjs` |
 | --entrada exige o caminho do arquivo com a resposta do banco.sql | `scripts/inventario/gerar-banco.mjs` |
 | Management API ${caminho} respondeu HTTP ${res.status} | `scripts/inventario/gerar-banco.mjs` |
 | a resposta nao parece ser do banco deste projeto: ${comuns} tabelas em comum com o manifesto  | `scripts/inventario/gerar-banco.mjs` |
@@ -2328,9 +2330,7 @@ _nenhum item encontrado_
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
-| Erro ao salvar conexão:  | `src/pages/admin/ERPConnections.tsx` |
-| Erro ao sincronizar:  | `src/pages/admin/ERPConnections.tsx` |
-| … +212 linhas — lista completa em `context.json` | |
+| … +214 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "74d01a21f9da4ea8cf34000595490d5a570aa616",
+  "sha": "ffe439a908f6870ea2d6dfeb82ae701aed50a129",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 12:24 UTC",
+  "generated_at": "2026-11-22 12:25 UTC",
   "files_total": 1291,
   "code_files": 1128,
-  "code_lines": 194031,
+  "code_lines": 194103,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3424350dd027f4d0",
+ "facts_hash": "7676c128735789b4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34117,7 +34117,7 @@
   {
    "module": "scripts",
    "files": 79,
-   "lines": 29214,
+   "lines": 29286,
    "tables": [
     "a",
     "a_tabela",
@@ -39966,6 +39966,14 @@
    {
     "file": "scripts/ci/scripts-operacionais.unit.mjs",
     "msg": "relation "
+   },
+   {
+    "file": "scripts/ci/inventario-types/identidade.unit.mjs",
+    "msg": "passo "
+   },
+   {
+    "file": "scripts/ci/inventario-types/identidade.unit.mjs",
+    "msg": "passo sem "
    },
    {
     "file": "scripts/inventario/gerar-banco.mjs",
@@ -88190,7 +88198,7 @@
   },
   "scripts/ci/inventario-types/gentypes.unit.mjs": {
    "path": "scripts/ci/inventario-types/gentypes.unit.mjs",
-   "lines": 402,
+   "lines": 450,
    "params": [
     {
      "name": "GEN",
@@ -88199,6 +88207,10 @@
     {
      "name": "CA_REL",
      "value": "'scripts/types-sync/certs/supabase-prod-ca-2021.crt'"
+    },
+    {
+     "name": "REF_FALSO",
+     "value": "'abcdefghijklmnopqrst'"
     }
    ],
    "doc": "Cenarios de scripts/types-sync/gen-types.sh e dos install-*.sh, com binarios de mentira no PATH (supabase, apt-get, sudo, pgbouncer, pg_isready). Roda com bash/dash + coreutils, sem rede e sem banco: o PATH do script e um diretorio so de links para o nucleo POSIX, entao `supabase`, `pgbouncer` e `rg …",
@@ -88208,7 +88220,11 @@
   },
   "scripts/ci/inventario-types/identidade.unit.mjs": {
    "path": "scripts/ci/inventario-types/identidade.unit.mjs",
-   "lines": 326,
+   "lines": 350,
+   "errors": [
+    "passo ",
+    "passo sem "
+   ],
    "params": [
     {
      "name": "PROXY",
@@ -88223,7 +88239,7 @@
      "value": "'zyxwvutsrqponmlkjihg'"
     }
    ],
-   "doc": "Cenarios de scripts/types-sync/identidade-banco.mjs, local-pg-proxy.mjs e do passo \"Exigir credencial do banco oficial\" do types-sync.yml (o heredoc node e extraido do YAML e executado). So node (o caso do umask 000 tambem usa bash e fica skip sem ele)."
+   "doc": "Cenarios de scripts/types-sync/identidade-banco.mjs, local-pg-proxy.mjs e do passo \"Exigir credencial da Management API oficial\" do types-sync.yml (o bloco run e extraido do YAML e executado). So node (o caso do umask 000 tambem usa bash e fica skip sem ele)."
   },
   "scripts/ci/inventario-types/lib.mjs": {
    "path": "scripts/ci/inventario-types/lib.mjs",
@@ -113478,10 +113494,25 @@
   }
  },
  "git": {
-  "sha": "74d01a21f9da4ea8cf34000595490d5a570aa616",
+  "sha": "ffe439a908f6870ea2d6dfeb82ae701aed50a129",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ffe439a",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)",
+    "files": [
+     ".github/workflows/types-sync.yml",
+     "docs/agentes/banco.md",
+     "docs/ci/README.md",
+     "scripts/ci/inventario-types/gentypes.unit.mjs",
+     "scripts/ci/inventario-types/identidade.unit.mjs",
+     "scripts/types-sync/README.md",
+     "scripts/types-sync/gen-types.sh"
+    ]
+   },
    {
     "sha": "74d01a2",
     "date": "2026-11-22",
@@ -113773,15 +113804,6 @@
      "src/lib/__tests__/pushHandler.test.ts",
      "vite.config.ts"
     ]
-   },
-   {
-    "sha": "5f273a0",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: allowlist adiciona v_compras_catalogo e v_compras_precos_faixa",
-    "files": [
-     "supabase/functions/_shared/external-bridge-allowlist.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113790,15 +113812,15 @@
     5
    ],
    [
+    "docs/ci/README.md",
+    4
+   ],
+   [
     "docs/pendencias/integracao-pim-promo-supply.md",
     3
    ],
    [
     "src/tests/spot/spotApi.test.ts",
-    3
-   ],
-   [
-    "docs/ci/README.md",
     3
    ],
    [
@@ -113810,12 +113832,32 @@
     2
    ],
    [
-    "supabase/functions/_shared/external-bridge-allowlist.ts",
+    ".github/workflows/aplicar-migration-prod.yml",
     2
    ],
    [
-    ".github/workflows/aplicar-migration-prod.yml",
-    2
+    ".github/workflows/types-sync.yml",
+    1
+   ],
+   [
+    "docs/agentes/banco.md",
+    1
+   ],
+   [
+    "scripts/ci/inventario-types/gentypes.unit.mjs",
+    1
+   ],
+   [
+    "scripts/ci/inventario-types/identidade.unit.mjs",
+    1
+   ],
+   [
+    "scripts/types-sync/README.md",
+    1
+   ],
+   [
+    "scripts/types-sync/gen-types.sh",
+    1
    ],
    [
     "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
@@ -113843,26 +113885,6 @@
    ],
    [
     "supabase/functions/_shared/spot_api.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
-    1
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    1
-   ],
-   [
-    "scripts/ci/gerar-matriz-edge-tabela.mjs",
-    1
-   ],
-   [
-    "supabase/functions/_shared/notifications.ts",
-    1
-   ],
-   [
-    "supabase/functions/alert-dispatcher/index.ts",
     1
    ]
   ]
