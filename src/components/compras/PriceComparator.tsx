@@ -90,16 +90,50 @@ export function PriceComparator() {
 
     try {
       let linkedData: { fornecedor_id: string; preco_custo?: number | null; lead_time_estimado?: number | null }[] = [];
-      
-      // If a product is selected, fetch its linked suppliers and prices
+      let quotedPrices: { fornecedor_id: string; valor_unitario?: number | null; prazo_entrega?: number | string | null }[] = [];
+
       if (selectedProductId) {
         const { data, error } = await supabase
           .from('produto_fornecedores')
           .select('*')
           .eq('produto_id', selectedProductId);
-        
-        if (!error && data) {
+
+        if (error) {
+          logger.error('Erro ao carregar precos contratados', { error });
+        } else if (data) {
           linkedData = data;
+        }
+
+        // Cotacoes ja registradas viram fonte de preco real do produto.
+        // cotacoes nao tem produto_id: o vinculo e solicitacoes.produto_id.
+        const { data: solicitacoes, error: solicitacoesError } = await supabase
+          .from('solicitacoes')
+          .select('id')
+          .eq('produto_id', selectedProductId);
+
+        if (solicitacoesError) {
+          logger.error('Erro ao carregar solicitacoes do produto', { error: solicitacoesError });
+        }
+
+        const solicitacaoIds = (solicitacoes ?? []).map(s => s.id);
+        const { data: cotacoes, error: cotacoesError } = solicitacaoIds.length === 0
+          ? { data: [] as never[], error: null }
+          : await supabase
+              .from('cotacoes')
+              .select('fornecedor_id, valor_unitario, prazo_entrega')
+              .in('solicitacao_id', solicitacaoIds)
+              .not('valor_unitario', 'is', null);
+
+        if (cotacoesError) {
+          logger.error('Erro ao carregar cotacoes registradas', { error: cotacoesError });
+        } else if (cotacoes) {
+          quotedPrices = cotacoes
+            .filter(c => c.fornecedor_id !== null)
+            .map(c => ({
+              fornecedor_id: c.fornecedor_id as string,
+              valor_unitario: c.valor_unitario,
+              prazo_entrega: c.prazo_entrega,
+            }));
         }
       }
 
@@ -112,11 +146,13 @@ export function PriceComparator() {
         ? products.find(p => p.id === selectedProductId)?.nome || productName 
         : productName;
 
-      const result = generateQuotesFromSuppliers(fornecedores, displayProductName, qty, linkedData);
+      const result = generateQuotesFromSuppliers(fornecedores, displayProductName, qty, linkedData, quotedPrices);
       setComparison(result);
       toast({
         title: 'Comparação concluída',
-        description: `${result.quotes.length} cotações processadas para "${displayProductName}"`,
+        description: result.coverage.withPrice === 0
+          ? `Nenhum dos ${result.quotes.length} fornecedores tem preco registrado para "${displayProductName}"`
+          : `${result.coverage.withPrice} de ${result.quotes.length} fornecedores com preco registrado`,
       });
     } catch (error) {
       logger.error('Error comparing prices', { error });
@@ -130,18 +166,24 @@ export function PriceComparator() {
     }
   };
 
-  const chartData = comparison?.quotes.map(q => ({
-    name: q.supplierName.substring(0, 12),
-    price: q.totalPrice,
-    recommended: q.recommended,
-  })) || [];
+  const chartData = comparison?.quotes
+    .filter((q): q is typeof q & { totalPrice: number } => q.totalPrice !== null)
+    .map(q => ({
+      name: q.supplierName.substring(0, 12),
+      price: q.totalPrice,
+      recommended: q.recommended,
+    })) || [];
 
-  const strategicData = comparison ? comparison.quotes.map(q => ({
-    fornecedor: q.supplierName,
-    total: q.totalPrice,
-    lead_time: q.deliveryDays,
-    rating: q.rating
-  })) : [];
+  const strategicData = comparison
+    ? comparison.quotes
+        .filter((q): q is typeof q & { totalPrice: number } => q.totalPrice !== null)
+        .map(q => ({
+          fornecedor: q.supplierName,
+          total: q.totalPrice,
+          lead_time: q.deliveryDays,
+          rating: q.rating,
+        }))
+    : [];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -262,7 +304,7 @@ export function PriceComparator() {
                           <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
                           <p className="text-xl font-black text-white tracking-tight">
                             {selectedQuotes.length ? (
-                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
+                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + (q.totalPrice ?? 0), 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
                             ) : '—'}
                           </p>
                         </div>
@@ -293,9 +335,11 @@ export function PriceComparator() {
                         <TrendingDown className="h-4 w-4" />
                         <span className="text-xs font-medium">Melhor Preço</span>
                       </div>
-                      <p className="font-semibold truncate">{comparison.bestPrice}</p>
+                      <p className="font-semibold truncate">{comparison.bestPrice ?? '—'}</p>
                       <p className="text-sm text-muted-foreground">
-                        R$ {comparison.priceRange.min.toLocaleString('pt-BR')}
+                        {comparison.priceRange
+                          ? `R$ ${comparison.priceRange.min.toLocaleString('pt-BR')}`
+                          : 'Sem preco registrado'}
                       </p>
                     </CardContent>
                   </Card>
@@ -306,9 +350,12 @@ export function PriceComparator() {
                         <Truck className="h-4 w-4" />
                         <span className="text-xs font-medium">Entrega Mais Rápida</span>
                       </div>
-                      <p className="font-semibold truncate">{comparison.bestDelivery}</p>
+                      <p className="font-semibold truncate">{comparison.bestDelivery ?? '—'}</p>
                       <p className="text-sm text-muted-foreground">
-                        {comparison.quotes.find(q => q.supplierName === comparison.bestDelivery)?.deliveryDays} dias
+                        {(() => {
+                          const d = comparison.quotes.find(q => q.supplierName === comparison.bestDelivery)?.deliveryDays;
+                          return d === null || d === undefined ? 'Prazo nao cadastrado' : `${d} dias`;
+                        })()}
                       </p>
                     </CardContent>
                   </Card>
@@ -319,7 +366,7 @@ export function PriceComparator() {
                         <Star className="h-4 w-4" />
                         <span className="text-xs font-medium">Melhor Custo-Benefício</span>
                       </div>
-                      <p className="font-semibold truncate">{comparison.bestOverall}</p>
+                      <p className="font-semibold truncate">{comparison.bestOverall ?? '—'}</p>
                       <p className="text-sm text-muted-foreground">Recomendado</p>
                     </CardContent>
                   </Card>
@@ -437,27 +484,33 @@ export function PriceComparator() {
                               </div>
                             </TableCell>
                             <TableCell className="text-right">
-                              R$ {quote.unitPrice.toFixed(2)}
+                              {quote.unitPrice === null ? <span className="text-muted-foreground">—</span> : `R$ ${quote.unitPrice.toFixed(2)}`}
                             </TableCell>
                             <TableCell className="text-right font-semibold">
-                              R$ {quote.totalPrice.toLocaleString('pt-BR')}
-                              {quote.savingsPercent > 0 && (
-                                <span className="text-xs text-success block">
-                                  -{quote.savingsPercent}%
-                                </span>
+                              {quote.totalPrice === null ? (
+                                <span className="text-xs text-muted-foreground">Sem preco</span>
+                              ) : (
+                                <>
+                                  {quote.savings !== null && quote.savings > 0 ? (
+                                    <span className="text-xs text-destructive block">
+                                      +R$ {quote.savings.toLocaleString('pt-BR')}
+                                    </span>
+                                  ) : null}
+                                  R$ {quote.totalPrice.toLocaleString('pt-BR')}
+                                </>
                               )}
                             </TableCell>
                             <TableCell className="text-center">
                               <div className="flex items-center justify-center gap-1">
                                 <Clock className="h-3 w-3 text-muted-foreground" />
-                                {quote.deliveryDays}d
+                                {quote.deliveryDays === null ? '—' : `${quote.deliveryDays}d`}
                               </div>
                             </TableCell>
-                            <TableCell className="text-sm">{quote.paymentTerms}</TableCell>
+                            <TableCell className="text-sm">{quote.paymentTerms ?? '—'}</TableCell>
                             <TableCell className="text-center">
                               <div className="flex items-center justify-center gap-1">
                                 <Star className="h-3 w-3 text-warning fill-amber-500" />
-                                {quote.rating}
+                                {quote.rating === null ? '—' : quote.rating}
                               </div>
                             </TableCell>
                           </TableRow>
