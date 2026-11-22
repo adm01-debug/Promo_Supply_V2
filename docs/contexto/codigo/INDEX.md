@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0e453b0f3d2b4a68d4c07544ba14358f8d2b99c9` (2026-11-22T14:30:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b61b54dbf7799777c2c7ef7574c68edf80fffdc7` (2026-11-22T14:44:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1306 |
 | arquivos_codigo | 813 |
-| linhas_codigo | 169352 |
+| linhas_codigo | 169359 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `b61b54d` fix(configuracoes): corrige centro de custo pai gravando string "none" em uuid (#291)
 - 2026-11-22 `0e453b0` fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)
 - 2026-11-22 `e81325a` docs(auditoria): marca L03 (spot-api no front) como concluido (#289)
 - 2026-11-22 `bc442e6` feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `e0eede2` fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)
 - 2026-11-22 `8e9d432` fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)
 - 2026-11-22 `94f73a1` fix(ci): fallback do canal de migration reconhece erro de ownership (#246)
-- 2026-11-22 `e469807` fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

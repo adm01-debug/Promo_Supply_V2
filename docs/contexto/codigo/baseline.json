@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0e453b0f3d2b4a68d4c07544ba14358f8d2b99c9",
+  "commit": "b61b54dbf7799777c2c7ef7574c68edf80fffdc7",
   "branch": "main",
-  "data_commit": "2026-11-22T14:30:53-03:00",
+  "data_commit": "2026-11-22T14:44:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b61b54d",
+    "data": "2026-11-22",
+    "assunto": "fix(configuracoes): corrige centro de custo pai gravando string \"none\" em uuid (#291)"
+   },
    {
     "sha": "0e453b0",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "23566a2",
     "data": "2026-11-22",
     "assunto": "fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)"
-   },
-   {
-    "sha": "1cd652f",
-    "data": "2026-11-22",
-    "assunto": "docs: checklist PIM e indice de pendencias refletem o estado real (#265)"
    }
   ],
-  "arquivos_mudados_7d": 273,
+  "arquivos_mudados_7d": 274,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 247
+    "commits": 248
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1306,
   "arquivos_codigo": 813,
-  "linhas_codigo": 169352,
+  "linhas_codigo": 169359,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30095
+   "linhas": 30102
   },
   "src/routes": {
    "arquivos": 1,

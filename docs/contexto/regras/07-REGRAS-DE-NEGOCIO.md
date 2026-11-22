@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0e453b0f3d` · branch `main` · 2026-11-22 17:31 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b61b54dbf7` · branch `main` · 2026-11-22 17:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1724,6 +1724,7 @@ _nenhum item encontrado_
 | `TREND_WINDOW` | `12` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_MIN_SAMPLES` | `6` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| `NON_PARENT` | `"__none__"` | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
 | `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
 | `MAX_SELECT_LIMIT` | `500` | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `DEFAULT_LEVEL` | `"info"` | `supabase/functions/_shared/logLevel.ts` |

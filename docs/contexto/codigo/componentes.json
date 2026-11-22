@@ -4735,7 +4735,7 @@
     "ConfiguracoesCentroCusto"
    ],
    "export_default": "ConfiguracoesCentroCusto",
-   "linhas": 329,
+   "linhas": 336,
    "dominio": "pages/configuracoes",
    "hooks_locais": [
     "useSolicitacoes"
