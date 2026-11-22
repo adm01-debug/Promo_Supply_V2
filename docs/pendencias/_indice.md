@@ -32,6 +32,7 @@ catalogo, Fase 2 execucao vertical por item.
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | CONCLUIDO (PR #194, merge 2026-11-20) | default `emailRecipients: []` + seed via `profile.email` em `SLASettingsPanel.tsx` |
 | fake-kpi-targets | metas sao objetivos configuráveis (KPITargetsConfig + persist localStorage), não dados simulados | CONCLUIDO | `kpiTargetsStore.ts` |
 | fake-sla-analysis | `slaAnalysisData.ts` e `SLABySupplierAnalysis.tsx` geravam 6 fornecedores hardcoded com todos os numeros via `Math.random()` no import | CONCLUIDO (PR #284) | `buildSupplierSLAData` agrega `pedidos` reais (conformidade = `data_entrega <= data_previsao`, lead time = `data_entrega - data_emissao`, criticos = previsao vencida sem entrega) + `fornecedores.avaliacao`/`prazo_medio_entrega`; sem amostra o campo e `null` e a tela mostra `—`. `useSupplierSlaData` filtra pelo periodo (3m/6m/12m) e tem estados loading/erro/vazio |
+| fake-price-comparator | `priceComparatorHelpers.ts` inventava `unitPrice` (25 + random*50), forma de pagamento, estoque, nota e prazo; `savings` era calculado como `preco medio x 1,2` | CONCLUIDO | `generateQuotesFromSuppliers` recebe as `cotacoes` reais (via `solicitacoes.produto_id`) e nunca inventa valor: precedencia `produto_fornecedores` -> `cotacoes` -> ausente. Campos sem fonte viram `null` e a tela mostra `—`, com `coverage` (`X de Y com preco`) no toast e na tabela |
 
 ## Edge functions (L10)
 | ID | Item | Estado | Fonte |
