@@ -2354,6 +2354,24 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_watchdog_seen: {
+        Row: {
+          first_seen: string
+          jobid: number
+          jobname: string
+        }
+        Insert: {
+          first_seen?: string
+          jobid: number
+          jobname: string
+        }
+        Update: {
+          first_seen?: string
+          jobid?: number
+          jobname?: string
+        }
+        Relationships: []
+      }
       currencies: {
         Row: {
           code: string
@@ -9692,6 +9710,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      resolve_stale_system_error_alerts: { Args: never; Returns: number }
       run_all_health_scans: { Args: never; Returns: string }
       scan_autovacuum_starvation: {
         Args: {
