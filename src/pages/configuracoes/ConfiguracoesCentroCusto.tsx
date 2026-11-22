@@ -31,6 +31,10 @@ import {
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+// `parent_id` é uuid; "Nenhum" precisa de um sentinela que nunca vá para o banco.
+// Sem isso o form gravava a string "none" e o Postgres rejeitava com 22P02.
+const NON_PARENT = "__none__";
+
 const ConfiguracoesCentroCusto = () => {
   const { costCenters, loadingCostCenters } = useSolicitacoes();
   const queryClient = useQueryClient();
@@ -207,12 +211,15 @@ const ConfiguracoesCentroCusto = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Centro de Custo Pai (Opcional)</Label>
-                  <Select value={form.parent_id} onValueChange={v => setForm(p => ({ ...p, parent_id: v }))}>
+                  <Select
+                    value={form.parent_id}
+                    onValueChange={v => setForm(p => ({ ...p, parent_id: v === NON_PARENT ? '' : v }))}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Nenhum" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Nenhum</SelectItem>
+                      <SelectItem value={NON_PARENT}>Nenhum</SelectItem>
                       {costCenters.filter(cc => cc.id !== editingCC?.id).map(cc => (
                         <SelectItem key={cc.id} value={cc.id}>
                           {cc.code} - {cc.name}
