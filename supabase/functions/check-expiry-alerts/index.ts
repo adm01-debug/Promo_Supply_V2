@@ -3,6 +3,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { insertNotification } from "../_shared/notifications.ts";
+import {
+  alertMessage,
+  alertTitle,
+  selectContractAlerts,
+  type ContractRow,
+} from "./contractExpiry.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -11,14 +17,18 @@ Deno.serve(async (req) => {
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
 
+  // MED-C10: logger declarado ANTES do try para o catch poder referencia-lo
+  // (antes era `const` dentro do try e o catch estourava ReferenceError em TDZ).
+  const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
+  let logger: EdgeLogger | undefined;
+
   try {
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('check-expiry-alerts', requestId);
+    logger = new EdgeLogger('check-expiry-alerts', requestId);
 
     logger.info("Starting expiry alerts check...");
 
@@ -174,6 +184,50 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 6. Contratos ativos vencendo ou ja vencidos. O cron
+    //    `contract-expiry-check` (07:00 UTC) chama esta edge desde
+    //    20261121153000; sem este bloco ele rodava sem emitir alerta nenhum.
+    const { data: contractRows, error: contractError } = await supabase
+      .from("contracts")
+      .select("id, contract_number, title, status, end_date, renewal_type, renewal_notice_days, tenant_id")
+      .in("status", ["active", "ativo"])
+      .not("end_date", "is", null);
+
+    if (contractError) throw contractError;
+
+    const contractAlerts = selectContractAlerts((contractRows ?? []) as ContractRow[], now);
+
+    let contractNotifications = 0;
+    let contractDeduped = 0;
+
+    for (const alert of contractAlerts) {
+      const title = alertTitle(alert);
+      const message = alertMessage(alert);
+      for (const userId of userIds) {
+        const res = await insertNotification(
+          supabase,
+          {
+            user_id: userId,
+            tenant_id: alert.tenant_id,
+            title,
+            message,
+            type: "contract_expiring",
+            priority: alert.priority,
+            action_label: "Ver Contrato",
+            action_url: `/contratos?status=expiring`,
+            data: {
+              contract_id: alert.contract_id,
+              days_left: alert.days_left,
+              end_date: alert.end_date,
+            },
+          },
+          { dedupeSince: todayStr },
+        );
+        if (res.ok) contractNotifications++;
+        else if (res.skipped === "duplicada") contractDeduped++;
+      }
+    }
+
     // Insert notifications (deduplicate - check if similar notification exists today)
     let notificationsCreated = 0;
     for (const notif of notifications) {
@@ -186,6 +240,10 @@ Deno.serve(async (req) => {
       cotacoes_expired: expiredCount,
       pagamentos_due_soon: (dueSoonPagamentos || []).length,
       pagamentos_overdue_marked: overdueCount,
+      contratos_em_alerta: contractAlerts.length,
+      contratos_vencidos: contractAlerts.filter((a) => a.expired).length,
+      contract_notifications_created: contractNotifications,
+      contract_notifications_deduped: contractDeduped,
       notifications_created: notificationsCreated,
       timestamp: now.toISOString(),
     };
