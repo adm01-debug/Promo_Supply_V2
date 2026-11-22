@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "4c78723596b5851e3c088df25a1b22aacf68868a",
+  "sha": "e46980782e2f7efacf4581ca8dd203994b04eb97",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 13:01 UTC",
-  "files_total": 1292,
-  "code_files": 1129,
-  "code_lines": 194237,
+  "generated_at": "2026-11-22 13:24 UTC",
+  "files_total": 1295,
+  "code_files": 1130,
+  "code_lines": 194390,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e98948e7edf0a182",
+ "facts_hash": "ac3a014ff7a2ceb6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 379,
+   ".ts": 380,
    ".tsx": 348,
    ".sql": 327,
    ".mjs": 67,
@@ -33488,7 +33488,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 295,
+  "components_count": 296,
   "hooks": [
    {
     "name": "useContacts",
@@ -34378,8 +34378,8 @@
   },
   {
    "module": "src/components",
-   "files": 261,
-   "lines": 48388,
+   "files": 262,
+   "lines": 48409,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34457,9 +34457,9 @@
     "PrefetchLink.tsx: Componente Link com prefetch automático de DADOS (React Query) e do CHUNK JS da rota destino, no hover/focus do usuário.",
     "executiveDashboardData.ts: Pure utilities for the Executive Dashboard (no fictional data). All derived data now comes from useExecutiveDashboardData.",
     "deadlineFallback.ts: Resolves the effective deadline for a pending approval step. Priority: 1. `stepPrazoLimite` — deadline set directly on the step 2. `workflowPrazoLimite` — deadline inherited from the parent workflow 3. `(workflowCreatedAt ?? stepCreatedAt) + 24h` — safe fallback Never returns \"now\", which would fals …",
-    "kpiMockData.ts: Mock data and helper types for AdvancedProcurementKPIs",
     "slaAnalysisData.ts: Mock SLA data per supplier",
-    "tourStepDefinitions.ts: Predefined tour step definitions for each page/feature. Extracted from OnboardingTour to keep that component focused on rendering."
+    "tourStepDefinitions.ts: Predefined tour step definitions for each page/feature. Extracted from OnboardingTour to keep that component focused on rendering.",
+    "contextual-skeletons.tsx: Re-export all skeleton components from modular files Base primitives"
    ],
    "deps": [
     "@dnd-kit/core",
@@ -34883,7 +34883,7 @@
   {
    "module": "src/hooks",
    "files": 73,
-   "lines": 12932,
+   "lines": 13064,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -52689,7 +52689,25 @@
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
     "field": "status",
+    "value": "active",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "status",
+    "value": "active",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "status",
     "value": "pending",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "field": "reconciliation_status",
+    "value": "reconciled",
     "kind": "compara"
    },
    {
@@ -55839,6 +55857,12 @@
     "body": "const trend = useMemo(() => { if (filtered.length < 2) return null; const half = Math.ceil(filtered.length / 2); const recent = filtered.slice(half); const older = filtered.slice(0, half); const avgRecent = recent.reduce((s, c) => s + c.valor_unitario, 0) / recent.length; const avgOlder = older.reduce((s, c) => s + c.valor_unitario, 0) / older.length; const change = avgOlder > 0 ? ((avgRecent - avgOlder) / avgOlder) * 100 : 0; return { avgRecent, avgOlder, change }; }, [filtered]); const monthly …"
    },
    {
+    "file": "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
+    "name": "round",
+    "params": "value: number, decimals = 0",
+    "body": "const factor = 10 ** decimals; return Math.round(value * factor) / factor;"
+   },
+   {
     "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
     "name": "generateSupplierSLAData",
     "params": "",
@@ -55873,6 +55897,12 @@
     "name": "generateSparkline",
     "params": "_base: number, _count: number = 7",
     "body": "[];"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "name": "round1",
+    "params": "value: number",
+    "body": "Math.round(value * 10) / 10;"
    },
    {
     "file": "src/hooks/useFornecedores.ts",
@@ -56311,6 +56341,10 @@
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
     "line": "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];"
    },
    {
     "file": "src/hooks/useFlashHighlight.ts",
@@ -57109,6 +57143,10 @@
    {
     "file": "src/features/layout/components/AdvancedSearch.tsx",
     "line": "items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });"
+   },
+   {
+    "file": "src/hooks/useExecutiveDashboardData.ts",
+    "line": "// Snapshot dos KPIs avançados, 100% derivado do banco (sem baseline fictício)."
    },
    {
     "file": "src/hooks/useExecutiveDashboardData.ts",
@@ -58589,180 +58627,88 @@
     "name": "result for 1000 is longer than result for 10"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "KPI_COLORS"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - sem dados"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has 5 color entries"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "nao inventa valores quando o banco esta vazio"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "all entries are non-empty strings"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "usa as metas do modulo, nao numeros fixos de tela"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "first color uses primary CSS variable"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - ROI"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "all colors use hsl format"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "divide economia pelo spend fora de contrato"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.procurementROI"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "zera o ROI quando nao ha maverick spend (evita divisao por zero)"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has current, previous, target, savings, investment"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - maverick"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "current ROI is positive"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "ordena categorias por valor, limita a 6 e calcula porcentagem sobre o total fora de contrato"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "current is higher than previous"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "descarta categorias com valor zero"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.maverickSpend"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - contratos"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has total, maverick, percentage, target, byCategory"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "repassa ativos, expirando e expirados do banco"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "maverick spend is less than total"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - first time match rate"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "percentage is above target (indicating room for improvement)"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "calcula aderencia a partir das notas fiscais conciliadas"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "byCategory has 4 entries"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "nao passa de 100% nem de o total de notas"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "each byCategory entry has name, value, percentage"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - savings realization"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "byCategory percentages sum to 100"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "soma o projetado dos trimestres e calcula o percentual realizado"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.contractCompliance"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveKpiSnapshot - concentracao de fornecedores"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has percentage, target, contracts, compliant, expiring, expired"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "calcula participacao sobre o spend total"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "compliant <= contracts"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "deriveHerfindahl / deriveConcentrationRisk"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "percentage is below target (gap indicates improvement needed)"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "HHI de mercado concentrado e pulverizado"
    },
    {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.costAvoidance"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has total, negotiated, competitive, standardization"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "negotiated + competitive + standardization equals total"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.poCycleTime"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has current, target, and trend array"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "current is above target (improvement opportunity)"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "trend has 6 entries"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "trend entries have month and days"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "trend is decreasing over time (improving)"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.supplierConcentration"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has top5Percentage, herfindahlIndex, risk, suppliers"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "risk level is medium"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has 5 suppliers"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "each supplier has name and percentage"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.savingsRealization"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has projected, realized, percentage, byQuarter"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "realized is less than projected"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "byQuarter has 4 entries (Q1-Q4)"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "byQuarter quarters are Q1 through Q4"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "each byQuarter entry has projected and realized"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "kpiData.firstTimeMatchRate"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "has current, target, invoices, matched, exceptions"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "matched + exceptions equals invoices"
-   },
-   {
-    "file": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    "name": "current rate is below target"
+    "file": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    "name": "faixas de risco"
    },
    {
     "file": "src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts",
@@ -77399,17 +77345,10 @@
       "compara:supabase/functions/_shared/circuit_breaker.ts"
      ]
     },
-    "bid_status": {
-     "valid": [
-      "escreve:src/integrations/supabase/types.ts"
-     ]
-    },
-    "tenant_status": {
-     "active": [
-      "escreve:src/integrations/supabase/types.ts"
-     ]
-    },
     "reconciliation_status": {
+     "reconciled": [
+      "compara:src/hooks/useExecutiveDashboardData.ts"
+     ],
      "aprovado": [
       "compara:src/pages/acompanhamento/Acompanhamento.tsx"
      ],
@@ -77424,6 +77363,16 @@
      ],
      "pending": [
       "compara:src/pages/documentos/DocumentosFiscais.tsx"
+     ]
+    },
+    "bid_status": {
+     "valid": [
+      "escreve:src/integrations/supabase/types.ts"
+     ]
+    },
+    "tenant_status": {
+     "active": [
+      "escreve:src/integrations/supabase/types.ts"
      ]
     },
     "supplier_status": {
@@ -85984,6 +85933,13 @@
    },
    {
     "kind": "status",
+    "msg": "valor `reconciled` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/hooks/useExecutiveDashboardData.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `matched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/documentos/DocumentosFiscais.tsx"
@@ -89925,7 +89881,7 @@
   },
   "src/components/compras/AdvancedProcurementKPIs.tsx": {
    "path": "src/components/compras/AdvancedProcurementKPIs.tsx",
-   "lines": 531,
+   "lines": 513,
    "exports": [
     "const AdvancedProcurementKPIs"
    ],
@@ -93256,64 +93212,62 @@
     "result for 1000 is longer than result for 10"
    ]
   },
-  "src/components/compras/procurement-kpis/kpiMockData.ts": {
-   "path": "src/components/compras/procurement-kpis/kpiMockData.ts",
-   "lines": 81,
+  "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts": {
+   "path": "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
+   "lines": 173,
    "exports": [
-    "const kpiData",
-    "const KPI_COLORS"
+    "interface MaverickCategoryRow",
+    "interface CycleTrendRow",
+    "interface ConcentrationRow",
+    "interface QuarterRow",
+    "interface KpiSnapshotInput",
+    "interface KpiSnapshot",
+    "const KPI_TARGETS",
+    "function deriveHerfindahl",
+    "function deriveConcentrationRisk",
+    "function deriveKpiSnapshot"
    ],
-   "doc": "Mock data and helper types for AdvancedProcurementKPIs"
+   "calc_fns": [
+    {
+     "name": "round",
+     "params": "value: number, decimals = 0",
+     "body": "const factor = 10 ** decimals; return Math.round(value * factor) / factor;"
+    }
+   ]
   },
-  "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts": {
-   "path": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-   "lines": 234,
+  "src/components/compras/procurement-kpis/kpiColors.ts": {
+   "path": "src/components/compras/procurement-kpis/kpiColors.ts",
+   "lines": 2,
+   "exports": [
+    "const KPI_COLORS"
+   ]
+  },
+  "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts": {
+   "path": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+   "lines": 179,
    "is_test": true,
    "tests": [
-    "KPI_COLORS",
-    "has 5 color entries",
-    "all entries are non-empty strings",
-    "first color uses primary CSS variable",
-    "all colors use hsl format",
-    "kpiData.procurementROI",
-    "has current, previous, target, savings, investment",
-    "current ROI is positive",
-    "current is higher than previous",
-    "kpiData.maverickSpend",
-    "has total, maverick, percentage, target, byCategory",
-    "maverick spend is less than total",
-    "percentage is above target (indicating room for improvement)",
-    "byCategory has 4 entries",
-    "each byCategory entry has name, value, percentage",
-    "byCategory percentages sum to 100",
-    "kpiData.contractCompliance",
-    "has percentage, target, contracts, compliant, expiring, expired",
-    "compliant <= contracts",
-    "percentage is below target (gap indicates improvement needed)",
-    "kpiData.costAvoidance",
-    "has total, negotiated, competitive, standardization",
-    "negotiated + competitive + standardization equals total",
-    "kpiData.poCycleTime",
-    "has current, target, and trend array",
-    "current is above target (improvement opportunity)",
-    "trend has 6 entries",
-    "trend entries have month and days",
-    "trend is decreasing over time (improving)",
-    "kpiData.supplierConcentration",
-    "has top5Percentage, herfindahlIndex, risk, suppliers",
-    "risk level is medium",
-    "has 5 suppliers",
-    "each supplier has name and percentage",
-    "kpiData.savingsRealization",
-    "has projected, realized, percentage, byQuarter",
-    "realized is less than projected",
-    "byQuarter has 4 entries (Q1-Q4)",
-    "byQuarter quarters are Q1 through Q4",
-    "each byQuarter entry has projected and realized",
-    "kpiData.firstTimeMatchRate",
-    "has current, target, invoices, matched, exceptions",
-    "matched + exceptions equals invoices",
-    "current rate is below target"
+    "deriveKpiSnapshot - sem dados",
+    "nao inventa valores quando o banco esta vazio",
+    "usa as metas do modulo, nao numeros fixos de tela",
+    "deriveKpiSnapshot - ROI",
+    "divide economia pelo spend fora de contrato",
+    "zera o ROI quando nao ha maverick spend (evita divisao por zero)",
+    "deriveKpiSnapshot - maverick",
+    "ordena categorias por valor, limita a 6 e calcula porcentagem sobre o total fora de contrato",
+    "descarta categorias com valor zero",
+    "deriveKpiSnapshot - contratos",
+    "repassa ativos, expirando e expirados do banco",
+    "deriveKpiSnapshot - first time match rate",
+    "calcula aderencia a partir das notas fiscais conciliadas",
+    "nao passa de 100% nem de o total de notas",
+    "deriveKpiSnapshot - savings realization",
+    "soma o projetado dos trimestres e calcula o percentual realizado",
+    "deriveKpiSnapshot - concentracao de fornecedores",
+    "calcula participacao sobre o spend total",
+    "deriveHerfindahl / deriveConcentrationRisk",
+    "HHI de mercado concentrado e pulverizado",
+    "faixas de risco"
    ]
   },
   "src/components/compras/scorecard/supplierScorecardData.ts": {
@@ -98017,7 +97971,7 @@
   },
   "src/hooks/useExecutiveDashboardData.ts": {
    "path": "src/hooks/useExecutiveDashboardData.ts",
-   "lines": 535,
+   "lines": 667,
    "exports": [
     "interface ExecutiveMetrics",
     "interface MonthlyPoint",
@@ -98061,20 +98015,44 @@
     },
     {
      "field": "status",
+     "value": "active",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "active",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "pending",
+     "kind": "compara"
+    },
+    {
+     "field": "reconciliation_status",
+     "value": "reconciled",
      "kind": "compara"
     }
    ],
    "hooks": [
     "useExecutiveDashboardData"
    ],
+   "calc_fns": [
+    {
+     "name": "round1",
+     "params": "value: number",
+     "body": "Math.round(value * 10) / 10;"
+    }
+   ],
    "temporal": [
     "const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at || Date.now()).getTime()) / (1000 * 60 * 60 * 24)));",
     "const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);",
     "const diff = (new Date().getTime() - new Date(p.data_previsao).getTime()) / (1000 * 60 * 60 * 24);",
-    "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);"
+    "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);",
+    "const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];"
    ],
    "percents": [
+    "// Snapshot dos KPIs avançados, 100% derivado do banco (sem baseline fictício).",
     "buckets[idx].savings += val * 0.08;",
     "const prev = c.value * 0.92;",
     "previousOrders: Math.max(1, Math.round(v.orders * 0.85)),",
@@ -113525,10 +113503,43 @@
   }
  },
  "git": {
-  "sha": "4c78723596b5851e3c088df25a1b22aacf68868a",
+  "sha": "e46980782e2f7efacf4581ca8dd203994b04eb97",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e469807",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)",
+    "files": [
+     "src/components/compras/AdvancedProcurementKPIs.tsx",
+     "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+     "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
+     "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
+     "src/components/compras/procurement-kpis/kpiColors.ts",
+     "src/components/compras/procurement-kpis/kpiMockData.ts",
+     "src/hooks/useExecutiveDashboardData.ts"
+    ]
+   },
+   {
+    "sha": "0cb5045",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)",
+    "files": [
+     "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md"
+    ]
+   },
+   {
+    "sha": "a51d0de",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)",
+    "files": [
+     "docs/planos/PLANO_PROMO_SUPPLY_SO_COMPRAS_CATALOGO_NO_PROMO_GIFTS.md"
+    ]
+   },
    {
     "sha": "4c78723",
     "date": "2026-11-22",
@@ -113805,45 +113816,12 @@
     "files": [
      "supabase/migrations/20261121160000_pim_refs_compras.sql"
     ]
-   },
-   {
-    "sha": "017aa0c",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(docs): alinha contagem de workflows do README de CI com main (#241)",
-    "files": [
-     "docs/ci/README.md"
-    ]
-   },
-   {
-    "sha": "545b30a",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "ci(prod): cria canal manual para provisionar as chaves VAPID na edge (#238)",
-    "files": [
-     ".github/workflows/provisionar-vapid.yml",
-     "docs/ci/README.md"
-    ]
-   },
-   {
-    "sha": "28421a9",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "ci(prod): cria canal manual para aplicar migration versionada em producao (#237)",
-    "files": [
-     ".github/workflows/aplicar-migration-prod.yml",
-     "docs/ci/README.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
     5
-   ],
-   [
-    "docs/ci/README.md",
-    4
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113870,8 +113848,40 @@
     2
    ],
    [
-    ".github/workflows/aplicar-migration-prod.yml",
-    2
+    "src/components/compras/AdvancedProcurementKPIs.tsx",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/kpiColors.ts",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/kpiMockData.ts",
+    1
+   ],
+   [
+    "src/hooks/useExecutiveDashboardData.ts",
+    1
+   ],
+   [
+    "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md",
+    1
+   ],
+   [
+    "docs/planos/PLANO_PROMO_SUPPLY_SO_COMPRAS_CATALOGO_NO_PROMO_GIFTS.md",
+    1
    ],
    [
     "supabase/functions/_shared/notifications.test.ts",
@@ -113886,35 +113896,7 @@
     1
    ],
    [
-    "scripts/ci/inventario-types/gentypes.unit.mjs",
-    1
-   ],
-   [
-    "scripts/ci/inventario-types/identidade.unit.mjs",
-    1
-   ],
-   [
-    "scripts/types-sync/README.md",
-    1
-   ],
-   [
-    "scripts/types-sync/gen-types.sh",
-    1
-   ],
-   [
-    "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+    "docs/ci/README.md",
     1
    ]
   ]

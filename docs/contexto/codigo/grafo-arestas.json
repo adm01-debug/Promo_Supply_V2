@@ -169,12 +169,13 @@
   ],
   "src/components/compras/AdvancedProcurementKPIs.tsx": [
    "src/components/compras/KPITargetsConfig.tsx",
-   "src/components/compras/procurement-kpis/kpiMockData.ts",
+   "src/components/compras/procurement-kpis/kpiColors.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/progress.tsx",
    "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
    "src/hooks/use-toast.ts",
    "src/hooks/useExecutiveDashboardData.ts",
    "src/lib/utils.ts",
@@ -2013,6 +2014,7 @@
    "src/lib/feedbackToast.ts"
   ],
   "src/hooks/useExecutiveDashboardData.ts": [
+   "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
    "src/features/auth/index.ts",
    "src/lib/paginatedFetch.ts"
   ],

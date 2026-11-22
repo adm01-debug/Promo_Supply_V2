@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4c78723596` · branch `main` · 2026-11-22 13:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e46980782e` · branch `main` · 2026-11-22 13:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1145,13 +1145,14 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `state` | `expanded` | escreve | `src/components/ui/sidebar.tsx` |
 | `state` | `open` | compara | `supabase/functions/_shared/circuit_breaker.ts` |
 | `state` | `suspended` | compara | `src/hooks/useFeedback.ts`<br>`src/lib/feedbackToast.ts` |
-| `bid_status` | `valid` | escreve | `src/integrations/supabase/types.ts` |
-| `tenant_status` | `active` | escreve | `src/integrations/supabase/types.ts` |
 | `reconciliation_status` | `aprovado` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `reconciliation_status` | `matched` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
 | `reconciliation_status` | `pendente` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `reconciliation_status` | `pending` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
+| `reconciliation_status` | `reconciled` | compara | `src/hooks/useExecutiveDashboardData.ts` |
 | `reconciliation_status` | `unmatched` | compara | `src/pages/documentos/DocumentosFiscais.tsx` |
+| `bid_status` | `valid` | escreve | `src/integrations/supabase/types.ts` |
+| `tenant_status` | `active` | escreve | `src/integrations/supabase/types.ts` |
 | `supplier_status` | `bloqueado` | compara | `src/pages/compliance/complianceHelpers.ts` |
 | `dispatch_status` | `suppressed_dedup` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
 | `sefaz_status` | `dispatch_error` | compara, escreve | `supabase/functions/fiscal-orchestrator/index.ts` |
@@ -1408,6 +1409,10 @@ _nenhum item encontrado_
   ```
   const trend = useMemo(() => { if (filtered.length < 2) return null; const half = Math.ceil(filtered.length / 2); const recent = filtered.slice(half); const older = filtered.slice(0, half); const avgRecent = recent.reduce((s, c) => s + c.valor_unitario, 0) / recent.length; const avgOlder = older.reduce((s, c) => s + c.valor_unitario, 0) / older.length; const change = avgOlder > 0 ? ((avgRecent - avgOlder) / avgOlder) * 100 : 0; return { avgRecent, avgOlder, change }; }, [filtered]); const monthly …
   ```
+- **round(value: number, decimals = 0)** — `src/components/compras/procurement-kpis/deriveKpiSnapshot.ts`
+  ```
+  const factor = 10 ** decimals; return Math.round(value * factor) / factor;
+  ```
 - **generateSupplierSLAData()** — `src/components/compras/sla-analysis/slaAnalysisData.ts`
   ```
   const suppliers = [ 'XBZ Brindes', 'Tech Brindes', 'Stricker / Spot Gifts', 'Premium Gifts', 'Asia Import', 'Eco Brindes', ]; return suppliers.map((name) => { const baseCompliance = 80 + Math.random() * 18; const baseOnTime = 85 + Math.random() * 14; const baseLeadTime = 2 + Math.random() * 4; return { name, slaCompliance: Math.round(baseCompliance * 10) / 10, onTimeDelivery: Math.round(baseOnTime * 10) / 10, avgLeadTime: Math.round(baseLeadTime * 10) / 10, totalOrders: Math.floor(20 + Math.rand …
@@ -1431,6 +1436,10 @@ _nenhum item encontrado_
 - **generateSparkline(_base: number, _count: number = 7)** — `src/hooks/useDashboardKPIs.ts`
   ```
   [];
+  ```
+- **round1(value: number)** — `src/hooks/useExecutiveDashboardData.ts`
+  ```
+  Math.round(value * 10) / 10;
   ```
 - **calc(str: string, weights: number[])** — `src/hooks/useFornecedores.ts`
   ```
@@ -1642,6 +1651,7 @@ _nenhum item encontrado_
 | `x: -380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `x: 380 + swipeState.deltaX * 0.4,` | `src/components/onboarding/OnboardingTour.tsx` |
 | `items.forEach(item => { if (!seenIds.has(item.id)) allResults.push({ ...item, score: weight * 0.3 }); });` | `src/features/layout/components/AdvancedSearch.tsx` |
+| `// Snapshot dos KPIs avançados, 100% derivado do banco (sem baseline fictício).` | `src/hooks/useExecutiveDashboardData.ts` |
 | `buckets[idx].savings += val * 0.08;` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const prev = c.value * 0.92;` | `src/hooks/useExecutiveDashboardData.ts` |
 | `previousOrders: Math.max(1, Math.round(v.orders * 0.85)),` | `src/hooks/useExecutiveDashboardData.ts` |
@@ -1807,6 +1817,7 @@ _nenhum item encontrado_
 | `const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const diff = (new Date().getTime() - new Date(p.data_previsao).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
+| `const in30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const timer = setTimeout(() => { setShouldFlash(true); const resetTimer = setTimeout(() => setShouldFlash(false), 1500);` | `src/hooks/useFlashHighlight.ts` |
 | `syncTimeoutRef.current = setTimeout(() => { syncPendingOperations(); }, 1000);` | `src/hooks/useOfflineSync.ts` |
 | `syncTimeoutRef.current = setTimeout(syncPendingOperations, 2000);` | `src/hooks/useOfflineSync.ts` |
@@ -2349,7 +2360,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2689 testes em 139 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2666 testes em 139 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2361,7 +2372,6 @@ _nenhum item encontrado_
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
-| `src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts` | 44 | KPI_COLORS · has 5 color entries · all entries are non-empty strings · first color uses primary CSS variable … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
@@ -2412,6 +2422,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/imageCompression.test.ts` | 22 | formatBytes · returns  · formats bytes under 1 KB as  · formats exactly 1 KB … |
 | `src/lib/__tests__/queryClient.test.ts` | 22 | stale-time constants · DEFAULT_STALE_TIME is 30 seconds (30_000 ms) · REFERENCE_STALE_TIME is 5 minutes (300_000 ms) · STATIC_STALE_TIME is 30 minutes (1_800_000 ms) … |
 | `src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts` | 22 | COLORS · has 4 color values · all values are non-empty strings · first color is the CSS variable primary … |
+| `src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts` | 21 | deriveKpiSnapshot - sem dados · nao inventa valores quando o banco esta vazio · usa as metas do modulo, nao numeros fixos de tela · deriveKpiSnapshot - ROI … |
 | `src/features/auth/types/__tests__/authRoles.test.ts` | 21 | roleLabels · covers all 6 roles · has exactly 6 entries · all labels are non-empty strings … |
 | `src/lib/__tests__/pdfGenerator.test.ts` | 21 | generateOrderPDF · is a function · returns a jsPDF document instance · does not throw with valid data … |
 | `src/pages/devolucoes/__tests__/devolucoesModals.test.ts` | 21 | MOTIVO_LABELS · has 7 motivo entries · covers all expected motivo keys · every label is a non-empty string … |

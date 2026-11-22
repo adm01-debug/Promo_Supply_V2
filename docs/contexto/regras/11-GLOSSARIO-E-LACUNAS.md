@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4c78723596` · branch `main` · 2026-11-22 13:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e46980782e` · branch `main` · 2026-11-22 13:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -311,6 +311,7 @@
 | status | valor `expanded` para `state` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/ui/sidebar.tsx` |
 | status | valor `collapsed` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/ui/sidebar.tsx` |
 | status | valor `open` para `state` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/_shared/circuit_breaker.ts` |
+| status | valor `reconciled` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/useExecutiveDashboardData.ts` |
 | status | valor `matched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `unmatched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/alert-dispatcher/index.ts` |

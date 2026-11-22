@@ -479,13 +479,13 @@
    "casos": 18
   },
   {
-   "arquivo": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
+   "arquivo": "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
    "tipo": "unit",
-   "linhas": 234,
+   "linhas": 179,
    "testa": [
-    "src/components/compras/procurement-kpis/kpiMockData.ts"
+    "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts"
    ],
-   "casos": 35
+   "casos": 13
   },
   {
    "arquivo": "src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts",
@@ -1716,7 +1716,7 @@
   "src/components/compras/pending-approvals/pendingApprovalsData.ts": 2,
   "src/components/compras/price-comparator/priceComparatorHelpers.ts": 1,
   "src/components/compras/price-history/priceHistoryHelpers.ts": 1,
-  "src/components/compras/procurement-kpis/kpiMockData.ts": 1,
+  "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts": 1,
   "src/components/compras/scorecard/supplierScorecardData.ts": 1,
   "src/components/compras/sla-analysis/slaAnalysisData.ts": 1,
   "src/components/compras/timeline/timelineConfig.ts": 1,

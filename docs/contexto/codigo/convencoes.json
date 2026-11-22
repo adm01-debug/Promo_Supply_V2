@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)",
+   "docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)",
+   "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)",
    "fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)",
-   "fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)",
-   "fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)",
-   "fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)",
-   "fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)"
+   "fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)"
   ]
  },
  "pr_template": null,

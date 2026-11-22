@@ -1093,7 +1093,7 @@
    "hooks_exportados": [
     "useExecutiveDashboardData"
    ],
-   "linhas": 535,
+   "linhas": 667,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],

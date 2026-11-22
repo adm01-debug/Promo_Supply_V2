@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4c78723596b5851e3c088df25a1b22aacf68868a` (2026-11-22T10:00:42-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e46980782e2f7efacf4581ca8dd203994b04eb97` (2026-11-22T10:21:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (727), SQL (327), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (728), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1291 |
-| arquivos_codigo | 800 |
-| linhas_codigo | 167279 |
+| arquivos_total | 1294 |
+| arquivos_codigo | 801 |
+| linhas_codigo | 167432 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -51,7 +51,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | testes | 187 |
 | workflows | 13 |
 | scripts | 50 |
-| docs_md | 92 |
+| docs_md | 94 |
 
 ## Onde ficam as coisas
 - telas: src/pages (53)
@@ -71,7 +71,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
-| components/compras | 0 | 0 | 103 | 80 | 8 | 56 |
+| components/compras | 0 | 0 | 104 | 80 | 8 | 56 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
@@ -412,10 +412,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
 - `docs/prod-readiness.md` — Prontidão para produção — Promo Supply V2 (546 linhas)
-- subpastas de docs/: docs/agentes (11), docs/pendencias (10), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1)
+- subpastas de docs/: docs/agentes (11), docs/pendencias (10), docs/arsenal-auditoria (5), docs/contexto (2), docs/ci (1), docs/conventions (1), docs/mapa (1), docs/planos (1)
 
 
 ## Últimos commits
+- 2026-11-22 `e469807` fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)
+- 2026-11-22 `0cb5045` docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)
+- 2026-11-22 `a51d0de` docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)
 - 2026-11-22 `4c78723` fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)
 - 2026-11-22 `7ba0757` fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)
 - 2026-11-22 `640e5d2` fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)
@@ -428,9 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `d528e0e` docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)
 - 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
 - 2026-11-21 `0b8e547` fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)
-- 2026-11-21 `2b94f6d` feat(spot): versiona cron spot-api-sync-orders-30min (#258)
-- 2026-11-21 `e39f3aa` fix(spot): envia Status=ALL na OrdersV1 - contrato exige o parametro (#257)
-- 2026-11-21 `502c3b5` fix(spot): permite getOrders no cron para popular spot_pedidos (#256)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
