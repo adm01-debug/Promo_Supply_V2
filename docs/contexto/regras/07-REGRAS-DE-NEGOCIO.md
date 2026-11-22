@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0051cc3174` · branch `main` · 2026-11-22 17:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b9303d3ed2` · branch `main` · 2026-11-22 17:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1656,7 +1656,6 @@ _nenhum item encontrado_
 | `gainNode.gain.linearRampToValueAtTime(volume * 0.3, startTime + 0.01);` | `src/hooks/useFeedback.ts` |
 | `// Explicit columns: drops ~30% payload vs `*` on wide table.` | `src/hooks/useProdutos.ts` |
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |
-| `1. **Cost Efficiency:** Supplier **${best.fornecedor}** guarantees **15%** savings vs. market average.` | `src/pages/cotacao/Cotacao.tsx` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
 | `const jitter = delay * (Math.random() * 0.5 - 0.25);` | `supabase/functions/dependency-health/index.ts` |
@@ -1836,7 +1835,6 @@ _nenhum item encontrado_
 | `const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/pages/cotacao/Cotacao.tsx` |
-| `await new Promise(resolve => setTimeout(resolve, 2000));` | `src/pages/cotacao/Cotacao.tsx` |
 | `setTimeout(() => setCopiado(null), 2000);` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | `case "30d": setDateRange({ from: subDays(today, 30), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
 | `case "7d": setDateRange({ from: subDays(today, 7), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
@@ -2362,7 +2360,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2671 testes em 143 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2678 testes em 143 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2379,6 +2377,7 @@ _nenhum item encontrado_
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
 | `src/pages/aprovacoes/__tests__/aprovacoesData.test.ts` | 39 | approvalHistory · has 4 items · every item has required fields · all ids are unique … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
+| `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 37 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
@@ -2391,7 +2390,6 @@ _nenhum item encontrado_
 | `src/schemas/__tests__/solicitacao.schema.test.ts` | 31 | solicitacaoSchema · accepts fully valid input · applies default observacoes as empty string · applies default centroCusto as empty string … |
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |
 | `src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts` | 30 | mockPendingApprovals · has 3 items · each item has required string fields · each item has numeric fields … |
-| `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 30 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts` | 30 | historicoMensal · has 6 months of data · every item has mes, economia, volume, percentual, cotacoes · all economia values are positive … |
 | `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 30 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 29 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
@@ -2617,6 +2615,7 @@ _nenhum item encontrado_
 | Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| risco/prazo: so calcula o que os dados das cotacoes permitem afirmar. | `src/pages/cotacao/cotacaoHelpers.ts` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
 | * A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um | `src/pages/recebimento/pedidoComplementar.ts` |

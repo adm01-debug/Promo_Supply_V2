@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0051cc3174416f975b1a0058cdf35f020cd087b5` (2026-11-22T13:58:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b9303d3ed2fef2073f290362ac81761affe9b046` (2026-11-22T14:06:31-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1304 |
 | arquivos_codigo | 811 |
-| linhas_codigo | 168998 |
+| linhas_codigo | 169120 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (42)
+- docs/pendencias/_indice.md (43)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (14)
 - docs/ci/README.md (12)
 - package.json (12)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
 - 2026-11-22 `0051cc3` fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)
 - 2026-11-22 `d2c6d78` fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)
 - 2026-11-22 `752b1f5` fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `0cb5045` docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)
 - 2026-11-22 `a51d0de` docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)
 - 2026-11-22 `4c78723` fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)
-- 2026-11-22 `7ba0757` fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

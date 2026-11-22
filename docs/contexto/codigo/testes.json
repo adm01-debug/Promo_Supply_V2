@@ -1160,11 +1160,11 @@
   {
    "arquivo": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 257,
+   "linhas": 324,
    "testa": [
     "src/pages/cotacao/cotacaoHelpers.ts"
    ],
-   "casos": 28
+   "casos": 34
   },
   {
    "arquivo": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",

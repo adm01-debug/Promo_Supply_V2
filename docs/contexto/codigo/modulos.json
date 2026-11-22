@@ -4716,7 +4716,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 558,
+   "linhas": 613,
    "itens_menu": [
     "Cotações"
    ],
