@@ -6396,6 +6396,15 @@
    "indices": [],
    "fks": [],
    "criada_em": "20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+   "colunas_types": {
+    "first_seen": "string",
+    "jobid": "number",
+    "jobname": "string"
+   },
+   "drift": {
+    "so_na_migration": [],
+    "so_no_types": []
+   },
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],

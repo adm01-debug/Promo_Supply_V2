@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ffe439a908f6870ea2d6dfeb82ae701aed50a129",
+  "sha": "640e5d2926ef038e14ca82e3327431194ace2b86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 12:25 UTC",
+  "generated_at": "2026-11-22 12:30 UTC",
   "files_total": 1291,
   "code_files": 1128,
-  "code_lines": 194103,
+  "code_lines": 194122,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7676c128735789b4",
+ "facts_hash": "30b61b33aabdbdb1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35112,7 +35112,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10424,
+   "lines": 10443,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -100218,7 +100218,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10365,
+   "lines": 10384,
    "exports": [
     "type Json",
     "type Database",
@@ -113494,10 +113494,19 @@
   }
  },
  "git": {
-  "sha": "ffe439a908f6870ea2d6dfeb82ae701aed50a129",
+  "sha": "640e5d2926ef038e14ca82e3327431194ace2b86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "640e5d2",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "ffe439a",
     "date": "2026-11-22",
@@ -113793,17 +113802,6 @@
     "files": [
      "src/hooks/useCatalogoPim.ts"
     ]
-   },
-   {
-    "sha": "7ad0b03",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(pwa): adiciona handler de push ao service worker (#234)",
-    "files": [
-     "public/push-handler.js",
-     "src/lib/__tests__/pushHandler.test.ts",
-     "vite.config.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -113822,6 +113820,10 @@
    [
     "src/tests/spot/spotApi.test.ts",
     3
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    2
    ],
    [
     "supabase/functions/spot-api/index.ts",
@@ -113881,10 +113883,6 @@
    ],
    [
     "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
-    1
-   ],
-   [
-    "supabase/functions/_shared/spot_api.ts",
     1
    ]
   ]
