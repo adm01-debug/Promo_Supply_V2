@@ -3792,9 +3792,10 @@
     "CommandPalette"
    ],
    "export_default": "CommandPalette",
-   "linhas": 370,
+   "linhas": 372,
    "dominio": "features/layout",
    "hooks_locais": [
+    "useAuth",
     "useCommandPalette"
    ],
    "tabelas": [],

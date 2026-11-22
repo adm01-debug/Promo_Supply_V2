@@ -327,7 +327,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 70,
+   "usado_por": 71,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -352,13 +352,13 @@
     "src/features/auth/components/ProtectedRoute.tsx",
     "src/features/cotacoes/hooks/useCotacoes.ts",
     "src/features/layout/components/AppSidebar.tsx",
+    "src/features/layout/components/CommandPalette.tsx",
     "src/features/layout/components/SLASettingsPanel.tsx",
     "src/features/layout/components/SupplierChat.tsx",
     "src/features/layout/components/UserMenu.tsx",
     "src/features/pedidos/hooks/usePedidos.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "src/hooks/useApprovalRules.ts",
-    "src/hooks/useApprovalWorkflow.ts"
+    "src/hooks/useApprovalRules.ts"
    ],
    "coberto_por_testes": 2
   },
@@ -435,12 +435,13 @@
    "hooks_exportados": [
     "useCommandPalette"
    ],
-   "linhas": 370,
+   "linhas": 372,
    "dominio": "features/layout",
    "tabelas": [],
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useEffect",
     "useMemo",
     "useNavigate",

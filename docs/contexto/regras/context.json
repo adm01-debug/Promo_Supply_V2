@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "53725ba841429251c3d1ec50faefcd5829ebff24",
+  "sha": "a23aea582416b53051a74db0ccaabc23dd4c884d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 18:00 UTC",
+  "generated_at": "2026-11-22 18:06 UTC",
   "files_total": 1307,
   "code_files": 1142,
-  "code_lines": 196426,
+  "code_lines": 196428,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bfb04f4788140742",
+ "facts_hash": "57e91de80abf3aab",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34726,7 +34726,7 @@
   {
    "module": "src/features/layout",
    "files": 36,
-   "lines": 5800,
+   "lines": 5802,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -96405,7 +96405,7 @@
   },
   "src/features/layout/components/CommandPalette.tsx": {
    "path": "src/features/layout/components/CommandPalette.tsx",
-   "lines": 370,
+   "lines": 372,
    "exports": [
     "function CommandPalette",
     "function useCommandPalette"
@@ -114402,10 +114402,19 @@
   }
  },
  "git": {
-  "sha": "53725ba841429251c3d1ec50faefcd5829ebff24",
+  "sha": "a23aea582416b53051a74db0ccaabc23dd4c884d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a23aea5",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)",
+    "files": [
+     "src/features/layout/components/CommandPalette.tsx"
+    ]
+   },
    {
     "sha": "53725ba",
     "date": "2026-11-22",
@@ -114718,15 +114727,6 @@
     "files": [
      "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
     ]
-   },
-   {
-    "sha": "d528e0e",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)",
-    "files": [
-     "docs/agentes/estado-spot-sync.md"
-    ]
    }
   ],
   "hot_files": [
@@ -114745,6 +114745,10 @@
    [
     "supabase/functions/spot-proxy/index.ts",
     2
+   ],
+   [
+    "src/features/layout/components/CommandPalette.tsx",
+    1
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
@@ -114804,10 +114808,6 @@
    ],
    [
     "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-    1
-   ],
-   [
-    "src/components/compras/SLABySupplierAnalysis.tsx",
     1
    ]
   ]

@@ -1696,6 +1696,7 @@
   "src/features/layout/components/CommandPalette.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/command.tsx",
+   "src/features/auth/index.ts",
    "src/hooks/useFuseSearch.ts"
   ],
   "src/features/layout/components/GuidedBuyingAssistant.tsx": [
