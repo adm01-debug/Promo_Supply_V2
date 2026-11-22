@@ -38900,9 +38900,13 @@
             {
               "file": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [
             "123:cron-watchdog-15min"
           ],
@@ -41400,9 +41404,13 @@
             {
               "file": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
               "hits": 2
+            },
+            {
+              "file": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [
             "public.cron_watchdog"
@@ -54664,6 +54672,20 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_solicitacoes_organization_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "solicitacoes"
+      },
+      {
+        "columns": [
+          "pim_product_id"
+        ],
+        "definition": "CREATE INDEX idx_solicitacoes_pim_product_id ON public.solicitacoes USING btree (pim_product_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_solicitacoes_pim_product_id",
         "predicate": null,
         "schema": "public",
         "table": "solicitacoes"

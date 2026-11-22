@@ -92,6 +92,7 @@
 | idx_solicitacoes_fornecedor_id | btree | fornecedor_id | não | sim |  | `CREATE INDEX idx_solicitacoes_fornecedor_id ON public.solicitacoes USING btree (fornecedor_id)` |
 | idx_solicitacoes_org_status_created | btree | organization_id, status, created_at | não | sim |  | `CREATE INDEX idx_solicitacoes_org_status_created ON public.solicitacoes USING btree (organization_id, status, created_at DESC)` |
 | idx_solicitacoes_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_solicitacoes_organization_id ON public.solicitacoes USING btree (organization_id)` |
+| idx_solicitacoes_pim_product_id | btree | pim_product_id | não | sim |  | `CREATE INDEX idx_solicitacoes_pim_product_id ON public.solicitacoes USING btree (pim_product_id)` |
 | idx_solicitacoes_produto_id | btree | produto_id | não | sim |  | `CREATE INDEX idx_solicitacoes_produto_id ON public.solicitacoes USING btree (produto_id)` |
 | idx_solicitacoes_solicitante | btree | solicitante_id | não | sim |  | `CREATE INDEX idx_solicitacoes_solicitante ON public.solicitacoes USING btree (solicitante_id)` |
 | idx_solicitacoes_status | btree | status | não | sim |  | `CREATE INDEX idx_solicitacoes_status ON public.solicitacoes USING btree (status)` |

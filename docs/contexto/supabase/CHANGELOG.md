@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 13:11 UTC
+
+- **functions** alterado (2): `public.cron_watchdog()`, `public.resolve_stale_system_error_alerts()`
+- **indexes** adicionado (1): `public.idx_solicitacoes_pim_product_id`
+
 ## 2026-11-22 12:16 UTC
 
 - **colunas** adicionado (3): `public.cron_watchdog_seen.first_seen`, `public.cron_watchdog_seen.jobid`, `public.cron_watchdog_seen.jobname`

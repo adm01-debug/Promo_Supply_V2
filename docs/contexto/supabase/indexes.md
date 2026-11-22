@@ -474,6 +474,7 @@ Uso e tamanho em `stats.md`.
 | public.solicitacoes | idx_solicitacoes_fornecedor_id | btree | fornecedor_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_org_status_created | btree | organization_id, status, created_at | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_organization_id | btree | organization_id | não | sim |  |
+| public.solicitacoes | idx_solicitacoes_pim_product_id | btree | pim_product_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_produto_id | btree | produto_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_solicitante | btree | solicitante_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_status | btree | status | não | sim |  |
