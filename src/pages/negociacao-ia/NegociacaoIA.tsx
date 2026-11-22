@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,13 @@ import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { StrategicQuoteTable } from "@/components/compras/StrategicQuoteTable";
+import {
+  buildWhatsAppUrl,
+  buildMailtoUrl,
+  buildWhatsAppText,
+  buildEmailAssunto,
+  buildEmailCorpo,
+} from "@/lib/negotiationOutreach";
 import { cn } from "@/lib/utils";
 
 interface NegotiationAnalysis {
@@ -119,6 +126,86 @@ const NegociacaoIA = () => {
       toast.error(err.message || "Erro ao analisar negociação");
     },
   });
+  // Contatos dos fornecedores citados nas sugestoes (para WhatsApp/e-mail reais)
+  const nomesSugeridos = useMemo(
+    () => Array.from(new Set((analysis?.sugestoes ?? []).map((s) => s.fornecedor).filter(Boolean))),
+    [analysis],
+  );
+
+  const { data: contatosFornecedores = [] } = useQuery({
+    queryKey: ["fornecedores-contato-negociacao", nomesSugeridos],
+    queryFn: async () => {
+      const termos = nomesSugeridos
+        .map((nome) => nome.replace(/[,()*%\\]/g, " ").trim())
+        .filter((nome) => nome.length > 1);
+      if (termos.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from("fornecedores")
+        .select("razao_social, nome_fantasia, email, telefone")
+        .or(
+          termos
+            .flatMap((nome) => [`razao_social.ilike.%${nome}%`, `nome_fantasia.ilike.%${nome}%`])
+            .join(","),
+        );
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: nomesSugeridos.length > 0,
+  });
+
+  const contatoDoFornecedor = (nome: string) => {
+    const alvo = nome.trim().toLowerCase();
+    return contatosFornecedores.find((f) => {
+      const razao = (f.razao_social ?? "").toLowerCase();
+      const fantasia = (f.nome_fantasia ?? "").toLowerCase();
+      return razao === alvo || fantasia === alvo || razao.includes(alvo) || fantasia.includes(alvo);
+    });
+  };
+
+  const contextoDaSolicitacao = () => {
+    const sol = solicitacoes?.find((s) => s.id === selectedSolicitacao);
+    return {
+      numeroSolicitacao: sol?.numero ?? null,
+      tituloSolicitacao: sol?.titulo ?? null,
+    };
+  };
+
+  const abrirWhatsApp = (sugestao: NegotiationAnalysis["sugestoes"][number]) => {
+    const contato = contatoDoFornecedor(sugestao.fornecedor);
+    const texto = buildWhatsAppText(sugestao, contextoDaSolicitacao());
+    const url = buildWhatsAppUrl(contato?.telefone, texto);
+
+    if (!url) {
+      navigator.clipboard.writeText(texto).catch(() => undefined);
+      toast.warning("Fornecedor sem telefone cadastrado", {
+        description: "O script foi copiado para a área de transferência — cole no WhatsApp.",
+      });
+      return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+    toast.success(`WhatsApp aberto para ${sugestao.fornecedor}`);
+  };
+
+  const abrirEmail = (sugestao: NegotiationAnalysis["sugestoes"][number]) => {
+    const contato = contatoDoFornecedor(sugestao.fornecedor);
+    const ctx = contextoDaSolicitacao();
+    const assunto = buildEmailAssunto(sugestao, ctx);
+    const corpo = buildEmailCorpo(sugestao, ctx);
+    const url = buildMailtoUrl(contato?.email, assunto, corpo);
+
+    if (!url) {
+      navigator.clipboard.writeText(`${assunto}\n\n${corpo}`).catch(() => undefined);
+      toast.warning("Fornecedor sem e-mail cadastrado", {
+        description: "O e-mail tático foi copiado para a área de transferência.",
+      });
+      return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+    toast.success(`E-mail preparado para ${sugestao.fornecedor}`);
+  };
 
 
   return (
@@ -438,14 +525,14 @@ const NegociacaoIA = () => {
                                   size="sm" 
                                   variant="outline" 
                                   className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 rounded-xl border-white/10 hover:bg-white/5 text-zinc-400 hover:text-white"
-                                  onClick={() => toast.info(`Preparando script de WhatsApp para ${s.fornecedor}...`)}
+                                  onClick={() => abrirWhatsApp(s)}
                                 >
                                   <MessageSquare className="h-3.5 w-3.5 mr-2 text-emerald-400" /> WhatsApp
                                 </Button>
                                 <Button 
                                   size="sm" 
                                   className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
-                                  onClick={() => toast.info(`Gerando e-mail tático para ${s.fornecedor}...`)}
+                                  onClick={() => abrirEmail(s)}
                                 >
                                   <Mail className="h-3.5 w-3.5 mr-2" /> E-mail
                                 </Button>
