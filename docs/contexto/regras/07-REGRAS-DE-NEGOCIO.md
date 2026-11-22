@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cb9b3e61a5` · branch `main` · 2026-11-22 15:42 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6b0ce593b1` · branch `main` · 2026-11-22 15:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2347,7 +2347,7 @@ _nenhum item encontrado_
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
-| … +214 linhas — lista completa em `context.json` | |
+| … +215 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2366,7 +2366,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2666 testes em 139 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2669 testes em 140 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2499,6 +2499,7 @@ _nenhum item encontrado_
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
+| `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |

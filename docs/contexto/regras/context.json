@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "cb9b3e61a5565d83d5ccf82d608f8eb28ea0799f",
+  "sha": "6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 15:42 UTC",
-  "files_total": 1299,
-  "code_files": 1134,
-  "code_lines": 194896,
+  "generated_at": "2026-11-22 15:54 UTC",
+  "files_total": 1300,
+  "code_files": 1135,
+  "code_lines": 195047,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "67f673162c7e311d",
+ "facts_hash": "d4bb6e6695026ca3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 384,
-   ".tsx": 348,
+   ".tsx": 349,
    ".sql": 327,
    ".mjs": 67,
    ".py": 5,
@@ -34883,8 +34883,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 73,
-   "lines": 13064,
+   "files": 74,
+   "lines": 13136,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35084,6 +35084,7 @@
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/usePermissions.test.tsx",
+    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
     "src/hooks/__tests__/useToastReducer.test.ts",
     "src/hooks/__tests__/useWorkflowDLQ.test.ts",
     "src/hooks/__tests__/useXbzIntegration.cache.test.tsx"
@@ -35254,7 +35255,7 @@
   {
    "module": "src/pages",
    "files": 127,
-   "lines": 29652,
+   "lines": 29731,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41146,6 +41147,10 @@
    {
     "file": "src/pages/catalogo-spot/CatalogoSpot.tsx",
     "msg": "Não foi possível identificar o produto SPOT para adicionar ao carrinho"
+   },
+   {
+    "file": "src/pages/catalogo-spot/CatalogoSpot.tsx",
+    "msg": "SPOT não retornou a página de finalização do pedido"
    },
    {
     "file": "src/pages/catalogo-spot/SpotSyncPanel.tsx",
@@ -61197,6 +61202,18 @@
    {
     "file": "src/hooks/__tests__/usePermissions.test.tsx",
     "name": "should return false if no role is present"
+   },
+   {
+    "file": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+    "name": "useSpotIntegration — checkout"
+   },
+   {
+    "file": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+    "name": "chama spot-proxy com action=checkout e devolve o contrato tipado"
+   },
+   {
+    "file": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+    "name": "propaga o erro da edge e não devolve info de checkout"
    },
    {
     "file": "src/hooks/__tests__/useToastReducer.test.ts",
@@ -99696,10 +99713,12 @@
   },
   "src/hooks/useSpotIntegration.ts": {
    "path": "src/hooks/useSpotIntegration.ts",
-   "lines": 197,
+   "lines": 210,
    "exports": [
     "interface SpotProduct",
     "interface SpotCartItem",
+    "interface SpotAddress",
+    "interface SpotCheckoutInfo",
     "interface SpotOrder",
     "interface SpotFinancialDoc",
     "function useSpotIntegration"
@@ -100200,6 +100219,19 @@
     "should return default permissions for admin",
     "should check user permissions correctly for non-admin",
     "should return false if no role is present"
+   ]
+  },
+  "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx": {
+   "path": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+   "lines": 59,
+   "is_test": true,
+   "tests": [
+    "useSpotIntegration — checkout",
+    "chama spot-proxy com action=checkout e devolve o contrato tipado",
+    "propaga o erro da edge e não devolve info de checkout"
+   ],
+   "side_effects": [
+    "invoke("
    ]
   },
   "src/hooks/__tests__/useToastReducer.test.ts": {
@@ -103075,12 +103107,13 @@
   },
   "src/pages/catalogo-spot/CatalogoSpot.tsx": {
    "path": "src/pages/catalogo-spot/CatalogoSpot.tsx",
-   "lines": 352,
+   "lines": 431,
    "exports": [
     "default CatalogoSpot"
    ],
    "errors": [
-    "Não foi possível identificar o produto SPOT para adicionar ao carrinho"
+    "Não foi possível identificar o produto SPOT para adicionar ao carrinho",
+    "SPOT não retornou a página de finalização do pedido"
    ]
   },
   "src/pages/catalogo-spot/SpotCatalogTab.tsx": {
@@ -113700,10 +113733,22 @@
   }
  },
  "git": {
-  "sha": "cb9b3e61a5565d83d5ccf82d608f8eb28ea0799f",
+  "sha": "6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6b0ce59",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+     "src/hooks/useSpotIntegration.ts",
+     "src/pages/catalogo-spot/CatalogoSpot.tsx"
+    ]
+   },
    {
     "sha": "cb9b3e6",
     "date": "2026-11-22",
@@ -114006,21 +114051,12 @@
      "scripts/migracao/README.md",
      "scripts/migracao/reconcilia-produtos-pim.mjs"
     ]
-   },
-   {
-    "sha": "3067e11",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(partitions): nao tratar tabela nao particionada como falha (#243)",
-    "files": [
-     "supabase/functions/maintain-partitions/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    8
+    9
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -114055,6 +114091,18 @@
     2
    ],
    [
+    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useSpotIntegration.ts",
+    1
+   ],
+   [
+    "src/pages/catalogo-spot/CatalogoSpot.tsx",
+    1
+   ],
+   [
     "supabase/functions/spot-proxy/sessions.ts",
     1
    ],
@@ -114084,18 +114132,6 @@
    ],
    [
     "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/kpiColors.ts",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/kpiMockData.ts",
     1
    ]
   ]

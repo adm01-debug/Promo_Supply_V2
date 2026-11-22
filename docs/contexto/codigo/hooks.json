@@ -2000,7 +2000,7 @@
    "hooks_exportados": [
     "useSpotIntegration"
    ],
-   "linhas": 197,
+   "linhas": 210,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -2018,7 +2018,7 @@
     "src/pages/catalogo-spot/CatalogoSpot.tsx",
     "src/pages/catalogo-spot/SpotFinancialTab.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useSupplierQualification.ts",

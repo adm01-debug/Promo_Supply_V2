@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (109)",
+   "co-localizado (__tests__) (110)",
    "outro (42)",
    "co-localizado (*.test) (28)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)",
    "fix(edge): spot-proxy volta a passar no deno check (#280)",
    "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)",
    "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)",
-   "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)",
-   "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)"
+   "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)"
   ]
  },
  "pr_template": null,

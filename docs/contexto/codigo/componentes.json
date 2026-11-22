@@ -2841,7 +2841,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 59,
+   "usado_por": 60,
    "orfao": false
   },
   {
@@ -4536,7 +4536,7 @@
     "CatalogoSpot"
    ],
    "export_default": "CatalogoSpot",
-   "linhas": 352,
+   "linhas": 431,
    "dominio": "pages/catalogo-spot",
    "hooks_locais": [
     "useSpotIntegration"

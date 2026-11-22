@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 616,
- "arestas": 2742,
+ "arestas": 2743,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "arquivo": "src/components/ui/select.tsx",

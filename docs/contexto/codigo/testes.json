@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 189,
+ "total": 190,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 172
+  "unit": 173
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 109
+   "arquivos": 110
   },
   {
    "padrao": "outro",
@@ -735,6 +735,15 @@
     "src/integrations/supabase/client.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [
+    "src/hooks/useSpotIntegration.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/hooks/__tests__/useToastReducer.test.ts",
@@ -1767,6 +1776,7 @@
   "src/hooks/useKeyboardShortcuts.ts": 1,
   "src/hooks/usePermissions.ts": 2,
   "src/hooks/useRecentlyViewed.ts": 1,
+  "src/hooks/useSpotIntegration.ts": 1,
   "src/hooks/useWorkflowDLQ.ts": 1,
   "src/hooks/useXbzIntegration.ts": 1,
   "src/integrations/supabase/client.ts": 5,
@@ -1960,7 +1970,6 @@
    "src/hooks/useSecurityLogs.ts",
    "src/hooks/useSessionIdleTimeout.ts",
    "src/hooks/useSidebarBadges.ts",
-   "src/hooks/useSpotIntegration.ts",
    "src/hooks/useSupplierQualification.ts",
    "src/hooks/useTourPreferences.ts",
    "src/hooks/useUnsavedChangesWarning.ts",

@@ -2531,6 +2531,7 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
+   "src/components/ui/dialog.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/separator.tsx",
    "src/components/ui/table.tsx",
