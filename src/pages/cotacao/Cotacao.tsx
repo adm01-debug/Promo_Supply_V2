@@ -39,7 +39,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, fetchRegisteredQuotes, type CotacaoAPI } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, buildQuoteAnalysis, fetchRegisteredQuotes, type CotacaoAPI } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -86,14 +86,13 @@ const Cotacao = () => {
     if (!solicitacao || allCotacoes.length === 0) return;
     setIsAiAnalyzing(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const best = [...allCotacoes].sort((a, b) => a.total - b.total)[0];
-      const analysis = `**Promo AI Strategic Insight:**
-      
-1.  **Cost Efficiency:** Supplier **${best.fornecedor}** guarantees **15%** savings vs. market average.
-2.  **Risk Profile:** Gold-level compliance achieved, zero delivery delays in the last 6 months.
-3.  **Final Verdict:** Immediate approval recommended to maintain production SLA.`;
-      setAiAnalysis(analysis);
+      const result = buildQuoteAnalysis(allCotacoes);
+      setAiAnalysis(
+        result
+          ? result.lines.map((line, index) => `${index + 1}. ${line}`).join('\n\n')
+          : null
+      );
+      if (!result) toast.info('Nenhuma cotacao com valor registrado para analisar');
     } finally {
       setIsAiAnalyzing(false);
     }
@@ -127,7 +126,7 @@ const Cotacao = () => {
     setIsRunningFollowUp(true);
     try {
       // Simulation of Neural Follow-up based on user prompt
-      const supplierName = allCotacoes[0]?.fornecedor || "Supplier";
+      const supplierName = allCotacoes[0]?.fornecedor || "Fornecedor";
       toast.info(`Neural Follow-up: "Olá ${supplierName}, tudo bem? Notei que ainda não recebemos sua atualização sobre a caneca de alumínio. Consegue nos enviar hoje?"`, {
         duration: 5000,
       });
