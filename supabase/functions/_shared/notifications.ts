@@ -39,10 +39,13 @@ export async function insertNotification(
 
   let tenantId = notif.tenant_id ?? null;
   if (!tenantId) {
+    // `profiles.id` é PK própria e só coincide com `auth.users.id` em parte dos
+    // registros; a chave do usuário é `profiles.user_id`. Buscar pela PK errada
+    // devolvia vazio e o alerta era descartado como "sem_tenant".
     const { data: profile } = await supabase
       .from("profiles")
       .select("tenant_id")
-      .eq("id", notif.user_id)
+      .eq("user_id", notif.user_id)
       .maybeSingle();
     tenantId = (profile as { tenant_id?: string | null } | null)?.tenant_id ?? null;
   }
@@ -76,9 +79,9 @@ export async function insertNotificationsBatch(
   const tenantsPorUsuario = new Map<string, string | null>();
   if (semTenant.length > 0) {
     const ids = [...new Set(semTenant.map((n) => n.user_id))];
-    const { data: perfis } = await supabase.from("profiles").select("id, tenant_id").in("id", ids);
-    for (const p of (perfis ?? []) as Array<{ id: string; tenant_id: string | null }>) {
-      tenantsPorUsuario.set(p.id, p.tenant_id);
+    const { data: perfis } = await supabase.from("profiles").select("user_id, tenant_id").in("user_id", ids);
+    for (const p of (perfis ?? []) as Array<{ user_id: string; tenant_id: string | null }>) {
+      tenantsPorUsuario.set(p.user_id, p.tenant_id);
     }
   }
 
