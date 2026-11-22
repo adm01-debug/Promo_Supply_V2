@@ -1120,7 +1120,7 @@
    "nome": "spot-proxy",
    "entrada": "supabase/functions/spot-proxy/index.ts",
    "arquivos": 2,
-   "linhas": 957,
+   "linhas": 960,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

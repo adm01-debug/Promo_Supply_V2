@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e0eede25c26925dabda3f613a7c3672ba58bc3b2",
+  "commit": "cb9b3e61a5565d83d5ccf82d608f8eb28ea0799f",
   "branch": "main",
-  "data_commit": "2026-11-22T11:14:21-03:00",
+  "data_commit": "2026-11-22T12:41:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "cb9b3e6",
+    "data": "2026-11-22",
+    "assunto": "fix(edge): spot-proxy volta a passar no deno check (#280)"
+   },
    {
     "sha": "e0eede2",
     "data": "2026-11-22",
@@ -126,11 +131,6 @@
     "sha": "d7718b8",
     "data": "2026-11-21",
     "assunto": "fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)"
-   },
-   {
-    "sha": "ccdb17f",
-    "data": "2026-11-21",
-    "assunto": "docs(pim): marca PR 2.1 concluída no checklist (#249)"
    }
   ],
   "arquivos_mudados_7d": 251,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 236
+    "commits": 237
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1298,
   "arquivos_codigo": 805,
-  "linhas_codigo": 167935,
+  "linhas_codigo": 167938,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 95,
-   "linhas": 16494
+   "linhas": 16497
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -594,7 +594,7 @@
   },
   {
    "arquivo": "supabase/functions/spot-proxy/index.ts",
-   "linhas": 885
+   "linhas": 888
   },
   {
    "arquivo": "src/pages/admin/HealthDashboard.tsx",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e0eede25c26925dabda3f613a7c3672ba58bc3b2",
+  "sha": "cb9b3e61a5565d83d5ccf82d608f8eb28ea0799f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 14:17 UTC",
+  "generated_at": "2026-11-22 15:42 UTC",
   "files_total": 1299,
   "code_files": 1134,
-  "code_lines": 194893,
+  "code_lines": 194896,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "91cd970a9c27559b",
+ "facts_hash": "67f673162c7e311d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35656,7 +35656,7 @@
   {
    "module": "supabase/functions",
    "files": 95,
-   "lines": 16494,
+   "lines": 16497,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -110963,7 +110963,7 @@
   },
   "supabase/functions/spot-proxy/index.ts": {
    "path": "supabase/functions/spot-proxy/index.ts",
-   "lines": 885,
+   "lines": 888,
    "tables": [
     {
      "table": "user_roles",
@@ -113700,10 +113700,20 @@
   }
  },
  "git": {
-  "sha": "e0eede25c26925dabda3f613a7c3672ba58bc3b2",
+  "sha": "cb9b3e61a5565d83d5ccf82d608f8eb28ea0799f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cb9b3e6",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(edge): spot-proxy volta a passar no deno check (#280)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "supabase/functions/spot-proxy/index.ts"
+    ]
+   },
    {
     "sha": "e0eede2",
     "date": "2026-11-22",
@@ -114005,21 +114015,12 @@
     "files": [
      "supabase/functions/maintain-partitions/index.ts"
     ]
-   },
-   {
-    "sha": "7187345",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(types): regenera types.ts com as colunas PIM de compras (#245)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    7
+    8
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -114028,6 +114029,10 @@
    [
     "src/tests/spot/spotApi.test.ts",
     3
+   ],
+   [
+    "supabase/functions/spot-proxy/index.ts",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -114042,20 +114047,12 @@
     2
    ],
    [
-    "src/integrations/supabase/types.ts",
-    2
-   ],
-   [
     "supabase/functions/spot-api/index.ts",
     2
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     2
-   ],
-   [
-    "supabase/functions/spot-proxy/index.ts",
-    1
    ],
    [
     "supabase/functions/spot-proxy/sessions.ts",
@@ -114095,6 +114092,10 @@
    ],
    [
     "src/components/compras/procurement-kpis/kpiColors.ts",
+    1
+   ],
+   [
+    "src/components/compras/procurement-kpis/kpiMockData.ts",
     1
    ]
   ]
