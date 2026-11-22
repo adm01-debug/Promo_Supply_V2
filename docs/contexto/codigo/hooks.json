@@ -2203,9 +2203,10 @@
     "useSpotProducts",
     "useSpotSkus",
     "useSpotStock",
-    "useSpotSyncStatus"
+    "useSpotSyncStatus",
+    "useTriggerSpotSync"
    ],
-   "linhas": 155,
+   "linhas": 181,
    "dominio": "pages/catalogo-spot",
    "tabelas": [
     "spot_api_sync_log",
@@ -2214,9 +2215,13 @@
     "spot_skus"
    ],
    "rpcs": [],
-   "edges": [],
+   "edges": [
+    "spot-api"
+   ],
    "hooks_internos": [
-    "useQuery"
+    "useMutation",
+    "useQuery",
+    "useQueryClient"
    ],
    "canais_realtime": [],
    "usado_por": 2,

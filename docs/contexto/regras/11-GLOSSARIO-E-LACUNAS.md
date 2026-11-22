@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b9303d3ed2` · branch `main` · 2026-11-22 17:06 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bc442e6f37` · branch `main` · 2026-11-22 17:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -201,6 +201,7 @@
 | `SLAStatus` (TS) | atrasado \| critico \| atencao \| no_prazo \| entregue |  | `src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `SeverityFilter` (TS) | all \| slow \| very_slow \| error |  | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | `TimeFilter` (TS) | 1h \| 6h \| 24h \| 7d \| custom |  | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
+| `SpotSyncAction` (TS) | syncCatalog \| syncCustomization \| syncStock \| getOrders |  | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `CacheFreshness` (TS) | fresh \| stale \| missing |  | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `PagamentoStatus` (TS) | pago \| pendente \| desconhecido |  | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `XBZ_PERIODOS` (TS) | { value: 1, label: 'Recente (~2 meses)' }, { value: 2, label: 'Médio (~3 meses)' }, { value: 3, label: 'Longo (~6 meses)' }, |  | `src/pages/catalogo-xbz/xbzHelpers.ts` |

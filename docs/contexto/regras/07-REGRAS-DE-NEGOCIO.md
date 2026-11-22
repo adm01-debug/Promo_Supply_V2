@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b9303d3ed2` · branch `main` · 2026-11-22 17:06 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bc442e6f37` · branch `main` · 2026-11-22 17:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1199,6 +1199,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | SLAStatus | atrasado \| critico \| atencao \| no_prazo \| entregue | `src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | SeverityFilter | all \| slow \| very_slow \| error | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
 | TimeFilter | 1h \| 6h \| 24h \| 7d \| custom | `src/pages/admin-telemetria/telemetriaHelpers.ts` |
+| SpotSyncAction | syncCatalog \| syncCustomization \| syncStock \| getOrders | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | CacheFreshness | fresh \| stale \| missing | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | PagamentoStatus | pago \| pendente \| desconhecido | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | XBZ_PERIODOS | { value: 1, label: 'Recente (~2 meses)' }, { value: 2, label: 'Médio (~3 meses)' }, { value: 3, label: 'Longo (~6 meses)' }, | `src/pages/catalogo-xbz/xbzHelpers.ts` |
@@ -2532,6 +2533,7 @@ _nenhum item encontrado_
 | `invoke(` | `src/pages/admin/PunchOutCatalogs.tsx` |
 | `invoke(` | `src/pages/admin/StorageMigration.tsx` |
 | `invoke(` | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
+| `invoke(` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `invoke(` | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | `invoke(` | `src/services/rlsAuditService.ts` |
 | `sendEmail` | `supabase/functions/alert-dispatcher/index.ts` |
@@ -2610,6 +2612,7 @@ _nenhum item encontrado_
 | Dialog de Adicionar/Editar Regra SoD | `src/pages/admin/WorkflowAdmin.tsx` |
 | Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
+| automática: cada clique consome 1 requisição do limite. | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */ | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | partir de um volume mínimo de chamadas; abaixo disso o painel exibe estado | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | Volume mínimo de chamadas antes de classificar a eficiência. */ | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |

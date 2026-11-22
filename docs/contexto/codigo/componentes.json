@@ -4589,10 +4589,11 @@
     "SpotSyncPanel"
    ],
    "export_default": null,
-   "linhas": 134,
+   "linhas": 138,
    "dominio": "pages/catalogo-spot",
    "hooks_locais": [
-    "useSpotSyncStatus"
+    "useSpotSyncStatus",
+    "useTriggerSpotSync"
    ],
    "tabelas": [],
    "edges": [],

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b9303d3ed2fef2073f290362ac81761affe9b046` (2026-11-22T14:06:31-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bc442e6f3777b7f0b79c3fb3c13d6659a4cb2785` (2026-11-22T14:13:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1304 |
 | arquivos_codigo | 811 |
-| linhas_codigo | 169120 |
+| linhas_codigo | 169150 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -89,7 +89,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 83 | 9 | 56 |
+| pages/catalogo-spot | 1 | 1 | 6 | 84 | 10 | 56 |
 | pages/catalogo-xbz | 1 | 1 | 10 | 80 | 9 | 52 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
 | pages/configuracoes | 1 | 1 | 1 | 78 | 8 | 52 |
@@ -212,7 +212,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
-- `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `bc442e6` feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)
 - 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
 - 2026-11-22 `0051cc3` fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)
 - 2026-11-22 `d2c6d78` fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `e469807` fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)
 - 2026-11-22 `0cb5045` docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)
 - 2026-11-22 `a51d0de` docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)
-- 2026-11-22 `4c78723` fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

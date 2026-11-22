@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b9303d3ed2fef2073f290362ac81761affe9b046",
+  "sha": "bc442e6f3777b7f0b79c3fb3c13d6659a4cb2785",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 17:06 UTC",
+  "generated_at": "2026-11-22 17:13 UTC",
   "files_total": 1305,
   "code_files": 1140,
-  "code_lines": 196078,
+  "code_lines": 196108,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "1b31f303aa27d26d",
+ "facts_hash": "87dc82c40d1f0657",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33907,6 +33907,10 @@
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts"
    },
    {
+    "name": "useTriggerSpotSync",
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts"
+   },
+   {
     "name": "usePortalFornecedorData",
     "file": "src/pages/portal-fornecedor/portalFornecedorData.ts"
    },
@@ -35262,7 +35266,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30065,
+   "lines": 30095,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -38976,6 +38980,9 @@
    "send-email": [
     "scripts/ai-context/gerar.unit.mjs"
    ],
+   "spot-api": [
+    "src/pages/catalogo-spot/useSpotCatalog.ts"
+   ],
    "spot-proxy": [
     "src/hooks/useSpotIntegration.ts"
    ],
@@ -39751,6 +39758,11 @@
     "file": "src/pages/admin-telemetria/telemetriaHelpers.ts",
     "name": "TimeFilter",
     "values": "1h | 6h | 24h | 7d | custom"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "name": "SpotSyncAction",
+    "values": "syncCatalog | syncCustomization | syncStock | getOrders"
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
@@ -41171,7 +41183,7 @@
    },
    {
     "file": "src/pages/catalogo-spot/SpotSyncPanel.tsx",
-    "msg": ";\nimport { RefreshCw, AlertTriangle, Database, Clock } from "
+    "msg": ";\nimport { RefreshCw, AlertTriangle, Database, Clock, Download } from "
    },
    {
     "file": "src/pages/catalogo-spot/SpotSyncPanel.tsx",
@@ -42232,6 +42244,10 @@
    {
     "file": "src/pages/auth/Auth.tsx",
     "text": "Validation schemas"
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "text": "automática: cada clique consome 1 requisição do limite."
    },
    {
     "file": "src/pages/catalogo-xbz/xbzHelpers.ts",
@@ -68202,6 +68218,10 @@
    },
    {
     "file": "src/pages/admin-telemetria/AdminTelemetria.tsx",
+    "call": "invoke("
+   },
+   {
+    "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "call": "invoke("
    },
    {
@@ -103440,12 +103460,12 @@
   },
   "src/pages/catalogo-spot/SpotSyncPanel.tsx": {
    "path": "src/pages/catalogo-spot/SpotSyncPanel.tsx",
-   "lines": 134,
+   "lines": 138,
    "exports": [
     "const SpotSyncPanel"
    ],
    "errors": [
-    ";\nimport { RefreshCw, AlertTriangle, Database, Clock } from ",
+    ";\nimport { RefreshCw, AlertTriangle, Database, Clock, Download } from ",
     ">\n            <AlertTriangle className="
    ]
   },
@@ -103467,7 +103487,7 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 155,
+   "lines": 181,
    "exports": [
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
@@ -103479,6 +103499,8 @@
     "function useSpotSkus",
     "function useSpotStock",
     "function useSpotSyncStatus",
+    "type SpotSyncAction",
+    "function useTriggerSpotSync",
     "function latestSuccessByEndpoint",
     "type CacheFreshness",
     "function evaluateFreshness"
@@ -103537,7 +103559,14 @@
      "status"
     ]
    },
+   "invokes": [
+    "spot-api"
+   ],
    "enums": [
+    {
+     "name": "SpotSyncAction",
+     "values": "syncCatalog | syncCustomization | syncStock | getOrders"
+    },
     {
      "name": "CacheFreshness",
      "values": "fresh | stale | missing"
@@ -103556,14 +103585,21 @@
      "kind": "compara"
     }
    ],
+   "rule_comments": [
+    "automática: cada clique consome 1 requisição do limite."
+   ],
    "hooks": [
     "useSpotProducts",
     "useSpotSkus",
     "useSpotStock",
-    "useSpotSyncStatus"
+    "useSpotSyncStatus",
+    "useTriggerSpotSync"
    ],
    "temporal": [
     "staleTime: 5 * 60 * 1000,"
+   ],
+   "side_effects": [
+    "invoke("
    ],
    "pagination": [
     "40"
@@ -114123,10 +114159,20 @@
   }
  },
  "git": {
-  "sha": "b9303d3ed2fef2073f290362ac81761affe9b046",
+  "sha": "bc442e6f3777b7f0b79c3fb3c13d6659a4cb2785",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "bc442e6",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)",
+    "files": [
+     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts"
+    ]
+   },
    {
     "sha": "b9303d3",
     "date": "2026-11-22",
@@ -114437,25 +114483,6 @@
      "src/tests/spot/spotApi.test.ts",
      "supabase/functions/spot-api/index.ts"
     ]
-   },
-   {
-    "sha": "9200429",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "scripts/ci/gerar-matriz-edge-tabela.mjs",
-     "supabase/functions/_shared/notifications.ts",
-     "supabase/functions/alert-dispatcher/index.ts",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/check-expiry-alerts/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/weekly-report/index.ts",
-     "supabase/functions/weekly-summary-report/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -114480,20 +114507,16 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "supabase/functions/check-expiry-alerts/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/_shared/notifications.ts",
-    2
-   ],
-   [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "src/pages/catalogo-spot/SpotSyncPanel.tsx",
+    1
+   ],
+   [
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
+    1
    ],
    [
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
@@ -114537,6 +114560,10 @@
    ],
    [
     "supabase/functions/process-invoice-idp/extraction.ts",
+    1
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
     1
    ]
   ]

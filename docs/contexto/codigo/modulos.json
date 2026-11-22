@@ -3923,7 +3923,7 @@
    "modulo": "pages/catalogo-spot",
    "arquivos": 6,
    "testes": 1,
-   "linhas": 1120,
+   "linhas": 1150,
    "itens_menu": [
     "SPOT / Stricker"
    ],
@@ -4011,6 +4011,7 @@
     "useToast",
     "useTrackPageView",
     "useTriggerCelebration",
+    "useTriggerSpotSync",
     "useUndoStore",
     "useUndoToast",
     "useUndoableAction",
@@ -4021,7 +4022,8 @@
     "useSpotProducts",
     "useSpotSkus",
     "useSpotStock",
-    "useSpotSyncStatus"
+    "useSpotSyncStatus",
+    "useTriggerSpotSync"
    ],
    "edges": [
     "ai-demand-prediction",
@@ -4031,6 +4033,7 @@
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
+    "spot-api",
     "spot-proxy",
     "telemetry"
    ],
@@ -4123,7 +4126,9 @@
     "user"
    ],
    "diretos": {
-    "edges": [],
+    "edges": [
+     "spot-api"
+    ],
     "tabelas": [
      "spot_api_sync_log",
      "spot_estoque",
@@ -7405,6 +7410,7 @@
     "useToast",
     "useTrackPageView",
     "useTriggerCelebration",
+    "useTriggerSpotSync",
     "useUndoStore",
     "useUndoToast",
     "useUndoableAction",
@@ -7434,6 +7440,7 @@
     "punchout-setup",
     "run-audit",
     "scim-v2",
+    "spot-api",
     "spot-proxy",
     "system-simulation",
     "telemetry",

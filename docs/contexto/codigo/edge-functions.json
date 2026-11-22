@@ -1112,7 +1112,9 @@
     "security.ts",
     "spot_api.ts"
    ],
-   "chamada_pelo_front": [],
+   "chamada_pelo_front": [
+    "src/pages/catalogo-spot/useSpotCatalog.ts"
+   ],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": true,
    "orfa": false,

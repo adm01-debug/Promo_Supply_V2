@@ -1157,6 +1157,7 @@
     "useTransform",
     "useTranslation",
     "useTriggerCelebration",
+    "useTriggerSpotSync",
     "useUndoStore",
     "useUndoToast",
     "useUndoToastStore",
@@ -1243,6 +1244,7 @@
     "useToast",
     "useTrackPageView",
     "useTriggerCelebration",
+    "useTriggerSpotSync",
     "useUndoStore",
     "useUndoToast",
     "useUndoableAction",
@@ -1328,6 +1330,7 @@
     "generate-contract-pdf",
     "guided-buying-ai",
     "process-solicitacao-neural",
+    "spot-api",
     "spot-proxy",
     "telemetry"
    ],

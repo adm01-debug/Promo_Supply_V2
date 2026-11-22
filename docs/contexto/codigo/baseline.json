@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b9303d3ed2fef2073f290362ac81761affe9b046",
+  "commit": "bc442e6f3777b7f0b79c3fb3c13d6659a4cb2785",
   "branch": "main",
-  "data_commit": "2026-11-22T14:06:31-03:00",
+  "data_commit": "2026-11-22T14:13:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "bc442e6",
+    "data": "2026-11-22",
+    "assunto": "feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)"
+   },
    {
     "sha": "b9303d3",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "d528e0e",
     "data": "2026-11-21",
     "assunto": "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)"
-   },
-   {
-    "sha": "8b01dfe",
-    "data": "2026-11-21",
-    "assunto": "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)"
    }
   ],
-  "arquivos_mudados_7d": 269,
+  "arquivos_mudados_7d": 271,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 244
+    "commits": 245
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1304,
   "arquivos_codigo": 811,
-  "linhas_codigo": 169120,
+  "linhas_codigo": 169150,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30065
+   "linhas": 30095
   },
   "src/routes": {
    "arquivos": 1,
