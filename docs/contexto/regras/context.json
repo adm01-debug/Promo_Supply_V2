@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb",
+  "sha": "e0eede25c26925dabda3f613a7c3672ba58bc3b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 13:59 UTC",
-  "files_total": 1297,
-  "code_files": 1132,
-  "code_lines": 194705,
+  "generated_at": "2026-11-22 14:17 UTC",
+  "files_total": 1299,
+  "code_files": 1134,
+  "code_lines": 194893,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "994a03dd40fa8e19",
+ "facts_hash": "91cd970a9c27559b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 382,
+   ".ts": 384,
    ".tsx": 348,
    ".sql": 327,
    ".mjs": 67,
@@ -35655,8 +35655,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 93,
-   "lines": 16306,
+   "files": 95,
+   "lines": 16494,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35742,7 +35742,8 @@
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
-    "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth"
+    "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth",
+    "sessions.ts: PORTAL_SESSION_TAG, PORTAL_SESSION_TTL_MS, SpotSessionRow, PortalSessionPick, isPortalSession, pickPortalSession"
    ],
    "docs": [
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
@@ -38071,6 +38072,7 @@
     "created_at",
     "id",
     "is_valid",
+    "last_used_at",
     "metadata",
     "session_cookie"
    ],
@@ -42480,6 +42482,10 @@
    {
     "file": "supabase/functions/spot-proxy/index.ts",
     "text": "M-05: rate limit uniforme por usuário (60 req/min)."
+   },
+   {
+    "file": "supabase/functions/spot-proxy/sessions.ts",
+    "text": "Linha que deve ter `last_used_at` renovado. */"
    },
    {
     "file": "supabase/functions/telemetry/index.ts",
@@ -49901,6 +49907,21 @@
     "value": "15000"
    },
    {
+    "file": "supabase/functions/spot-proxy/sessions.ts",
+    "name": "PORTAL_SESSION_TAG",
+    "value": "\"spot-portal-cookie\""
+   },
+   {
+    "file": "supabase/functions/spot-proxy/sessions.ts",
+    "name": "PORTAL_SESSION_TTL_MS",
+    "value": "30 * 60 * 1000"
+   },
+   {
+    "file": "supabase/functions/spot-proxy/sessions_test.ts",
+    "name": "MIN",
+    "value": "60_000"
+   },
+   {
     "file": "supabase/functions/xbz-proxy/index.ts",
     "name": "GERAR_PEDIDOS_DEDUP_SECONDS",
     "value": "30"
@@ -56566,8 +56587,8 @@
     "line": "const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem"
    },
    {
-    "file": "supabase/functions/spot-proxy/index.ts",
-    "line": "if (age < 30 * 60 * 1000) {"
+    "file": "supabase/functions/spot-proxy/sessions.ts",
+    "line": "export const PORTAL_SESSION_TTL_MS = 30 * 60 * 1000;"
    },
    {
     "file": "supabase/functions/webauthn-authenticate/index.ts",
@@ -110942,7 +110963,7 @@
   },
   "supabase/functions/spot-proxy/index.ts": {
    "path": "supabase/functions/spot-proxy/index.ts",
-   "lines": 878,
+   "lines": 885,
    "tables": [
     {
      "table": "user_roles",
@@ -110951,10 +110972,6 @@
     {
      "table": "spot_sessions",
      "op": "select"
-    },
-    {
-     "table": "spot_sessions",
-     "op": "update"
     },
     {
      "table": "spot_sessions",
@@ -110988,7 +111005,10 @@
     ],
     "spot_sessions": [
      "id",
-     "is_valid"
+     "is_valid",
+     "last_used_at",
+     "metadata",
+     "session_cookie"
     ]
    },
    "env": [
@@ -111037,13 +111057,50 @@
      "body": "const pageMatch = html.match(/\\?p=(\\d+)/g); if (pageMatch) { const pages = pageMatch.map(p => parseInt(p.replace(\"?p=\", \"\"))); return Math.max(...pages, 1); } return 1;"
     }
    ],
-   "temporal": [
-    "if (age < 30 * 60 * 1000) {"
-   ],
    "pagination": [
     "10"
    ],
    "uses_service_role": true
+  },
+  "supabase/functions/spot-proxy/sessions.ts": {
+   "path": "supabase/functions/spot-proxy/sessions.ts",
+   "lines": 72,
+   "exports": [
+    "const PORTAL_SESSION_TAG",
+    "const PORTAL_SESSION_TTL_MS",
+    "interface SpotSessionRow",
+    "interface PortalSessionPick",
+    "function isPortalSession",
+    "function pickPortalSession",
+    "function isLoginRedirect"
+   ],
+   "params": [
+    {
+     "name": "PORTAL_SESSION_TAG",
+     "value": "\"spot-portal-cookie\""
+    },
+    {
+     "name": "PORTAL_SESSION_TTL_MS",
+     "value": "30 * 60 * 1000"
+    }
+   ],
+   "rule_comments": [
+    "Linha que deve ter `last_used_at` renovado. */"
+   ],
+   "doc": "Regras puras de seleção da sessão do portal SPOT. A tabela `spot_sessions` é compartilhada com a edge `spot-api`, que guarda ali o token da API WS marcado com `metadata.tag = \"spot-api-token\"`. O portal guarda o cookie PHPSESSID. A `spot-proxy` lia a tabela sem filtrar o tipo, podia tratar o token d …",
+   "temporal": [
+    "export const PORTAL_SESSION_TTL_MS = 30 * 60 * 1000;"
+   ]
+  },
+  "supabase/functions/spot-proxy/sessions_test.ts": {
+   "path": "supabase/functions/spot-proxy/sessions_test.ts",
+   "lines": 109,
+   "params": [
+    {
+     "name": "MIN",
+     "value": "60_000"
+    }
+   ]
   },
   "supabase/functions/system-simulation/index.ts": {
    "path": "supabase/functions/system-simulation/index.ts",
@@ -113643,10 +113700,22 @@
   }
  },
  "git": {
-  "sha": "8e9d432776496eefe1849f2fe72f0b9a9fcc4cfb",
+  "sha": "e0eede25c26925dabda3f613a7c3672ba58bc3b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e0eede2",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "supabase/functions/spot-proxy/index.ts",
+     "supabase/functions/spot-proxy/sessions.ts",
+     "supabase/functions/spot-proxy/sessions_test.ts"
+    ]
+   },
    {
     "sha": "8e9d432",
     "date": "2026-11-22",
@@ -113945,26 +114014,12 @@
     "files": [
      "src/integrations/supabase/types.ts"
     ]
-   },
-   {
-    "sha": "6ae4856",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: compra grava referencia do PIM e congela o item (#242)",
-    "files": [
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/hooks/usePurchaseHistory.ts",
-     "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "src/pages/recebimento/RecebimentoOffline.tsx",
-     "src/pages/recebimento/recebimentoHelpers.ts",
-     "src/pages/recompra/RecompraInteligente.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    6
+    7
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113999,6 +114054,18 @@
     2
    ],
    [
+    "supabase/functions/spot-proxy/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-proxy/sessions.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-proxy/sessions_test.ts",
+    1
+   ],
+   [
     "supabase/functions/check-expiry-alerts/contractExpiry.ts",
     1
    ],
@@ -114028,18 +114095,6 @@
    ],
    [
     "src/components/compras/procurement-kpis/kpiColors.ts",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/kpiMockData.ts",
-    1
-   ],
-   [
-    "src/hooks/useExecutiveDashboardData.ts",
-    1
-   ],
-   [
-    "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md",
     1
    ]
   ]

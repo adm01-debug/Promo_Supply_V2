@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 188,
+ "total": 189,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 171
+  "unit": 172
  },
  "onde_ficam": [
   {
@@ -19,7 +19,7 @@
   },
   {
    "padrao": "outro",
-   "arquivos": 41
+   "arquivos": 42
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -1579,6 +1579,15 @@
    "casos": 3
   },
   {
+   "arquivo": "supabase/functions/spot-proxy/sessions_test.ts",
+   "tipo": "unit",
+   "linhas": 109,
+   "testa": [
+    "supabase/functions/spot-proxy/sessions.ts"
+   ],
+   "casos": 10
+  },
+  {
    "arquivo": "supabase/functions/telemetry/index.test.ts",
    "tipo": "unit",
    "linhas": 121,
@@ -1836,7 +1845,8 @@
   "supabase/functions/check-sla-alerts/failures.ts": 1,
   "supabase/functions/punchout-receive/session.ts": 1,
   "supabase/functions/punchout-receive/solicitation.ts": 1,
-  "supabase/functions/send-push-notification/webpush.ts": 1
+  "supabase/functions/send-push-notification/webpush.ts": 1,
+  "supabase/functions/spot-proxy/sessions.ts": 1
  },
  "sem_teste": {
   "telas": [
@@ -1980,7 +1990,6 @@
    "punchout-encrypt",
    "punchout-setup",
    "spot-api",
-   "spot-proxy",
    "system-simulation",
    "webauthn-authenticate",
    "webauthn-register",

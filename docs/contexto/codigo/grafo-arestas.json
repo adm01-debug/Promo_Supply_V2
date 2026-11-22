@@ -3653,7 +3653,8 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/spot-proxy/sessions.ts"
   ],
   "supabase/functions/system-simulation/index.ts": [
    "supabase/functions/_shared/contracts.ts",

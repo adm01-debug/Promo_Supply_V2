@@ -1119,8 +1119,8 @@
   {
    "nome": "spot-proxy",
    "entrada": "supabase/functions/spot-proxy/index.ts",
-   "arquivos": 1,
-   "linhas": 878,
+   "arquivos": 2,
+   "linhas": 957,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1157,7 +1157,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "system-simulation",

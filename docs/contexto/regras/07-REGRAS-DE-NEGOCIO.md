@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8e9d432776` · branch `main` · 2026-11-22 13:59 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e0eede25c2` · branch `main` · 2026-11-22 14:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1768,6 +1768,9 @@ _nenhum item encontrado_
 | `SPOT_BASE` | `"https://www.spotgifts.com.br"` | `supabase/functions/spot-proxy/index.ts` |
 | `LANG` | `"pt"` | `supabase/functions/spot-proxy/index.ts` |
 | `SPOT_REQUEST_TIMEOUT_MS` | `15000` | `supabase/functions/spot-proxy/index.ts` |
+| `PORTAL_SESSION_TAG` | `"spot-portal-cookie"` | `supabase/functions/spot-proxy/sessions.ts` |
+| `PORTAL_SESSION_TTL_MS` | `30 * 60 * 1000` | `supabase/functions/spot-proxy/sessions.ts` |
+| `MIN` | `60_000` | `supabase/functions/spot-proxy/sessions_test.ts` |
 | `GERAR_PEDIDOS_DEDUP_SECONDS` | `30` | `supabase/functions/xbz-proxy/index.ts` |
 
 ### H.2 Prazos, expirações e janelas de tempo
@@ -1862,7 +1865,7 @@ _nenhum item encontrado_
 | `.gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),` | `supabase/functions/health-dashboard/index.ts` |
 | `exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,` | `supabase/functions/send-push-notification/webpush.ts` |
 | `const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem` | `supabase/functions/spot-api/index.ts` |
-| `if (age < 30 * 60 * 1000) {` | `supabase/functions/spot-proxy/index.ts` |
+| `export const PORTAL_SESSION_TTL_MS = 30 * 60 * 1000;` | `supabase/functions/spot-proxy/sessions.ts` |
 | `expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),` | `supabase/functions/webauthn-authenticate/index.ts` |
 | `timeout: 60000,` | `supabase/functions/webauthn-authenticate/index.ts` |
 | `expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),` | `supabase/functions/webauthn-register/index.ts` |
@@ -2682,6 +2685,7 @@ _nenhum item encontrado_
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |
 | M-05: rate limit uniforme por usuário (60 req/min). | `supabase/functions/spot-proxy/index.ts` |
+| Linha que deve ter `last_used_at` renovado. */ | `supabase/functions/spot-proxy/sessions.ts` |
 | versões diferentes da lib; `SupabaseClientLike` é o mínimo usado). | `supabase/functions/telemetry/index.ts` |
 | Rate limit: mitiga brute-force / enumeração por IP+email | `supabase/functions/webauthn-authenticate/index.ts` |
 | SECURITY: fail-closed. A autenticação por passkey não pode ser | `supabase/functions/webauthn-authenticate/index.ts` |
