@@ -786,6 +786,9 @@ Deno.serve(async (req) => {
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger('spot-proxy', requestId);
 
+  // Declarado fora do try para o catch poder registrar qual ação falhou.
+  let action: SpotAction | undefined;
+
   try {
     const supabase = getSupabaseAdmin();
 
@@ -801,7 +804,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await readJsonBody(req);
-    const action = readRequestAction(body);
+    action = readRequestAction(body);
 
     logger.info("Executing SPOT action", { action, userId });
 
@@ -871,7 +874,7 @@ Deno.serve(async (req) => {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
     const status = error instanceof HttpError ? error.status : 500;
     if (typeof logger !== 'undefined') {
-      logger.error("SPOT proxy error", { error: msg, action: typeof action !== 'undefined' ? action : 'unknown' });
+      logger.error("SPOT proxy error", { error: msg, action: action ?? 'unknown' });
     } else {
       console.error("SPOT proxy error:", msg);
     }
