@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7bc46ac77dee055bad147f1d47b751dd371ea49a` (2026-11-22T08:44:33-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `23566a22580b999a2595710b7b47e5afc116d304` (2026-11-22T09:04:22-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (324), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (325), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1287 |
+| arquivos_total | 1288 |
 | arquivos_codigo | 799 |
 | linhas_codigo | 167073 |
 | rotas | 55 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 39 |
 | tabelas | 163 |
-| migrations | 322 |
-| cron_jobs | 73 |
+| migrations | 323 |
+| cron_jobs | 74 |
 | testes | 186 |
 | workflows | 13 |
 | scripts | 50 |
@@ -249,6 +249,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `contract-expiry-check` 0 7 * * * → edge check-expiry-alerts (20261121153000_religa_crons_negocio_vault.sql)
 - `cotacao-followup-check` 0 12 * * * → edge check-cotacao-followup (20261121153000_religa_crons_negocio_vault.sql)
 - `cron-watchdog` */5 * * * * (20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql)
+- `cron-watchdog-15min` */15 * * * * (20261122130000_corrige_cron_watchdog_nomes_mortos.sql)
 - `ensure-audit-logs-next-partition` 0 4 25 * * (20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql)
 - `ensure-telemetry-logs-next-partition` 0 4 25 * * (20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql)
 - `expiry-alerts-check` 0 10 * * * → edge check-expiry-alerts (20261121153000_religa_crons_negocio_vault.sql)
@@ -333,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (29)
+- docs/pendencias/_indice.md (31)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (13)
 - package.json (12)
 - docs/ci/README.md (11)
@@ -415,6 +416,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `23566a2` fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)
+- 2026-11-22 `1cd652f` docs: checklist PIM e indice de pendencias refletem o estado real (#265)
 - 2026-11-22 `7bc46ac` fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)
 - 2026-11-21 `d528e0e` docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)
 - 2026-11-21 `8b01dfe` fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)
@@ -428,8 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `ccdb17f` docs(pim): marca PR 2.1 concluída no checklist (#249)
 - 2026-11-21 `8a61f8c` feat(bridge): allowlist aponta só para as views de compras do PIM (#248)
 - 2026-11-21 `64c1922` docs(pim): integra plano de compras-sem-catalogo com checklist (#247)
-- 2026-11-21 `621a86c` chore(script): reconcilia produtos locais com o PIM (#244)
-- 2026-11-21 `3067e11` fix(partitions): nao tratar tabela nao particionada como falha (#243)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

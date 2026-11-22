@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 322,
+ "migrations": 323,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1230,6 +1230,11 @@
    "nome": "cron-watchdog",
    "agenda": "*/5 * * * *",
    "migration": "20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql"
+  },
+  {
+   "nome": "cron-watchdog-15min",
+   "agenda": "*/15 * * * *",
+   "migration": "20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
   },
   {
    "nome": "ensure-audit-logs-next-partition",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7bc46ac77dee055bad147f1d47b751dd371ea49a",
+  "sha": "23566a22580b999a2595710b7b47e5afc116d304",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 11:45 UTC",
-  "files_total": 1288,
-  "code_files": 1125,
-  "code_lines": 193427,
+  "generated_at": "2026-11-22 12:04 UTC",
+  "files_total": 1289,
+  "code_files": 1126,
+  "code_lines": 193592,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6b6fee2bb9da9e47",
+ "facts_hash": "6673bbfe563bdc36",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 324,
+   ".sql": 325,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -20951,16 +20951,16 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260711191946_872a6814-ab1c-4596-b6d7-c3e5c8379396.sql",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_last_run TIMESTAMPTZ; v_last_status TEXT; v_sla_minutes INT; v_recent_failures INT; v_dedup_exists BOOLEAN; v_alert_type TEXT; BEGIN FOR v_job IN SELECT jobid, jobname FROM cron.job WHERE jobname IN ( 'cleanup-audit-logs','cleanup-security-logs','cleanup-webhook-events', 'cleanup-integration-outbox','process-outbox','alert-dispatcher','cron-watchdog', 'cleanup-system-alerts','cleanup-telemetry-logs','cleanup-login-attempts', 'cleanup-rate-limit-logs','cleanup-geo-access-logs','cleanup-query-telemetry' ) LOOP v_sla_minutes := CASE WHEN v_job.jobname IN ('process-outbox','alert-dispatcher','cron-watchdog') THEN 10 ELSE 1560 END; SELECT start_time, status INTO v_last_run …",
+    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 3600 END WHEN split_part(v_job.schedule, ' ', 2) ~ '^\\* …",
     "raises": [],
     "tables": [
+     "LATERAL",
      "cron",
+     "now",
      "system_alerts",
-     "v_dedup_exists",
-     "v_last_run",
      "v_recent_failures"
     ]
    },
@@ -26721,6 +26721,12 @@
     "schedule": "*/20 * * * *",
     "body": "SELECT public._invoke_spot_sync(",
     "src": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql"
+   },
+   {
+    "job": "cron-watchdog-15min",
+    "schedule": "*/15 * * * *",
+    "body": "SELECT public.cron_watchdog();",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
    }
   ],
   "views": {
@@ -27061,6 +27067,7 @@
    "supabase/migrations/20261121225000_versiona_job_spot_sync_orders_30min.sql",
    "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
    "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
+   "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -30926,6 +30933,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
    }
   ],
   "raises": [
@@ -35717,8 +35740,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 322,
-   "lines": 26131,
+   "files": 323,
+   "lines": 26296,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -73430,16 +73453,16 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260711191946_872a6814-ab1c-4596-b6d7-c3e5c8379396.sql",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_last_run TIMESTAMPTZ; v_last_status TEXT; v_sla_minutes INT; v_recent_failures INT; v_dedup_exists BOOLEAN; v_alert_type TEXT; BEGIN FOR v_job IN SELECT jobid, jobname FROM cron.job WHERE jobname IN ( 'cleanup-audit-logs','cleanup-security-logs','cleanup-webhook-events', 'cleanup-integration-outbox','process-outbox','alert-dispatcher','cron-watchdog', 'cleanup-system-alerts','cleanup-telemetry-logs','cleanup-login-attempts', 'cleanup-rate-limit-logs','cleanup-geo-access-logs','cleanup-query-telemetry' ) LOOP v_sla_minutes := CASE WHEN v_job.jobname IN ('process-outbox','alert-dispatcher','cron-watchdog') THEN 10 ELSE 1560 END; SELECT start_time, status INTO v_last_run …",
+    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 3600 END WHEN split_part(v_job.schedule, ' ', 2) ~ '^\\* …",
     "raises": [],
     "tables": [
+     "LATERAL",
      "cron",
+     "now",
      "system_alerts",
-     "v_dedup_exists",
-     "v_last_run",
      "v_recent_failures"
     ]
    },
@@ -83641,6 +83664,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
    }
   ],
   "guards": [
@@ -113005,6 +113044,10 @@
     "OR v_last_data < now() - interval '2 hours';"
    ]
   },
+  "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql": {
+   "path": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+   "lines": 165
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113224,10 +113267,30 @@
   }
  },
  "git": {
-  "sha": "7bc46ac77dee055bad147f1d47b751dd371ea49a",
+  "sha": "23566a22580b999a2595710b7b47e5afc116d304",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "23566a2",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+    ]
+   },
+   {
+    "sha": "1cd652f",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "docs: checklist PIM e indice de pendencias refletem o estado real (#265)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "docs/pendencias/integracao-pim-promo-supply.md"
+    ]
+   },
    {
     "sha": "7bc46ac",
     "date": "2026-11-22",
@@ -113507,31 +113570,17 @@
     "files": [
      "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql"
     ]
-   },
-   {
-    "sha": "199e4ed",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore: grava ficha fiscal (getSt) em xbz_produto_fiscal e cores em xbz_cores (#230)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
-     "supabase/functions/_shared/xbz_fiscal_cache.ts",
-     "supabase/functions/xbz-proxy/index.ts"
-    ]
-   },
-   {
-    "sha": "7a030e4",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(layout): liga acoes mortas do menu e paleta a rotas reais (#224)",
-    "files": [
-     "src/features/layout/components/CommandPalette.tsx",
-     "src/features/layout/components/UserMenu.tsx"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/pendencias/_indice.md",
+    3
+   ],
+   [
+    "docs/pendencias/integracao-pim-promo-supply.md",
+    3
+   ],
    [
     "src/tests/spot/spotApi.test.ts",
     3
@@ -113545,15 +113594,7 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-    2
-   ],
-   [
-    "docs/pendencias/integracao-pim-promo-supply.md",
     2
    ],
    [
@@ -113563,6 +113604,10 @@
    [
     ".github/workflows/aplicar-migration-prod.yml",
     2
+   ],
+   [
+    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
+    1
    ],
    [
     "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
@@ -113585,6 +113630,10 @@
     1
    ],
    [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    1
+   ],
+   [
     "scripts/ci/gerar-matriz-edge-tabela.mjs",
     1
    ],
@@ -113602,14 +113651,6 @@
    ],
    [
     "supabase/functions/check-cotacao-followup/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-expiry-alerts/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-sla-alerts/index.ts",
     1
    ]
   ]

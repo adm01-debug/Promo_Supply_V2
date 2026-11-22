@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)",
+   "docs: checklist PIM e indice de pendencias refletem o estado real (#265)",
    "fix: watchdog XBZ passa a medir dado real, nao o agendador (#264)",
    "docs(spot): registra os 5 bugs corrigidos e o novo estado dos crons (#262)",
-   "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)",
-   "fix(spot): desembrulha OrderV1Result para gravar pedido criado (#260)",
-   "feat(spot): versiona cron spot-api-sync-orders-30min (#258)"
+   "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)"
   ]
  },
  "pr_template": null,
