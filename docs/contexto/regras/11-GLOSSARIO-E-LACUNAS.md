@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `495ab36c29` · branch `main` · 2026-11-22 12:09 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `74d01a21f9` · branch `main` · 2026-11-22 12:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -43,6 +43,7 @@
 | `cotacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 32 colunas | migration |
 | `creditos_fornecedor` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `cron_heartbeats` | Health monitoring for scheduled cron edge functions. Each job upserts a row after each run. | 8 colunas | migration |
+| `cron_watchdog_seen` | Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico. | 3 colunas | migration |
 | `currencies` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `dashboard_filter_favorites` | _(sem COMMENT ON TABLE — significado não documentado)_ | 11 colunas | migration |
 | `dashboard_layouts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
@@ -373,6 +374,7 @@
 | tenant | `spot_skus` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `spot_customization_options` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `spot_estoque` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
+| tenant | `cron_watchdog_seen` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_history` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
@@ -438,7 +440,7 @@
 - `spot_api_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_documents.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_qualification_scores.qualification_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 157/160 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
+- 157/161 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
 
 ## Regras manuais presentes
 

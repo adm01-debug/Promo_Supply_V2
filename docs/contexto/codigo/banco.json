@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 324,
+ "migrations": 325,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -6361,6 +6361,41 @@
     "so_na_migration": [],
     "so_no_types": []
    },
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
+  },
+  "cron_watchdog_seen": {
+   "colunas": {
+    "first_seen": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "jobid": {
+     "tipo": "int",
+     "nn": false,
+     "pk": true,
+     "default": null,
+     "ref": null
+    },
+    "jobname": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": "20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],

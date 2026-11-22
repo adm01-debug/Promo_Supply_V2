@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "495ab36c290597dc32ac43f49fc1520804385d3a",
+  "sha": "74d01a21f9da4ea8cf34000595490d5a570aa616",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 12:09 UTC",
-  "files_total": 1290,
-  "code_files": 1127,
-  "code_lines": 193840,
+  "generated_at": "2026-11-22 12:24 UTC",
+  "files_total": 1291,
+  "code_files": 1128,
+  "code_lines": 194031,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bd525c96c7002d1a",
+ "facts_hash": "3424350dd027f4d0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 378,
    ".tsx": 348,
-   ".sql": 326,
+   ".sql": 327,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -13803,6 +13803,35 @@
     "comment": "",
     "origin": "migration"
    },
+   "cron_watchdog_seen": {
+    "columns": [
+     {
+      "name": "jobid",
+      "type": "INT PRIMARY KEY",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+     },
+     {
+      "name": "jobname",
+      "type": "TEXT NOT NULL",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+     },
+     {
+      "name": "first_seen",
+      "type": "TIMESTAMPTZ NOT NULL DEFAULT now()",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+     }
+    ],
+    "constraints": [],
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+    "comment": "Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico.",
+    "origin": "migration"
+   },
    "audit_logs_202605": {
     "columns": [
      {
@@ -20953,14 +20982,15 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 360 …",
+    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
     "raises": [],
     "tables": [
      "LATERAL",
      "cron",
+     "cron_watchdog_seen",
      "now",
      "system_alerts",
      "v_recent_failures"
@@ -27086,6 +27116,7 @@
    "supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql",
    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
    "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+   "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -27237,7 +27268,8 @@
    "spot_skus": "enabled",
    "spot_customization_options": "enabled",
    "spot_estoque": "enabled",
-   "spot_api_sync_log": "enabled"
+   "spot_api_sync_log": "enabled",
+   "cron_watchdog_seen": "enabled"
   },
   "grants": [
    {
@@ -30983,6 +31015,38 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog_seen",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "cron_watchdog_seen",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
    }
   ],
   "raises": [
@@ -31235,7 +31299,8 @@
    "column:system_alerts.source": "Funcao/rotina que originou o alerta (ex.: scan_toast_bloat). Complementa alert_type.",
    "column:audit_logs.sequencia": "Posicao na cadeia de integridade. Preenchida pelo trigger z_audit_logs_hash; o DEFAULT 0 e sentinela e nunca persiste.",
    "column:audit_logs.hash_anterior": "Hash do registro anterior da cadeia (GENESIS no primeiro). Preenchida pelo trigger z_audit_logs_hash; o DEFAULT e sentinela e nunca persiste.",
-   "column:audit_logs.registro_hash": "SHA-256 do conteudo canonico + hash_anterior. Preenchida pelo trigger z_audit_logs_hash; o DEFAULT e sentinela e nunca persiste."
+   "column:audit_logs.registro_hash": "SHA-256 do conteudo canonico + hash_anterior. Preenchida pelo trigger z_audit_logs_hash; o DEFAULT e sentinela e nunca persiste.",
+   "table:cron_watchdog_seen": "Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico."
   },
   "types_file": "src/integrations/supabase/types.ts",
   "dynamic_ddl": [
@@ -35774,8 +35839,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 324,
-   "lines": 26544,
+   "files": 325,
+   "lines": 26735,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -39266,6 +39331,7 @@
    "budget_audit_logs",
    "budget_transactions",
    "checkpoint_snapshots",
+   "cron_watchdog_seen",
    "currencies",
    "deadlock_snapshots",
    "entity_versions",
@@ -48886,6 +48952,21 @@
    {
     "table": "spot_api_sync_log",
     "column": "created_at",
+    "rule": "default now()"
+   },
+   {
+    "table": "cron_watchdog_seen",
+    "column": "jobid",
+    "rule": "PK"
+   },
+   {
+    "table": "cron_watchdog_seen",
+    "column": "jobname",
+    "rule": "obrigatório"
+   },
+   {
+    "table": "cron_watchdog_seen",
+    "column": "first_seen",
     "rule": "default now()"
    },
    {
@@ -73493,14 +73574,15 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_sla_seg INT; v_idade_seg INT; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, lr.last_run FROM cron.job j LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d.jobid = j.jobid ) lr ON TRUE WHERE j.active LOOP v_sla_seg := CASE WHEN v_job.schedule ~ '^\\S+\\s+\\S+\\s+\\*\\s+\\*\\s+\\*\\s*$' THEN CASE WHEN split_part(v_job.schedule, ' ', 2) = '*' THEN CASE WHEN split_part(v_job.schedule, ' ', 1) = '*' THEN 60 WHEN split_part(v_job.schedule, ' ', 1) ~ '^\\*/[0-9]+$' THEN substring(split_part(v_job.schedule, ' ', 1) FROM 3)::int * 60 ELSE 360 …",
+    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
     "raises": [],
     "tables": [
      "LATERAL",
      "cron",
+     "cron_watchdog_seen",
      "now",
      "system_alerts",
      "v_recent_failures"
@@ -78001,6 +78083,13 @@
     "DELETE": [
      "service_role: true"
     ]
+   },
+   "cron_watchdog_seen": {
+    "rls": "enabled",
+    "SELECT": [],
+    "INSERT": [],
+    "UPDATE": [],
+    "DELETE": []
    },
    "currencies": {
     "rls": "enabled",
@@ -83752,6 +83841,38 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog_seen",
+    "objkind": "table",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert, update, delete",
+    "object": "cron_watchdog_seen",
+    "objkind": "table",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cron_watchdog",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
    }
   ],
   "guards": [
@@ -84173,6 +84294,7 @@
    "spot_skus",
    "spot_customization_options",
    "spot_estoque",
+   "cron_watchdog_seen",
    "blocked_countries",
    "qualification_history",
    "qualification_requirements"
@@ -84735,6 +84857,7 @@
    "spot_api_sync_log": [
     "created_at"
    ],
+   "cron_watchdog_seen": [],
    "audit_logs_202605": [
     "created_at"
    ],
@@ -86183,6 +86306,11 @@
    },
    {
     "kind": "tenant",
+    "msg": "`cron_watchdog_seen` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
+    "where": []
+   },
+   {
+    "kind": "tenant",
     "msg": "`blocked_countries` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
     "where": []
    },
@@ -86419,7 +86547,7 @@
    "`spot_api_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`supplier_documents.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`supplier_qualification_scores.qualification_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
-   "157/160 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …"
+   "157/161 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …"
   ]
  },
  "manual": [],
@@ -113127,6 +113255,10 @@
     "AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'"
    ]
   },
+  "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql": {
+   "path": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+   "lines": 191
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -113346,10 +113478,20 @@
   }
  },
  "git": {
-  "sha": "495ab36c290597dc32ac43f49fc1520804385d3a",
+  "sha": "74d01a21f9da4ea8cf34000595490d5a570aa616",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "74d01a2",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+    ]
+   },
    {
     "sha": "495ab36",
     "date": "2026-11-22",
@@ -113640,22 +113782,12 @@
     "files": [
      "supabase/functions/_shared/external-bridge-allowlist.ts"
     ]
-   },
-   {
-    "sha": "b30b4cd",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs: fronteira compras x catalogo — produto, estoque e preco vem do Promo Gifts V4 (#232)",
-    "files": [
-     "AGENTS.md",
-     "docs/agentes/catalogo-e-fornecedores.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    4
+    5
    ],
    [
     "docs/pendencias/integracao-pim-promo-supply.md",
@@ -113684,6 +113816,10 @@
    [
     ".github/workflows/aplicar-migration-prod.yml",
     2
+   ],
+   [
+    "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+    1
    ],
    [
     "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
@@ -113727,10 +113863,6 @@
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-approval-escalations/index.ts",
     1
    ]
   ]

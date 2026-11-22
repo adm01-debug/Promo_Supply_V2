@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `495ab36c290597dc32ac43f49fc1520804385d3a` (2026-11-22T09:08:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `74d01a21f9da4ea8cf34000595490d5a570aa616` (2026-11-22T09:22:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (726), SQL (326), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (726), SQL (327), Markdown (92), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1289 |
+| arquivos_total | 1290 |
 | arquivos_codigo | 799 |
 | linhas_codigo | 167073 |
 | rotas | 55 |
@@ -45,8 +45,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | componentes | 330 |
 | hooks | 90 |
 | edge_functions | 39 |
-| tabelas | 163 |
-| migrations | 324 |
+| tabelas | 164 |
+| migrations | 325 |
 | cron_jobs | 74 |
 | testes | 186 |
 | workflows | 13 |
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (32)
+- docs/pendencias/_indice.md (33)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (13)
 - package.json (12)
 - docs/ci/README.md (11)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `74d01a2` fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)
 - 2026-11-22 `495ab36` fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)
 - 2026-11-22 `23566a2` fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)
 - 2026-11-22 `1cd652f` docs: checklist PIM e indice de pendencias refletem o estado real (#265)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-21 `2b20c50` test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)
 - 2026-11-21 `d7718b8` fix(ci): bridge CLI valida o contrato real em vez da allowlist antiga (#251)
 - 2026-11-21 `ccdb17f` docs(pim): marca PR 2.1 concluída no checklist (#249)
-- 2026-11-21 `8a61f8c` feat(bridge): allowlist aponta só para as views de compras do PIM (#248)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
