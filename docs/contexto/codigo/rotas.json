@@ -3184,6 +3184,7 @@
    ],
    "tabelas": [
     "cotacoes",
+    "fornecedores",
     "negotiation_analyses",
     "profiles",
     "solicitacoes",
@@ -3202,7 +3203,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 27
+   "arquivos_puxados": 28
   },
   {
    "protegida": true,

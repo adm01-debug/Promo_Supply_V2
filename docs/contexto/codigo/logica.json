@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 39,
+ "total": 40,
  "por_camada": {
   "integrations": 3,
-  "lib": 24,
+  "lib": 25,
   "python": 3,
   "schemas": 1,
   "services": 3,
@@ -703,6 +703,36 @@
     "stores"
    ],
    "coberto_por_testes": 3,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/negotiationOutreach.ts",
+   "camada": "lib",
+   "exports": [
+    "ContextoNegociacao",
+    "SugestaoNegociacao",
+    "buildEmailAssunto",
+    "buildEmailCorpo",
+    "buildMailtoUrl",
+    "buildWhatsAppText",
+    "buildWhatsAppUrl",
+    "normalizarTelefone"
+   ],
+   "export_default": null,
+   "linhas": 100,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 1,
+   "usado_por_modulos": [
+    "pages/negociacao-ia"
+   ],
+   "coberto_por_testes": 1,
    "orfao": false
   },
   {

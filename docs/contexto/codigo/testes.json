@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 195,
+ "total": 196,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 178
+  "unit": 179
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 112
+   "arquivos": 113
   },
   {
    "padrao": "outro",
@@ -868,6 +868,15 @@
     "src/lib/logger.ts"
    ],
    "casos": 24
+  },
+  {
+   "arquivo": "src/lib/__tests__/negotiationOutreach.test.ts",
+   "tipo": "unit",
+   "linhas": 79,
+   "testa": [
+    "src/lib/negotiationOutreach.ts"
+   ],
+   "casos": 9
   },
   {
    "arquivo": "src/lib/__tests__/paginatedFetch.test.ts",
@@ -1833,6 +1842,7 @@
   "src/lib/haptics.ts": 1,
   "src/lib/imageCompression.ts": 1,
   "src/lib/logger.ts": 3,
+  "src/lib/negotiationOutreach.ts": 1,
   "src/lib/paginatedFetch.ts": 1,
   "src/lib/pdfGenerator.ts": 1,
   "src/lib/performance.ts": 1,

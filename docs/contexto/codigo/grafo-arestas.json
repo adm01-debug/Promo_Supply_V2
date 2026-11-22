@@ -3034,6 +3034,7 @@
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
    "src/lib/feedbackToast.ts",
+   "src/lib/negotiationOutreach.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/orcamentos/Orcamentos.tsx": [

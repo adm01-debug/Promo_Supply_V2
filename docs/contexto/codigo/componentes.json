@@ -5128,13 +5128,14 @@
     "NegociacaoIA"
    ],
    "export_default": "NegociacaoIA",
-   "linhas": 604,
+   "linhas": 691,
    "dominio": "pages/negociacao-ia",
    "hooks_locais": [
     "useAuth"
    ],
    "tabelas": [
     "cotacoes",
+    "fornecedores",
     "negotiation_analyses",
     "solicitacoes"
    ],

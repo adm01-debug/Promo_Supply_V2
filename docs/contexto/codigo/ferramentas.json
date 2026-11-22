@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (743)",
+   "TypeScript (745)",
    "SQL (327)",
    "Markdown (94)",
    "JavaScript (70)",
@@ -765,11 +765,11 @@
   ],
   "hosts_externos": [
    {
-    "host": "api.resend.com",
-    "arquivos": 2
+    "host": "wa.me",
+    "arquivos": 3
    },
    {
-    "host": "wa.me",
+    "host": "api.resend.com",
     "arquivos": 2
    },
    {

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "32f87b2fed0790bded9b239b35dfd2e26d9e86f3",
+  "commit": "2a98db83a9b40b52442ce4243a773e00cb10131b",
   "branch": "main",
-  "data_commit": "2026-11-22T16:32:02-03:00",
+  "data_commit": "2026-11-22T16:36:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2a98db8",
+    "data": "2026-11-22",
+    "assunto": "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)"
+   },
    {
     "sha": "32f87b2",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "94f73a1",
     "data": "2026-11-22",
     "assunto": "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)"
-   },
-   {
-    "sha": "e469807",
-    "data": "2026-11-22",
-    "assunto": "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)"
    }
   ],
-  "arquivos_mudados_7d": 281,
+  "arquivos_mudados_7d": 284,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -180,6 +180,10 @@
     "mudancas": 11
    },
    {
+    "pasta": "src/lib/__tests__",
+    "mudancas": 10
+   },
+   {
     "pasta": ".github/workflows/main.yml",
     "mudancas": 9
    },
@@ -189,10 +193,6 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 9
-   },
-   {
-    "pasta": "src/lib/__tests__",
     "mudancas": 9
    }
   ],
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 257
+    "commits": 258
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1309,
-  "arquivos_codigo": 816,
-  "linhas_codigo": 170111,
+  "arquivos_total": 1311,
+  "arquivos_codigo": 818,
+  "linhas_codigo": 170377,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 325,
   "cron_jobs": 74,
-  "testes": 195,
+  "testes": 196,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 94
@@ -451,8 +451,8 @@
    "linhas": 10443
   },
   "src/lib": {
-   "arquivos": 51,
-   "linhas": 6039
+   "arquivos": 53,
+   "linhas": 6218
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30214
+   "linhas": 30301
   },
   "src/routes": {
    "arquivos": 1,
@@ -605,6 +605,10 @@
    "linhas": 708
   },
   {
+   "arquivo": "src/pages/negociacao-ia/NegociacaoIA.tsx",
+   "linhas": 691
+  },
+  {
    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
    "linhas": 672
   },
@@ -630,10 +634,6 @@
   },
   {
    "arquivo": "src/components/compras/ComparadorCotacoes.tsx",
-   "linhas": 604
-  },
-  {
-   "arquivo": "src/pages/negociacao-ia/NegociacaoIA.tsx",
    "linhas": 604
   },
   {

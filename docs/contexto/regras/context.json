@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "32f87b2fed0790bded9b239b35dfd2e26d9e86f3",
+  "sha": "2a98db83a9b40b52442ce4243a773e00cb10131b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 19:33 UTC",
-  "files_total": 1310,
-  "code_files": 1145,
-  "code_lines": 197069,
+  "generated_at": "2026-11-22 19:36 UTC",
+  "files_total": 1312,
+  "code_files": 1147,
+  "code_lines": 197335,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2dad2d328b3d0cad",
+ "facts_hash": "81b015059b683b69",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 392,
+   ".ts": 394,
    ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
@@ -35180,8 +35180,8 @@
   },
   {
    "module": "src/lib",
-   "files": 52,
-   "lines": 6059,
+   "files": 54,
+   "lines": 6238,
    "tables": [
     "profiles"
    ],
@@ -35196,6 +35196,7 @@
     "hubEvents.ts: HubEvent, emitHubEvent, onHubEvent",
     "imageCompression.ts: CompressionOptions, CompressedImage, supportsWebP, compressImage, compressImages, getCompressedPreviewUrl",
     "logger.ts: logger",
+    "negotiationOutreach.ts: SugestaoNegociacao, ContextoNegociacao, normalizarTelefone, buildWhatsAppText, buildEmailAssunto, buildEmailCorpo",
     "paginatedFetch.ts: fetchAllRows",
     "pdfGenerator.ts: OrderPDFCompany, OrderPDFData, generateOrderPDF",
     "performance.ts: performanceMonitor",
@@ -35251,6 +35252,7 @@
     "src/lib/hubEvents.ts",
     "src/lib/imageCompression.ts",
     "src/lib/logger.ts",
+    "src/lib/negotiationOutreach.ts",
     "src/lib/paginatedFetch.ts",
     "src/lib/pdfGenerator.ts",
     "src/lib/performance.ts",
@@ -35276,6 +35278,7 @@
     "src/lib/__tests__/imageCompression.test.ts",
     "src/lib/__tests__/logger.fuzz.test.ts",
     "src/lib/__tests__/logger.test.ts",
+    "src/lib/__tests__/negotiationOutreach.test.ts",
     "src/lib/__tests__/paginatedFetch.test.ts",
     "src/lib/__tests__/pdfGenerator.test.ts",
     "src/lib/__tests__/performance.test.ts",
@@ -35298,7 +35301,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30214,
+   "lines": 30301,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36561,6 +36564,7 @@
      "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/dashboard/ComprasDashboard.tsx",
      "src/pages/gerar-ordem/GerarOrdem.tsx",
+     "src/pages/negociacao-ia/NegociacaoIA.tsx",
      "src/pages/portal-fornecedor/PortalFornecedor.tsx",
      "src/pages/portal-fornecedor/portalFornecedorData.ts",
      "src/pages/recompra/RecompraInteligente.tsx",
@@ -41362,6 +41366,14 @@
    {
     "file": "src/pages/kanban/KanbanWorkflow.tsx",
     "msg": "Sem permissão para alterar esta solicitação"
+   },
+   {
+    "file": "src/pages/negociacao-ia/NegociacaoIA.tsx",
+    "msg": "Fornecedor sem e-mail cadastrado"
+   },
+   {
+    "file": "src/pages/negociacao-ia/NegociacaoIA.tsx",
+    "msg": "Fornecedor sem telefone cadastrado"
    },
    {
     "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
@@ -62839,6 +62851,58 @@
    {
     "file": "src/lib/__tests__/logger.test.ts",
     "name": "redacts multiple sensitive keys in one call"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "normalizarTelefone"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "prefixa 55 em celular de 11 digitos"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "nao duplica o 55 quando ja veio com pais"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "rejeita telefone curto demais"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "buildWhatsAppText"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "inclui meta formatada em BRL e todos os argumentos"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "omite a linha da meta quando nao ha contraproposta"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "buildEmailCorpo"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "inclui estrategia, meta, recuo e fundamentos"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "assunto usa a solicitacao como referencia"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "URLs"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "gera wa.me apenas com telefone valido"
+   },
+   {
+    "file": "src/lib/__tests__/negotiationOutreach.test.ts",
+    "name": "gera mailto apenas com e-mail plausivel"
    },
    {
     "file": "src/lib/__tests__/paginatedFetch.test.ts",
@@ -101084,6 +101148,21 @@
     "invoke("
    ]
   },
+  "src/lib/negotiationOutreach.ts": {
+   "path": "src/lib/negotiationOutreach.ts",
+   "lines": 100,
+   "exports": [
+    "interface SugestaoNegociacao",
+    "interface ContextoNegociacao",
+    "const normalizarTelefone",
+    "const buildWhatsAppText",
+    "const buildEmailAssunto",
+    "const buildEmailCorpo",
+    "const buildWhatsAppUrl",
+    "const buildMailtoUrl"
+   ],
+   "doc": "Monta a abordagem ao fornecedor a partir da estrategia sugerida pela IA. Logica pura (sem DOM) para ser testavel e reaproveitada por WhatsApp e e-mail."
+  },
   "src/lib/paginatedFetch.ts": {
    "path": "src/lib/paginatedFetch.ts",
    "lines": 55,
@@ -101791,6 +101870,26 @@
     "does not mutate the original context object",
     "handles empty context object",
     "redacts multiple sensitive keys in one call"
+   ]
+  },
+  "src/lib/__tests__/negotiationOutreach.test.ts": {
+   "path": "src/lib/__tests__/negotiationOutreach.test.ts",
+   "lines": 79,
+   "is_test": true,
+   "tests": [
+    "normalizarTelefone",
+    "prefixa 55 em celular de 11 digitos",
+    "nao duplica o 55 quando ja veio com pais",
+    "rejeita telefone curto demais",
+    "buildWhatsAppText",
+    "inclui meta formatada em BRL e todos os argumentos",
+    "omite a linha da meta quando nao ha contraproposta",
+    "buildEmailCorpo",
+    "inclui estrategia, meta, recuo e fundamentos",
+    "assunto usa a solicitacao como referencia",
+    "URLs",
+    "gera wa.me apenas com telefone valido",
+    "gera mailto apenas com e-mail plausivel"
    ]
   },
   "src/lib/__tests__/paginatedFetch.test.ts": {
@@ -105470,7 +105569,7 @@
   },
   "src/pages/negociacao-ia/NegociacaoIA.tsx": {
    "path": "src/pages/negociacao-ia/NegociacaoIA.tsx",
-   "lines": 604,
+   "lines": 691,
    "exports": [
     "default NegociacaoIA"
    ],
@@ -105490,6 +105589,10 @@
     {
      "table": "negotiation_analyses",
      "op": "insert"
+    },
+    {
+     "table": "fornecedores",
+     "op": "select"
     }
    ],
    "table_cols": {
@@ -105503,10 +105606,20 @@
     ],
     "cotacoes": [
      "solicitacao_id"
+    ],
+    "fornecedores": [
+     "email",
+     "nome_fantasia",
+     "razao_social",
+     "telefone"
     ]
    },
    "invokes": [
     "ai-negotiation"
+   ],
+   "errors": [
+    "Fornecedor sem e-mail cadastrado",
+    "Fornecedor sem telefone cadastrado"
    ],
    "status_values": [
     {
@@ -114652,10 +114765,21 @@
   }
  },
  "git": {
-  "sha": "32f87b2fed0790bded9b239b35dfd2e26d9e86f3",
+  "sha": "2a98db83a9b40b52442ce4243a773e00cb10131b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2a98db8",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)",
+    "files": [
+     "src/lib/__tests__/negotiationOutreach.test.ts",
+     "src/lib/negotiationOutreach.ts",
+     "src/pages/negociacao-ia/NegociacaoIA.tsx"
+    ]
+   },
    {
     "sha": "32f87b2",
     "date": "2026-11-22",
@@ -114964,15 +115088,6 @@
     "files": [
      "docs/pendencias/_indice.md"
     ]
-   },
-   {
-    "sha": "640e5d2",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -115009,6 +115124,18 @@
     2
    ],
    [
+    "src/lib/__tests__/negotiationOutreach.test.ts",
+    1
+   ],
+   [
+    "src/lib/negotiationOutreach.ts",
+    1
+   ],
+   [
+    "src/pages/negociacao-ia/NegociacaoIA.tsx",
+    1
+   ],
+   [
     "src/components/compras/SourcingHistoryConsole.tsx",
     1
    ],
@@ -115042,18 +115169,6 @@
    ],
    [
     "src/pages/recebimento/recebimentoHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-    1
-   ],
-   [
-    "supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts",
     1
    ]
   ]

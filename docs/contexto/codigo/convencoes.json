@@ -16,12 +16,12 @@
    "src/features (11)"
   ],
   "servicos_logica": [
-   "src/lib (24)",
+   "src/lib (25)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (112)",
+   "co-localizado (__tests__) (113)",
    "outro (43)",
    "co-localizado (*.test) (30)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)",
    "feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)",
    "fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)",
    "feat: escala solicitacao e alerta comprador com notificacao real (#301)",
-   "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
-   "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)"
+   "fix: liga o Desfazer Global do historico ao undoStore real (#300)"
   ]
  },
  "pr_template": null,

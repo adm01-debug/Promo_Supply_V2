@@ -2913,9 +2913,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 24,
+   "arquivos": 25,
    "testes": 0,
-   "linhas": 2134,
+   "linhas": 2234,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3206,7 +3206,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 27,
+   "testes": 28,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -5718,7 +5718,7 @@
    "modulo": "pages/negociacao-ia",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 604,
+   "linhas": 691,
    "itens_menu": [
     "Negociação IA"
    ],
@@ -5739,6 +5739,7 @@
    ],
    "tabelas": [
     "cotacoes",
+    "fornecedores",
     "negotiation_analyses",
     "profiles",
     "solicitacoes",
@@ -5764,6 +5765,7 @@
     ],
     "tabelas": [
      "cotacoes",
+     "fornecedores",
      "negotiation_analyses",
      "solicitacoes"
     ],

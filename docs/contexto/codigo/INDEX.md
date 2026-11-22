@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `32f87b2fed0790bded9b239b35dfd2e26d9e86f3` (2026-11-22T16:32:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2a98db83a9b40b52442ce4243a773e00cb10131b` (2026-11-22T16:36:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (743), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (745), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1309 |
-| arquivos_codigo | 816 |
-| linhas_codigo | 170111 |
+| arquivos_total | 1311 |
+| arquivos_codigo | 818 |
+| linhas_codigo | 170377 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 195 |
+| testes | 196 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 94 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
-- servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (112), outro (43), co-localizado (*.test) (30)
+- servicos_logica: src/lib (25), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (113), outro (43), co-localizado (*.test) (30)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -79,7 +79,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
 | hooks | 0 | 0 | 62 | 57 | 7 | 59 |
-| lib | 0 | 0 | 24 | 57 | 8 | 47 |
+| lib | 0 | 0 | 25 | 57 | 8 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 19 |
@@ -105,7 +105,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/historico | 1 | 1 | 7 | 13 | 1 | 9 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
 | pages/licitacoes | 1 | 1 | 2 | 78 | 9 | 52 |
-| pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
+| pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 7 |
 | pages/orcamentos | 1 | 1 | 1 | 79 | 9 | 53 |
 | pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
 | pages/pedidos | 1 | 1 | 3 | 16 | 1 | 11 |
@@ -303,7 +303,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
-- hosts mais citados: api.resend.com, wa.me, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
+- hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
 - webhooks recebidos: scim-v2
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `2a98db8` feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)
 - 2026-11-22 `32f87b2` feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)
 - 2026-11-22 `954238f` fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)
 - 2026-11-22 `c15161d` feat: escala solicitacao e alerta comprador com notificacao real (#301)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `e81325a` docs(auditoria): marca L03 (spot-api no front) como concluido (#289)
 - 2026-11-22 `bc442e6` feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)
 - 2026-11-22 `b9303d3` fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)
-- 2026-11-22 `0051cc3` fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
