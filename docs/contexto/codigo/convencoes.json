@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)",
    "fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)",
    "fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)",
    "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)",
-   "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)",
-   "fix(edge): spot-proxy volta a passar no deno check (#280)"
+   "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)"
   ]
  },
  "pr_template": null,

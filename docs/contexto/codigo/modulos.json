@@ -408,7 +408,7 @@
    "modulo": "components/compras",
    "arquivos": 105,
    "testes": 17,
-   "linhas": 25079,
+   "linhas": 25222,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5223,12 +5223,14 @@
    ],
    "tabelas": [
     "audit_logs",
+    "cotacoes",
     "devolucoes",
     "fornecedores",
     "pedidos",
     "produto_fornecedores",
     "produtos",
     "profiles",
+    "solicitacoes",
     "supplier_qualification_scores",
     "user_roles",
     "user_tenants"

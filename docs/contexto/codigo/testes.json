@@ -463,11 +463,11 @@
   {
    "arquivo": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 165,
+   "linhas": 186,
    "testa": [
     "src/components/compras/price-comparator/priceComparatorHelpers.ts"
    ],
-   "casos": 21
+   "casos": 19
   },
   {
    "arquivo": "src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts",

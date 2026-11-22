@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "752b1f5efbd775937ad084841541ad227205a487",
+  "sha": "d2c6d788b883eee75060fbba8ffdebb168fd4db6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 16:41 UTC",
+  "generated_at": "2026-11-22 16:51 UTC",
   "files_total": 1305,
   "code_files": 1140,
-  "code_lines": 195804,
+  "code_lines": 195968,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "922dbeb5fc0cb080",
+ "facts_hash": "52a6131f478ab840",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34387,7 +34387,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 48679,
+   "lines": 48843,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -36292,6 +36292,7 @@
    "cotacoes": {
     "select": [
      "src/components/compras/BuyerPerformancePanel.tsx",
+     "src/components/compras/PriceComparator.tsx",
      "src/features/cotacoes/hooks/useCotacoes.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/usePrefetch.ts",
@@ -37045,6 +37046,7 @@
      "src/components/compras/BuyerPerformancePanel.tsx",
      "src/components/compras/CriticalAlertsBar.tsx",
      "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/compras/PriceComparator.tsx",
      "src/components/compras/PurchaseClimateWidget.tsx",
      "src/components/compras/SLADistributionChart.tsx",
      "src/components/compras/SavingsGoalPanel.tsx",
@@ -41992,6 +41994,26 @@
    {
     "file": "src/components/compras/pending-approvals/deadlineFallback.ts",
     "text": "2. `workflowPrazoLimite` — deadline inherited from the parent workflow"
+   },
+   {
+    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    "text": "Prazo em dias: lead time contratado, prazo cadastrado ou media cotada. */"
+   },
+   {
+    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    "text": "Prazo medio de entrega cadastrado no fornecedor. */"
+   },
+   {
+    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    "text": "Conformidade de prazo ainda nao e coletada por este fluxo. */"
+   },
+   {
+    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    "text": "Media apenas das cotacoes com preco conhecido. */"
+   },
+   {
+    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    "text": "* Monta a comparacao de precos usando somente dado existente: preco contratado"
    },
    {
     "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
@@ -56064,8 +56086,8 @@
    {
     "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
     "name": "generateQuotesFromSuppliers",
-    "params": "fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = []",
-    "body": "const quotes: PriceQuote[] = fornecedores.map((f, index) => { /* Check if we have real data linked for this supplier and product */ const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id); /* If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats */ const unitPrice = linkedData?.preco_custo ? Number(linkedData.preco_custo) : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2)); const totalPrice = …"
+    "params": "fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [], quo",
+    "body": "const quotes: PriceQuote[] = fornecedores.map((f) => { const linked = linkedProductSuppliers.find((ls) => ls.fornecedor_id === f.id); const quoted = quotedPrices.find((q) => q.fornecedor_id === f.id); const contracted = toNumber(linked?.preco_custo); const quotedPrice = toNumber(quoted?.valor_unitario); const unitPrice = contracted ?? quotedPrice; const priceSource: PriceQuote['priceSource'] = contracted !== null ? 'contratado' : quotedPrice !== null ? 'cotado' : 'ausente'; const totalPrice = un …"
    },
    {
     "file": "src/components/compras/price-history/priceHistoryHelpers.ts",
@@ -57322,10 +57344,6 @@
    {
     "file": "src/components/compras/executive/ExecutiveChartsRow.tsx",
     "line": "+12.4% vs LTM"
-   },
-   {
-    "file": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-    "line": ": Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2));"
    },
    {
     "file": "src/components/compras/scorecard/supplierScorecardData.ts",
@@ -58683,11 +58701,7 @@
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "passes product name through"
-   },
-   {
-    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "passes quantity through"
+    "name": "passes product name and quantity through"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
@@ -58695,11 +58709,11 @@
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "quotes are sorted by totalPrice ascending"
+    "name": "quotes are sorted by totalPrice ascending when prices exist"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "marks first (cheapest) quote as recommended"
+    "name": "marks the cheapest quote as recommended"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
@@ -58707,27 +58721,15 @@
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "bestPrice is the name of the cheapest supplier"
+    "name": "bestPrice names the cheapest supplier and priceRange reflects real prices"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "bestDelivery is the name of the fastest-delivery supplier"
+    "name": "bestDelivery names the supplier with the smallest known lead time"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "priceRange.min equals the cheapest totalPrice"
-   },
-   {
-    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "priceRange.max equals the most expensive totalPrice"
-   },
-   {
-    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "averagePrice equals arithmetic mean of totalPrices"
-   },
-   {
-    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "each quote has all required fields"
+    "name": "averagePrice is the mean of the priced quotes only"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
@@ -58739,31 +58741,47 @@
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "falls back to razao_social when nome_fantasia is null"
+    "name": "insights describe the real gap, the fastest supplier and the average rating"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "quotes with linked data have pros starting with "
+    "name": "returns valid result with a single priced supplier"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "insights array has 3 entries"
+    "name": "generateQuotesFromSuppliers sem preco registrado"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "first insight mentions saving amount"
+    "name": "never invents a unit price"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "second insight names the fastest-delivery supplier"
+    "name": "leaves the comparison empty instead of fabricating numbers"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "third insight mentions average star rating"
+    "name": "is deterministic — two calls produce identical output"
    },
    {
     "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-    "name": "returns valid result with single supplier"
+    "name": "falls back to the registered payment terms and average lead time"
+   },
+   {
+    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+    "name": "generateQuotesFromSuppliers com cotacoes registradas"
+   },
+   {
+    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+    "name": "uses the quoted price when there is no contracted price"
+   },
+   {
+    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+    "name": "counts suppliers without any price source in coverage"
+   },
+   {
+    "file": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+    "name": "prefers the contracted price over the quoted one"
    },
    {
     "file": "src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts",
@@ -91348,7 +91366,7 @@
   },
   "src/components/compras/PriceComparator.tsx": {
    "path": "src/components/compras/PriceComparator.tsx",
-   "lines": 504,
+   "lines": 557,
    "exports": [
     "function PriceComparator"
    ],
@@ -91363,6 +91381,14 @@
     },
     {
      "table": "produto_fornecedores",
+     "op": "select"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "select"
+    },
+    {
+     "table": "cotacoes",
      "op": "select"
     }
    ],
@@ -91383,6 +91409,16 @@
     ],
     "produto_fornecedores": [
      "produto_id"
+    ],
+    "solicitacoes": [
+     "id",
+     "produto_id"
+    ],
+    "cotacoes": [
+     "fornecedor_id",
+     "prazo_entrega",
+     "solicitacao_id",
+     "valor_unitario"
     ]
    },
    "errors": [
@@ -93360,26 +93396,30 @@
   },
   "src/components/compras/price-comparator/priceComparatorHelpers.ts": {
    "path": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-   "lines": 118,
+   "lines": 208,
    "exports": [
     "interface PriceQuote",
     "interface ComparisonResult",
     "function generateQuotesFromSuppliers"
    ],
+   "rule_comments": [
+    "Prazo em dias: lead time contratado, prazo cadastrado ou media cotada. */",
+    "Prazo medio de entrega cadastrado no fornecedor. */",
+    "Conformidade de prazo ainda nao e coletada por este fluxo. */",
+    "Media apenas das cotacoes com preco conhecido. */",
+    "* Monta a comparacao de precos usando somente dado existente: preco contratado"
+   ],
    "calc_fns": [
     {
      "name": "generateQuotesFromSuppliers",
-     "params": "fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = []",
-     "body": "const quotes: PriceQuote[] = fornecedores.map((f, index) => { /* Check if we have real data linked for this supplier and product */ const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id); /* If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats */ const unitPrice = linkedData?.preco_custo ? Number(linkedData.preco_custo) : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2)); const totalPrice = …"
+     "params": "fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [], quo",
+     "body": "const quotes: PriceQuote[] = fornecedores.map((f) => { const linked = linkedProductSuppliers.find((ls) => ls.fornecedor_id === f.id); const quoted = quotedPrices.find((q) => q.fornecedor_id === f.id); const contracted = toNumber(linked?.preco_custo); const quotedPrice = toNumber(quoted?.valor_unitario); const unitPrice = contracted ?? quotedPrice; const priceSource: PriceQuote['priceSource'] = contracted !== null ? 'contratado' : quotedPrice !== null ? 'cotado' : 'ausente'; const totalPrice = un …"
     }
-   ],
-   "percents": [
-    ": Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2));"
    ]
   },
   "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts": {
    "path": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-   "lines": 165,
+   "lines": 186,
    "is_test": true,
    "params": [
     {
@@ -93393,27 +93433,27 @@
    ],
    "tests": [
     "generateQuotesFromSuppliers",
-    "passes product name through",
-    "passes quantity through",
+    "passes product name and quantity through",
     "returns one quote per supplier",
-    "quotes are sorted by totalPrice ascending",
-    "marks first (cheapest) quote as recommended",
+    "quotes are sorted by totalPrice ascending when prices exist",
+    "marks the cheapest quote as recommended",
     "no other quote is recommended",
-    "bestPrice is the name of the cheapest supplier",
-    "bestDelivery is the name of the fastest-delivery supplier",
-    "priceRange.min equals the cheapest totalPrice",
-    "priceRange.max equals the most expensive totalPrice",
-    "averagePrice equals arithmetic mean of totalPrices",
-    "each quote has all required fields",
+    "bestPrice names the cheapest supplier and priceRange reflects real prices",
+    "bestDelivery names the supplier with the smallest known lead time",
+    "averagePrice is the mean of the priced quotes only",
     "totalPrice equals unitPrice * quantity",
     "uses nome_fantasia when available",
-    "falls back to razao_social when nome_fantasia is null",
-    "quotes with linked data have pros starting with ",
-    "insights array has 3 entries",
-    "first insight mentions saving amount",
-    "second insight names the fastest-delivery supplier",
-    "third insight mentions average star rating",
-    "returns valid result with single supplier"
+    "insights describe the real gap, the fastest supplier and the average rating",
+    "returns valid result with a single priced supplier",
+    "generateQuotesFromSuppliers sem preco registrado",
+    "never invents a unit price",
+    "leaves the comparison empty instead of fabricating numbers",
+    "is deterministic — two calls produce identical output",
+    "falls back to the registered payment terms and average lead time",
+    "generateQuotesFromSuppliers com cotacoes registradas",
+    "uses the quoted price when there is no contracted price",
+    "counts suppliers without any price source in coverage",
+    "prefers the contracted price over the quoted one"
    ]
   },
   "src/components/compras/price-history/priceHistoryHelpers.ts": {
@@ -114077,10 +114117,22 @@
   }
  },
  "git": {
-  "sha": "752b1f5efbd775937ad084841541ad227205a487",
+  "sha": "d2c6d788b883eee75060fbba8ffdebb168fd4db6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d2c6d78",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/components/compras/PriceComparator.tsx",
+     "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+     "src/components/compras/price-comparator/priceComparatorHelpers.ts"
+    ]
+   },
    {
     "sha": "752b1f5",
     "date": "2026-11-22",
@@ -114394,21 +114446,12 @@
      "scripts/ci/scripts-operacionais.unit.mjs",
      "scripts/validate-bridge.ts"
     ]
-   },
-   {
-    "sha": "ccdb17f",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "docs(pim): marca PR 2.1 concluída no checklist (#249)",
-    "files": [
-     "docs/pendencias/integracao-pim-promo-supply.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    11
+    12
    ],
    [
     "src/tests/spot/spotApi.test.ts",
@@ -114431,12 +114474,20 @@
     2
    ],
    [
-    "docs/pendencias/integracao-pim-promo-supply.md",
+    "supabase/functions/spot-api/index.ts",
     2
    ],
    [
-    "supabase/functions/spot-api/index.ts",
-    2
+    "src/components/compras/PriceComparator.tsx",
+    1
+   ],
+   [
+    "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+    1
    ],
    [
     "src/components/compras/SLABySupplierAnalysis.tsx",
@@ -114476,14 +114527,6 @@
    ],
    [
     "src/pages/admin/SourcingPipeline.tsx",
-    1
-   ],
-   [
-    "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
-    1
-   ],
-   [
-    "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
     1
    ]
   ]

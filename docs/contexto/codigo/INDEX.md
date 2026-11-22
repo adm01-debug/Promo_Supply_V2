@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `752b1f5efbd775937ad084841541ad227205a487` (2026-11-22T13:39:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d2c6d788b883eee75060fbba8ffdebb168fd4db6` (2026-11-22T13:51:08-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1304 |
 | arquivos_codigo | 811 |
-| linhas_codigo | 168846 |
+| linhas_codigo | 169010 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -100,7 +100,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
 | pages/documentos | 1 | 1 | 1 | 2 | 2 | 2 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 7 |
-| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 10 |
+| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 12 |
 | pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 9 |
 | pages/historico | 1 | 1 | 7 | 7 | 1 | 9 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (40)
+- docs/pendencias/_indice.md (41)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (14)
 - docs/ci/README.md (12)
 - package.json (12)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `d2c6d78` fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)
 - 2026-11-22 `752b1f5` fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)
 - 2026-11-22 `47920c1` fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)
 - 2026-11-22 `acd4583` fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `4c78723` fix(edge): resolve tenant da notificacao por profiles.user_id, nao pela PK (#274)
 - 2026-11-22 `7ba0757` fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)
 - 2026-11-22 `640e5d2` fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)
-- 2026-11-22 `ffe439a` fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

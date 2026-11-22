@@ -1266,15 +1266,17 @@
     "PriceComparator"
    ],
    "export_default": null,
-   "linhas": 504,
+   "linhas": 557,
    "dominio": "components/compras",
    "hooks_locais": [
     "useToast"
    ],
    "tabelas": [
+    "cotacoes",
     "fornecedores",
     "produto_fornecedores",
-    "produtos"
+    "produtos",
+    "solicitacoes"
    ],
    "edges": [],
    "usado_por": 1,

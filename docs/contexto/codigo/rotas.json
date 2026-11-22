@@ -2635,11 +2635,13 @@
    ],
    "tabelas": [
     "audit_logs",
+    "cotacoes",
     "fornecedores",
     "pedidos",
     "produto_fornecedores",
     "produtos",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],

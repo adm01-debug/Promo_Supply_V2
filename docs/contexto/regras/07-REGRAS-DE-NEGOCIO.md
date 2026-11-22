@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `752b1f5efb` · branch `main` · 2026-11-22 16:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d2c6d788b8` · branch `main` · 2026-11-22 16:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1401,9 +1401,9 @@ _nenhum item encontrado_
   ```
   if (!previous) return 0; return ((current - previous) / previous) * 100;
   ```
-- **generateQuotesFromSuppliers(fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [])** — `src/components/compras/price-comparator/priceComparatorHelpers.ts`
+- **generateQuotesFromSuppliers(fornecedores: FornecedorLike[], productName: string, qty: number, linkedProductSuppliers: LinkedSupplierLike[] = [], quo)** — `src/components/compras/price-comparator/priceComparatorHelpers.ts`
   ```
-  const quotes: PriceQuote[] = fornecedores.map((f, index) => { /* Check if we have real data linked for this supplier and product */ const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id); /* If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats */ const unitPrice = linkedData?.preco_custo ? Number(linkedData.preco_custo) : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2)); const totalPrice = …
+  const quotes: PriceQuote[] = fornecedores.map((f) => { const linked = linkedProductSuppliers.find((ls) => ls.fornecedor_id === f.id); const quoted = quotedPrices.find((q) => q.fornecedor_id === f.id); const contracted = toNumber(linked?.preco_custo); const quotedPrice = toNumber(quoted?.valor_unitario); const unitPrice = contracted ?? quotedPrice; const priceSource: PriceQuote['priceSource'] = contracted !== null ? 'contratado' : quotedPrice !== null ? 'cotado' : 'ausente'; const totalPrice = un …
   ```
 - **usePriceHistoryAnalysis(cotacoes: CotacaoRecord[], filtered: CotacaoRecord[], fornecedorMap: Map<string, string>, solicitacaoMap: Map<string, st)** — `src/components/compras/price-history/priceHistoryHelpers.ts`
   ```
@@ -1637,7 +1637,6 @@ _nenhum item encontrado_
 | `score += priceScore * 0.5;` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `score += stockScore * 0.2;` | `src/components/compras/VisualComparadorCotacoes.tsx` |
 | `+12.4% vs LTM` | `src/components/compras/executive/ExecutiveChartsRow.tsx` |
-| `: Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2));` | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
 | `communication * 0.08 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `deliveryTime * 0.20 +` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `flexibility * 0.07` | `src/components/compras/scorecard/supplierScorecardData.ts` |
@@ -2423,7 +2422,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/queryClientConstants.test.ts` | 23 | DEFAULT_STALE_TIME · is 30 seconds in milliseconds · is a positive number · REFERENCE_STALE_TIME … |
 | `src/lib/__tests__/supabaseRpc.test.ts` | 23 | supabaseRpc typed wrappers · rpcCurrentTenantId → rpc( · rpcGenerateSequentialNumber → correct name and params · rpcCheckBudgetAvailability → correct name and params … |
 | `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 23 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
-| `src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts` | 22 | generateQuotesFromSuppliers · passes product name through · passes quantity through · returns one quote per supplier … |
+| `src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts` | 22 | generateQuotesFromSuppliers · passes product name and quantity through · returns one quote per supplier · quotes are sorted by totalPrice ascending when prices exist … |
 | `src/lib/__tests__/imageCompression.test.ts` | 22 | formatBytes · returns  · formats bytes under 1 KB as  · formats exactly 1 KB … |
 | `src/lib/__tests__/queryClient.test.ts` | 22 | stale-time constants · DEFAULT_STALE_TIME is 30 seconds (30_000 ms) · REFERENCE_STALE_TIME is 5 minutes (300_000 ms) · STATIC_STALE_TIME is 30 minutes (1_800_000 ms) … |
 | `src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts` | 22 | COLORS · has 4 color values · all values are non-empty strings · first color is the CSS variable primary … |
@@ -2556,6 +2555,11 @@ _nenhum item encontrado_
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 1. `stepPrazoLimite`   — deadline set directly on the step | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 2. `workflowPrazoLimite` — deadline inherited from the parent workflow | `src/components/compras/pending-approvals/deadlineFallback.ts` |
+| Prazo em dias: lead time contratado, prazo cadastrado ou media cotada. */ | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
+| Prazo medio de entrega cadastrado no fornecedor. */ | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
+| Conformidade de prazo ainda nao e coletada por este fluxo. */ | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
+| Media apenas das cotacoes com preco conhecido. */ | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
+| * Monta a comparacao de precos usando somente dado existente: preco contratado | `src/components/compras/price-comparator/priceComparatorHelpers.ts` |
 | Entregues no prazo / entregues (null sem entrega registrada). */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
 | Entregues no prazo / pedidos com previsao ja vencida (null sem amostra). */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
 | Media de dias entre emissao e entrega; cai para o prazo cadastrado. */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
