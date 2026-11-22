@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `954238f197` · branch `main` · 2026-11-22 19:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `32f87b2fed` · branch `main` · 2026-11-22 19:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2192,6 +2192,7 @@ _nenhum item encontrado_
 | Quantidade inválida | `src/components/compras/PriceComparator.tsx` |
 | ; import { cn } from  | `src/components/compras/SavingsGoalPanel.tsx` |
 | Request #${solicitacao.id} rejected | `src/components/compras/SolicitacaoCard.tsx` |
+| Nada para exportar | `src/components/compras/SourcingHistoryConsole.tsx` |
 | Erro ao registrar bonificação | `src/components/compras/SupplierBonificationsPanel.tsx` |
 | Usuário não autenticado | `src/components/compras/SupplierBonificationsPanel.tsx` |
 | Erro na análise | `src/components/compras/SupplierRiskAnalysis.tsx` |
@@ -2359,8 +2360,7 @@ _nenhum item encontrado_
 | CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
 | HTTP ${res.status} | `src/pages/admin/DependencyHealth.tsx` |
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
-| Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
-| … +222 linhas — lista completa em `context.json` | |
+| … +223 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

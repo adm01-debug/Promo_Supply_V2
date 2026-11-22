@@ -1517,7 +1517,7 @@
     "SourcingHistoryConsole"
    ],
    "export_default": null,
-   "linhas": 973,
+   "linhas": 1031,
    "dominio": "components/compras",
    "hooks_locais": [
     "usePurchaseHistory"
