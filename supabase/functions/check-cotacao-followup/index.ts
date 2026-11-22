@@ -4,6 +4,11 @@ import { EdgeLogger } from "../_shared/logger.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { insertNotification } from "../_shared/notifications.ts";
+import {
+  cutoffIso,
+  dedupePattern,
+  shouldSendFollowUp,
+} from "./cotacaoFollowUp.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -33,12 +38,12 @@ Deno.serve(async (req) => {
     }
 
     const now = new Date();
-    const cutoff48h = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+    const cutoff48h = cutoffIso(now);
 
     // Find cotações pending for more than 48h without response
     const { data: staleCotacoes, error: fetchError } = await supabase
       .from("cotacoes")
-      .select("id, numero, fornecedor_id, solicitacao_id, created_at, valor_total, solicitacao:solicitacoes(titulo, solicitante_id, tenant_id)")
+      .select("id, numero, fornecedor_id, solicitacao_id, created_at, valor_total, last_follow_up_at, solicitacao:solicitacoes(titulo, solicitante_id, tenant_id)")
       .eq("status", "pendente")
       .lt("created_at", cutoff48h);
 
@@ -52,20 +57,34 @@ Deno.serve(async (req) => {
 
     for (const cotacao of staleCotacoes || []) {
       const solicitanteId = (cotacao.solicitacao as any)?.solicitante_id;
-      if (!solicitanteId) continue;
+      const decision = shouldSendFollowUp(
+        { id: cotacao.id, numero: cotacao.numero, created_at: cotacao.created_at },
+        solicitanteId,
+        (cotacao as { last_follow_up_at?: string | null }).last_follow_up_at,
+        now,
+      );
+      if (!decision.shouldNotify) continue;
 
-      // Check if we already sent a follow-up notification for this cotação
+      // Dedupe por numero inteiro delimitado: `#COT-1 ` nao casa `#COT-12 `,
+      // que era o furo do `ilike('%COT-1%')` anterior.
       const { data: existingNotif } = await supabase
         .from("notifications")
         .select("id")
         .eq("type", "cotacao_followup")
-        .ilike("message", `%${cotacao.numero}%`)
+        .ilike("message", dedupePattern(cotacao.numero, cotacao.id))
         .limit(1);
 
-      if (existingNotif && existingNotif.length > 0) continue;
+      if (existingNotif && existingNotif.length > 0) {
+        await supabase
+          .from("cotacoes")
+          .update({ last_follow_up_at: now.toISOString(), follow_up_status: "notificado" })
+          .eq("id", cotacao.id);
+        continue;
+      }
 
       const titulo = (cotacao.solicitacao as any)?.titulo || "item";
-      const message = `A cotação #${cotacao.numero} para "${titulo}" está pendente há mais de 48 horas. Considere contatar o fornecedor.`;
+      const numeroRef = (cotacao.numero ?? "").trim() || cotacao.id;
+      const message = `A cotação #${numeroRef} para "${titulo}" está pendente há mais de 48 horas. Considere contatar o fornecedor.`;
 
       // Send in-app notification
       const { error: notifError } = await insertNotification(supabase, {
@@ -82,6 +101,16 @@ Deno.serve(async (req) => {
         logger.warn("follow-up: notificacao nao criada", { error: String(notifError) });
       }
       followUpsSent++;
+
+      // Registra o envio: alimenta o dedupe da proxima execucao e as colunas
+      // que a UI de cotacoes ja exibe (`last_follow_up_at`, `follow_up_status`).
+      const { error: stampError } = await supabase
+        .from("cotacoes")
+        .update({ last_follow_up_at: now.toISOString(), follow_up_status: "notificado" })
+        .eq("id", cotacao.id);
+      if (stampError) {
+        logger.warn("follow-up: carimbo de envio falhou", { error: String(stampError) });
+      }
 
       // Send email via Resend if configured
       if (resendApiKey) {
