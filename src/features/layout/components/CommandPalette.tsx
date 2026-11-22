@@ -46,6 +46,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { normalizeText } from "@/hooks/useFuseSearch";
+import { useAuth } from "@/features/auth";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -84,6 +85,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
   const [mounted, setMounted] = React.useState(false);
   const { theme, setTheme } = useTheme();
+  const { signOut } = useAuth();
   const [search, setSearch] = React.useState("");
   const [recentIds, setRecentIds] = React.useState<string[]>(() => {
     try {
@@ -163,12 +165,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     { id: "notificacoes", label: "Notificações", icon: Bell, action: () => navigate("/seguranca"), keywords: ["alertas", "avisos"], group: "Configurações" },
     { id: "perfil", label: "Meu Perfil", icon: User, action: () => navigate("/seguranca"), keywords: ["conta", "usuário"], group: "Configurações" },
     { id: "ajuda", label: "Ajuda & Suporte", icon: HelpCircle, action: () => navigate("/admin/docs"), shortcut: "⌘?", keywords: ["help", "faq", "documentação", "docs"], group: "Configurações" },
-    { id: "sair", label: "Sair", icon: LogOut, action: () => navigate("/auth"), shortcut: "⌘⇧Q", keywords: ["logout", "desconectar"], group: "Configurações" },
+    { id: "sair", label: "Sair", icon: LogOut, action: () => { void signOut().then(() => navigate("/auth")); }, shortcut: "⌘⇧Q", keywords: ["logout", "desconectar"], group: "Configurações" },
   ].map(item => ({
     ...item,
     normalizedLabel: normalizeText(item.label),
     normalizedKeywords: item.keywords?.map(k => normalizeText(k)),
-  })), [currentTheme, navigate, setTheme]);
+  })), [currentTheme, navigate, setTheme, signOut]);
 
   const allItems = React.useMemo(() => 
     [...navigationItems, ...actionItems, ...settingsItems],
