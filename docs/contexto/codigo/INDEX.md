@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1` (2026-11-22T12:54:08-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `acd45831a7c3fe166ff5d7c7705fe18ae8f2666f` (2026-11-22T13:09:52-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (733), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (735), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1299 |
-| arquivos_codigo | 806 |
-| linhas_codigo | 168089 |
+| arquivos_total | 1301 |
+| arquivos_codigo | 808 |
+| linhas_codigo | 168300 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 190 |
+| testes | 192 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 94 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (11), src/components (10)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (110), outro (42), co-localizado (*.test) (28)
+- testes: co-localizado (__tests__) (112), outro (42), co-localizado (*.test) (28)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `acd4583` fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)
 - 2026-11-22 `6b0ce59` feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)
 - 2026-11-22 `cb9b3e6` fix(edge): spot-proxy volta a passar no deno check (#280)
 - 2026-11-22 `e0eede2` fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `ffe439a` fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)
 - 2026-11-22 `74d01a2` fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)
 - 2026-11-22 `495ab36` fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)
-- 2026-11-22 `23566a2` fix(cron): watchdog vigia todos os jobs e nunca ficou agendado (#266)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

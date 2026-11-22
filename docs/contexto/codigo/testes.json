@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 190,
+ "total": 192,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 173
+  "unit": 175
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 110
+   "arquivos": 112
   },
   {
    "padrao": "outro",
@@ -1040,11 +1040,29 @@
    "casos": 18
   },
   {
+   "arquivo": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+   "tipo": "unit",
+   "linhas": 73,
+   "testa": [
+    "src/pages/admin/FiscalDashboard.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
    "tipo": "unit",
    "linhas": 96,
    "testa": [
     "src/pages/admin/HealthDashboard.tsx"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+   "tipo": "unit",
+   "linhas": 62,
+   "testa": [
+    "src/pages/admin/SourcingPipeline.tsx"
    ],
    "casos": 2
   },
@@ -1807,7 +1825,9 @@
   "src/locales/pt/translation.json": 1,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 1,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
+  "src/pages/admin/FiscalDashboard.tsx": 1,
   "src/pages/admin/HealthDashboard.tsx": 1,
+  "src/pages/admin/SourcingPipeline.tsx": 1,
   "src/pages/admin/alertRunbooks.ts": 1,
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
@@ -1867,10 +1887,8 @@
    "src/pages/admin/DependencyHealth.tsx",
    "src/pages/admin/DeveloperDocs.tsx",
    "src/pages/admin/ERPConnections.tsx",
-   "src/pages/admin/FiscalDashboard.tsx",
    "src/pages/admin/PunchOutCatalogs.tsx",
    "src/pages/admin/SSOConfig.tsx",
-   "src/pages/admin/SourcingPipeline.tsx",
    "src/pages/admin/StorageMigration.tsx",
    "src/pages/admin/WorkflowAdmin.tsx",
    "src/pages/aprovacoes/Aprovacoes.tsx",

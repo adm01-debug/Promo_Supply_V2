@@ -327,6 +327,7 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useMemo",
     "useQuery"
    ],
    "hooks_locais": [],
@@ -511,6 +512,7 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useMemo",
     "useQuery"
    ],
    "hooks_locais": [],

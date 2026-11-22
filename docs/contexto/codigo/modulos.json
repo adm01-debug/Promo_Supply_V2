@@ -3338,8 +3338,8 @@
   {
    "modulo": "pages/admin",
    "arquivos": 14,
-   "testes": 2,
-   "linhas": 5938,
+   "testes": 4,
+   "linhas": 6014,
    "itens_menu": [
     "Dep. Health",
     "Documentação",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1",
+  "sha": "acd45831a7c3fe166ff5d7c7705fe18ae8f2666f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 15:54 UTC",
-  "files_total": 1300,
-  "code_files": 1135,
-  "code_lines": 195047,
+  "generated_at": "2026-11-22 16:10 UTC",
+  "files_total": 1302,
+  "code_files": 1137,
+  "code_lines": 195258,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d4bb6e6695026ca3",
+ "facts_hash": "76a81b6663f20dba",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 384,
-   ".tsx": 349,
+   ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
    ".py": 5,
@@ -35254,8 +35254,8 @@
   },
   {
    "module": "src/pages",
-   "files": 127,
-   "lines": 29731,
+   "files": 129,
+   "lines": 29942,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35402,7 +35402,9 @@
     "src/pages/admin/StorageMigration.tsx",
     "src/pages/admin/WorkflowAdmin.tsx",
     "src/pages/admin/alertRunbooks.ts",
+    "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
     "src/pages/admin/__tests__/HealthDashboard.test.tsx",
+    "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
     "src/pages/admin/__tests__/alertRunbooks.test.ts",
     "src/pages/admin-telemetria/AdminTelemetria.tsx",
     "src/pages/admin-telemetria/telemetriaHelpers.ts",
@@ -35461,9 +35463,7 @@
     "src/pages/documentos/DocumentosFiscais.tsx",
     "src/pages/estoque/GestaoEstoque.tsx",
     "src/pages/fornecedores/Fornecedores.tsx",
-    "src/pages/fornecedores/SupplierPerformance.tsx",
-    "src/pages/fornecedores/fornecedorHelpers.ts",
-    "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts"
+    "src/pages/fornecedores/SupplierPerformance.tsx"
    ]
   },
   {
@@ -37737,6 +37737,7 @@
     "document_id",
     "error_message",
     "id",
+    "processed_at",
     "protocol",
     "status",
     "type"
@@ -53364,6 +53365,30 @@
    {
     "file": "src/pages/admin/FiscalDashboard.tsx",
     "field": "status",
+    "value": "pending",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/FiscalDashboard.tsx",
+    "field": "status",
+    "value": "error",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/FiscalDashboard.tsx",
+    "field": "status",
+    "value": "denied",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/FiscalDashboard.tsx",
+    "field": "status",
+    "value": "authorized",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/FiscalDashboard.tsx",
+    "field": "status",
     "value": "error",
     "kind": "compara"
    },
@@ -53407,6 +53432,12 @@
     "file": "src/pages/admin/SourcingPipeline.tsx",
     "field": "status",
     "value": "cancelled",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/SourcingPipeline.tsx",
+    "field": "status",
+    "value": "negotiation",
     "kind": "compara"
    },
    {
@@ -63908,6 +63939,18 @@
     "name": "handles unknown status gracefully (defaults to 0)"
    },
    {
+    "file": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+    "name": "KPIs do painel fiscal derivados de fiscal_events"
+   },
+   {
+    "file": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+    "name": "mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa"
+   },
+   {
+    "file": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+    "name": "calcula autorizadas, pendentes, erros e latencia media real"
+   },
+   {
     "file": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
     "name": "contratos do dashboard de saude"
    },
@@ -63918,6 +63961,18 @@
    {
     "file": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
     "name": "mostra alerta sem data no periodo completo e o exclui de periodo recente"
+   },
+   {
+    "file": "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+    "name": "KPIs do Sourcing Pipeline derivados do banco"
+   },
+   {
+    "file": "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+    "name": "nao exibe numeros fixos quando nao ha projeto"
+   },
+   {
+    "file": "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+    "name": "agrega estimated_spend dos projetos ativos ignorando concluidos"
    },
    {
     "file": "src/pages/admin/__tests__/alertRunbooks.test.ts",
@@ -77185,10 +77240,10 @@
       "compara:src/pages/admin/SourcingPipeline.tsx",
       "compara:src/pages/sourcing/Sourcing.tsx"
      ],
-     "execution": [
+     "negotiation": [
       "compara:src/pages/admin/SourcingPipeline.tsx"
      ],
-     "negotiation": [
+     "execution": [
       "compara:src/pages/admin/SourcingPipeline.tsx"
      ],
      "planning": [
@@ -102286,7 +102341,7 @@
   },
   "src/pages/admin/FiscalDashboard.tsx": {
    "path": "src/pages/admin/FiscalDashboard.tsx",
-   "lines": 143,
+   "lines": 187,
    "exports": [
     "default FiscalDashboard"
    ],
@@ -102294,9 +102349,40 @@
     {
      "table": "fiscal_events",
      "op": "select"
+    },
+    {
+     "table": "fiscal_events",
+     "op": "select"
     }
    ],
+   "table_cols": {
+    "fiscal_events": [
+     "created_at",
+     "processed_at",
+     "status"
+    ]
+   },
    "status_values": [
+    {
+     "field": "status",
+     "value": "authorized",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pending",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "error",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "denied",
+     "kind": "compara"
+    },
     {
      "field": "status",
      "value": "authorized",
@@ -102525,7 +102611,7 @@
   },
   "src/pages/admin/SourcingPipeline.tsx": {
    "path": "src/pages/admin/SourcingPipeline.tsx",
-   "lines": 207,
+   "lines": 239,
    "exports": [
     "default SourcingPipeline"
    ],
@@ -102548,6 +102634,11 @@
     {
      "field": "status",
      "value": "cancelled",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "negotiation",
      "kind": "compara"
     },
     {
@@ -102654,6 +102745,16 @@
    ],
    "doc": "Runbooks operacionais por alert_type. Cada entrada descreve: sintoma, impacto e passos sugeridos de remediação. Mantido como código para versionamento e revisão em PRs."
   },
+  "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx": {
+   "path": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+   "lines": 73,
+   "is_test": true,
+   "tests": [
+    "KPIs do painel fiscal derivados de fiscal_events",
+    "mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa",
+    "calcula autorizadas, pendentes, erros e latencia media real"
+   ]
+  },
   "src/pages/admin/__tests__/HealthDashboard.test.tsx": {
    "path": "src/pages/admin/__tests__/HealthDashboard.test.tsx",
    "lines": 96,
@@ -102668,6 +102769,16 @@
     "contratos do dashboard de saude",
     "preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas",
     "mostra alerta sem data no periodo completo e o exclui de periodo recente"
+   ]
+  },
+  "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx": {
+   "path": "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+   "lines": 62,
+   "is_test": true,
+   "tests": [
+    "KPIs do Sourcing Pipeline derivados do banco",
+    "nao exibe numeros fixos quando nao ha projeto",
+    "agrega estimated_spend dos projetos ativos ignorando concluidos"
    ]
   },
   "src/pages/admin/__tests__/alertRunbooks.test.ts": {
@@ -113733,10 +113844,22 @@
   }
  },
  "git": {
-  "sha": "6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1",
+  "sha": "acd45831a7c3fe166ff5d7c7705fe18ae8f2666f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "acd4583",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)",
+    "files": [
+     "src/pages/admin/FiscalDashboard.tsx",
+     "src/pages/admin/SourcingPipeline.tsx",
+     "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+     "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx"
+    ]
+   },
    {
     "sha": "6b0ce59",
     "date": "2026-11-22",
@@ -114040,17 +114163,6 @@
     "files": [
      "docs/pendencias/integracao-pim-promo-supply.md"
     ]
-   },
-   {
-    "sha": "621a86c",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "chore(script): reconcilia produtos locais com o PIM (#244)",
-    "files": [
-     "scripts/automation.config.json",
-     "scripts/migracao/README.md",
-     "scripts/migracao/reconcilia-produtos-pim.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -114091,6 +114203,22 @@
     2
    ],
    [
+    "src/pages/admin/FiscalDashboard.tsx",
+    1
+   ],
+   [
+    "src/pages/admin/SourcingPipeline.tsx",
+    1
+   ],
+   [
+    "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
+    1
+   ],
+   [
+    "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
+    1
+   ],
+   [
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
     1
    ],
@@ -114116,22 +114244,6 @@
    ],
    [
     "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
-    1
-   ],
-   [
-    ".github/workflows/aplicar-migration-prod.yml",
-    1
-   ],
-   [
-    "src/components/compras/AdvancedProcurementKPIs.tsx",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
-    1
-   ],
-   [
-    "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
     1
    ]
   ]

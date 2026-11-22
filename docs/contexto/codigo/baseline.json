@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6b0ce593b1b8114e3316ef1b16ae75d15cd1b8a1",
+  "commit": "acd45831a7c3fe166ff5d7c7705fe18ae8f2666f",
   "branch": "main",
-  "data_commit": "2026-11-22T12:54:08-03:00",
+  "data_commit": "2026-11-22T13:09:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "acd4583",
+    "data": "2026-11-22",
+    "assunto": "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)"
+   },
    {
     "sha": "6b0ce59",
     "data": "2026-11-22",
@@ -126,14 +131,9 @@
     "sha": "9200429",
     "data": "2026-11-21",
     "assunto": "fix(edge): notificacoes exigem tenant_id (NOT NULL) em 8 edges (#253)"
-   },
-   {
-    "sha": "2b20c50",
-    "data": "2026-11-21",
-    "assunto": "test(bridge): cobre gaps de teste da allowlist achados em auditoria (#252)"
    }
   ],
-  "arquivos_mudados_7d": 254,
+  "arquivos_mudados_7d": 258,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -149,6 +149,10 @@
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 14
+   },
+   {
+    "pasta": "src/pages/admin",
     "mudancas": 14
    },
    {
@@ -170,10 +174,6 @@
    {
     "pasta": "supabase/functions/punchout-receive",
     "mudancas": 11
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 10
    },
    {
     "pasta": ".github/workflows/main.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 238
+    "commits": 239
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1299,
-  "arquivos_codigo": 806,
-  "linhas_codigo": 168089,
+  "arquivos_total": 1301,
+  "arquivos_codigo": 808,
+  "linhas_codigo": 168300,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 325,
   "cron_jobs": 74,
-  "testes": 190,
+  "testes": 192,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 94
@@ -459,8 +459,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 127,
-   "linhas": 29731
+   "arquivos": 129,
+   "linhas": 29942
   },
   "src/routes": {
    "arquivos": 1,

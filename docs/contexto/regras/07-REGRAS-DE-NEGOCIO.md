@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6b0ce593b1` · branch `main` · 2026-11-22 15:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `acd45831a7` · branch `main` · 2026-11-22 16:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2366,7 +2366,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2669 testes em 140 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2675 testes em 142 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2500,7 +2500,9 @@ _nenhum item encontrado_
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
+| `src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx` | 3 | KPIs do painel fiscal derivados de fiscal_events · mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa · calcula autorizadas, pendentes, erros e latencia media real |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
+| `src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx` | 3 | KPIs do Sourcing Pipeline derivados do banco · nao exibe numeros fixos quando nao ha projeto · agrega estimated_spend dos projetos ativos ignorando concluidos |
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |

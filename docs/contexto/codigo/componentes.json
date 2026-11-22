@@ -4260,7 +4260,7 @@
     "FiscalDashboard"
    ],
    "export_default": "FiscalDashboard",
-   "linhas": 143,
+   "linhas": 187,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -4333,7 +4333,7 @@
     "SourcingPipeline"
    ],
    "export_default": "SourcingPipeline",
-   "linhas": 207,
+   "linhas": 239,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [
