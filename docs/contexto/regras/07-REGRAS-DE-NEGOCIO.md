@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ec90e1edd0` · branch `main` · 2026-11-22 18:47 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c15161de29` · branch `main` · 2026-11-22 19:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1216,6 +1216,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Role | admin \| coordinator \| buyer \| approver \| viewer | `supabase/functions/_shared/xbz_auth.ts` |
 | XBZ_PERMISSION_FLAGS | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", | `supabase/functions/_shared/xbz_client.ts` |
 | ContractRenewalType | automatic \| manual | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
+| EscalationTarget | gerencia \| comprador | `supabase/functions/escalate-solicitacao/recipients.ts` |
 
 ## F. Validações de entrada
 
@@ -2042,6 +2043,7 @@ _nenhum item encontrado_
 | 20 | `supabase/functions/check-sla-alerts/index.ts` |
 | 200 | `supabase/functions/check-sla-alerts/index.ts` |
 | 30 | `supabase/functions/dependency-health/index.ts` |
+| 1 | `supabase/functions/escalate-solicitacao/recipients.ts` |
 | 10 | `supabase/functions/guided-buying-ai/index.ts` |
 | 20 | `supabase/functions/guided-buying-ai/index.ts` |
 | 10 | `supabase/functions/health-dashboard/index.ts` |
@@ -2196,6 +2198,7 @@ _nenhum item encontrado_
 | Selecione um fornecedor | `src/components/compras/SupplierRiskAnalysis.tsx` |
 | Erro ao atualizar status. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | Sem permissão para alterar esta solicitação. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
+| Solicitação não identificada. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | Erro ao enviar notificação de teste. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Erro ao verificar alertas. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Permissão para notificações foi negada. | `src/components/notifications/NotificationSettingsPanel.tsx` |
@@ -2356,8 +2359,7 @@ _nenhum item encontrado_
 | HTTP ${res.status} | `src/pages/admin/DependencyHealth.tsx` |
 | Erro ao alterar status:  | `src/pages/admin/ERPConnections.tsx` |
 | Erro ao excluir conexão:  | `src/pages/admin/ERPConnections.tsx` |
-| Erro ao salvar campos:  | `src/pages/admin/ERPConnections.tsx` |
-| … +220 linhas — lista completa em `context.json` | |
+| … +222 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2376,7 +2378,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2689 testes em 143 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2696 testes em 144 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2479,6 +2481,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
+| `supabase/functions/escalate-solicitacao/recipients.test.ts` | 7 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
@@ -2536,6 +2539,7 @@ _nenhum item encontrado_
 | `invoke(` | `src/components/compras/DemandPredictionPanel.tsx` |
 | `invoke(` | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | `invoke(` | `src/components/compras/SupplierRiskAnalysis.tsx` |
+| `invoke(` | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | `invoke(` | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | `sendNotification` | `src/hooks/useApprovalNotifications.ts` |
 | `invoke(` | `src/hooks/useSpotIntegration.ts` |

@@ -708,13 +708,15 @@
     "UrgencyDetailsSheet"
    ],
    "export_default": null,
-   "linhas": 316,
+   "linhas": 351,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
     "solicitacoes"
    ],
-   "edges": [],
+   "edges": [
+    "escalate-solicitacao"
+   ],
    "usado_por": 1,
    "orfao": false
   },

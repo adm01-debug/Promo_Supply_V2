@@ -3558,6 +3558,14 @@
    "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/validation.ts"
   ],
+  "supabase/functions/escalate-solicitacao/index.ts": [
+   "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
+   "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/escalate-solicitacao/recipients.ts"
+  ],
   "supabase/functions/external-db-bridge/index.ts": [
    "supabase/functions/_shared/external-bridge-allowlist.ts",
    "supabase/functions/_shared/http.ts",

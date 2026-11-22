@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (112)",
    "outro (43)",
-   "co-localizado (*.test) (29)"
+   "co-localizado (*.test) (30)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -41,7 +41,7 @@
   "componentes": "PascalCase (84%)",
   "hooks": "use + PascalCase",
   "servicos": "camelCase (95%)",
-  "edge_functions": "kebab-case (97%)",
+  "edge_functions": "kebab-case (98%)",
   "tabelas": "snake_case (89%)"
  },
  "barrels_index": 4,
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: escala solicitacao e alerta comprador com notificacao real (#301)",
    "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
    "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)",
    "fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)",
-   "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)",
-   "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)"
+   "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)"
   ]
  },
  "pr_template": null,

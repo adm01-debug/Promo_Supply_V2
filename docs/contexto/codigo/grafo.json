@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 619,
- "arestas": 2754,
+ "nos": 621,
+ "arestas": 2760,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -62,7 +62,7 @@
   },
   {
    "arquivo": "supabase/functions/_shared/security.ts",
-   "importado_por": 36
+   "importado_por": 37
   },
   {
    "arquivo": "src/components/ui/progress.tsx",
@@ -73,16 +73,16 @@
    "importado_por": 33
   },
   {
+   "arquivo": "supabase/functions/_shared/http.ts",
+   "importado_por": 31
+  },
+  {
    "arquivo": "src/components/ui/tooltip.tsx",
    "importado_por": 30
   },
   {
-   "arquivo": "supabase/functions/_shared/http.ts",
-   "importado_por": 30
-  },
-  {
    "arquivo": "supabase/functions/_shared/logger.ts",
-   "importado_por": 28
+   "importado_por": 29
   },
   {
    "arquivo": "src/components/ui/scroll-area.tsx",
@@ -105,11 +105,11 @@
    "importado_por": 20
   },
   {
-   "arquivo": "src/hooks/use-toast.ts",
-   "importado_por": 17
+   "arquivo": "supabase/functions/_shared/rate_limit.ts",
+   "importado_por": 18
   },
   {
-   "arquivo": "supabase/functions/_shared/rate_limit.ts",
+   "arquivo": "src/hooks/use-toast.ts",
    "importado_por": 17
   },
   {

@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ec90e1edd0` · branch `main` · 2026-11-22 18:47 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c15161de29` · branch `main` · 2026-11-22 19:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -183,7 +183,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo. `?` = nenhuma migration do repo liga ou desliga RLS nessa tabela (ex.: tabela conhecida só pelo arquivo de tipos) — NÃO VERIFICADO; política listada numa linha `não encontrado` só vale se o RLS estiver ligado no banco real.
 
-## Onde o RLS é IGNORADO (service_role) — 52 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 53 arquivo(s)
 
 - `scripts/ai-context/cenarios.mjs`
 - `scripts/ai-context/gerar.unit.mjs`
@@ -213,6 +213,7 @@
 - `supabase/functions/check-sla-alerts/index.ts`
 - `supabase/functions/dependency-health/index.ts`
 - `supabase/functions/erp-sync/index.ts`
+- `supabase/functions/escalate-solicitacao/index.ts`
 - `supabase/functions/external-db-bridge/index.ts`
 - `supabase/functions/fiscal-orchestrator/index.ts`
 - `supabase/functions/generate-contract-pdf/index.ts`
