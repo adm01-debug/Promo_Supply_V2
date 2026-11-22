@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 /**
@@ -130,6 +130,32 @@ export function useSpotSyncStatus() {
         .limit(40);
       if (error) throw new Error(error.message);
       return (data ?? []) as SpotSyncStatus[];
+    },
+  });
+}
+
+export type SpotSyncAction = 'syncCatalog' | 'syncCustomization' | 'syncStock' | 'getOrders';
+
+/**
+ * Dispara a sincronização na edge function `spot-api`.
+ * A API oficial tem quota diária, então a chamada é explícita (botão) e não
+ * automática: cada clique consome 1 requisição do limite.
+ */
+export function useTriggerSpotSync() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (action: SpotSyncAction) => {
+      const { data, error } = await supabase.functions.invoke('spot-api', { body: { action } });
+      if (error) throw new Error(error.message);
+      const resposta = data as { success?: boolean; error?: string; records?: number } | null;
+      if (resposta?.success === false) throw new Error(resposta.error ?? 'Sincronização recusada');
+      return { action, records: resposta?.records ?? null };
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['spot-sync-status'] });
+      void queryClient.invalidateQueries({ queryKey: ['spot-products'] });
+      void queryClient.invalidateQueries({ queryKey: ['spot-skus'] });
+      void queryClient.invalidateQueries({ queryKey: ['spot-stock'] });
     },
   });
 }

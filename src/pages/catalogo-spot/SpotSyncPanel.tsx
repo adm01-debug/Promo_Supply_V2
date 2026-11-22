@@ -3,13 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { RefreshCw, AlertTriangle, Database, Clock } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Database, Clock, Download } from 'lucide-react';
+import { toast } from '@/lib/feedbackToast';
 import { cn } from '@/lib/utils';
 import {
   evaluateFreshness,
   latestSuccessByEndpoint,
   useSpotSyncStatus,
+  useTriggerSpotSync,
   type CacheFreshness,
+  type SpotSyncAction,
 } from './useSpotCatalog';
 
 const MONITORED: ReadonlyArray<{ endpoint: string; label: string; maxAgeMinutes: number; dailyLimit: number }> = [
@@ -47,6 +50,7 @@ function formatAge(iso: string | undefined): string {
  */
 export const SpotSyncPanel = () => {
   const { data: rows = [], isLoading, refetch, isFetching } = useSpotSyncStatus();
+  const syncMutation = useTriggerSpotSync();
 
   const summary = useMemo(() => {
     const latest = latestSuccessByEndpoint(rows);
