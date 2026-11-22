@@ -39588,6 +39588,36 @@
         "volatility": "volatile"
       },
       {
+        "args": "p_organization_id uuid, p_period text, p_category_id uuid, p_supplier_id uuid",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "67bfec9adae1e35d",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "get_compras_sla_metrics",
+        "owner": "postgres",
+        "returns": "jsonb",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
         "args": "",
         "callers": {
           "code": [
@@ -40120,6 +40150,7 @@
           "cron": [],
           "db": [
             "public.get_compras_dashboard_metrics",
+            "public.get_compras_sla_metrics",
             "public.get_fornecedores_kpis",
             "public.get_pagamentos_kpis",
             "public.get_pedidos_kpis",

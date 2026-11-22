@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-22 19:10 UTC
+
+- **functions** adicionado (1): `public.get_compras_sla_metrics(p_organization_id uuid, p_period text, p_category_id uuid, p_supplier_id uuid)`
+- **functions** alterado (1): `public.get_user_grupo_id()`
+
 ## 2026-11-22 14:11 UTC
 
 - **realtime** removido (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_18`
