@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)",
    "fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)",
    "fix(configuracoes): corrige centro de custo pai gravando string \"none\" em uuid (#291)",
    "fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)",
-   "docs(auditoria): marca L03 (spot-api no front) como concluido (#289)",
-   "feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)"
+   "docs(auditoria): marca L03 (spot-api no front) como concluido (#289)"
   ]
  },
  "pr_template": null,

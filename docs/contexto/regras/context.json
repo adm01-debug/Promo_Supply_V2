@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
+  "sha": "53725ba841429251c3d1ec50faefcd5829ebff24",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 17:53 UTC",
+  "generated_at": "2026-11-22 18:00 UTC",
   "files_total": 1307,
   "code_files": 1142,
-  "code_lines": 196416,
+  "code_lines": 196426,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bdbd5a2e1302b210",
+ "facts_hash": "bfb04f4788140742",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34895,7 +34895,7 @@
   {
    "module": "src/hooks",
    "files": 74,
-   "lines": 13136,
+   "lines": 13146,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -37085,6 +37085,7 @@
     "update": [
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/hooks/useApprovalWorkflow.ts",
      "src/pages/gerar-ordem/GerarOrdem.tsx",
      "src/pages/kanban/KanbanWorkflow.tsx"
     ],
@@ -52727,6 +52728,12 @@
    {
     "file": "src/hooks/useApprovalWorkflow.ts",
     "field": "status",
+    "value": "rejeitada",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "field": "status",
     "value": "escalated",
     "kind": "escreve"
    },
@@ -52770,6 +52777,12 @@
     "file": "src/hooks/useApprovalWorkflow.ts",
     "field": "status",
     "value": "pending",
+    "kind": "filtra"
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "field": "status",
+    "value": "pendente",
     "kind": "filtra"
    },
    {
@@ -77141,6 +77154,7 @@
       "escreve:src/pages/documentos/DocumentosFiscais.tsx",
       "escreve:supabase/functions/punchout-receive/solicitation.ts",
       "filtra:src/components/mobile/BottomNavigation.tsx",
+      "filtra:src/hooks/useApprovalWorkflow.ts",
       "filtra:src/hooks/useSidebarBadges.ts",
       "filtra:supabase/functions/check-approval-escalations/index.ts",
       "filtra:supabase/functions/check-cotacao-followup/index.ts",
@@ -77420,6 +77434,10 @@
      "todas": [
       "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts"
      ],
+     "rejeitada": [
+      "escreve:src/hooks/useApprovalWorkflow.ts",
+      "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
+     ],
      "escalated": [
       "escreve:src/hooks/useApprovalWorkflow.ts"
      ],
@@ -77503,9 +77521,6 @@
      ],
      "backlog": [
       "compara:src/pages/admin/SourcingPipeline.tsx"
-     ],
-     "rejeitada": [
-      "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
      "recebida_fornecedor": [
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
@@ -97666,7 +97681,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 406,
+   "lines": 416,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -97752,6 +97767,14 @@
      "op": "update"
     },
     {
+     "table": "approval_workflows",
+     "op": "select"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "update"
+    },
+    {
      "table": "approval_history",
      "op": "insert"
     },
@@ -97778,6 +97801,7 @@
      "id",
      "organization_id",
      "prazo_limite",
+     "solicitacao_id",
      "status"
     ],
     "approval_steps": [
@@ -97787,7 +97811,8 @@
      "workflow_id"
     ],
     "solicitacoes": [
-     "id"
+     "id",
+     "status"
     ],
     "approval_rules": [
      "id",
@@ -97835,6 +97860,11 @@
     },
     {
      "field": "status",
+     "value": "rejeitada",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
      "value": "escalated",
      "kind": "escreve"
     },
@@ -97871,6 +97901,11 @@
     {
      "field": "status",
      "value": "pending",
+     "kind": "filtra"
+    },
+    {
+     "field": "status",
+     "value": "pendente",
      "kind": "filtra"
     },
     {
@@ -114367,10 +114402,19 @@
   }
  },
  "git": {
-  "sha": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
+  "sha": "53725ba841429251c3d1ec50faefcd5829ebff24",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "53725ba",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)",
+    "files": [
+     "src/hooks/useApprovalWorkflow.ts"
+    ]
+   },
    {
     "sha": "ad0c42d",
     "date": "2026-11-22",
@@ -114683,15 +114727,6 @@
     "files": [
      "docs/agentes/estado-spot-sync.md"
     ]
-   },
-   {
-    "sha": "8b01dfe",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "fix(spot): cron de estoque a cada 20min para nao estourar a cota (#261)",
-    "files": [
-     "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -114710,6 +114745,10 @@
    [
     "supabase/functions/spot-proxy/index.ts",
     2
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    1
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -114769,10 +114808,6 @@
    ],
    [
     "src/components/compras/SLABySupplierAnalysis.tsx",
-    1
-   ],
-   [
-    "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
     1
    ]
   ]

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ad0c42d4d7` · branch `main` · 2026-11-22 17:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53725ba841` · branch `main` · 2026-11-22 18:00 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1077,7 +1077,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +10 |
+| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +11 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +13 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `processed` | escreve | `supabase/functions/_shared/idempotency.ts` |
@@ -1091,7 +1091,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `recebida_fornecedor` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `recebido` | compara | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | `status` | `rejected` | compara, escreve | `src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx`<br>`supabase/functions/spot-proxy/index.ts` |
-| `status` | `rejeitada` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
+| `status` | `rejeitada` | escreve | `src/hooks/useApprovalWorkflow.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `replied` | escreve | `src/components/compras/SupplierInteractionLog.tsx` |
 | `status` | `reposicao_enviada` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `returned` | compara | `src/hooks/usePurchaseHistory.ts` |

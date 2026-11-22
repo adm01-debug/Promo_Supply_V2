@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ad0c42d4d7aaeeea3615a392eeaeeffa51480b2e",
+  "commit": "53725ba841429251c3d1ec50faefcd5829ebff24",
   "branch": "main",
-  "data_commit": "2026-11-22T14:53:06-03:00",
+  "data_commit": "2026-11-22T14:59:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "53725ba",
+    "data": "2026-11-22",
+    "assunto": "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)"
+   },
    {
     "sha": "ad0c42d",
     "data": "2026-11-22",
@@ -126,11 +131,6 @@
     "sha": "74d01a2",
     "data": "2026-11-22",
     "assunto": "fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)"
-   },
-   {
-    "sha": "495ab36",
-    "data": "2026-11-22",
-    "assunto": "fix(alertas): SYSTEM_ERROR deixa de acumular 1 alerta por evento (#267)"
    }
   ],
   "arquivos_mudados_7d": 275,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 249
+    "commits": 250
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1306,
   "arquivos_codigo": 813,
-  "linhas_codigo": 169458,
+  "linhas_codigo": 169468,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -440,7 +440,7 @@
   },
   "src/hooks": {
    "arquivos": 74,
-   "linhas": 13136
+   "linhas": 13146
   },
   "src/i18n": {
    "arquivos": 1,
