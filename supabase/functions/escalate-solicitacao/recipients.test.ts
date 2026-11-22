@@ -6,6 +6,8 @@
  */
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
+  ACOES_APROVACAO_VALIDAS,
+  acaoAprovacao,
   buildMensagem,
   buildTitulo,
   diasDeEspera,
@@ -155,4 +157,14 @@ Deno.test("diasDeEspera arredonda para cima e nunca fica negativo", () => {
   assertEquals(diasDeEspera("2026-11-23T11:00:00Z", agora), 1);
   assertEquals(diasDeEspera("2026-11-21T12:00:00Z", agora), 2);
   assertEquals(diasDeEspera("2026-11-25T12:00:00Z", agora), 0);
+});
+
+Deno.test("acao em approval_history respeita o CHECK do banco", () => {
+  // Regressao: 'escalonamento_gerencia' violava approval_history_acao_check
+  // (23514) e o evento do escalonamento nao era registrado.
+  assertEquals(acaoAprovacao("gerencia"), "escalated");
+  assertEquals(acaoAprovacao("comprador"), "reminder_sent");
+  for (const alvo of ["gerencia", "comprador"] as const) {
+    assertEquals(ACOES_APROVACAO_VALIDAS.includes(acaoAprovacao(alvo)), true);
+  }
 });
