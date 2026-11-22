@@ -48,6 +48,7 @@ catalogo, Fase 2 execucao vertical por item.
 | edge-bridge | (integracao completa, falta EXTERNAL_DB_URL/KEY em prod) | CONCLUIDO (refutado - nao morto; JWT+allowlist+rate limit em external-db-bridge/index.ts, deploy :100) | validate-bridge.ts |
 | edge-suggestion | `ai-supplier-suggestion` sem chamador em src | CONCLUIDO (PR #207, merge 2026-11-20) — AISupplierSuggestion consulta edge real com fallback honesto | AISupplierSuggestion.tsx |
 | obs-cron-watchdog | `cron_watchdog()` filtrava 13 nomes de job (11 inexistentes) e **nunca foi agendado** — vigiava 2 de 26 jobs e mesmo esses nunca eram checados | CONCLUIDO (PR #266, 2026-11-22) | Medido em prod: `weekly-procurement-report`, `weekly-summary-report-job` e `cotacao-followup-check` agendados desde `20261121153000` e com `last_run = null`, sem alerta. Passa a vigiar todo job ativo, SLA derivado do `schedule` (3× período, mín. 10 min), dedupe por alerta aberto e auto-resolução. Job `123` `cron-watchdog-15min` ativo |
+| obs-system-error | `check_telemetry_alerts()` (TRIGGER em `telemetry_logs`) inseria 1 `SYSTEM_ERROR` por `logger.error`, sem dedupe nem resolução | CONCLUIDO (PR #267, 2026-11-22) | Medido em prod: **450 abertos**, dos quais **421 são a mesma mensagem** `[spot-api] spot-api falhou`. Passa a manter 1 alerta por `(mensagem, tenant)` com `occurrences`/`last_seen`, colapsa backlog (450→10) e auto-resolve o que parou há >24h via `cron_watchdog-15min`. Semântica preservada: todo `logger.error` ainda alerta |
 
 ## Front - hooks (L07) mortos / parciais
 | ID | Item | Estado | Fonte |
