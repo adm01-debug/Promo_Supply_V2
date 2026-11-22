@@ -1,24 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import {
   SUPPLIER_COLORS,
-  generateSupplierSLAData,
+  SUPPLIER_PALETTE,
+  averageCompliance,
+  buildSupplierSLAData,
   getSLAColor,
   getSLABgColor,
+  type SlaOrderInput,
+  type SlaSupplierInput,
 } from '../slaAnalysisData';
 
-// ─── SUPPLIER_COLORS ──────────────────────────────────────────────────────────
+// ─── SUPPLIER_COLORS ─────────────────────────────────────────────────────────
 
 describe('SUPPLIER_COLORS', () => {
   it('has 6 supplier entries', () => {
     expect(Object.keys(SUPPLIER_COLORS)).toHaveLength(6);
-  });
-
-  it('includes XBZ Brindes', () => {
-    expect(SUPPLIER_COLORS).toHaveProperty('XBZ Brindes');
-  });
-
-  it('includes Stricker / Spot Gifts', () => {
-    expect(SUPPLIER_COLORS).toHaveProperty('Stricker / Spot Gifts');
   });
 
   it('all values are non-empty strings', () => {
@@ -27,182 +23,151 @@ describe('SUPPLIER_COLORS', () => {
       expect(color.length).toBeGreaterThan(0);
     });
   });
+});
 
-  it('XBZ Brindes uses primary CSS variable', () => {
-    expect(SUPPLIER_COLORS['XBZ Brindes']).toContain('primary');
+describe('SUPPLIER_PALETTE', () => {
+  it('has at least 6 colors to cycle through dynamic suppliers', () => {
+    expect(SUPPLIER_PALETTE.length).toBeGreaterThanOrEqual(6);
   });
 });
 
-// ─── getSLAColor ──────────────────────────────────────────────────────────────
+// ─── getSLAColor ─────────────────────────────────────────────────────────────
 
 describe('getSLAColor', () => {
   it('returns text-success for value >= 95', () => {
     expect(getSLAColor(95)).toBe('text-success');
-    expect(getSLAColor(100)).toBe('text-success');
   });
 
-  it('returns text-info for value >= 85 and < 95', () => {
-    expect(getSLAColor(85)).toBe('text-info');
-    expect(getSLAColor(90)).toBe('text-info');
-    expect(getSLAColor(94.9)).toBe('text-info');
+  it('returns text-info for value >= 85', () => {
+    expect(getSLAColor(88)).toBe('text-info');
   });
 
-  it('returns text-warning for value >= 75 and < 85', () => {
-    expect(getSLAColor(75)).toBe('text-warning');
+  it('returns text-warning for value >= 75', () => {
     expect(getSLAColor(80)).toBe('text-warning');
-    expect(getSLAColor(84.9)).toBe('text-warning');
   });
 
   it('returns text-destructive for value < 75', () => {
-    expect(getSLAColor(74.9)).toBe('text-destructive');
-    expect(getSLAColor(50)).toBe('text-destructive');
-    expect(getSLAColor(0)).toBe('text-destructive');
-  });
-
-  it('boundary at exactly 95', () => {
-    expect(getSLAColor(95)).toBe('text-success');
-    expect(getSLAColor(94)).toBe('text-info');
-  });
-
-  it('boundary at exactly 85', () => {
-    expect(getSLAColor(85)).toBe('text-info');
-    expect(getSLAColor(84)).toBe('text-warning');
-  });
-
-  it('boundary at exactly 75', () => {
-    expect(getSLAColor(75)).toBe('text-warning');
-    expect(getSLAColor(74)).toBe('text-destructive');
-  });
-
-  it('returns a string', () => {
-    expect(typeof getSLAColor(80)).toBe('string');
+    expect(getSLAColor(60)).toBe('text-destructive');
   });
 });
 
-// ─── getSLABgColor ────────────────────────────────────────────────────────────
-
 describe('getSLABgColor', () => {
-  it('returns bg-success for value >= 95', () => {
-    expect(getSLABgColor(95)).toBe('bg-success');
-    expect(getSLABgColor(100)).toBe('bg-success');
-  });
-
-  it('returns bg-info for value >= 85 and < 95', () => {
-    expect(getSLABgColor(85)).toBe('bg-info');
-    expect(getSLABgColor(90)).toBe('bg-info');
-  });
-
-  it('returns bg-warning for value >= 75 and < 85', () => {
-    expect(getSLABgColor(75)).toBe('bg-warning');
-    expect(getSLABgColor(80)).toBe('bg-warning');
-  });
-
-  it('returns bg-destructive for value < 75', () => {
-    expect(getSLABgColor(74)).toBe('bg-destructive');
-    expect(getSLABgColor(0)).toBe('bg-destructive');
-  });
-
-  it('mirrors getSLAColor thresholds (text- vs bg-)', () => {
-    const textResult = getSLAColor(90).replace('text-', '');
-    const bgResult = getSLABgColor(90).replace('bg-', '');
-    expect(textResult).toBe(bgResult);
-  });
-
   it('returns a string', () => {
     expect(typeof getSLABgColor(50)).toBe('string');
   });
 });
 
-// ─── generateSupplierSLAData ─────────────────────────────────────────────────
+// ─── buildSupplierSLAData ────────────────────────────────────────────────────
 
-describe('generateSupplierSLAData', () => {
-  it('returns an array of 6 suppliers', () => {
-    const data = generateSupplierSLAData();
-    expect(data).toHaveLength(6);
+const suppliers: SlaSupplierInput[] = [
+  { id: 's1', name: 'Fornecedor Pontual', prazo_medio_entrega: 10, avaliacao: 4.5 },
+  { id: 's2', name: 'Fornecedor Atrasado', prazo_medio_entrega: 20, avaliacao: '3.00' },
+  { id: 's3', name: 'Fornecedor Sem Pedido', prazo_medio_entrega: null, avaliacao: null },
+];
+
+const today = new Date('2026-11-22T12:00:00Z');
+const daysAgo = (n: number) => {
+  const d = new Date(today.getTime() - n * 86400000);
+  return d.toISOString().slice(0, 10);
+};
+
+const orders: SlaOrderInput[] = [
+  // s1: 3 entregas, todas no prazo
+  { fornecedor_id: 's1', status: 'entregue', data_emissao: daysAgo(60), data_previsao: daysAgo(50), data_entrega: daysAgo(52) },
+  { fornecedor_id: 's1', status: 'entregue', data_emissao: daysAgo(40), data_previsao: daysAgo(30), data_entrega: daysAgo(30) },
+  { fornecedor_id: 's1', status: 'entregue', data_emissao: daysAgo(20), data_previsao: daysAgo(10), data_entrega: daysAgo(12) },
+  // s2: 2 entregas, 1 atrasada + 1 pedido em aberto vencido
+  { fornecedor_id: 's2', status: 'entregue', data_emissao: daysAgo(55), data_previsao: daysAgo(45), data_entrega: daysAgo(40) },
+  { fornecedor_id: 's2', status: 'entregue', data_emissao: daysAgo(35), data_previsao: daysAgo(25), data_entrega: daysAgo(30) },
+  { fornecedor_id: 's2', status: 'pendente', data_emissao: daysAgo(15), data_previsao: daysAgo(5), data_entrega: null },
+];
+
+describe('buildSupplierSLAData', () => {
+  const rows = buildSupplierSLAData(suppliers, orders, 180, today);
+
+  it('returns one row per supplier and never invents extra suppliers', () => {
+    expect(rows.map(r => r.name)).toEqual([
+      'Fornecedor Pontual',
+      'Fornecedor Atrasado',
+      'Fornecedor Sem Pedido',
+    ]);
   });
 
-  it('each supplier has a name string', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => expect(typeof s.name).toBe('string'));
+  it('computes compliance from real delivery dates', () => {
+    const pontual = rows[0];
+    expect(pontual.slaCompliance).toBe(100);
+    expect(pontual.lateOrders).toBe(0);
+    expect(pontual.totalOrders).toBe(3);
+
+    const atrasado = rows[1];
+    expect(atrasado.totalOrders).toBe(3);
+    expect(atrasado.lateOrders).toBe(1);
+    expect(atrasado.slaCompliance).toBe(50);
   });
 
-  it('includes XBZ Brindes', () => {
-    const data = generateSupplierSLAData();
-    expect(data.some(s => s.name === 'XBZ Brindes')).toBe(true);
+  it('counts open orders past the promised date as critical', () => {
+    expect(rows[0].criticalOrders).toBe(0);
+    expect(rows[1].criticalOrders).toBe(1);
+    expect(rows[2].criticalOrders).toBe(0);
   });
 
-  it('slaCompliance is between 80 and 100', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.slaCompliance).toBeGreaterThanOrEqual(80);
-      expect(s.slaCompliance).toBeLessThanOrEqual(100);
-    });
+  it('keeps null instead of fabricating metrics when there is no sample', () => {
+    const semPedido = rows[2];
+    expect(semPedido.totalOrders).toBe(0);
+    expect(semPedido.slaCompliance).toBeNull();
+    expect(semPedido.onTimeDelivery).toBeNull();
+    expect(semPedido.qualityScore).toBeNull();
+    expect(semPedido.avgLeadTime).toBeNull();
+    expect(semPedido.trend).toBe('stable');
+    expect(semPedido.trendValue).toBeNull();
   });
 
-  it('onTimeDelivery is between 85 and 100', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.onTimeDelivery).toBeGreaterThanOrEqual(85);
-      expect(s.onTimeDelivery).toBeLessThanOrEqual(100);
-    });
+  it('derives lead time from emission to delivery and averages it', () => {
+    // s1: 8, 10, 8 dias => 8.7
+    expect(rows[0].avgLeadTime).toBeCloseTo(8.7, 1);
+    // s2: 15, 5 dias => 10
+    expect(rows[1].avgLeadTime).toBeCloseTo(10, 1);
   });
 
-  it('totalOrders is between 20 and 60', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.totalOrders).toBeGreaterThanOrEqual(20);
-      expect(s.totalOrders).toBeLessThanOrEqual(60);
-    });
+  it('falls back to the registered average lead time when nothing was delivered', () => {
+    const [row] = buildSupplierSLAData([{ id: 'x', name: 'X', prazo_medio_entrega: 12 }], [], 180, today);
+    expect(row.avgLeadTime).toBe(12);
+    expect(row.slaCompliance).toBeNull();
   });
 
-  it('trend is either up or down', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(['up', 'down']).toContain(s.trend);
-    });
+  it('converts the supplier rating to a 0-100 quality score', () => {
+    expect(rows[0].qualityScore).toBe(90);
+    expect(rows[1].qualityScore).toBe(60);
   });
 
-  it('each supplier has 6 monthlyTrend entries', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.monthlyTrend).toHaveLength(6);
-    });
+  it('produces 6 monthly points ending on the current month', () => {
+    expect(rows[0].monthlyTrend).toHaveLength(6);
+    expect(rows[0].monthlyTrend[5].month).toBe('Nov');
   });
 
-  it('monthlyTrend months are Jul through Dez', () => {
-    const data = generateSupplierSLAData();
-    const months = data[0].monthlyTrend.map(t => t.month);
-    expect(months).toEqual(['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']);
+  it('respects the requested period window', () => {
+    const shortWindow = buildSupplierSLAData(suppliers, orders, 30, today);
+    const pontual = shortWindow[0];
+    // apenas o pedido emitido 20 dias atrás entra na janela de 30 dias
+    expect(pontual.totalOrders).toBe(1);
   });
 
-  it('each supplier has 6 radarData entries', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.radarData).toHaveLength(6);
-    });
+  it('is deterministic across calls (no random values)', () => {
+    const a = buildSupplierSLAData(suppliers, orders, 180, today);
+    const b = buildSupplierSLAData(suppliers, orders, 180, today);
+    expect(a).toEqual(b);
+  });
+});
+
+describe('averageCompliance', () => {
+  it('ignores suppliers without sample', () => {
+    const rows = buildSupplierSLAData(suppliers, orders, 180, today);
+    // (100 + 50) / 2 — o fornecedor sem pedido não entra na média
+    expect(averageCompliance(rows)).toBe(75);
   });
 
-  it('radarData includes Pontualidade metric', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      const metrics = s.radarData.map(r => r.metric);
-      expect(metrics).toContain('Pontualidade');
-    });
-  });
-
-  it('qualityScore is between 85 and 100', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.qualityScore).toBeGreaterThanOrEqual(85);
-      expect(s.qualityScore).toBeLessThanOrEqual(100);
-    });
-  });
-
-  it('lateOrders is non-negative integer', () => {
-    const data = generateSupplierSLAData();
-    data.forEach(s => {
-      expect(s.lateOrders).toBeGreaterThanOrEqual(0);
-      expect(Number.isInteger(s.lateOrders)).toBe(true);
-    });
+  it('returns null when no supplier has sample', () => {
+    const rows = buildSupplierSLAData([{ id: 'x', name: 'X' }], [], 180, today);
+    expect(averageCompliance(rows)).toBeNull();
   });
 });

@@ -31,6 +31,7 @@ catalogo, Fase 2 execucao vertical por item.
 | fake-dash | `useDashboardKPIs`/`useExecutiveDashboardData` literais + Math.random | CONCLUIDO (PR #181, merge 2026-11-20) | KPI SLA/card fabricado removido; dashboard Executivo/KPIs usam dados reais via RPC; top-5 = 77.5% prod. `kpiTargetsStore` virou metas (objetivos), nao dados simulados |
 | fake-sla | `slaSettingsStore.ts:37` e-mail fixo multi-tenant | CONCLUIDO (PR #194, merge 2026-11-20) | default `emailRecipients: []` + seed via `profile.email` em `SLASettingsPanel.tsx` |
 | fake-kpi-targets | metas sao objetivos configuráveis (KPITargetsConfig + persist localStorage), não dados simulados | CONCLUIDO | `kpiTargetsStore.ts` |
+| fake-sla-analysis | `slaAnalysisData.ts` e `SLABySupplierAnalysis.tsx` geravam 6 fornecedores hardcoded com todos os numeros via `Math.random()` no import | CONCLUIDO (PR #284) | `buildSupplierSLAData` agrega `pedidos` reais (conformidade = `data_entrega <= data_previsao`, lead time = `data_entrega - data_emissao`, criticos = previsao vencida sem entrega) + `fornecedores.avaliacao`/`prazo_medio_entrega`; sem amostra o campo e `null` e a tela mostra `—`. `useSupplierSlaData` filtra pelo periodo (3m/6m/12m) e tem estados loading/erro/vazio |
 
 ## Edge functions (L10)
 | ID | Item | Estado | Fonte |
