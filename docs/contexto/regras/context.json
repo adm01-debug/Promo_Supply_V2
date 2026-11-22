@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e46980782e2f7efacf4581ca8dd203994b04eb97",
+  "sha": "94f73a1a72e806e05f4f9d177b305baf91c4fe1f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 13:24 UTC",
+  "generated_at": "2026-11-22 13:40 UTC",
   "files_total": 1295,
   "code_files": 1130,
   "code_lines": 194390,
@@ -113503,10 +113503,19 @@
   }
  },
  "git": {
-  "sha": "e46980782e2f7efacf4581ca8dd203994b04eb97",
+  "sha": "94f73a1a72e806e05f4f9d177b305baf91c4fe1f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "94f73a1",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)",
+    "files": [
+     ".github/workflows/aplicar-migration-prod.yml"
+    ]
+   },
    {
     "sha": "e469807",
     "date": "2026-11-22",
@@ -113807,15 +113816,6 @@
      ".github/workflows/aplicar-migration-prod.yml",
      "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql"
     ]
-   },
-   {
-    "sha": "3192276",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat: referência ao PIM em solicitacoes, pedido_itens e repurchase_suggestions (#240)",
-    "files": [
-     "supabase/migrations/20261121160000_pim_refs_compras.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -113830,6 +113830,10 @@
    [
     "src/tests/spot/spotApi.test.ts",
     3
+   ],
+   [
+    ".github/workflows/aplicar-migration-prod.yml",
+    2
    ],
    [
     "supabase/functions/_shared/notifications.ts",
@@ -113893,10 +113897,6 @@
    ],
    [
     "docs/agentes/banco.md",
-    1
-   ],
-   [
-    "docs/ci/README.md",
     1
    ]
   ]
