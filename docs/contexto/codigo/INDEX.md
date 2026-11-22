@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `47920c1d3ce67e73be1ee7060559ee5bdc4d22b5` (2026-11-22T13:18:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `752b1f5efbd775937ad084841541ad227205a487` (2026-11-22T13:39:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (737), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (738), SQL (327), Markdown (94), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,16 +34,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1303 |
-| arquivos_codigo | 810 |
-| linhas_codigo | 168576 |
+| arquivos_total | 1304 |
+| arquivos_codigo | 811 |
+| linhas_codigo | 168846 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 48 |
 | modulos | 87 |
 | componentes | 330 |
-| hooks | 90 |
+| hooks | 91 |
 | edge_functions | 39 |
 | tabelas | 164 |
 | migrations | 325 |
@@ -56,7 +56,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Onde ficam as coisas
 - telas: src/pages (53)
 - componentes: src/components (215), src/pages (79), src/features (33)
-- hooks: src/hooks (61), src/features (11), src/components (10)
+- hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (24), src/stores (5), src/integrations (3)
 - testes: co-localizado (__tests__) (112), outro (42), co-localizado (*.test) (29)
 - edge_functions: supabase/functions
@@ -71,15 +71,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
-| components/compras | 0 | 0 | 104 | 80 | 8 | 56 |
+| components/compras | 0 | 0 | 105 | 81 | 8 | 56 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
-| features/layout | 0 | 0 | 32 | 77 | 8 | 52 |
+| features/layout | 0 | 0 | 32 | 78 | 8 | 52 |
 | hooks | 0 | 0 | 62 | 57 | 7 | 59 |
-| lib | 0 | 0 | 24 | 54 | 7 | 47 |
+| lib | 0 | 0 | 24 | 55 | 7 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 19 |
@@ -89,10 +89,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 82 | 9 | 56 |
-| pages/catalogo-xbz | 1 | 1 | 10 | 79 | 9 | 52 |
+| pages/catalogo-spot | 1 | 1 | 6 | 83 | 9 | 56 |
+| pages/catalogo-xbz | 1 | 1 | 10 | 80 | 9 | 52 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
-| pages/configuracoes | 1 | 1 | 1 | 77 | 8 | 52 |
+| pages/configuracoes | 1 | 1 | 1 | 78 | 8 | 52 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
 | pages/cotacao | 1 | 2 | 2 | 14 | 2 | 14 |
 | pages/dashboard | 3 | 2 | 2 | 28 | 2 | 26 |
@@ -104,18 +104,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 9 |
 | pages/historico | 1 | 1 | 7 | 7 | 1 | 9 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 77 | 8 | 52 |
+| pages/licitacoes | 1 | 1 | 2 | 78 | 8 | 52 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
-| pages/orcamentos | 1 | 1 | 1 | 78 | 8 | 53 |
+| pages/orcamentos | 1 | 1 | 1 | 79 | 8 | 53 |
 | pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
 | pages/pedidos | 1 | 1 | 3 | 16 | 1 | 11 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 78 | 8 | 53 |
-| pages/qualificacao | 1 | 1 | 1 | 78 | 8 | 56 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 79 | 8 | 53 |
+| pages/qualificacao | 1 | 1 | 1 | 79 | 8 | 56 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 4 | 2 | 6 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
-| pages/relatorios | 1 | 1 | 2 | 6 | 2 | 8 |
-| pages/seguranca | 1 | 1 | 1 | 84 | 11 | 67 |
+| pages/relatorios | 1 | 1 | 2 | 7 | 2 | 8 |
+| pages/seguranca | 1 | 1 | 1 | 85 | 11 | 67 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
@@ -334,7 +334,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/pendencias/_indice.md (39)
+- docs/pendencias/_indice.md (40)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (14)
 - docs/ci/README.md (12)
 - package.json (12)
@@ -416,6 +416,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-22 `752b1f5` fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)
 - 2026-11-22 `47920c1` fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)
 - 2026-11-22 `acd4583` fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)
 - 2026-11-22 `6b0ce59` feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)
@@ -430,7 +431,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `7ba0757` fix: corrige numero da PR do registro obs-cron-sla (#268 -> #270) (#273)
 - 2026-11-22 `640e5d2` fix(types): preserva os generics do Supabase e so adiciona o que o banco ganhou (#272)
 - 2026-11-22 `ffe439a` fix(ci): types-sync gera pela Management API e elimina o drift permanente (#254)
-- 2026-11-22 `74d01a2` fix(cron): SLA do watchdog segue a granularidade real e nao alerta job novo (#270)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

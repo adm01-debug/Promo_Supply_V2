@@ -499,11 +499,11 @@
   {
    "arquivo": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
    "tipo": "unit",
-   "linhas": 209,
+   "linhas": 174,
    "testa": [
     "src/components/compras/sla-analysis/slaAnalysisData.ts"
    ],
-   "casos": 32
+   "casos": 20
   },
   {
    "arquivo": "src/components/compras/timeline/__tests__/timelineConfig.test.ts",
@@ -1942,6 +1942,7 @@
   ],
   "hooks": [
    "src/components/accessibility/AdvancedAccessibility.tsx",
+   "src/components/compras/sla-analysis/useSupplierSlaData.ts",
    "src/components/onboarding/OnboardingTour.tsx",
    "src/components/ui/celebration.tsx",
    "src/components/ui/form.tsx",

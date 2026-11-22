@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 90,
+ "total": 91,
  "hooks": [
   {
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
@@ -100,6 +100,29 @@
     "src/components/compras/SupplierScorecard.tsx"
    ],
    "coberto_por_testes": 1
+  },
+  {
+   "arquivo": "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+   "hooks_exportados": [
+    "useSupplierSlaData"
+   ],
+   "linhas": 110,
+   "dominio": "components/compras",
+   "tabelas": [
+    "fornecedores",
+    "pedidos"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useAuth"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/compras/SLABySupplierAnalysis.tsx"
+   ],
+   "coberto_por_testes": 0
   },
   {
    "arquivo": "src/components/onboarding/OnboardingTour.tsx",
@@ -304,7 +327,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 69,
+   "usado_por": 70,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -317,6 +340,7 @@
     "src/components/compras/SourcingIntelligenceWidget.tsx",
     "src/components/compras/SupplierBonificationsPanel.tsx",
     "src/components/compras/scorecard/supplierScorecardData.ts",
+    "src/components/compras/sla-analysis/useSupplierSlaData.ts",
     "src/components/pagamentos/PagamentoDetailModal.tsx",
     "src/components/security/ActiveSessionsPanel.tsx",
     "src/components/security/BlockedCountriesPanel.tsx",
@@ -334,8 +358,7 @@
     "src/features/pedidos/hooks/usePedidos.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/hooks/useApprovalRules.ts",
-    "src/hooks/useApprovalWorkflow.ts",
-    "src/hooks/useBudgetManagement.ts"
+    "src/hooks/useApprovalWorkflow.ts"
    ],
    "coberto_por_testes": 2
   },

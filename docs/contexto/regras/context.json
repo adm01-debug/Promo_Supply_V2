@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "47920c1d3ce67e73be1ee7060559ee5bdc4d22b5",
+  "sha": "752b1f5efbd775937ad084841541ad227205a487",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-22 16:19 UTC",
-  "files_total": 1304,
-  "code_files": 1139,
-  "code_lines": 195534,
+  "generated_at": "2026-11-22 16:41 UTC",
+  "files_total": 1305,
+  "code_files": 1140,
+  "code_lines": 195804,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d2ed9efba00d539b",
+ "facts_hash": "922dbeb5fc0cb080",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 386,
+   ".ts": 387,
    ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
@@ -33492,7 +33492,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 296,
+  "components_count": 297,
   "hooks": [
    {
     "name": "useContacts",
@@ -33525,6 +33525,10 @@
    {
     "name": "useSupplierScorecardData",
     "file": "src/components/compras/scorecard/supplierScorecardData.ts"
+   },
+   {
+    "name": "useSupplierSlaData",
+    "file": "src/components/compras/sla-analysis/useSupplierSlaData.ts"
    },
    {
     "name": "useCelebration",
@@ -34382,8 +34386,8 @@
   },
   {
    "module": "src/components",
-   "files": 262,
-   "lines": 48409,
+   "files": 263,
+   "lines": 48679,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34461,7 +34465,7 @@
     "PrefetchLink.tsx: Componente Link com prefetch automático de DADOS (React Query) e do CHUNK JS da rota destino, no hover/focus do usuário.",
     "executiveDashboardData.ts: Pure utilities for the Executive Dashboard (no fictional data). All derived data now comes from useExecutiveDashboardData.",
     "deadlineFallback.ts: Resolves the effective deadline for a pending approval step. Priority: 1. `stepPrazoLimite` — deadline set directly on the step 2. `workflowPrazoLimite` — deadline inherited from the parent workflow 3. `(workflowCreatedAt ?? stepCreatedAt) + 24h` — safe fallback Never returns \"now\", which would fals …",
-    "slaAnalysisData.ts: Mock SLA data per supplier",
+    "slaAnalysisData.ts: SLA por fornecedor calculado a partir dos pedidos reais. Antes este modulo gerava numeros com Math.random() a cada render: pedidos, lead time, atrasos e conformidade nunca refletiam nada do banco. Agora as metricas saem de `pedidos` (data_previsao x data_entrega) e `fornecedores` (prazo_medio_entreg …",
     "tourStepDefinitions.ts: Predefined tour step definitions for each page/feature. Extracted from OnboardingTour to keep that component focused on rendering.",
     "contextual-skeletons.tsx: Re-export all skeleton components from modular files Base primitives"
    ],
@@ -36505,6 +36509,7 @@
      "src/components/compras/SupplierRiskAnalysis.tsx",
      "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
      "src/components/compras/scorecard/supplierScorecardData.ts",
+     "src/components/compras/sla-analysis/useSupplierSlaData.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/useDevolucoes.ts",
      "src/hooks/useFornecedores.ts",
@@ -36790,6 +36795,7 @@
      "src/components/compras/SupplierRiskAnalysis.tsx",
      "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
      "src/components/compras/scorecard/supplierScorecardData.ts",
+     "src/components/compras/sla-analysis/useSupplierSlaData.ts",
      "src/components/mobile/BottomNavigation.tsx",
      "src/components/pagamentos/ThreeWayMatchPanel.tsx",
      "src/features/empresas/hooks/useEmpresaFilter.ts",
@@ -39687,6 +39693,11 @@
     "values": "all | urgente | escalado | normal"
    },
    {
+    "file": "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+    "name": "SlaPeriod",
+    "values": "3m | 6m | 12m"
+   },
+   {
     "file": "src/components/ui/celebration-particles.tsx",
     "name": "CelebrationType",
     "values": "success | achievement | milestone | streak | level-up | purchase | savings | record | first-time"
@@ -41981,6 +41992,22 @@
    {
     "file": "src/components/compras/pending-approvals/deadlineFallback.ts",
     "text": "2. `workflowPrazoLimite` — deadline inherited from the parent workflow"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    "text": "Entregues no prazo / entregues (null sem entrega registrada). */"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    "text": "Entregues no prazo / pedidos com previsao ja vencida (null sem amostra). */"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    "text": "Media de dias entre emissao e entrega; cai para o prazo cadastrado. */"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    "text": "Conformidade media apenas dos fornecedores com amostra. */"
    },
    {
     "file": "src/components/notifications/NotificationSettingsPanel.tsx",
@@ -49486,6 +49513,11 @@
     "value": "7 * 24 * 60 * 60 * 1000"
    },
    {
+    "file": "src/components/compras/SLABySupplierAnalysis.tsx",
+    "name": "EMPTY",
+    "value": "'—'"
+   },
+   {
     "file": "src/components/ui/sidebar.tsx",
     "name": "SIDEBAR_COOKIE_MAX_AGE",
     "value": "60 * 60 * 24 * 7"
@@ -51610,6 +51642,12 @@
     "field": "qualification_status",
     "value": "blocked",
     "kind": "compara"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+    "field": "status",
+    "value": "ativo",
+    "kind": "filtra"
    },
    {
     "file": "src/components/compras/timeline/timelineConfig.ts",
@@ -56006,12 +56044,6 @@
     "body": "const [weights, setWeights] = useState<ScoreWeights>({ preco: 60, prazo: 20, estoque: 20 }); const [justificativa, setJustificativa] = useState(\"\"); const [showJustifyModal, setShowJustifyModal] = useState(false); const [pendingSelectionId, setPendingSelectionId] = useState<string | null>(null); const confirmSelection = () => { if (pendingSelectionId) { onSelecionar(pendingSelectionId, justificativa); setShowJustifyModal(false); setPendingSelectionId(null); setJustificativa(\"\"); } }; const handl …"
    },
    {
-    "file": "src/components/compras/SLABySupplierAnalysis.tsx",
-    "name": "generateHistoricalSLAData",
-    "params": "",
-    "body": "const months = ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']; return months.map((month) => ({ month, 'XBZ Brindes': Math.round((85 + Math.random() * 12) * 10) / 10, 'Tech Brindes': Math.round((82 + Math.random() * 14) * 10) / 10, 'Stricker': Math.round((88 + Math.random() * 10) * 10) / 10, 'Premium Gifts': Math.round((90 + Math.random() * 8) * 10) / 10, 'Asia Import': Math.round((78 + Math.random() * 15) * 10) / 10, 'Eco Brindes': Math.round((84 + Math.random() * 12) * 10) / 10, }));"
-   },
-   {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
     "name": "PriceTrendChart",
     "params": "{ data }: { data: { date: string, price: number }[] }",
@@ -56046,12 +56078,6 @@
     "name": "round",
     "params": "value: number, decimals = 0",
     "body": "const factor = 10 ** decimals; return Math.round(value * factor) / factor;"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
-    "name": "generateSupplierSLAData",
-    "params": "",
-    "body": "const suppliers = [ 'XBZ Brindes', 'Tech Brindes', 'Stricker / Spot Gifts', 'Premium Gifts', 'Asia Import', 'Eco Brindes', ]; return suppliers.map((name) => { const baseCompliance = 80 + Math.random() * 18; const baseOnTime = 85 + Math.random() * 14; const baseLeadTime = 2 + Math.random() * 4; return { name, slaCompliance: Math.round(baseCompliance * 10) / 10, onTimeDelivery: Math.round(baseOnTime * 10) / 10, avgLeadTime: Math.round(baseLeadTime * 10) / 10, totalOrders: Math.floor(20 + Math.rand …"
    },
    {
     "file": "src/components/compras/visual-comparador/ComparadorCharts.tsx",
@@ -56470,6 +56496,14 @@
    {
     "file": "src/components/compras/scorecard/supplierScorecardData.ts",
     "line": "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    "line": "const cutoff = new Date(today.getTime() - periodDays * 24 * 60 * 60 * 1000);"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+    "line": "const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000)"
    },
    {
     "file": "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
@@ -59009,19 +59043,15 @@
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "includes XBZ Brindes"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "includes Stricker / Spot Gifts"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
     "name": "all values are non-empty strings"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "XBZ Brindes uses primary CSS variable"
+    "name": "SUPPLIER_PALETTE"
+   },
+   {
+    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
+    "name": "has at least 6 colors to cycle through dynamic suppliers"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
@@ -59033,11 +59063,11 @@
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns text-info for value >= 85 and < 95"
+    "name": "returns text-info for value >= 85"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns text-warning for value >= 75 and < 85"
+    "name": "returns text-warning for value >= 75"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
@@ -59045,103 +59075,67 @@
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "boundary at exactly 95"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "boundary at exactly 85"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "boundary at exactly 75"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns a string"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
     "name": "getSLABgColor"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns bg-success for value >= 95"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns bg-info for value >= 85 and < 95"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns bg-warning for value >= 75 and < 85"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns bg-destructive for value < 75"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "mirrors getSLAColor thresholds (text- vs bg-)"
-   },
-   {
-    "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
     "name": "returns a string"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "generateSupplierSLAData"
+    "name": "buildSupplierSLAData"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "returns an array of 6 suppliers"
+    "name": "returns one row per supplier and never invents extra suppliers"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "each supplier has a name string"
+    "name": "computes compliance from real delivery dates"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "includes XBZ Brindes"
+    "name": "counts open orders past the promised date as critical"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "slaCompliance is between 80 and 100"
+    "name": "keeps null instead of fabricating metrics when there is no sample"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "onTimeDelivery is between 85 and 100"
+    "name": "derives lead time from emission to delivery and averages it"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "totalOrders is between 20 and 60"
+    "name": "falls back to the registered average lead time when nothing was delivered"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "trend is either up or down"
+    "name": "converts the supplier rating to a 0-100 quality score"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "each supplier has 6 monthlyTrend entries"
+    "name": "produces 6 monthly points ending on the current month"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "monthlyTrend months are Jul through Dez"
+    "name": "respects the requested period window"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "each supplier has 6 radarData entries"
+    "name": "is deterministic across calls (no random values)"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "radarData includes Pontualidade metric"
+    "name": "averageCompliance"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "qualityScore is between 85 and 100"
+    "name": "ignores suppliers without sample"
    },
    {
     "file": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-    "name": "lateOrders is non-negative integer"
+    "name": "returns null when no supplier has sample"
    },
    {
     "file": "src/components/compras/timeline/__tests__/timelineConfig.test.ts",
@@ -77035,6 +77029,7 @@
       "filtra:src/components/compras/SupplierBonificationsPanel.tsx",
       "filtra:src/components/compras/SupplierRankingPanel.tsx",
       "filtra:src/components/compras/SupplierRiskAnalysis.tsx",
+      "filtra:src/components/compras/sla-analysis/useSupplierSlaData.ts",
       "filtra:src/components/pagamentos/PagamentoDetailModal.tsx",
       "filtra:src/hooks/usePrefetch.ts",
       "filtra:src/hooks/useSupplierQualification.ts",
@@ -91687,15 +91682,14 @@
   },
   "src/components/compras/SLABySupplierAnalysis.tsx": {
    "path": "src/components/compras/SLABySupplierAnalysis.tsx",
-   "lines": 384,
+   "lines": 437,
    "exports": [
     "const SLABySupplierAnalysis"
    ],
-   "calc_fns": [
+   "params": [
     {
-     "name": "generateHistoricalSLAData",
-     "params": "",
-     "body": "const months = ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']; return months.map((month) => ({ month, 'XBZ Brindes': Math.round((85 + Math.random() * 12) * 10) / 10, 'Tech Brindes': Math.round((82 + Math.random() * 14) * 10) / 10, 'Stricker': Math.round((88 + Math.random() * 10) * 10) / 10, 'Premium Gifts': Math.round((90 + Math.random() * 8) * 10) / 10, 'Asia Import': Math.round((78 + Math.random() * 15) * 10) / 10, 'Eco Brindes': Math.round((84 + Math.random() * 12) * 10) / 10, }));"
+     "name": "EMPTY",
+     "value": "'—'"
     }
    ]
   },
@@ -93658,63 +93652,122 @@
   },
   "src/components/compras/sla-analysis/slaAnalysisData.ts": {
    "path": "src/components/compras/sla-analysis/slaAnalysisData.ts",
-   "lines": 89,
+   "lines": 231,
    "exports": [
+    "const SUPPLIER_PALETTE",
+    "interface MonthlySlaPoint",
     "interface SupplierSLAData",
-    "const generateSupplierSLAData",
+    "interface SlaSupplierInput",
+    "interface SlaOrderInput",
+    "function buildSupplierSLAData",
+    "function averageCompliance",
     "function getSLAColor",
     "function getSLABgColor"
    ],
-   "doc": "Mock SLA data per supplier",
-   "calc_fns": [
+   "rule_comments": [
+    "Entregues no prazo / entregues (null sem entrega registrada). */",
+    "Entregues no prazo / pedidos com previsao ja vencida (null sem amostra). */",
+    "Media de dias entre emissao e entrega; cai para o prazo cadastrado. */",
+    "Conformidade media apenas dos fornecedores com amostra. */"
+   ],
+   "doc": "SLA por fornecedor calculado a partir dos pedidos reais. Antes este modulo gerava numeros com Math.random() a cada render: pedidos, lead time, atrasos e conformidade nunca refletiam nada do banco. Agora as metricas saem de `pedidos` (data_previsao x data_entrega) e `fornecedores` (prazo_medio_entreg …",
+   "temporal": [
+    "const cutoff = new Date(today.getTime() - periodDays * 24 * 60 * 60 * 1000);"
+   ]
+  },
+  "src/components/compras/sla-analysis/useSupplierSlaData.ts": {
+   "path": "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+   "lines": 110,
+   "exports": [
+    "type SlaPeriod",
+    "const SLA_PERIOD_DAYS",
+    "const SLA_PERIOD_LABEL",
+    "interface SupplierSlaResult",
+    "function useSupplierSlaData"
+   ],
+   "tables": [
     {
-     "name": "generateSupplierSLAData",
-     "params": "",
-     "body": "const suppliers = [ 'XBZ Brindes', 'Tech Brindes', 'Stricker / Spot Gifts', 'Premium Gifts', 'Asia Import', 'Eco Brindes', ]; return suppliers.map((name) => { const baseCompliance = 80 + Math.random() * 18; const baseOnTime = 85 + Math.random() * 14; const baseLeadTime = 2 + Math.random() * 4; return { name, slaCompliance: Math.round(baseCompliance * 10) / 10, onTimeDelivery: Math.round(baseOnTime * 10) / 10, avgLeadTime: Math.round(baseLeadTime * 10) / 10, totalOrders: Math.floor(20 + Math.rand …"
+     "table": "fornecedores",
+     "op": "select"
+    },
+    {
+     "table": "pedidos",
+     "op": "select"
     }
+   ],
+   "table_cols": {
+    "fornecedores": [
+     "avaliacao",
+     "id",
+     "nome_fantasia",
+     "prazo_medio_entrega",
+     "razao_social",
+     "status"
+    ],
+    "pedidos": [
+     "created_at",
+     "data_emissao",
+     "data_entrega",
+     "data_previsao",
+     "fornecedor_id",
+     "status"
+    ]
+   },
+   "enums": [
+    {
+     "name": "SlaPeriod",
+     "values": "3m | 6m | 12m"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "ativo",
+     "kind": "filtra"
+    }
+   ],
+   "hooks": [
+    "useSupplierSlaData"
+   ],
+   "temporal": [
+    "const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000)"
    ]
   },
   "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts": {
    "path": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-   "lines": 209,
+   "lines": 174,
    "is_test": true,
+   "rule_comments": [
+    "s1: 3 entregas, todas no prazo",
+    "apenas o pedido emitido 20 dias atrás entra na janela de 30 dias"
+   ],
    "tests": [
     "SUPPLIER_COLORS",
     "has 6 supplier entries",
-    "includes XBZ Brindes",
-    "includes Stricker / Spot Gifts",
     "all values are non-empty strings",
-    "XBZ Brindes uses primary CSS variable",
+    "SUPPLIER_PALETTE",
+    "has at least 6 colors to cycle through dynamic suppliers",
     "getSLAColor",
     "returns text-success for value >= 95",
-    "returns text-info for value >= 85 and < 95",
-    "returns text-warning for value >= 75 and < 85",
+    "returns text-info for value >= 85",
+    "returns text-warning for value >= 75",
     "returns text-destructive for value < 75",
-    "boundary at exactly 95",
-    "boundary at exactly 85",
-    "boundary at exactly 75",
-    "returns a string",
     "getSLABgColor",
-    "returns bg-success for value >= 95",
-    "returns bg-info for value >= 85 and < 95",
-    "returns bg-warning for value >= 75 and < 85",
-    "returns bg-destructive for value < 75",
-    "mirrors getSLAColor thresholds (text- vs bg-)",
     "returns a string",
-    "generateSupplierSLAData",
-    "returns an array of 6 suppliers",
-    "each supplier has a name string",
-    "includes XBZ Brindes",
-    "slaCompliance is between 80 and 100",
-    "onTimeDelivery is between 85 and 100",
-    "totalOrders is between 20 and 60",
-    "trend is either up or down",
-    "each supplier has 6 monthlyTrend entries",
-    "monthlyTrend months are Jul through Dez",
-    "each supplier has 6 radarData entries",
-    "radarData includes Pontualidade metric",
-    "qualityScore is between 85 and 100",
-    "lateOrders is non-negative integer"
+    "buildSupplierSLAData",
+    "returns one row per supplier and never invents extra suppliers",
+    "computes compliance from real delivery dates",
+    "counts open orders past the promised date as critical",
+    "keeps null instead of fabricating metrics when there is no sample",
+    "derives lead time from emission to delivery and averages it",
+    "falls back to the registered average lead time when nothing was delivered",
+    "converts the supplier rating to a 0-100 quality score",
+    "produces 6 monthly points ending on the current month",
+    "respects the requested period window",
+    "is deterministic across calls (no random values)",
+    "averageCompliance",
+    "ignores suppliers without sample",
+    "returns null when no supplier has sample"
    ]
   },
   "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx": {
@@ -114024,10 +114077,23 @@
   }
  },
  "git": {
-  "sha": "47920c1d3ce67e73be1ee7060559ee5bdc4d22b5",
+  "sha": "752b1f5efbd775937ad084841541ad227205a487",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "752b1f5",
+    "date": "2026-11-22",
+    "author": "adm01-debug",
+    "subject": "fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "src/components/compras/SLABySupplierAnalysis.tsx",
+     "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
+     "src/components/compras/sla-analysis/slaAnalysisData.ts",
+     "src/components/compras/sla-analysis/useSupplierSlaData.ts"
+    ]
+   },
    {
     "sha": "47920c1",
     "date": "2026-11-22",
@@ -114337,22 +114403,12 @@
     "files": [
      "docs/pendencias/integracao-pim-promo-supply.md"
     ]
-   },
-   {
-    "sha": "8a61f8c",
-    "date": "2026-11-21",
-    "author": "adm01-debug",
-    "subject": "feat(bridge): allowlist aponta só para as views de compras do PIM (#248)",
-    "files": [
-     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-     "supabase/functions/_shared/external-bridge-allowlist.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    10
+    11
    ],
    [
     "src/tests/spot/spotApi.test.ts",
@@ -114383,8 +114439,20 @@
     2
    ],
    [
-    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-    2
+    "src/components/compras/SLABySupplierAnalysis.tsx",
+    1
+   ],
+   [
+    "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
+    1
+   ],
+   [
+    "src/components/compras/sla-analysis/slaAnalysisData.ts",
+    1
+   ],
+   [
+    "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+    1
    ],
    [
     "src/pages/documentos/DocumentosFiscais.tsx",
@@ -114416,18 +114484,6 @@
    ],
    [
     "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useSpotIntegration.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-spot/CatalogoSpot.tsx",
     1
    ]
   ]

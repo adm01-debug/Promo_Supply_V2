@@ -648,10 +648,12 @@
   ],
   "src/components/compras/SLABySupplierAnalysis.tsx": [
    "src/components/compras/sla-analysis/slaAnalysisData.ts",
-   "src/components/ui/badge.tsx",
+   "src/components/compras/sla-analysis/useSupplierSlaData.ts",
+   "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/progress.tsx",
    "src/components/ui/select.tsx",
+   "src/components/ui/skeleton.tsx",
    "src/components/ui/tabs.tsx"
   ],
   "src/components/compras/SLADistributionChart.tsx": [
@@ -971,6 +973,11 @@
    "src/lib/utils.ts"
   ],
   "src/components/compras/scorecard/supplierScorecardData.ts": [
+   "src/features/auth/index.ts",
+   "src/integrations/supabase/client.ts"
+  ],
+  "src/components/compras/sla-analysis/useSupplierSlaData.ts": [
+   "src/components/compras/sla-analysis/slaAnalysisData.ts",
    "src/features/auth/index.ts",
    "src/integrations/supabase/client.ts"
   ],

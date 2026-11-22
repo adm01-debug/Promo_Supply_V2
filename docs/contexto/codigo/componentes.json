@@ -1415,10 +1415,12 @@
    "exports": [
     "SLABySupplierAnalysis"
    ],
-   "export_default": null,
-   "linhas": 384,
+   "export_default": "SLABySupplierAnalysis",
+   "linhas": 437,
    "dominio": "components/compras",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useSupplierSlaData"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -2654,7 +2656,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 176,
+   "usado_por": 175,
    "orfao": false
   },
   {
@@ -2689,7 +2691,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 171,
+   "usado_por": 172,
    "orfao": false
   },
   {
@@ -3346,7 +3348,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 42,
+   "usado_por": 43,
    "orfao": false
   },
   {

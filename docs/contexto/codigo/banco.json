@@ -9427,7 +9427,7 @@
     ],
     "so_no_types": []
    },
-   "usada_no_front": 24,
+   "usada_no_front": 25,
    "usada_em_edges": [
     "guided-buying-ai"
    ],
@@ -12544,7 +12544,7 @@
     "so_na_migration": [],
     "so_no_types": []
    },
-   "usada_no_front": 21,
+   "usada_no_front": 22,
    "usada_em_edges": [
     "check-sla-alerts",
     "weekly-report",

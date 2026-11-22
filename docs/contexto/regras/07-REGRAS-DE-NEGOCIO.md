@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `47920c1d3c` · branch `main` · 2026-11-22 16:19 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `752b1f5efb` · branch `main` · 2026-11-22 16:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1018,7 +1018,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts`<br>`supabase/functions/weekly-report/index.ts`<br>`supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql`<br>… +1 |
 | `status` | `aprovado` | compara, escreve, filtra | `src/components/compras/OrderPreviewModal.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/usePagamentos.ts`<br>`src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/recebimento/RecebimentoOffline.tsx` |
 | `status` | `atencao` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
-| `status` | `ativo` | compara, escreve, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +13 |
+| `status` | `ativo` | compara, escreve, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +14 |
 | `status` | `atrasado` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts` |
 | `status` | `atual` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx` |
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
@@ -1188,6 +1188,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | KpiColor | emerald \| orange \| blue \| purple \| green \| cyan \| red \| indigo \| teal \| violet \| fuchsia | `src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx` |
 | SortOption | prazo \| valor \| data | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | FilterStatus | all \| urgente \| escalado \| normal | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
+| SlaPeriod | 3m \| 6m \| 12m | `src/components/compras/sla-analysis/useSupplierSlaData.ts` |
 | CelebrationType | success \| achievement \| milestone \| streak \| level-up \| purchase \| savings \| record \| first-time | `src/components/ui/celebration-particles.tsx` |
 | StatusType | pending \| processing \| approved \| completed \| cancelled \| error \| warning \| info \| draft \| active \| inactive \| success \| neutral | `src/components/ui/indicators/StatusIndicator.tsx` |
 | AppRole | admin \| coordinator \| buyer \| finance \| viewer \| supplier | `src/features/auth/types/authRoles.ts` |
@@ -1388,10 +1389,6 @@ _nenhum item encontrado_
   ```
   const [weights, setWeights] = useState<ScoreWeights>({ preco: 60, prazo: 20, estoque: 20 }); const [justificativa, setJustificativa] = useState(""); const [showJustifyModal, setShowJustifyModal] = useState(false); const [pendingSelectionId, setPendingSelectionId] = useState<string | null>(null); const confirmSelection = () => { if (pendingSelectionId) { onSelecionar(pendingSelectionId, justificativa); setShowJustifyModal(false); setPendingSelectionId(null); setJustificativa(""); } }; const handl …
   ```
-- **generateHistoricalSLAData()** — `src/components/compras/SLABySupplierAnalysis.tsx`
-  ```
-  const months = ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']; return months.map((month) => ({ month, 'XBZ Brindes': Math.round((85 + Math.random() * 12) * 10) / 10, 'Tech Brindes': Math.round((82 + Math.random() * 14) * 10) / 10, 'Stricker': Math.round((88 + Math.random() * 10) * 10) / 10, 'Premium Gifts': Math.round((90 + Math.random() * 8) * 10) / 10, 'Asia Import': Math.round((78 + Math.random() * 15) * 10) / 10, 'Eco Brindes': Math.round((84 + Math.random() * 12) * 10) / 10, }));
-  ```
 - **PriceTrendChart({ data }: { data: { date: string, price: number }[] })** — `src/components/compras/SourcingHistoryConsole.tsx`
   ```
   (
@@ -1415,10 +1412,6 @@ _nenhum item encontrado_
 - **round(value: number, decimals = 0)** — `src/components/compras/procurement-kpis/deriveKpiSnapshot.ts`
   ```
   const factor = 10 ** decimals; return Math.round(value * factor) / factor;
-  ```
-- **generateSupplierSLAData()** — `src/components/compras/sla-analysis/slaAnalysisData.ts`
-  ```
-  const suppliers = [ 'XBZ Brindes', 'Tech Brindes', 'Stricker / Spot Gifts', 'Premium Gifts', 'Asia Import', 'Eco Brindes', ]; return suppliers.map((name) => { const baseCompliance = 80 + Math.random() * 18; const baseOnTime = 85 + Math.random() * 14; const baseLeadTime = 2 + Math.random() * 4; return { name, slaCompliance: Math.round(baseCompliance * 10) / 10, onTimeDelivery: Math.round(baseOnTime * 10) / 10, avgLeadTime: Math.round(baseLeadTime * 10) / 10, totalOrders: Math.floor(20 + Math.rand …
   ```
 - **ScoresTab({ selectedCotacoes, pieData, getScore }: Pick<ChartProps, 'selectedCotacoes' | 'pieData' | 'getScore'>)** — `src/components/compras/visual-comparador/ComparadorCharts.tsx`
   ```
@@ -1677,6 +1670,7 @@ _nenhum item encontrado_
 | Constante | Valor | Arquivo |
 |---|---|---|
 | `STALE_MS` | `7 * 24 * 60 * 60 * 1000` | `src/components/admin/DependencyHealthBadge.tsx` |
+| `EMPTY` | `'—'` | `src/components/compras/SLABySupplierAnalysis.tsx` |
 | `SIDEBAR_COOKIE_MAX_AGE` | `60 * 60 * 24 * 7` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH` | `"16rem"` | `src/components/ui/sidebar.tsx` |
 | `SIDEBAR_WIDTH_MOBILE` | `"18rem"` | `src/components/ui/sidebar.tsx` |
@@ -1812,6 +1806,8 @@ _nenhum item encontrado_
 | `prazo_limite: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),` | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000).toISOString();` | `src/components/compras/scorecard/supplierScorecardData.ts` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);` | `src/components/compras/scorecard/supplierScorecardData.ts` |
+| `const cutoff = new Date(today.getTime() - periodDays * 24 * 60 * 60 * 1000);` | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
+| `const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000)` | `src/components/compras/sla-analysis/useSupplierSlaData.ts` |
 | `const diffDays = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/compras/solicitacao/SolicitacaoFormSteps.tsx` |
 | `setTimeout(() => setShowSuccess(false), 1500);` | `src/components/mobile/MobileRefreshWrapper.tsx` |
 | `const fimMesAnterior = endOfMonth(subMonths(hoje, 1));` | `src/components/pagamentos/PagamentoAdvancedKPIs.tsx` |
@@ -2369,7 +2365,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2681 testes em 143 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2671 testes em 143 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2387,7 +2383,6 @@ _nenhum item encontrado_
 | `src/pages/aprovacoes/__tests__/aprovacoesData.test.ts` | 39 | approvalHistory · has 4 items · every item has required fields · all ids are unique … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
-| `src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts` | 36 | SUPPLIER_COLORS · has 6 supplier entries · includes XBZ Brindes · includes Stricker / Spot Gifts … |
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
@@ -2411,6 +2406,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/performance.test.ts` | 27 | performanceMonitor · is defined and is an object · exposes mark, measure, trackLCP, trackCLS, trackFID, trackFCP, initAll · has exactly 7 methods (structural completeness) … |
 | `src/services/__tests__/auditServiceConstants.test.ts` | 27 | actionTypeLabels · has exactly 10 action types · covers all 10 expected action types · every label is a non-empty string … |
 | `src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts` | 26 | getScoreColor · returns  · returns  · returns  … |
+| `src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts` | 26 | SUPPLIER_COLORS · has 6 supplier entries · all values are non-empty strings · SUPPLIER_PALETTE … |
 | `src/lib/__tests__/logger.test.ts` | 26 | logger · is a singleton (same instance on re-import) · getRequestId() returns a non-empty string · getRequestId() returns the same value on repeated calls … |
 | `src/lib/__tests__/secureStorage.test.ts` | 25 | secureStorage · setItem + getItem round-trip · stores and retrieves a plain string · stores an empty string and retrieves it … |
 | `src/pages/catalogo-spot/__tests__/spotHelpers.test.ts` | 25 | STATUS_CONFIG · has 10 entries · has key  · each entry has a variant and label … |
@@ -2560,6 +2556,10 @@ _nenhum item encontrado_
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 1. `stepPrazoLimite`   — deadline set directly on the step | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 2. `workflowPrazoLimite` — deadline inherited from the parent workflow | `src/components/compras/pending-approvals/deadlineFallback.ts` |
+| Entregues no prazo / entregues (null sem entrega registrada). */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
+| Entregues no prazo / pedidos com previsao ja vencida (null sem amostra). */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
+| Media de dias entre emissao e entrega; cai para o prazo cadastrado. */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
+| Conformidade media apenas dos fornecedores com amostra. */ | `src/components/compras/sla-analysis/slaAnalysisData.ts` |
 | Permission Section */} | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Vencimento/Pagamento e Valor */} | `src/components/pagamentos/PagamentoMobileCard.tsx` |
 | Prazo e Valor */} | `src/components/pedidos/PedidoMobileCard.tsx` |
