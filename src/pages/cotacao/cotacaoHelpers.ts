@@ -120,68 +120,48 @@ export function adaptCotacoesFromDB(cotacoes: CotacaoRow[]): CotacaoAPI[] {
   });
 }
 
-export async function simulateAPISearch(
-  fornecedores: FornecedorRow[],
-  quantidade: number,
-  produtoId?: string
+/**
+ * Busca cotacoes ja registradas dos fornecedores ativos numa solicitacao.
+ * Nao inventa preco: fornecedor sem cotacao registrada nao apareceu na busca.
+ */
+export async function fetchRegisteredQuotes(
+  solicitacaoId: string,
+  quantidade: number
 ): Promise<CotacaoAPI[]> {
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  const { data, error } = await supabase
+    .from('cotacoes')
+    .select('id, fornecedor_id, valor_unitario, quantidade, valor_frete, prazo_entrega, condicao_pagamento, valor_total, selecionada, score_preco, score_prazo, score_qualidade, score_total, fornecedor:fornecedores(nome_fantasia, razao_social)')
+    .eq('solicitacao_id', solicitacaoId)
+    .not('valor_unitario', 'is', null);
 
-  const suppliersToSearch = fornecedores;
+  if (error) return [];
 
-  // If we have a product context, prioritize linked suppliers from our ecosystem
-  if (produtoId) {
-    const { data: linkedSuppliers } = await supabase
-      .from('produto_fornecedores')
-      .select('fornecedor_id, preco_custo, lead_time_estimado')
-      .eq('produto_id', produtoId);
-    
-    if (linkedSuppliers && linkedSuppliers.length > 0) {
-      // Logic: Boost linked suppliers or filter specifically to them
-      // For simulation, we'll just ensure they are included and have accurate initial data
-      // Debug: Using linked suppliers for simulation
-      // logger.debug('Using linked suppliers for simulation', { linkedSuppliersCount: linkedSuppliers.length });
-    }
-  }
-
-  const apiSuppliers = fornecedores.filter(f => f.integrado_api);
-
-  const results: CotacaoAPI[] = apiSuppliers.map(supplier => {
-    const isEncontrado = Math.random() > 0.3;
-    const status: 'encontrado' | 'nao_encontrado' = isEncontrado ? 'encontrado' : 'nao_encontrado';
-    const valorUnitario = 20 + Math.random() * 15;
-    const frete = Math.random() > 0.5 ? Math.floor(50 + Math.random() * 200) : 0;
+  return (data ?? []).map((c) => {
+    const valorUnitario = nullishNum(c.valor_unitario) ?? 0;
+    const frete = nullishNum(c.valor_frete) ?? 0;
+    const registro = c as unknown as {
+      fornecedor?: { nome_fantasia?: string | null; razao_social?: string | null } | null;
+    };
     return {
-      id: `api-${supplier.id}`,
-      fornecedor: supplier.nome_fantasia || supplier.razao_social,
-      fornecedor_id: supplier.id,
-      status,
+      id: c.id,
+      fornecedor:
+        registro.fornecedor?.nome_fantasia ??
+        registro.fornecedor?.razao_social ??
+        'Fornecedor sem cadastro',
+      fornecedor_id: c.fornecedor_id ?? undefined,
+      status: 'encontrado' as const,
       valorUnitario,
-      quantidadeDisponivel: Math.floor(100 + Math.random() * 500),
-      prazoEntrega: Math.floor(2 + Math.random() * 5),
+      quantidadeDisponivel: nullishNum(c.quantidade) ?? quantidade,
+      prazoEntrega: nullishNum(c.prazo_entrega) ?? 0,
       frete,
       freteInfo: frete > 0 ? `+R$ ${frete}` : 'Incluso',
-      condicaoPagamento: ['À vista', '30 dias', '30/60 dias'][Math.floor(Math.random() * 3)],
-      total: isEncontrado ? (valorUnitario * quantidade) + frete : 0,
+      condicaoPagamento: nullishStr(c.condicao_pagamento, ''),
+      total: nullishNum(c.valor_total) ?? valorUnitario * quantidade + frete,
+      selecionada: nullishBool(c.selecionada) ?? false,
+      score_preco: nullishNum(c.score_preco) ?? undefined,
+      score_prazo: nullishNum(c.score_prazo) ?? undefined,
+      score_qualidade: nullishNum(c.score_qualidade) ?? undefined,
+      score_total: nullishNum(c.score_total) ?? undefined,
     };
   });
-
-  const manualSuppliers = fornecedores.filter(f => !f.integrado_api).slice(0, 3);
-  manualSuppliers.forEach(s => {
-    results.push({
-      id: `manual-${s.id}`,
-      fornecedor: s.nome_fantasia || s.razao_social,
-      fornecedor_id: s.id,
-      status: 'nao_encontrado',
-      valorUnitario: 0,
-      quantidadeDisponivel: 0,
-      prazoEntrega: 0,
-      frete: 0,
-      freteInfo: '',
-      condicaoPagamento: '',
-      total: 0,
-    });
-  });
-
-  return results.filter(r => r.status === 'encontrado');
 }
