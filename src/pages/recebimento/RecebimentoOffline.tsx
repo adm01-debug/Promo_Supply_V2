@@ -33,9 +33,14 @@ import {
   getCachedOrders,
   saveCachedOrders,
   statusFromReceived,
+  aplicarStatusRecebimento,
   buildReceivingObservation,
 } from "./recebimentoHelpers";
+import type { CamposStatusPedido } from "./recebimentoHelpers";
 import { createComplementaryOrder } from "./pedidoComplementar";
+
+const atualizarPedido = async (pedidoId: string, campos: CamposStatusPedido) =>
+  await supabase.from("pedidos").update(campos).eq("id", pedidoId);
 
 export default function RecebimentoOffline() {
   const { user } = useAuth();
@@ -194,11 +199,23 @@ export default function RecebimentoOffline() {
 
         const newStatus = statusFromReceived(selectedOrder.itens, receivedQty);
         if (newStatus) {
-          await supabase.from("pedidos").update({
-            status: newStatus,
-            observacoes: buildReceivingObservation(itemNotes, generalNote),
-            ...(newStatus === "entregue" ? { data_entrega: new Date().toISOString().split("T")[0] } : {}),
-          }).eq("id", selectedOrder.id);
+          const erroStatus = await aplicarStatusRecebimento(
+            atualizarPedido,
+            selectedOrder.id,
+            selectedOrder.status,
+            newStatus,
+            buildReceivingObservation(itemNotes, generalNote),
+          );
+          if (erroStatus) {
+            // A quantidade foi gravada, mas o pedido nao avancou: guarda a entrada
+            // para o sync tentar de novo em vez de anunciar recebimento registrado.
+            const entries = [...offlineEntries, entry];
+            saveOfflineEntries(entries);
+            setOfflineEntries(entries);
+            toast.warning(`Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}`);
+            setSaving(false);
+            return;
+          }
         }
 
         entry.synced = true;
@@ -259,23 +276,28 @@ export default function RecebimentoOffline() {
           ? statusFromReceived(order.itens, Object.fromEntries(entry.items.map(i => [i.item_id, i.quantidade_recebida])))
           : undefined;
         if (newStatus) {
-          await supabase.from("pedidos").update({
-            status: newStatus,
-            ...(newStatus === "entregue" ? { data_entrega: new Date().toISOString().split("T")[0] } : {}),
-          }).eq("id", entry.pedido_id);
+          const erroStatus = await aplicarStatusRecebimento(
+            atualizarPedido,
+            entry.pedido_id,
+            (order as PendingOrder).status,
+            newStatus,
+          );
+          if (erroStatus) throw new Error(erroStatus);
         }
 
         entry.synced = true;
         syncedCount++;
-      } catch {
+      } catch (err: unknown) {
         // Will retry next time
       }
     }
 
-    saveOfflineEntries(offlineEntries);
-    setOfflineEntries([...offlineEntries]);
-
+    // Sem nenhuma entrada sincronizada nada muda: reescrever o array aqui
+    // re-dispararia o efeito de sync em laco enquanto o status falhar.
     if (syncedCount > 0) {
+      saveOfflineEntries(offlineEntries);
+      setOfflineEntries([...offlineEntries]);
+
       toast.success(`${syncedCount} recebimento(s) sincronizado(s)!`);
       fetchOrders();
     }
