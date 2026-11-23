@@ -4357,7 +4357,7 @@
     "SSOConfig"
    ],
    "export_default": "SSOConfig",
-   "linhas": 286,
+   "linhas": 329,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"

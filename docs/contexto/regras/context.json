@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "81f63a505a1de1e1ae7482d33f2dcabf4494688e",
+  "sha": "0369433b7760658f9a405bb171873ff52bb6d3cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 10:12 UTC",
+  "generated_at": "2026-11-23 10:56 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198198,
+  "code_lines": 198242,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e56902f89e5ae510",
+ "facts_hash": "7a3b189d10da724a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35304,7 +35304,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30301,
+   "lines": 30344,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35705,7 +35705,7 @@
   {
    "module": "supabase/functions",
    "files": 102,
-   "lines": 17497,
+   "lines": 17498,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -41188,6 +41188,14 @@
    },
    {
     "file": "src/pages/admin/SSOConfig.tsx",
+    "msg": "Empresa não identificada"
+   },
+   {
+    "file": "src/pages/admin/SSOConfig.tsx",
+    "msg": "Erro ao gerar token SCIM: "
+   },
+   {
+    "file": "src/pages/admin/SSOConfig.tsx",
     "msg": "Erro ao salvar configuração: "
    },
    {
@@ -42668,7 +42676,7 @@
    },
    {
     "file": "supabase/functions/scim-v2/index.ts",
-    "text": "Fail closed: the SCIM bearer token must match the configured secret before"
+    "text": "Fail closed: the SCIM bearer token must match either a tenant hash or the"
    },
    {
     "file": "supabase/functions/scim-v2/index.ts",
@@ -56373,6 +56381,12 @@
     "name": "gerarEtapasEnhanced",
     "params": "pedido: AcompanhamentoPedido",
     "body": "const statusOrdem: Record<string, number> = { AGUARDANDO_COTACAO: 0, EM_COTACAO: 1, FORNECEDOR_SELECIONADO: 2, PEDIDO_GERADO: 2, AGUARDANDO_PAGAMENTO: 3, PAGO: 4, EM_TRANSITO: 4, ENTREGUE: 5, }; const etapaAtual = statusOrdem[pedido.status] ?? 0; const dataBase = new Date(pedido.createdAt); const todasEtapas: TimelineStep[] = [ { id: 'solicitacao', nome: 'Solicitação Criada', status: 'pendente', dataReal: pedido.createdAt, data: new Date(pedido.createdAt).toLocaleDateString('pt-BR'), descricao: …"
+   },
+   {
+    "file": "src/pages/admin/SSOConfig.tsx",
+    "name": "generateScimToken",
+    "params": "",
+    "body": "if (!tenantId) { toast.error('Empresa não identificada'); return; } const bytes = new Uint8Array(32); crypto.getRandomValues(bytes); const token = 'scim_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(''); const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token)); const hash = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join(''); const { error } = await supabase.from('sso_configurations').upsert({ tenant_id: tenantId, …"
    },
    {
     "file": "src/pages/admin-telemetria/telemetriaHelpers.ts",
@@ -103249,7 +103263,7 @@
   },
   "src/pages/admin/SSOConfig.tsx": {
    "path": "src/pages/admin/SSOConfig.tsx",
-   "lines": 286,
+   "lines": 329,
    "exports": [
     "function SSOConfig"
    ],
@@ -103257,6 +103271,10 @@
     {
      "table": "sso_configurations",
      "op": "select"
+    },
+    {
+     "table": "sso_configurations",
+     "op": "upsert"
     },
     {
      "table": "sso_configurations",
@@ -103271,8 +103289,17 @@
    "errors": [
     ";\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ",
     "Domínio já adicionado",
+    "Empresa não identificada",
+    "Erro ao gerar token SCIM: ",
     "Erro ao salvar configuração: ",
     "Informe um domínio válido (ex: empresa.com)"
+   ],
+   "calc_fns": [
+    {
+     "name": "generateScimToken",
+     "params": "",
+     "body": "if (!tenantId) { toast.error('Empresa não identificada'); return; } const bytes = new Uint8Array(32); crypto.getRandomValues(bytes); const token = 'scim_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(''); const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token)); const hash = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join(''); const { error } = await supabase.from('sso_configurations').upsert({ tenant_id: tenantId, …"
+    }
    ]
   },
   "src/pages/admin/ScanRunsSlaCard.tsx": {
@@ -111912,7 +111939,7 @@
   },
   "supabase/functions/scim-v2/index.ts": {
    "path": "supabase/functions/scim-v2/index.ts",
-   "lines": 269,
+   "lines": 270,
    "tables": [
     {
      "table": "sso_configurations",
@@ -111953,7 +111980,7 @@
    ],
    "rule_comments": [
     "M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id).",
-    "Fail closed: the SCIM bearer token must match the configured secret before",
+    "Fail closed: the SCIM bearer token must match either a tenant hash or the",
     "RFC 7644 §3.3: 201 response MUST include a Location header",
     "RFC 7644 §3.12: all errors must use the SCIM Error schema"
    ],
@@ -114906,10 +114933,20 @@
   }
  },
  "git": {
-  "sha": "81f63a505a1de1e1ae7482d33f2dcabf4494688e",
+  "sha": "0369433b7760658f9a405bb171873ff52bb6d3cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0369433",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)",
+    "files": [
+     "src/pages/admin/SSOConfig.tsx",
+     "supabase/functions/scim-v2/index.ts"
+    ]
+   },
    {
     "sha": "81f63a5",
     "date": "2026-11-23",
@@ -115226,15 +115263,6 @@
     "files": [
      "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md"
     ]
-   },
-   {
-    "sha": "a51d0de",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "docs: plano de integração com PIM (Promo Gifts V4) para catálogo de compras (#276)",
-    "files": [
-     "docs/planos/PLANO_PROMO_SUPPLY_SO_COMPRAS_CATALOGO_NO_PROMO_GIFTS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -115275,6 +115303,14 @@
     2
    ],
    [
+    "src/pages/admin/SSOConfig.tsx",
+    1
+   ],
+   [
+    "supabase/functions/scim-v2/index.ts",
+    1
+   ],
+   [
     "docs/qa/00-RESUMO.md",
     1
    ],
@@ -115308,14 +115344,6 @@
    ],
    [
     "src/lib/__tests__/negotiationOutreach.test.ts",
-    1
-   ],
-   [
-    "src/lib/negotiationOutreach.ts",
-    1
-   ],
-   [
-    "src/pages/negociacao-ia/NegociacaoIA.tsx",
     1
    ]
   ]

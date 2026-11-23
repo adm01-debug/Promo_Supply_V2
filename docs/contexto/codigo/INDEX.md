@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `81f63a505a1de1e1ae7482d33f2dcabf4494688e` (2026-11-23T06:55:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0369433b7760658f9a405bb171873ff52bb6d3cd` (2026-11-23T07:55:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1319 |
 | arquivos_codigo | 820 |
-| linhas_codigo | 171240 |
+| linhas_codigo | 171284 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `0369433` fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)
 - 2026-11-23 `81f63a5` docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)
 - 2026-11-22 `d9c58bc` feat(sourcing): substitui dados ficticios por metricas reais no console (#306)
 - 2026-11-22 `2a98db8` feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `ad0c42d` fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)
 - 2026-11-22 `b61b54d` fix(configuracoes): corrige centro de custo pai gravando string "none" em uuid (#291)
 - 2026-11-22 `0e453b0` fix(cotacoes): dedupe exato e carimbo de envio no follow-up de 48h (#290)
-- 2026-11-22 `e81325a` docs(auditoria): marca L03 (spot-api no front) como concluido (#289)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

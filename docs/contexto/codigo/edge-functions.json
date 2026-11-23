@@ -1047,7 +1047,7 @@
    "nome": "scim-v2",
    "entrada": "supabase/functions/scim-v2/index.ts",
    "arquivos": 1,
-   "linhas": 269,
+   "linhas": 270,
    "verify_jwt": false,
    "metodos": [
     "DELETE",

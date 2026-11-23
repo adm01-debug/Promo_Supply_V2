@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81f63a505a` · branch `main` · 2026-11-23 10:12 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0369433b77` · branch `main` · 2026-11-23 10:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1500,6 +1500,10 @@ _nenhum item encontrado_
   ```
   const statusOrdem: Record<string, number> = { AGUARDANDO_COTACAO: 0, EM_COTACAO: 1, FORNECEDOR_SELECIONADO: 2, PEDIDO_GERADO: 2, AGUARDANDO_PAGAMENTO: 3, PAGO: 4, EM_TRANSITO: 4, ENTREGUE: 5, }; const etapaAtual = statusOrdem[pedido.status] ?? 0; const dataBase = new Date(pedido.createdAt); const todasEtapas: TimelineStep[] = [ { id: 'solicitacao', nome: 'Solicitação Criada', status: 'pendente', dataReal: pedido.createdAt, data: new Date(pedido.createdAt).toLocaleDateString('pt-BR'), descricao: …
   ```
+- **generateScimToken()** — `src/pages/admin/SSOConfig.tsx`
+  ```
+  if (!tenantId) { toast.error('Empresa não identificada'); return; } const bytes = new Uint8Array(32); crypto.getRandomValues(bytes); const token = 'scim_' + Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(''); const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token)); const hash = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join(''); const { error } = await supabase.from('sso_configurations').upsert({ tenant_id: tenantId, …
+  ```
 - **computeStats(rows: TelemetryRow[])** — `src/pages/admin-telemetria/telemetriaHelpers.ts`
   ```
   const verySlow = rows.filter(r => r.severity === "very_slow").length; const slow = rows.filter(r => r.severity === "slow").length; const errors = rows.filter(r => r.severity === "error").length; const avgDuration = rows.length > 0 ? Math.round(rows.reduce((s, r) => s + r.duration_ms, 0) / rows.length) : 0; const tableStats = new Map<string, { count: number; totalMs: number; maxMs: number }>(); for (const r of rows) { const key = r.rpc_name || r.table_name || "unknown"; const prev = tableStats.ge …
@@ -2369,7 +2373,7 @@ _nenhum item encontrado_
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
 | CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
-| … +227 linhas — lista completa em `context.json` | |
+| … +229 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2725,7 +2729,7 @@ _nenhum item encontrado_
 | The PunchOut shared secret must never be returned to the browser. | `supabase/functions/punchout-setup/index.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
-| Fail closed: the SCIM bearer token must match the configured secret before | `supabase/functions/scim-v2/index.ts` |
+| Fail closed: the SCIM bearer token must match either a tenant hash or the | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |

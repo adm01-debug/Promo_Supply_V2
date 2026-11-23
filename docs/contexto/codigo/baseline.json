@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "81f63a505a1de1e1ae7482d33f2dcabf4494688e",
+  "commit": "0369433b7760658f9a405bb171873ff52bb6d3cd",
   "branch": "main",
-  "data_commit": "2026-11-23T06:55:19-03:00",
+  "data_commit": "2026-11-23T07:55:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0369433",
+    "data": "2026-11-23",
+    "assunto": "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)"
+   },
    {
     "sha": "81f63a5",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "cb9b3e6",
     "data": "2026-11-22",
     "assunto": "fix(edge): spot-proxy volta a passar no deno check (#280)"
-   },
-   {
-    "sha": "e0eede2",
-    "data": "2026-11-22",
-    "assunto": "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)"
    }
   ],
-  "arquivos_mudados_7d": 292,
+  "arquivos_mudados_7d": 294,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 260
+    "commits": 261
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1319,
   "arquivos_codigo": 820,
-  "linhas_codigo": 171240,
+  "linhas_codigo": 171284,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30301
+   "linhas": 30344
   },
   "src/routes": {
    "arquivos": 1,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 102,
-   "linhas": 17497
+   "linhas": 17498
   },
   "tailwind.config.ts": {
    "arquivos": 1,
