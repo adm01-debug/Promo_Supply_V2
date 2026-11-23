@@ -4,6 +4,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { evaluateScimGate, sha256Hex } from "./auth.ts";
 
 // RFC 7643 §4.1 — SCIM User resource schemas
 const ScimUserPostSchema = z.object({
@@ -33,37 +34,6 @@ function scimErrorResponse(detail: string, status: number, headers: Record<strin
     }),
     { status, headers: buildResponseHeaders(headers) },
   );
-}
-
-const encoder = new TextEncoder();
-
-function toHex(bytes: ArrayBuffer): string {
-  return Array.from(new Uint8Array(bytes))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function safeEqual(a: string, b: string): boolean {
-  const left = encoder.encode(a);
-  const right = encoder.encode(b);
-  if (left.length !== right.length) return false;
-  let diff = 0;
-  for (let i = 0; i < left.length; i += 1) diff |= left[i] ^ right[i];
-  return diff === 0;
-}
-
-async function sha256Hex(value: string): Promise<string> {
-  return toHex(await crypto.subtle.digest("SHA-256", encoder.encode(value)));
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  const encoder = new TextEncoder();
-  const aBytes = encoder.encode(a);
-  const bBytes = encoder.encode(b);
-  if (aBytes.length !== bBytes.length) return false;
-  let diff = 0;
-  for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
-  return diff === 0;
 }
 
 serve(async (req) => {
@@ -117,22 +87,24 @@ serve(async (req) => {
 
     if (configError) throw configError;
 
-    const isTokenValid = (configs ?? []).some((config) =>
-      typeof config.scim_token_hash === "string" && safeEqual(config.scim_token_hash, tokenHash)
+    // QA-047 (EDGA-07): as duas fontes concorrem em ALTERNATIVA. A decisao
+    // fica em ./auth.ts para ser testavel sem rede (auth.test.ts).
+    const gate = evaluateScimGate(
+      token,
+      tokenHash,
+      (configs ?? []).map((config) => config.scim_token_hash),
+      Deno.env.get("SCIM_BEARER_TOKEN"),
     );
-
-    // Fail closed: the SCIM bearer token must match either a tenant hash or the
-    // configured secret before any service-role operation is allowed.
-    const expectedToken = Deno.env.get("SCIM_BEARER_TOKEN");
-    if (!expectedToken && !isTokenValid) {
-      console.error("SCIM has no credential configured; rejecting request");
-      return new Response(JSON.stringify({ error: "SCIM not configured" }), {
-        status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (!isTokenValid && !(expectedToken && timingSafeEqual(token, expectedToken))) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    if (!gate.ok) {
+      const detail = gate.error;
+      if (gate.status === 503) {
+        console.error("SCIM has no credential configured; rejecting request");
+        return new Response(JSON.stringify({ error: detail }), {
+          status: 503,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      return new Response(JSON.stringify({ error: detail }), {
         status: 401,
         headers: buildResponseHeaders(corsHeaders),
       });
