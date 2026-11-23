@@ -38,6 +38,7 @@ export interface SolicitacaoFilters {
   valorMax?: number;
   page?: number;
   pageSize?: number;
+  empresaIds?: string[] | null;
 }
 
 const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
@@ -85,6 +86,7 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
   if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);
   if (filters?.valorMax !== undefined) query = query.lte('valor_estimado', filters.valorMax);
+  if (filters?.empresaIds) query = query.in('tenant_id', filters.empresaIds);
 
   const { data, error, count } = await query;
   if (error) throw error;
@@ -101,6 +103,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
+    filters?.empresaIds ?? 'all',
   ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({

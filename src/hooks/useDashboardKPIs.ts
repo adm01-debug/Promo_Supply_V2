@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
+import { useEmpresaFilter } from '@/features/empresas/hooks/useEmpresaFilter';
 
 export interface KPIComparison {
   current: number;
@@ -62,13 +63,14 @@ interface RpcDashboardMetrics {
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { organizationId, user } = useAuth();
+  const { queryKeyPart } = useEmpresaFilter();
   
   const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;
   const supplierId = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : null;
   const period = filters?.period || '6m';
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard-metrics-optimized', organizationId, period, categoryId, supplierId],
+    queryKey: ['dashboard-metrics-optimized', organizationId, period, categoryId, supplierId, queryKeyPart],
     queryFn: async () => {
       if (!organizationId) return null;
       

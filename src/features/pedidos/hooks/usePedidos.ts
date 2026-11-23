@@ -57,6 +57,7 @@ export interface PedidoFilters {
   dateTo?: string;
   page?: number;
   pageSize?: number;
+  empresaIds?: string[] | null;
 }
 
 const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
@@ -107,6 +108,9 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
   if (filters?.dateTo) {
     query = query.lte('data_emissao', filters.dateTo);
   }
+  if (filters?.empresaIds) {
+    query = query.in('tenant_id', filters.empresaIds);
+  }
 
   const { data, error, count } = await query;
   if (error) throw error;
@@ -122,6 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
     'pedidos', user?.id, organizationId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
+    filters?.empresaIds ?? 'all',
   ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({

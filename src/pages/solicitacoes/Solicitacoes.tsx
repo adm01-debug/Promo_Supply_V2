@@ -29,6 +29,7 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
 import { useSolicitacoes } from "@/features/solicitacoes";
+import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { statusConfig as uiStatusConfig } from "./solicitacoesHelpers";
@@ -89,9 +90,11 @@ const Solicitacoes = () => {
     acctRef.current.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
   }, [searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
+  const { empresaIds } = useEmpresaFilter();
   const { solicitacoes, loading, updateStatus, bulkDelete, bulkUpdateStatus, refetch } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
+    empresaIds,
   });
 
   useRealtimeSubscription({

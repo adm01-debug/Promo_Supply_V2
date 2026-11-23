@@ -36,6 +36,7 @@ export interface PagamentoFilters {
   dateTo?: string;
   page?: number;
   pageSize?: number;
+  empresaIds?: string[] | null;
 }
 
 const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
@@ -78,6 +79,7 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   }
   if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
+  if (filters?.empresaIds) query = query.in('tenant_id', filters.empresaIds);
 
   const { data, error, count } = await query;
   if (error) throw error;
@@ -92,6 +94,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     'pagamentos', user?.id, organizationId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
+    filters?.empresaIds ?? 'all',
   ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
