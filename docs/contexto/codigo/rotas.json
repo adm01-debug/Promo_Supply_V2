@@ -1718,6 +1718,7 @@
     "useDeliveryEvents",
     "useDragControls",
     "useEffect",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useLicitacaoLances",
@@ -1745,6 +1746,7 @@
     "useDashboardKPIs",
     "useDashboardLayoutStore",
     "useDeliveryEvents",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useLicitacaoLances",
@@ -1799,7 +1801,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 74
+   "arquivos_puxados": 75
   },
   {
    "protegida": true,
@@ -3516,6 +3518,7 @@
     "useCallback",
     "useContext",
     "useEffect",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -3538,6 +3541,7 @@
    ],
    "hooks_locais": [
     "useAuth",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -3574,7 +3578,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 65
+   "arquivos_puxados": 66
   },
   {
    "protegida": true,
@@ -3599,6 +3603,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs",
     "useEffect",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useFornecedores",
@@ -3625,6 +3630,7 @@
     "useCreditosFornecedor",
     "useDevolucoes",
     "useDevolucoesKPIs",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useFornecedores",
@@ -3665,7 +3671,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 67
+   "arquivos_puxados": 68
   },
   {
    "protegida": true,
@@ -4837,6 +4843,7 @@
     "useCallback",
     "useContext",
     "useEffect",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -4871,6 +4878,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -4919,7 +4927,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 101
+   "arquivos_puxados": 102
   },
   {
    "protegida": true,

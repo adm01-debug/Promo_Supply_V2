@@ -5182,9 +5182,10 @@
     "Pagamentos"
    ],
    "export_default": "Pagamentos",
-   "linhas": 298,
+   "linhas": 300,
    "dominio": "pages/pagamentos",
    "hooks_locais": [
+    "useEmpresaFilter",
     "useIsMobile",
     "usePagamentos",
     "usePagamentosKPIs"
@@ -5218,9 +5219,10 @@
     "Pedidos"
    ],
    "export_default": "Pedidos",
-   "linhas": 354,
+   "linhas": 356,
    "dominio": "pages/pedidos",
    "hooks_locais": [
+    "useEmpresaFilter",
     "useFornecedores",
     "useIsMobile",
     "usePedidos",
@@ -5409,10 +5411,11 @@
     "Solicitacoes"
    ],
    "export_default": "Solicitacoes",
-   "linhas": 440,
+   "linhas": 443,
    "dominio": "pages/solicitacoes",
    "hooks_locais": [
     "useAccountFilters",
+    "useEmpresaFilter",
     "useRealtimeSubscription",
     "useSolicitacoes"
    ],

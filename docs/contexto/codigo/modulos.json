@@ -30,6 +30,7 @@
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
+    "useEmpresaFilter",
     "useEstoque",
     "useExecutiveDashboardData",
     "useFeedback",
@@ -1923,7 +1924,11 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
-    "features/layout"
+    "features/layout",
+    "hooks",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/solicitacoes"
    ],
    "depende_de_modulos": [
     "components/ui",
@@ -2186,7 +2191,7 @@
    "modulo": "features/pedidos",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 350,
+   "linhas": 355,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2261,7 +2266,7 @@
    "modulo": "features/solicitacoes",
    "arquivos": 3,
    "testes": 3,
-   "linhas": 394,
+   "linhas": 397,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2350,7 +2355,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11550,
+   "linhas": 11562,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2370,6 +2375,7 @@
     "useDashboardKPIs",
     "useDevolucoes",
     "useDevolucoesKPIs",
+    "useEmpresaFilter",
     "useEstoque",
     "useExecutiveDashboardData",
     "useFeedback",
@@ -2723,6 +2729,7 @@
     "components/filters",
     "components/ui",
     "features/auth",
+    "features/empresas",
     "integrations/supabase",
     "lib",
     "pages/catalogo-xbz",
@@ -2940,6 +2947,7 @@
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
+    "useEmpresaFilter",
     "useEstoque",
     "useExecutiveDashboardData",
     "useFeedback",
@@ -4856,6 +4864,7 @@
     "useDashboardKPIs",
     "useDashboardLayoutStore",
     "useDeliveryEvents",
+    "useEmpresaFilter",
     "useExecutiveDashboardData",
     "useFeedback",
     "useFeedbackPreferences",
@@ -6007,7 +6016,7 @@
    "modulo": "pages/pagamentos",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 298,
+   "linhas": 300,
    "itens_menu": [
     "Pagamentos"
    ],
@@ -6018,6 +6027,7 @@
    "componentes": 1,
    "hooks_locais": [
     "useAuth",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -6076,6 +6086,7 @@
     "components/organisms",
     "components/pagamentos",
     "components/ui",
+    "features/empresas",
     "features/layout",
     "hooks",
     "lib"
@@ -6090,7 +6101,7 @@
    "modulo": "pages/pedidos",
    "arquivos": 3,
    "testes": 0,
-   "linhas": 868,
+   "linhas": 870,
    "itens_menu": [
     "Pedidos"
    ],
@@ -6104,6 +6115,7 @@
     "useCreditosFornecedor",
     "useDevolucoes",
     "useDevolucoesKPIs",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useFornecedores",
@@ -6167,6 +6179,7 @@
     "components/organisms",
     "components/pedidos",
     "components/ui",
+    "features/empresas",
     "features/layout",
     "features/pedidos",
     "hooks",
@@ -7146,7 +7159,7 @@
    "modulo": "pages/solicitacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 507,
+   "linhas": 510,
    "itens_menu": [
     "Solicitações"
    ],
@@ -7162,6 +7175,7 @@
     "useApprovalWorkflow",
     "useAuth",
     "useAutoImageCompression",
+    "useEmpresaFilter",
     "useFeedback",
     "useFeedbackPreferences",
     "useHapticFeedback",
@@ -7232,6 +7246,7 @@
     "components/compras",
     "components/organisms",
     "components/ui",
+    "features/empresas",
     "features/layout",
     "features/solicitacoes",
     "hooks",

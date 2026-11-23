@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "106012493fe29f53c2ba27236d507f674edfc89b",
+  "commit": "73dce42ad29b8123c3883dd83624caf50e9865cd",
   "branch": "main",
-  "data_commit": "2026-11-23T08:31:38-03:00",
+  "data_commit": "2026-11-23T10:35:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "73dce42",
+    "data": "2026-11-23",
+    "assunto": "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)"
+   },
    {
     "sha": "1060124",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "d2c6d78",
     "data": "2026-11-22",
     "assunto": "fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)"
-   },
-   {
-    "sha": "752b1f5",
-    "data": "2026-11-22",
-    "assunto": "fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)"
    }
   ],
-  "arquivos_mudados_7d": 304,
+  "arquivos_mudados_7d": 311,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -290,18 +290,18 @@
     "mudancas": 4
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
     "mudancas": 4
    },
    {
-    "arquivo": "src/pages/catalogo-xbz/xbzHelpers.ts",
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 265
+    "commits": 266
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1319,
   "arquivos_codigo": 820,
-  "linhas_codigo": 171471,
+  "linhas_codigo": 171502,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,11 +436,11 @@
   },
   "src/features": {
    "arquivos": 64,
-   "linhas": 8544
+   "linhas": 8552
   },
   "src/hooks": {
    "arquivos": 74,
-   "linhas": 13146
+   "linhas": 13162
   },
   "src/i18n": {
    "arquivos": 1,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30476
+   "linhas": 30483
   },
   "src/routes": {
    "arquivos": 1,

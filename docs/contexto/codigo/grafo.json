@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 623,
- "arestas": 2768,
+ "arestas": 2773,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -221,7 +221,7 @@
   },
   {
    "modulo": "hooks",
-   "depende_de": 9,
+   "depende_de": 10,
    "importado_por": 44
   },
   {
@@ -255,6 +255,11 @@
    "importado_por": 12
   },
   {
+   "modulo": "pages/pedidos",
+   "depende_de": 12,
+   "importado_por": 2
+  },
+  {
    "modulo": "components/organisms",
    "depende_de": 2,
    "importado_por": 11
@@ -265,18 +270,13 @@
    "importado_por": 2
   },
   {
-   "modulo": "pages/pedidos",
-   "depende_de": 11,
-   "importado_por": 2
-  },
-  {
    "modulo": "pages/dashboard",
    "depende_de": 10,
    "importado_por": 2
   },
   {
    "modulo": "pages/solicitacoes",
-   "depende_de": 9,
+   "depende_de": 10,
    "importado_por": 2
   },
   {
@@ -305,9 +305,9 @@
    "importado_por": 2
   },
   {
-   "modulo": "components/mobile",
-   "depende_de": 4,
-   "importado_por": 5
+   "modulo": "pages/pagamentos",
+   "depende_de": 8,
+   "importado_por": 2
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

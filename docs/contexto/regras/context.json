@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "106012493fe29f53c2ba27236d507f674edfc89b",
+  "sha": "73dce42ad29b8123c3883dd83624caf50e9865cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 12:10 UTC",
+  "generated_at": "2026-11-23 13:36 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198429,
+  "code_lines": 198460,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2666fa8f753a7b0d",
+ "facts_hash": "b4a950dc4a5c34fc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34861,7 +34861,7 @@
   {
    "module": "src/features/pedidos",
    "files": 2,
-   "lines": 350,
+   "lines": 355,
    "tables": [
     "pedido_itens",
     "pedidos"
@@ -34889,7 +34889,7 @@
   {
    "module": "src/features/solicitacoes",
    "files": 6,
-   "lines": 730,
+   "lines": 733,
    "tables": [
     "cost_centers",
     "solicitacoes"
@@ -34927,7 +34927,7 @@
   {
    "module": "src/hooks",
    "files": 74,
-   "lines": 13146,
+   "lines": 13162,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35050,6 +35050,7 @@
    "imports_modules": [
     "src/components",
     "src/features/auth",
+    "src/features/empresas",
     "src/integrations",
     "src/lib",
     "src/pages",
@@ -35304,7 +35305,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30476,
+   "lines": 30483,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35421,6 +35422,7 @@
     "src/features/aprovacoes",
     "src/features/auth",
     "src/features/cotacoes",
+    "src/features/empresas",
     "src/features/layout",
     "src/features/pedidos",
     "src/features/solicitacoes",
@@ -97313,7 +97315,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 348,
+   "lines": 353,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -97417,7 +97419,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 365,
+   "lines": 368,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -98552,7 +98554,7 @@
   },
   "src/hooks/useDashboardKPIs.ts": {
    "path": "src/hooks/useDashboardKPIs.ts",
-   "lines": 195,
+   "lines": 197,
    "exports": [
     "interface KPIComparison",
     "interface PipelineData",
@@ -99546,7 +99548,7 @@
   },
   "src/hooks/usePagamentos.ts": {
    "path": "src/hooks/usePagamentos.ts",
-   "lines": 303,
+   "lines": 306,
    "exports": [
     "type Pagamento",
     "interface CreatePagamentoInput",
@@ -100345,7 +100347,7 @@
   },
   "src/hooks/useSidebarBadges.ts": {
    "path": "src/hooks/useSidebarBadges.ts",
-   "lines": 42,
+   "lines": 49,
    "exports": [
     "interface SidebarBadges",
     "function useSidebarBadges"
@@ -100862,7 +100864,7 @@
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
    "path": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-   "lines": 116,
+   "lines": 120,
    "is_test": true,
    "rule_comments": [
     "passou a responder 'forbidden' para organização que não é a do chamador."
@@ -105833,7 +105835,7 @@
   },
   "src/pages/pagamentos/Pagamentos.tsx": {
    "path": "src/pages/pagamentos/Pagamentos.tsx",
-   "lines": 298,
+   "lines": 300,
    "exports": [
     "default Pagamentos"
    ],
@@ -105886,7 +105888,7 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 354,
+   "lines": 356,
    "exports": [
     "default Pedidos"
    ]
@@ -106626,7 +106628,7 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 440,
+   "lines": 443,
    "exports": [
     "default Solicitacoes"
    ]
@@ -114953,10 +114955,28 @@
   }
  },
  "git": {
-  "sha": "106012493fe29f53c2ba27236d507f674edfc89b",
+  "sha": "73dce42ad29b8123c3883dd83624caf50e9865cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "73dce42",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)",
+    "files": [
+     "src/features/auth/hooks/useAuth.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+     "src/hooks/useDashboardKPIs.ts",
+     "src/hooks/usePagamentos.ts",
+     "src/hooks/useSidebarBadges.ts",
+     "src/pages/pagamentos/Pagamentos.tsx",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/solicitacoes/Solicitacoes.tsx"
+    ]
+   },
    {
     "sha": "1060124",
     "date": "2026-11-23",
@@ -115269,24 +115289,16 @@
      "docs/pendencias/_indice.md",
      "supabase/functions/spot-proxy/index.ts"
     ]
-   },
-   {
-    "sha": "e0eede2",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(edge): spot-proxy para de invalidar o token da API WS do spot-api (#279)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "supabase/functions/spot-proxy/index.ts",
-     "supabase/functions/spot-proxy/sessions.ts",
-     "supabase/functions/spot-proxy/sessions_test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    9
+    8
+   ],
+   [
+    "src/features/auth/hooks/useAuth.tsx",
+    2
    ],
    [
     "src/components/compras/SourcingHistoryConsole.tsx",
@@ -115313,8 +115325,40 @@
     2
    ],
    [
-    "supabase/functions/spot-proxy/index.ts",
-    2
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useDashboardKPIs.ts",
+    1
+   ],
+   [
+    "src/hooks/usePagamentos.ts",
+    1
+   ],
+   [
+    "src/hooks/useSidebarBadges.ts",
+    1
+   ],
+   [
+    "src/pages/pagamentos/Pagamentos.tsx",
+    1
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    1
    ],
    [
     "src/features/auth/components/ProtectedRoute.tsx",
@@ -115326,42 +115370,6 @@
    ],
    [
     "src/components/compras/ContractDetailsModal.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/RealNotificationCenter.tsx",
-    1
-   ],
-   [
-    "src/lib/security.ts",
-    1
-   ],
-   [
-    "src/pages/admin/PunchOutCatalogs.tsx",
-    1
-   ],
-   [
-    "supabase/functions/generate-contract-pdf/index.ts",
-    1
-   ],
-   [
-    "index.html",
-    1
-   ],
-   [
-    "src/features/auth/hooks/useAuth.tsx",
-    1
-   ],
-   [
-    "vercel.json",
-    1
-   ],
-   [
-    "vite.config.ts",
-    1
-   ],
-   [
-    "src/pages/historico/HistoricoSourcingTab.tsx",
     1
    ]
   ]

@@ -406,9 +406,14 @@
     "useMemo"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 6,
    "usado_por_arquivos": [
-    "src/features/empresas/index.ts"
+    "src/features/empresas/index.ts",
+    "src/hooks/useDashboardKPIs.ts",
+    "src/hooks/useSidebarBadges.ts",
+    "src/pages/pagamentos/Pagamentos.tsx",
+    "src/pages/pedidos/Pedidos.tsx",
+    "src/pages/solicitacoes/Solicitacoes.tsx"
    ],
    "coberto_por_testes": 0
   },
@@ -504,7 +509,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 348,
+   "linhas": 353,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
@@ -536,7 +541,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 365,
+   "linhas": 368,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "cost_centers",
@@ -1031,7 +1036,7 @@
    "hooks_exportados": [
     "useDashboardKPIs"
    ],
-   "linhas": 195,
+   "linhas": 197,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [
@@ -1040,6 +1045,7 @@
    "edges": [],
    "hooks_internos": [
     "useAuth",
+    "useEmpresaFilter",
     "useQuery"
    ],
    "canais_realtime": [],
@@ -1586,7 +1592,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 303,
+   "linhas": 306,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos"
@@ -2000,7 +2006,7 @@
    "hooks_exportados": [
     "useSidebarBadges"
    ],
-   "linhas": 42,
+   "linhas": 49,
    "dominio": "hooks",
    "tabelas": [
     "approval_workflows",
@@ -2011,7 +2017,8 @@
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
-    "useAuth"
+    "useAuth",
+    "useEmpresaFilter"
    ],
    "canais_realtime": [],
    "usado_por": 1,

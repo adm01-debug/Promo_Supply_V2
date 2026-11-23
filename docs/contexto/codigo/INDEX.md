@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `106012493fe29f53c2ba27236d507f674edfc89b` (2026-11-23T08:31:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `73dce42ad29b8123c3883dd83624caf50e9865cd` (2026-11-23T10:35:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1319 |
 | arquivos_codigo | 820 |
-| linhas_codigo | 171471 |
+| linhas_codigo | 171502 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -78,8 +78,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 3 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
-| hooks | 0 | 0 | 62 | 57 | 7 | 59 |
-| lib | 0 | 0 | 26 | 57 | 8 | 47 |
+| hooks | 0 | 0 | 62 | 58 | 7 | 59 |
+| lib | 0 | 0 | 26 | 58 | 8 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 19 |
@@ -95,7 +95,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/configuracoes | 1 | 1 | 1 | 78 | 9 | 52 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
 | pages/cotacao | 1 | 2 | 2 | 14 | 2 | 14 |
-| pages/dashboard | 3 | 2 | 2 | 28 | 3 | 26 |
+| pages/dashboard | 3 | 2 | 2 | 29 | 3 | 26 |
 | pages/dev | 0 | 1 | 1 | 3 | 2 | 0 |
 | pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
 | pages/documentos | 1 | 1 | 1 | 2 | 2 | 2 |
@@ -107,8 +107,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/licitacoes | 1 | 1 | 2 | 78 | 9 | 52 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 7 |
 | pages/orcamentos | 1 | 1 | 1 | 79 | 9 | 53 |
-| pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 9 |
-| pages/pedidos | 1 | 1 | 3 | 16 | 1 | 11 |
+| pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 9 |
+| pages/pedidos | 1 | 1 | 3 | 17 | 1 | 11 |
 | pages/portal-fornecedor | 0 | 1 | 2 | 79 | 9 | 53 |
 | pages/qualificacao | 1 | 1 | 1 | 79 | 9 | 56 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
@@ -116,7 +116,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 7 | 2 | 8 |
 | pages/seguranca | 0 | 1 | 1 | 85 | 12 | 67 |
-| pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
+| pages/solicitacoes | 1 | 1 | 2 | 21 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
 
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `73dce42` fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)
 - 2026-11-23 `1060124` fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)
 - 2026-11-23 `87d6784` fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)
 - 2026-11-23 `6f38b3e` fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `ec90e1e` fix: liga o Desfazer Global do historico ao undoStore real (#300)
 - 2026-11-22 `ff7a555` chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)
 - 2026-11-22 `cba3145` fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)
-- 2026-11-22 `a23aea5` fix(palette): "Sair" do Command Palette encerra a sessao (#294)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

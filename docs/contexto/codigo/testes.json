@@ -701,7 +701,7 @@
   {
    "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
    "tipo": "unit",
-   "linhas": 116,
+   "linhas": 120,
    "testa": [
     "src/hooks/useDashboardKPIs.ts"
    ],
