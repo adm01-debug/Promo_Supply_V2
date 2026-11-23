@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "77ddaebb9e54238f2add65438bd2254d076ed33c",
+  "sha": "368fe97d41f0921048248c282e6b8b1af201400b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 22:05 UTC",
-  "files_total": 1336,
-  "code_files": 1165,
-  "code_lines": 200000,
+  "generated_at": "2026-11-23 22:07 UTC",
+  "files_total": 1337,
+  "code_files": 1166,
+  "code_lines": 200093,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "264f9c4846360b7f",
+ "facts_hash": "3ff7c3491bf09f72",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 406,
-   ".tsx": 353,
+   ".tsx": 354,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35202,8 +35202,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 75,
-   "lines": 13282,
+   "files": 76,
+   "lines": 13375,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35404,6 +35404,7 @@
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
+    "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
     "src/hooks/__tests__/usePermissions.test.tsx",
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
@@ -61962,6 +61963,18 @@
    {
     "file": "src/hooks/__tests__/useImageCompression.test.ts",
     "name": "should ignore non-image files"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+    "name": "useSourcingEvents.createEvent (VAL-01)"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+    "name": "grava numero sequencial e owner_id junto do evento"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+    "name": "usa fallback com prefixo SRC quando o RPC nao devolve numero"
    },
    {
     "file": "src/hooks/__tests__/usePermissions.test.tsx",
@@ -100377,7 +100390,7 @@
   },
   "src/hooks/useLicitacoes.ts": {
    "path": "src/hooks/useLicitacoes.ts",
-   "lines": 348,
+   "lines": 355,
    "exports": [
     "type Licitacao",
     "type LicitacaoProposta",
@@ -102031,6 +102044,16 @@
     "useAutoImageCompression",
     "should process image files when input changes",
     "should ignore non-image files"
+   ]
+  },
+  "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx": {
+   "path": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+   "lines": 86,
+   "is_test": true,
+   "tests": [
+    "useSourcingEvents.createEvent (VAL-01)",
+    "grava numero sequencial e owner_id junto do evento",
+    "usa fallback com prefixo SRC quando o RPC nao devolve numero"
    ]
   },
   "src/hooks/__tests__/usePermissions.test.tsx": {
@@ -116452,10 +116475,21 @@
   }
  },
  "git": {
-  "sha": "77ddaebb9e54238f2add65438bd2254d076ed33c",
+  "sha": "368fe97d41f0921048248c282e6b8b1af201400b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "368fe97",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+     "src/hooks/useLicitacoes.ts"
+    ]
+   },
    {
     "sha": "77ddaeb",
     "date": "2026-11-23",
@@ -116809,29 +116843,15 @@
      "src/pages/pedidos/Pedidos.tsx",
      "src/pages/solicitacoes/Solicitacoes.tsx"
     ]
-   },
-   {
-    "sha": "1060124",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)",
-    "files": [
-     "src/features/auth/components/ProtectedRoute.tsx",
-     "src/features/layout/components/AppSidebar.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    5
+    6
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
-    3
-   ],
-   [
-    "src/features/auth/components/ProtectedRoute.tsx",
     3
    ],
    [
@@ -116900,6 +116920,10 @@
    ],
    [
     "supabase/functions/generate-contract-pdf/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
     2
    ]
   ]

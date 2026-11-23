@@ -1423,7 +1423,7 @@
     "useSourcingEventDetails",
     "useSourcingEvents"
    ],
-   "linhas": 348,
+   "linhas": 355,
    "dominio": "hooks",
    "tabelas": [
     "categorias",
@@ -1461,7 +1461,7 @@
     "src/pages/sourcing/RFxDetails.tsx",
     "src/pages/sourcing/Sourcing.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useMFA.ts",

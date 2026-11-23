@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `77ddaebb9e` · branch `main` · 2026-11-23 22:05 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `368fe97d41` · branch `main` · 2026-11-23 22:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2402,7 +2402,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2781 testes em 155 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2784 testes em 156 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2545,6 +2545,7 @@ _nenhum item encontrado_
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
+| `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
 | `src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx` | 3 | KPIs do painel fiscal derivados de fiscal_events · mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa · calcula autorizadas, pendentes, erros e latencia media real |

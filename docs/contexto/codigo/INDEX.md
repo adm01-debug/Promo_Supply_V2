@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `77ddaebb9e54238f2add65438bd2254d076ed33c` (2026-11-23T19:05:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `368fe97d41f0921048248c282e6b8b1af201400b` (2026-11-23T19:06:57-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (759), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (760), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1335 |
-| arquivos_codigo | 832 |
-| linhas_codigo | 172816 |
+| arquivos_total | 1336 |
+| arquivos_codigo | 833 |
+| linhas_codigo | 172909 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 206 |
+| testes | 207 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (116), outro (43), co-localizado (*.test) (37)
+- testes: co-localizado (__tests__) (117), outro (43), co-localizado (*.test) (37)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -345,12 +345,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/prod-readiness.md (9)
 - docs/pendencias/_ordem.md (8)
 - AGENTS.md (7)
+- docs/qa/05-PROGRESSO.md (7)
 - supabase/config.toml (7)
 - supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/xbz-proxy/index.ts (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
-- docs/qa/05-PROGRESSO.md (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `368fe97` fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)
 - 2026-11-23 `77ddaeb` fix: receive-os-sync sem verify_jwt (webhook HMAC)
 - 2026-11-23 `4ea4805` fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)
 - 2026-11-23 `c318737` fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `d355ef3` fix(cors): todas as edges derivam o CORS da requisicao (#334)
 - 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
 - 2026-11-23 `a8582d4` fix(auth): preserva a rota e avisa quando a sessao expira (#329)
-- 2026-11-23 `4358c8c` chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

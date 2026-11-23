@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 206,
+ "total": 207,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 189
+  "unit": 190
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 116
+   "arquivos": 117
   },
   {
    "padrao": "outro",
@@ -732,6 +732,15 @@
    "linhas": 63,
    "testa": [
     "src/hooks/useImageCompression.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+   "tipo": "unit",
+   "linhas": 86,
+   "testa": [
+    "src/hooks/useLicitacoes.ts"
    ],
    "casos": 2
   },
@@ -1918,6 +1927,7 @@
   "src/hooks/useGeoRestriction.ts": 1,
   "src/hooks/useImageCompression.ts": 1,
   "src/hooks/useKeyboardShortcuts.ts": 1,
+  "src/hooks/useLicitacoes.ts": 1,
   "src/hooks/usePermissions.ts": 2,
   "src/hooks/usePrefetch.ts": 1,
   "src/hooks/useRecentlyViewed.ts": 1,
@@ -2105,7 +2115,6 @@
    "src/hooks/useFormDirty.ts",
    "src/hooks/useGlobalUndo.ts",
    "src/hooks/useGuidedBuying.ts",
-   "src/hooks/useLicitacoes.ts",
    "src/hooks/useMFA.ts",
    "src/hooks/useMobileGestures.ts",
    "src/hooks/useNavigation.tsx",
