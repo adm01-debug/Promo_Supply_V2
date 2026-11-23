@@ -27,14 +27,16 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirmarPagamento: (id: string, valorParcial?: number) => Promise<boolean>;
+    onAprovarPagamento?: (id: string) => Promise<boolean>;
 }
 
-export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento }: Props) => {
+  export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento, onAprovarPagamento }: Props) => {
   const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const [valorParcial, setValorParcial] = useState("");
   const [uploading, setUploading] = useState(false);
   const [processing, setProcessing] = useState(false);
+    const [approving, setApproving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch credits for this supplier
@@ -171,6 +173,17 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     }
   }, [pagamento, user, saldoRestante, queryClient]);
 
+  const handleAprovar = async () => {
+    if (!pagamento || !onAprovarPagamento) return;
+    setApproving(true);
+    try {
+      const success = await onAprovarPagamento(pagamento.id);
+      if (success) onOpenChange(false);
+    } finally {
+      setApproving(false);
+    }
+  };
+
   const handleConfirmar = async () => {
     if (!pagamento) return;
     setProcessing(true);
@@ -229,6 +242,11 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
           {/* Tab Pagar */}
           {!isPago && (
             <TabsContent value="pagar" className="space-y-4">
+                          {pagamento.status === 'pendente' && (
+                            <p className="rounded-md bg-warning/10 px-3 py-2 text-sm text-warning">
+                              Este pagamento está pendente de aprovação. Aprove antes de registrar o pagamento.
+                            </p>
+                          )}
               {/* Progress bar */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -315,9 +333,15 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
               <Separator />
               <div className="flex gap-2">
                 <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>Cancelar</Button>
-                <Button className="flex-1" onClick={handleConfirmar} disabled={processing}>
-                  {processing ? "Processando..." : valorParcial ? "Pagar Parcial" : "Confirmar Pagamento"}
-                </Button>
+                              {pagamento.status === 'pendente' ? (
+                                <Button className="flex-1" onClick={handleAprovar} disabled={approving || !onAprovarPagamento}>
+                                  {approving ? "Aprovando..." : "Aprovar Pagamento"}
+                                </Button>
+                              ) : (
+                                <Button className="flex-1" onClick={handleConfirmar} disabled={processing}>
+                                  {processing ? "Processando..." : valorParcial ? "Pagar Parcial" : "Confirmar Pagamento"}
+                                </Button>
+                              )}
               </div>
             </TabsContent>
           )}
