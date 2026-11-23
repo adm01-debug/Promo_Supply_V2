@@ -174,38 +174,11 @@ export const useMFA = () => {
     },
   });
 
-  // Generate backup codes
-  const generateBackupCodes = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error('User not authenticated');
-
-      // Generate 10 cryptographically-secure backup codes (8 alnum chars each)
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      const codes: string[] = [];
-      const arr = new Uint32Array(4);
-      for (let i = 0; i < 10; i++) {
-        window.crypto.getRandomValues(arr);
-        let code = '';
-        for (let j = 0; j < 8; j++) {
-          code += chars[arr[j % 4] % chars.length];
-        }
-        codes.push(code);
-      }
-
-      await supabase.from('mfa_settings').update({
-        backup_codes: codes,
-      }).eq('user_id', user.id);
-
-      return codes;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['mfa-settings'] });
-      toast.success('Códigos de backup gerados');
-    },
-    onError: (error) => {
-      toast.error('Erro ao gerar códigos: ' + error.message);
-    },
-  });
+  // QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de
+  // entropia (arr[j % 4] com buffer de 4 posicoes), gravada em texto puro em
+  // mfa_settings.backup_codes e nunca verificada por nenhum fluxo (grep por
+  // backup_codes em src/ e supabase/functions/ devolvia so este arquivo).
+  // Para reativar: hash com crypto.subtle e uma edge que consuma o codigo.
 
   // Check if MFA is required for this session
   const checkMFARequired = async (): Promise<boolean> => {
@@ -224,7 +197,6 @@ export const useMFA = () => {
     verifyEnrollment,
     verifyMFA,
     disableMFA,
-    generateBackupCodes,
     checkMFARequired,
   };
 };
