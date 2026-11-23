@@ -37,24 +37,36 @@ export const usePermissions = () => {
     enabled: !!user,
   });
 
-  // Fetch user's role permissions
+  // Fetch user's role permissions via SECURITY DEFINER RPC (bypasses RLS on role_permissions).
+  // For admin the admin-shortcut in hasPermission fires first, so we skip the RPC.
   const { data: userPermissions, isLoading: userPermissionsLoading } = useQuery({
-    queryKey: ['user-permissions', role],
+    queryKey: ['user-permissions', user?.id],
     queryFn: async () => {
-      if (!role) return [];
+      if (!user) return [];
 
-      const { data, error } = await supabase
-        .from('role_permissions')
-        .select(`
-          *,
-          permission:permissions(*)
-        `)
-        .eq('role', role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer');
-
+      // A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast
+      // libera o typecheck até `types.ts` ser regenerado.
+      const { data, error } = await supabase.rpc('get_my_permissions' as never);
       if (error) throw error;
-      return data as (RolePermission & { permission: Permission })[];
+
+      // Reshape to the same structure consumers expect
+      return (data as { module: string; action: string }[]).map((row) => ({
+        id: `${row.module}:${row.action}`,
+        role: role ?? '',
+        permission_id: `${row.module}:${row.action}`,
+        created_at: '',
+        permission: {
+          id: `${row.module}:${row.action}`,
+          name: `${row.module}.${row.action}`,
+          description: null,
+          module: row.module,
+          action: row.action,
+          created_at: '',
+        } as Permission,
+      })) as (RolePermission & { permission: Permission })[];
     },
-    enabled: !!user && !!role,
+    enabled: !!user && !isAdmin,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Fetch ALL role permissions (admin matrix only)
@@ -78,12 +90,8 @@ export const usePermissions = () => {
   // Check if user has specific permission
   const hasPermission = (module: string, action: string): boolean => {
     if (!role) return false;
-    
-    // Admin has all permissions
-    if (role === 'admin') return true;
-    
+    if (isAdmin) return true;
     if (!userPermissions) return false;
-    
     return userPermissions.some(
       rp => rp.permission?.module === module && rp.permission?.action === action
     );
