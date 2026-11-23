@@ -80,7 +80,7 @@ _(vazio)_
   - Evidencia: PR #315 (mergeada) - src/lib/security.ts: safeExternalUrl bloqueia javascript:/data:/vbscript:.
 - [x] 033 — (parte 2/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
   - Evidencia: PR #315 (mergeada) - RealNotificationCenter usa safeExternalUrl em action_url; PunchOutCatalogs tambem.
-- [ ] 034 — Códigos de backup de MFA têm 4 caracteres de entropia e repetem a primeira metade (regressão da PR #183), são gravados em texto puro e nunca são verif — onda 1 — Alta — SEC-03
+- [x] 034 — Códigos de backup de MFA têm 4 caracteres de entropia e repetem a primeira metade (regressão da PR #183), são gravados em texto puro e nunca são verif — onda 1 — Alta — SEC-03
 - [ ] 035 — (parte 1/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
 - [ ] 036 — (parte 2/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
 - [ ] 037 — (parte 1/2) Painel 'Sessões Ativas' é decorativo: nada popula `active_sessions` e 'Encerrar Sessão' só apaga uma linha, sem revogar o token do disposi — onda 1 — Alta — SEC-05
@@ -89,11 +89,11 @@ _(vazio)_
 - [ ] 040 — (parte 1/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
 - [ ] 041 — (parte 2/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
 - [ ] 042 — Nenhuma tela distingue 'sem permissão' de 'sem dados': o papel viewer não tem SELECT em pedidos, cotações, fornecedores, contratos, pagamentos, docume — onda 1 — Média — AUT-07
-- [ ] 043 — Sessão expirada no meio da navegação joga o usuário em /auth sem guardar a rota e sem avisar; depois do login ele sempre volta para /compras e perde a — onda 1 — Média — AUT-08
-- [ ] 044 — O Command Palette anuncia 11 atalhos de teclado que não existem, vários deles colidindo com atalhos destrutivos do navegador (⌘Q, ⌘P, ⌘S, ⌘T), e exibe — onda 1 — Média — AUT-09
-- [ ] 045 — (parte 1/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
-- [ ] 046 — (parte 2/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
-- [ ] 047 — O gate do scim-v2 exige o segredo global E o hash por empresa ao mesmo tempo: com `sso_configurations` vazia nenhuma chamada SCIM passa, e o token ger — onda 1 — Média — EDGA-07
+- [x] 043 — Sessão expirada no meio da navegação joga o usuário em /auth sem guardar a rota e sem avisar; depois do login ele sempre volta para /compras e perde a — onda 1 — Média — AUT-08
+- [x] 044 — O Command Palette anuncia 11 atalhos de teclado que não existem, vários deles colidindo com atalhos destrutivos do navegador (⌘Q, ⌘P, ⌘S, ⌘T), e exibe — onda 1 — Média — AUT-09
+- [x] 045 — (parte 1/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
+- [x] 046 — (parte 2/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
+- [x] 047 — O gate do scim-v2 exige o segredo global E o hash por empresa ao mesmo tempo: com `sso_configurations` vazia nenhuma chamada SCIM passa, e o token ger — onda 1 — Média — EDGA-07
 - [ ] 048 — withIdempotency responde do cache antes de autenticar e a chave vem do cliente sem escopo de usuario: em punchout-setup um usuario recebe a resposta g — onda 1 — Média — EDGA-08
 - [ ] 049 — validateBody grava o corpo inteiro da requisicao em telemetry_logs a cada falha de validacao, porque a condicao que deveria redigi-lo (`logger.info ?` — onda 1 — Média — EDGA-09
 - [ ] 050 — Migration: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
