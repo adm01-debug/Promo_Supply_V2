@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "99345f55a55e834c881a9c117cbbf4bba270e165",
+  "sha": "d16d88cc4e17cd6000a173afb5bdba1c685acc99",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 14:52 UTC",
+  "generated_at": "2026-11-23 15:19 UTC",
   "files_total": 1321,
   "code_files": 1150,
-  "code_lines": 198476,
+  "code_lines": 198347,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9b2a565e0617f9c9",
+ "facts_hash": "97ff8cd3de11dd83",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34427,7 +34427,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 49234,
+   "lines": 49133,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34931,7 +34931,7 @@
   {
    "module": "src/hooks",
    "files": 74,
-   "lines": 13162,
+   "lines": 13134,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -40942,10 +40942,6 @@
    },
    {
     "file": "src/hooks/useMFA.ts",
-    "msg": "Erro ao gerar códigos: "
-   },
-   {
-    "file": "src/hooks/useMFA.ts",
     "msg": "No TOTP factor found"
    },
    {
@@ -42251,6 +42247,10 @@
    {
     "file": "src/hooks/useFornecedores.ts",
     "text": "CNPJ validation helper"
+   },
+   {
+    "file": "src/hooks/useMFA.ts",
+    "text": "QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de"
    },
    {
     "file": "src/hooks/useMFA.ts",
@@ -95218,7 +95218,7 @@
   },
   "src/components/security/MFASettings.tsx": {
    "path": "src/components/security/MFASettings.tsx",
-   "lines": 347,
+   "lines": 246,
    "exports": [
     "const MFASettings"
    ],
@@ -99445,7 +99445,7 @@
   },
   "src/hooks/useMFA.ts": {
    "path": "src/hooks/useMFA.ts",
-   "lines": 231,
+   "lines": 203,
    "exports": [
     "interface MFASettings",
     "const useMFA"
@@ -99466,10 +99466,6 @@
     {
      "table": "mfa_settings",
      "op": "update"
-    },
-    {
-     "table": "mfa_settings",
-     "op": "update"
     }
    ],
    "table_cols": {
@@ -99481,11 +99477,11 @@
     "Código inválido: ",
     "Erro ao configurar MFA: ",
     "Erro ao desativar MFA: ",
-    "Erro ao gerar códigos: ",
     "No TOTP factor found",
     "User not authenticated"
    ],
    "rule_comments": [
+    "QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de",
     "Check if MFA is required for this session"
    ],
    "hooks": [
@@ -115040,10 +115036,29 @@
   }
  },
  "git": {
-  "sha": "99345f55a55e834c881a9c117cbbf4bba270e165",
+  "sha": "d16d88cc4e17cd6000a173afb5bdba1c685acc99",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d16d88c",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(contrato): escapeHtml tambem escapa apostrofo (#328)",
+    "files": [
+     "supabase/functions/generate-contract-pdf/index.ts"
+    ]
+   },
+   {
+    "sha": "e02eb15",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(mfa): remove backup codes inseguros e sem consumidor (#327)",
+    "files": [
+     "src/components/security/MFASettings.tsx",
+     "src/hooks/useMFA.ts"
+    ]
+   },
    {
     "sha": "99345f5",
     "date": "2026-11-23",
@@ -115346,34 +115361,16 @@
     "files": [
      "docs/auditoria-implementacao-261120.md"
     ]
-   },
-   {
-    "sha": "bc442e6",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat(spot): permite disparar a sincronizacao do catalogo pela tela (#288)",
-    "files": [
-     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
-    ]
-   },
-   {
-    "sha": "b9303d3",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
-     "src/pages/cotacao/cotacaoHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/features/auth/hooks/useAuth.tsx",
     3
+   ],
+   [
+    "supabase/functions/generate-contract-pdf/index.ts",
+    2
    ],
    [
     "docs/qa/05-PROGRESSO.md",
@@ -115400,8 +115397,12 @@
     2
    ],
    [
-    "docs/pendencias/_indice.md",
-    2
+    "src/components/security/MFASettings.tsx",
+    1
+   ],
+   [
+    "src/hooks/useMFA.ts",
+    1
    ],
    [
     "supabase/functions/_shared/cors-allowlist.test.ts",
@@ -115441,14 +115442,6 @@
    ],
    [
     "supabase/functions/dependency-health/index.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/telemetry/index.test.ts",
-    1
-   ],
-   [
-    "src/features/auth/hooks/AuthContext.ts",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `99345f55a55e834c881a9c117cbbf4bba270e165` (2026-11-23T11:21:58-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d16d88cc4e17cd6000a173afb5bdba1c685acc99` (2026-11-23T11:47:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1320 |
 | arquivos_codigo | 821 |
-| linhas_codigo | 171518 |
+| linhas_codigo | 171389 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -417,6 +417,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `d16d88c` fix(contrato): escapeHtml tambem escapa apostrofo (#328)
+- 2026-11-23 `e02eb15` fix(mfa): remove backup codes inseguros e sem consumidor (#327)
 - 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
 - 2026-11-23 `e33a738` fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)
 - 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
@@ -430,8 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `6f38b3e` fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)
 - 2026-11-23 `88646df` fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)
 - 2026-11-23 `0369433` fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)
-- 2026-11-23 `81f63a5` docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)
-- 2026-11-22 `d9c58bc` feat(sourcing): substitui dados ficticios por metricas reais no console (#306)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

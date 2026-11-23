@@ -2416,7 +2416,7 @@
     "MFASettings"
    ],
    "export_default": null,
-   "linhas": 347,
+   "linhas": 246,
    "dominio": "components/security",
    "hooks_locais": [
     "useMFA"

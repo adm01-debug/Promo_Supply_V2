@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(contrato): escapeHtml tambem escapa apostrofo (#328)",
+   "fix(mfa): remove backup codes inseguros e sem consumidor (#327)",
    "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)",
    "fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)",
-   "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)",
-   "fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)",
-   "fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)"
+   "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)"
   ]
  },
  "pr_template": null,

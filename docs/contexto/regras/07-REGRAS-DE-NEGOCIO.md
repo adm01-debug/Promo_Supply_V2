@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `99345f55a5` · branch `main` · 2026-11-23 14:52 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d16d88cc4e` · branch `main` · 2026-11-23 15:19 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2328,7 +2328,6 @@ _nenhum item encontrado_
 | Código inválido:  | `src/hooks/useMFA.ts` |
 | Erro ao configurar MFA:  | `src/hooks/useMFA.ts` |
 | Erro ao desativar MFA:  | `src/hooks/useMFA.ts` |
-| Erro ao gerar códigos:  | `src/hooks/useMFA.ts` |
 | No TOTP factor found | `src/hooks/useMFA.ts` |
 | User not authenticated | `src/hooks/useMFA.ts` |
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
@@ -2373,7 +2372,8 @@ _nenhum item encontrado_
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
-| … +230 linhas — lista completa em `context.json` | |
+| CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
+| … +229 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2620,6 +2620,7 @@ _nenhum item encontrado_
 | origem da regra, ex: 'spot_customization' */ | `src/hooks/useCatalogoPim.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
+| QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de | `src/hooks/useMFA.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |
 | Check if user has specific permission | `src/hooks/usePermissions.ts` |
 | * Prefetch keys must match the live query keys used by feature hooks so that | `src/hooks/usePrefetch.ts` |

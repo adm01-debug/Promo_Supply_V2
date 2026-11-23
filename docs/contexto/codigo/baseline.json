@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "99345f55a55e834c881a9c117cbbf4bba270e165",
+  "commit": "d16d88cc4e17cd6000a173afb5bdba1c685acc99",
   "branch": "main",
-  "data_commit": "2026-11-23T11:21:58-03:00",
+  "data_commit": "2026-11-23T11:47:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d16d88c",
+    "data": "2026-11-23",
+    "assunto": "fix(contrato): escapeHtml tambem escapa apostrofo (#328)"
+   },
+   {
+    "sha": "e02eb15",
+    "data": "2026-11-23",
+    "assunto": "fix(mfa): remove backup codes inseguros e sem consumidor (#327)"
+   },
    {
     "sha": "99345f5",
     "data": "2026-11-23",
@@ -121,19 +131,9 @@
     "sha": "a23aea5",
     "data": "2026-11-22",
     "assunto": "fix(palette): \"Sair\" do Command Palette encerra a sessao (#294)"
-   },
-   {
-    "sha": "53725ba",
-    "data": "2026-11-22",
-    "assunto": "fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)"
-   },
-   {
-    "sha": "ad0c42d",
-    "data": "2026-11-22",
-    "assunto": "fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)"
    }
   ],
-  "arquivos_mudados_7d": 323,
+  "arquivos_mudados_7d": 324,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 273
+    "commits": 275
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1320,
   "arquivos_codigo": 821,
-  "linhas_codigo": 171518,
+  "linhas_codigo": 171389,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -432,7 +432,7 @@
   },
   "src/components": {
    "arquivos": 263,
-   "linhas": 49234
+   "linhas": 49133
   },
   "src/features": {
    "arquivos": 64,
@@ -440,7 +440,7 @@
   },
   "src/hooks": {
    "arquivos": 74,
-   "linhas": 13162
+   "linhas": 13134
   },
   "src/i18n": {
    "arquivos": 1,
