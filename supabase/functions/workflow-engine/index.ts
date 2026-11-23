@@ -2,17 +2,18 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4'
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { WorkflowContract } from "../_shared/contracts.ts";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: cors })
   }
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -25,7 +26,7 @@ serve(async (req) => {
     const { user } = await getAuthUser(req);
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: buildResponseHeaders(corsHeaders),
+        status: 401, headers: buildResponseHeaders(cors),
       });
     }
 
@@ -104,7 +105,7 @@ serve(async (req) => {
         status: "success",
         timestamp: new Date().toISOString()
       }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
         status: 200,
       })
 
@@ -125,7 +126,7 @@ serve(async (req) => {
       if (instanceErr) throw instanceErr;
       if (!instanceCheck) {
         return new Response(JSON.stringify({ error: 'Forbidden: instance not found in your tenant' }), {
-          status: 403, headers: buildResponseHeaders(corsHeaders),
+          status: 403, headers: buildResponseHeaders(cors),
         });
       }
 
@@ -137,7 +138,7 @@ serve(async (req) => {
 
       if (sodError) throw sodError
       if (!sodOk) {
-        return errorResponse(new Error('Security error: SoD Violation: Approver cannot approve this step.'), logger);
+        return errorResponse(new Error('Security error: SoD Violation: Approver cannot approve this step.'), logger, cors);
 
       }
 
@@ -157,7 +158,7 @@ serve(async (req) => {
         status: "success",
         timestamp: new Date().toISOString()
       }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
         status: 200,
       })
     }
@@ -166,6 +167,6 @@ serve(async (req) => {
 
 
   } catch (error) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 })

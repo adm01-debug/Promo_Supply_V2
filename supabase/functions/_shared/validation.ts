@@ -1,7 +1,5 @@
 import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "./logger.ts";
-// Re-export canonical CORS headers (single source of truth — security.ts).
-export { corsHeaders } from "./security.ts";
 import { safeErrorMessage } from "./security.ts";
 
 /**
@@ -40,7 +38,11 @@ export async function validateBody<T>(
 /**
  * Standardized error response with proper status codes and logging.
  */
-export function errorResponse(error: unknown, logger?: EdgeLogger, headers = corsHeaders) {
+export function errorResponse(
+  error: unknown,
+  logger?: EdgeLogger,
+  headers: Record<string, string> = {},
+) {
   const message = safeErrorMessage(error);
   const requestId = logger?.getRequestId() || "req_" + crypto.randomUUID().slice(0, 8);
   

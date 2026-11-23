@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -90,14 +90,15 @@ function classifyStatus(
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -109,7 +110,7 @@ Deno.serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -123,7 +124,7 @@ Deno.serve(async (req) => {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -149,7 +150,7 @@ Deno.serve(async (req) => {
       logger.warn("bridge request rejected", { userId: user.id, operation, table, rpcName, reason: authz.reason });
       return new Response(
         JSON.stringify({ error: authz.reason }),
-        { status: authz.status, headers: buildResponseHeaders(corsHeaders) },
+        { status: authz.status, headers: buildResponseHeaders(cors) },
       );
     }
 
@@ -162,7 +163,7 @@ Deno.serve(async (req) => {
     });
     if (!rl.allowed) {
       logger.warn("bridge rate limited", { userId: user.id, retryAfter: rl.retryAfterSeconds });
-      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+      return rateLimitedResponse(rl.retryAfterSeconds, cors);
     }
 
     // Get external DB credentials
@@ -174,7 +175,7 @@ Deno.serve(async (req) => {
     if (!externalUrl || !externalKey) {
       return new Response(
         JSON.stringify({ error: "External database not configured" }),
-        { status: 500, headers: buildResponseHeaders(corsHeaders) }
+        { status: 500, headers: buildResponseHeaders(cors) }
       );
     }
 
@@ -258,7 +259,7 @@ Deno.serve(async (req) => {
       default:
         return new Response(
           JSON.stringify({ error: `Unsupported operation: ${operation}` }),
-          { status: 400, headers: buildResponseHeaders(corsHeaders) }
+          { status: 400, headers: buildResponseHeaders(cors) }
         );
     }
 
@@ -284,7 +285,7 @@ Deno.serve(async (req) => {
     if (hasError) {
       return new Response(
         JSON.stringify({ error: (result.error as { message?: string })?.message }),
-        { status: 400, headers: buildResponseHeaders(corsHeaders) }
+        { status: 400, headers: buildResponseHeaders(cors) }
       );
     }
 
@@ -294,7 +295,7 @@ Deno.serve(async (req) => {
         count: result.count ?? null,
         meta: { durationMs, status, recordCount },
       }),
-      { headers: buildResponseHeaders(corsHeaders) }
+      { headers: buildResponseHeaders(cors) }
     );
   } catch (err) {
     if (typeof logger !== 'undefined') {
@@ -304,7 +305,7 @@ Deno.serve(async (req) => {
     }
     return new Response(
       JSON.stringify({ error: err.message || "Internal server error" }),
-      { status: 500, headers: buildResponseHeaders(corsHeaders) }
+      { status: 500, headers: buildResponseHeaders(cors) }
     );
   }
 });

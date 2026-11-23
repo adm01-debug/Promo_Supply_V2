@@ -14,7 +14,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 import { z } from "https://esm.sh/zod@3.22.4";
@@ -32,8 +32,9 @@ const campos = [
 ] as const;
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
@@ -53,7 +54,7 @@ Deno.serve(async (req) => {
     if (authError || !user) throw new Error("Nao autorizado: token invalido");
 
     const rl = await checkRateLimit({ identifier: user.id, endpoint: "process-solicitacao-neural", maxRequests: 30, windowSeconds: 60 });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const { input } = await validateBody(req, NeuralDraftContract, logger);
 
@@ -92,7 +93,7 @@ Deno.serve(async (req) => {
         const produto = input.slice(0, 200);
         return { fields: { produto, observacoes: input }, requestId };
       },
-      corsHeaders,
+      cors,
     );
 
     if (usedFallback) return response;
@@ -124,9 +125,9 @@ Deno.serve(async (req) => {
     logger.info("Neural draft generated");
 
     return new Response(JSON.stringify({ fields, requestId }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   } catch (error: unknown) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 });

@@ -1,4 +1,4 @@
-import { corsHeaders, stripHtml } from "../_shared/security.ts";
+import { stripHtml, buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import {
   isLoginRedirect,
@@ -772,14 +772,15 @@ async function handleCheckout(supabase: ReturnType<typeof getSupabaseAdmin>, add
 
 // MAIN HANDLER
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Método não permitido" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -800,7 +801,7 @@ Deno.serve(async (req) => {
     const rl = await checkRateLimit({ identifier: userId, endpoint: "spot-proxy", maxRequests: 60, windowSeconds: 60 });
     if (!rl.allowed) {
       logger.warn("spot-proxy rate limited", { userId, retry: rl.retryAfterSeconds });
-      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+      return rateLimitedResponse(rl.retryAfterSeconds, cors);
     }
 
     const body = await readJsonBody(req);
@@ -868,7 +869,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
@@ -881,7 +882,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ error: msg }), {
       status,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 });

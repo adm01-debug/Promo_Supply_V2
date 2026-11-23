@@ -1,25 +1,26 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
   // A-10 (Onda 49): idempotência universal.
   // Reprocessos com o mesmo X-Idempotency-Key (ou mesmo body) devolvem a resposta
   // cacheada em vez de criar novas sessões punchout duplicadas.
-  return await withIdempotency("punchout-setup", req, corsHeaders, async (bodyText) => {
+  return await withIdempotency("punchout-setup", req, cors, async (bodyText) => {
     const authClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""

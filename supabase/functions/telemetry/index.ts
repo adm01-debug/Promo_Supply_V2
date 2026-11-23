@@ -2,14 +2,15 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { TelemetryContract } from "../_shared/contracts.ts";
 import { buildTelemetryRow } from "../_shared/logLevel.ts";
 import { getTenantId, type SupabaseClientLike } from "../_shared/security.ts";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -31,7 +32,7 @@ serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
     const { data: authData } = await supabaseClient.auth.getUser();
@@ -39,7 +40,7 @@ serve(async (req) => {
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -48,7 +49,7 @@ serve(async (req) => {
     try {
       rawBody = await req.json();
     } catch (_e) {
-      return errorResponse(new Error("Invalid JSON body"), logger);
+      return errorResponse(new Error("Invalid JSON body"), logger, cors);
     }
 
     const entries: any[] = Array.isArray(rawBody?.batch) ? rawBody.batch : [rawBody];
@@ -87,7 +88,7 @@ serve(async (req) => {
 
     if (rows.length === 0) {
       return new Response(JSON.stringify({ success: true, inserted: 0, requestId }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
         status: 200,
       });
     }
@@ -99,10 +100,10 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ success: true, inserted: rows.length, requestId }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
       status: 200,
     });
   } catch (error) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 });

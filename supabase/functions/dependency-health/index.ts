@@ -1,4 +1,4 @@
-import { corsHeaders, safeErrorMessage } from "../_shared/security.ts";
+import { buildCorsHeaders, safeErrorMessage } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { safeTruncate } from "../_shared/logLevel.ts";
 
@@ -9,7 +9,9 @@ const GITHUB_REPO_RAW_BASE = Deno.env.get("GITHUB_REPO_RAW_BASE") ?? "";
 const GITHUB_DISPATCH_TOKEN = Deno.env.get("GITHUB_DISPATCH_TOKEN") ?? "";
 const DISPATCH_WORKFLOW_FILE = "dependency-health.yml";
 
-function deriveOwnerRepo(rawBase: string): { owner: string; repo: string } | null {
+function deriveOwnerRepo(
+  rawBase: string,
+): { owner: string; repo: string } | null {
   try {
     const url = new URL(rawBase);
     const parts = url.pathname.split("/").filter(Boolean);
@@ -48,11 +50,22 @@ async function fetchLatestCommit(
   owner: string,
   repo: string,
   branch: string,
-): Promise<Pick<DispatchInfo, "latestCommitSha" | "latestCommitUrl" | "latestCommitMessage" | "latestCommitAuthor" | "latestCommitAt">> {
+): Promise<
+  Pick<
+    DispatchInfo,
+    | "latestCommitSha"
+    | "latestCommitUrl"
+    | "latestCommitMessage"
+    | "latestCommitAuthor"
+    | "latestCommitAt"
+  >
+> {
   if (!GITHUB_DISPATCH_TOKEN) return {};
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/commits/${encodeURIComponent(branch)}`,
+      `https://api.github.com/repos/${owner}/${repo}/commits/${
+        encodeURIComponent(branch)
+      }`,
       {
         headers: {
           Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
@@ -71,7 +84,10 @@ async function fetchLatestCommit(
     return {
       latestCommitSha: body?.sha,
       latestCommitUrl: body?.html_url,
-      latestCommitMessage: safeTruncate(String(body?.commit?.message ?? "").split("\n")[0] ?? "", 200),
+      latestCommitMessage: safeTruncate(
+        String(body?.commit?.message ?? "").split("\n")[0] ?? "",
+        200,
+      ),
       latestCommitAuthor: body?.commit?.author?.name ?? body?.author?.login,
       latestCommitAt: body?.commit?.author?.date,
     };
@@ -85,14 +101,18 @@ async function fetchLatestWorkflowRun(
   repo: string,
   branch: string,
   dispatchedAtMs: number,
-): Promise<Pick<DispatchInfo, "workflowRunUrl" | "workflowRunId" | "workflowRunStatus">> {
+): Promise<
+  Pick<DispatchInfo, "workflowRunUrl" | "workflowRunId" | "workflowRunStatus">
+> {
   if (!GITHUB_DISPATCH_TOKEN) return {};
   // GitHub takes a moment to register the run after dispatch; poll briefly.
   for (let attempt = 0; attempt < 4; attempt++) {
     await new Promise((r) => setTimeout(r, attempt === 0 ? 800 : 1200));
     try {
       const res = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/runs?branch=${encodeURIComponent(branch)}&event=workflow_dispatch&per_page=5`,
+        `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/runs?branch=${
+          encodeURIComponent(branch)
+        }&event=workflow_dispatch&per_page=5`,
         {
           headers: {
             Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
@@ -109,7 +129,9 @@ async function fetchLatestWorkflowRun(
       // deno-lint-ignore no-explicit-any
       const body: any = await res.json();
       // deno-lint-ignore no-explicit-any
-      const runs: any[] = Array.isArray(body?.workflow_runs) ? body.workflow_runs : [];
+      const runs: any[] = Array.isArray(body?.workflow_runs)
+        ? body.workflow_runs
+        : [];
       const match = runs.find((r) => {
         const created = Date.parse(r?.created_at ?? "");
         return Number.isFinite(created) && created >= dispatchedAtMs - 5000;
@@ -129,11 +151,18 @@ async function fetchLatestWorkflowRun(
 }
 
 async function dispatchWorkflow(rawBase: string): Promise<DispatchInfo> {
-  if (!GITHUB_DISPATCH_TOKEN) return { status: "skipped: GITHUB_DISPATCH_TOKEN not configured" };
+  if (!GITHUB_DISPATCH_TOKEN) {
+    return { status: "skipped: GITHUB_DISPATCH_TOKEN not configured" };
+  }
   const or = deriveOwnerRepo(rawBase);
-  if (!or) return { status: "skipped: owner/repo not derivable from GITHUB_REPO_RAW_BASE" };
+  if (!or) {
+    return {
+      status: "skipped: owner/repo not derivable from GITHUB_REPO_RAW_BASE",
+    };
+  }
   const branch = deriveBranch(rawBase);
-  const url = `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/dispatches`;
+  const url =
+    `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/dispatches`;
   const dispatchedAt = new Date();
   try {
     const res = await fetch(url, {
@@ -218,11 +247,15 @@ interface DependencyHealthSnapshot {
   treeShaking?: TreeShakingReport;
 }
 
-async function scanTreeShakingViaGitHub(rawBase: string): Promise<TreeShakingReport | null> {
+async function scanTreeShakingViaGitHub(
+  rawBase: string,
+): Promise<TreeShakingReport | null> {
   if (!GITHUB_DISPATCH_TOKEN) return null;
   const or = deriveOwnerRepo(rawBase);
   if (!or) return null;
-  const q = encodeURIComponent(`from "date-fns" repo:${or.owner}/${or.repo} path:src`);
+  const q = encodeURIComponent(
+    `from "date-fns" repo:${or.owner}/${or.repo} path:src`,
+  );
   const url = `https://api.github.com/search/code?q=${q}&per_page=50`;
   try {
     const res = await fetch(url, {
@@ -240,7 +273,9 @@ async function scanTreeShakingViaGitHub(rawBase: string): Promise<TreeShakingRep
     const offenders: TreeShakingOffender[] = [];
     let barrelImportsFound = 0;
     for (const item of items) {
-      const matches: any[] = Array.isArray(item?.text_matches) ? item.text_matches : [];
+      const matches: any[] = Array.isArray(item?.text_matches)
+        ? item.text_matches
+        : [];
       for (const m of matches) {
         const frag = String(m?.fragment ?? "");
         const re = /from\s+['"](date-fns(?:\/locale)?)['"]/g;
@@ -248,14 +283,23 @@ async function scanTreeShakingViaGitHub(rawBase: string): Promise<TreeShakingRep
         while ((mm = re.exec(frag)) !== null) {
           barrelImportsFound++;
           if (offenders.length < 50) {
-            offenders.push({ file: String(item?.path ?? ""), line: 0, importPath: mm[1] });
+            offenders.push({
+              file: String(item?.path ?? ""),
+              line: 0,
+              importPath: mm[1],
+            });
           }
         }
       }
     }
-    const total = typeof body?.total_count === "number" ? body.total_count : barrelImportsFound;
-    const riskLevel: TreeShakingReport["riskLevel"] =
-      total === 0 ? "ok" : total < 5 ? "warning" : "critical";
+    const total = typeof body?.total_count === "number"
+      ? body.total_count
+      : barrelImportsFound;
+    const riskLevel: TreeShakingReport["riskLevel"] = total === 0
+      ? "ok"
+      : total < 5
+      ? "warning"
+      : "critical";
     return {
       scannedAt: new Date().toISOString(),
       filesScanned: items.length,
@@ -270,10 +314,14 @@ async function scanTreeShakingViaGitHub(rawBase: string): Promise<TreeShakingRep
   }
 }
 
-function json(body: unknown, status = 200): Response {
+function json(
+  body: unknown,
+  cors: Record<string, string>,
+  status = 200,
+): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -300,10 +348,20 @@ interface TrackedEntry {
 }
 
 const TRACKED: TrackedEntry[] = [
-  { name: "date-fns", label: "date-fns", npmName: "date-fns", location: "dependencies" },
+  {
+    name: "date-fns",
+    label: "date-fns",
+    npmName: "date-fns",
+    location: "dependencies",
+  },
   { name: "react", label: "React", npmName: "react", location: "dependencies" },
   { name: "vite", label: "Vite", npmName: "vite", location: "devDependencies" },
-  { name: "typescript", label: "TypeScript", npmName: "typescript", location: "devDependencies" },
+  {
+    name: "typescript",
+    label: "TypeScript",
+    npmName: "typescript",
+    location: "devDependencies",
+  },
   {
     name: "shadcn-ui",
     label: "shadcn/ui (radix-dialog proxy)",
@@ -313,11 +371,16 @@ const TRACKED: TrackedEntry[] = [
 ];
 
 // deno-lint-ignore no-explicit-any
-function computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry): PackageHealth {
+function computePackageHealth(
+  pkg: any,
+  lockText: string,
+  entry: TrackedEntry,
+): PackageHealth {
   let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? "";
   if (!spec) {
-    const altLoc: TrackedEntry["location"] =
-      entry.location === "dependencies" ? "devDependencies" : "dependencies";
+    const altLoc: TrackedEntry["location"] = entry.location === "dependencies"
+      ? "devDependencies"
+      : "dependencies";
     spec = pkg?.[altLoc]?.[entry.npmName] ?? "";
   }
   const locked = resolveLockedVersion(lockText, entry.npmName) ?? "";
@@ -340,26 +403,31 @@ function computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry): 
 // fetchStaticFallback removed (QA-026): was an SSRF vector — Origin/Referer spoofing allowed
 // server-side fetch to attacker-controlled URLs.
 
-async function handleHistory(): Promise<Response> {
+async function handleHistory(cors: Record<string, string>): Promise<Response> {
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data, error } = await admin
     .from("dependency_health_history")
     .select("id, generated_at, drift_count, barrel_imports, payload")
     .order("generated_at", { ascending: false })
     .limit(30);
-  if (error) return json({ error: safeErrorMessage(error) }, 500);
+  if (error) return json({ error: safeErrorMessage(error) }, cors, 500);
   // deno-lint-ignore no-explicit-any
   const rows = (data ?? []).map((row: any) => {
-    const pkgs: any[] = Array.isArray(row?.payload?.packages) ? row.payload.packages : [];
+    const pkgs: any[] = Array.isArray(row?.payload?.packages)
+      ? row.payload.packages
+      : [];
     return {
       id: row.id,
       generatedAt: row.generated_at,
       driftCount: row.drift_count,
       barrelImports: row.barrel_imports,
-      packages: pkgs.map((p) => ({ name: p?.name, driftDetected: !!p?.driftDetected })),
+      packages: pkgs.map((p) => ({
+        name: p?.name,
+        driftDetected: !!p?.driftDetected,
+      })),
     };
   });
-  return json({ history: rows });
+  return json({ history: rows }, cors);
 }
 
 /**
@@ -374,13 +442,19 @@ async function handleHistory(): Promise<Response> {
  * straight to the failing change. A future enhancement could stream +
  * unzip the body server-side, but that needs caching to be useful.
  */
-async function handlePrSmoke(): Promise<Response> {
+async function handlePrSmoke(cors: Record<string, string>): Promise<Response> {
   if (!GITHUB_DISPATCH_TOKEN) {
-    return json({ status: "skipped", reason: "GITHUB_DISPATCH_TOKEN not configured" });
+    return json({
+      status: "skipped",
+      reason: "GITHUB_DISPATCH_TOKEN not configured",
+    }, cors);
   }
   const or = deriveOwnerRepo(GITHUB_REPO_RAW_BASE);
   if (!or) {
-    return json({ status: "skipped", reason: "owner/repo not derivable from GITHUB_REPO_RAW_BASE" });
+    return json({
+      status: "skipped",
+      reason: "owner/repo not derivable from GITHUB_REPO_RAW_BASE",
+    }, cors);
   }
   // List artifacts (most recent first). The API returns 30 by default which
   // is plenty given our retention is 14 days. Filter client-side by prefix.
@@ -399,6 +473,7 @@ async function handlePrSmoke(): Promise<Response> {
     if (!res.ok) {
       return json(
         { status: "error", reason: `GitHub API ${res.status}`, artifact: null },
+        cors,
         res.status === 401 || res.status === 403 ? 200 : 502,
       );
     }
@@ -408,15 +483,19 @@ async function handlePrSmoke(): Promise<Response> {
     const all: any[] = Array.isArray(body?.artifacts) ? body.artifacts : [];
     // Only PR smoke artifacts; skip expired ones (download_url 410s).
     const prArtifacts = all
-      .filter((a) => typeof a?.name === "string" && a.name.startsWith("dependency-health-smoke-"))
+      .filter((a) =>
+        typeof a?.name === "string" &&
+        a.name.startsWith("dependency-health-smoke-")
+      )
       .filter((a) => a?.expired !== true)
       .sort(
         (a, b) =>
-          new Date(b?.created_at ?? 0).getTime() - new Date(a?.created_at ?? 0).getTime(),
+          new Date(b?.created_at ?? 0).getTime() -
+          new Date(a?.created_at ?? 0).getTime(),
       );
     const latest = prArtifacts[0];
     if (!latest) {
-      return json({ status: "empty", artifact: null });
+      return json({ status: "empty", artifact: null }, cors);
     }
     const wf = latest.workflow_run ?? {};
     return json({
@@ -428,7 +507,9 @@ async function handlePrSmoke(): Promise<Response> {
         createdAt: latest.created_at,
         expiresAt: latest.expires_at,
         downloadUrl: latest.archive_download_url,
-        webUrl: `https://github.com/${or.owner}/${or.repo}/actions/runs/${wf.id ?? ""}`,
+        webUrl: `https://github.com/${or.owner}/${or.repo}/actions/runs/${
+          wf.id ?? ""
+        }`,
         runId: wf.id ?? null,
         headBranch: wf.head_branch ?? null,
         headSha: wf.head_sha ?? null,
@@ -440,32 +521,37 @@ async function handlePrSmoke(): Promise<Response> {
         })(),
       },
       totalScanned: prArtifacts.length,
-    });
+    }, cors);
   } catch (e) {
     return json({
       status: "error",
       reason: safeErrorMessage(e),
       artifact: null,
-    });
+    }, cors);
   }
 }
 
-async function handleGet(req: Request): Promise<Response> {
+async function handleGet(
+  req: Request,
+  cors: Record<string, string>,
+): Promise<Response> {
   // SECURITY: require authenticated user for all GET paths (internal operational data).
   const auth = req.headers.get("Authorization");
-  if (!auth) return json({ error: "Unauthorized" }, 401);
+  if (!auth) return json({ error: "Unauthorized" }, cors, 401);
   const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: auth } },
   });
   const { data: userData, error: userErr } = await userClient.auth.getUser();
-  if (userErr || !userData.user) return json({ error: "Unauthorized" }, 401);
+  if (userErr || !userData.user) {
+    return json({ error: "Unauthorized" }, cors, 401);
+  }
 
   const url = new URL(req.url);
   if (url.searchParams.get("history") === "true") {
-    return await handleHistory();
+    return await handleHistory(cors);
   }
   if (url.searchParams.get("prSmoke") === "true") {
-    return await handlePrSmoke();
+    return await handlePrSmoke(cors);
   }
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data } = await admin
@@ -475,7 +561,7 @@ async function handleGet(req: Request): Promise<Response> {
     .maybeSingle();
 
   if (data?.payload) {
-    return json(data.payload);
+    return json(data.payload, cors);
   }
 
   // QA-026: Origin/Referer-based fallback removed — it was an SSRF vector (server-side
@@ -491,7 +577,7 @@ async function handleGet(req: Request): Promise<Response> {
       source: "edge:dependency-health fallback-stub",
     },
   };
-  return json(stub);
+  return json(stub, cors);
 }
 
 async function fetchWithRetry(
@@ -501,7 +587,14 @@ async function fetchWithRetry(
     baseDelayMs?: number;
     timeoutMs?: number;
   } = {},
-): Promise<{ ok: true; res: Response } | { ok: false; status: number; reason: string; attempts: number }> {
+): Promise<
+  { ok: true; res: Response } | {
+    ok: false;
+    status: number;
+    reason: string;
+    attempts: number;
+  }
+> {
   let lastStatus = 0;
   let lastReason = "";
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -511,10 +604,18 @@ async function fetchWithRetry(
       lastStatus = res.status;
       lastReason = `HTTP ${res.status}`;
       // Only retry on transient upstream errors (5xx, 408, 429).
-      const transient = res.status >= 500 || res.status === 408 || res.status === 429;
+      const transient = res.status >= 500 || res.status === 408 ||
+        res.status === 429;
       // Drain the body so the connection can be reused.
       await res.text().catch(() => "");
-      if (!transient) return { ok: false, status: res.status, reason: lastReason, attempts: attempt };
+      if (!transient) {
+        return {
+          ok: false,
+          status: res.status,
+          reason: lastReason,
+          attempts: attempt,
+        };
+      }
     } catch (e) {
       lastStatus = 0;
       lastReason = safeErrorMessage(e);
@@ -526,29 +627,43 @@ async function fetchWithRetry(
       await new Promise((r) => setTimeout(r, Math.max(50, delay + jitter)));
     }
   }
-  return { ok: false, status: lastStatus, reason: lastReason, attempts: retries };
+  return {
+    ok: false,
+    status: lastStatus,
+    reason: lastReason,
+    attempts: retries,
+  };
 }
 
-async function handlePost(req: Request): Promise<Response> {
+async function handlePost(
+  req: Request,
+  cors: Record<string, string>,
+): Promise<Response> {
   const FORBIDDEN_MESSAGE = "Forbidden: admin role required";
   const auth = req.headers.get("Authorization");
-  if (!auth) return json({ error: FORBIDDEN_MESSAGE }, 403);
+  if (!auth) return json({ error: FORBIDDEN_MESSAGE }, cors, 403);
 
   const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: auth } },
   });
   const { data: userData, error: userErr } = await userClient.auth.getUser();
-  if (userErr || !userData.user) return json({ error: FORBIDDEN_MESSAGE }, 403);
+  if (userErr || !userData.user) {
+    return json({ error: FORBIDDEN_MESSAGE }, cors, 403);
+  }
 
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", {
     _user_id: userData.user.id,
     _role: "admin",
   });
-  if (roleErr || !isAdmin) return json({ error: FORBIDDEN_MESSAGE }, 403);
+  if (roleErr || !isAdmin) return json({ error: FORBIDDEN_MESSAGE }, cors, 403);
 
   if (!GITHUB_REPO_RAW_BASE) {
-    return json({ error: "GITHUB_REPO_RAW_BASE secret not configured" }, 500);
+    return json(
+      { error: "GITHUB_REPO_RAW_BASE secret not configured" },
+      cors,
+      500,
+    );
   }
 
   const base = GITHUB_REPO_RAW_BASE.replace(/\/+$/, "");
@@ -557,28 +672,38 @@ async function handlePost(req: Request): Promise<Response> {
     fetchWithRetry(`${base}/bun.lock`),
   ]);
   if (!pkgResult.ok) {
-    return json({
-      error: "Failed to fetch package.json from GitHub after retries",
-      detail: pkgResult.reason,
-      status: pkgResult.status,
-      attempts: pkgResult.attempts,
-      url: `${base}/package.json`,
-    }, 502);
+    return json(
+      {
+        error: "Failed to fetch package.json from GitHub after retries",
+        detail: pkgResult.reason,
+        status: pkgResult.status,
+        attempts: pkgResult.attempts,
+        url: `${base}/package.json`,
+      },
+      cors,
+      502,
+    );
   }
   if (!lockResult.ok) {
-    return json({
-      error: "Failed to fetch bun.lock from GitHub after retries",
-      detail: lockResult.reason,
-      status: lockResult.status,
-      attempts: lockResult.attempts,
-      url: `${base}/bun.lock`,
-    }, 502);
+    return json(
+      {
+        error: "Failed to fetch bun.lock from GitHub after retries",
+        detail: lockResult.reason,
+        status: lockResult.status,
+        attempts: lockResult.attempts,
+        url: `${base}/bun.lock`,
+      },
+      cors,
+      502,
+    );
   }
 
   const pkg = await pkgResult.res.json();
   const lockText = await lockResult.res.text();
 
-  const packages = TRACKED.map((entry) => computePackageHealth(pkg, lockText, entry));
+  const packages = TRACKED.map((entry) =>
+    computePackageHealth(pkg, lockText, entry)
+  );
   const dateFnsEntry = packages.find((p) => p.name === "date-fns");
   const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
@@ -604,8 +729,13 @@ async function handlePost(req: Request): Promise<Response> {
 
   const { error: upsertErr } = await admin
     .from("dependency_health")
-    .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
-  if (upsertErr) return json({ error: safeErrorMessage(upsertErr) }, 500);
+    .upsert({
+      id: true,
+      payload,
+      updated_by: userData.user.id,
+      updated_at: now,
+    });
+  if (upsertErr) return json({ error: safeErrorMessage(upsertErr) }, cors, 500);
 
   // Audit log: record snapshot recompute
   const driftCountForAudit = packages.filter((p) => p.driftDetected).length;
@@ -616,10 +746,11 @@ async function handlePost(req: Request): Promise<Response> {
     entity_description: "Dependency health snapshot recomputed",
     user_id: userData.user.id,
     user_email: userData.user.email ?? null,
-    user_name:
-      (userData.user.user_metadata as Record<string, unknown> | null)?.full_name as string ??
-        userData.user.email ?? null,
-    ip_address: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    user_name: (userData.user.user_metadata as Record<string, unknown> | null)
+      ?.full_name as string ??
+      userData.user.email ?? null,
+    ip_address: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      null,
     user_agent: req.headers.get("user-agent") ?? null,
     new_values: {
       generatedAt: now,
@@ -645,13 +776,14 @@ async function handlePost(req: Request): Promise<Response> {
   // Append to history + prune to last 30
   const driftCount = driftCountForAudit;
   const barrelImports = treeShaking?.barrelImportsFound ?? 0;
-  const { error: histErr } = await admin.from("dependency_health_history").insert({
-    payload,
-    drift_count: driftCount,
-    barrel_imports: barrelImports,
-    generated_at: now,
-    created_by: userData.user.id,
-  });
+  const { error: histErr } = await admin.from("dependency_health_history")
+    .insert({
+      payload,
+      drift_count: driftCount,
+      barrel_imports: barrelImports,
+      generated_at: now,
+      created_by: userData.user.id,
+    });
   if (histErr) {
     console.error("history insert failed:", histErr.message);
   } else {
@@ -673,24 +805,25 @@ async function handlePost(req: Request): Promise<Response> {
   const url = new URL(req.url);
   if (url.searchParams.get("dispatchCi") === "true") {
     const ciDispatch = await dispatchWorkflow(GITHUB_REPO_RAW_BASE);
-    return json({ ...payload, ciDispatch });
+    return json({ ...payload, ciDispatch }, cors);
   }
 
-  return json(payload);
+  return json(payload, cors);
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders });
+    return new Response(null, { status: 204, headers: cors });
   }
-  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
   try {
-    if (req.method === "GET") return await handleGet(req);
-    if (req.method === "POST") return await handlePost(req);
-    return json({ error: "Method not allowed" }, 405);
+    if (req.method === "GET") return await handleGet(req, cors);
+    if (req.method === "POST") return await handlePost(req, cors);
+    return json({ error: "Method not allowed" }, cors, 405);
   } catch (error: unknown) {
     const msg = safeErrorMessage(error);
     console.error(`[${requestId}] Dependency health error:`, msg);
-    return json({ error: msg }, 500);
+    return json({ error: msg }, cors, 500);
   }
 });

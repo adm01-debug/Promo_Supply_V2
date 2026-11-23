@@ -7,7 +7,7 @@
  * `system_alerts` com severidade `high` (o alert-dispatcher só despacha
  * HIGH/CRITICAL). Mapeamento dos 80 campos: `_shared/xbz_pedido_map.ts`.
  */
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { authenticate, loadCredentials, requireRole, serviceClient } from "../_shared/xbz_auth.ts";
@@ -121,11 +121,12 @@ async function syncTenant(
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   const requestId = req.headers.get("x-request-id") ?? crypto.randomUUID();
   const logger = new EdgeLogger("xbz-sync-pedidos", requestId);
-  const headers = buildResponseHeaders(corsHeaders);
+  const headers = buildResponseHeaders(cors);
 
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Método não permitido", requestId }), {

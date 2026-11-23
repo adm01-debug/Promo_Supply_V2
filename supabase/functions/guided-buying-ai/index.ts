@@ -3,7 +3,7 @@ import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { corsHeaders, validateBody, errorResponse } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { getAuthUser } from "../_shared/security.ts";
 
@@ -14,8 +14,9 @@ const requestSchema = z.object({
 });
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -24,10 +25,10 @@ serve(async (req) => {
   try {
     const { user } = await getAuthUser(req);
     if (!user) {
-      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: buildResponseHeaders(corsHeaders) });
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: buildResponseHeaders(cors) });
     }
     const rl = await checkRateLimit({ identifier: user.id, endpoint: "guided-buying-ai", maxRequests: 30, windowSeconds: 60 });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const { message, history, context } = await validateBody(req, requestSchema);
 
@@ -53,7 +54,7 @@ serve(async (req) => {
     if (!tenantId) {
       return new Response(JSON.stringify({ error: "tenant not resolved" }), {
         status: 403,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -129,7 +130,7 @@ serve(async (req) => {
             "Recomendo aguardar alguns instantes e tentar novamente.",
         };
       },
-      corsHeaders,
+      cors,
     );
 
     if (aiResponseBody.usedFallback) {
@@ -150,11 +151,11 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ response: content }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
 
   } catch (error) {
     logger.error("Error in guided-buying-ai", { error: error instanceof Error ? error.message : "Unknown error" });
-    return errorResponse(error);
+    return errorResponse(error, undefined, cors);
   }
 });

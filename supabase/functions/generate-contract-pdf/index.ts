@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -18,13 +18,14 @@ function formatDate(dateStr: string): string {
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -39,7 +40,7 @@ Deno.serve(async (req) => {
     if (!token) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
     const authClient = createClient(
@@ -51,7 +52,7 @@ Deno.serve(async (req) => {
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -62,7 +63,7 @@ Deno.serve(async (req) => {
       maxRequests: 20,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const body = await req.json().catch(() => ({}));
     const contract_id = typeof body?.contract_id === "string" ? body.contract_id : null;
@@ -79,7 +80,7 @@ Deno.serve(async (req) => {
     if (rlsErr || !rlsCheck) {
       return new Response(JSON.stringify({ error: "Contrato não encontrado ou sem permissão" }), {
         status: 403,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -249,14 +250,14 @@ Deno.serve(async (req) => {
 </html>`;
 
     return new Response(JSON.stringify({ html, contract_number: contract.contract_number }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
     logger.error("Error generating contract PDF", { error: msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 });

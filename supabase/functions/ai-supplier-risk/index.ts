@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -30,8 +30,9 @@ async function verifyAuthUser(req: Request): Promise<string> {
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const logger = getLogger(req);
@@ -40,7 +41,7 @@ Deno.serve(async (req) => {
     const userId = await verifyAuthUser(req);
     // M-05: rate-limit por usuário (AI = custo de token elevado).
     const rl = await checkRateLimit({ identifier: userId, endpoint: "ai-supplier-risk", maxRequests: 20, windowSeconds: 60 });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
     logger.info("Iniciando análise de risco de fornecedor", { userId });
 
     const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
@@ -109,7 +110,7 @@ Forneça uma análise de risco completa e acionável.`;
           recommendations: ["Realize revisão manual completa do fornecedor antes de prosseguir."],
         };
       },
-      corsHeaders,
+      cors,
     );
 
     if (usedFallback) {
@@ -122,12 +123,12 @@ Forneça uma análise de risco completa e acionável.`;
       logger.error("Erro no AI Gateway", { status: response.status, response: errorText });
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
-          status: 429, headers: buildResponseHeaders(corsHeaders),
+          status: 429, headers: buildResponseHeaders(cors),
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
-          status: 402, headers: buildResponseHeaders(corsHeaders),
+          status: 402, headers: buildResponseHeaders(cors),
         });
       }
       throw new Error(`AI Gateway error: ${response.status}`);
@@ -157,7 +158,7 @@ Forneça uma análise de risco completa e acionável.`;
     logger.info("Análise de risco concluída", { requestId: logger.getRequestId() });
 
     return new Response(JSON.stringify(analysis), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   } catch (error: unknown) {
     logger.error("Erro fatal na função ai-supplier-risk", { error: (error as Error).message });
@@ -165,7 +166,7 @@ Forneça uma análise de risco completa e acionável.`;
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       status,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 });

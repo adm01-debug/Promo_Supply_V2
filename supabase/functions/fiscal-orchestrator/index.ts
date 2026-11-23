@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { buildResponseHeaders, fetchWithTimeout, FetchTimeoutError } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { FiscalContract } from "../_shared/contracts.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { retry } from "../_shared/retry.ts";
@@ -64,7 +64,8 @@ async function dispatchToSefaz(
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
 
   const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
   const logger = new EdgeLogger("fiscal-orchestrator", requestId);
@@ -85,7 +86,7 @@ serve(async (req) => {
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Sessão expirada ou inválida", requestId }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -105,7 +106,7 @@ serve(async (req) => {
     return await withIdempotency(
       `fiscal-orchestrator:${user.id}`,
       req,
-      corsHeaders,
+      cors,
       async (bodyText) => {
         const data = FiscalContract.parse(JSON.parse(bodyText || "{}"));
         const { action, type, document_id, payload } = data;
@@ -167,6 +168,6 @@ serve(async (req) => {
       },
     );
   } catch (error) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 });

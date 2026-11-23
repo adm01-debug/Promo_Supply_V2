@@ -1,14 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { ERPSyncContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { getIdempotentResponse, recordIdempotentResponse, deriveIdempotencyKey } from "../_shared/idempotency.ts";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -26,7 +27,7 @@ serve(async (req) => {
     if (!user) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -37,7 +38,7 @@ serve(async (req) => {
       maxRequests: 30,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     // M-06: idempotência (webhooks ERP podem reentregar em falha parcial).
     const bodyText = await req.text();
@@ -45,7 +46,7 @@ serve(async (req) => {
     const cached = await getIdempotentResponse("erp-sync", idempotencyKey);
     if (cached) {
       logger.info("Idempotent replay", { key: idempotencyKey });
-      return cached.response(corsHeaders);
+      return cached.response(cors);
     }
 
     // Reconstrói request para validateBody (que consome req.json()).
@@ -102,9 +103,9 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify(responsePayload),
-      { status: 501, headers: { ...corsHeaders, "Content-Type": "application/json", "x-request-id": requestId } }
+      { status: 501, headers: { ...cors, "Content-Type": "application/json", "x-request-id": requestId } }
     );
   } catch (error) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 });
