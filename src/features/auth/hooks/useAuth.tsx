@@ -224,6 +224,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error as Error | null };
   }, []);
 
+  // Limpa caches do service worker para evitar vazamento de dados entre usuarios/tenants.
+  const clearSwCaches = useCallback(async () => {
+    if (!('caches' in window)) return;
+    try {
+      const names = await caches.keys();
+      await Promise.all(
+        names
+          .filter((n) => n.startsWith('supabase-'))
+          .map((n) => caches.delete(n))
+      );
+    } catch {
+      // nao bloqueia o logout se a API de cache falhar
+    }
+  }, []);
   const signOut = useCallback(async () => {
     const userId = user?.id;
     logger.info('Signing out', { userId });
@@ -231,6 +245,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // so a late-arriving Promise cannot restore the outgoing user's profile/role.
     fetchGenerationRef.current += 1;
     fetchedUserIdRef.current = null;
+    await clearSwCaches();
     await supabase.auth.signOut();
     queryClient.clear();
     setUser(null);
@@ -240,7 +255,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setOrganizationId(null);
     setTenantId(null);
     setAvailableTenants([]);
-  }, [user?.id]);
+  }, [user?.id, clearSwCaches]);
 
   const switchTenant = useCallback(async (newTenantId: string) => {
     if (!user) return;
@@ -266,6 +281,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Clear refs to force re-fetch
       fetchedUserIdRef.current = null;
+      await clearSwCaches();
       await fetchUserData(user.id);
       
       toast.success('Organização alterada com sucesso!');
@@ -275,7 +291,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, [user, fetchUserData]);
+  }, [user, fetchUserData, clearSwCaches]);
 
   const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
