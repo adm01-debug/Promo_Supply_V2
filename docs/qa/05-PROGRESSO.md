@@ -26,9 +26,12 @@ _(vazio)_
 
 ## Etapas
 
-- [ ] 001 — Senha de uma conta admin de QA está escrita em claro em dois testes de edge function versionados — onda 1 — Alta — TST-04
-- [ ] 002 — (parte 1/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
-- [ ] 003 — (parte 2/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
+- [x] 001 — Senha de uma conta admin de QA está escrita em claro em dois testes de edge function versionados — onda 1 — Alta — TST-04
+  - Evidencia: PR #323 - fallbacks literais 'qa-admin@promobrindes.test'/'QaTest@2026!' removidos de telemetry/index.test.ts e dependency-health/index.test.ts; credenciais so via env, e os testes autenticados usam ignore quando ausentes. grep nos dois arquivos: zero ocorrencias. eslint exit 0. NAO VERIFICADO: papel da conta no banco (exec_sql e /auth/v1/admin/users devolveram 401 sem SUPABASE_DB_URL).
+- [x] 002 — (parte 1/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
+  - Evidencia: PR #324 - tests-e2e/workflow-advanced.spec.ts para no dialogo (sem Salvar) e elite-validation.spec.ts nao clica mais em Simulacao 10/10; escritas cross-tenant de tests-rls atras de RLS_ALLOW_WRITES=true, com prova estatica das policies RESTRICTIVE. Verificado: tsc --noEmit exit 0; npx vitest run --config ./vitest.rls.config.ts -> 20 passed / 13 skipped.
+- [x] 003 — (parte 2/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
+  - Evidencia: PR #324 - src/tests/integration/supabase-db.test.ts: afterAll que fazia DELETE com service_role em approval_history foi removido e virou checagem somente leitura (.like('detalhes->>test_marker','integration-test-%'), limit 1). UPDATE em massa de contracts ganhou .eq('id','00000000-0000-0000-0000-000000000000'). eslint exit 0 nos 4 arquivos.
 - [ ] 004 — Migration: 30 tabelas têm como única policy `tenant_in_my_group(tenant_id)` PERMISSIVE FOR ALL: qualquer usuário logado reescreve regras de aprovação, — onda 1 — Crítica — RLS-01
 - [ ] 005 — Aplicação: 30 tabelas têm como única policy `tenant_in_my_group(tenant_id)` PERMISSIVE FOR ALL: qualquer usuário logado reescreve regras de aprovação, — onda 1 — Crítica — RLS-01
 - [ ] 006 — Quatro telas /admin/* são protegidas APENAS pelo React: a RLS das tabelas por trás libera leitura e escrita a qualquer usuário autenticado do grupo —  — onda 1 — Crítica — AUT-01
@@ -61,8 +64,10 @@ _(vazio)_
   - Evidencia: PR #320 - workflow-engine usa user.id do JWT como approver_id e valida tenant da instancia antes de aprovar.
 - [x] 023 — process-invoice-idp baixa qualquer caminho do bucket privado `fiscal-documents` com service_role e devolve o conteudo da nota, sem conferir se o arqui — onda 1 — Alta — EDGA-03
   - Evidencia: PR #320 - process-invoice-idp exige filePath comecando em uploads/{user.id}/.
-- [ ] 024 — (parte 1/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
-- [ ] 025 — (parte 2/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
+- [x] 024 — (parte 1/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
+  - Evidencia: PR #322 - supabase/config.toml declara [functions.X] verify_jwt=false para scim-v2, punchout-receive, webauthn-authenticate e dependency-health; gerar.mjs gera verify_jwt_false com essas 4. Comando: node scripts/ci/render-workflow-docs.mjs --check e gerar-matriz-edge-tabela.mjs --check sem alteracao.
+- [x] 025 — (parte 2/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
+  - Evidencia: PR #322 - deploy_edge_functions_promo_supply.sh: NO_JWT_FUNCTIONS espelha o config.toml ('scim-v2' 'punchout-receive' 'webauthn-authenticate' 'dependency-health'). run-audit:12 e system-simulation:12 usam requireAdmin e telemetry:33-41 chama auth.getUser() (401 sem token), por isso sairam do --no-verify-jwt. Teste scripts/ci/scripts-operacionais.unit.mjs alinhado: 35 passed / 5 failed (as 5 sao herdadas do main via CRLF; no main sao 9).
 - [x] 026 — dependency-health faz requisicao HTTP server-side para a URL do header Origin/Referer e devolve o corpo ao chamador (SSRF para qualquer usuario autent — onda 1 — Alta — EDGA-05
   - Evidencia: PR #320 - fallback via Origin/Referer removido de dependency-health; fetchStaticFallback excluida (SSRF fechado).
 - [ ] 027 — `current_tenant_id()` lê uma informação do token que nada preenche: devolve sempre nulo e cinco funcionalidades morrem em silêncio — onda 1 — Alta — RLS-02
