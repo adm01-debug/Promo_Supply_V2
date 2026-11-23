@@ -18,6 +18,7 @@ vi.mock('@/integrations/supabase/client', () => ({
         eq: vi.fn(() => Promise.resolve({ data: [], error: null })),
       })),
     })),
+    rpc: vi.fn(() => Promise.resolve({ data: [], error: null })),
   },
 }));
 
@@ -56,18 +57,10 @@ describe('usePermissions', () => {
   });
 
   it('should check user permissions correctly for non-admin', async () => {
-    // Mock user permissions data
-    const mockUserPermissions = [
-      {
-        id: '1',
-        role: 'buyer',
-        permission: { module: 'solicitacoes', action: 'view' },
-      },
-      {
-        id: '2',
-        role: 'buyer',
-        permission: { module: 'solicitacoes', action: 'create' },
-      },
+          // RPC get_my_permissions returns {module, action}[] rows
+          const mockRpcPermissions = [
+            { module: 'solicitacoes', action: 'view' },
+            { module: 'solicitacoes', action: 'create' },
     ];
 
     vi.mocked(useAuth).mockReturnValue({
@@ -76,14 +69,9 @@ describe('usePermissions', () => {
       isAdmin: false,
     } as ReturnType<typeof useAuth>);
 
-    // Mock supabase response for role_permissions
+          // Mock supabase.rpc to return the permission rows
     const { supabase } = await import('@/integrations/supabase/client');
-    vi.mocked(supabase.from).mockImplementation((_table: string) => ({
-      select: vi.fn(() => ({
-        order: vi.fn(() => Promise.resolve({ data: [], error: null })),
-        eq: vi.fn(() => Promise.resolve({ data: mockUserPermissions, error: null })),
-      })),
-    }) as unknown as ReturnType<typeof supabase.from>);
+          vi.mocked(supabase.rpc).mockResolvedValueOnce({ data: mockRpcPermissions, error: null } as never);
 
     const { result } = renderHook(() => usePermissions(), {
       wrapper: createQueryClientWrapper(),
