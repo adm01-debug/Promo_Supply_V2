@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(auth): desabilita autocadastro público (QA 008+009) (#319)",
    "fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320)",
    "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)",
    "fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)",
-   "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)",
-   "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)"
+   "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)"
   ]
  },
  "pr_template": null,

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3833aac5197feaa21232baebd38d08ad4a9f3f5e` (2026-11-23T10:39:19-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d78471b73b4abf98aa1a68b52eb6e6fef6e3ef9` (2026-11-23T10:49:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1319 |
 | arquivos_codigo | 820 |
-| linhas_codigo | 171566 |
+| linhas_codigo | 171398 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -323,7 +323,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tabelas_usadas_sem_definicao: 0
 - tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
-- componentes_orfaos: 12 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
+- componentes_orfaos: 13 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
 - scripts_orfaos: 0
 - arquivos_nao_lidos_por_tamanho: 0
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `2d78471` fix(auth): desabilita autocadastro público (QA 008+009) (#319)
 - 2026-11-23 `3833aac` fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320
 - 2026-11-23 `73dce42` fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)
 - 2026-11-23 `1060124` fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `954238f` fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)
 - 2026-11-22 `c15161d` feat: escala solicitacao e alerta comprador com notificacao real (#301)
 - 2026-11-22 `ec90e1e` fix: liga o Desfazer Global do historico ao undoStore real (#300)
-- 2026-11-22 `ff7a555` chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

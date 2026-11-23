@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3833aac519` · branch `main` · 2026-11-23 13:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2d78471b73` · branch `main` · 2026-11-23 14:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2373,7 +2373,7 @@ _nenhum item encontrado_
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
-| … +232 linhas — lista completa em `context.json` | |
+| … +230 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

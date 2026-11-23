@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3833aac5197feaa21232baebd38d08ad4a9f3f5e",
+  "commit": "2d78471b73b4abf98aa1a68b52eb6e6fef6e3ef9",
   "branch": "main",
-  "data_commit": "2026-11-23T10:39:19-03:00",
+  "data_commit": "2026-11-23T10:49:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2d78471",
+    "data": "2026-11-23",
+    "assunto": "fix(auth): desabilita autocadastro público (QA 008+009) (#319)"
+   },
    {
     "sha": "3833aac",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "b9303d3",
     "data": "2026-11-22",
     "assunto": "fix(cotacao): analise calculada a partir das cotacoes em vez de texto fixo (#287)"
-   },
-   {
-    "sha": "0051cc3",
-    "data": "2026-11-22",
-    "assunto": "fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)"
    }
   ],
-  "arquivos_mudados_7d": 313,
+  "arquivos_mudados_7d": 314,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 267
+    "commits": 268
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1319,
   "arquivos_codigo": 820,
-  "linhas_codigo": 171566,
+  "linhas_codigo": 171398,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/features": {
    "arquivos": 64,
-   "linhas": 8552
+   "linhas": 8541
   },
   "src/hooks": {
    "arquivos": 74,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30483
+   "linhas": 30326
   },
   "src/routes": {
    "arquivos": 1,
@@ -773,6 +773,7 @@
    "src/components/fornecedores/FornecedorMobileCard.tsx",
    "src/components/molecules/EliteFormField.tsx",
    "src/components/organisms/Organism.tsx",
+   "src/components/security/PasswordStrengthIndicator.tsx",
    "src/components/ui/chart.tsx",
    "src/components/ui/form.tsx",
    "src/components/ui/kbd.tsx",

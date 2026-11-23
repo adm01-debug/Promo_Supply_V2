@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 330,
- "orfaos": 12,
+ "orfaos": 13,
  "nomes_duplicados": {
   "AnimatedCounter": [
    "src/components/animations/MotionComponents.tsx",
@@ -2471,8 +2471,8 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
-   "orfao": false
+   "usado_por": 0,
+   "orfao": true
   },
   {
    "arquivo": "src/components/security/PermissionGate.tsx",
@@ -3513,7 +3513,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 33,
+   "usado_por": 32,
    "orfao": false
   },
   {
@@ -3653,7 +3653,7 @@
     "AuthProvider"
    ],
    "export_default": null,
-   "linhas": 354,
+   "linhas": 342,
    "dominio": "features/auth",
    "hooks_locais": [],
    "tabelas": [
@@ -4444,7 +4444,7 @@
     "Auth"
    ],
    "export_default": "Auth",
-   "linhas": 474,
+   "linhas": 317,
    "dominio": "pages/auth",
    "hooks_locais": [
     "useAccountLockout",

@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 623,
- "arestas": 2773,
+ "arestas": 2771,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -70,7 +70,7 @@
   },
   {
    "arquivo": "src/components/ui/tabs.tsx",
-   "importado_por": 33
+   "importado_por": 32
   },
   {
    "arquivo": "supabase/functions/_shared/http.ts",
@@ -195,6 +195,7 @@
   "src/components/fornecedores/FornecedorMobileCard.tsx",
   "src/components/molecules/EliteFormField.tsx",
   "src/components/organisms/Organism.tsx",
+  "src/components/security/PasswordStrengthIndicator.tsx",
   "src/components/ui/chart.tsx",
   "src/components/ui/form.tsx",
   "src/components/ui/kbd.tsx",
@@ -290,11 +291,6 @@
    "importado_por": 2
   },
   {
-   "modulo": "pages/auth",
-   "depende_de": 9,
-   "importado_por": 1
-  },
-  {
    "modulo": "pages/contratos",
    "depende_de": 8,
    "importado_por": 2
@@ -308,6 +304,11 @@
    "modulo": "pages/pagamentos",
    "depende_de": 8,
    "importado_por": 2
+  },
+  {
+   "modulo": "components/mobile",
+   "depende_de": 4,
+   "importado_por": 5
   }
  ],
  "arestas_em": "docs/contexto/codigo/grafo-arestas.json"

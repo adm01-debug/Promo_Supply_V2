@@ -1483,7 +1483,6 @@
     "rpcs": []
    },
    "importado_por_outros_modulos": [
-    "pages/auth",
     "pages/seguranca"
    ],
    "depende_de_modulos": [
@@ -1745,7 +1744,7 @@
    "modulo": "features/auth",
    "arquivos": 7,
    "testes": 3,
-   "linhas": 512,
+   "linhas": 501,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3730,7 +3729,7 @@
    "modulo": "pages/auth",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 535,
+   "linhas": 378,
    "itens_menu": [],
    "telas": [
     "/auth"
@@ -3785,7 +3784,6 @@
    ],
    "depende_de_modulos": [
     "components/layout",
-    "components/security",
     "components/ui",
     "features/auth",
     "features/layout",

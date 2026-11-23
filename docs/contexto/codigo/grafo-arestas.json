@@ -2478,11 +2478,9 @@
    "src/services/auditService.ts"
   ],
   "src/pages/auth/Auth.tsx": [
-   "src/components/security/PasswordStrengthIndicator.tsx",
    "src/components/ui/alert.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/floating-input.tsx",
-   "src/components/ui/tabs.tsx",
    "src/features/auth/index.ts",
    "src/features/layout/components/ThemeToggle.tsx",
    "src/hooks/useAccountLockout.ts",
