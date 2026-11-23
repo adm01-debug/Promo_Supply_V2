@@ -56,7 +56,7 @@
    "nome": "ai-demand-prediction",
    "entrada": "supabase/functions/ai-demand-prediction/index.ts",
    "arquivos": 1,
-   "linhas": 170,
+   "linhas": 171,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -77,6 +77,7 @@
     "http.ts",
     "logger.ts",
     "rate_limit.ts",
+    "security.ts",
     "validation.ts"
    ],
    "chamada_pelo_front": [
@@ -91,7 +92,7 @@
    "nome": "ai-negotiation",
    "entrada": "supabase/functions/ai-negotiation/index.ts",
    "arquivos": 1,
-   "linhas": 155,
+   "linhas": 156,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -112,6 +113,7 @@
     "http.ts",
     "logger.ts",
     "rate_limit.ts",
+    "security.ts",
     "validation.ts"
    ],
    "chamada_pelo_front": [
@@ -160,7 +162,7 @@
    "nome": "ai-supplier-suggestion",
    "entrada": "supabase/functions/ai-supplier-suggestion/index.ts",
    "arquivos": 1,
-   "linhas": 161,
+   "linhas": 162,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -181,6 +183,7 @@
     "http.ts",
     "logger.ts",
     "rate_limit.ts",
+    "security.ts",
     "validation.ts"
    ],
    "chamada_pelo_front": [
@@ -458,7 +461,7 @@
    "nome": "erp-sync",
    "entrada": "supabase/functions/erp-sync/index.ts",
    "arquivos": 1,
-   "linhas": 111,
+   "linhas": 112,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -576,7 +579,7 @@
    "nome": "fiscal-orchestrator",
    "entrada": "supabase/functions/fiscal-orchestrator/index.ts",
    "arquivos": 1,
-   "linhas": 174,
+   "linhas": 175,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -653,7 +656,7 @@
    "nome": "guided-buying-ai",
    "entrada": "supabase/functions/guided-buying-ai/index.ts",
    "arquivos": 1,
-   "linhas": 161,
+   "linhas": 162,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -867,7 +870,7 @@
    "nome": "process-solicitacao-neural",
    "entrada": "supabase/functions/process-solicitacao-neural/index.ts",
    "arquivos": 1,
-   "linhas": 133,
+   "linhas": 134,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -887,6 +890,7 @@
     "http.ts",
     "logger.ts",
     "rate_limit.ts",
+    "security.ts",
     "validation.ts"
    ],
    "chamada_pelo_front": [
@@ -1251,7 +1255,7 @@
    "nome": "telemetry",
    "entrada": "supabase/functions/telemetry/index.ts",
    "arquivos": 1,
-   "linhas": 109,
+   "linhas": 110,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1432,7 +1436,7 @@
    "nome": "workflow-engine",
    "entrada": "supabase/functions/workflow-engine/index.ts",
    "arquivos": 1,
-   "linhas": 173,
+   "linhas": 174,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

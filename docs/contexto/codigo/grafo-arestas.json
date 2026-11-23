@@ -3497,6 +3497,7 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/validation.ts"
   ],
   "supabase/functions/ai-negotiation/index.ts": [
@@ -3505,6 +3506,7 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/validation.ts"
   ],
   "supabase/functions/ai-supplier-risk/index.ts": [
@@ -3520,6 +3522,7 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/validation.ts"
   ],
   "supabase/functions/alert-dispatcher/index.ts": [
@@ -3641,6 +3644,7 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/validation.ts"
   ],
   "supabase/functions/punchout-encrypt/index.ts": [

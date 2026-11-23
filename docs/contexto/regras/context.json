@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
+  "sha": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 16:07 UTC",
+  "generated_at": "2026-11-23 19:22 UTC",
   "files_total": 1326,
   "code_files": 1155,
-  "code_lines": 198922,
+  "code_lines": 198931,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7e6f37f8e23cf32c",
+ "facts_hash": "ba5f60d19937f5aa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35863,7 +35863,7 @@
   {
    "module": "supabase/functions",
    "files": 107,
-   "lines": 18051,
+   "lines": 18060,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -110414,7 +110414,7 @@
   },
   "supabase/functions/ai-demand-prediction/index.ts": {
    "path": "supabase/functions/ai-demand-prediction/index.ts",
-   "lines": 170,
+   "lines": 171,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110445,7 +110445,7 @@
   },
   "supabase/functions/ai-negotiation/index.ts": {
    "path": "supabase/functions/ai-negotiation/index.ts",
-   "lines": 155,
+   "lines": 156,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110602,7 +110602,7 @@
   },
   "supabase/functions/ai-supplier-suggestion/index.ts": {
    "path": "supabase/functions/ai-supplier-suggestion/index.ts",
-   "lines": 161,
+   "lines": 162,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -111629,7 +111629,7 @@
   },
   "supabase/functions/erp-sync/index.ts": {
    "path": "supabase/functions/erp-sync/index.ts",
-   "lines": 111,
+   "lines": 112,
    "tables": [
     {
      "table": "erp_connections",
@@ -111858,7 +111858,7 @@
   },
   "supabase/functions/fiscal-orchestrator/index.ts": {
    "path": "supabase/functions/fiscal-orchestrator/index.ts",
-   "lines": 174,
+   "lines": 175,
    "tables": [
     {
      "table": "fiscal_events",
@@ -111970,7 +111970,7 @@
   },
   "supabase/functions/guided-buying-ai/index.ts": {
    "path": "supabase/functions/guided-buying-ai/index.ts",
-   "lines": 161,
+   "lines": 162,
    "tables": [
     {
      "table": "produtos",
@@ -112333,7 +112333,7 @@
   },
   "supabase/functions/process-solicitacao-neural/index.ts": {
    "path": "supabase/functions/process-solicitacao-neural/index.ts",
-   "lines": 133,
+   "lines": 134,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -113219,7 +113219,7 @@
   },
   "supabase/functions/telemetry/index.ts": {
    "path": "supabase/functions/telemetry/index.ts",
-   "lines": 109,
+   "lines": 110,
    "tables": [
     {
      "table": "telemetry_logs",
@@ -113659,7 +113659,7 @@
   },
   "supabase/functions/workflow-engine/index.ts": {
    "path": "supabase/functions/workflow-engine/index.ts",
-   "lines": 173,
+   "lines": 174,
    "tables": [
     {
      "table": "workflow_instances",
@@ -115789,10 +115789,27 @@
   }
  },
  "git": {
-  "sha": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
+  "sha": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "334a384",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)",
+    "files": [
+     "supabase/functions/ai-demand-prediction/index.ts",
+     "supabase/functions/ai-negotiation/index.ts",
+     "supabase/functions/ai-supplier-suggestion/index.ts",
+     "supabase/functions/erp-sync/index.ts",
+     "supabase/functions/fiscal-orchestrator/index.ts",
+     "supabase/functions/guided-buying-ai/index.ts",
+     "supabase/functions/process-solicitacao-neural/index.ts",
+     "supabase/functions/telemetry/index.ts",
+     "supabase/functions/workflow-engine/index.ts"
+    ]
+   },
    {
     "sha": "d355ef3",
     "date": "2026-11-23",
@@ -116147,21 +116164,16 @@
      "supabase/functions/escalate-solicitacao/recipients.test.ts",
      "supabase/functions/escalate-solicitacao/recipients.ts"
     ]
-   },
-   {
-    "sha": "ec90e1e",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix: liga o Desfazer Global do historico ao undoStore real (#300)",
-    "files": [
-     "src/pages/historico/HistoricoCompras.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/features/auth/hooks/useAuth.tsx",
     4
+   ],
+   [
+    "supabase/functions/workflow-engine/index.ts",
+    3
    ],
    [
     "supabase/functions/generate-contract-pdf/index.ts",
@@ -116180,6 +116192,38 @@
     3
    ],
    [
+    "supabase/functions/ai-demand-prediction/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/ai-negotiation/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/ai-supplier-suggestion/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/erp-sync/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/fiscal-orchestrator/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/guided-buying-ai/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/process-solicitacao-neural/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/telemetry/index.ts",
+    2
+   ],
+   [
     "supabase/functions/dependency-health/index.ts",
     2
    ],
@@ -116189,10 +116233,6 @@
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
     2
    ],
    [
@@ -116206,38 +116246,6 @@
    [
     "src/components/compras/SourcingHistoryConsole.tsx",
     2
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/recipients.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/escalate-solicitacao/recipients.ts",
-    2
-   ],
-   [
-    "supabase/functions/_shared/cors-sem-constante.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/validation.ts",
-    1
-   ],
-   [
-    "supabase/functions/ai-demand-prediction/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/ai-negotiation/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/ai-supplier-risk/index.ts",
-    1
    ]
   ]
  }

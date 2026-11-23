@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e` (2026-11-23T12:32:33-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `334a3848a5c4eb6db64aa1d88c7314c362ece37a` (2026-11-23T16:21:41-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1325 |
 | arquivos_codigo | 826 |
-| linhas_codigo | 171964 |
+| linhas_codigo | 171973 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `334a384` fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)
 - 2026-11-23 `d355ef3` fix(cors): todas as edges derivam o CORS da requisicao (#334)
 - 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
 - 2026-11-23 `a8582d4` fix(auth): preserva a rota e avisa quando a sessao expira (#329)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `e33a738` fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)
 - 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
 - 2026-11-23 `959a649` fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)
-- 2026-11-23 `07960cf` fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

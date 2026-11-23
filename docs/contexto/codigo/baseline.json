@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
+  "commit": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
   "branch": "main",
-  "data_commit": "2026-11-23T12:32:33-03:00",
+  "data_commit": "2026-11-23T16:21:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "334a384",
+    "data": "2026-11-23",
+    "assunto": "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)"
+   },
    {
     "sha": "d355ef3",
     "data": "2026-11-23",
@@ -126,11 +131,6 @@
     "sha": "81f63a5",
     "data": "2026-11-23",
     "assunto": "docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)"
-   },
-   {
-    "sha": "d9c58bc",
-    "data": "2026-11-22",
-    "assunto": "feat(sourcing): substitui dados ficticios por metricas reais no console (#306)"
    }
   ],
   "arquivos_mudados_7d": 338,
@@ -282,6 +282,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "supabase/functions/workflow-engine/index.ts",
+    "mudancas": 5
+   },
+   {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 4
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/realtime-audit.ts",
     "mudancas": 4
-   },
-   {
-    "arquivo": "scripts/rls-audit.allowlist.json",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 283
+    "commits": 284
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1325,
   "arquivos_codigo": 826,
-  "linhas_codigo": 171964,
+  "linhas_codigo": 171973,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -492,7 +492,7 @@
   },
   "supabase/functions": {
    "arquivos": 107,
-   "linhas": 18051
+   "linhas": 18060
   },
   "tailwind.config.ts": {
    "arquivos": 1,
