@@ -2,14 +2,15 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { NegotiationContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 
 import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger("ai-negotiation", requestId);
@@ -28,7 +29,7 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return errorResponse(new Error("Sessão inválida"), logger);
+      return errorResponse(new Error("Sessão inválida"), logger, cors);
     }
 
     // M-05: rate-limit — IA custa tokens; 20 req/min por usuário.
@@ -38,7 +39,7 @@ serve(async (req) => {
       maxRequests: 20,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     // Standardized validation with auto-telemetry
     const validatedData = await validateBody(req, NegotiationContract, logger);
@@ -112,7 +113,7 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     if (!response.ok) {
       if (response.status === 429) {
-        return errorResponse(new Error("Validation error: Limite de requisições excedido. Tente novamente em alguns minutos."), logger);
+        return errorResponse(new Error("Validation error: Limite de requisições excedido. Tente novamente em alguns minutos."), logger, cors);
 
       }
       const t = await response.text();
@@ -143,11 +144,11 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
       status: "success",
       timestamp: new Date().toISOString()
     }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
 
   } catch (e) {
-    if (e instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
-    return errorResponse(e, logger);
+    if (e instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(cors);
+    return errorResponse(e, logger, cors);
   }
 });

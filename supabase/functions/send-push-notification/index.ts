@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -65,8 +65,9 @@ async function sendPushToSubscription(
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -76,7 +77,7 @@ Deno.serve(async (req) => {
     // SECURITY: Validate user authentication
     const pushUserId = await verifyAuthUser(req);
     const rlPush = await checkRateLimit({ identifier: pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
-    if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, corsHeaders);
+    if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, cors);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -87,7 +88,7 @@ Deno.serve(async (req) => {
       logger.error('VAPID keys not configured');
       return new Response(
         JSON.stringify({ error: 'VAPID keys not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -102,7 +103,7 @@ Deno.serve(async (req) => {
     if (roleErr || !roleRow || !['admin', 'coordinator'].includes(roleRow.role)) {
       return new Response(
         JSON.stringify({ error: 'Forbidden: admin or coordinator role required to send push notifications' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -131,7 +132,7 @@ Deno.serve(async (req) => {
       if (outsiders.length > 0) {
         return new Response(
           JSON.stringify({ error: 'Forbidden: cannot send push to users outside your organization' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } }
         );
       }
     }
@@ -234,7 +235,7 @@ Deno.serve(async (req) => {
         failed: failedCount,
         notifications_created: uniqueUserIds.length,
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -246,7 +247,7 @@ Deno.serve(async (req) => {
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

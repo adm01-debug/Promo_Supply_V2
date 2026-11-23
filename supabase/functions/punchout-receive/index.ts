@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
@@ -93,14 +93,15 @@ function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; s
 }
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -112,14 +113,14 @@ serve(async (req) => {
     maxRequests: 30,
     windowSeconds: 60,
   });
-  if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+  if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
   const bodyText = await req.text();
   const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
 
   // M-05: se já processamos este evento, retorna a resposta anterior.
   const cached = await getIdempotentResponse(SOURCE, idempotencyKey);
-  if (cached) return cached.response(corsHeaders);
+  if (cached) return cached.response(cors);
 
   try {
     const supabaseClient = createClient(
@@ -176,7 +177,7 @@ serve(async (req) => {
     if (isPunchOutSessionExpired(session.created_at)) {
       return new Response(JSON.stringify({ error: "Session expired" }), {
         status: 410,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -232,14 +233,14 @@ serve(async (req) => {
 
     return new Response(null, {
       status: 303,
-      headers: { ...corsHeaders, Location: redirectLocation },
+      headers: { ...cors, Location: redirectLocation },
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "PunchOut receive failed";
     await recordIdempotentResponse(SOURCE, idempotencyKey, null, { status: "failed", errorMessage: message });
     return new Response(JSON.stringify({ error: message }), {
       status: 400,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 });

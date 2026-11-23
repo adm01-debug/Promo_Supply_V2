@@ -1,4 +1,4 @@
-﻿import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+﻿import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
@@ -10,8 +10,9 @@ import {
   shouldSendFollowUp,
 } from "./cotacaoFollowUp.ts";
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
@@ -180,7 +181,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabase as any, "check-cotacao-followup");
     return new Response(
       JSON.stringify({ followUpsSent, emailsSent, resendConfigured, resendWarning: resendConfigured ? null : "RESEND_API_KEY não configurada — e-mails pulados", totalStale: staleCotacoes?.length || 0 }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...cors, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unknown error";
@@ -193,7 +194,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabaseForHb as any, "check-cotacao-followup", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

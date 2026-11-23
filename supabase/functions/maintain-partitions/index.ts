@@ -1,4 +1,4 @@
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
@@ -13,8 +13,9 @@ const PARTITIONED_TABLES: Array<{
 ];
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
@@ -69,7 +70,7 @@ Deno.serve(async (req) => {
     );
 
     return new Response(JSON.stringify({ results }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
       status: hasErrors ? 207 : 200,
     });
   } catch (error: unknown) {
@@ -86,7 +87,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabaseForHb as any, "maintain-partitions", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

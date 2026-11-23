@@ -11,7 +11,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { buildResponseHeaders } from "../_shared/http.ts";
-import { corsHeaders, stripHtml, safeErrorMessage } from "../_shared/security.ts";
+import { stripHtml, safeErrorMessage, buildCorsHeaders } from "../_shared/security.ts";
 
 const ENC_LABEL = "erpcred";
 const ENC_VERSION = "v1";
@@ -53,13 +53,14 @@ async function encryptSecret(plain: string): Promise<string> {
 }
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -68,7 +69,7 @@ serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -85,7 +86,7 @@ serve(async (req) => {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -97,7 +98,7 @@ serve(async (req) => {
     if (membershipError || !membership || membership.length === 0) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -116,7 +117,7 @@ serve(async (req) => {
     if (!roleOk && !roleOkCoord) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -125,19 +126,19 @@ serve(async (req) => {
     if (!plain || plain.length > 8192) {
       return new Response(
         JSON.stringify({ error: "invalid secret (required, max 8192 chars)" }),
-        { status: 400, headers: buildResponseHeaders(corsHeaders) },
+        { status: 400, headers: buildResponseHeaders(cors) },
       );
     }
 
     const encrypted = await encryptSecret(plain);
     return new Response(
       JSON.stringify({ data: { encrypted, tenant_id: tenantId } }),
-      { status: 200, headers: buildResponseHeaders(corsHeaders) },
+      { status: 200, headers: buildResponseHeaders(cors) },
     );
   } catch (err) {
     return new Response(
       JSON.stringify({ error: safeErrorMessage(err) }),
-      { status: 500, headers: buildResponseHeaders(corsHeaders) },
+      { status: 500, headers: buildResponseHeaders(cors) },
     );
   }
 });

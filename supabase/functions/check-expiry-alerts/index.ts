@@ -1,4 +1,4 @@
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
@@ -11,8 +11,9 @@ import {
 } from "./contractExpiry.ts";
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
@@ -252,7 +253,7 @@ Deno.serve(async (req) => {
 
     await recordCronHeartbeat(supabase as any, "check-expiry-alerts");
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
@@ -263,7 +264,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabaseForHb as any, "check-expiry-alerts", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

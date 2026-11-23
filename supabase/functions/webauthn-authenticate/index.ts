@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -29,13 +29,14 @@ function base64UrlDecode(str: string): Uint8Array {
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -61,7 +62,7 @@ Deno.serve(async (req) => {
       maxRequests: action === 'start' ? 10 : 20,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     console.log(`WebAuthn authenticate action: ${action}`);
 
@@ -127,7 +128,7 @@ Deno.serve(async (req) => {
       console.log('Authentication options generated for:', email);
 
       return new Response(JSON.stringify({ options, userId: user.id }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -237,7 +238,7 @@ Deno.serve(async (req) => {
         email: email,
         actionLink: signInData.properties?.action_link,
       }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -247,7 +248,7 @@ Deno.serve(async (req) => {
     console.error('WebAuthn authenticate error:', error);
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status: 400, headers: buildResponseHeaders(corsHeaders) }
+      { status: 400, headers: buildResponseHeaders(cors) }
     );
   }
 });

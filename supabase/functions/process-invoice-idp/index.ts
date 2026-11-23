@@ -1,4 +1,4 @@
-﻿import { corsHeaders, getAuthUser } from "../_shared/security.ts";
+﻿import { buildCorsHeaders, getAuthUser } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -17,8 +17,9 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const MODEL = "google/gemini-2.5-flash";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -30,7 +31,7 @@ serve(async (req) => {
     if (!user) {
       return new Response(JSON.stringify({ error: "Não autorizado: token ausente ou inválido" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -41,7 +42,7 @@ serve(async (req) => {
     if (filePath.includes("..") || filePath.startsWith("/")) {
       return new Response(JSON.stringify({ error: "filePath inválido" }), {
         status: 400,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -51,7 +52,7 @@ serve(async (req) => {
     if (!filePath.startsWith(expectedPrefix)) {
       return new Response(JSON.stringify({ error: "Acesso negado: arquivo nao pertence ao usuario" }), {
         status: 403,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -74,7 +75,7 @@ serve(async (req) => {
     if (fileData.size > MAX_FILE_BYTES) {
       return new Response(JSON.stringify({ error: "Arquivo maior que 10 MB" }), {
         status: 413,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -87,7 +88,7 @@ serve(async (req) => {
       logger.error("OPENROUTER_API_KEY não configurada");
       return new Response(JSON.stringify(extractionUnavailable()), {
         status: 503,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -138,7 +139,7 @@ serve(async (req) => {
       }
       return new Response(JSON.stringify(extractionUnavailable()), {
         status: 503,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -155,14 +156,14 @@ serve(async (req) => {
       requer_revisao: obrigatoriosFaltando.length > 0,
       requestId: logger.getRequestId(),
     }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
 
   } catch (error) {
     logger.error("Erro fatal no processamento IDP", { error: (error as Error).message });
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 400,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 });

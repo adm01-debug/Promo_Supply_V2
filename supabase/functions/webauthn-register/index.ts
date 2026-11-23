@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -43,13 +43,14 @@ async function verifyAuthUser(req: Request): Promise<string> {
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
       status: 405,
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   }
 
@@ -64,7 +65,7 @@ Deno.serve(async (req) => {
       maxRequests: 15,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -152,7 +153,7 @@ Deno.serve(async (req) => {
       console.log('Registration options generated for user', safeUserId);
 
       return new Response(JSON.stringify({ options }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -209,7 +210,7 @@ Deno.serve(async (req) => {
       console.log('Passkey registered successfully for user:', safeUserId);
 
       return new Response(JSON.stringify({ success: true }), {
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -220,7 +221,7 @@ Deno.serve(async (req) => {
     const status = errorMessage.includes("Não autorizado") ? 401 : 400;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status, headers: buildResponseHeaders(corsHeaders) }
+      { status, headers: buildResponseHeaders(cors) }
     );
   }
 });

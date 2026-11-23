@@ -1,12 +1,13 @@
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
@@ -100,7 +101,7 @@ Deno.serve(async (req) => {
         },
         notificationsSent,
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...cors, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unknown error";
@@ -113,7 +114,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabaseForHb as any, "weekly-report", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

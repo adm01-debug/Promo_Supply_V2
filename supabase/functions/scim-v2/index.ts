@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
@@ -37,8 +37,9 @@ function scimErrorResponse(detail: string, status: number, headers: Record<strin
 }
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   try {
@@ -46,7 +47,7 @@ serve(async (req) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Missing or invalid token" }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -61,13 +62,13 @@ serve(async (req) => {
       maxRequests: 120,
       windowSeconds: 60,
     });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const token = authHeader.slice("Bearer ".length).trim();
     if (!token) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -101,12 +102,12 @@ serve(async (req) => {
         console.error("SCIM has no credential configured; rejecting request");
         return new Response(JSON.stringify({ error: detail }), {
           status: 503,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...cors, "Content-Type": "application/json" },
         });
       }
       return new Response(JSON.stringify({ error: detail }), {
         status: 401,
-        headers: buildResponseHeaders(corsHeaders),
+        headers: buildResponseHeaders(cors),
       });
     }
 
@@ -123,7 +124,7 @@ serve(async (req) => {
           const { data, error } = await supabaseAdmin.auth.admin.getUserById(resourceId);
           if (error) throw error;
           return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
-            headers: buildResponseHeaders(corsHeaders),
+            headers: buildResponseHeaders(cors),
           });
         } else {
           // List users
@@ -134,7 +135,7 @@ serve(async (req) => {
             totalResults: data.users.length,
             Resources: data.users.map(mapSupabaseUserToSCIM),
           }), {
-            headers: buildResponseHeaders(corsHeaders),
+            headers: buildResponseHeaders(cors),
           });
         }
       }
@@ -146,7 +147,7 @@ serve(async (req) => {
           return scimErrorResponse(
             parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
             400,
-            corsHeaders,
+            cors,
           );
         }
 
@@ -166,7 +167,7 @@ serve(async (req) => {
         const locationHeader = `${url.origin}${url.pathname.replace(/\/$/, "")}/Users/${data.user.id}`;
         return new Response(JSON.stringify(scimUser), {
           status: 201,
-          headers: { ...buildResponseHeaders(corsHeaders), Location: locationHeader },
+          headers: { ...buildResponseHeaders(cors), Location: locationHeader },
         });
       }
 
@@ -178,7 +179,7 @@ serve(async (req) => {
           return scimErrorResponse(
             parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
             400,
-            corsHeaders,
+            cors,
           );
         }
 
@@ -199,7 +200,7 @@ serve(async (req) => {
 
         return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
           status: 200,
-          headers: buildResponseHeaders(corsHeaders),
+          headers: buildResponseHeaders(cors),
         });
       }
 
@@ -209,18 +210,18 @@ serve(async (req) => {
         // RFC 7644 §3.6: 204 No Content — empty body
         return new Response(null, {
           status: 204,
-          headers: { ...buildResponseHeaders(corsHeaders), "content-length": "0" },
+          headers: { ...buildResponseHeaders(cors), "content-length": "0" },
         });
       }
     }
 
-    return scimErrorResponse("Method not supported", 405, corsHeaders);
+    return scimErrorResponse("Method not supported", 405, cors);
 
   } catch (error: unknown) {
     console.error("SCIM Error:", error);
     const message = error instanceof Error ? error.message : "SCIM request failed";
     // RFC 7644 §3.12: all errors must use the SCIM Error schema
-    return scimErrorResponse(message, 400, corsHeaders);
+    return scimErrorResponse(message, 400, cors);
   }
 });
 

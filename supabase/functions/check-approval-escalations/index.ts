@@ -1,13 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { EdgeLogger } from "../_shared/logger.ts";
-import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { insertNotification } from "../_shared/notifications.ts";
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
@@ -225,7 +226,7 @@ Deno.serve(async (req) => {
 
     await recordCronHeartbeat(supabase as any, "check-approval-escalations");
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...cors, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
@@ -242,7 +243,7 @@ Deno.serve(async (req) => {
       success: false
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...cors, 'Content-Type': 'application/json' },
     });
   }
 });

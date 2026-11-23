@@ -1,4 +1,4 @@
-import { corsHeaders, requireAdmin } from "../_shared/security.ts";
+import { requireAdmin, buildCorsHeaders } from "../_shared/security.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SimulationEngine } from "../_shared/simulation-engine.ts";
 import { ContractValidator, NegotiationContract, WorkflowContract, ERPSyncContract } from "../_shared/contracts.ts";
@@ -6,7 +6,8 @@ import { PayloadFuzzer } from "../_shared/fuzzer.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   // A-02: guarda dupla (JWT + role admin) — simulação impacta o banco.
   const guard = await requireAdmin(req);
@@ -111,12 +112,12 @@ serve(async (req) => {
       message: `System simulation (${mode} mode) with contract validation completed`,
       summary
     }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (e) {
     logger.error("Simulation failed", { error: e.message });
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });

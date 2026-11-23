@@ -1,4 +1,4 @@
-import { corsHeaders, verifyCronSecret, getAuthUser } from "../_shared/security.ts";
+import { verifyCronSecret, getAuthUser, buildCorsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
@@ -73,8 +73,9 @@ async function detectIntegrationFailures(
 }
 
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
   // Invocacao por cron (pg_net) usa CRON_SECRET; o botao manual do front
   // envia o JWT do usuario autenticado. Aceitamos ambas: cron autorizado ou
@@ -299,7 +300,7 @@ Deno.serve(async (req) => {
         checked_at: now.toISOString(),
         ...result,
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -312,7 +313,7 @@ Deno.serve(async (req) => {
     await recordCronHeartbeat(supabaseForHb as any, "check-sla-alerts", errorMessage);
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }
     );
   }
 });

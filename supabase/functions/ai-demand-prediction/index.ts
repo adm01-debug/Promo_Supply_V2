@@ -1,14 +1,15 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
 import { DemandPredictionContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 Deno.serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
@@ -30,7 +31,7 @@ Deno.serve(async (req) => {
     if (authError || !user) throw new Error("Não autorizado: token inválido");
 
     const rl = await checkRateLimit({ identifier: user.id, endpoint: "ai-demand-prediction", maxRequests: 15, windowSeconds: 60 });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     const validatedData = await validateBody(req, DemandPredictionContract, logger);
     const { historicalData, category, timeframe } = validatedData;
@@ -112,7 +113,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
           requestId,
         };
       },
-      corsHeaders,
+      cors,
     );
 
     if (usedFallback) {
@@ -126,7 +127,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded", requestId }), {
           status: 429,
-          headers: buildResponseHeaders(corsHeaders),
+          headers: buildResponseHeaders(cors),
         });
       }
       throw new Error(`AI Gateway error: ${response.status}`);
@@ -161,9 +162,9 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
     logger.info("Demand prediction generated successfully");
 
     return new Response(JSON.stringify({ ...predictions, requestId }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
     });
   } catch (error: unknown) {
-    return errorResponse(error, logger);
+    return errorResponse(error, logger, cors);
   }
 });

@@ -1,11 +1,12 @@
-import { corsHeaders, requireAdmin } from "../_shared/security.ts";
+import { requireAdmin, buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 serve(async (req) => {
+  const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   // A-02: guarda dupla (JWT + role admin)
@@ -86,14 +87,14 @@ serve(async (req) => {
     };
 
     return new Response(JSON.stringify(complianceSummary, null, 2), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
       // Always 200: the front-end consumes the JSON body as the report.
       // overall_status inside the payload carries the compliance verdict.
       status: 200,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
-      headers: buildResponseHeaders(corsHeaders),
+      headers: buildResponseHeaders(cors),
       status: 500,
     });
   }

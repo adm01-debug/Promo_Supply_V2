@@ -9,7 +9,7 @@
  *  - Credenciais decifradas apenas no servidor, nunca retornadas ao browser
  *  - Toda escrita é auditada em `xbz_carrinho_log`
  */
-import { corsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -100,14 +100,19 @@ interface Body {
 }
 
 
-function json(payload: unknown, status = 200, extra: Record<string, string> = {}) {
+function json(
+  payload: unknown,
+  cors: Record<string, string>,
+  status = 200,
+  extra: Record<string, string> = {},
+) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...buildResponseHeaders(corsHeaders), ...extra },
+    headers: { ...buildResponseHeaders(cors), ...extra },
   });
 }
 
-function ok<T>(result: XbzResult<T>, requestId: string) {
+function ok<T>(result: XbzResult<T>, requestId: string, cors: Record<string, string>) {
   return json(
     {
       data: result.data,
@@ -117,6 +122,7 @@ function ok<T>(result: XbzResult<T>, requestId: string) {
         : null,
       requestId,
     },
+    cors,
     200,
   );
 }
@@ -134,6 +140,7 @@ async function handleAction(
   admin: ReturnType<typeof serviceClient>,
   logger: EdgeLogger,
   requestId: string,
+  cors: Record<string, string>,
 ): Promise<Response> {
   // --- Ações administrativas (não exigem credenciais previamente salvas) ---
   if (action === "saveCredentials") {
@@ -181,7 +188,7 @@ async function handleAction(
         permissions: extractPermissions(login),
       },
       requestId,
-    });
+    }, cors);
   }
 
   if (action === "credentialsStatus") {
@@ -192,7 +199,7 @@ async function handleAction(
       .eq("tenant_id", caller.tenantId)
       .is("deleted_at", null)
       .maybeSingle();
-    return json({ data: data ?? null, requestId });
+    return json({ data: data ?? null, requestId }, cors);
   }
 
   if (action === "cores") {
@@ -204,7 +211,7 @@ async function handleAction(
       (message) => logger.warn("falha ao espelhar cores XBZ", { message }),
     );
     logger.info("cores XBZ espelhadas", { cores });
-    return ok(result, requestId);
+    return ok(result, requestId, cors);
   }
 
   // --- A partir daqui, todas as ações exigem credenciais do tenant ---
@@ -236,24 +243,24 @@ async function handleAction(
         permissions,
       },
       requestId,
-    });
+    }, cors);
   }
 
   if (action === "dashboard") {
     requireRole(caller, READ_ROLES);
-    return ok(await xbzDashboard(portal), requestId);
+    return ok(await xbzDashboard(portal), requestId, cors);
   }
 
   if (action === "pessoaToken") {
     // Legado: a XBZ substitui o token de retirada pelo portador (23/11/2026).
     requireRole(caller, READ_ROLES);
-    return ok(await xbzPessoaToken(portal), requestId);
+    return ok(await xbzPessoaToken(portal), requestId, cors);
   }
 
   if (action === "portadorCarregar") {
     requireRole(caller, READ_ROLES);
     // 204 na XBZ → data: null (nenhum portador cadastrado).
-    return ok(await xbzPortadorCarregar(portal), requestId);
+    return ok(await xbzPortadorCarregar(portal), requestId, cors);
   }
 
   if (action === "pedidos" || action === "pedidoDetalhe") {
@@ -273,7 +280,7 @@ async function handleAction(
     if (action === "pedidoDetalhe" && !filters.numeroPedido) {
       throw new XbzError(400, "numeroPedido é obrigatório");
     }
-    return ok(await xbzConsultaPedidos(portal, filters), requestId);
+    return ok(await xbzConsultaPedidos(portal, filters), requestId, cors);
   }
 
   if (action === "catalogo") {
@@ -309,7 +316,7 @@ async function handleAction(
       );
       logger.info("catálogo XBZ espelhado", { mirrored });
 
-      return ok(result, requestId);
+      return ok(result, requestId, cors);
     } catch (err) {
       // Degradação elegante: XBZ fora do ar (rede/5xx/circuit breaker aberto)
       // → devolve o último snapshot conhecido em vez de falhar a tela.
@@ -327,7 +334,7 @@ async function handleAction(
         source: "cache",
         syncedAt: cached.syncedAt,
         requestId,
-      });
+      }, cors);
 
     }
   }
@@ -348,7 +355,7 @@ async function handleAction(
       (message) => logger.warn("falha ao espelhar ficha fiscal XBZ", { message }),
     );
     logger.info("ficha fiscal XBZ espelhada", { produtoId, espelhado });
-    return ok(result, requestId);
+    return ok(result, requestId, cors);
   }
 
   // --- Leituras do carrinho ---
@@ -364,7 +371,7 @@ async function handleAction(
   if (cartReads[action]) {
     requireRole(caller, READ_ROLES);
     if (action.startsWith("carrinho")) requirePortalPermission(creds, "WebCarrinhoVisualizar");
-    return ok(await xbzCarrinhoGet(cartReads[action], portal), requestId);
+    return ok(await xbzCarrinhoGet(cartReads[action], portal), requestId, cors);
   }
 
   // --- Escritas ---
@@ -463,7 +470,7 @@ async function handleAction(
       success: true,
     });
 
-    return ok(result, requestId);
+    return ok(result, requestId, cors);
   } catch (err) {
     const xbzErr = err instanceof XbzError ? err : null;
     await logCartOperation(admin, {
@@ -480,13 +487,14 @@ async function handleAction(
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   const requestId = req.headers.get("x-request-id") ?? crypto.randomUUID();
   const logger = new EdgeLogger("xbz-proxy", requestId);
 
   if (req.method !== "POST") {
-    return json({ error: "Método não permitido", requestId }, 405, { Allow: "POST, OPTIONS" });
+    return json({ error: "Método não permitido", requestId }, cors, 405, { Allow: "POST, OPTIONS" });
   }
 
   const admin = serviceClient();
@@ -516,17 +524,17 @@ Deno.serve(async (req) => {
     });
     if (!rl.allowed) {
       logger.warn("rate limit atingido", { action, tenantId: caller.tenantId });
-      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+      return rateLimitedResponse(rl.retryAfterSeconds, cors);
     }
 
 
     logger.info("xbz action", { action, tenantId: caller.tenantId });
-    return await handleAction(action, body, caller, admin, logger, requestId);
+    return await handleAction(action, body, caller, admin, logger, requestId, cors);
   } catch (err) {
     const status = err instanceof XbzError ? err.status : 500;
     const message = err instanceof Error ? err.message : "Erro desconhecido";
     if (status >= 500) logger.error("xbz-proxy falhou", { message });
     else logger.warn("xbz-proxy rejeitou requisição", { status, message });
-    return json({ error: message, requestId }, status);
+    return json({ error: message, requestId }, cors, status);
   }
 });

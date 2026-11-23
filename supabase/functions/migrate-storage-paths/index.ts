@@ -1,4 +1,4 @@
-import { corsHeaders, safeErrorMessage } from "../_shared/security.ts";
+import { safeErrorMessage, buildCorsHeaders } from "../_shared/security.ts";
 // Edge function: migra arquivos legados dos buckets `documentos` e `comprovantes`
 // do path antigo `{userId}/...` para o novo `{tenantId}/{userId}/...`.
 //
@@ -66,11 +66,12 @@ async function listAll(admin: ReturnType<typeof createClient>, bucket: string, p
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 
@@ -83,7 +84,7 @@ serve(async (req) => {
     if (!authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -95,7 +96,7 @@ serve(async (req) => {
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -107,7 +108,7 @@ serve(async (req) => {
     if (!isAdmin) {
       return new Response(JSON.stringify({ error: "Forbidden: admin only" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...cors, "Content-Type": "application/json" },
       });
     }
 
@@ -213,13 +214,13 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ dryRun, results }, null, 2), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (err) {
     const msg = safeErrorMessage(err);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...cors, "Content-Type": "application/json" },
     });
   }
 });
