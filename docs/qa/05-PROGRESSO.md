@@ -121,7 +121,7 @@ _(vazio)_
 - [ ] 072 — Passar o mouse no menu "Solicitações" esvazia a lista de solicitações e a tela de cotação — onda 2 — Crítica — HK-01
 - [ ] 073 — Migration: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
 - [ ] 074 — Aplicação: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
-- [ ] 075 — O valor da ordem de compra vem do valor estimado da solicitacao, nunca da cotacao vencedora, e cai para R$ 12,00 fixos quando nao ha estimativa — onda 2 — Crítica — NEG-03
+- [x] 075 — O valor da ordem de compra vem do valor estimado da solicitacao, nunca da cotacao vencedora, e cai para R$ 12,00 fixos quando nao ha estimativa — onda 2 — Crítica — NEG-03
 - [ ] 076 — (parte 1/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
 - [ ] 077 — (parte 2/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
 - [ ] 078 — Ordem de compra é gravada com o valor ESTIMADO da solicitação (ou R$ 12 fixo), ignorando o preço da cotação selecionada, e o total do pedido não bate  — onda 2 — Crítica — UI-02
