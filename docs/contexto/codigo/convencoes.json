@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (118)",
+   "co-localizado (__tests__) (119)",
    "outro (43)",
    "co-localizado (*.test) (37)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)",
    "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)",
    "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)",
    "fix: receive-os-sync sem verify_jwt (webhook HMAC)",
-   "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)",
-   "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)"
+   "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)"
   ]
  },
  "pr_template": null,

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a1f9fe04efed1982b76d883785f4f928926a837d",
+  "commit": "cd9ae3fd315c9b9325d8520806c841b6a09c6944",
   "branch": "main",
-  "data_commit": "2026-11-23T19:07:03-03:00",
+  "data_commit": "2026-11-23T19:35:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "cd9ae3f",
+    "data": "2026-11-23",
+    "assunto": "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)"
+   },
    {
     "sha": "a1f9fe0",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "99345f5",
     "data": "2026-11-23",
     "assunto": "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)"
-   },
-   {
-    "sha": "e33a738",
-    "data": "2026-11-23",
-    "assunto": "fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)"
    }
   ],
-  "arquivos_mudados_7d": 356,
+  "arquivos_mudados_7d": 358,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -168,11 +168,11 @@
     "mudancas": 25
    },
    {
-    "pasta": "src/features/auth",
-    "mudancas": 19
+    "pasta": "src/hooks/__tests__",
+    "mudancas": 20
    },
    {
-    "pasta": "src/hooks/__tests__",
+    "pasta": "src/features/auth",
     "mudancas": 19
    },
    {
@@ -188,12 +188,12 @@
     "mudancas": 16
    },
    {
-    "pasta": "package.json",
+    "pasta": "supabase/functions/punchout-receive",
     "mudancas": 13
    },
    {
-    "pasta": "supabase/functions/punchout-receive",
-    "mudancas": 13
+    "pasta": "docs/ci/README.md",
+    "mudancas": 12
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -206,11 +206,11 @@
     "mudancas": 17
    },
    {
-    "arquivo": "package.json",
-    "mudancas": 13
+    "arquivo": "docs/ci/README.md",
+    "mudancas": 12
    },
    {
-    "arquivo": "docs/ci/README.md",
+    "arquivo": "package.json",
     "mudancas": 12
    },
    {
@@ -226,16 +226,12 @@
     "mudancas": 9
    },
    {
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 9
+   },
+   {
     "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 8
-   },
-   {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 7
    },
    {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
@@ -251,6 +247,10 @@
    },
    {
     "arquivo": ".github/workflows/deploy-edge-functions.yml",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "AGENTS.md",
     "mudancas": 6
    },
    {
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1337,
-  "arquivos_codigo": 834,
-  "linhas_codigo": 173059,
+  "arquivos_total": 1338,
+  "arquivos_codigo": 835,
+  "linhas_codigo": 173133,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 208,
+  "testes": 209,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -439,8 +439,8 @@
    "linhas": 8680
   },
   "src/hooks": {
-   "arquivos": 77,
-   "linhas": 13496
+   "arquivos": 78,
+   "linhas": 13570
   },
   "src/i18n": {
    "arquivos": 1,

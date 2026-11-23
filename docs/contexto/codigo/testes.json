@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 208,
+ "total": 209,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 191
+  "unit": 192
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 118
+   "arquivos": 119
   },
   {
    "padrao": "outro",
@@ -716,6 +716,15 @@
     "src/hooks/useDashboardKPIs.ts"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "src/hooks/useFornecedores.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -1931,7 +1940,7 @@
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useFeedback.ts": 1,
-  "src/hooks/useFornecedores.ts": 1,
+  "src/hooks/useFornecedores.ts": 2,
   "src/hooks/useFuseSearch.ts": 1,
   "src/hooks/useGeoRestriction.ts": 1,
   "src/hooks/useImageCompression.ts": 1,

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a1f9fe04ef` · branch `main` · 2026-11-23 22:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cd9ae3fd31` · branch `main` · 2026-11-23 22:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2332,7 +2332,7 @@ _nenhum item encontrado_
 | Erro ao atualizar:  | `src/hooks/useFornecedores.ts` |
 | Erro ao cadastrar fornecedor:  | `src/hooks/useFornecedores.ts` |
 | Erro ao excluir:  | `src/hooks/useFornecedores.ts` |
-| Você precisa estar logado | `src/hooks/useFornecedores.ts` |
+| Você precisa estar logado em uma organização | `src/hooks/useFornecedores.ts` |
 | Configurações de geo-restrição ainda não carregaram. Aguarde e tente novamente. | `src/hooks/useGeoRestriction.ts` |
 | Não foi possível desfazer a ação | `src/hooks/useGlobalUndo.ts` |
 | Não foi possível refazer a ação | `src/hooks/useGlobalUndo.ts` |
@@ -2406,7 +2406,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2787 testes em 157 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2789 testes em 158 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2564,6 +2564,7 @@ _nenhum item encontrado_
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
+| `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/_shared/validation.log_body.test.ts` | 2 | validateBody: corpo invalido nao vaza os valores para o log · validateBody: JSON malformado loga a causa e mantem a mensagem |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |

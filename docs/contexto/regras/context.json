@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a1f9fe04efed1982b76d883785f4f928926a837d",
+  "sha": "cd9ae3fd315c9b9325d8520806c841b6a09c6944",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 22:08 UTC",
-  "files_total": 1338,
-  "code_files": 1167,
-  "code_lines": 200243,
+  "generated_at": "2026-11-23 22:35 UTC",
+  "files_total": 1339,
+  "code_files": 1168,
+  "code_lines": 200317,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "37fd74ebfcfa0138",
+ "facts_hash": "2be305fc8a41b65a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 406,
-   ".tsx": 355,
+   ".tsx": 356,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35202,8 +35202,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 77,
-   "lines": 13496,
+   "files": 78,
+   "lines": 13570,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35402,6 +35402,7 @@
     "src/hooks/__tests__/permissionsConstants.test.ts",
     "src/hooks/__tests__/useApprovalHistory.test.ts",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
@@ -41206,7 +41207,7 @@
    },
    {
     "file": "src/hooks/useFornecedores.ts",
-    "msg": "Você precisa estar logado"
+    "msg": "Você precisa estar logado em uma organização"
    },
    {
     "file": "src/hooks/useGeoRestriction.ts",
@@ -61924,6 +61925,14 @@
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "name": "volume zero → 0 (sem divisão por zero)"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+    "name": "useFornecedores · createFornecedor (VAL-12)"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+    "name": "grava organization_id com o id da ORGANIZACAO, nao o do tenant"
    },
    {
     "file": "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -100249,7 +100258,7 @@
     "Erro ao atualizar: ",
     "Erro ao cadastrar fornecedor: ",
     "Erro ao excluir: ",
-    "Você precisa estar logado"
+    "Você precisa estar logado em uma organização"
    ],
    "status_values": [
     {
@@ -102075,6 +102084,25 @@
     "useDashboardKPIs — economia percentual sem arredondar",
     "R$ 873,60 sobre volume %d → %s%%",
     "volume zero → 0 (sem divisão por zero)"
+   ]
+  },
+  "src/hooks/__tests__/useFornecedores.organization.test.tsx": {
+   "path": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+   "lines": 74,
+   "is_test": true,
+   "params": [
+    {
+     "name": "ORG",
+     "value": "'df60b900-ede4-45db-8573-da40d13bf767'"
+    },
+    {
+     "name": "TENANT",
+     "value": "'39838251-a1d7-4437-b47a-7329efe8f68f'"
+    }
+   ],
+   "tests": [
+    "useFornecedores · createFornecedor (VAL-12)",
+    "grava organization_id com o id da ORGANIZACAO, nao o do tenant"
    ]
   },
   "src/hooks/__tests__/useFuseSearch.test.ts": {
@@ -116553,10 +116581,21 @@
   }
  },
  "git": {
-  "sha": "a1f9fe04efed1982b76d883785f4f928926a837d",
+  "sha": "cd9ae3fd315c9b9325d8520806c841b6a09c6944",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cd9ae3f",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+     "src/hooks/useFornecedores.ts"
+    ]
+   },
    {
     "sha": "a1f9fe0",
     "date": "2026-11-23",
@@ -116902,30 +116941,12 @@
      "src/features/auth/hooks/useAuth.tsx",
      "src/pages/auth/Auth.tsx"
     ]
-   },
-   {
-    "sha": "3833aac",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/functions/_shared/contracts.ts",
-     "supabase/functions/dependency-health/index.ts",
-     "supabase/functions/process-invoice-idp/index.ts",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/workflow-engine/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    7
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
-    3
+    8
    ],
    [
     "supabase/config.toml",
@@ -116933,10 +116954,6 @@
    ],
    [
     "supabase/functions/_shared/validation.ts",
-    2
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
    ],
    [
@@ -116972,7 +116989,7 @@
     2
    ],
    [
-    "supabase/functions/dependency-health/index.ts",
+    "supabase/functions/workflow-engine/index.ts",
     2
    ],
    [
@@ -116980,15 +116997,7 @@
     2
    ],
    [
-    "supabase/functions/process-invoice-idp/index.ts",
-    2
-   ],
-   [
     "supabase/functions/scim-v2/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
     2
    ],
    [
@@ -116998,6 +117007,22 @@
    [
     "src/features/auth/hooks/useAuth.tsx",
     2
+   ],
+   [
+    "src/pages/auth/Auth.tsx",
+    2
+   ],
+   [
+    "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useFornecedores.ts",
+    1
+   ],
+   [
+    "src/components/pagamentos/PagamentoDetailModal.tsx",
+    1
    ]
   ]
  }
