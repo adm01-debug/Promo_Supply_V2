@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `73dce42ad29b8123c3883dd83624caf50e9865cd` (2026-11-23T10:35:42-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3833aac5197feaa21232baebd38d08ad4a9f3f5e` (2026-11-23T10:39:19-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1319 |
 | arquivos_codigo | 820 |
-| linhas_codigo | 171502 |
+| linhas_codigo | 171566 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -212,7 +212,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
-- `send-push-notification` — tabelas: push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
@@ -336,7 +336,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (15)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - docs/ci/README.md (12)
 - package.json (12)
 - .github/workflows/main.yml (9)
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `3833aac` fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320
 - 2026-11-23 `73dce42` fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)
 - 2026-11-23 `1060124` fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)
 - 2026-11-23 `87d6784` fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `c15161d` feat: escala solicitacao e alerta comprador com notificacao real (#301)
 - 2026-11-22 `ec90e1e` fix: liga o Desfazer Global do historico ao undoStore real (#300)
 - 2026-11-22 `ff7a555` chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)
-- 2026-11-22 `cba3145` fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

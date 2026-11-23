@@ -13408,7 +13408,8 @@
     "check-cotacao-followup",
     "escalate-solicitacao",
     "migrate-storage-paths",
-    "punchout-receive"
+    "punchout-receive",
+    "send-push-notification"
    ],
    "triggers": [
     "trg_normalize_phone_profiles",
@@ -20450,6 +20451,7 @@
     "check-expiry-alerts",
     "check-sla-alerts",
     "escalate-solicitacao",
+    "send-push-notification",
     "spot-api",
     "spot-proxy",
     "weekly-report",

@@ -375,7 +375,7 @@
    "nome": "dependency-health",
    "entrada": "supabase/functions/dependency-health/index.ts",
    "arquivos": 1,
-   "linhas": 708,
+   "linhas": 697,
    "verify_jwt": true,
    "metodos": [
     "GET",
@@ -793,7 +793,7 @@
    "nome": "process-invoice-idp",
    "entrada": "supabase/functions/process-invoice-idp/index.ts",
    "arquivos": 2,
-   "linhas": 290,
+   "linhas": 300,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1085,13 +1085,15 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 499,
+   "linhas": 545,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [
-    "push_subscriptions"
+    "profiles",
+    "push_subscriptions",
+    "user_roles"
    ],
    "rpcs": [],
    "env": [
@@ -1423,7 +1425,7 @@
    "nome": "workflow-engine",
    "entrada": "supabase/functions/workflow-engine/index.ts",
    "arquivos": 1,
-   "linhas": 155,
+   "linhas": 172,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

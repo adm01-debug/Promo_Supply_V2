@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "73dce42ad29b8123c3883dd83624caf50e9865cd",
+  "sha": "3833aac5197feaa21232baebd38d08ad4a9f3f5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 13:36 UTC",
+  "generated_at": "2026-11-23 13:54 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198460,
+  "code_lines": 198524,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b4a950dc4a5c34fc",
+ "facts_hash": "b486b06f59fbb628",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -32284,6 +32284,7 @@
      "profiles",
      "push_subscriptions",
      "telemetry_logs",
+     "user_roles",
      "user_tenants"
     ],
     "env": [
@@ -35707,7 +35708,7 @@
   {
    "module": "supabase/functions",
    "files": 102,
-   "lines": 17498,
+   "lines": 17562,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36947,7 +36948,8 @@
      "supabase/functions/escalate-solicitacao/index.ts",
      "supabase/functions/escalate-solicitacao/recipients.ts",
      "supabase/functions/migrate-storage-paths/index.ts",
-     "supabase/functions/punchout-receive/index.ts"
+     "supabase/functions/punchout-receive/index.ts",
+     "supabase/functions/send-push-notification/index.ts"
     ]
    },
    "punchout_catalogs": {
@@ -37389,6 +37391,7 @@
      "supabase/functions/check-expiry-alerts/index.ts",
      "supabase/functions/check-sla-alerts/index.ts",
      "supabase/functions/escalate-solicitacao/recipients.ts",
+     "supabase/functions/send-push-notification/index.ts",
      "supabase/functions/spot-api/index.ts",
      "supabase/functions/spot-proxy/index.ts",
      "supabase/functions/weekly-report/index.ts",
@@ -38243,7 +38246,8 @@
     "target_node_id"
    ],
    "workflow_instances": [
-    "id"
+    "id",
+    "tenant_id"
    ],
    "workflow_nodes": [
     "template_id",
@@ -39553,7 +39557,7 @@
     "file": "supabase/functions/_shared/contracts.ts",
     "name": "WorkflowContract",
     "kind": "discriminatedUnion",
-    "body": "\"action\", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }) ]",
+    "body": "\"action\", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }) ]",
     "refines": [],
     "chain": []
    },
@@ -42735,6 +42739,10 @@
    {
     "file": "supabase/functions/workflow-engine/index.ts",
     "text": "Contract Validation: Ensures type safety and catches malformed payloads before logic execution"
+   },
+   {
+    "file": "supabase/functions/workflow-engine/index.ts",
+    "text": "QA-022: approver_id must come from the verified JWT, never from the request body."
    },
    {
     "file": "supabase/functions/xbz-proxy/index.ts",
@@ -108505,7 +108513,7 @@
   },
   "supabase/functions/_shared/contracts.ts": {
    "path": "supabase/functions/_shared/contracts.ts",
-   "lines": 164,
+   "lines": 166,
    "exports": [
     "const NegotiationContract",
     "const WorkflowContract",
@@ -108530,7 +108538,7 @@
     {
      "name": "WorkflowContract",
      "kind": "discriminatedUnion",
-     "body": "\"action\", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }) ]",
+     "body": "\"action\", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }) ]",
      "refines": [],
      "chain": []
     },
@@ -110691,7 +110699,7 @@
   },
   "supabase/functions/dependency-health/index.ts": {
    "path": "supabase/functions/dependency-health/index.ts",
-   "lines": 708,
+   "lines": 697,
    "tables": [
     {
      "table": "dependency_health_history",
@@ -111445,7 +111453,7 @@
   },
   "supabase/functions/process-invoice-idp/index.ts": {
    "path": "supabase/functions/process-invoice-idp/index.ts",
-   "lines": 187,
+   "lines": 197,
    "storage": [
     "fiscal-documents"
    ],
@@ -112010,10 +112018,26 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 207,
+   "lines": 253,
    "tables": [
     {
+     "table": "user_roles",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
      "table": "push_subscriptions",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
      "op": "select"
     },
     {
@@ -112022,6 +112046,14 @@
     }
    ],
    "table_cols": {
+    "user_roles": [
+     "role",
+     "user_id"
+    ],
+    "profiles": [
+     "current_organization_id",
+     "user_id"
+    ],
     "push_subscriptions": [
      "id"
     ]
@@ -112835,7 +112867,7 @@
   },
   "supabase/functions/workflow-engine/index.ts": {
    "path": "supabase/functions/workflow-engine/index.ts",
-   "lines": 155,
+   "lines": 172,
    "tables": [
     {
      "table": "workflow_instances",
@@ -112862,6 +112894,10 @@
      "op": "update"
     },
     {
+     "table": "workflow_instances",
+     "op": "select"
+    },
+    {
      "table": "workflow_approvals",
      "op": "update"
     }
@@ -112872,7 +112908,8 @@
      "type"
     ],
     "workflow_instances": [
-     "id"
+     "id",
+     "tenant_id"
     ],
     "workflow_edges": [
      "source_node_id",
@@ -112918,7 +112955,8 @@
     }
    ],
    "rule_comments": [
-    "Contract Validation: Ensures type safety and catches malformed payloads before logic execution"
+    "Contract Validation: Ensures type safety and catches malformed payloads before logic execution",
+    "QA-022: approver_id must come from the verified JWT, never from the request body."
    ],
    "uses_service_role": true
   },
@@ -114955,10 +114993,24 @@
   }
  },
  "git": {
-  "sha": "73dce42ad29b8123c3883dd83624caf50e9865cd",
+  "sha": "3833aac5197feaa21232baebd38d08ad4a9f3f5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3833aac",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "supabase/functions/_shared/contracts.ts",
+     "supabase/functions/dependency-health/index.ts",
+     "supabase/functions/process-invoice-idp/index.ts",
+     "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/workflow-engine/index.ts"
+    ]
+   },
    {
     "sha": "73dce42",
     "date": "2026-11-23",
@@ -115279,22 +115331,20 @@
      "src/hooks/useSpotIntegration.ts",
      "src/pages/catalogo-spot/CatalogoSpot.tsx"
     ]
-   },
-   {
-    "sha": "cb9b3e6",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(edge): spot-proxy volta a passar no deno check (#280)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "supabase/functions/spot-proxy/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    8
+    7
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
+    2
    ],
    [
     "src/features/auth/hooks/useAuth.tsx",
@@ -115325,6 +115375,22 @@
     2
    ],
    [
+    "supabase/functions/_shared/contracts.ts",
+    1
+   ],
+   [
+    "supabase/functions/dependency-health/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-push-notification/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/workflow-engine/index.ts",
+    1
+   ],
+   [
     "src/features/pedidos/hooks/usePedidos.ts",
     1
    ],
@@ -115346,30 +115412,6 @@
    ],
    [
     "src/hooks/useSidebarBadges.ts",
-    1
-   ],
-   [
-    "src/pages/pagamentos/Pagamentos.tsx",
-    1
-   ],
-   [
-    "src/pages/pedidos/Pedidos.tsx",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/Solicitacoes.tsx",
-    1
-   ],
-   [
-    "src/features/auth/components/ProtectedRoute.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/AppSidebar.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ContractDetailsModal.tsx",
     1
    ]
   ]

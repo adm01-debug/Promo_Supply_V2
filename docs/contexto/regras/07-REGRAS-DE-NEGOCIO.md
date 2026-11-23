@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `73dce42ad2` · branch `main` · 2026-11-23 13:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3833aac519` · branch `main` · 2026-11-23 13:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1262,7 +1262,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **WorkflowContract** (`supabase/functions/_shared/contracts.ts`, z.discriminatedUnion):
   ```ts
-  "action", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }) ]
+  "action", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), /* QA-022: approver_id from body is ignored; server uses user.id from JWT. */ approver_id: z.string().uuid().optional(), comment: z.string().max(1000).optional() }) ]
   ```
 - **ERPSyncContract** (`supabase/functions/_shared/contracts.ts`, z.object):
   ```ts
@@ -2741,6 +2741,7 @@ _nenhum item encontrado_
 | posse da chave privada. Reativar apenas quando a verificação de | `supabase/functions/webauthn-authenticate/index.ts` |
 | Rate limit por usuário para evitar registro em massa/enumeração | `supabase/functions/webauthn-register/index.ts` |
 | Contract Validation: Ensures type safety and catches malformed payloads before logic execution | `supabase/functions/workflow-engine/index.ts` |
+| QA-022: approver_id must come from the verified JWT, never from the request body. | `supabase/functions/workflow-engine/index.ts` |
 | - Credenciais decifradas apenas no servidor, nunca retornadas ao browser | `supabase/functions/xbz-proxy/index.ts` |
 | Rate limit por ação: escritas críticas têm janela muito mais estreita. | `supabase/functions/xbz-proxy/index.ts` |
 | - E2E_TEST_EMAIL / E2E_TEST_PASSWORD must be set in env (CI secrets) | `tests-e2e/global-setup.ts` |
