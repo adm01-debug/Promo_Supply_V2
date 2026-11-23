@@ -117,6 +117,89 @@ export function statusFromReceived(
     : "parcial";
 }
 
+/**
+ * Transicoes aceitas por `validate_pedido_status_transition` (trigger
+ * `trg_validate_pedido_status`) restritas ao caminho que o recebimento percorre.
+ * O contrato completo vive em src/features/pedidos/hooks/usePedidos.ts.
+ */
+const TRANSICOES_RECEBIMENTO: Record<string, string[]> = {
+  pendente: ['aprovado'],
+  aprovado: ['em_transito', 'enviado'],
+  enviado: ['em_transito', 'entregue'],
+  em_transito: ['entregue', 'parcial'],
+  entregue: ['parcial'],
+  parcial: ['entregue'],
+};
+
+/**
+ * Sequencia de status a gravar para sair de `atual` e chegar em `alvo` sem
+ * violar o trigger: `aprovado`/`enviado` nao aceitam `entregue`/`parcial`
+ * direto, entao a mercadoria passa por `em_transito` no mesmo fluxo.
+ * `[]` quando o pedido ja esta no alvo; `null` quando nao existe caminho legal.
+ */
+export function caminhoDeStatus(
+  atual: string,
+  alvo: 'entregue' | 'parcial',
+): string[] | null {
+  if (atual === alvo) return [];
+  const fila: string[][] = [[atual]];
+  const visitados = new Set<string>([atual]);
+  while (fila.length > 0) {
+    const caminho = fila.shift() as string[];
+    const ultimo = caminho[caminho.length - 1];
+    for (const proximo of TRANSICOES_RECEBIMENTO[ultimo] || []) {
+      if (visitados.has(proximo)) continue;
+      const novo = [...caminho, proximo];
+      if (proximo === alvo) return novo.slice(1);
+      visitados.add(proximo);
+      fila.push(novo);
+    }
+  }
+  return null;
+}
+
+/** Campos que o recebimento escreve em `pedidos` ao registrar a entrega. */
+export interface CamposStatusPedido {
+  status?: string;
+  observacoes?: string | null;
+  data_entrega?: string;
+}
+
+/** Atualiza `pedidos` e devolve o erro do PostgREST (nunca lanca). */
+export type AtualizarPedido = (
+  pedidoId: string,
+  campos: CamposStatusPedido,
+) => Promise<{ error: { message: string } | null }>;
+
+/**
+ * Grava o status pelo caminho que o trigger aceita, um UPDATE por transicao, e
+ * devolve a mensagem de erro quando um deles falha. Antes disso o erro do
+ * UPDATE era descartado e a tela anunciava "recebimento registrado" com o
+ * pedido intacto.
+ */
+export async function aplicarStatusRecebimento(
+  atualizarPedido: AtualizarPedido,
+  pedidoId: string,
+  statusAtual: string,
+  alvo: 'entregue' | 'parcial',
+  observacoes: string | null = null,
+): Promise<string | null> {
+  const caminho = caminhoDeStatus(statusAtual, alvo);
+  if (!caminho) return `Transicao de status invalida: ${statusAtual} -> ${alvo}`;
+
+  // Sem transicao a aplicar, um UPDATE so para as observacoes do recebimento.
+  const passos: (string | null)[] = caminho.length > 0 ? caminho : [null];
+  for (const [i, status] of passos.entries()) {
+    const campos: CamposStatusPedido = {};
+    if (status) campos.status = status;
+    if (i === 0 && observacoes !== null) campos.observacoes = observacoes;
+    if (status === 'entregue') campos.data_entrega = new Date().toISOString().split('T')[0];
+    const { error } = await atualizarPedido(pedidoId, campos);
+    if (error) return error.message;
+  }
+  return null;
+}
+
 /** Observacoes do recebimento consolidadas para a coluna `pedidos.observacoes`. */
 export function buildReceivingObservation(
   itemNotes: Record<string, string>,

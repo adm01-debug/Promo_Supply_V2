@@ -1,13 +1,15 @@
-﻿import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
   saveOfflineEntries,
   isLineComplete,
   statusFromReceived,
+  caminhoDeStatus,
+  aplicarStatusRecebimento,
   buildReceivingObservation,
 } from '../recebimentoHelpers';
-import type { ReceivingEntry } from '../recebimentoHelpers';
+import type { CamposStatusPedido, ReceivingEntry } from '../recebimentoHelpers';
 
 const makeEntry = (overrides: Partial<ReceivingEntry> = {}): ReceivingEntry => ({
   pedido_id: 'PED-001',
@@ -225,5 +227,128 @@ describe('buildReceivingObservation', () => {
 
   it('usa so a observacao geral quando nao ha nota por item', () => {
     expect(buildReceivingObservation({}, 'faltou 1 unidade')).toBe('faltou 1 unidade');
+  });
+});
+
+// Contrato copiado de public.validate_pedido_status_transition no banco (trigger
+// trg_validate_pedido_status). Qualquer aresta fora desta tabela derruba o UPDATE.
+const TRANSICOES_DO_BANCO: Record<string, string[]> = {
+  pendente: ['aprovado', 'cancelado'],
+  aprovado: ['enviado', 'em_transito', 'cancelado'],
+  enviado: ['em_transito', 'entregue', 'cancelado'],
+  em_transito: ['entregue', 'parcial', 'cancelado'],
+  entregue: ['parcial'],
+  parcial: ['entregue'],
+  cancelado: [],
+  concluido: [],
+};
+
+describe('caminhoDeStatus', () => {
+  it('nao gera transicao quando o pedido ja esta no alvo', () => {
+    expect(caminhoDeStatus('entregue', 'entregue')).toEqual([]);
+    expect(caminhoDeStatus('parcial', 'parcial')).toEqual([]);
+  });
+
+  it('aprovado nao pula direto para entregue nem para parcial', () => {
+    expect(caminhoDeStatus('aprovado', 'entregue')).toEqual(['em_transito', 'entregue']);
+    expect(caminhoDeStatus('aprovado', 'parcial')).toEqual(['em_transito', 'parcial']);
+  });
+
+  it('enviado vai direto para entregue mas passa por em_transito no parcial', () => {
+    expect(caminhoDeStatus('enviado', 'entregue')).toEqual(['entregue']);
+    expect(caminhoDeStatus('enviado', 'parcial')).toEqual(['em_transito', 'parcial']);
+  });
+
+  it('em_transito entrega ou parcializa em um passo', () => {
+    expect(caminhoDeStatus('em_transito', 'entregue')).toEqual(['entregue']);
+    expect(caminhoDeStatus('em_transito', 'parcial')).toEqual(['parcial']);
+  });
+
+  it('parcial completa pelo caminho ja existente', () => {
+    expect(caminhoDeStatus('parcial', 'entregue')).toEqual(['entregue']);
+    expect(caminhoDeStatus('entregue', 'parcial')).toEqual(['parcial']);
+  });
+
+  it('pendente chega ao recebimento passando pela aprovacao', () => {
+    expect(caminhoDeStatus('pendente', 'entregue')).toEqual(['aprovado', 'em_transito', 'entregue']);
+  });
+
+  it('sem caminho legal devolve null em vez de gravar status proibido', () => {
+    expect(caminhoDeStatus('cancelado', 'entregue')).toBeNull();
+    expect(caminhoDeStatus('cancelado', 'parcial')).toBeNull();
+    expect(caminhoDeStatus('concluido', 'parcial')).toBeNull();
+  });
+
+  it('toda aresta produzida existe na maquina de estados do banco', () => {
+    const origens = Object.keys(TRANSICOES_DO_BANCO);
+    for (const origem of origens) {
+      for (const alvo of ['entregue', 'parcial'] as const) {
+        const caminho = caminhoDeStatus(origem, alvo);
+        if (!caminho) continue;
+        let atual = origem;
+        for (const passo of caminho) {
+          expect(TRANSICOES_DO_BANCO[atual], `${atual} -> ${passo}`).toContain(passo);
+          atual = passo;
+        }
+        expect(atual).toBe(alvo);
+      }
+    }
+  });
+});
+
+describe('aplicarStatusRecebimento', () => {
+  const ok = async () => ({ error: null });
+
+  it('passa por em_transito antes de entregar um pedido aprovado', async () => {
+    const patches: { id: string; campos: CamposStatusPedido }[] = [];
+    const erro = await aplicarStatusRecebimento(
+      async (id, campos) => { patches.push({ id, campos }); return ok(); },
+      'PED-1', 'aprovado', 'entregue', 'recebido com avaria',
+    );
+
+    expect(erro).toBeNull();
+    expect(patches.map(p => p.campos.status)).toEqual(['em_transito', 'entregue']);
+    expect(patches[0].campos.observacoes).toBe('recebido com avaria');
+    expect(patches[1].campos.observacoes).toBeUndefined();
+    expect(patches[0].campos.data_entrega).toBeUndefined();
+    expect(typeof patches[1].campos.data_entrega).toBe('string');
+  });
+
+  it('devolve a mensagem do banco e para no primeiro passo que falhar', async () => {
+    const patches: (string | undefined)[] = [];
+    const erro = await aplicarStatusRecebimento(
+      async (_id, campos) => {
+        patches.push(campos.status);
+        return campos.status === 'entregue'
+          ? { error: { message: 'Transicao de status invalida' } }
+          : ok();
+      },
+      'PED-1', 'aprovado', 'entregue',
+    );
+
+    expect(erro).toBe('Transicao de status invalida');
+    expect(patches).toEqual(['em_transito', 'entregue']);
+  });
+
+  it('nao toca no banco quando nao existe caminho legal', async () => {
+    let chamadas = 0;
+    const erro = await aplicarStatusRecebimento(
+      async () => { chamadas++; return ok(); },
+      'PED-1', 'cancelado', 'entregue',
+    );
+
+    expect(erro).toBe('Transicao de status invalida: cancelado -> entregue');
+    expect(chamadas).toBe(0);
+  });
+
+  it('so grava observacoes quando o pedido ja esta no status alvo', async () => {
+    const patches: CamposStatusPedido[] = [];
+    const erro = await aplicarStatusRecebimento(
+      async (_id, campos) => { patches.push(campos); return ok(); },
+      'PED-1', 'entregue', 'entregue', 'conferido',
+    );
+
+    expect(erro).toBeNull();
+    expect(patches).toEqual([{ observacoes: 'conferido' }]);
   });
 });
