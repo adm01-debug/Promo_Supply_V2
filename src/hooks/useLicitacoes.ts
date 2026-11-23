@@ -199,8 +199,15 @@ export function useSourcingEvents() {
 
   const createEvent = useMutation({
     mutationFn: async (event: Partial<SourcingEventInsert>) => {
+        if (!user) throw new Error('Login necessário');
+        // numero e' NOT NULL e UNIQUE global em sourcing_events, e owner_id e' NOT NULL:
+        // nada no banco preenche os dois (unico trigger e' a_fill_tenant_id).
+        const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'SRC', table_name: 'sourcing_events' });
+        const numero = numData || `SRC-${Date.now()}`;
       const payload: SourcingEventInsert = {
         ...event,
+          numero,
+          owner_id: user.id,
         organization_id: organizationId || tenantId || '',
         tenant_id: tenantId || organizationId || '',
       } as SourcingEventInsert;
