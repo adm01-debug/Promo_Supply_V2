@@ -6,6 +6,7 @@ import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { calcularAbatimentoCredito } from '@/lib/creditoFornecedor';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
@@ -265,11 +266,12 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     const credito = creditos.find(c => c.id === creditoId);
     if (!credito || credito.saldo < valor) { toast.error('Saldo insuficiente'); return false; }
     try {
-      const novoSaldo = credito.saldo - valor;
+      const abatimento = calcularAbatimentoCredito(
+        { saldo: credito.saldo, valor_utilizado: credito.valor_utilizado },
+        valor,
+      );
       const { error } = await supabase.from('creditos_fornecedor').update({
-        valor_utilizado: credito.valor_utilizado + valor,
-        saldo: novoSaldo,
-        status: novoSaldo <= 0 ? 'utilizado' : 'ativo',
+        ...abatimento,
         utilizado_em_pagamento_id: pagamentoId,
       }).eq('id', creditoId);
       if (error) throw error;
