@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { openExternalUrl } from '@/lib/security';
 import { Bell, BellRing, Check, Trash2, Volume2, VolumeX, Settings, ExternalLink, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -92,7 +93,7 @@ function NotificationItem({ notification, onMarkAsRead, onRemove }: Notification
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
-                  onClick={() => window.open(notification.action_url, '_blank')}
+                  onClick={() => openExternalUrl(notification.action_url)}
                 >
                   <ExternalLink className="h-3 w-3" />
                 </Button>

@@ -150,12 +150,17 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       });
       if (error) throw error;
 
-      // Open HTML in new window for printing
-      const printWindow = window.open('', '_blank');
+      // Serve o HTML via Blob URL (origem opaca) para evitar XSS na origem do app
+      const blob = new Blob([data.html], { type: 'text/html; charset=utf-8' });
+      const blobUrl = URL.createObjectURL(blob);
+      const printWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
       if (printWindow) {
-        printWindow.document.write(data.html);
-        printWindow.document.close();
-        setTimeout(() => printWindow.print(), 500);
+        setTimeout(() => {
+          printWindow.print();
+          URL.revokeObjectURL(blobUrl);
+        }, 500);
+      } else {
+        URL.revokeObjectURL(blobUrl);
       }
       toast.success("PDF gerado com sucesso!");
     } catch (err: unknown) {

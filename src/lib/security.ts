@@ -68,3 +68,24 @@ export const security = {
     });
   }
 };
+
+
+/**
+ * Abre uma URL externa com segurança: exige protocolo http/https,
+ * bloqueia javascript:, data: e vbscript: e sempre passa noopener,noreferrer.
+ * Para caminhos internos (começam com '/') use navigate() diretamente.
+ */
+export function openExternalUrl(raw: string | null | undefined): void {
+  if (!raw) return;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+      logger.warn('URL externa bloqueada por protocolo nao permitido', { protocol: url.protocol });
+      return;
+    }
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
+  } catch {
+    // URL invalida (ex.: javascript:alert(1) sem protocolo reconhecido)
+    logger.warn('URL externa invalida bloqueada', { raw });
+  }
+}
