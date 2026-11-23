@@ -1,0 +1,328 @@
+# 05 — Progresso da execução
+
+> Uma linha por etapa de `04-PLANO.md`. O agente executor marca aqui, **com evidência**, à medida que conclui.
+> Marcação: `[ ]` não começada · `[x]` concluída (verificação executada e evidência anotada) · `[~]` não se aplica mais (o código já não corresponde à evidência da etapa — registre o que encontrou) · `[!]` bloqueada (diga o que falta) · `[A]` PR aberta aguardando o dono (etapas com aprovação humana).
+>
+> Depois de cada etapa concluída, acrescente abaixo da linha, indentado, a evidência: o comando que você rodou e a saída que viu, ou a consulta e o resultado. "Deveria funcionar" não conclui etapa.
+
+## Linha de base medida em 2026-11-22/23 (antes da primeira etapa)
+
+| portão | resultado |
+|---|---|
+| `npm run typecheck` | exit 0, 0 erros |
+| `npx eslint .` | exit 0, 0 erros, 10 warnings |
+| `npx vitest run` | 122 arquivos / 2311 testes passam, 1 arquivo e 12 testes skipped |
+| `npm run build` | exit 0 |
+| `deno check` nas 40 edge functions | **19 falham** |
+| `deno test --allow-net --allow-env --allow-read supabase/functions/` | 152 passam, 0 falham, 13 ignorados |
+
+Se algum desses já estiver vermelho quando você começar, é regressão posterior à auditoria: registre aqui antes de seguir.
+
+## Achados novos durante a execução
+
+> Problema encontrado no caminho **não é corrigido na hora**. Anote aqui com `arquivo:linha` e uma linha de impacto, e siga a etapa.
+
+_(vazio)_
+
+## Etapas
+
+- [ ] 001 — Senha de uma conta admin de QA está escrita em claro em dois testes de edge function versionados — onda 1 — Alta — TST-04
+- [ ] 002 — (parte 1/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
+- [ ] 003 — (parte 2/2) Testes escrevem em PRODUÇÃO: o E2E cria solicitação real e dispara simulação; a suíte de RLS insere pedido/pagamento e dá UPDATE em massa  — onda 1 — Alta — TST-03
+- [ ] 004 — Migration: 30 tabelas têm como única policy `tenant_in_my_group(tenant_id)` PERMISSIVE FOR ALL: qualquer usuário logado reescreve regras de aprovação, — onda 1 — Crítica — RLS-01
+- [ ] 005 — Aplicação: 30 tabelas têm como única policy `tenant_in_my_group(tenant_id)` PERMISSIVE FOR ALL: qualquer usuário logado reescreve regras de aprovação, — onda 1 — Crítica — RLS-01
+- [ ] 006 — Quatro telas /admin/* são protegidas APENAS pelo React: a RLS das tabelas por trás libera leitura e escrita a qualquer usuário autenticado do grupo —  — onda 1 — Crítica — AUT-01
+- [ ] 007 — Migration: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+- [ ] 008 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+- [ ] 009 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+- [ ] 010 — O sistema de permissões granulares está morto para todo papel não-admin: usePermissions lê permissions/role_permissions direto, e a RLS dessas duas ta — onda 1 — Alta — AUT-03
+- [ ] 011 — (parte 1/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
+- [ ] 012 — (parte 2/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
+- [ ] 013 — (parte 1/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+- [ ] 014 — (parte 2/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+- [ ] 015 — (parte 3/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+- [ ] 016 — (parte 1/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
+- [ ] 017 — (parte 2/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
+- [ ] 018 — Produção não serve nenhum cabeçalho HTTP de segurança: vercel.json só tem rewrites e o CSP está em <meta>, onde frame-ancestors e nosniff não têm efei — onda 1 — Alta — CI-04
+- [ ] 019 — O service worker guarda respostas autenticadas da API no cache do navegador e nada limpa esse cache no logout nem na troca de empresa — onda 1 — Alta — CI-05
+- [ ] 020 — aplicar-migration-prod.yml aplica DDL em produção a partir de qualquer branch, sem exigir que a migration esteja na main e sem segundo par de olhos — onda 1 — Alta — CI-06
+- [ ] 021 — send-push-notification nao confere papel nem empresa: qualquer usuario autenticado dispara notificacao e push para TODOS os usuarios de TODAS as empre — onda 1 — Alta — EDGA-01
+- [ ] 022 — workflow-engine aceita `approver_id` vindo do corpo e nao filtra a instancia por tenant: qualquer usuario autenticado registra aprovacao em nome de ou — onda 1 — Alta — EDGA-02
+- [ ] 023 — process-invoice-idp baixa qualquer caminho do bucket privado `fiscal-documents` com service_role e devolve o conteudo da nota, sem conferir se o arqui — onda 1 — Alta — EDGA-03
+- [ ] 024 — (parte 1/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
+- [ ] 025 — (parte 2/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
+- [ ] 026 — dependency-health faz requisicao HTTP server-side para a URL do header Origin/Referer e devolve o corpo ao chamador (SSRF para qualquer usuario autent — onda 1 — Alta — EDGA-05
+- [ ] 027 — `current_tenant_id()` lê uma informação do token que nada preenche: devolve sempre nulo e cinco funcionalidades morrem em silêncio — onda 1 — Alta — RLS-02
+- [ ] 028 — Movimentar estoque não exige papel e a trigger privilegiada atualiza o saldo sem conferir a empresa do item — onda 1 — Alta — RLS-03
+- [ ] 029 — Migration: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
+- [ ] 030 — Aplicação: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
+- [ ] 031 — XSS armazenado no HTML do contrato: `payment_terms` e `item.unit` interpolados sem escape e injetados com `document.write` na origem do app — onda 1 — Alta — SEC-01
+- [ ] 032 — (parte 1/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
+- [ ] 033 — (parte 2/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
+- [ ] 034 — Códigos de backup de MFA têm 4 caracteres de entropia e repetem a primeira metade (regressão da PR #183), são gravados em texto puro e nunca são verif — onda 1 — Alta — SEC-03
+- [ ] 035 — (parte 1/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
+- [ ] 036 — (parte 2/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
+- [ ] 037 — (parte 1/2) Painel 'Sessões Ativas' é decorativo: nada popula `active_sessions` e 'Encerrar Sessão' só apaga uma linha, sem revogar o token do disposi — onda 1 — Alta — SEC-05
+- [ ] 038 — (parte 2/2) Painel 'Sessões Ativas' é decorativo: nada popula `active_sessions` e 'Encerrar Sessão' só apaga uma linha, sem revogar o token do disposi — onda 1 — Alta — SEC-05
+- [ ] 039 — Portal do Fornecedor cria conta de autenticação para o e-mail do fornecedor (`signInWithOtp` sem `shouldCreateUser: false`), sem papel nem vínculo de  — onda 1 — Alta — SEC-06
+- [ ] 040 — (parte 1/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
+- [ ] 041 — (parte 2/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
+- [ ] 042 — Nenhuma tela distingue 'sem permissão' de 'sem dados': o papel viewer não tem SELECT em pedidos, cotações, fornecedores, contratos, pagamentos, docume — onda 1 — Média — AUT-07
+- [ ] 043 — Sessão expirada no meio da navegação joga o usuário em /auth sem guardar a rota e sem avisar; depois do login ele sempre volta para /compras e perde a — onda 1 — Média — AUT-08
+- [ ] 044 — O Command Palette anuncia 11 atalhos de teclado que não existem, vários deles colidindo com atalhos destrutivos do navegador (⌘Q, ⌘P, ⌘S, ⌘T), e exibe — onda 1 — Média — AUT-09
+- [ ] 045 — (parte 1/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
+- [ ] 046 — (parte 2/2) A allowlist `ALLOWED_ORIGINS` nao vale para 37 das 40 edges: `corsHeaders` e constante de modulo e nunca olha a Origin da requisicao; o cu — onda 1 — Média — EDGA-06
+- [ ] 047 — O gate do scim-v2 exige o segredo global E o hash por empresa ao mesmo tempo: com `sso_configurations` vazia nenhuma chamada SCIM passa, e o token ger — onda 1 — Média — EDGA-07
+- [ ] 048 — withIdempotency responde do cache antes de autenticar e a chave vem do cliente sem escopo de usuario: em punchout-setup um usuario recebe a resposta g — onda 1 — Média — EDGA-08
+- [ ] 049 — validateBody grava o corpo inteiro da requisicao em telemetry_logs a cada falha de validacao, porque a condicao que deveria redigi-lo (`logger.info ?` — onda 1 — Média — EDGA-09
+- [ ] 050 — Migration: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+- [ ] 051 — Aplicação: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+- [ ] 052 — Migration: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
+- [ ] 053 — Aplicação: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
+- [ ] 054 — (parte 1/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+- [ ] 055 — (parte 2/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+- [ ] 056 — (parte 3/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+- [ ] 057 — Migration: Bloqueio de conta por tentativas existe apenas no cliente: nenhum ponto do servidor consulta `is_account_locked`, e `clear_login_lockout` a — onda 1 — Média — SEC-08
+- [ ] 058 — Aplicação: Bloqueio de conta por tentativas existe apenas no cliente: nenhum ponto do servidor consulta `is_account_locked`, e `clear_login_lockout` a — onda 1 — Média — SEC-08
+- [ ] 059 — `external-db-bridge` valida tabela, operação e operadores, mas repassa `selectColumns` e os nomes de coluna dos filtros crus para o PostgREST do PIM — onda 1 — Média — SEC-09
+- [ ] 060 — Busca do catálogo SPOT interpola o texto do usuário em `.or()` do PostgREST sem `escapeIlike` — o único dos 9 filtros de busca do app sem escape — onda 1 — Média — SEC-10
+- [ ] 061 — A tela de segurança continua oferecendo cadastro de passkey ('Faça login usando biometria') enquanto o login por passkey está desligado no servidor — onda 1 — Média — SEC-11
+- [ ] 062 — Bucket `product-images` é público e enumerável por anônimo, sem limite de tamanho nem de tipo MIME, e o upload aceita arquivo não-imagem sem validação — onda 1 — Média — SEC-12
+- [ ] 063 — O item 'Dashboard' do menu nunca fica marcado como ativo, porque aponta para '/' e '/' redireciona para /compras — na tela inicial do sistema nenhum i — onda 1 — Baixa — AUT-10
+- [ ] 064 — (parte 1/2) Segredos de cron e de servico comparados com `===`/`!==` em vez de comparacao de tempo constante, no mesmo codigo que ja tem a helper corr — onda 1 — Baixa — EDGA-11
+- [ ] 065 — (parte 2/2) Segredos de cron e de servico comparados com `===`/`!==` em vez de comparacao de tempo constante, no mesmo codigo que ja tem a helper corr — onda 1 — Baixa — EDGA-11
+- [ ] 066 — Migration: As tabelas de arquivo de auditoria e telemetria não filtram empresa, e `telemetry_logs` nunca entrou na lista de tabelas RESTRICTIVE — onda 1 — Baixa — RLS-06
+- [ ] 067 — Aplicação: As tabelas de arquivo de auditoria e telemetria não filtram empresa, e `telemetry_logs` nunca entrou na lista de tabelas RESTRICTIVE — onda 1 — Baixa — RLS-06
+- [ ] 068 — `organizations` e `spend_forecasts` dependem, como única regra de leitura, de uma tabela de vínculo que ninguém popula — onda 1 — Baixa — RLS-07
+- [ ] 069 — errorResponse() do _shared/validation.ts estoura ReferenceError em 9 edge functions, e nenhum gate de CI checa tipo em supabase/functions/ — onda 2 — Crítica — CI-01
+- [ ] 070 — `errorResponse` lança `ReferenceError: corsHeaders is not defined` — nenhuma das 9 edges que a usam consegue responder erro — onda 2 — Alta — EDG-01
+- [ ] 071 — Criar evento de sourcing (RFx) é impossível: o insert omite `numero` e `owner_id`, que são NOT NULL sem default — onda 2 — Crítica — VAL-01
+- [ ] 072 — Passar o mouse no menu "Solicitações" esvazia a lista de solicitações e a tela de cotação — onda 2 — Crítica — HK-01
+- [ ] 073 — Migration: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
+- [ ] 074 — Aplicação: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
+- [ ] 075 — O valor da ordem de compra vem do valor estimado da solicitacao, nunca da cotacao vencedora, e cai para R$ 12,00 fixos quando nao ha estimativa — onda 2 — Crítica — NEG-03
+- [ ] 076 — (parte 1/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
+- [ ] 077 — (parte 2/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
+- [ ] 078 — Ordem de compra é gravada com o valor ESTIMADO da solicitação (ou R$ 12 fixo), ignorando o preço da cotação selecionada, e o total do pedido não bate  — onda 2 — Crítica — UI-02
+- [ ] 079 — Todo fornecedor cadastrado pela tela nasce sem organização e nunca aparece na lista — onda 2 — Crítica — VAL-12
+- [ ] 080 — O tempo real reinscreve o canal a cada render e perde eventos — onda 2 — Alta — HK-02
+- [ ] 081 — Os indicadores da tela de Fornecedores mostram sempre zero — onda 2 — Alta — HK-03
+- [ ] 082 — A escalação de aprovação cria uma etapa invisível para o aprovador escalado — onda 2 — Alta — HK-04
+- [ ] 083 — Recebimento grava a quantidade recebida mas perde o status do pedido: o trigger rejeita aprovado/enviado -> entregue/parcial e o erro nao e checado — onda 2 — Alta — NEG-02
+- [ ] 084 — Aplicar credito de devolucao debita o credito e nao altera o pagamento: o trigger rejeita o status e o erro e ignorado — onda 2 — Alta — NEG-04
+- [ ] 085 — Migration: Pagamento parcial e inalcancavel: o banco so aceita 'parcial' a partir de 'pago', mas a UI o oferece a partir de aprovado, agendado e atras — onda 2 — Alta — NEG-05
+- [ ] 086 — Aplicação: Pagamento parcial e inalcancavel: o banco so aceita 'parcial' a partir de 'pago', mas a UI o oferece a partir de aprovado, agendado e atras — onda 2 — Alta — NEG-05
+- [ ] 087 — Migration: Ordem de compra e gerada para solicitacao nao aprovada e a promocao para 'em_andamento' falha em silencio — onda 2 — Alta — NEG-06
+- [ ] 088 — Aplicação: Ordem de compra e gerada para solicitacao nao aprovada e a promocao para 'em_andamento' falha em silencio — onda 2 — Alta — NEG-06
+- [ ] 089 — Pedido complementar do recebimento parcial nasce sem organization_id e fica invisivel em todas as telas de pedido — onda 2 — Alta — NEG-07
+- [ ] 090 — Migration: A trava de orcamento consulta um ledger que ninguem escreve (cost_centers) enquanto o consumo real vai para department_budgets - e priorida — onda 2 — Alta — NEG-08
+- [ ] 091 — Aplicação: A trava de orcamento consulta um ledger que ninguem escreve (cost_centers) enquanto o consumo real vai para department_budgets - e priorida — onda 2 — Alta — NEG-08
+- [ ] 092 — O orcamento por centro de custo nunca libera o valor comprometido e conta o valor utilizado duas vezes — onda 2 — Alta — NEG-09
+- [ ] 093 — Migration: Aprovar uma etapa fora de ordem aprova o workflow inteiro, e nao ha nenhuma checagem de segregacao de funcao na aprovacao real — onda 2 — Alta — NEG-10
+- [ ] 094 — Aplicação: Aprovar uma etapa fora de ordem aprova o workflow inteiro, e nao ha nenhuma checagem de segregacao de funcao na aprovacao real — onda 2 — Alta — NEG-10
+- [ ] 095 — (parte 1/2) A tela de Aprovacoes mostra indicadores e graficos com numeros fixos no codigo, tendo os dados reais no mesmo hook — onda 2 — Alta — NEG-11
+- [ ] 096 — (parte 2/2) A tela de Aprovacoes mostra indicadores e graficos com numeros fixos no codigo, tendo os dados reais no mesmo hook — onda 2 — Alta — NEG-11
+- [ ] 097 — Devolucao nao devolve nada: sem efeito em estoque, no pedido e no pagamento, e o credito e gravado sem checar o erro — onda 2 — Alta — NEG-12
+- [ ] 098 — Recebimento anuncia 'registrado!' sem verificar nenhuma das gravações e ainda sobrescreve as observações do pedido — onda 2 — Alta — UI-03
+- [ ] 099 — (parte 1/2) Tela de Aprovações mostra números inventados como se fossem reais (5 KPIs, aba Métricas e histórico), e o seletor de período não filtra na — onda 2 — Alta — UI-04
+- [ ] 100 — (parte 2/2) Tela de Aprovações mostra números inventados como se fossem reais (5 KPIs, aba Métricas e histórico), e o seletor de período não filtra na — onda 2 — Alta — UI-04
+- [ ] 101 — (parte 1/2) A primeira tela do fluxo obriga escolher 'Entidade Solicitante' e 'Gestor Responsável' em listas fictícias, e grava o nome inventado em so — onda 2 — Alta — UI-05
+- [ ] 102 — (parte 2/2) A primeira tela do fluxo obriga escolher 'Entidade Solicitante' e 'Gestor Responsável' em listas fictícias, e grava o nome inventado em so — onda 2 — Alta — UI-05
+- [ ] 103 — Indicadores desenhados a partir do índice da linha, não do dado: a coluna 'Saúde do SLA' de Pedidos e a 'Matriz de Prioridade Neural' de Solicitações — onda 2 — Alta — UI-06
+- [ ] 104 — 'EXPORTAR DADOS' em Pedidos baixa um CSV vazio (só linhas em branco) e mostra toast de sucesso — onda 2 — Alta — UI-07
+- [ ] 105 — (parte 1/2) A interação com o fornecedor é encenada: conversa fabricada no dossiê do pedido e dois botões de follow-up que só fingem ter enviado mensa — onda 2 — Alta — UI-08
+- [ ] 106 — (parte 2/2) A interação com o fornecedor é encenada: conversa fabricada no dossiê do pedido e dois botões de follow-up que só fingem ter enviado mensa — onda 2 — Alta — UI-08
+- [ ] 107 — O card de cada solicitação exibe um fluxo de aprovação inventado, com nomes de pessoas fictícias, e uma 'previsão neural' que é só o prazo + 2 dias — onda 2 — Alta — UI-09
+- [ ] 108 — O filtro 'Meus Itens' / 'Minhas Solicitações' sempre devolve lista vazia e ainda troca o filtro do servidor para 'pendente' — onda 2 — Alta — UI-10
+- [ ] 109 — (parte 1/2) A matriz de alçada escolhe aprovadores e categorias de listas fictícias que o banco rejeita como UUID — onda 2 — Alta — VAL-03
+- [ ] 110 — (parte 2/2) A matriz de alçada escolhe aprovadores e categorias de listas fictícias que o banco rejeita como UUID — onda 2 — Alta — VAL-03
+- [ ] 111 — O contrato grava um apelido do nome digitado em `supplier_id`, e o painel executivo compara esse campo com o id do fornecedor — toda compra conta como — onda 2 — Alta — VAL-05
+- [ ] 112 — O Kanban de acompanhamento marca "entregue" sem nenhuma conferência de mercadoria, e isso cria a conta a pagar — onda 2 — Alta — VAL-10
+- [ ] 113 — Excluir pedido apaga o recebimento e desliga a devolucao, sem nenhuma guarda de status — onda 2 — Média — NEG-13
+- [ ] 114 — Migration: Solicitacao abaixo de R$ 1.000 e auto-aprovada por um limite fixo no banco, e o front cria um workflow de aprovacao fantasma para ela — onda 2 — Média — NEG-14
+- [ ] 115 — Aplicação: Solicitacao abaixo de R$ 1.000 e auto-aprovada por um limite fixo no banco, e o front cria um workflow de aprovacao fantasma para ela — onda 2 — Média — NEG-14
+- [ ] 116 — Migration: find_approval_rule (SECURITY DEFINER) escolhe a regra de alcada sem filtrar empresa e com ordenacao diferente da do front — onda 2 — Média — NEG-15
+- [ ] 117 — Aplicação: find_approval_rule (SECURITY DEFINER) escolhe a regra de alcada sem filtrar empresa e com ordenacao diferente da do front — onda 2 — Média — NEG-15
+- [ ] 118 — A cotação manual joga fora condição de pagamento, validade e observações, e perde o nome do fornecedor novo — onda 2 — Média — VAL-07
+- [ ] 119 — CNPJ de fornecedor e código de centro de custo têm UNIQUE global, sem empresa: a segunda empresa recebe erro cru do Postgres sobre um registro que ela — onda 2 — Média — VAL-09
+- [ ] 120 — `pedidos` tem dois triggers idênticos validando a transição de status — onda 2 — Baixa — VAL-11
+- [ ] 121 — Migration: RPC get_cost_center_performance_report() (sem argumento, SECURITY DEFINER, EXECUTE para authenticated) devolve o orçamento de TODAS as empr — onda 3 — Crítica — FN-01
+- [ ] 122 — Aplicação: RPC get_cost_center_performance_report() (sem argumento, SECURITY DEFINER, EXECUTE para authenticated) devolve o orçamento de TODAS as empr — onda 3 — Crítica — FN-01
+- [ ] 123 — Migration: O vocabulário de status divergiu entre CHECK constraint, trigger de validação e as tabelas de transição do front — pagamento parcial e apli — onda 3 — Crítica — FN-02
+- [ ] 124 — Aplicação: O vocabulário de status divergiu entre CHECK constraint, trigger de validação e as tabelas de transição do front — pagamento parcial e apli — onda 3 — Crítica — FN-02
+- [ ] 125 — Aplicação: O vocabulário de status divergiu entre CHECK constraint, trigger de validação e as tabelas de transição do front — pagamento parcial e apli — onda 3 — Crítica — FN-02
+- [ ] 126 — A edge check-approval-escalations (cron a cada 15 min) nunca escala nada: filtra e grava status em português que os CHECK constraints do banco rejeita — onda 3 — Alta — DB-01
+- [ ] 127 — Migration: contracts.supplier_id é text sem FK e a tela de contrato grava um slug do nome do fornecedor, então nenhum contrato criado pela UI liga no  — onda 3 — Alta — DB-02
+- [ ] 128 — Aplicação: contracts.supplier_id é text sem FK e a tela de contrato grava um slug do nome do fornecedor, então nenhum contrato criado pela UI liga no  — onda 3 — Alta — DB-02
+- [ ] 129 — Migration: fiscal_documents não tem unicidade de nota fiscal: chave_acesso e (fornecedor, série, número) aceitam duplicata, e o painel de conferência  — onda 3 — Alta — DB-03
+- [ ] 130 — Aplicação: fiscal_documents não tem unicidade de nota fiscal: chave_acesso e (fornecedor, série, número) aceitam duplicata, e o painel de conferência  — onda 3 — Alta — DB-03
+- [ ] 131 — Migration: ON DELETE CASCADE/SET NULL em filhos de histórico e financeiro, combinado com exclusão física sem guarda na UI, apaga crédito de fornecedor — onda 3 — Alta — DB-04
+- [ ] 132 — Aplicação: ON DELETE CASCADE/SET NULL em filhos de histórico e financeiro, combinado com exclusão física sem guarda na UI, apaga crédito de fornecedor — onda 3 — Alta — DB-04
+- [ ] 133 — Aplicação: ON DELETE CASCADE/SET NULL em filhos de histórico e financeiro, combinado com exclusão física sem guarda na UI, apaga crédito de fornecedor — onda 3 — Alta — DB-04
+- [ ] 134 — Aplicação: ON DELETE CASCADE/SET NULL em filhos de histórico e financeiro, combinado com exclusão física sem guarda na UI, apaga crédito de fornecedor — onda 3 — Alta — DB-04
+- [ ] 135 — Migration: O ledger de migration tem 14 linhas para 325 arquivos: aplicar a próxima migration pelo caminho padrão do Supabase tentaria reexecutar 311  — onda 3 — Alta — DB-05
+- [ ] 136 — Aplicação: O ledger de migration tem 14 linhas para 325 arquivos: aplicar a próxima migration pelo caminho padrão do Supabase tentaria reexecutar 311  — onda 3 — Alta — DB-05
+- [ ] 137 — A trava de orçamento (check_budget_availability) lê colunas de cost_centers que são alimentadas só por um trigger sobre budget_transactions, tabela qu — onda 3 — Alta — FN-03
+- [ ] 138 — Os três triggers que mantêm department_budgets usam status que a CHECK constraint proíbe e somam o mesmo gasto duas vezes: o orçamento consumido fica  — onda 3 — Alta — FN-04
+- [ ] 139 — Dois triggers notificam admins/coordenadores/financeiro de TODAS as empresas sobre multa e bloqueio de fornecedor de UMA empresa, porque leem user_rol — onda 3 — Alta — FN-05
+- [ ] 140 — Migration: record_failed_login e log_login_attempt estão abertos para anon com e-mail/IP escolhidos pelo chamador, e clear_login_lockout está aberta p — onda 3 — Alta — FN-06
+- [ ] 141 — Aplicação: record_failed_login e log_login_attempt estão abertos para anon com e-mail/IP escolhidos pelo chamador, e clear_login_lockout está aberta p — onda 3 — Alta — FN-06
+- [ ] 142 — Os 14 cron jobs que chamam edge functions disparam e esquecem: o resultado do net.http_post nunca é lido, cron_heartbeats não tem nenhum leitor e cron — onda 3 — Alta — FN-07
+- [ ] 143 — Migration: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
+- [ ] 144 — Aplicação: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
+- [ ] 145 — devolucoes.numero é a única numeração de documento sem UNIQUE, e o gerador de número libera o lock antes do insert: duas devoluções podem nascer com o — onda 3 — Média — DB-07
+- [ ] 146 — Seis tabelas de log órfãs do particionamento abandonado guardam telemetria pessoal fora da retenção de 90 dias e mantêm DELETE/UPDATE/TRUNCATE concedi — onda 3 — Média — DB-08
+- [ ] 147 — Chaves de negócio são únicas globalmente e não por empresa: o UNIQUE global de fornecedores.cnpj impede duas empresas de cadastrarem o mesmo fornecedo — onda 3 — Média — DB-09
+- [ ] 148 — O cartão de saúde dos scanners (admin_scan_runs_sla_status) lista 7 scanners cujo nome nenhuma rotina ativa grava — o painel marca 'crítico/nunca' par — onda 3 — Média — FN-08
+- [ ] 149 — Três pares de triggers duplicados na mesma tabela e no mesmo evento: a recalculagem do score de qualificação do fornecedor roda duas vezes a cada docu — onda 3 — Média — FN-09
+- [ ] 150 — Migration: Duas funções SECURITY DEFINER executam SQL arbitrário no banco: exec_sql concatena a string recebida e execute_read_query aceita CTE com DM — onda 3 — Média — FN-10
+- [ ] 151 — Aplicação: Duas funções SECURITY DEFINER executam SQL arbitrário no banco: exec_sql concatena a string recebida e execute_read_query aceita CTE com DM — onda 3 — Média — FN-10
+- [ ] 152 — maintain_monthly_partitions, upsert_cron_heartbeat e find_approval_rule são SECURITY DEFINER com EXECUTE para authenticated e não conferem papel nem t — onda 3 — Média — FN-11
+- [ ] 153 — Colunas de pessoa na cadeia de aprovação e de devolução não têm FK para auth.users, ao contrário das 58 outras do banco que têm — onda 3 — Baixa — DB-10
+- [ ] 154 — verificar_integridade_audit_logs vai acusar 'ADULTERADO' assim que a retenção LGPD apagar o primeiro bloco da trilha, porque exige que o registro mais — onda 3 — Baixa — FN-12
+- [ ] 155 — (parte 1/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [ ] 156 — (parte 2/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [ ] 157 — (parte 3/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [ ] 158 — (parte 4/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [ ] 159 — Migration: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
+- [ ] 160 — Aplicação: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
+- [ ] 161 — (parte 1/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
+- [ ] 162 — (parte 2/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
+- [ ] 163 — (parte 1/4) Compras ingere e espelha catálogo de fornecedor: 3 crons ativos em produção enchem spot_produtos/spot_skus/spot_estoque/spot_customization — onda 4 — Alta — INT-01
+- [ ] 164 — (parte 2/4) Compras ingere e espelha catálogo de fornecedor: 3 crons ativos em produção enchem spot_produtos/spot_skus/spot_estoque/spot_customization — onda 4 — Alta — INT-01
+- [ ] 165 — (parte 3/4) Compras ingere e espelha catálogo de fornecedor: 3 crons ativos em produção enchem spot_produtos/spot_skus/spot_estoque/spot_customization — onda 4 — Alta — INT-01
+- [ ] 166 — (parte 4/4) Compras ingere e espelha catálogo de fornecedor: 3 crons ativos em produção enchem spot_produtos/spot_skus/spot_estoque/spot_customization — onda 4 — Alta — INT-01
+- [ ] 167 — send-push-notification: qualquer usuário autenticado dispara notificação para TODOS os usuários de TODOS os tenants, com título, texto e link arbitrár — onda 4 — Alta — INT-03
+- [ ] 168 — SCIM: desativação de usuário pelo provedor de identidade é aceita com 200 e `active: true`, mas não desativa nada — onda 4 — Alta — INT-05
+- [ ] 169 — (parte 1/2) PIM indisponível ou produto sem vínculo: a ordem de compra é gravada sem NCM, IPI e código do fornecedor, e a tela diz "Ordem Gerada!" — onda 4 — Alta — INT-07
+- [ ] 170 — (parte 2/2) PIM indisponível ou produto sem vínculo: a ordem de compra é gravada sem NCM, IPI e código do fornecedor, e a tela diz "Ordem Gerada!" — onda 4 — Alta — INT-07
+- [ ] 171 — Alerta crítico é marcado como despachado mesmo quando nenhum canal entregou, e nunca é reenviado nem reportado — onda 4 — Média — EDG-05
+- [ ] 172 — Migration: Falha de cron edge é invisível: o pg_net marca sucesso, o heartbeat registra o erro e ninguém lê — onda 4 — Média — EDG-06
+- [ ] 173 — Aplicação: Falha de cron edge é invisível: o pg_net marca sucesso, o heartbeat registra o erro e ninguém lê — onda 4 — Média — EDG-06
+- [ ] 174 — Quatro edge functions são órfãs de verdade — e o push do produto tem o fio cortado: o front grava a inscrição e nada nunca envia — onda 4 — Média — EDG-07
+- [ ] 175 — A redação `[REDACTED]` do corpo da requisição nunca acontece: toda requisição recusada grava o payload inteiro no log — onda 4 — Média — EDG-08
+- [ ] 176 — A tela /catalogo-produtos cadastra e edita produto à mão em `produtos` (tabela em extinção), com upload de imagem para bucket público — onda 4 — Média — INT-02
+- [ ] 177 — Falha temporária do serviço de push (429/500/timeout) apaga a inscrição do dispositivo para sempre — onda 4 — Média — INT-04
+- [ ] 178 — Cota da SPOT é contada por invocação da edge, não por requisição HTTP: o retry multiplica por até 4 e as recusas contam como uso — onda 4 — Média — INT-06
+- [ ] 179 — (parte 1/2) Helper de idempotência responde do cache antes de autenticar e guarda falha para sempre: sessão punchout de um usuário vai para outro e re — onda 4 — Média — INT-08
+- [ ] 180 — (parte 2/2) Helper de idempotência responde do cache antes de autenticar e guarda falha para sempre: sessão punchout de um usuário vai para outro e re — onda 4 — Média — INT-08
+- [ ] 181 — punchout-receive aceita carrinho de catálogo desativado e só exige o shared secret quando o campo está preenchido — onda 4 — Média — INT-09
+- [ ] 182 — alert-dispatcher marca o alerta como despachado mesmo quando nenhum canal entregou, e descarta o 2º alerta do mesmo tipo na mesma rodada — onda 4 — Média — INT-10
+- [ ] 183 — Catálogo SPOT mostra estoque sem dizer de quando é, não some com SKU que o fornecedor parou de enviar, e o botão de sincronizar invalida chaves de cac — onda 4 — Média — INT-11
+- [ ] 184 — (parte 1/2) Quais edges são públicas só está escrito no shell de deploy, e o `corsHeaders` estático fica sem Access-Control-Allow-Origin quando ALLOWE — onda 4 — Média — INT-12
+- [ ] 185 — (parte 2/2) Quais edges são públicas só está escrito no shell de deploy, e o `corsHeaders` estático fica sem Access-Control-Allow-Origin quando ALLOWE — onda 4 — Média — INT-12
+- [ ] 186 — Migration: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
+- [ ] 187 — Aplicação: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
+- [ ] 188 — `alert-dispatcher` carimba todo alerta como `dispatch_status='delivered'` mesmo quando não existe nenhum destinatário — e `alert_subscriptions` está v — onda 5 — Alta — JOB-02
+- [ ] 189 — O botão "Resolver" do painel de telemetria não resolve alerta nenhum: faz UPDATE direto numa tabela cuja RLS só tem policy de SELECT, e mostra "Alerta — onda 5 — Alta — JOB-03
+- [ ] 190 — (parte 1/3) Nenhuma mutação atualiza os cartões de indicadores: as chaves `-kpis` ficam fora do alcance do invalidate — onda 5 — Média — HK-05
+- [ ] 191 — (parte 2/3) Nenhuma mutação atualiza os cartões de indicadores: as chaves `-kpis` ficam fora do alcance do invalidate — onda 5 — Média — HK-05
+- [ ] 192 — (parte 3/3) Nenhuma mutação atualiza os cartões de indicadores: as chaves `-kpis` ficam fora do alcance do invalidate — onda 5 — Média — HK-05
+- [ ] 193 — "Sincronizar catálogo SPOT" gasta cota da API e a tela não atualiza (chave de cache em outro idioma) — onda 5 — Média — HK-06
+- [ ] 194 — (parte 1/3) O seletor de empresa do cabeçalho não filtra nada — onda 5 — Média — HK-07
+- [ ] 195 — (parte 2/3) O seletor de empresa do cabeçalho não filtra nada — onda 5 — Média — HK-07
+- [ ] 196 — (parte 3/3) O seletor de empresa do cabeçalho não filtra nada — onda 5 — Média — HK-07
+- [ ] 197 — O botão "Limpar filtros" do Histórico de Compras nunca limpa — onda 5 — Média — HK-08
+- [ ] 198 — O contador de pendências do menu mostra "0" quando a consulta falha — onda 5 — Média — HK-09
+- [ ] 199 — Duas chaves de cache não carregam o dado que a consulta usa (empresa omitida; itens indexados pela quantidade de pedidos) — onda 5 — Média — HK-10
+- [ ] 200 — O sistema depende de um `tenant_id` no token que nada no repositório cria; onde ele falta, Licitações e o tempo real desligam em silêncio — onda 5 — Média — HK-11
+- [ ] 201 — O cron `cleanup-system-alerts` apaga alerta ABERTO aos 30 dias, enquanto a função oficial do banco guarda os não resolvidos por 180 — onda 5 — Média — JOB-04
+- [ ] 202 — O alerta de "cron falhando" é matematicamente inalcançável para os 8 jobs semanais: exige 5 falhas entre as 5 últimas execuções, e o histórico é apaga — onda 5 — Média — JOB-05
+- [ ] 203 — Migration: `outbox-worker-1min` faz 1.440 invocações de edge por dia sobre uma outbox que nunca teve uma linha: não existe produtor em lugar nenhum do — onda 5 — Média — JOB-06
+- [ ] 204 — Aplicação: `outbox-worker-1min` faz 1.440 invocações de edge por dia sobre uma outbox que nunca teve uma linha: não existe produtor em lugar nenhum do — onda 5 — Média — JOB-06
+- [ ] 205 — Migration: 5 jobs ativos em produção não existem em nenhuma migration — entre eles o único vigia da integração XBZ — e o verificador de paridade exclu — onda 5 — Média — JOB-07
+- [ ] 206 — Aplicação: 5 jobs ativos em produção não existem em nenhuma migration — entre eles o único vigia da integração XBZ — e o verificador de paridade exclu — onda 5 — Média — JOB-07
+- [ ] 207 — ~1,18 mil linhas de telemetria com `user_id`, `client_ip` e `user_agent` ficam fora da retenção única, em tabelas órfãs que o `apply_lgpd_retention()` — onda 5 — Média — JOB-08
+- [ ] 208 — O follow-up de cotação parada acontece uma única vez por cotação, para sempre — contra a janela de 24 h que o próprio módulo define e testa — onda 5 — Média — JOB-09
+- [ ] 209 — Migration: `system_alerts.severity` não tem valor canônico: os produtores gravam em caixas diferentes e o contador de alertas críticos do sidebar só r — onda 5 — Média — JOB-10
+- [ ] 210 — Aplicação: `system_alerts.severity` não tem valor canônico: os produtores gravam em caixas diferentes e o contador de alertas críticos do sidebar só r — onda 5 — Média — JOB-10
+- [ ] 211 — (parte 1/2) A lista de pagamentos baixa o contas-a-pagar inteiro: o `.range()` foi calculado e nunca chamado — onda 6 — Alta — PERF-01
+- [ ] 212 — (parte 2/2) A lista de pagamentos baixa o contas-a-pagar inteiro: o `.range()` foi calculado e nunca chamado — onda 6 — Alta — PERF-01
+- [ ] 213 — Pedidos e Solicitações mostram só as primeiras 50/100 linhas e não têm como virar página — onda 6 — Alta — PERF-02
+- [ ] 214 — Migration: Painéis executivos baixam tabelas inteiras (até 50.000 linhas cada, em páginas sequenciais) e agregam no navegador, ignorando as RPCs de in — onda 6 — Alta — PERF-03
+- [ ] 215 — Aplicação: Painéis executivos baixam tabelas inteiras (até 50.000 linhas cada, em páginas sequenciais) e agregam no navegador, ignorando as RPCs de in — onda 6 — Alta — PERF-03
+- [ ] 216 — Aplicação: Painéis executivos baixam tabelas inteiras (até 50.000 linhas cada, em páginas sequenciais) e agregam no navegador, ignorando as RPCs de in — onda 6 — Alta — PERF-03
+- [ ] 217 — Uma requisição por item dentro de laço sequencial (dossiê do pedido e matriz de permissões) — onda 6 — Média — PERF-04
+- [ ] 218 — Índices de `system_alerts` e `spot_api_sync_log` não cobrem a coluna que as consultas quentes usam, e o índice parcial do despachante tem predicado qu — onda 6 — Média — PERF-05
+- [ ] 219 — A busca do catálogo SPOT dispara 3 requisições por tecla e o índice GIN de 393 KB criado para o nome não serve à busca usada — onda 6 — Média — PERF-06
+- [ ] 220 — A primeira tela baixa 781 KB (234 KB comprimidos) de bibliotecas de PDF e imagem porque dois auxiliares compartilhados caíram dentro desses pacotes — onda 6 — Média — PERF-07
+- [ ] 221 — Migration: 38 índices redundantes com zero uso, e uma view materializada recalculada a cada 15 minutos que ninguém lê — onda 6 — Baixa — PERF-08
+- [ ] 222 — Aplicação: 38 índices redundantes com zero uso, e uma view materializada recalculada a cada 15 minutos que ninguém lê — onda 6 — Baixa — PERF-08
+- [ ] 223 — (parte 1/4) 42 valores em reais são montados à mão com `toFixed(2)` ou `toLocaleString('pt-BR')` sem casas decimais, imprimindo 'R$ 1234.50' e 'R$ 8.9 — onda 7 — Alta — UX-02
+- [ ] 224 — (parte 2/4) 42 valores em reais são montados à mão com `toFixed(2)` ou `toLocaleString('pt-BR')` sem casas decimais, imprimindo 'R$ 1234.50' e 'R$ 8.9 — onda 7 — Alta — UX-02
+- [ ] 225 — (parte 3/4) 42 valores em reais são montados à mão com `toFixed(2)` ou `toLocaleString('pt-BR')` sem casas decimais, imprimindo 'R$ 1234.50' e 'R$ 8.9 — onda 7 — Alta — UX-02
+- [ ] 226 — (parte 4/4) 42 valores em reais são montados à mão com `toFixed(2)` ou `toLocaleString('pt-BR')` sem casas decimais, imprimindo 'R$ 1234.50' e 'R$ 8.9 — onda 7 — Alta — UX-02
+- [ ] 227 — (parte 1/2) A mensagem de ordem de compra enviada ao fornecedor inventa 'R$ 12,00' de valor unitário quando o campo vem vazio e sai com o texto litera — onda 7 — Alta — UX-03
+- [ ] 228 — (parte 2/2) A mensagem de ordem de compra enviada ao fornecedor inventa 'R$ 12,00' de valor unitário quando o campo vem vazio e sai com o texto litera — onda 7 — Alta — UX-03
+- [ ] 229 — (parte 1/4) Navegação lateral recolhida e 29 botões só-ícone não têm nome acessível: o nome só existe no Tooltip, que o leitor de tela não usa como no — onda 7 — Alta — UX-04
+- [ ] 230 — (parte 2/4) Navegação lateral recolhida e 29 botões só-ícone não têm nome acessível: o nome só existe no Tooltip, que o leitor de tela não usa como no — onda 7 — Alta — UX-04
+- [ ] 231 — (parte 3/4) Navegação lateral recolhida e 29 botões só-ícone não têm nome acessível: o nome só existe no Tooltip, que o leitor de tela não usa como no — onda 7 — Alta — UX-04
+- [ ] 232 — (parte 4/4) Navegação lateral recolhida e 29 botões só-ícone não têm nome acessível: o nome só existe no Tooltip, que o leitor de tela não usa como no — onda 7 — Alta — UX-04
+- [ ] 233 — (parte 1/4) Abrir um pedido, selecionar o pedido a receber e abrir um atraso em acompanhamento só funcionam com mouse: 40 elementos clicáveis são `div — onda 7 — Alta — UX-05
+- [ ] 234 — (parte 2/4) Abrir um pedido, selecionar o pedido a receber e abrir um atraso em acompanhamento só funcionam com mouse: 40 elementos clicáveis são `div — onda 7 — Alta — UX-05
+- [ ] 235 — (parte 3/4) Abrir um pedido, selecionar o pedido a receber e abrir um atraso em acompanhamento só funcionam com mouse: 40 elementos clicáveis são `div — onda 7 — Alta — UX-05
+- [ ] 236 — (parte 4/4) Abrir um pedido, selecionar o pedido a receber e abrir um atraso em acompanhamento só funcionam com mouse: 40 elementos clicáveis são `div — onda 7 — Alta — UX-05
+- [ ] 237 — (parte 1/3) 151 campos de formulário não têm nome acessível e 195 `<Label>` não apontam para campo nenhum — no modal de cotação manual de /cotacao tod — onda 7 — Alta — UX-06
+- [ ] 238 — (parte 2/3) 151 campos de formulário não têm nome acessível e 195 `<Label>` não apontam para campo nenhum — no modal de cotação manual de /cotacao tod — onda 7 — Alta — UX-06
+- [ ] 239 — (parte 3/3) 151 campos de formulário não têm nome acessível e 195 `<Label>` não apontam para campo nenhum — no modal de cotação manual de /cotacao tod — onda 7 — Alta — UX-06
+- [ ] 240 — (parte 1/2) Modal de detalhe do pedido e dossiê de acompanhamento não têm altura máxima nem rolagem: no celular o topo e o rodapé do conteúdo ficam fo — onda 7 — Alta — UX-07
+- [ ] 241 — (parte 2/2) Modal de detalhe do pedido e dossiê de acompanhamento não têm altura máxima nem rolagem: no celular o topo e o rodapé do conteúdo ficam fo — onda 7 — Alta — UX-07
+- [ ] 242 — (parte 1/3) Quatro botões flutuantes fixos disputam o mesmo canto inferior direito: o assistente de IA cobre o botão de Ações Rápidas e o Voltar ao To — onda 7 — Alta — UX-08
+- [ ] 243 — (parte 2/3) Quatro botões flutuantes fixos disputam o mesmo canto inferior direito: o assistente de IA cobre o botão de Ações Rápidas e o Voltar ao To — onda 7 — Alta — UX-08
+- [ ] 244 — (parte 3/3) Quatro botões flutuantes fixos disputam o mesmo canto inferior direito: o assistente de IA cobre o botão de Ações Rápidas e o Voltar ao To — onda 7 — Alta — UX-08
+- [ ] 245 — A coluna 'Saúde do SLA' de /pedidos é fabricada: a barra e o rótulo ATENÇÃO/NO PRAZO vêm da posição da linha na lista (`index % 3`), não de dado nenhu — onda 7 — Alta — UX-11
+- [ ] 246 — A linha do tempo de acompanhamento carimba '15/12/2025' como data de toda etapa concluída, em todos os pedidos — onda 7 — Média — UI-11
+- [ ] 247 — Agendar pagamento descarta a data escolhida: o usuário escolhe o dia, a tela confirma 'agendado para dd/MM/yyyy' e nada da data é gravado — onda 7 — Média — UI-12
+- [ ] 248 — Conciliação de NF-e casa a nota com qualquer pedido de mesmo valor, ignorando o fornecedor — onda 7 — Média — UI-13
+- [ ] 249 — Comparador de cotações nunca aparece no fluxo normal, e a cotação escolhida pela 'auto busca' não grava a seleção — onda 7 — Média — UI-14
+- [ ] 250 — (parte 1/3) Falha ao carregar vira 'lista vazia' e 'nada pendente': as telas consomem só data+loading e descartam error e totalCount dos hooks — onda 7 — Média — UI-15
+- [ ] 251 — (parte 2/3) Falha ao carregar vira 'lista vazia' e 'nada pendente': as telas consomem só data+loading e descartam error e totalCount dos hooks — onda 7 — Média — UI-15
+- [ ] 252 — (parte 3/3) Falha ao carregar vira 'lista vazia' e 'nada pendente': as telas consomem só data+loading e descartam error e totalCount dos hooks — onda 7 — Média — UI-15
+- [ ] 253 — Botões sem handler: 'Filtros Avançados' do estoque, 'Ver Histórico' das aprovações e 'LISTAR/CONECTAR' do sourcing no dossiê do pedido — onda 7 — Média — UI-16
+- [ ] 254 — O 'Gestor Responsável' obrigatório nunca é gravado em coluna própria e a lista exibe as observações da solicitação no lugar do vendedor — onda 7 — Média — UI-17
+- [ ] 255 — Anexo que falha no upload não avisa: a solicitação é anunciada como criada com os arquivos, que ficaram para trás — onda 7 — Média — UI-18
+- [ ] 256 — (parte 1/3) Seletor de idioma (pt/en/es) entregue no cabeçalho de toda tela, mas só 9 strings do sistema passam por tradução: 1134 textos estão fixos  — onda 7 — Média — UX-01
+- [ ] 257 — (parte 2/3) Seletor de idioma (pt/en/es) entregue no cabeçalho de toda tela, mas só 9 strings do sistema passam por tradução: 1134 textos estão fixos  — onda 7 — Média — UX-01
+- [ ] 258 — (parte 3/3) Seletor de idioma (pt/en/es) entregue no cabeçalho de toda tela, mas só 9 strings do sistema passam por tradução: 1134 textos estão fixos  — onda 7 — Média — UX-01
+- [ ] 259 — (parte 1/3) A camada de acessibilidade está pela metade: o painel é montado duas vezes (o botão do cabeçalho abre um popover vazio), os links de pular — onda 7 — Média — UX-09
+- [ ] 260 — (parte 2/3) A camada de acessibilidade está pela metade: o painel é montado duas vezes (o botão do cabeçalho abre um popover vazio), os links de pular — onda 7 — Média — UX-09
+- [ ] 261 — (parte 3/3) A camada de acessibilidade está pela metade: o painel é montado duas vezes (o botão do cabeçalho abre um popover vazio), os links de pular — onda 7 — Média — UX-09
+- [ ] 262 — No celular o menu lateral fechado continua na ordem de tabulação: o foco do teclado some para dentro de ~40 links fora da tela, e o menu não fecha com — onda 7 — Média — UX-10
+- [ ] 263 — (parte 1/2) O repositório é PÚBLICO no GitHub, mas AGENTS.md e docs/agentes/github-ci.md afirmam que é privado — com secret scanning e push protection — onda 8 — Crítica — HIG-01
+- [ ] 264 — (parte 2/2) O repositório é PÚBLICO no GitHub, mas AGENTS.md e docs/agentes/github-ci.md afirmam que é privado — com secret scanning e push protection — onda 8 — Crítica — HIG-01
+- [ ] 265 — (parte 1/3) Os 13 testes Deno que provariam isolamento multiempresa e autenticação das edges são `ignored` em toda execução de CI — e a sonda que os h — onda 8 — Alta — CI-02
+- [ ] 266 — (parte 2/3) Os 13 testes Deno que provariam isolamento multiempresa e autenticação das edges são `ignored` em toda execução de CI — e a sonda que os h — onda 8 — Alta — CI-02
+- [ ] 267 — (parte 3/3) Os 13 testes Deno que provariam isolamento multiempresa e autenticação das edges são `ignored` em toda execução de CI — e a sonda que os h — onda 8 — Alta — CI-02
+- [ ] 268 — As duas vias de deploy de edge function discordam sobre verify_jwt: o workflow e o script aplicam isenções opostas no mesmo projeto — onda 8 — Alta — CI-03
+- [ ] 269 — (parte 1/4) AGENTS.md e docs/agentes/ contradizem o repositório em 10 afirmações verificáveis — inclusive mandando o agente perguntar ao dono por um c — onda 8 — Alta — HIG-02
+- [ ] 270 — (parte 2/4) AGENTS.md e docs/agentes/ contradizem o repositório em 10 afirmações verificáveis — inclusive mandando o agente perguntar ao dono por um c — onda 8 — Alta — HIG-02
+- [ ] 271 — (parte 3/4) AGENTS.md e docs/agentes/ contradizem o repositório em 10 afirmações verificáveis — inclusive mandando o agente perguntar ao dono por um c — onda 8 — Alta — HIG-02
+- [ ] 272 — (parte 4/4) AGENTS.md e docs/agentes/ contradizem o repositório em 10 afirmações verificáveis — inclusive mandando o agente perguntar ao dono por um c — onda 8 — Alta — HIG-02
+- [ ] 273 — (parte 1/2) As duas últimas PRs mergeadas em produção (#304 e #306) investiram ~1.026 linhas no Console de Sourcing, um componente que nenhum arquivo  — onda 8 — Alta — HIG-03
+- [ ] 274 — (parte 2/2) As duas últimas PRs mergeadas em produção (#304 e #306) investiram ~1.026 linhas no Console de Sourcing, um componente que nenhum arquivo  — onda 8 — Alta — HIG-03
+- [ ] 275 — (parte 1/3) Os 4 arquivos de "teste de contrato" validam cópias à mão que já divergiram do contrato real das edges — 4 asserções afirmam que um payloa — onda 8 — Alta — TST-01
+- [ ] 276 — (parte 2/3) Os 4 arquivos de "teste de contrato" validam cópias à mão que já divergiram do contrato real das edges — 4 asserções afirmam que um payloa — onda 8 — Alta — TST-01
+- [ ] 277 — (parte 3/3) Os 4 arquivos de "teste de contrato" validam cópias à mão que já divergiram do contrato real das edges — 4 asserções afirmam que um payloa — onda 8 — Alta — TST-01
+- [ ] 278 — (parte 1/3) O gate "End-to-End Tests (Playwright)" do CI nunca roda autenticado: nenhum spec importa a fixture de sessão e o playwright.config.ts não  — onda 8 — Alta — TST-02
+- [ ] 279 — (parte 2/3) O gate "End-to-End Tests (Playwright)" do CI nunca roda autenticado: nenhum spec importa a fixture de sessão e o playwright.config.ts não  — onda 8 — Alta — TST-02
+- [ ] 280 — (parte 3/3) O gate "End-to-End Tests (Playwright)" do CI nunca roda autenticado: nenhum spec importa a fixture de sessão e o playwright.config.ts não  — onda 8 — Alta — TST-02
+- [ ] 281 — (parte 1/3) 2311 testes verdes cobrem rótulos e dados fictícios, não regras: nenhuma das 15 jornadas tem o caminho de escrita testado, 11 dos 15 hooks — onda 8 — Alta — TST-06
+- [ ] 282 — (parte 2/3) 2311 testes verdes cobrem rótulos e dados fictícios, não regras: nenhuma das 15 jornadas tem o caminho de escrita testado, 11 dos 15 hooks — onda 8 — Alta — TST-06
+- [ ] 283 — (parte 3/3) 2311 testes verdes cobrem rótulos e dados fictícios, não regras: nenhuma das 15 jornadas tem o caminho de escrita testado, 11 dos 15 hooks — onda 8 — Alta — TST-06
+- [ ] 284 — (parte 1/2) AGENTS.md e docs/agentes/{deploy,github-ci}.md afirmam quatro coisas que o repositório desmente hoje, e o guard de integridade não checa v — onda 8 — Média — CI-07
+- [ ] 285 — (parte 2/2) AGENTS.md e docs/agentes/{deploy,github-ci}.md afirmam quatro coisas que o repositório desmente hoje, e o guard de integridade não checa v — onda 8 — Média — CI-07
+- [ ] 286 — contexto.yml não passa SUPABASE_PROJECT_REF/SUPABASE_ACCESS_TOKEN ao coletor, e o snapshot de edge functions e de configuração do projeto sai vazio a  — onda 8 — Média — CI-08
+- [ ] 287 — O build publica 151 sourcemaps com o TypeScript original inteiro, e nada no repositório os exclui do deploy — onda 8 — Média — CI-09
+- [ ] 288 — VITE_VAPID_PUBLIC_KEY não está declarada em lugar nenhum e o app avisa 'Notificações ativadas' sem jamais registrar a inscrição de push — onda 8 — Média — CI-10
+- [ ] 289 — Três workflows usam actions por tag flutuante, dois deles com a credencial do banco de produção em mãos, enquanto o resto do repo já pina por SHA — onda 8 — Média — CI-11
+- [ ] 290 — Migration: O cahier marca `fake-dash-sla` como CONCLUIDO, mas só metade foi entregue: os literais `avgSla: 1.8` / `taxaSlaReal: 85` e a sparkline inve — onda 8 — Média — HIG-04
+- [ ] 291 — Aplicação: O cahier marca `fake-dash-sla` como CONCLUIDO, mas só metade foi entregue: os literais `avgSla: 1.8` / `taxaSlaReal: 85` e a sparkline inve — onda 8 — Média — HIG-04
+- [ ] 292 — (parte 1/2) `no-unused-vars` está desligado no ESLint, e por isso 459 declarações não usadas sobrevivem em `src/` — entre elas a fiação abandonada que — onda 8 — Média — HIG-05
+- [ ] 293 — (parte 2/2) `no-unused-vars` está desligado no ESLint, e por isso 459 declarações não usadas sobrevivem em `src/` — entre elas a fiação abandonada que — onda 8 — Média — HIG-05
+- [ ] 294 — (parte 1/2) `ESTADO_ATUAL.md` e `DOCS/ESTADO/` são de 16/08/2026 e descrevem três fluxos quebrados que já foram consertados — e AGENTS.md:139 os apont — onda 8 — Média — HIG-06
+- [ ] 295 — (parte 2/2) `ESTADO_ATUAL.md` e `DOCS/ESTADO/` são de 16/08/2026 e descrevem três fluxos quebrados que já foram consertados — e AGENTS.md:139 os apont — onda 8 — Média — HIG-06
+- [ ] 296 — (parte 1/4) Testes cujo título afirma muito mais do que o corpo verifica: asserção tautológica, `expect` ausente, assert comentado e 8 testes que repo — onda 8 — Média — TST-07
+- [ ] 297 — (parte 2/4) Testes cujo título afirma muito mais do que o corpo verifica: asserção tautológica, `expect` ausente, assert comentado e 8 testes que repo — onda 8 — Média — TST-07
+- [ ] 298 — (parte 3/4) Testes cujo título afirma muito mais do que o corpo verifica: asserção tautológica, `expect` ausente, assert comentado e 8 testes que repo — onda 8 — Média — TST-07
+- [ ] 299 — (parte 4/4) Testes cujo título afirma muito mais do que o corpo verifica: asserção tautológica, `expect` ausente, assert comentado e 8 testes que repo — onda 8 — Média — TST-07
+- [ ] 300 — Os 12 testes skipped e o único arquivo skipped são a única verificação contra o banco real, e estão presos numa variável que nenhum workflow define — onda 8 — Média — TST-08
