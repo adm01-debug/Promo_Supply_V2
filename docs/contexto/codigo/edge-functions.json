@@ -6,6 +6,7 @@
  "verify_jwt_false": [
   "dependency-health",
   "punchout-receive",
+  "receive-os-sync",
   "scim-v2",
   "webauthn-authenticate"
  ],
@@ -1029,7 +1030,7 @@
    "entrada": "supabase/functions/receive-os-sync/index.ts",
    "arquivos": 2,
    "linhas": 399,
-   "verify_jwt": true,
+   "verify_jwt": false,
    "metodos": [
     "OPTIONS",
     "POST"
@@ -1059,7 +1060,7 @@
    "chamada_pelo_front": [],
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
-   "orfa": true,
+   "orfa": false,
    "testes": 1
   },
   {

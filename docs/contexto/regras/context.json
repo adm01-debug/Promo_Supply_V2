@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "4ea48051b171d0d60da4d9c7ed43127318c37d27",
+  "sha": "77ddaebb9e54238f2add65438bd2254d076ed33c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 21:00 UTC",
+  "generated_at": "2026-11-23 22:05 UTC",
   "files_total": 1336,
   "code_files": 1165,
   "code_lines": 200000,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "8e0cc352e74752d0",
+ "facts_hash": "264f9c4846360b7f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -276,7 +276,8 @@
     "scim-v2",
     "punchout-receive",
     "webauthn-authenticate",
-    "dependency-health"
+    "dependency-health",
+    "receive-os-sync"
    ],
    "auth": {}
   },
@@ -32319,7 +32320,7 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "profiles",
      "solicitacoes",
@@ -81488,7 +81489,8 @@
    "scim-v2",
    "punchout-receive",
    "webauthn-authenticate",
-   "dependency-health"
+   "dependency-health",
+   "receive-os-sync"
   ],
   "auth_config": {},
   "grants": [
@@ -116450,10 +116452,19 @@
   }
  },
  "git": {
-  "sha": "4ea48051b171d0d60da4d9c7ed43127318c37d27",
+  "sha": "77ddaebb9e54238f2add65438bd2254d076ed33c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "77ddaeb",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix: receive-os-sync sem verify_jwt (webhook HMAC)",
+    "files": [
+     "supabase/config.toml"
+    ]
+   },
    {
     "sha": "4ea4805",
     "date": "2026-11-23",
@@ -116808,19 +116819,6 @@
      "src/features/auth/components/ProtectedRoute.tsx",
      "src/features/layout/components/AppSidebar.tsx"
     ]
-   },
-   {
-    "sha": "87d6784",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)",
-    "files": [
-     "src/components/compras/ContractDetailsModal.tsx",
-     "src/features/layout/components/RealNotificationCenter.tsx",
-     "src/lib/security.ts",
-     "src/pages/admin/PunchOutCatalogs.tsx",
-     "supabase/functions/generate-contract-pdf/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -116833,16 +116831,16 @@
     3
    ],
    [
-    "supabase/functions/generate-contract-pdf/index.ts",
-    3
-   ],
-   [
     "src/features/auth/components/ProtectedRoute.tsx",
     3
    ],
    [
     "src/features/auth/hooks/useAuth.tsx",
     3
+   ],
+   [
+    "supabase/config.toml",
+    2
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -116901,7 +116899,7 @@
     2
    ],
    [
-    "supabase/functions/process-invoice-idp/index.ts",
+    "supabase/functions/generate-contract-pdf/index.ts",
     2
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4ea48051b171d0d60da4d9c7ed43127318c37d27` (2026-11-23T17:59:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `77ddaebb9e54238f2add65438bd2254d076ed33c` (2026-11-23T19:05:15-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -210,7 +210,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `punchout-receive` (verify_jwt=false) — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
-- `receive-os-sync` — tabelas: profiles, solicitacoes, tenants, user_tenants; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `receive-os-sync` (verify_jwt=false) — tabelas: profiles, solicitacoes, tenants, user_tenants; chamada por 0 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -305,7 +305,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
-- webhooks recebidos: dependency-health, punchout-receive, scim-v2, webauthn-authenticate
+- webhooks recebidos: dependency-health, punchout-receive, receive-os-sync, scim-v2, webauthn-authenticate
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
@@ -318,7 +318,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 7 — ex.: alert-dispatcher, fiscal-orchestrator, maintain-partitions
+- edges_orfas: 6 — ex.: alert-dispatcher, fiscal-orchestrator, maintain-partitions
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
@@ -338,19 +338,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
+- package.json (13)
 - docs/ci/README.md (12)
-- package.json (12)
 - .github/workflows/main.yml (9)
+- bun.lock (9)
 - docs/prod-readiness.md (9)
-- bun.lock (8)
 - docs/pendencias/_ordem.md (8)
+- AGENTS.md (7)
+- supabase/config.toml (7)
+- supabase/functions/punchout-receive/index.ts (7)
+- supabase/functions/xbz-proxy/index.ts (7)
 - .github/workflows/contexto.yml (6)
 - .github/workflows/deploy-edge-functions.yml (6)
-- AGENTS.md (6)
 - docs/qa/05-PROGRESSO.md (6)
-- scripts/automation.config.json (6)
-- supabase/functions/punchout-receive/index.ts (6)
-- supabase/functions/xbz-proxy/index.ts (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `77ddaeb` fix: receive-os-sync sem verify_jwt (webhook HMAC)
 - 2026-11-23 `4ea4805` fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)
 - 2026-11-23 `c318737` fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)
 - 2026-11-23 `294d385` fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
 - 2026-11-23 `a8582d4` fix(auth): preserva a rota e avisa quando a sessao expira (#329)
 - 2026-11-23 `4358c8c` chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)
-- 2026-11-23 `fa08c73` fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
