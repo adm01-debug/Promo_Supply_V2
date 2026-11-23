@@ -33,32 +33,48 @@ _(vazio)_
 - [ ] 005 — Aplicação: 30 tabelas têm como única policy `tenant_in_my_group(tenant_id)` PERMISSIVE FOR ALL: qualquer usuário logado reescreve regras de aprovação, — onda 1 — Crítica — RLS-01
 - [ ] 006 — Quatro telas /admin/* são protegidas APENAS pelo React: a RLS das tabelas por trás libera leitura e escrita a qualquer usuário autenticado do grupo —  — onda 1 — Crítica — AUT-01
 - [ ] 007 — Migration: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
-- [ ] 008 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
-- [ ] 009 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+- [x] 008 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+  - Evidencia: PR #319 (merge pendente autorizacao) - Auth.tsx: aba Criar Conta removida; useAuth.signUp() retorna erro bloqueador.
+- [x] 009 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
+  - Evidencia: PR #319 - useAuth.signUp() nao chama supabase.auth.signUp(); AuthContext.signUp marcado @deprecated.
 - [ ] 010 — O sistema de permissões granulares está morto para todo papel não-admin: usePermissions lê permissions/role_permissions direto, e a RLS dessas duas ta — onda 1 — Alta — AUT-03
 - [ ] 011 — (parte 1/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
 - [ ] 012 — (parte 2/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
-- [ ] 013 — (parte 1/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
-- [ ] 014 — (parte 2/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
-- [ ] 015 — (parte 3/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
-- [ ] 016 — (parte 1/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
-- [ ] 017 — (parte 2/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
-- [ ] 018 — Produção não serve nenhum cabeçalho HTTP de segurança: vercel.json só tem rewrites e o CSP está em <meta>, onde frame-ancestors e nosniff não têm efei — onda 1 — Alta — CI-04
-- [ ] 019 — O service worker guarda respostas autenticadas da API no cache do navegador e nada limpa esse cache no logout nem na troca de empresa — onda 1 — Alta — CI-05
+- [x] 013 — (parte 1/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+  - Evidencia: PR #318 (mergeada) - useEmpresaFilter propagado em pedidos/pagamentos/solicitacoes/badges/dashboard.
+- [x] 014 — (parte 2/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+  - Evidencia: PR #318 (mergeada) - filtro aplicado nas queries de listagem e contadores.
+- [x] 015 — (parte 3/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
+  - Evidencia: PR #318 (mergeada) - badges e dashboard respeitam empresaIds do seletor de cabecalho.
+- [x] 016 — (parte 1/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
+  - Evidencia: PR #316 (mergeada) - AppSidebar filtra itens por papel; clique em rota proibida mostra aviso em vez de redirect silencioso.
+- [x] 017 — (parte 2/2) O menu lateral não filtra por papel: os 14 itens da seção 'Admin' aparecem para todos os papéis e o clique cai num redirect silencioso par — onda 1 — Alta — AUT-06
+  - Evidencia: PR #316 (mergeada) - guarda de rota por papel no layout + alerta de acesso negado.
+- [x] 018 — Produção não serve nenhum cabeçalho HTTP de segurança: vercel.json só tem rewrites e o CSP está em <meta>, onde frame-ancestors e nosniff não têm efei — onda 1 — Alta — CI-04
+  - Evidencia: PR #314 (mergeada) - vercel.json com CSP/HSTS/X-Frame-Options/Referrer-Policy reais.
+- [x] 019 — O service worker guarda respostas autenticadas da API no cache do navegador e nada limpa esse cache no logout nem na troca de empresa — onda 1 — Alta — CI-05
+  - Evidencia: PR #314 (mergeada) - Service Worker limpa caches de API no logout e na troca de token.
 - [ ] 020 — aplicar-migration-prod.yml aplica DDL em produção a partir de qualquer branch, sem exigir que a migration esteja na main e sem segundo par de olhos — onda 1 — Alta — CI-06
-- [ ] 021 — send-push-notification nao confere papel nem empresa: qualquer usuario autenticado dispara notificacao e push para TODOS os usuarios de TODAS as empre — onda 1 — Alta — EDGA-01
-- [ ] 022 — workflow-engine aceita `approver_id` vindo do corpo e nao filtra a instancia por tenant: qualquer usuario autenticado registra aprovacao em nome de ou — onda 1 — Alta — EDGA-02
-- [ ] 023 — process-invoice-idp baixa qualquer caminho do bucket privado `fiscal-documents` com service_role e devolve o conteudo da nota, sem conferir se o arqui — onda 1 — Alta — EDGA-03
+- [x] 021 — send-push-notification nao confere papel nem empresa: qualquer usuario autenticado dispara notificacao e push para TODOS os usuarios de TODAS as empre — onda 1 — Alta — EDGA-01
+  - Evidencia: PR #320 - send-push-notification exige role admin/coordinator e restringe destinatarios a organizacao do caller.
+- [x] 022 — workflow-engine aceita `approver_id` vindo do corpo e nao filtra a instancia por tenant: qualquer usuario autenticado registra aprovacao em nome de ou — onda 1 — Alta — EDGA-02
+  - Evidencia: PR #320 - workflow-engine usa user.id do JWT como approver_id e valida tenant da instancia antes de aprovar.
+- [x] 023 — process-invoice-idp baixa qualquer caminho do bucket privado `fiscal-documents` com service_role e devolve o conteudo da nota, sem conferir se o arqui — onda 1 — Alta — EDGA-03
+  - Evidencia: PR #320 - process-invoice-idp exige filePath comecando em uploads/{user.id}/.
 - [ ] 024 — (parte 1/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
 - [ ] 025 — (parte 2/2) O deploy automatico de edge functions religa verify_jwt nas 6 funcoes que precisam ser publicas, porque `supabase/config.toml` so declara  — onda 1 — Alta — EDGA-04
-- [ ] 026 — dependency-health faz requisicao HTTP server-side para a URL do header Origin/Referer e devolve o corpo ao chamador (SSRF para qualquer usuario autent — onda 1 — Alta — EDGA-05
+- [x] 026 — dependency-health faz requisicao HTTP server-side para a URL do header Origin/Referer e devolve o corpo ao chamador (SSRF para qualquer usuario autent — onda 1 — Alta — EDGA-05
+  - Evidencia: PR #320 - fallback via Origin/Referer removido de dependency-health; fetchStaticFallback excluida (SSRF fechado).
 - [ ] 027 — `current_tenant_id()` lê uma informação do token que nada preenche: devolve sempre nulo e cinco funcionalidades morrem em silêncio — onda 1 — Alta — RLS-02
 - [ ] 028 — Movimentar estoque não exige papel e a trigger privilegiada atualiza o saldo sem conferir a empresa do item — onda 1 — Alta — RLS-03
 - [ ] 029 — Migration: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
-- [ ] 030 — Aplicação: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
-- [ ] 031 — XSS armazenado no HTML do contrato: `payment_terms` e `item.unit` interpolados sem escape e injetados com `document.write` na origem do app — onda 1 — Alta — SEC-01
-- [ ] 032 — (parte 1/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
-- [ ] 033 — (parte 2/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
+- [ ] 0 — Aplicação: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
+- [x] 031 — XSS armazenado no HTML do contrato: `payment_terms` e `item.unit` interpolados sem escape e injetados com `document.write` na origem do app — onda 1 — Alta — SEC-01
+  - Evidencia: PR #315 (mergeada) - escape HTML em payment_terms e item.unit; generate-contract-pdf sanitiza antes de injetar.
+- [x] 032 — (parte 1/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
+  - Evidencia: PR #315 (mergeada) - src/lib/security.ts: safeExternalUrl bloqueia javascript:/data:/vbscript:.
+- [x] 033 — (parte 2/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
+  - Evidencia: PR #315 (mergeada) - RealNotificationCenter usa safeExternalUrl em action_url; PunchOutCatalogs tambem.
 - [ ] 034 — Códigos de backup de MFA têm 4 caracteres de entropia e repetem a primeira metade (regressão da PR #183), são gravados em texto puro e nunca são verif — onda 1 — Alta — SEC-03
 - [ ] 035 — (parte 1/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
 - [ ] 036 — (parte 2/2) Fluxo de recuperação de senha não existe: `password_reset_requests` só é utilizável por quem já está logado e o `reset_token` aprovado nun — onda 1 — Alta — SEC-04
