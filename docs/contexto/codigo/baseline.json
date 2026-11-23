@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b48d6441c1a50a2d783dced7c5b5cd18c784c34a",
+  "commit": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
   "branch": "main",
-  "data_commit": "2026-11-23T12:27:18-03:00",
+  "data_commit": "2026-11-23T12:32:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d355ef3",
+    "data": "2026-11-23",
+    "assunto": "fix(cors): todas as edges derivam o CORS da requisicao (#334)"
+   },
    {
     "sha": "b48d644",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "d9c58bc",
     "data": "2026-11-22",
     "assunto": "feat(sourcing): substitui dados ficticios por metricas reais no console (#306)"
-   },
-   {
-    "sha": "2a98db8",
-    "data": "2026-11-22",
-    "assunto": "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)"
    }
   ],
-  "arquivos_mudados_7d": 330,
+  "arquivos_mudados_7d": 338,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 38
+    "mudancas": 40
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -176,15 +176,15 @@
     "mudancas": 12
    },
    {
+    "pasta": "supabase/functions/punchout-receive",
+    "mudancas": 12
+   },
+   {
     "pasta": "scripts/ci/inventario-types",
     "mudancas": 11
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 11
-   },
-   {
-    "pasta": "supabase/functions/punchout-receive",
     "mudancas": 11
    },
    {
@@ -246,6 +246,14 @@
     "mudancas": 6
    },
    {
+    "arquivo": "supabase/functions/punchout-receive/index.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/xbz-proxy/index.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/types-sync.yml",
     "mudancas": 5
    },
@@ -270,11 +278,7 @@
     "mudancas": 5
    },
    {
-    "arquivo": "supabase/functions/punchout-receive/index.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "supabase/functions/xbz-proxy/index.ts",
+    "arquivo": "supabase/functions/dependency-health/index.ts",
     "mudancas": 5
    },
    {
@@ -292,16 +296,12 @@
    {
     "arquivo": "scripts/rls-audit.allowlist.json",
     "mudancas": 4
-   },
-   {
-    "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 282
+    "commits": 283
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1324,
-  "arquivos_codigo": 825,
-  "linhas_codigo": 171727,
+  "arquivos_total": 1325,
+  "arquivos_codigo": 826,
+  "linhas_codigo": 171964,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 325,
   "cron_jobs": 74,
-  "testes": 201,
+  "testes": 202,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -491,8 +491,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 106,
-   "linhas": 17814
+   "arquivos": 107,
+   "linhas": 18051
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -594,7 +594,7 @@
   },
   {
    "arquivo": "supabase/functions/spot-proxy/index.ts",
-   "linhas": 888
+   "linhas": 889
   },
   {
    "arquivo": "src/pages/admin/HealthDashboard.tsx",
@@ -602,7 +602,7 @@
   },
   {
    "arquivo": "supabase/functions/dependency-health/index.ts",
-   "linhas": 697
+   "linhas": 830
   },
   {
    "arquivo": "src/pages/negociacao-ia/NegociacaoIA.tsx",
@@ -650,7 +650,7 @@
   },
   {
    "arquivo": "supabase/functions/xbz-proxy/index.ts",
-   "linhas": 533
+   "linhas": 541
   }
  ],
  "qualidade": {

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b48d6441c1` · branch `main` · 2026-11-23 15:58 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d355ef397d` · branch `main` · 2026-11-23 16:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1592,11 +1592,11 @@ _nenhum item encontrado_
   ```
   if (!solicitanteId) return { shouldNotify: false, reason: "sem_destinatario" }; if (ultimoFollowUpIso) { const last = Date.parse(ultimoFollowUpIso); if (!Number.isNaN(last) && now.getTime() - last < dedupeHours * 60 * 60 * 1000) { return { shouldNotify: false, reason: "recente_duplicada" }; } } return { shouldNotify: true };
   ```
-- **scanTreeShakingViaGitHub(rawBase: string)** — `supabase/functions/dependency-health/index.ts`
+- **scanTreeShakingViaGitHub(rawBase: string,)** — `supabase/functions/dependency-health/index.ts`
   ```
-  if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent(`from "date-fns" repo:${or.owner}/${or.repo} path:src`); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: "application/vnd.github.text-match+json",
+  if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent( `from "date-fns" repo:${or.owner}/${or.repo} path:src`, ); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: "application/vnd.github.text-match+json",
   ```
-- **computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry)** — `supabase/functions/dependency-health/index.ts`
+- **computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry,)** — `supabase/functions/dependency-health/index.ts`
   ```
   let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? ""; if (!spec) { const altLoc: TrackedEntry["location"] = entry.location === "dependencies" ? "devDependencies" : "dependencies"; spec = pkg?.[altLoc]?.[entry.npmName] ?? ""; } const locked = resolveLockedVersion(lockText, entry.npmName) ?? ""; const installed = locked; /* edge cannot read node_modules */ const exactPinned = /^\d+\.\d+\.\d+$/.test(spec); const normalizedSpec = spec.replace(/^[\^~]/, ""); const driftDetected = Boolean(s …
   ```
@@ -2393,7 +2393,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2748 testes em 150 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2751 testes em 151 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2544,6 +2544,7 @@ _nenhum item encontrado_
 | `src/tests/contracts.test.ts` | 3 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes |
 | `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
+| `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |

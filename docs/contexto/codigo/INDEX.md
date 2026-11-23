@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b48d6441c1a50a2d783dced7c5b5cd18c784c34a` (2026-11-23T12:27:18-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e` (2026-11-23T12:32:33-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (752), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (753), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1324 |
-| arquivos_codigo | 825 |
-| linhas_codigo | 171727 |
+| arquivos_total | 1325 |
+| arquivos_codigo | 826 |
+| linhas_codigo | 171964 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 201 |
+| testes | 202 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (33)
+- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (34)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -347,9 +347,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-edge-functions.yml (6)
 - AGENTS.md (6)
 - scripts/automation.config.json (6)
+- supabase/functions/punchout-receive/index.ts (6)
+- supabase/functions/xbz-proxy/index.ts (6)
 - .github/workflows/types-sync.yml (5)
-- docs/agentes/github-ci.md (5)
-- scripts/ci/scripts-operacionais.unit.mjs (5)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `d355ef3` fix(cors): todas as edges derivam o CORS da requisicao (#334)
 - 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
 - 2026-11-23 `a8582d4` fix(auth): preserva a rota e avisa quando a sessao expira (#329)
 - 2026-11-23 `4358c8c` chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
 - 2026-11-23 `959a649` fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)
 - 2026-11-23 `07960cf` fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)
-- 2026-11-23 `2d78471` fix(auth): desabilita autocadastro público (QA 008+009) (#319)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

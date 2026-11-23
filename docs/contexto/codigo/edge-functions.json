@@ -14,6 +14,7 @@
   "supabase/functions/_shared/circuit_breaker.ts",
   "supabase/functions/_shared/contracts.ts",
   "supabase/functions/_shared/cors-allowlist.test.ts",
+  "supabase/functions/_shared/cors-sem-constante.test.ts",
   "supabase/functions/_shared/cronHealth.ts",
   "supabase/functions/_shared/external-bridge-allowlist.test.ts",
   "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -55,7 +56,7 @@
    "nome": "ai-demand-prediction",
    "entrada": "supabase/functions/ai-demand-prediction/index.ts",
    "arquivos": 1,
-   "linhas": 169,
+   "linhas": 170,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -90,7 +91,7 @@
    "nome": "ai-negotiation",
    "entrada": "supabase/functions/ai-negotiation/index.ts",
    "arquivos": 1,
-   "linhas": 154,
+   "linhas": 155,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -125,7 +126,7 @@
    "nome": "ai-supplier-risk",
    "entrada": "supabase/functions/ai-supplier-risk/index.ts",
    "arquivos": 1,
-   "linhas": 172,
+   "linhas": 173,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -159,7 +160,7 @@
    "nome": "ai-supplier-suggestion",
    "entrada": "supabase/functions/ai-supplier-suggestion/index.ts",
    "arquivos": 1,
-   "linhas": 160,
+   "linhas": 161,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -194,7 +195,7 @@
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
    "arquivos": 1,
-   "linhas": 395,
+   "linhas": 396,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -236,7 +237,7 @@
    "nome": "check-approval-escalations",
    "entrada": "supabase/functions/check-approval-escalations/index.ts",
    "arquivos": 1,
-   "linhas": 249,
+   "linhas": 250,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -270,7 +271,7 @@
    "nome": "check-cotacao-followup",
    "entrada": "supabase/functions/check-cotacao-followup/index.ts",
    "arquivos": 2,
-   "linhas": 292,
+   "linhas": 293,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -308,7 +309,7 @@
    "nome": "check-expiry-alerts",
    "entrada": "supabase/functions/check-expiry-alerts/index.ts",
    "arquivos": 2,
-   "linhas": 395,
+   "linhas": 396,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -343,7 +344,7 @@
    "nome": "check-sla-alerts",
    "entrada": "supabase/functions/check-sla-alerts/index.ts",
    "arquivos": 2,
-   "linhas": 377,
+   "linhas": 378,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -380,7 +381,7 @@
    "nome": "dependency-health",
    "entrada": "supabase/functions/dependency-health/index.ts",
    "arquivos": 1,
-   "linhas": 697,
+   "linhas": 830,
    "verify_jwt": false,
    "metodos": [
     "GET",
@@ -421,7 +422,7 @@
    "nome": "erp-credential-encrypt",
    "entrada": "supabase/functions/erp-credential-encrypt/index.ts",
    "arquivos": 1,
-   "linhas": 143,
+   "linhas": 144,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -457,7 +458,7 @@
    "nome": "erp-sync",
    "entrada": "supabase/functions/erp-sync/index.ts",
    "arquivos": 1,
-   "linhas": 110,
+   "linhas": 111,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -535,7 +536,7 @@
    "nome": "external-db-bridge",
    "entrada": "supabase/functions/external-db-bridge/index.ts",
    "arquivos": 1,
-   "linhas": 311,
+   "linhas": 312,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -575,7 +576,7 @@
    "nome": "fiscal-orchestrator",
    "entrada": "supabase/functions/fiscal-orchestrator/index.ts",
    "arquivos": 1,
-   "linhas": 173,
+   "linhas": 174,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -614,7 +615,7 @@
    "nome": "generate-contract-pdf",
    "entrada": "supabase/functions/generate-contract-pdf/index.ts",
    "arquivos": 1,
-   "linhas": 263,
+   "linhas": 264,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -652,7 +653,7 @@
    "nome": "guided-buying-ai",
    "entrada": "supabase/functions/guided-buying-ai/index.ts",
    "arquivos": 1,
-   "linhas": 160,
+   "linhas": 161,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -733,7 +734,7 @@
    "nome": "maintain-partitions",
    "entrada": "supabase/functions/maintain-partitions/index.ts",
    "arquivos": 1,
-   "linhas": 93,
+   "linhas": 94,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -764,7 +765,7 @@
    "nome": "migrate-storage-paths",
    "entrada": "supabase/functions/migrate-storage-paths/index.ts",
    "arquivos": 1,
-   "linhas": 226,
+   "linhas": 227,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -799,7 +800,7 @@
    "nome": "process-invoice-idp",
    "entrada": "supabase/functions/process-invoice-idp/index.ts",
    "arquivos": 2,
-   "linhas": 300,
+   "linhas": 301,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -834,7 +835,7 @@
    "nome": "process-outbox",
    "entrada": "supabase/functions/process-outbox/index.ts",
    "arquivos": 1,
-   "linhas": 134,
+   "linhas": 135,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -866,7 +867,7 @@
    "nome": "process-solicitacao-neural",
    "entrada": "supabase/functions/process-solicitacao-neural/index.ts",
    "arquivos": 1,
-   "linhas": 132,
+   "linhas": 133,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -901,7 +902,7 @@
    "nome": "punchout-encrypt",
    "entrada": "supabase/functions/punchout-encrypt/index.ts",
    "arquivos": 1,
-   "linhas": 149,
+   "linhas": 150,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -937,7 +938,7 @@
    "nome": "punchout-receive",
    "entrada": "supabase/functions/punchout-receive/index.ts",
    "arquivos": 3,
-   "linhas": 371,
+   "linhas": 372,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -980,7 +981,7 @@
    "nome": "punchout-setup",
    "entrada": "supabase/functions/punchout-setup/index.ts",
    "arquivos": 1,
-   "linhas": 108,
+   "linhas": 109,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1021,7 +1022,7 @@
    "nome": "run-audit",
    "entrada": "supabase/functions/run-audit/index.ts",
    "arquivos": 1,
-   "linhas": 102,
+   "linhas": 103,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1053,7 +1054,7 @@
    "nome": "scim-v2",
    "entrada": "supabase/functions/scim-v2/index.ts",
    "arquivos": 2,
-   "linhas": 312,
+   "linhas": 313,
    "verify_jwt": false,
    "metodos": [
     "DELETE",
@@ -1091,7 +1092,7 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 545,
+   "linhas": 546,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1173,7 +1174,7 @@
    "nome": "spot-proxy",
    "entrada": "supabase/functions/spot-proxy/index.ts",
    "arquivos": 2,
-   "linhas": 960,
+   "linhas": 961,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1216,7 +1217,7 @@
    "nome": "system-simulation",
    "entrada": "supabase/functions/system-simulation/index.ts",
    "arquivos": 1,
-   "linhas": 123,
+   "linhas": 124,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1250,7 +1251,7 @@
    "nome": "telemetry",
    "entrada": "supabase/functions/telemetry/index.ts",
    "arquivos": 1,
-   "linhas": 108,
+   "linhas": 109,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1287,7 +1288,7 @@
    "nome": "webauthn-authenticate",
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
-   "linhas": 254,
+   "linhas": 255,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -1324,7 +1325,7 @@
    "nome": "webauthn-register",
    "entrada": "supabase/functions/webauthn-register/index.ts",
    "arquivos": 1,
-   "linhas": 227,
+   "linhas": 228,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1360,7 +1361,7 @@
    "nome": "weekly-report",
    "entrada": "supabase/functions/weekly-report/index.ts",
    "arquivos": 1,
-   "linhas": 120,
+   "linhas": 121,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1396,7 +1397,7 @@
    "nome": "weekly-summary-report",
    "entrada": "supabase/functions/weekly-summary-report/index.ts",
    "arquivos": 1,
-   "linhas": 117,
+   "linhas": 118,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1431,7 +1432,7 @@
    "nome": "workflow-engine",
    "entrada": "supabase/functions/workflow-engine/index.ts",
    "arquivos": 1,
-   "linhas": 172,
+   "linhas": 173,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1471,7 +1472,7 @@
    "nome": "xbz-proxy",
    "entrada": "supabase/functions/xbz-proxy/index.ts",
    "arquivos": 1,
-   "linhas": 533,
+   "linhas": 541,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1510,7 +1511,7 @@
    "nome": "xbz-sync-pedidos",
    "entrada": "supabase/functions/xbz-sync-pedidos/index.ts",
    "arquivos": 1,
-   "linhas": 192,
+   "linhas": 193,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

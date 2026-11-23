@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b48d6441c1a50a2d783dced7c5b5cd18c784c34a",
+  "sha": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 15:58 UTC",
-  "files_total": 1325,
-  "code_files": 1154,
-  "code_lines": 198685,
+  "generated_at": "2026-11-23 16:07 UTC",
+  "files_total": 1326,
+  "code_files": 1155,
+  "code_lines": 198922,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2301b8d900531e13",
+ "facts_hash": "7e6f37f8e23cf32c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 400,
+   ".ts": 401,
    ".tsx": 352,
    ".sql": 327,
    ".mjs": 67,
@@ -35862,8 +35862,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 106,
-   "lines": 17814,
+   "files": 107,
+   "lines": 18051,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35961,8 +35961,8 @@
     "circuit_breaker.ts: INT-01: Circuit breaker leve em memória por instância de edge function. Estados: CLOSED → (falhas ≥ threshold) → OPEN → (após cooldown) → HALF_OPEN → CLOSED Uso: const cb = getBreaker(\"spot\", { failureThreshold: 5, cooldownMs: 30_000 }); if (!cb.canRequest()) throw new Error(\"circuit_open\"); try { c …",
     "contracts.ts: @ts-ignore - Deno remote import",
     "cors-allowlist.test.ts: Allowlist de CORS (QA 045): cobre o furo do comparador de curinga e o comportamento de buildCorsHeaders com e sem ALLOWED_ORIGINS. Rodar: deno test supabase/functions/_shared/cors-allowlist.test.ts",
-    "cronHealth.ts: F-052: Cron heartbeat utility. Call `recordCronHeartbeat` at the end of every cron edge function to register last-run state. Uses `upsert_cron_heartbeat` RPC (SECURITY DEFINER) so the service-role client can write without bypassing RLS explicitly. Usage: import { recordCronHeartbeat } from \"../_shar …",
-    "external-bridge-allowlist.test.ts: Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts"
+    "cors-sem-constante.test.ts: QA 046 (EDGA-06): nenhuma edge function pode responder CORS por conta propria. Antes desta etapa, 37 handlers usavam a constante `corsHeaders` de `_shared/security.ts`, que devolve `Access-Control-Allow-Origin: *` e por isso ignora a allowlist `ALLOWED_ORIGINS`. Um `access-control-allow-origin: *` f …",
+    "cronHealth.ts: F-052: Cron heartbeat utility. Call `recordCronHeartbeat` at the end of every cron edge function to register last-run state. Uses `upsert_cron_heartbeat` RPC (SECURITY DEFINER) so the service-role client can write without bypassing RLS explicitly. Usage: import { recordCronHeartbeat } from \"../_shar …"
    ],
    "deps": [
     "https:"
@@ -35973,6 +35973,7 @@
     "supabase/functions/_shared/circuit_breaker.ts",
     "supabase/functions/_shared/contracts.ts",
     "supabase/functions/_shared/cors-allowlist.test.ts",
+    "supabase/functions/_shared/cors-sem-constante.test.ts",
     "supabase/functions/_shared/cronHealth.ts",
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -36047,8 +36048,7 @@
     "supabase/functions/punchout-receive/session.test.ts",
     "supabase/functions/punchout-receive/session.ts",
     "supabase/functions/punchout-receive/solicitation.test.ts",
-    "supabase/functions/punchout-receive/solicitation.ts",
-    "supabase/functions/punchout-setup/index.ts"
+    "supabase/functions/punchout-receive/solicitation.ts"
    ]
   },
   {
@@ -56710,13 +56710,13 @@
    {
     "file": "supabase/functions/dependency-health/index.ts",
     "name": "scanTreeShakingViaGitHub",
-    "params": "rawBase: string",
-    "body": "if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent(`from \"date-fns\" repo:${or.owner}/${or.repo} path:src`); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: \"application/vnd.github.text-match+json\","
+    "params": "rawBase: string,",
+    "body": "if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent( `from \"date-fns\" repo:${or.owner}/${or.repo} path:src`, ); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: \"application/vnd.github.text-match+json\","
    },
    {
     "file": "supabase/functions/dependency-health/index.ts",
     "name": "computePackageHealth",
-    "params": "pkg: any, lockText: string, entry: TrackedEntry",
+    "params": "pkg: any, lockText: string, entry: TrackedEntry,",
     "body": "let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? \"\"; if (!spec) { const altLoc: TrackedEntry[\"location\"] = entry.location === \"dependencies\" ? \"devDependencies\" : \"dependencies\"; spec = pkg?.[altLoc]?.[entry.npmName] ?? \"\"; } const locked = resolveLockedVersion(lockText, entry.npmName) ?? \"\"; const installed = locked; /* edge cannot read node_modules */ const exactPinned = /^\\d+\\.\\d+\\.\\d+$/.test(spec); const normalizedSpec = spec.replace(/^[\\^~]/, \"\"); const driftDetected = Boolean(s …"
    },
    {
@@ -68176,6 +68176,18 @@
    {
     "file": "supabase/functions/_shared/cors-allowlist.test.ts",
     "name": "curinga nao casa o dominio raiz nem origem invalida"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-sem-constante.test.ts",
+    "name": "nenhuma edge importa a constante corsHeaders"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-sem-constante.test.ts",
+    "name": "as edges que respondem OPTIONS derivam o cors da requisicao"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-sem-constante.test.ts",
+    "name": "o teste cobre o diretorio de functions de verdade"
    },
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
@@ -109316,6 +109328,20 @@
     "curinga nao casa o dominio raiz nem origem invalida"
    ]
   },
+  "supabase/functions/_shared/cors-sem-constante.test.ts": {
+   "path": "supabase/functions/_shared/cors-sem-constante.test.ts",
+   "lines": 59,
+   "is_test": true,
+   "rule_comments": [
+    "forma correta e `buildCorsHeaders(req)`, que ecoa a origem apenas quando ela"
+   ],
+   "doc": "QA 046 (EDGA-06): nenhuma edge function pode responder CORS por conta propria. Antes desta etapa, 37 handlers usavam a constante `corsHeaders` de `_shared/security.ts`, que devolve `Access-Control-Allow-Origin: *` e por isso ignora a allowlist `ALLOWED_ORIGINS`. Um `access-control-allow-origin: *` f …",
+   "tests": [
+    "nenhuma edge importa a constante corsHeaders",
+    "as edges que respondem OPTIONS derivam o cors da requisicao",
+    "o teste cobre o diretorio de functions de verdade"
+   ]
+  },
   "supabase/functions/_shared/cronHealth.ts": {
    "path": "supabase/functions/_shared/cronHealth.ts",
    "lines": 47,
@@ -109995,7 +110021,7 @@
   },
   "supabase/functions/_shared/validation.ts": {
    "path": "supabase/functions/_shared/validation.ts",
-   "lines": 98,
+   "lines": 100,
    "exports": [
     "function validateBody",
     "function errorResponse",
@@ -110388,7 +110414,7 @@
   },
   "supabase/functions/ai-demand-prediction/index.ts": {
    "path": "supabase/functions/ai-demand-prediction/index.ts",
-   "lines": 169,
+   "lines": 170,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110419,7 +110445,7 @@
   },
   "supabase/functions/ai-negotiation/index.ts": {
    "path": "supabase/functions/ai-negotiation/index.ts",
-   "lines": 154,
+   "lines": 155,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110544,7 +110570,7 @@
   },
   "supabase/functions/ai-supplier-risk/index.ts": {
    "path": "supabase/functions/ai-supplier-risk/index.ts",
-   "lines": 172,
+   "lines": 173,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110576,7 +110602,7 @@
   },
   "supabase/functions/ai-supplier-suggestion/index.ts": {
    "path": "supabase/functions/ai-supplier-suggestion/index.ts",
-   "lines": 160,
+   "lines": 161,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -110607,7 +110633,7 @@
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 395,
+   "lines": 396,
    "tables": [
     {
      "table": "system_alerts",
@@ -110693,7 +110719,7 @@
   },
   "supabase/functions/check-approval-escalations/index.ts": {
    "path": "supabase/functions/check-approval-escalations/index.ts",
-   "lines": 249,
+   "lines": 250,
    "tables": [
     {
      "table": "approval_steps",
@@ -110843,7 +110869,7 @@
   },
   "supabase/functions/check-cotacao-followup/index.ts": {
    "path": "supabase/functions/check-cotacao-followup/index.ts",
-   "lines": 200,
+   "lines": 201,
    "tables": [
     {
      "table": "cotacoes",
@@ -110982,7 +111008,7 @@
   },
   "supabase/functions/check-expiry-alerts/index.ts": {
    "path": "supabase/functions/check-expiry-alerts/index.ts",
-   "lines": 270,
+   "lines": 271,
    "tables": [
     {
      "table": "cotacoes",
@@ -111266,7 +111292,7 @@
   },
   "supabase/functions/check-sla-alerts/index.ts": {
    "path": "supabase/functions/check-sla-alerts/index.ts",
-   "lines": 319,
+   "lines": 320,
    "tables": [
     {
      "table": "pedidos",
@@ -111429,7 +111455,7 @@
   },
   "supabase/functions/dependency-health/index.ts": {
    "path": "supabase/functions/dependency-health/index.ts",
-   "lines": 697,
+   "lines": 830,
    "tables": [
     {
      "table": "dependency_health_history",
@@ -111538,12 +111564,12 @@
    "calc_fns": [
     {
      "name": "scanTreeShakingViaGitHub",
-     "params": "rawBase: string",
-     "body": "if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent(`from \"date-fns\" repo:${or.owner}/${or.repo} path:src`); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: \"application/vnd.github.text-match+json\","
+     "params": "rawBase: string,",
+     "body": "if (!GITHUB_DISPATCH_TOKEN) return null; const or = deriveOwnerRepo(rawBase); if (!or) return null; const q = encodeURIComponent( `from \"date-fns\" repo:${or.owner}/${or.repo} path:src`, ); const url = `https://api.github.com/search/code?q=${q}&per_page=50`; try { const res = await fetch(url, { headers: { Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`, Accept: \"application/vnd.github.text-match+json\","
     },
     {
      "name": "computePackageHealth",
-     "params": "pkg: any, lockText: string, entry: TrackedEntry",
+     "params": "pkg: any, lockText: string, entry: TrackedEntry,",
      "body": "let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? \"\"; if (!spec) { const altLoc: TrackedEntry[\"location\"] = entry.location === \"dependencies\" ? \"devDependencies\" : \"dependencies\"; spec = pkg?.[altLoc]?.[entry.npmName] ?? \"\"; } const locked = resolveLockedVersion(lockText, entry.npmName) ?? \"\"; const installed = locked; /* edge cannot read node_modules */ const exactPinned = /^\\d+\\.\\d+\\.\\d+$/.test(spec); const normalizedSpec = spec.replace(/^[\\^~]/, \"\"); const driftDetected = Boolean(s …"
     }
    ],
@@ -111557,7 +111583,7 @@
   },
   "supabase/functions/erp-credential-encrypt/index.ts": {
    "path": "supabase/functions/erp-credential-encrypt/index.ts",
-   "lines": 143,
+   "lines": 144,
    "tables": [
     {
      "table": "user_tenants",
@@ -111603,7 +111629,7 @@
   },
   "supabase/functions/erp-sync/index.ts": {
    "path": "supabase/functions/erp-sync/index.ts",
-   "lines": 110,
+   "lines": 111,
    "tables": [
     {
      "table": "erp_connections",
@@ -111767,7 +111793,7 @@
   },
   "supabase/functions/external-db-bridge/index.ts": {
    "path": "supabase/functions/external-db-bridge/index.ts",
-   "lines": 311,
+   "lines": 312,
    "tables": [
     {
      "table": "query_telemetry",
@@ -111832,7 +111858,7 @@
   },
   "supabase/functions/fiscal-orchestrator/index.ts": {
    "path": "supabase/functions/fiscal-orchestrator/index.ts",
-   "lines": 173,
+   "lines": 174,
    "tables": [
     {
      "table": "fiscal_events",
@@ -111891,7 +111917,7 @@
   },
   "supabase/functions/generate-contract-pdf/index.ts": {
    "path": "supabase/functions/generate-contract-pdf/index.ts",
-   "lines": 263,
+   "lines": 264,
    "tables": [
     {
      "table": "contracts",
@@ -111944,7 +111970,7 @@
   },
   "supabase/functions/guided-buying-ai/index.ts": {
    "path": "supabase/functions/guided-buying-ai/index.ts",
-   "lines": 160,
+   "lines": 161,
    "tables": [
     {
      "table": "produtos",
@@ -112108,7 +112134,7 @@
   },
   "supabase/functions/maintain-partitions/index.ts": {
    "path": "supabase/functions/maintain-partitions/index.ts",
-   "lines": 93,
+   "lines": 94,
    "rpc": [
     "maintain_monthly_partitions"
    ],
@@ -112120,7 +112146,7 @@
   },
   "supabase/functions/migrate-storage-paths/index.ts": {
    "path": "supabase/functions/migrate-storage-paths/index.ts",
-   "lines": 226,
+   "lines": 227,
    "tables": [
     {
      "table": "profiles",
@@ -112183,7 +112209,7 @@
   },
   "supabase/functions/process-invoice-idp/index.ts": {
    "path": "supabase/functions/process-invoice-idp/index.ts",
-   "lines": 197,
+   "lines": 198,
    "storage": [
     "fiscal-documents"
    ],
@@ -112242,7 +112268,7 @@
   },
   "supabase/functions/process-outbox/index.ts": {
    "path": "supabase/functions/process-outbox/index.ts",
-   "lines": 134,
+   "lines": 135,
    "tables": [
     {
      "table": "integration_outbox",
@@ -112307,7 +112333,7 @@
   },
   "supabase/functions/process-solicitacao-neural/index.ts": {
    "path": "supabase/functions/process-solicitacao-neural/index.ts",
-   "lines": 132,
+   "lines": 133,
    "env": [
     "OPENROUTER_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -112351,7 +112377,7 @@
   },
   "supabase/functions/punchout-encrypt/index.ts": {
    "path": "supabase/functions/punchout-encrypt/index.ts",
-   "lines": 149,
+   "lines": 150,
    "tables": [
     {
      "table": "user_tenants",
@@ -112398,7 +112424,7 @@
   },
   "supabase/functions/punchout-receive/index.ts": {
    "path": "supabase/functions/punchout-receive/index.ts",
-   "lines": 245,
+   "lines": 246,
    "tables": [
     {
      "table": "punchout_sessions",
@@ -112598,7 +112624,7 @@
   },
   "supabase/functions/punchout-setup/index.ts": {
    "path": "supabase/functions/punchout-setup/index.ts",
-   "lines": 108,
+   "lines": 109,
    "tables": [
     {
      "table": "punchout_catalogs",
@@ -112649,7 +112675,7 @@
   },
   "supabase/functions/run-audit/index.ts": {
    "path": "supabase/functions/run-audit/index.ts",
-   "lines": 102,
+   "lines": 103,
    "rpc": [
     "exec_sql"
    ],
@@ -112736,7 +112762,7 @@
   },
   "supabase/functions/scim-v2/index.ts": {
    "path": "supabase/functions/scim-v2/index.ts",
-   "lines": 242,
+   "lines": 243,
    "tables": [
     {
      "table": "sso_configurations",
@@ -112784,7 +112810,7 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 253,
+   "lines": 254,
    "tables": [
     {
      "table": "user_roles",
@@ -113016,7 +113042,7 @@
   },
   "supabase/functions/spot-proxy/index.ts": {
    "path": "supabase/functions/spot-proxy/index.ts",
-   "lines": 888,
+   "lines": 889,
    "tables": [
     {
      "table": "user_roles",
@@ -113157,7 +113183,7 @@
   },
   "supabase/functions/system-simulation/index.ts": {
    "path": "supabase/functions/system-simulation/index.ts",
-   "lines": 123,
+   "lines": 124,
    "env": [
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -113193,7 +113219,7 @@
   },
   "supabase/functions/telemetry/index.ts": {
    "path": "supabase/functions/telemetry/index.ts",
-   "lines": 108,
+   "lines": 109,
    "tables": [
     {
      "table": "telemetry_logs",
@@ -113239,7 +113265,7 @@
   },
   "supabase/functions/webauthn-authenticate/index.ts": {
    "path": "supabase/functions/webauthn-authenticate/index.ts",
-   "lines": 254,
+   "lines": 255,
    "tables": [
     {
      "table": "webauthn_credentials",
@@ -113338,7 +113364,7 @@
   },
   "supabase/functions/webauthn-register/index.ts": {
    "path": "supabase/functions/webauthn-register/index.ts",
-   "lines": 227,
+   "lines": 228,
    "tables": [
     {
      "table": "webauthn_challenges",
@@ -113432,7 +113458,7 @@
   },
   "supabase/functions/weekly-report/index.ts": {
    "path": "supabase/functions/weekly-report/index.ts",
-   "lines": 120,
+   "lines": 121,
    "tables": [
     {
      "table": "solicitacoes",
@@ -113536,7 +113562,7 @@
   },
   "supabase/functions/weekly-summary-report/index.ts": {
    "path": "supabase/functions/weekly-summary-report/index.ts",
-   "lines": 117,
+   "lines": 118,
    "tables": [
     {
      "table": "solicitacoes",
@@ -113633,7 +113659,7 @@
   },
   "supabase/functions/workflow-engine/index.ts": {
    "path": "supabase/functions/workflow-engine/index.ts",
-   "lines": 172,
+   "lines": 173,
    "tables": [
     {
      "table": "workflow_instances",
@@ -113728,7 +113754,7 @@
   },
   "supabase/functions/xbz-proxy/index.ts": {
    "path": "supabase/functions/xbz-proxy/index.ts",
-   "lines": 533,
+   "lines": 541,
    "tables": [
     {
      "table": "xbz_credentials",
@@ -113786,7 +113812,7 @@
   },
   "supabase/functions/xbz-sync-pedidos/index.ts": {
    "path": "supabase/functions/xbz-sync-pedidos/index.ts",
-   "lines": 192,
+   "lines": 193,
    "tables": [
     {
      "table": "xbz_pedidos",
@@ -115763,10 +115789,57 @@
   }
  },
  "git": {
-  "sha": "b48d6441c1a50a2d783dced7c5b5cd18c784c34a",
+  "sha": "d355ef397d6bfa93fe445a7c1dc263f78e3a6a1e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d355ef3",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(cors): todas as edges derivam o CORS da requisicao (#334)",
+    "files": [
+     "supabase/functions/_shared/cors-sem-constante.test.ts",
+     "supabase/functions/_shared/validation.ts",
+     "supabase/functions/ai-demand-prediction/index.ts",
+     "supabase/functions/ai-negotiation/index.ts",
+     "supabase/functions/ai-supplier-risk/index.ts",
+     "supabase/functions/ai-supplier-suggestion/index.ts",
+     "supabase/functions/alert-dispatcher/index.ts",
+     "supabase/functions/check-approval-escalations/index.ts",
+     "supabase/functions/check-cotacao-followup/index.ts",
+     "supabase/functions/check-expiry-alerts/index.ts",
+     "supabase/functions/check-sla-alerts/index.ts",
+     "supabase/functions/dependency-health/index.ts",
+     "supabase/functions/erp-credential-encrypt/index.ts",
+     "supabase/functions/erp-sync/index.ts",
+     "supabase/functions/external-db-bridge/index.ts",
+     "supabase/functions/fiscal-orchestrator/index.ts",
+     "supabase/functions/generate-contract-pdf/index.ts",
+     "supabase/functions/guided-buying-ai/index.ts",
+     "supabase/functions/maintain-partitions/index.ts",
+     "supabase/functions/migrate-storage-paths/index.ts",
+     "supabase/functions/process-invoice-idp/index.ts",
+     "supabase/functions/process-outbox/index.ts",
+     "supabase/functions/process-solicitacao-neural/index.ts",
+     "supabase/functions/punchout-encrypt/index.ts",
+     "supabase/functions/punchout-receive/index.ts",
+     "supabase/functions/punchout-setup/index.ts",
+     "supabase/functions/run-audit/index.ts",
+     "supabase/functions/scim-v2/index.ts",
+     "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/spot-proxy/index.ts",
+     "supabase/functions/system-simulation/index.ts",
+     "supabase/functions/telemetry/index.ts",
+     "supabase/functions/webauthn-authenticate/index.ts",
+     "supabase/functions/webauthn-register/index.ts",
+     "supabase/functions/weekly-report/index.ts",
+     "supabase/functions/weekly-summary-report/index.ts",
+     "supabase/functions/workflow-engine/index.ts",
+     "supabase/functions/xbz-proxy/index.ts",
+     "supabase/functions/xbz-sync-pedidos/index.ts"
+    ]
+   },
    {
     "sha": "b48d644",
     "date": "2026-11-23",
@@ -116083,21 +116156,20 @@
     "files": [
      "src/pages/historico/HistoricoCompras.tsx"
     ]
-   },
-   {
-    "sha": "ff7a555",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)",
-    "files": [
-     "docs/pendencias/_indice.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/features/auth/hooks/useAuth.tsx",
     4
+   ],
+   [
+    "supabase/functions/generate-contract-pdf/index.ts",
+    3
+   ],
+   [
+    "supabase/functions/scim-v2/index.ts",
+    3
    ],
    [
     "src/features/auth/components/ProtectedRoute.tsx",
@@ -116108,15 +116180,23 @@
     3
    ],
    [
+    "supabase/functions/dependency-health/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/process-invoice-idp/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/send-push-notification/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/workflow-engine/index.ts",
+    2
+   ],
+   [
     "src/pages/auth/Auth.tsx",
-    2
-   ],
-   [
-    "supabase/functions/scim-v2/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/generate-contract-pdf/index.ts",
     2
    ],
    [
@@ -116140,39 +116220,23 @@
     2
    ],
    [
-    "src/features/auth/__tests__/ProtectedRoute.test.tsx",
+    "supabase/functions/_shared/cors-sem-constante.test.ts",
     1
    ],
    [
-    "src/pages/auditoria/Auditoria.tsx",
+    "supabase/functions/_shared/validation.ts",
     1
    ],
    [
-    "src/routes/AppRoutes.tsx",
+    "supabase/functions/ai-demand-prediction/index.ts",
     1
    ],
    [
-    "supabase/functions/scim-v2/auth.test.ts",
+    "supabase/functions/ai-negotiation/index.ts",
     1
    ],
    [
-    "supabase/functions/scim-v2/auth.ts",
-    1
-   ],
-   [
-    "supabase/functions/health-dashboard/index.ts",
-    1
-   ],
-   [
-    "src/features/layout/components/CommandPalette.tsx",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_client.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/xbz_date_tz.test.ts",
+    "supabase/functions/ai-supplier-risk/index.ts",
     1
    ]
   ]

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 201,
+ "total": 202,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 184
+  "unit": 185
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 33
+   "arquivos": 34
   },
   {
    "padrao": "tests-e2e/",
@@ -1482,6 +1482,13 @@
     "supabase/functions/_shared/security.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/_shared/cors-sem-constante.test.ts",
+   "tipo": "unit",
+   "linhas": 59,
+   "testa": [],
+   "casos": 6
   },
   {
    "arquivo": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
