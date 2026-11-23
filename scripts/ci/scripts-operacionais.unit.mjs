@@ -820,7 +820,11 @@ test('deploy: --dry-run não chama supabase nem rede; migrate-helper fica de for
     assert.match(r.stdout, /\[migrate-helper\] existe em disco e está BLOQUEADA/);
     assert.match(r.stdout, /fora da lista de deploy \(não serão publicadas\): fora-da-lista/);
     assert.doesNotMatch(r.stdout, /\[migrate-helper\] seria publicada/);
-    assert.match(r.stdout, /\[telemetry\] seria publicada \(--no-verify-jwt\)/);
+    // QA-024/025: telemetry/run-audit/system-simulation validam JWT no codigo
+    // (401 sem token), entao o gateway PODE exigir JWT: nao levam --no-verify-jwt.
+    assert.match(r.stdout, /\[telemetry\] seria publicada\n/);
+    assert.doesNotMatch(r.stdout, /\[telemetry\] seria publicada \(--no-verify-jwt\)/);
+    assert.match(r.stdout, /\[scim-v2\] seria publicada \(--no-verify-jwt\)/);
     assert.match(r.stdout, /\[workflow-engine\] seria publicada\n/);
   } finally {
     amb.apagar();
@@ -836,7 +840,7 @@ test('deploy: tudo certo sai 0 — publica cada função uma vez, JWT desligado 
     assert.equal(deploys.length, amb.lista.length);
     assert.ok(!deploys.some((l) => l.includes('migrate-helper')));
     const semJwt = deploys.filter((l) => l.includes('--no-verify-jwt')).map((l) => l.split(' ')[2]).sort();
-    assert.deepEqual(semJwt, ['dependency-health', 'punchout-receive', 'run-audit', 'system-simulation', 'telemetry', 'webauthn-authenticate']);
+    assert.deepEqual(semJwt, ['dependency-health', 'punchout-receive', 'scim-v2', 'webauthn-authenticate']);
     assert.ok(deploys.every((l) => l.includes('--project-ref lmypcdfsrgfftzhxawao')));
     assert.match(amb.curl(), /Authorization: Bearer chave-publica-do-env/);
     assert.equal(amb.curl().trim().split('\n').length, 6, 'uma verificação por função crítica');
