@@ -26,3 +26,9 @@ verify_jwt = false
 
 [functions.dependency-health]
 verify_jwt = false
+
+# Receptor da integracao com o Promo Design (fechamento de OS): autentica por
+# HMAC-SHA256 do corpo cru em `x-webhook-signature`, segredo
+# PROMO_DESIGN_WEBHOOK_SECRET, fail-closed (401 sem assinatura valida).
+[functions.receive-os-sync]
+verify_jwt = false
