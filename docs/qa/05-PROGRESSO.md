@@ -117,7 +117,7 @@ _(vazio)_
 - [ ] 068 — `organizations` e `spend_forecasts` dependem, como única regra de leitura, de uma tabela de vínculo que ninguém popula — onda 1 — Baixa — RLS-07
 - [ ] 069 — errorResponse() do _shared/validation.ts estoura ReferenceError em 9 edge functions, e nenhum gate de CI checa tipo em supabase/functions/ — onda 2 — Crítica — CI-01
 - [ ] 070 — `errorResponse` lança `ReferenceError: corsHeaders is not defined` — nenhuma das 9 edges que a usam consegue responder erro — onda 2 — Alta — EDG-01
-- [ ] 071 — Criar evento de sourcing (RFx) é impossível: o insert omite `numero` e `owner_id`, que são NOT NULL sem default — onda 2 — Crítica — VAL-01
+- [x] 071 — Criar evento de sourcing (RFx) é impossível: o insert omite `numero` e `owner_id`, que são NOT NULL sem default — onda 2 — Crítica — VAL-01
 - [x] 072 — Passar o mouse no menu "Solicitações" esvazia a lista de solicitações e a tela de cotação — onda 2 — Crítica — HK-01
 - [ ] 073 — Migration: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
 - [ ] 074 — Aplicação: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
