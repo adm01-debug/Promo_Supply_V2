@@ -15,7 +15,7 @@ export async function validateBody<T>(
     body = await req.json();
   } catch (error) {
     const msg = "Invalid JSON body";
-    if (logger) logger.error(msg, { error: error.message });
+    if (logger) logger.error(msg, { error: safeErrorMessage(error) });
     throw new Error(msg);
   }
 
@@ -24,9 +24,14 @@ export async function validateBody<T>(
     const errors = result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
     const msg = `Validation error: ${errors}`;
     if (logger) {
-      logger.warn(msg, { 
-        body: logger.info ? body : '[REDACTED]', // Only log body if not in prod-like sensitivity
-        validationErrors: result.error.errors 
+      logger.warn(msg, {
+        // Somente a forma do corpo: `sanitizeContext` do logger so esconde chaves
+        // de primeiro nivel, entao logar `body` cru gravaria cpf/cartao/senha
+        // aninhados em telemetry_logs.
+        bodyKeys: body && typeof body === "object" && !Array.isArray(body)
+          ? Object.keys(body as Record<string, unknown>)
+          : typeof body,
+        validationErrors: result.error.errors,
       });
     }
     throw new Error(msg);
