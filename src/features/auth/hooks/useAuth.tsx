@@ -35,8 +35,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (empresaId) window.localStorage.setItem('selectedEmpresaId', empresaId);
       else window.localStorage.removeItem('selectedEmpresaId');
     }
-    // Invalida queries para refetch com novo filtro
-    queryClient.invalidateQueries();
+    // Queries com queryKeyPart já usam cache-key diferente por empresa;
+    // invalidação blanket removida para não causar refetch desnecessário.
   }, []);
 
   const fetchUserData = useCallback(async (userId: string) => {

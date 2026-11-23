@@ -23,6 +23,10 @@ vi.mock('@/integrations/supabase/client', () => ({
 
 vi.mock('@/features/auth', () => ({ useAuth: () => auth }));
 
+vi.mock('@/features/empresas/hooks/useEmpresaFilter', () => ({
+  useEmpresaFilter: () => ({ empresaIds: null, queryKeyPart: 'all' }),
+}));
+
 vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));

@@ -30,6 +30,7 @@ import {
   Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
 } from "@/components/ui/tooltip";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
+import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
@@ -53,7 +54,8 @@ const Pagamentos = () => {
   useEffect(() => { setSelectedIds([]); }, [activeTab]);
 
   const isMobile = useIsMobile();
-  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus } = usePagamentos();
+  const { empresaIds } = useEmpresaFilter();
+  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus } = usePagamentos({ empresaIds });
   const { kpis } = usePagamentosKPIs();
 
   const pagamentosPendentes = useMemo(() =>

@@ -25,6 +25,7 @@ import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperati
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
+import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { exportToCSV } from "@/lib/exportData";
@@ -53,7 +54,8 @@ const Pedidos = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const isMobile = useIsMobile();
-  const { pedidos, loading, refetch, bulkUpdateStatus, bulkDelete } = usePedidos();
+  const { empresaIds } = useEmpresaFilter();
+  const { pedidos, loading, refetch, bulkUpdateStatus, bulkDelete } = usePedidos({ empresaIds });
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
 
