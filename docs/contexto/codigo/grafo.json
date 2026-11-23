@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 623,
- "arestas": 2763,
+ "arestas": 2765,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -137,6 +137,10 @@
    "importado_por": 11
   },
   {
+   "arquivo": "src/lib/exportData.ts",
+   "importado_por": 11
+  },
+  {
    "arquivo": "supabase/functions/_shared/contracts.ts",
    "importado_por": 11
   },
@@ -158,10 +162,6 @@
   },
   {
    "arquivo": "src/hooks/useRealtimeSubscription.ts",
-   "importado_por": 10
-  },
-  {
-   "arquivo": "src/hooks/useXbzIntegration.ts",
    "importado_por": 10
   }
  ],

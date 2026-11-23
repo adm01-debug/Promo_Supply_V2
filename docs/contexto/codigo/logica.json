@@ -481,7 +481,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 8,
+   "usado_por": 9,
    "usado_por_modulos": [
     "components/compras",
     "pages/auditoria",
@@ -1022,9 +1022,10 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_modulos": [
-    "components/compras"
+    "components/compras",
+    "pages/historico"
    ],
    "coberto_por_testes": 1,
    "orfao": false

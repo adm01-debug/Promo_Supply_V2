@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0369433b7760658f9a405bb171873ff52bb6d3cd",
+  "sha": "88646dfa9832c5d29874db988e21e1bd4aba7726",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 10:56 UTC",
+  "generated_at": "2026-11-23 11:08 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198242,
+  "code_lines": 198373,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7a3b189d10da724a",
+ "facts_hash": "d0e2c411e30ce5db",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35304,7 +35304,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30344,
+   "lines": 30475,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41381,6 +41381,14 @@
    {
     "file": "src/pages/historico/HistoricoCompras.tsx",
     "msg": "Sem dados para exportar"
+   },
+   {
+    "file": "src/pages/historico/HistoricoSourcingTab.tsx",
+    "msg": "Nenhum registro selecionado"
+   },
+   {
+    "file": "src/pages/historico/HistoricoSourcingTab.tsx",
+    "msg": "Sem base de comparação"
    },
    {
     "file": "src/pages/kanban/KanbanWorkflow.tsx",
@@ -105531,9 +105539,13 @@
   },
   "src/pages/historico/HistoricoSourcingTab.tsx": {
    "path": "src/pages/historico/HistoricoSourcingTab.tsx",
-   "lines": 347,
+   "lines": 478,
    "exports": [
     "const HistoricoSourcingTab"
+   ],
+   "errors": [
+    "Nenhum registro selecionado",
+    "Sem base de comparação"
    ],
    "status_values": [
     {
@@ -114933,10 +114945,19 @@
   }
  },
  "git": {
-  "sha": "0369433b7760658f9a405bb171873ff52bb6d3cd",
+  "sha": "88646dfa9832c5d29874db988e21e1bd4aba7726",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "88646df",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)",
+    "files": [
+     "src/pages/historico/HistoricoSourcingTab.tsx"
+    ]
+   },
    {
     "sha": "0369433",
     "date": "2026-11-23",
@@ -115254,15 +115275,6 @@
      "src/components/compras/procurement-kpis/kpiMockData.ts",
      "src/hooks/useExecutiveDashboardData.ts"
     ]
-   },
-   {
-    "sha": "0cb5045",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "docs: plano SPOT/Stricker — Promo Supply só compras, catálogo no PIM (#275)",
-    "files": [
-     "DOCS/INTEGRACOES/SPOT_STRICKER_PLANO_SO_COMPRAS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -115303,6 +115315,10 @@
     2
    ],
    [
+    "src/pages/historico/HistoricoSourcingTab.tsx",
+    1
+   ],
+   [
     "src/pages/admin/SSOConfig.tsx",
     1
    ],
@@ -115340,10 +115356,6 @@
    ],
    [
     "src/lib/sourcingAnalytics.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/negotiationOutreach.test.ts",
     1
    ]
   ]

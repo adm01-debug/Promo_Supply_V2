@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)",
    "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)",
    "docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)",
    "feat(sourcing): substitui dados ficticios por metricas reais no console (#306)",
-   "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)",
-   "feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)"
+   "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)"
   ]
  },
  "pr_template": null,

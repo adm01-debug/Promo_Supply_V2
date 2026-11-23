@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0369433b7760658f9a405bb171873ff52bb6d3cd",
+  "commit": "88646dfa9832c5d29874db988e21e1bd4aba7726",
   "branch": "main",
-  "data_commit": "2026-11-23T07:55:30-03:00",
+  "data_commit": "2026-11-23T08:02:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "88646df",
+    "data": "2026-11-23",
+    "assunto": "fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)"
+   },
    {
     "sha": "0369433",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "6b0ce59",
     "data": "2026-11-22",
     "assunto": "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)"
-   },
-   {
-    "sha": "cb9b3e6",
-    "data": "2026-11-22",
-    "assunto": "fix(edge): spot-proxy volta a passar no deno check (#280)"
    }
   ],
-  "arquivos_mudados_7d": 294,
+  "arquivos_mudados_7d": 295,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 261
+    "commits": 262
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1319,
   "arquivos_codigo": 820,
-  "linhas_codigo": 171284,
+  "linhas_codigo": 171415,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30344
+   "linhas": 30475
   },
   "src/routes": {
    "arquivos": 1,

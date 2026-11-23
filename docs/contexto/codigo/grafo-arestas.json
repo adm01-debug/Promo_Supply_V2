@@ -2980,7 +2980,9 @@
    "src/components/ui/table.tsx",
    "src/components/ui/tooltip.tsx",
    "src/hooks/usePurchaseHistory.ts",
+   "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
+   "src/lib/sourcingAnalytics.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/kanban/KanbanWorkflow.tsx": [
