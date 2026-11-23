@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f2b99e87a` · branch `main` · 2026-11-23 23:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `619c2bb32a` · branch `main` · 2026-11-23 23:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1114,6 +1114,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +2 |
 | `status` | `unknown` | compara | `src/pages/admin/DependencyHealth.tsx` |
 | `status` | `upcoming` | compara, escreve | `src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/StatusTimeline.tsx` |
+| `status` | `utilizado` | escreve | `src/lib/creditoFornecedor.ts` |
 | `status` | `validada` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx` |
 | `status` | `vencedora` | escreve | `src/hooks/useLicitacoes.ts` |
 | `status` | `very_slow` | compara | `supabase/functions/external-db-bridge/index.ts` |
@@ -1453,6 +1454,10 @@ _nenhum item encontrado_
 - **generateId()** — `src/hooks/useWorkflowDLQ.ts`
   ```
   return `wdlq_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  ```
+- **calcularAbatimentoCredito(credito: CreditoAtual, valorAplicado: number,)** — `src/lib/creditoFornecedor.ts`
+  ```
+  const valorUtilizadoAtual = Number(credito.valor_utilizado) || 0; const saldo = (Number(credito.saldo) || 0) - valorAplicado; return { valor_utilizado: valorUtilizadoAtual + valorAplicado, saldo: saldo < 0 ? 0 : saldo, status: saldo <= 0 ? 'utilizado' : 'ativo', };
   ```
 - **formatCurrency(value: unknown)** — `src/lib/exportData.ts`
   ```
@@ -2238,6 +2243,7 @@ _nenhum item encontrado_
 | Erro ao verificar alertas. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Permissão para notificações foi negada. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Permita as notificações primeiro. | `src/components/notifications/NotificationSettingsPanel.tsx` |
+| Crédito não aplicado | `src/components/pagamentos/PagamentoDetailModal.tsx` |
 | Erro no upload | `src/components/pagamentos/PagamentoDetailModal.tsx` |
 | Informe um valor entre R$ 0,01 e ${formatCurrency(saldoRestante)} | `src/components/pagamentos/PagamentoDetailModal.tsx` |
 | Organização não identificada | `src/components/pagamentos/PagamentoDetailModal.tsx` |
@@ -2390,8 +2396,7 @@ _nenhum item encontrado_
 | Sem dados | `src/pages/admin/AlertDetail.tsx` |
 | Email inválido | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Falha: ${(e as Error).message} | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| Sem usuário | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +240 linhas — lista completa em `context.json` | |
+| … +241 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2410,7 +2415,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2809 testes em 160 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2824 testes em 161 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2495,6 +2500,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/logLevel.test.ts` | 16 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `scripts/lib/seguranca-processo.test.mjs` | 15 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell · resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH … |
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
+| `src/lib/__tests__/creditoFornecedor.test.ts` | 15 | calcularAbatimentoCredito · acumula o valor utilizado em vez de substituir · marca o credito como utilizado quando o saldo zera · nunca deixa o saldo negativo … |
 | `supabase/functions/receive-os-sync/mapping.test.ts` | 15 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
@@ -2672,6 +2678,10 @@ _nenhum item encontrado_
 | * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações | `src/hooks/useXbzIntegration.ts` |
 | Other shortcuts in the app that the user must NOT collide with. */ | `src/lib/clearFiltersShortcut.ts` |
 | Must use at least one modifier — single letter shortcuts would fire while typing. | `src/lib/clearFiltersShortcut.ts` |
+| * Regra unica de abatimento de credito de devolucao em pagamento. | `src/lib/creditoFornecedor.ts` |
+| caso em que o abatimento deve ser abortado ANTES de debitar o credito. | `src/lib/creditoFornecedor.ts` |
+| Somente transicoes diretas: quitar um pagamento `pendente` passa pela | `src/lib/creditoFornecedor.ts` |
+| aprovacao, que e uma decisao de alcada e nao pode ser pulada aqui. | `src/lib/creditoFornecedor.ts` |
 | * Fetch all rows from a Supabase table, bypassing the 1000-row default limit. | `src/lib/paginatedFetch.ts` |
 | * Aqui o topico NAO pode mudar: ele e o endereco que une os participantes | `src/lib/realtime.ts` |
 | - Acrescenta `ellipsis` (default: "…") somente quando houve truncamento. | `src/lib/safeDisplay.ts` |

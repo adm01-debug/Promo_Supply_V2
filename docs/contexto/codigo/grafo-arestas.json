@@ -1149,6 +1149,7 @@
    "src/hooks/use-toast.ts",
    "src/hooks/usePagamentos.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/creditoFornecedor.ts",
    "src/lib/storageFiles.ts",
    "src/lib/utils.ts"
   ],
@@ -2021,6 +2022,7 @@
    "src/hooks/useRealtimeSubscription.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
+   "src/lib/creditoFornecedor.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/supabaseQuery.ts"
   ],

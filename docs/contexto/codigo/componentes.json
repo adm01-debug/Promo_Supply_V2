@@ -2146,7 +2146,7 @@
     "PagamentoDetailModal"
    ],
    "export_default": null,
-   "linhas": 467,
+   "linhas": 496,
    "dominio": "components/pagamentos",
    "hooks_locais": [
     "useAuth"

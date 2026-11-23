@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 41,
+ "total": 42,
  "por_camada": {
   "integrations": 3,
-  "lib": 26,
+  "lib": 27,
   "python": 3,
   "schemas": 1,
   "services": 3,
@@ -390,6 +390,35 @@
    "usado_por": 3,
    "usado_por_modulos": [
     "features/layout",
+    "hooks"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
+  },
+  {
+   "arquivo": "src/lib/creditoFornecedor.ts",
+   "camada": "lib",
+   "exports": [
+    "CreditoAbatido",
+    "CreditoAtual",
+    "calcularAbatimentoCredito",
+    "mensagemAbatimentoBloqueado",
+    "statusAbatimentoAlcancavel",
+    "statusAlvoAbatimento"
+   ],
+   "export_default": null,
+   "linhas": 80,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "components/pagamentos",
     "hooks"
    ],
    "coberto_por_testes": 1,

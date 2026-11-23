@@ -1066,7 +1066,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs"
    ],
-   "linhas": 319,
+   "linhas": 321,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",

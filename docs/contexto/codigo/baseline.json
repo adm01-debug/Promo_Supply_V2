@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
+  "commit": "619c2bb32a92e5b52076ccf7893de1194c87e300",
   "branch": "main",
-  "data_commit": "2026-11-23T20:26:48-03:00",
+  "data_commit": "2026-11-23T20:35:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "619c2bb",
+    "data": "2026-11-23",
+    "assunto": "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)"
+   },
    {
     "sha": "5f2b99e",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "718302a",
     "data": "2026-11-23",
     "assunto": "fix(palette): atalhos e badges do Command Palette passam a ser reais (#330)"
-   },
-   {
-    "sha": "013232a",
-    "data": "2026-11-23",
-    "assunto": "fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)"
    }
   ],
-  "arquivos_mudados_7d": 360,
+  "arquivos_mudados_7d": 363,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -188,12 +188,12 @@
     "mudancas": 17
    },
    {
-    "pasta": "supabase/functions/punchout-receive",
+    "pasta": "docs/qa/05-PROGRESSO.md",
     "mudancas": 13
    },
    {
-    "pasta": "docs/ci/README.md",
-    "mudancas": 12
+    "pasta": "src/components/pagamentos",
+    "mudancas": 13
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -206,11 +206,11 @@
     "mudancas": 17
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 12
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 13
    },
    {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "arquivo": "docs/ci/README.md",
     "mudancas": 12
    },
    {
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1340,
-  "arquivos_codigo": 837,
-  "linhas_codigo": 173600,
+  "arquivos_total": 1342,
+  "arquivos_codigo": 839,
+  "linhas_codigo": 173797,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 211,
+  "testes": 212,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -432,7 +432,7 @@
   },
   "src/components": {
    "arquivos": 263,
-   "linhas": 49157
+   "linhas": 49186
   },
   "src/features": {
    "arquivos": 65,
@@ -440,7 +440,7 @@
   },
   "src/hooks": {
    "arquivos": 80,
-   "linhas": 13807
+   "linhas": 13809
   },
   "src/i18n": {
    "arquivos": 1,
@@ -451,8 +451,8 @@
    "linhas": 10452
   },
   "src/lib": {
-   "arquivos": 55,
-   "linhas": 6808
+   "arquivos": 57,
+   "linhas": 6974
   },
   "src/main.tsx": {
    "arquivos": 1,

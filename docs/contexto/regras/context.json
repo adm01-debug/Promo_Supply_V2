@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
+  "sha": "619c2bb32a92e5b52076ccf7893de1194c87e300",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 23:27 UTC",
-  "files_total": 1341,
-  "code_files": 1170,
-  "code_lines": 200784,
+  "generated_at": "2026-11-23 23:35 UTC",
+  "files_total": 1343,
+  "code_files": 1172,
+  "code_lines": 200981,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "17fdd0507fe5c600",
+ "facts_hash": "25ada353f852ee32",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 406,
+   ".ts": 408,
    ".tsx": 358,
    ".sql": 331,
    ".mjs": 67,
@@ -34697,7 +34697,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 49157,
+   "lines": 49186,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35203,7 +35203,7 @@
   {
    "module": "src/hooks",
    "files": 80,
-   "lines": 13807,
+   "lines": 13809,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35464,13 +35464,14 @@
   },
   {
    "module": "src/lib",
-   "files": 56,
-   "lines": 6828,
+   "files": 58,
+   "lines": 6994,
    "tables": [
     "profiles"
    ],
    "exports": [
     "clearFiltersShortcut.ts: ShortcutCombo, DEFAULT_CLEAR_FILTERS_SHORTCUT, RESERVED_SHORTCUTS, isSameCombo, findReservedConflict, isInvalidCombo",
+    "creditoFornecedor.ts: CreditoAtual, CreditoAbatido, calcularAbatimentoCredito, statusAlvoAbatimento, statusAbatimentoAlcancavel, mensagemAbatimentoBloqueado",
     "dateUtils.ts: parseLocalDate, formatDateBR",
     "dbMapping.ts: nullToUndefined, undefinedToNull, nullishOr, nullishStr, nullishNum, nullishBool",
     "exportData.ts: exportToCSV, pedidoColumns, solicitacaoColumns, fornecedorColumns, cotacaoColumns, pagamentoColumns",
@@ -35500,11 +35501,11 @@
    ],
    "docs": [
     "clearFiltersShortcut.ts: User-configurable keyboard shortcut for \"Clear filters\". Persisted in localStorage (per browser, per request from the user). Other shortcuts in the app are fixed; this one can be overridden.",
+    "creditoFornecedor.ts: Regra unica de abatimento de credito de devolucao em pagamento. Antes existia em duas versoes divergentes: PagamentoDetailModal substituia `valor_utilizado` (perdendo o acumulado) e useDevolucoes acumulava. Alem disso o status gravado no pagamento nao era conferido contra a maquina de estados do ban …",
     "exportData.ts: Utilitário de exportação de dados para CSV e Excel (XLSX via CSV com BOM). Suporta formatação BRL, datas pt-BR e nomes de colunas traduzidos.",
     "filterClearReporter.ts: Formats a snapshot of cleared filters into a human-readable description for toast notifications. Lists what was cleared (filters) and what was removed from local storage.",
     "haptics.ts: Utility for elite haptic feedback. Uses the vibration API with patterns optimized for UX.",
-    "hubEvents.ts: Canal global de eventos entre módulos da UI. Evita acoplamento direto (ex.: dialog de pedidos -> chat de fornecedores).",
-    "imageCompression.ts: Image Compression and WebP Conversion Utility Provides automatic image optimization for better performance"
+    "hubEvents.ts: Canal global de eventos entre módulos da UI. Evita acoplamento direto (ex.: dialog de pedidos -> chat de fornecedores)."
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -35528,6 +35529,7 @@
    ],
    "file_list": [
     "src/lib/clearFiltersShortcut.ts",
+    "src/lib/creditoFornecedor.ts",
     "src/lib/dateUtils.ts",
     "src/lib/dbMapping.ts",
     "src/lib/exportData.ts",
@@ -35554,6 +35556,7 @@
     "src/lib/supabaseRpc.ts",
     "src/lib/utils.ts",
     "src/lib/__tests__/clearFiltersShortcut.test.ts",
+    "src/lib/__tests__/creditoFornecedor.test.ts",
     "src/lib/__tests__/dbMapping.test.ts",
     "src/lib/__tests__/exportData.csv.test.ts",
     "src/lib/__tests__/exportData.test.ts",
@@ -40817,6 +40820,10 @@
    },
    {
     "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "msg": "Crédito não aplicado"
+   },
+   {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
     "msg": "Erro no upload"
    },
    {
@@ -42674,6 +42681,22 @@
    {
     "file": "src/lib/clearFiltersShortcut.ts",
     "text": "Must use at least one modifier — single letter shortcuts would fire while typing."
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "text": "* Regra unica de abatimento de credito de devolucao em pagamento."
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "text": "caso em que o abatimento deve ser abortado ANTES de debitar o credito."
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "text": "Somente transicoes diretas: quitar um pagamento `pendente` passa pela"
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "text": "aprovacao, que e uma decisao de alcada e nao pode ser pulada aqui."
    },
    {
     "file": "src/lib/paginatedFetch.ts",
@@ -52365,6 +52388,12 @@
    {
     "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
     "field": "status",
+    "value": "ativo",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "field": "status",
     "value": "pago",
     "kind": "compara"
    },
@@ -53698,6 +53727,12 @@
     "file": "src/integrations/supabase/types.ts",
     "field": "tenant_status",
     "value": "active",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "field": "status",
+    "value": "utilizado",
     "kind": "escreve"
    },
    {
@@ -56773,6 +56808,12 @@
     "name": "generateId",
     "params": "",
     "body": "return `wdlq_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;"
+   },
+   {
+    "file": "src/lib/creditoFornecedor.ts",
+    "name": "calcularAbatimentoCredito",
+    "params": "credito: CreditoAtual, valorAplicado: number,",
+    "body": "const valorUtilizadoAtual = Number(credito.valor_utilizado) || 0; const saldo = (Number(credito.saldo) || 0) - valorAplicado; return { valor_utilizado: valorUtilizadoAtual + valorAplicado, saldo: saldo < 0 ? 0 : saldo, status: saldo <= 0 ? 'utilizado' : 'ativo', };"
    },
    {
     "file": "src/lib/exportData.ts",
@@ -62491,6 +62532,66 @@
    {
     "file": "src/lib/__tests__/clearFiltersShortcut.test.ts",
     "name": "removes stored combo so default is returned"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "calcularAbatimentoCredito"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "acumula o valor utilizado em vez de substituir"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "marca o credito como utilizado quando o saldo zera"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "nunca deixa o saldo negativo"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "trata valor_utilizado nulo como zero"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "statusAlvoAbatimento"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "quita quando o pago alcanca o total"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "fica parcial quando ainda falta valor"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "statusAbatimentoAlcancavel"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "permite quitar um pagamento aprovado, agendado ou atrasado"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "bloqueia quitar um pagamento pendente (exige aprovacao), cancelado ou concluido"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "bloqueia parcial fora de parcial, porque o banco so aceita pago depois de pago"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "mantem o status quando ja esta no alvo (banco aceita mesma transicao)"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "mensagemAbatimentoBloqueado"
+   },
+   {
+    "file": "src/lib/__tests__/creditoFornecedor.test.ts",
+    "name": "explica o bloqueio de cada alvo"
    },
    {
     "file": "src/lib/__tests__/dbMapping.test.ts",
@@ -78348,6 +78449,7 @@
       "compara:src/hooks/useDevolucoes.ts",
       "compara:src/hooks/useExecutiveDashboardData.ts",
       "compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx",
+      "escreve:src/components/pagamentos/PagamentoDetailModal.tsx",
       "escreve:supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
       "filtra:src/components/compras/PriceComparator.tsx",
       "filtra:src/components/compras/SupplierAlertsPanel.tsx",
@@ -78614,6 +78716,9 @@
      ],
      "number": [
       "compara:src/hooks/useXbzIntegration.ts"
+     ],
+     "utilizado": [
+      "escreve:src/lib/creditoFornecedor.ts"
      ],
      "atrasado": [
       "compara:src/pages/acompanhamento/Acompanhamento.tsx",
@@ -87663,6 +87768,13 @@
    },
    {
     "kind": "status",
+    "msg": "valor `utilizado` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:src/lib/creditoFornecedor.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `sucesso` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/acompanhamento/Acompanhamento.tsx"
@@ -96023,7 +96135,7 @@
   },
   "src/components/pagamentos/PagamentoDetailModal.tsx": {
    "path": "src/components/pagamentos/PagamentoDetailModal.tsx",
-   "lines": 467,
+   "lines": 496,
    "tables": [
     {
      "table": "creditos_fornecedor",
@@ -96047,6 +96159,10 @@
     },
     {
      "table": "pagamentos",
+     "op": "update"
+    },
+    {
+     "table": "creditos_fornecedor",
      "op": "update"
     },
     {
@@ -96076,11 +96192,17 @@
     "comprovantes"
    ],
    "errors": [
+    "Crédito não aplicado",
     "Erro no upload",
     "Informe um valor entre R$ 0,01 e ${formatCurrency(saldoRestante)}",
     "Organização não identificada"
    ],
    "status_values": [
+    {
+     "field": "status",
+     "value": "ativo",
+     "kind": "escreve"
+    },
     {
      "field": "status",
      "value": "pago",
@@ -99897,7 +100019,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 319,
+   "lines": 321,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -102483,6 +102605,39 @@
    ],
    "doc": "User-configurable keyboard shortcut for \"Clear filters\". Persisted in localStorage (per browser, per request from the user). Other shortcuts in the app are fixed; this one can be overridden."
   },
+  "src/lib/creditoFornecedor.ts": {
+   "path": "src/lib/creditoFornecedor.ts",
+   "lines": 80,
+   "exports": [
+    "interface CreditoAtual",
+    "interface CreditoAbatido",
+    "function calcularAbatimentoCredito",
+    "function statusAlvoAbatimento",
+    "function statusAbatimentoAlcancavel",
+    "function mensagemAbatimentoBloqueado"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "utilizado",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* Regra unica de abatimento de credito de devolucao em pagamento.",
+    "caso em que o abatimento deve ser abortado ANTES de debitar o credito.",
+    "Somente transicoes diretas: quitar um pagamento `pendente` passa pela",
+    "aprovacao, que e uma decisao de alcada e nao pode ser pulada aqui."
+   ],
+   "doc": "Regra unica de abatimento de credito de devolucao em pagamento. Antes existia em duas versoes divergentes: PagamentoDetailModal substituia `valor_utilizado` (perdendo o acumulado) e useDevolucoes acumulava. Alem disso o status gravado no pagamento nao era conferido contra a maquina de estados do ban …",
+   "calc_fns": [
+    {
+     "name": "calcularAbatimentoCredito",
+     "params": "credito: CreditoAtual, valorAplicado: number,",
+     "body": "const valorUtilizadoAtual = Number(credito.valor_utilizado) || 0; const saldo = (Number(credito.saldo) || 0) - valorAplicado; return { valor_utilizado: valorUtilizadoAtual + valorAplicado, saldo: saldo < 0 ? 0 : saldo, status: saldo <= 0 ? 'utilizado' : 'ativo', };"
+    }
+   ]
+  },
   "src/lib/dateUtils.ts": {
    "path": "src/lib/dateUtils.ts",
    "lines": 36,
@@ -103065,6 +103220,31 @@
     "persists combo to localStorage",
     "resetClearFiltersShortcut",
     "removes stored combo so default is returned"
+   ]
+  },
+  "src/lib/__tests__/creditoFornecedor.test.ts": {
+   "path": "src/lib/__tests__/creditoFornecedor.test.ts",
+   "lines": 86,
+   "is_test": true,
+   "rule_comments": [
+    "o banco aceita pago -> parcial (ARRAY['parcial'] na function de validacao)"
+   ],
+   "tests": [
+    "calcularAbatimentoCredito",
+    "acumula o valor utilizado em vez de substituir",
+    "marca o credito como utilizado quando o saldo zera",
+    "nunca deixa o saldo negativo",
+    "trata valor_utilizado nulo como zero",
+    "statusAlvoAbatimento",
+    "quita quando o pago alcanca o total",
+    "fica parcial quando ainda falta valor",
+    "statusAbatimentoAlcancavel",
+    "permite quitar um pagamento aprovado, agendado ou atrasado",
+    "bloqueia quitar um pagamento pendente (exige aprovacao), cancelado ou concluido",
+    "bloqueia parcial fora de parcial, porque o banco so aceita pago depois de pago",
+    "mantem o status quando ja esta no alvo (banco aceita mesma transicao)",
+    "mensagemAbatimentoBloqueado",
+    "explica o bloqueio de cada alvo"
    ]
   },
   "src/lib/__tests__/dbMapping.test.ts": {
@@ -116748,10 +116928,23 @@
   }
  },
  "git": {
-  "sha": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
+  "sha": "619c2bb32a92e5b52076ccf7893de1194c87e300",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "619c2bb",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/pagamentos/PagamentoDetailModal.tsx",
+     "src/hooks/useDevolucoes.ts",
+     "src/lib/__tests__/creditoFornecedor.test.ts",
+     "src/lib/creditoFornecedor.ts"
+    ]
+   },
    {
     "sha": "5f2b99e",
     "date": "2026-11-23",
@@ -117100,21 +117293,16 @@
      "scripts/ci/scripts-operacionais.unit.mjs",
      "supabase/config.toml"
     ]
-   },
-   {
-    "sha": "46b4cd6",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     11
+   ],
+   [
+    "src/components/pagamentos/PagamentoDetailModal.tsx",
+    2
    ],
    [
     "supabase/config.toml",
@@ -117173,23 +117361,19 @@
     2
    ],
    [
+    "src/hooks/useDevolucoes.ts",
+    1
+   ],
+   [
+    "src/lib/__tests__/creditoFornecedor.test.ts",
+    1
+   ],
+   [
+    "src/lib/creditoFornecedor.ts",
+    1
+   ],
+   [
     "src/pages/recebimento/RecebimentoOffline.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/recebimento/recebimentoHelpers.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
     1
    ]
   ]
