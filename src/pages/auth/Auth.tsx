@@ -4,7 +4,6 @@ import { logger } from '@/lib/logger';
 import { Package, Mail, Lock, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FloatingInput } from '@/components/ui/floating-input';
 import { useAuth } from '@/features/auth';
@@ -178,9 +177,7 @@ const Auth = () => {
             className="bg-white/[0.03] border border-white/10 backdrop-blur-2xl rounded-[28px] p-7 sm:p-8 shadow-2xl"
             style={{ boxShadow: '0 30px 80px -20px rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(255,255,255,0.04)' }}
           >
-            <Tabs className="w-full">
-              {/* Login Tab */}
-              <TabsContent value="login" className="mt-0 space-y-4 animate-fade-in">
+            <div className="w-full space-y-4 animate-fade-in">
                 {isLocked && (
                   <Alert variant="destructive" className="animate-scale-in">
                     <AlertTriangle className="h-4 w-4" />
@@ -297,8 +294,7 @@ const Auth = () => {
                     )}
                   </div>
                 </form>
-              </TabsContent>
-            </Tabs>
+            </div>
           </div>
 
           <p className="mt-8 text-[11px] leading-relaxed text-zinc-600 text-center max-w-[380px] mx-auto">
