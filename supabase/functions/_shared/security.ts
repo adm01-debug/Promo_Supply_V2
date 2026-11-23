@@ -59,8 +59,11 @@ const originAllowed = (origin: string, allowlist: string[]): boolean => {
     if (entry.startsWith("*.")) {
       const suffix = entry.slice(1); // ".lovable.app"
       try {
+        // Só o subdomínio conta: ".lovable.app" casa "app.lovable.app", nunca
+        // "evil-lovable.app" nem "notlovable.app" (o ramo antigo, host.endsWith(suffix.slice(1)),
+        // aceitava qualquer host terminado em "lovable.app" sem o ponto).
         const host = new URL(origin).host;
-        return host.endsWith(suffix.slice(1)) || ("." + host).endsWith(suffix);
+        return host.endsWith(suffix) && host.length > suffix.length;
       } catch {
         return false;
       }
