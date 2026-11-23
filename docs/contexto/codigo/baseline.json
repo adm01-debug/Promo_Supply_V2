@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
+  "commit": "294d385c218139bb8cdd79d61233fa38c5ff9537",
   "branch": "main",
-  "data_commit": "2026-11-23T16:32:32-03:00",
+  "data_commit": "2026-11-23T17:20:13-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "294d385",
+    "data": "2026-11-23",
+    "assunto": "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)"
+   },
    {
     "sha": "9fd5491",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "3833aac",
     "data": "2026-11-23",
     "assunto": "fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320"
-   },
-   {
-    "sha": "73dce42",
-    "data": "2026-11-23",
-    "assunto": "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)"
    }
   ],
-  "arquivos_mudados_7d": 347,
+  "arquivos_mudados_7d": 349,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 40
+    "mudancas": 43
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 289
+    "commits": 290
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1332,
-  "arquivos_codigo": 829,
-  "linhas_codigo": 172601,
+  "arquivos_total": 1334,
+  "arquivos_codigo": 831,
+  "linhas_codigo": 172680,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 203,
+  "testes": 205,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -491,8 +491,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 110,
-   "linhas": 18600
+   "arquivos": 112,
+   "linhas": 18679
   },
   "tailwind.config.ts": {
    "arquivos": 1,

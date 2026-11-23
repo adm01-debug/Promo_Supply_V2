@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
+  "sha": "294d385c218139bb8cdd79d61233fa38c5ff9537",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 20:11 UTC",
-  "files_total": 1333,
-  "code_files": 1162,
-  "code_lines": 199785,
+  "generated_at": "2026-11-23 20:20 UTC",
+  "files_total": 1335,
+  "code_files": 1164,
+  "code_lines": 199864,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "18b24fbbe478c61b",
+ "facts_hash": "eb451fbe2eb0f1ee",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 404,
+   ".ts": 406,
    ".tsx": 352,
    ".sql": 331,
    ".mjs": 67,
@@ -35981,8 +35981,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 110,
-   "lines": 18600,
+   "files": 112,
+   "lines": 18679,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36117,6 +36117,8 @@
     "supabase/functions/_shared/simulation-engine.ts",
     "supabase/functions/_shared/spot_api.ts",
     "supabase/functions/_shared/telemetry.ts",
+    "supabase/functions/_shared/validation.error_response.test.ts",
+    "supabase/functions/_shared/validation.log_body.test.ts",
     "supabase/functions/_shared/validation.ts",
     "supabase/functions/_shared/xbz_auth.ts",
     "supabase/functions/_shared/xbz_catalog_cache.test.ts",
@@ -36167,9 +36169,7 @@
     "supabase/functions/punchout-encrypt/index.ts",
     "supabase/functions/punchout-receive/index.ts",
     "supabase/functions/punchout-receive/session.test.ts",
-    "supabase/functions/punchout-receive/session.ts",
-    "supabase/functions/punchout-receive/solicitation.test.ts",
-    "supabase/functions/punchout-receive/solicitation.ts"
+    "supabase/functions/punchout-receive/session.ts"
    ]
   },
   {
@@ -42858,6 +42858,10 @@
    {
     "file": "supabase/functions/_shared/validation.ts",
     "text": "* Enhanced validation utility that automatically logs failures to telemetry."
+   },
+   {
+    "file": "supabase/functions/_shared/validation.ts",
+    "text": "Somente a forma do corpo: `sanitizeContext` do logger so esconde chaves"
    },
    {
     "file": "supabase/functions/_shared/validation.ts",
@@ -68555,6 +68559,30 @@
    {
     "file": "supabase/functions/_shared/notifications.test.ts",
     "name": "insertNotificationsBatch resolve tenants por user_id"
+   },
+   {
+    "file": "supabase/functions/_shared/validation.error_response.test.ts",
+    "name": "errorResponse: "
+   },
+   {
+    "file": "supabase/functions/_shared/validation.error_response.test.ts",
+    "name": "errorResponse: "
+   },
+   {
+    "file": "supabase/functions/_shared/validation.error_response.test.ts",
+    "name": "errorResponse: unauthorized e sessao invalida virem 401"
+   },
+   {
+    "file": "supabase/functions/_shared/validation.error_response.test.ts",
+    "name": "errorResponse: demais categorias seguem iguais"
+   },
+   {
+    "file": "supabase/functions/_shared/validation.log_body.test.ts",
+    "name": "validateBody: corpo invalido nao vaza os valores para o log"
+   },
+   {
+    "file": "supabase/functions/_shared/validation.log_body.test.ts",
+    "name": "validateBody: JSON malformado loga a causa e mantem a mensagem"
    },
    {
     "file": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
@@ -110396,9 +110424,31 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/_shared/validation.error_response.test.ts": {
+   "path": "supabase/functions/_shared/validation.error_response.test.ts",
+   "lines": 31,
+   "is_test": true,
+   "doc": "Testes do categorizador de status de errorResponse. Regressao coberta: mensagem de auth em portugues (\"Nao autorizado\") saia como 500, o que fazia pedido sem sessao parecer erro de servidor em 3 edges de IA.",
+   "tests": [
+    "errorResponse: ",
+    "errorResponse: ",
+    "errorResponse: unauthorized e sessao invalida virem 401",
+    "errorResponse: demais categorias seguem iguais"
+   ]
+  },
+  "supabase/functions/_shared/validation.log_body.test.ts": {
+   "path": "supabase/functions/_shared/validation.log_body.test.ts",
+   "lines": 43,
+   "is_test": true,
+   "doc": "Teste do que o log recebe quando validateBody recusa o corpo.",
+   "tests": [
+    "validateBody: corpo invalido nao vaza os valores para o log",
+    "validateBody: JSON malformado loga a causa e mantem a mensagem"
+   ]
+  },
   "supabase/functions/_shared/validation.ts": {
    "path": "supabase/functions/_shared/validation.ts",
-   "lines": 100,
+   "lines": 105,
    "exports": [
     "function validateBody",
     "function errorResponse",
@@ -110416,6 +110466,7 @@
    ],
    "rule_comments": [
     "* Enhanced validation utility that automatically logs failures to telemetry.",
+    "Somente a forma do corpo: `sanitizeContext` do logger so esconde chaves",
     "Extract validation details if available from Zod error message"
    ],
    "calc_fns": [
@@ -116347,10 +116398,21 @@
   }
  },
  "git": {
-  "sha": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
+  "sha": "294d385c218139bb8cdd79d61233fa38c5ff9537",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "294d385",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)",
+    "files": [
+     "supabase/functions/_shared/validation.error_response.test.ts",
+     "supabase/functions/_shared/validation.log_body.test.ts",
+     "supabase/functions/_shared/validation.ts"
+    ]
+   },
    {
     "sha": "9fd5491",
     "date": "2026-11-23",
@@ -116704,16 +116766,6 @@
     "files": [
      "src/pages/historico/HistoricoSourcingTab.tsx"
     ]
-   },
-   {
-    "sha": "0369433",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)",
-    "files": [
-     "src/pages/admin/SSOConfig.tsx",
-     "supabase/functions/scim-v2/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -116734,12 +116786,12 @@
     3
    ],
    [
-    "supabase/functions/scim-v2/index.ts",
+    "src/features/auth/components/ProtectedRoute.tsx",
     3
    ],
    [
-    "src/features/auth/components/ProtectedRoute.tsx",
-    3
+    "supabase/functions/_shared/validation.ts",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -116794,7 +116846,7 @@
     2
    ],
    [
-    "supabase/functions/send-push-notification/index.ts",
+    "supabase/functions/scim-v2/index.ts",
     2
    ]
   ]

@@ -37,6 +37,8 @@
   "supabase/functions/_shared/simulation-engine.ts",
   "supabase/functions/_shared/spot_api.ts",
   "supabase/functions/_shared/telemetry.ts",
+  "supabase/functions/_shared/validation.error_response.test.ts",
+  "supabase/functions/_shared/validation.log_body.test.ts",
   "supabase/functions/_shared/validation.ts",
   "supabase/functions/_shared/xbz_auth.ts",
   "supabase/functions/_shared/xbz_catalog_cache.test.ts",

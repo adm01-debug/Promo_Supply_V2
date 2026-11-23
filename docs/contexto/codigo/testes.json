@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 203,
+ "total": 205,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 186
+  "unit": 188
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 35
+   "arquivos": 37
   },
   {
    "padrao": "tests-e2e/",
@@ -1547,6 +1547,24 @@
    "casos": 3
   },
   {
+   "arquivo": "supabase/functions/_shared/validation.error_response.test.ts",
+   "tipo": "unit",
+   "linhas": 31,
+   "testa": [
+    "supabase/functions/_shared/validation.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/_shared/validation.log_body.test.ts",
+   "tipo": "unit",
+   "linhas": 43,
+   "testa": [
+    "supabase/functions/_shared/validation.ts"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
    "tipo": "unit",
    "linhas": 142,
@@ -1968,6 +1986,7 @@
   "supabase/functions/_shared/punchout_crypto.ts": 1,
   "supabase/functions/_shared/security.ts": 1,
   "supabase/functions/_shared/spot_api.ts": 1,
+  "supabase/functions/_shared/validation.ts": 2,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
   "supabase/functions/_shared/xbz_client.ts": 2,
   "supabase/functions/_shared/xbz_fiscal_cache.ts": 1,
