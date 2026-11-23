@@ -14,7 +14,7 @@
  *   INTEGRATION_TESTS=true npx vitest run src/tests/integration/supabase-db.test.ts
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // ── Skip guard ────────────────────────────────────────────────────────────────
@@ -42,12 +42,23 @@ beforeAll(() => {
   });
 });
 
-afterAll(async () => {
-  if (!INTEGRATION || !supabase) return;
-  // Clean up any test rows inserted with the TEST_MARKER in detalhes
-  await supabase.from('approval_history')
-    .delete()
-    .eq('detalhes->>test_marker', TEST_MARKER);
+// Sem afterAll destrutivo: esta suite nao escreve nada, entao nao ha o que limpar.
+// O bloco anterior fazia `.delete().eq('detalhes->>test_marker', ...)` com service_role
+// — um DELETE real em producao (o unico alvo possivel deste repo) que so nao apagava
+// nada porque nenhum teste usava o marcador. Substituido por uma checagem somente
+// leitura: se houver residuo de execucao antiga, o teste falha e o dono investiga.
+describeIf('Sem residuo de execucao antiga', () => {
+  it('nenhuma linha de approval_history carrega marcador de teste', async () => {
+    if (!supabase) return;
+    // Prefixo fixo (sem Date.now()): pega residuo de QUALQUER execucao antiga, nao so da atual.
+    const { data, error } = await supabase
+      .from('approval_history')
+      .select('id')
+      .like('detalhes->>test_marker', 'integration-test-%')
+      .limit(1);
+    expect(error).toBeNull();
+    expect(data ?? []).toEqual([]);
+  });
 });
 
 // ── Schema integrity tests ────────────────────────────────────────────────────

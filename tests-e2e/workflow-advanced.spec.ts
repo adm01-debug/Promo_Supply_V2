@@ -2,24 +2,26 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Advanced Workflow & Security Tests', () => {
   
-  test('Multi-step Solicitation Flow', async ({ page }) => {
+  /**
+   * Antes este teste preenchia titulo/valor e clicava em Salvar: insert real de solicitacao
+   * no banco de PRODUCAO, sem cleanup (nao existe projeto de staging neste repo). Como o E2E
+   * ainda nao carrega sessao, a escrita estava dormente - o dia em que alguem ligasse
+   * `storageState` ela acordava. Agora o fluxo e conferido ate o dialogo de criacao, sem submit.
+   */
+  test('Multi-step Solicitation Flow (abre o formulario, sem gravar)', async ({ page }) => {
     await page.goto('/compras');
 
-    // 1. Trigger New Request
     const addBtn = page.getByRole('button', { name: /Nova/i }).first();
-    if (await addBtn.isVisible()) {
-      await addBtn.click();
-      
-      // 2. Fill Data
-      await page.getByPlaceholder(/Título/i).fill('Teste E2E Automatizado - Carga Crítica');
-      await page.getByPlaceholder(/Valor/i).fill('50000');
-      
-      // 3. Submit and Verify Optimistic UI
-      await page.getByRole('button', { name: /Salvar/i }).click();
-      
-      // Verify success message or list update
-      await expect(page.locator('text=sucesso').or(page.locator('text=Teste E2E'))).toBeVisible();
-    }
+    if ((await addBtn.count()) === 0 || !(await addBtn.isVisible())) return;
+
+    await addBtn.click();
+
+    // O formulario precisa existir com os campos do fluxo - sem clicar em Salvar.
+    await expect(page.getByPlaceholder(/T\u00edtulo/i).first()).toBeVisible();
+    await expect(page.getByPlaceholder(/Valor/i).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Salvar/i }).first()).toBeVisible();
+
+    await page.keyboard.press('Escape').catch(() => {});
   });
 
   test('Responsiveness & Mobile Viewport', async ({ page }) => {
