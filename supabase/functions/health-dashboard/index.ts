@@ -7,35 +7,34 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { buildResponseHeaders } from "../_shared/http.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-};
-
-function json(body: unknown, status = 200): Response {
+// QA-046 (EDGA-06): antes havia um corsHeaders local com
+// "Access-Control-Allow-Origin": "*" fixo, que ignorava ALLOWED_ORIGINS e
+// respondia preflight para qualquer origem. Agora segue o mesmo padrao de
+// escalate-solicitacao: o cors e derivado da requisicao.
+function json(body: unknown, cors: Record<string, string>, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: buildResponseHeaders(corsHeaders),
+    headers: buildResponseHeaders(cors),
   });
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-  if (req.method !== "GET") return json({ error: "Method not allowed" }, 405);
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  if (req.method !== "GET") return json({ error: "Method not allowed" }, cors, 405);
 
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
   const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
   if (!SUPABASE_URL || !SERVICE_ROLE || !ANON_KEY) {
-    return json({ error: "Server misconfigured" }, 500);
+    return json({ error: "Server misconfigured" }, cors, 500);
   }
 
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace(/^Bearer\s+/i, "").trim();
-  if (!token) return json({ error: "Unauthorized" }, 401);
+  if (!token) return json({ error: "Unauthorized" }, cors, 401);
 
   // 1. Valida o usuário via anon client
   const userClient = createClient(SUPABASE_URL, ANON_KEY, {
@@ -43,7 +42,7 @@ Deno.serve(async (req: Request) => {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const { data: userData, error: userErr } = await userClient.auth.getUser(token);
-  if (userErr || !userData?.user) return json({ error: "Unauthorized" }, 401);
+  if (userErr || !userData?.user) return json({ error: "Unauthorized" }, cors, 401);
 
   // 2. Checa role 'admin' via service role (bypassa RLS na função has_role)
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
@@ -54,8 +53,8 @@ Deno.serve(async (req: Request) => {
     _user_id: userData.user.id,
     _role: "admin",
   });
-  if (roleErr) return json({ error: "Role check failed" }, 500);
-  if (!isAdmin) return json({ error: "Forbidden" }, 403);
+  if (roleErr) return json({ error: "Role check failed" }, cors, 500);
+  if (!isAdmin) return json({ error: "Forbidden" }, cors, 403);
 
   // 2b. Rota alternativa: detalhe de um único alerta + timeline (audit_logs)
   const url = new URL(req.url);
@@ -79,15 +78,15 @@ Deno.serve(async (req: Request) => {
         .order("created_at", { ascending: false })
         .limit(20),
     ]);
-    if (alertRes.error) return json({ error: alertRes.error.message }, 500);
-    if (!alertRes.data) return json({ error: "Alert not found" }, 404);
+    if (alertRes.error) return json({ error: alertRes.error.message }, cors, 500);
+    if (!alertRes.data) return json({ error: "Alert not found" }, cors, 404);
     return json({
       alert: alertRes.data,
       timeline: auditRes.data ?? [],
       related_same_type: (relatedRes.data ?? []).filter(
         (r: { id: string }) => r.id !== alertId,
       ),
-    });
+    }, cors);
   }
 
 
@@ -116,13 +115,13 @@ Deno.serve(async (req: Request) => {
   ]);
 
 
-  if (overviewRes.error) return json({ error: overviewRes.error.message }, 500);
-  if (runsRes.error) return json({ error: runsRes.error.message }, 500);
-  if (severityRes.error) return json({ error: severityRes.error.message }, 500);
-  if (tsRes.error) return json({ error: tsRes.error.message }, 500);
-  if (mttrRes.error) return json({ error: mttrRes.error.message }, 500);
-  if (noisyRes.error) return json({ error: noisyRes.error.message }, 500);
-  if (openRes.error) return json({ error: openRes.error.message }, 500);
+  if (overviewRes.error) return json({ error: overviewRes.error.message }, cors, 500);
+  if (runsRes.error) return json({ error: runsRes.error.message }, cors, 500);
+  if (severityRes.error) return json({ error: severityRes.error.message }, cors, 500);
+  if (tsRes.error) return json({ error: tsRes.error.message }, cors, 500);
+  if (mttrRes.error) return json({ error: mttrRes.error.message }, cors, 500);
+  if (noisyRes.error) return json({ error: noisyRes.error.message }, cors, 500);
+  if (openRes.error) return json({ error: openRes.error.message }, cors, 500);
 
   const severityCounts: Record<string, number> = {};
   for (const row of severityRes.data ?? []) {
@@ -151,6 +150,6 @@ Deno.serve(async (req: Request) => {
     mttr_by_type_7d: mttrRes.data ?? [],
     noisy_scanners_24h: noisyRes.data ?? [],
     open_alerts: openRes.data ?? [],
-  });
+  }, cors);
 });
 
