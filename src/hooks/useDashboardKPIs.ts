@@ -52,6 +52,15 @@ export interface DashboardKPIsExtended {
 }
 
 interface RpcKpi { current: number; previous: number }
+
+interface RpcSlaMetrics {
+  avgSla: number;
+  taxaSlaReal: number;
+  previousAvgSla: number;
+  previousTaxaSlaReal: number;
+  amostra: number;
+  amostraAnterior: number;
+}
 interface RpcDashboardMetrics {
   kpis: { aguardando: RpcKpi; volume: RpcKpi; economia: RpcKpi };
   pipeline: PipelineData;
@@ -87,6 +96,19 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       }
 
       const rpcData = data as unknown as RpcDashboardMetrics;
+
+      // SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode
+      // derrubar o dashboard inteiro: cai em 0 e registra o erro.
+      const { data: slaData, error: slaError } = await supabase.rpc('get_compras_sla_metrics', {
+        p_organization_id: organizationId,
+        p_period: period,
+        p_category_id: (categoryId as string | undefined),
+        p_supplier_id: (supplierId as string | undefined),
+      });
+      if (slaError) logger.error('Error fetching SLA metrics', { error: slaError });
+      const sla = ((slaError ? null : slaData) ?? {
+        avgSla: 0, taxaSlaReal: 0, previousAvgSla: 0, previousTaxaSlaReal: 0, amostra: 0, amostraAnterior: 0,
+      }) as unknown as RpcSlaMetrics;
       
       const calculateTrend = (current: number, previous: number) => {
         if (previous === 0) return 0;
@@ -116,8 +138,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         economiaPercentual: rpcData.kpis.volume.current > 0
           ? (rpcData.kpis.economia.current / rpcData.kpis.volume.current) * 100
           : 0,
-        avgSla: 1.8,
-        taxaSlaReal: 85,
+        avgSla: Number(sla.avgSla ?? 0),
+        taxaSlaReal: Number(sla.taxaSlaReal ?? 0),
         comparisons: {
           aguardando: {
             current: rpcData.kpis.aguardando.current,
@@ -138,10 +160,12 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
             sparkline: generateSparkline(rpcData.kpis.economia.current || 2000)
           },
           sla: {
-            current: 85,
-            previous: 82,
-            trend: 3,
-            sparkline: [80, 82, 81, 84, 83, 85, 85]
+            // Sparkline vazia: sem serie historica confiavel, o card renderiza
+            // o placeholder em vez de uma linha inventada.
+            current: Number(sla.taxaSlaReal ?? 0),
+            previous: Number(sla.previousTaxaSlaReal ?? 0),
+            trend: Number(sla.taxaSlaReal ?? 0) - Number(sla.previousTaxaSlaReal ?? 0),
+            sparkline: []
           }
         },
         pipeline: rpcData.pipeline,
@@ -188,6 +212,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   return { 
     kpis: data || fallbackKPIs,
+    // Espelha os campos mais consumidos na raiz do retorno, para o consumidor
+    // nao precisar cavar em `kpis` (e para o SLA novo ficar visivel).
+    avgSla: (data || fallbackKPIs).avgSla,
+    taxaSlaReal: (data || fallbackKPIs).taxaSlaReal,
+    comparisons: (data || fallbackKPIs).comparisons,
     pipeline: data?.pipeline || fallbackKPIs.pipeline,
     urgentItems: data?.urgentItems || [],
     loading: isLoading,

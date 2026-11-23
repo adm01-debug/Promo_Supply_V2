@@ -63,11 +63,15 @@ describe('useDashboardKPIs — parâmetro da organização', () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(rpc).toHaveBeenCalledTimes(1);
-    const [fn, params] = rpc.mock.calls[0];
-    expect(fn).toBe('get_compras_dashboard_metrics');
-    expect(params.p_organization_id).toBe('org-grupo');
-    expect(params.p_organization_id).not.toBe('tenant-filial');
+    // Duas RPCs: metricas do dashboard e metricas de SLA.
+    expect(rpc).toHaveBeenCalledTimes(2);
+    const metricsCall = rpc.mock.calls.find(([fn]) => fn === 'get_compras_dashboard_metrics');
+    const slaCall = rpc.mock.calls.find(([fn]) => fn === 'get_compras_sla_metrics');
+    expect(metricsCall).toBeDefined();
+    expect(slaCall).toBeDefined();
+    expect(metricsCall![1].p_organization_id).toBe('org-grupo');
+    expect(metricsCall![1].p_organization_id).not.toBe('tenant-filial');
+    expect(slaCall![1].p_organization_id).toBe('org-grupo');
     expect(result.current.urgentItems).toHaveLength(1);
   });
 
@@ -77,6 +81,56 @@ describe('useDashboardKPIs — parâmetro da organização', () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(rpc).not.toHaveBeenCalled();
+  });
+});
+
+describe('useDashboardKPIs — SLA vem da RPC, não de literal', () => {
+  beforeEach(() => {
+    rpc.mockReset();
+    auth.organizationId = 'org-grupo';
+  });
+
+  it('usa avgSla e taxaSlaReal devolvidos por get_compras_sla_metrics', async () => {
+    rpc.mockImplementation((fn: string) =>
+      fn === 'get_compras_sla_metrics'
+        ? Promise.resolve({
+            data: {
+              avgSla: 2.5,
+              taxaSlaReal: 91,
+              previousAvgSla: 3.5,
+              previousTaxaSlaReal: 80,
+              amostra: 22,
+              amostraAnterior: 7,
+            },
+            error: null,
+          })
+        : Promise.resolve({ data: rpcPayload, error: null }),
+    );
+
+    const { result } = renderHook(() => useDashboardKPIs(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.avgSla).toBe(2.5);
+    expect(result.current.taxaSlaReal).toBe(91);
+    expect(result.current.comparisons.sla.current).toBe(91);
+    expect(result.current.comparisons.sla.previous).toBe(80);
+  });
+
+  it('não derruba o dashboard quando a RPC de SLA falha', async () => {
+    rpc.mockImplementation((fn: string) =>
+      fn === 'get_compras_sla_metrics'
+        ? Promise.resolve({ data: null, error: { message: 'boom' } })
+        : Promise.resolve({ data: rpcPayload, error: null }),
+    );
+
+    const { result } = renderHook(() => useDashboardKPIs(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.avgSla).toBe(0);
+    expect(result.current.taxaSlaReal).toBe(0);
+    expect(result.current.urgentItems).toHaveLength(1);
   });
 });
 
