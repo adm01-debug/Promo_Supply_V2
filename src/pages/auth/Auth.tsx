@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/lib/logger';
-import { Package, Mail, Lock, User, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
+import { Package, Mail, Lock, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FloatingInput } from '@/components/ui/floating-input';
 import { useAuth } from '@/features/auth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
-import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
 import { ThemeToggle } from '@/features/layout/components/ThemeToggle';
 import { toast } from '@/lib/feedbackToast';
 import { z } from 'zod';
@@ -22,26 +21,12 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Senha é obrigatória'),
 });
 
-const signupSchema = z.object({
-  fullName: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('Email inválido'),
-  password: z.string()
-    .min(8, 'Senha deve ter pelo menos 8 caracteres')
-    .regex(/[A-Z]/, 'Senha deve ter pelo menos uma letra maiúscula')
-    .regex(/[a-z]/, 'Senha deve ter pelo menos uma letra minúscula')
-    .regex(/[0-9]/, 'Senha deve ter pelo menos um número')
-    .regex(/[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\;'/`~]/, 'Senha deve ter pelo menos um caractere especial'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'As senhas não coincidem',
-  path: ['confirmPassword'],
-});
 
 import { AuthBackground, AuthBrandingPanel } from './AuthBranding';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, loading, signIn, signUp } = useAuth();
+  const { user, loading, signIn } = useAuth();
   const { isSupported, isLoading: isPasskeyLoading, authenticateWithPasskey } = useWebAuthn();
   const { isLocked, countdown, formatCountdown, checkLockout, recordFailedAttempt, clearLockout } = useAccountLockout();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,17 +34,9 @@ const Auth = () => {
   const [passkeyEmail, setPasskeyEmail] = useState('');
   const [isPasswordLeaked, setIsPasswordLeaked] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState('login');
-
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-
-  // Signup form state
-  const [signupName, setSignupName] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
 
   // Redirect if already logged in
   useEffect(() => {
@@ -144,48 +121,6 @@ const Auth = () => {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors({});
-
-    if (isPasswordLeaked && signupPassword.length >= 8) {
-      toast.error('Esta senha foi encontrada em vazamentos de dados (Pwned Passwords). Por sua segurança, escolha outra senha.');
-      return;
-    }
-
-    const result = signupSchema.safeParse({
-      fullName: signupName,
-      email: signupEmail,
-      password: signupPassword,
-      confirmPassword: signupConfirmPassword,
-    });
-
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.issues.forEach((err) => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as string] = err.message;
-        }
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-    const { error } = await signUp(signupEmail, signupPassword, signupName);
-    setIsSubmitting(false);
-
-    if (error) {
-      if (error.message.includes('already registered')) {
-        toast.error('Este email já está cadastrado');
-      } else {
-        toast.error(error.message);
-      }
-    } else {
-      toast.success('Conta criada com sucesso! Você já pode fazer login.');
-      navigate('/');
-    }
-  };
 
   if (loading) {
     return (
@@ -232,10 +167,10 @@ const Auth = () => {
         <div className="w-full max-w-[440px]">
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold mb-2 text-white" style={outfit}>
-              {activeTab === 'login' ? 'Bem-vindo de volta' : 'Criar nova conta'}
+              Bem-vindo de volta
             </h2>
             <p className="text-zinc-500 text-sm">
-              {activeTab === 'login' ? 'Acesse sua conta para continuar' : 'Preencha os dados para começar'}
+              Acesse sua conta para continuar
             </p>
           </div>
 
@@ -243,22 +178,7 @@ const Auth = () => {
             className="bg-white/[0.03] border border-white/10 backdrop-blur-2xl rounded-[28px] p-7 sm:p-8 shadow-2xl"
             style={{ boxShadow: '0 30px 80px -20px rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(255,255,255,0.04)' }}
           >
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 w-full h-11 p-1 bg-black/40 border border-white/5 rounded-2xl mb-7">
-                <TabsTrigger
-                  value="login"
-                  className="rounded-xl text-sm font-medium text-zinc-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-fuchsia-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-600/30"
-                >
-                  Entrar
-                </TabsTrigger>
-                <TabsTrigger
-                  value="signup"
-                  className="rounded-xl text-sm font-medium text-zinc-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-fuchsia-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-violet-600/30"
-                >
-                  Criar Conta
-                </TabsTrigger>
-              </TabsList>
-
+            <Tabs className="w-full">
               {/* Login Tab */}
               <TabsContent value="login" className="mt-0 space-y-4 animate-fade-in">
                 {isLocked && (
@@ -377,79 +297,6 @@ const Auth = () => {
                     )}
                   </div>
                 </form>
-              </TabsContent>
-
-              {/* Signup Tab */}
-              <TabsContent value="signup" className="mt-0 space-y-4 animate-fade-in">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <FloatingInput
-                    label="Nome Completo"
-                    type="text"
-                    icon={<User className="w-5 h-5" />}
-                    value={signupName}
-                    onChange={(e) => setSignupName(e.target.value)}
-                    error={errors["fullName"]}
-                    disabled={isSubmitting}
-                  />
-
-                  <FloatingInput
-                    label="Email"
-                    type="email"
-                    icon={<Mail className="w-5 h-5" />}
-                    value={signupEmail}
-                    onChange={(e) => setSignupEmail(e.target.value)}
-                    error={errors["email"]}
-                    disabled={isSubmitting}
-                  />
-
-                  <div className="space-y-2">
-                    <FloatingInput
-                      label="Senha"
-                      type="password"
-                      icon={<Lock className="w-5 h-5" />}
-                      value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
-                      error={errors["password"]}
-                      disabled={isSubmitting}
-                    />
-                    <PasswordStrengthIndicator
-                      password={signupPassword}
-                      onStrengthChange={(_, leaked) => setIsPasswordLeaked(leaked)}
-                    />
-                  </div>
-
-                  <FloatingInput
-                    label="Confirmar Senha"
-                    type="password"
-                    icon={<Lock className="w-5 h-5" />}
-                    value={signupConfirmPassword}
-                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                    error={errors["confirmPassword"]}
-                    disabled={isSubmitting}
-                  />
-
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-sm font-semibold rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:opacity-90 text-white border-0 shadow-xl shadow-violet-600/25 active:scale-[0.98] transition-all"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Criando conta...
-                      </>
-                    ) : (
-                      'Criar Conta'
-                    )}
-                  </Button>
-                </form>
-
-                <p className="text-center text-[11px] text-zinc-500 mt-4 leading-relaxed">
-                  Ao criar uma conta, você concorda com nossos{' '}
-                  <a href="#" className="text-violet-400 hover:text-violet-300">Termos de Uso</a>
-                  {' '}e{' '}
-                  <a href="#" className="text-violet-400 hover:text-violet-300">Política de Privacidade</a>
-                </p>
               </TabsContent>
             </Tabs>
           </div>
