@@ -1,4 +1,28 @@
 project_id = "lmypcdfsrgfftzhxawao"
 
+# QA-024/025: fonte unica de verdade para verify_jwt.
+# `supabase functions deploy` le este arquivo; o workflow .github/workflows/deploy-edge-functions.yml
+# nao passa --no-verify-jwt, entao antes desta declaracao um push em main religava o JWT nas funcoes
+# abaixo e elas paravam de funcionar (401 do gateway, sem log da funcao).
+#
+# Cada funcao publica abaixo autentica por conta propria — verificado no codigo:
+#   scim-v2               -> Bearer token do IdP comparado ao SHA-256 em sso_configurations
+#   punchout-receive      -> sharedSecret dentro do Header/Credential do cXML
+#   webauthn-authenticate -> antessala do login (emite o JWT); valida challenge/credential
+#   dependency-health     -> GET publico (sonda de saude); POST exige JWT + role admin (has_role)
+#
+# NAO entram aqui (validam JWT/role no codigo, entao o gateway pode exigir JWT):
+#   run-audit, system-simulation (requireAdmin), telemetry (auth.getUser()),
+#   migrate-helper (bloqueada no script de deploy)
+
 [functions.scim-v2]
+verify_jwt = false
+
+[functions.punchout-receive]
+verify_jwt = false
+
+[functions.webauthn-authenticate]
+verify_jwt = false
+
+[functions.dependency-health]
 verify_jwt = false
