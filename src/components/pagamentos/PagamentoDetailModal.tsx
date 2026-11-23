@@ -20,6 +20,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 import { formatCurrency } from "@/lib/utils";
+import { calcularAbatimentoCredito, mensagemAbatimentoBloqueado, statusAbatimentoAlcancavel, statusAlvoAbatimento } from "@/lib/creditoFornecedor";
 import { getStorageTenantId, privateStoragePath, resolveStoredFileUrl } from "@/lib/storageFiles";
 
 interface Props {
@@ -130,31 +131,59 @@ interface Props {
     }
   }, [pagamento, user, queryClient, tenantId]);
 
-  const handleApplyCredit = useCallback(async (creditId: string, creditSaldo: number) => {
+  const handleApplyCredit = useCallback(async (credito: { id: string; saldo: number; valor_utilizado: number | null }) => {
     if (!pagamento || !user) return;
+    const creditSaldo = Number(credito.saldo) || 0;
+    const valorUtilizadoAtual = Number(credito.valor_utilizado) || 0;
     const aplicar = Math.min(creditSaldo, saldoRestante);
-    
+    const novoValorPago = (pagamento.valor_pago || 0) + aplicar;
+    const alvoStatus = statusAlvoAbatimento(novoValorPago, pagamento.valor);
+    const novoStatus = statusAbatimentoAlcancavel(pagamento.status, novoValorPago, pagamento.valor);
+
+    // Sem parar aqui, o credito era debitado e o UPDATE de pagamentos falhava
+    // em silencio (pendente -> pago/parcial e rejeitado pelo trigger).
+    if (!novoStatus) {
+      toast({
+        title: "Crédito não aplicado",
+        description: mensagemAbatimentoBloqueado(alvoStatus),
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       // Update credit
       const { error: creditError } = await supabase
         .from('creditos_fornecedor')
         .update({
-          valor_utilizado: aplicar,
-          saldo: creditSaldo - aplicar,
-          status: creditSaldo - aplicar <= 0 ? 'utilizado' : 'ativo',
+          ...calcularAbatimentoCredito({ saldo: creditSaldo, valor_utilizado: valorUtilizadoAtual }, aplicar),
           utilizado_em_pagamento_id: pagamento.id,
         })
-        .eq('id', creditId);
+        .eq('id', credito.id);
       if (creditError) throw creditError;
 
       // Update pagamento
-      const novoValorPago = (pagamento.valor_pago || 0) + aplicar;
-      const novoStatus = novoValorPago >= pagamento.valor ? 'pago' : 'parcial';
-      await supabase.from('pagamentos').update({
+      const { error: pagamentoError } = await supabase.from('pagamentos').update({
         valor_pago: novoValorPago,
         status: novoStatus,
         data_pagamento: novoStatus === 'pago' ? new Date().toISOString().split('T')[0] : pagamento.data_pagamento,
       }).eq('id', pagamento.id);
+
+      if (pagamentoError) {
+        // Estorna o credito: sem isso ele saia da conta do fornecedor e o
+        // pagamento ficava intacto.
+        const { error: estornoError } = await supabase.from('creditos_fornecedor').update({
+          valor_utilizado: valorUtilizadoAtual,
+          saldo: creditSaldo,
+          status: 'ativo',
+          utilizado_em_pagamento_id: null,
+        }).eq('id', credito.id);
+        throw new Error(
+          estornoError
+            ? `${pagamentoError.message} — o crédito foi estornado, mas o estorno falhou: ${estornoError.message}`
+            : pagamentoError.message,
+        );
+      }
 
       // Log history
       await supabase.from('payment_history').insert({
@@ -450,7 +479,7 @@ interface Props {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-success">{formatCurrency(c.saldo)}</p>
-                      <Button size="sm" variant="outline" className="mt-1" onClick={() => handleApplyCredit(c.id, c.saldo)}>
+                      <Button size="sm" variant="outline" className="mt-1" onClick={() => handleApplyCredit(c)}>
                         Aplicar
                       </Button>
                     </div>
