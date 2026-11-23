@@ -36,7 +36,10 @@ serve(async (req) => {
 
     // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
     const data = await validateBody(req, WorkflowContract, logger);
-    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
+    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, comment } = data;
+
+    // QA-022: approver_id must come from the verified JWT, never from the request body.
+    const approver_id = user.id;
 
     const tenant_id = await getTenantId(supabase, user);
 
@@ -110,6 +113,20 @@ serve(async (req) => {
     if (action === 'submit_decision') {
       if (!instance_id || !node_id || !decision) {
         throw new Error('Validation error: instance_id, node_id and decision are required');
+      }
+
+      // QA-022: Verify the instance belongs to the caller's tenant before allowing approval
+      const { data: instanceCheck, error: instanceErr } = await supabase
+        .from('workflow_instances')
+        .select('id')
+        .eq('id', instance_id)
+        .eq('tenant_id', tenant_id)
+        .maybeSingle();
+      if (instanceErr) throw instanceErr;
+      if (!instanceCheck) {
+        return new Response(JSON.stringify({ error: 'Forbidden: instance not found in your tenant' }), {
+          status: 403, headers: buildResponseHeaders(corsHeaders),
+        });
       }
 
       const { data: sodOk, error: sodError } = await supabase.rpc('check_workflow_sod', {

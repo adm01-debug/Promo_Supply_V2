@@ -40,7 +40,7 @@
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
-| `send-push-notification` | `push_subscriptions` |
+| `send-push-notification` | `profiles`, `push_subscriptions`, `user_roles` |
 | `spot-api` | `spot_api_sync_log`, `spot_pedidos`, `spot_sessions`, `user_roles` |
 | `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles` |
 | `system-simulation` | — |
@@ -78,7 +78,7 @@
 | `pagamentos` | `check-expiry-alerts`, `check-sla-alerts`, `weekly-report` |
 | `pedidos` | `check-sla-alerts`, `escalate-solicitacao`, `weekly-report`, `weekly-summary-report` |
 | `produtos` | `guided-buying-ai` |
-| `profiles` | `check-cotacao-followup`, `escalate-solicitacao`, `migrate-storage-paths`, `punchout-receive` |
+| `profiles` | `check-cotacao-followup`, `escalate-solicitacao`, `migrate-storage-paths`, `punchout-receive`, `send-push-notification` |
 | `punchout_catalogs` | `punchout-receive`, `punchout-setup` |
 | `punchout_sessions` | `punchout-receive`, `punchout-setup` |
 | `push_subscriptions` | `send-push-notification` |
@@ -90,7 +90,7 @@
 | `sso_configurations` | `scim-v2` |
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
-| `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
+| `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `send-push-notification`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
 | `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
