@@ -10,6 +10,7 @@ import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { fetchSolicitacoesData, solicitacoesQueryKey } from '@/features/solicitacoes/hooks/useSolicitacoes';
 
 const PREFETCH_STALE_TIME = 30 * 1000;
 const PREFETCH_CACHE_TIME = 5 * 60 * 1000;
@@ -23,17 +24,8 @@ export function usePrefetch() {
   const prefetchSolicitacoes = useCallback(() => {
     if (!canPrefetch) return;
     queryClient.prefetchQuery({
-      queryKey: ['solicitacoes', user!.id, organizationId, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .from('solicitacoes')
-          .select('*')
-          .eq('organization_id', organizationId!)
-          .order('created_at', { ascending: false })
-          .limit(50);
-        if (error) throw error;
-        return data || [];
-      },
+      queryKey: solicitacoesQueryKey(user!.id, organizationId),
+      queryFn: () => fetchSolicitacoesData(user!.id, organizationId),
       staleTime: PREFETCH_STALE_TIME,
       gcTime: PREFETCH_CACHE_TIME,
     });
