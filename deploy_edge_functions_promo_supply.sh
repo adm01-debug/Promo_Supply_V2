@@ -106,7 +106,10 @@ FUNCTIONS=(
 # removida no commit 58f4fc8 e voltou em 97b6efc ("Visual edit in Lovable").
 BLOCKED_FUNCTIONS=("migrate-helper")
 
-NO_JWT_FUNCTIONS=("punchout-receive" "webauthn-authenticate" "run-audit" "system-simulation" "dependency-health" "telemetry")
+# QA-024/025: esta lista espelha supabase/config.toml (fonte unica). So entram funcoes que
+# autenticam por conta propria. run-audit, system-simulation e telemetry validam JWT/role no
+# codigo, entao o gateway pode exigir JWT.
+NO_JWT_FUNCTIONS=("scim-v2" "punchout-receive" "webauthn-authenticate" "dependency-health")
 
 CRITICAL_FNS=(
   "workflow-engine"
