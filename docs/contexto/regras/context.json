@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
+  "sha": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 19:38 UTC",
+  "generated_at": "2026-11-23 20:11 UTC",
   "files_total": 1333,
   "code_files": 1162,
   "code_lines": 199785,
@@ -116347,10 +116347,26 @@
   }
  },
  "git": {
-  "sha": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
+  "sha": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9fd5491",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore(qa): marca a etapa 042 como concluida (#337)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
+   {
+    "sha": "50aa142",
+    "date": "2026-11-23",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#303)",
+    "files": []
+   },
    {
     "sha": "25ed3a7",
     "date": "2026-11-23",
@@ -116698,37 +116714,16 @@
      "src/pages/admin/SSOConfig.tsx",
      "supabase/functions/scim-v2/index.ts"
     ]
-   },
-   {
-    "sha": "81f63a5",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)",
-    "files": [
-     "docs/qa/00-RESUMO.md",
-     "docs/qa/01-INVENTARIO.md",
-     "docs/qa/02-CENARIOS.md",
-     "docs/qa/03-ACHADOS.md",
-     "docs/qa/04-PLANO.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
-   },
-   {
-    "sha": "d9c58bc",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat(sourcing): substitui dados ficticios por metricas reais no console (#306)",
-    "files": [
-     "src/components/compras/SourcingHistoryConsole.tsx",
-     "src/lib/__tests__/sourcingAnalytics.test.ts",
-     "src/lib/sourcingAnalytics.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "src/features/auth/hooks/useAuth.tsx",
     4
+   ],
+   [
+    "docs/qa/05-PROGRESSO.md",
+    3
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
@@ -116744,10 +116739,6 @@
    ],
    [
     "src/features/auth/components/ProtectedRoute.tsx",
-    3
-   ],
-   [
-    "docs/qa/05-PROGRESSO.md",
     3
    ],
    [

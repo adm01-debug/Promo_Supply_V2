@@ -39508,6 +39508,10 @@
               "hits": 1
             },
             {
+              "file": "supabase/functions/receive-os-sync/index.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
             },
@@ -39516,7 +39520,7 @@
               "hits": 2
             }
           ],
-          "code_total_files": 13,
+          "code_total_files": 14,
           "cron": [],
           "db": [
             "public.auto_create_pagamento_on_delivery"
@@ -39590,8 +39594,13 @@
       {
         "args": "p_organization_id uuid, p_period text, p_category_id uuid, p_supplier_id uuid",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "src/hooks/useDashboardKPIs.ts",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -39989,6 +39998,41 @@
         "volatility": "stable"
       },
       {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "src/hooks/usePermissions.ts",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "7fcb636bef294931",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "get_my_permissions",
+        "owner": "postgres",
+        "returns": "TABLE(module text, action text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
         "args": "p_organization_id uuid",
         "callers": {
           "code": [
@@ -40144,9 +40188,13 @@
             {
               "file": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
               "hits": 5
+            },
+            {
+              "file": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 6,
+          "code_total_files": 7,
           "cron": [],
           "db": [
             "public.get_compras_dashboard_metrics",

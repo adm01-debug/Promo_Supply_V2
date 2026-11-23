@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
+  "commit": "9fd549100085cbf32bd2b2619d4f4502b6d16cb7",
   "branch": "main",
-  "data_commit": "2026-11-23T16:30:38-03:00",
+  "data_commit": "2026-11-23T16:32:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "9fd5491",
+    "data": "2026-11-23",
+    "assunto": "chore(qa): marca a etapa 042 como concluida (#337)"
+   },
+   {
+    "sha": "50aa142",
+    "data": "2026-11-23",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#303)"
+   },
    {
     "sha": "25ed3a7",
     "data": "2026-11-23",
@@ -121,16 +131,6 @@
     "sha": "73dce42",
     "data": "2026-11-23",
     "assunto": "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)"
-   },
-   {
-    "sha": "1060124",
-    "data": "2026-11-23",
-    "assunto": "fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)"
-   },
-   {
-    "sha": "87d6784",
-    "data": "2026-11-23",
-    "assunto": "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)"
    }
   ],
   "arquivos_mudados_7d": 347,
@@ -301,18 +301,18 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 288
+    "commits": 289
    },
    {
     "autor": "dependabot[bot]",
     "commits": 6
    },
    {
-    "autor": "copilot-swe-agent[bot]",
-    "commits": 1
+    "autor": "github-actions[bot]",
+    "commits": 2
    },
    {
-    "autor": "github-actions[bot]",
+    "autor": "copilot-swe-agent[bot]",
     "commits": 1
    }
   ]

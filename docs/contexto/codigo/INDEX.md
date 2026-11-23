@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2` (2026-11-23T16:30:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9fd549100085cbf32bd2b2619d4f4502b6d16cb7` (2026-11-23T16:32:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -418,6 +418,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `9fd5491` chore(qa): marca a etapa 042 como concluida (#337)
+- 2026-11-23 `50aa142` chore(db): sincronizar types.ts com o banco [auto] (#303)
 - 2026-11-23 `25ed3a7` fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)
 - 2026-11-23 `81a44e1` fix(seguranca): versiona o seed de permissions e role_permissions (#296)
 - 2026-11-23 `fdeede4` feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)
@@ -431,8 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `55aab7a` fix(cors): health-dashboard deixa de liberar qualquer origem (#333)
 - 2026-11-23 `718302a` fix(palette): atalhos e badges do Command Palette passam a ser reais (#330)
 - 2026-11-23 `013232a` fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)
-- 2026-11-23 `d16d88c` fix(contrato): escapeHtml tambem escapa apostrofo (#328)
-- 2026-11-23 `e02eb15` fix(mfa): remove backup codes inseguros e sem consumidor (#327)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
