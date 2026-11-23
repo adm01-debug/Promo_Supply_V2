@@ -1596,7 +1596,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 306,
+   "linhas": 328,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos"
@@ -1628,7 +1628,7 @@
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
     "src/pages/pagamentos/Pagamentos.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/usePasswordResetRequests.ts",

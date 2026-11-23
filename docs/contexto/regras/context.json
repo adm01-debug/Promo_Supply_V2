@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "368fe97d41f0921048248c282e6b8b1af201400b",
+  "sha": "a1f9fe04efed1982b76d883785f4f928926a837d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 22:07 UTC",
-  "files_total": 1337,
-  "code_files": 1166,
-  "code_lines": 200093,
+  "generated_at": "2026-11-23 22:08 UTC",
+  "files_total": 1338,
+  "code_files": 1167,
+  "code_lines": 200243,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3ff7c3491bf09f72",
+ "facts_hash": "37fd74ebfcfa0138",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 406,
-   ".tsx": 354,
+   ".tsx": 355,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -34697,7 +34697,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 49133,
+   "lines": 49157,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35202,8 +35202,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 76,
-   "lines": 13375,
+   "files": 77,
+   "lines": 13496,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35405,6 +35405,7 @@
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
+    "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
     "src/hooks/__tests__/usePermissions.test.tsx",
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
@@ -35584,7 +35585,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30386,
+   "lines": 30391,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41261,6 +41262,10 @@
    },
    {
     "file": "src/hooks/usePagamentos.ts",
+    "msg": "${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join("
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
     "msg": "Erro ao atualizar pagamentos: "
    },
    {
@@ -41278,6 +41283,10 @@
    {
     "file": "src/hooks/usePagamentos.ts",
     "msg": "Erro ao registrar pagamento: "
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
+    "msg": "Nenhum pagamento pode ir para ${newStatus}: ${blocked.join("
    },
    {
     "file": "src/hooks/usePagamentos.ts",
@@ -52355,6 +52364,18 @@
    {
     "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
     "field": "status",
+    "value": "pendente",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "field": "status",
+    "value": "pendente",
+    "kind": "compara"
+   },
+   {
+    "file": "src/components/pagamentos/PagamentoDetailModal.tsx",
+    "field": "status",
     "value": "ativo",
     "kind": "filtra"
    },
@@ -54719,6 +54740,12 @@
    {
     "file": "src/pages/pagamentos/Pagamentos.tsx",
     "field": "status",
+    "value": "aprovado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/pagamentos/Pagamentos.tsx",
+    "field": "status",
     "value": "pago",
     "kind": "compara"
    },
@@ -56721,6 +56748,12 @@
     "name": "calc",
     "params": "str: string, weights: number[]",
     "body": ""
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
+    "name": "canTransition",
+    "params": "from: string, to: string",
+    "body": "const allowed = VALID_PAGAMENTO_TRANSITIONS[from]; return !allowed || allowed.includes(to);"
    },
    {
     "file": "src/hooks/useWorkflowDLQ.ts",
@@ -61975,6 +62008,18 @@
    {
     "file": "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
     "name": "usa fallback com prefixo SRC quando o RPC nao devolve numero"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
+    "name": "usePagamentos · bulkUpdateStatus (UI-01)"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
+    "name": "nao agenda pagamento pendente: recusa o lote e nao grava nada"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
+    "name": "agenda apenas os aprovados e reporta os bloqueados"
    },
    {
     "file": "src/hooks/__tests__/usePermissions.test.tsx",
@@ -78147,6 +78192,7 @@
      "pendente": [
       "compara:src/components/compras/EnhancedPedidoTimeline.tsx",
       "compara:src/components/compras/PedidoTimeline.tsx",
+      "compara:src/components/pagamentos/PagamentoDetailModal.tsx",
       "compara:src/components/pagamentos/PagamentoMobileCard.tsx",
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
       "compara:src/pages/catalogo-xbz/XbzPedidosTab.tsx",
@@ -78180,6 +78226,7 @@
      "aprovado": [
       "compara:src/components/compras/OrderPreviewModal.tsx",
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
+      "compara:src/pages/pagamentos/Pagamentos.tsx",
       "escreve:src/hooks/usePagamentos.ts",
       "filtra:src/pages/documentos/DocumentosFiscais.tsx",
       "filtra:src/pages/recebimento/RecebimentoOffline.tsx"
@@ -95868,10 +95915,7 @@
   },
   "src/components/pagamentos/PagamentoDetailModal.tsx": {
    "path": "src/components/pagamentos/PagamentoDetailModal.tsx",
-   "lines": 443,
-   "exports": [
-    "const PagamentoDetailModal"
-   ],
+   "lines": 467,
    "tables": [
     {
      "table": "creditos_fornecedor",
@@ -95932,6 +95976,16 @@
     {
      "field": "status",
      "value": "pago",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pendente",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pendente",
      "kind": "compara"
     },
     {
@@ -100697,7 +100751,7 @@
   },
   "src/hooks/usePagamentos.ts": {
    "path": "src/hooks/usePagamentos.ts",
-   "lines": 306,
+   "lines": 328,
    "exports": [
     "type Pagamento",
     "interface CreatePagamentoInput",
@@ -100761,11 +100815,13 @@
     "get_pagamentos_kpis"
    ],
    "errors": [
+    "${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join(",
     "Erro ao atualizar pagamentos: ",
     "Erro ao atualizar: ",
     "Erro ao excluir pagamentos: ",
     "Erro ao excluir: ",
     "Erro ao registrar pagamento: ",
+    "Nenhum pagamento pode ir para ${newStatus}: ${blocked.join(",
     "Transição inválida: ${current.status} → ${updates.status}",
     "Você precisa estar logado"
    ],
@@ -100790,6 +100846,13 @@
    "hooks": [
     "usePagamentos",
     "usePagamentosKPIs"
+   ],
+   "calc_fns": [
+    {
+     "name": "canTransition",
+     "params": "from: string, to: string",
+     "body": "const allowed = VALID_PAGAMENTO_TRANSITIONS[from]; return !allowed || allowed.includes(to);"
+    }
    ]
   },
   "src/hooks/usePasswordResetRequests.ts": {
@@ -102054,6 +102117,16 @@
     "useSourcingEvents.createEvent (VAL-01)",
     "grava numero sequencial e owner_id junto do evento",
     "usa fallback com prefixo SRC quando o RPC nao devolve numero"
+   ]
+  },
+  "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx": {
+   "path": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
+   "lines": 99,
+   "is_test": true,
+   "tests": [
+    "usePagamentos · bulkUpdateStatus (UI-01)",
+    "nao agenda pagamento pendente: recusa o lote e nao grava nada",
+    "agenda apenas os aprovados e reporta os bloqueados"
    ]
   },
   "src/hooks/__tests__/usePermissions.test.tsx": {
@@ -106998,7 +107071,7 @@
   },
   "src/pages/pagamentos/Pagamentos.tsx": {
    "path": "src/pages/pagamentos/Pagamentos.tsx",
-   "lines": 300,
+   "lines": 305,
    "exports": [
     "default Pagamentos"
    ],
@@ -107006,6 +107079,11 @@
     {
      "field": "status",
      "value": "pago",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovado",
      "kind": "compara"
     },
     {
@@ -116475,10 +116553,23 @@
   }
  },
  "git": {
-  "sha": "368fe97d41f0921048248c282e6b8b1af201400b",
+  "sha": "a1f9fe04efed1982b76d883785f4f928926a837d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a1f9fe0",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/pagamentos/PagamentoDetailModal.tsx",
+     "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
+     "src/hooks/usePagamentos.ts",
+     "src/pages/pagamentos/Pagamentos.tsx"
+    ]
+   },
    {
     "sha": "368fe97",
     "date": "2026-11-23",
@@ -116825,45 +116916,19 @@
      "supabase/functions/send-push-notification/index.ts",
      "supabase/functions/workflow-engine/index.ts"
     ]
-   },
-   {
-    "sha": "73dce42",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)",
-    "files": [
-     "src/features/auth/hooks/useAuth.tsx",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-     "src/hooks/useDashboardKPIs.ts",
-     "src/hooks/usePagamentos.ts",
-     "src/hooks/useSidebarBadges.ts",
-     "src/pages/pagamentos/Pagamentos.tsx",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/solicitacoes/Solicitacoes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    6
+    7
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
     3
    ],
    [
-    "src/features/auth/hooks/useAuth.tsx",
-    3
-   ],
-   [
     "supabase/config.toml",
-    2
-   ],
-   [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
    ],
    [
@@ -116872,14 +116937,6 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-    2
-   ],
-   [
-    "src/hooks/useDashboardKPIs.ts",
     2
    ],
    [
@@ -116924,6 +116981,22 @@
    ],
    [
     "supabase/functions/process-invoice-idp/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/scim-v2/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/send-push-notification/index.ts",
+    2
+   ],
+   [
+    "src/features/auth/components/ProtectedRoute.tsx",
+    2
+   ],
+   [
+    "src/features/auth/hooks/useAuth.tsx",
     2
    ]
   ]
