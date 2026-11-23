@@ -28,6 +28,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // signOut / SIGNED_OUT / user-switch occurs, preventing stale data from a
   // previous user leaking into the newly-cleared state.
   const fetchGenerationRef = useRef(0);
+  // QA-043: distingue logout pedido pelo usuario de sessao expirada, para
+  // nao avisar 'sessao expirou' em quem clicou em Sair.
+  const logoutVoluntarioRef = useRef(false);
 
   const setSelectedEmpresa = useCallback((empresaId: string | null) => {
     setSelectedEmpresaIdState(empresaId);
@@ -164,6 +167,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (event === 'SIGNED_OUT') {
             queryClient.clear();
             setLoading(false);
+            if (!logoutVoluntarioRef.current) {
+              toast.warning('Sua sessao expirou. Entre novamente para continuar.', { id: 'sessao-expirada' });
+            }
+            logoutVoluntarioRef.current = false;
           }
         }
       }
@@ -183,6 +190,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setTenantId(null);
         setAvailableTenants([]);
         fetchedUserIdRef.current = null;
+        toast.warning('Sua sessao foi encerrada em outra aba.', { id: 'sessao-expirada' });
       }
     };
     window.addEventListener('storage', handleStorageLogout);
@@ -227,6 +235,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
   const signOut = useCallback(async () => {
+    logoutVoluntarioRef.current = true;
     const userId = user?.id;
     logger.info('Signing out', { userId });
     // CRIT-C1/C8: invalidate any in-flight fetchUserData BEFORE clearing state

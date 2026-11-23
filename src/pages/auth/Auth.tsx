@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { logger } from '@/lib/logger';
 import { Package, Mail, Lock, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,6 +25,13 @@ import { AuthBackground, AuthBrandingPanel } from './AuthBranding';
 
 const Auth = () => {
   const navigate = useNavigate();
+  // QA-043: rota de origem gravada pelo ProtectedRoute quando a sessao cai.
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  // Destino pos-login: volta para a rota interrompida, ou para a raiz.
+  const destinoPosLogin = from && from.startsWith('/') && !from.startsWith('//') && !from.startsWith('/auth')
+    ? from
+    : '/';
   const { user, loading, signIn } = useAuth();
   const { isSupported, isLoading: isPasskeyLoading, authenticateWithPasskey } = useWebAuthn();
   const { isLocked, countdown, formatCountdown, checkLockout, recordFailedAttempt, clearLockout } = useAccountLockout();
@@ -40,9 +47,9 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
-      navigate('/');
+      navigate(destinoPosLogin, { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, destinoPosLogin]);
 
   // Check lockout status when email changes
   useEffect(() => {
@@ -116,7 +123,7 @@ const Auth = () => {
       await clearLockout(loginEmail);
       setRemainingAttempts(null);
       toast.success('Login realizado com sucesso!');
-      navigate('/');
+      navigate(destinoPosLogin, { replace: true });
     }
   };
 
@@ -281,7 +288,7 @@ const Auth = () => {
                           }
                           setPasskeyEmail(target);
                           const result = await authenticateWithPasskey(target);
-                          if (result.success) navigate('/');
+                          if (result.success) navigate(destinoPosLogin, { replace: true });
                         }}
                       >
                         {isPasskeyLoading ? (
