@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d150caf4a41e567de0f4e1843c0fd8ae6e284dfe",
+  "sha": "2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 22:43 UTC",
-  "files_total": 1340,
-  "code_files": 1169,
-  "code_lines": 200404,
+  "generated_at": "2026-11-23 22:52 UTC",
+  "files_total": 1341,
+  "code_files": 1170,
+  "code_lines": 200554,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2ed05e68ebd3d5d4",
+ "facts_hash": "b086004134c23ddc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 406,
-   ".tsx": 357,
+   ".tsx": 358,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35202,8 +35202,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 79,
-   "lines": 13657,
+   "files": 80,
+   "lines": 13807,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35401,6 +35401,7 @@
     "src/hooks/__tests__/keyboardShortcutsData.test.ts",
     "src/hooks/__tests__/permissionsConstants.test.ts",
     "src/hooks/__tests__/useApprovalHistory.test.ts",
+    "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -61890,6 +61891,18 @@
    {
     "file": "src/hooks/__tests__/useApprovalHistory.test.ts",
     "name": "fetchAllHistory keeps allHistory empty on error"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+    "name": "useApprovalWorkflow · checkEscalations (HK-04)"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+    "name": "grava organization_id na etapa do aprovador escalado"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+    "name": "nao cria etapa quando outro navegador ja escalou o mesmo workflow"
    },
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -99188,7 +99201,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 416,
+   "lines": 424,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -99291,7 +99304,7 @@
     },
     {
      "table": "approval_workflows",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "approval_steps",
@@ -102078,6 +102091,35 @@
     "fetchHistory returns [] on error",
     "fetchAllHistory populates allHistory state",
     "fetchAllHistory keeps allHistory empty on error"
+   ]
+  },
+  "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx": {
+   "path": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+   "lines": 142,
+   "is_test": true,
+   "params": [
+    {
+     "name": "ORG",
+     "value": "'df60b900-ede4-45db-8573-da40d13bf767'"
+    },
+    {
+     "name": "APROVADOR",
+     "value": "'u-escalado'"
+    }
+   ],
+   "transition_maps": [
+    {
+     "name": "workflowVencido",
+     "body": "id: 'wf1', etapa_atual: 1, solicitacao_id: 's1', status: 'pending', approval_rules: { escalacao_automatica: true, escalacao_para: APROVADOR, tempo_limite_horas: 2, },"
+    }
+   ],
+   "temporal": [
+    "await vi.waitFor(() => expect(stepsInseridos).toHaveLength(1), { timeout: 3000 });"
+   ],
+   "tests": [
+    "useApprovalWorkflow · checkEscalations (HK-04)",
+    "grava organization_id na etapa do aprovador escalado",
+    "nao cria etapa quando outro navegador ja escalou o mesmo workflow"
    ]
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
@@ -116604,10 +116646,21 @@
   }
  },
  "git": {
-  "sha": "d150caf4a41e567de0f4e1843c0fd8ae6e284dfe",
+  "sha": "2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2b1df86",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+     "src/hooks/useApprovalWorkflow.ts"
+    ]
+   },
    {
     "sha": "d150caf",
     "date": "2026-11-23",
@@ -116954,22 +117007,12 @@
      "tests-e2e/workflow-advanced.spec.ts",
      "tests-rls/rls-isolation.test.ts"
     ]
-   },
-   {
-    "sha": "07960cf",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)",
-    "files": [
-     "supabase/functions/dependency-health/index.test.ts",
-     "supabase/functions/telemetry/index.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    9
+    10
    ],
    [
     "supabase/config.toml",
@@ -117028,6 +117071,14 @@
     2
    ],
    [
+    "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    1
+   ],
+   [
     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
     1
    ],
@@ -117037,14 +117088,6 @@
    ],
    [
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useFornecedores.ts",
-    1
-   ],
-   [
-    "src/components/pagamentos/PagamentoDetailModal.tsx",
     1
    ]
   ]

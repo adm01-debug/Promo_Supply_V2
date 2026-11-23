@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d150caf4a41e567de0f4e1843c0fd8ae6e284dfe` (2026-11-23T19:43:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8` (2026-11-23T19:50:53-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (763), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (764), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1339 |
-| arquivos_codigo | 836 |
-| linhas_codigo | 173220 |
+| arquivos_total | 1340 |
+| arquivos_codigo | 837 |
+| linhas_codigo | 173370 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 210 |
+| testes | 211 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (120), outro (43), co-localizado (*.test) (37)
+- testes: co-localizado (__tests__) (121), outro (43), co-localizado (*.test) (37)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -340,10 +340,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
 - package.json (12)
-- docs/qa/05-PROGRESSO.md (10)
-- .github/workflows/main.yml (9)
+- docs/qa/05-PROGRESSO.md (11)
 - bun.lock (9)
 - docs/prod-readiness.md (9)
+- .github/workflows/main.yml (8)
 - docs/pendencias/_ordem.md (8)
 - supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/xbz-proxy/index.ts (7)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `2b1df86` fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)
 - 2026-11-23 `d150caf` fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)
 - 2026-11-23 `cd9ae3f` fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)
 - 2026-11-23 `a1f9fe0` fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `81a44e1` fix(seguranca): versiona o seed de permissions e role_permissions (#296)
 - 2026-11-23 `fdeede4` feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)
 - 2026-11-23 `b2c53db` fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)
-- 2026-11-23 `334a384` fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
