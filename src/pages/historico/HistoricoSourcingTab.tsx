@@ -13,7 +13,9 @@ import { type PurchaseRecord } from "@/hooks/usePurchaseHistory";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { parseISO } from "date-fns/parseISO";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
+import { exportToCSV } from "@/lib/exportData";
+import { buildCategoryPriceIndex, productKeyOf, type SourcingRecordLike } from "@/lib/sourcingAnalytics";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/lib/feedbackToast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
@@ -45,11 +47,38 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
 
   const selectedRecord = useMemo(() => sourcingData.find(r => r.id === selectedRecordId), [sourcingData, selectedRecordId]);
 
+  const analyticsSource = useMemo<SourcingRecordLike[]>(
+    () =>
+      purchaseRecords.map((r) => ({
+        productId: r.productId,
+        productName: r.productName,
+        productCategory: r.productCategory,
+        supplierId: r.supplierId,
+        supplierName: r.supplierName,
+        purchaseDate: r.purchaseDate,
+        quantity: r.quantity,
+        unitPrice: r.unitPrice,
+        totalPrice: r.totalPrice,
+        discount: r.discount,
+        status: r.status,
+        deliveryDate: r.deliveryDate,
+        orderId: r.id,
+        orderNumber: r.orderNumber,
+      })),
+    [purchaseRecords]
+  );
+
+  const categoryPriceIndex = useMemo(
+    () => buildCategoryPriceIndex(analyticsSource),
+    [analyticsSource]
+  );
+
   // Step 4: Neural Price Benchmark Data
   const priceBenchmarkData = useMemo(() => {
     if (!selectedRecord) return [];
+    const chaveAlvo = productKeyOf(selectedRecord);
     return purchaseRecords
-      .filter(r => r.productId === selectedRecord.productId)
+      .filter(r => productKeyOf(r) === chaveAlvo)
       .sort((a, b) => a.purchaseDate.localeCompare(b.purchaseDate))
       .map(r => ({
         date: format(parseISO(r.purchaseDate), "MMM/yy", { locale: ptBR }),
@@ -58,9 +87,62 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
       }));
   }, [selectedRecord, purchaseRecords]);
 
+  const benchmark = useMemo(() => {
+    const precos = priceBenchmarkData.map((p) => p.price).filter((p) => p > 0);
+    if (precos.length === 0) return null;
+    const melhor = Math.min(...precos);
+    const atual = selectedRecord && selectedRecord.unitPrice > 0 ? selectedRecord.unitPrice : precos[precos.length - 1];
+    const media = precos.reduce((s, p) => s + p, 0) / precos.length;
+    const fornecedorMelhor = priceBenchmarkData.find((p) => p.price === melhor)?.supplier ?? null;
+    const variacaoPct = media > 0 ? ((atual - media) / media) * 100 : 0;
+    const economiaPotencial = selectedRecord ? Math.max(0, (atual - melhor) * selectedRecord.quantity) : 0;
+    const economiaPct = atual > 0 ? Math.max(0, ((atual - melhor) / atual) * 100) : 0;
+    return { precos, melhor, atual, media, fornecedorMelhor, variacaoPct, economiaPotencial, economiaPct };
+  }, [priceBenchmarkData, selectedRecord]);
+
+  const handleExportReport = () => {
+    if (!selectedRecord) {
+      toast.warning("Nenhum registro selecionado", { description: "Selecione um item para gerar o relatório." });
+      return;
+    }
+    const base = [
+      { campo: "Pedido", valor: selectedRecord.orderNumber },
+      { campo: "Produto", valor: selectedRecord.productName },
+      { campo: "Categoria", valor: selectedRecord.productCategory },
+      { campo: "Fornecedor", valor: selectedRecord.supplierName },
+      { campo: "Centro de Custo", valor: selectedRecord.costCenterName || selectedRecord.centroCusto || "Geral" },
+      { campo: "Solicitação", valor: selectedRecord.solicitacaoTitle || "Demanda Direta" },
+      { campo: "Quantidade", valor: selectedRecord.quantity },
+      { campo: "Preço Unitário", valor: selectedRecord.unitPrice },
+      { campo: "Total", valor: selectedRecord.totalPrice },
+      { campo: "Desconto (%)", valor: selectedRecord.discount },
+      { campo: "Status", valor: selectedRecord.status },
+      { campo: "Data da Compra", valor: selectedRecord.purchaseDate },
+      { campo: "Data de Entrega", valor: selectedRecord.deliveryDate || "não registrada" },
+      { campo: "Referências de preço no histórico", valor: priceBenchmarkData.length },
+      { campo: "Menor preço histórico", valor: benchmark ? benchmark.melhor : "sem base" },
+      { campo: "Economia potencial vs menor preço", valor: benchmark ? benchmark.economiaPotencial : "sem base" },
+    ];
+    exportToCSV(base, [
+      { key: "campo", label: "Campo" },
+      { key: "valor", label: "Valor" },
+    ], `sourcing-report-${selectedRecord.orderNumber || selectedRecord.id}`);
+    toast.success("Relatório de sourcing exportado", {
+      description: `Pedido ${selectedRecord.orderNumber} com ${priceBenchmarkData.length} referência(s) de preço.`,
+      icon: <Download className="w-4 h-4" />,
+    });
+  };
+
   const handleUndo = () => {
-    toast.success("Ação desfeita com sucesso via Neural Undo", {
-      description: "O estado anterior do registro foi restaurado.",
+    if (!selectedRecordId) {
+      toast.info("Nada para desfazer", {
+        description: "Nenhum item está selecionado no console.",
+      });
+      return;
+    }
+    setSelectedRecordId(null);
+    toast.success("Seleção limpa", {
+      description: "O console voltou ao estado inicial.",
       icon: <Undo2 className="w-4 h-4 text-amber-500" />
     });
   };
@@ -73,7 +155,7 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
           <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
             <BarChart className="w-3 h-3" /> Volume de Sourcing por Período
           </h4>
-          <Badge variant="outline" className="text-[8px] border-primary/20 text-primary">Live Neural Update</Badge>
+          <Badge variant="outline" className="text-[8px] border-primary/20 text-primary">Histórico real</Badge>
         </div>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={priceBenchmarkData.length > 0 ? priceBenchmarkData : [{date: 'N/A', price: 0}]}>
@@ -253,6 +335,19 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Sourcing & Logística</p>
                     <p className="text-xs font-bold text-foreground">{selectedRecord.supplierName}</p>
                     <p className="text-[10px] text-muted-foreground">Pedido Gerado: <span className="text-foreground font-medium">#{selectedRecord.orderNumber}</span></p>
+                    {(() => {
+                      const variacao = categoryPriceIndex.get(selectedRecord.productCategory);
+                      if (variacao === undefined) return null;
+                      return (
+                        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <TrendingUp className="w-2.5 h-2.5" />
+                          Índice de preço da categoria:{" "}
+                          <span className={cn("font-bold", variacao > 0 ? "text-destructive" : variacao < 0 ? "text-emerald-600" : "text-foreground")}>
+                            {variacao === 0 ? "sem base" : `${variacao > 0 ? "+" : ""}${variacao.toFixed(1)}%`}
+                          </span>
+                        </p>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -281,17 +376,44 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Melhor Histórico</p>
-                    <p className="text-sm font-extrabold text-foreground">R$ {(selectedRecord.unitPrice * 0.88).toLocaleString('pt-BR')}</p>
-                    <p className="text-[8px] text-muted-foreground italic">Distribuidora Global</p>
+                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Menor Preço Histórico</p>
+                    <p className="text-sm font-extrabold text-foreground">
+                      {benchmark ? formatCurrency(benchmark.melhor) : "Sem base"}
+                    </p>
+                    <p className="text-[8px] text-muted-foreground italic">
+                      {benchmark?.fornecedorMelhor ?? "Sem histórico comparável"}
+                    </p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Variação Média</p>
-                    <p className="text-sm font-extrabold text-amber-500">+4.2%</p>
-                    <p className="text-[8px] text-muted-foreground italic">Acima do Target</p>
+                    <p className="text-[9px] text-muted-foreground uppercase font-bold">Variação vs Média</p>
+                    <p className={cn("text-sm font-extrabold", !benchmark ? "text-muted-foreground" : benchmark.variacaoPct > 0 ? "text-amber-500" : "text-emerald-500")}>
+                      {benchmark ? `${benchmark.variacaoPct > 0 ? "+" : ""}${benchmark.variacaoPct.toFixed(1)}%` : "Sem base"}
+                    </p>
+                    <p className="text-[8px] text-muted-foreground italic">
+                      {benchmark ? `Média histórica ${formatCurrency(benchmark.media)}` : "Sem referências de preço"}
+                    </p>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full h-8 text-[10px] uppercase font-bold text-blue-500 border-blue-500/20 hover:bg-blue-500/10">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (!benchmark) {
+                      toast.warning("Sem base de comparação", { description: "Este item não tem histórico de preço registrado." });
+                      return;
+                    }
+                    exportToCSV(
+                      priceBenchmarkData.map((p) => ({ data: p.date, fornecedor: p.supplier, preco: p.price })),
+                      [
+                        { key: "data", label: "Período" },
+                        { key: "fornecedor", label: "Fornecedor" },
+                        { key: "preco", label: "Preço Unitário", formatter: (v: unknown) => formatCurrency(Number(v)) },
+                      ],
+                      `benchmark-${selectedRecord.orderNumber || selectedRecord.id}`
+                    );
+                    toast.success("Série de preços exportada", { description: `${priceBenchmarkData.length} referência(s).` });
+                  }}
+                  className="w-full h-8 text-[10px] uppercase font-bold text-blue-500 border-blue-500/20 hover:bg-blue-500/10"
+                >
                   Ver Análise Detalhada <ArrowRight className="w-3 h-3 ml-2" />
                 </Button>
               </div>
@@ -307,26 +429,35 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">Investimento Real</p>
-                      <p className="text-sm font-bold text-foreground">R$ {selectedRecord.unitPrice.toLocaleString('pt-BR')}</p>
+                      <p className="text-sm font-bold text-foreground">{formatCurrency(selectedRecord.unitPrice)}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[9px] text-muted-foreground uppercase font-bold">Target Price AI</p>
-                      <p className="text-sm font-bold text-emerald-500">R$ {(selectedRecord.unitPrice * 0.92).toFixed(2)}</p>
+                      <p className="text-[9px] text-muted-foreground uppercase font-bold">Menor Preço Praticado</p>
+                      <p className="text-sm font-bold text-emerald-500">
+                        {benchmark ? formatCurrency(benchmark.melhor) : "Sem base"}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-emerald-500/10 flex items-center justify-between">
                     <div>
                       <p className="text-[9px] text-muted-foreground uppercase font-bold">Economia Potencial</p>
-                      <p className="text-xs font-extrabold text-emerald-600">R$ {(selectedRecord.totalPrice * 0.08).toLocaleString('pt-BR')}</p>
+                      <p className="text-xs font-extrabold text-emerald-600">
+                        {benchmark ? formatCurrency(benchmark.economiaPotencial) : "Sem base"}
+                      </p>
                     </div>
                     <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex flex-col items-center justify-center border border-emerald-500/20 shadow-inner">
-                      <span className="text-[10px] font-black text-emerald-600">8%</span>
-                      <span className="text-[6px] text-emerald-500/70 font-bold uppercase">ROI</span>
+                      <span className="text-[10px] font-black text-emerald-600">
+                        {benchmark ? `${benchmark.economiaPct.toFixed(0)}%` : "—"}
+                      </span>
+                      <span className="text-[6px] text-emerald-500/70 font-bold uppercase">Gap</span>
                     </div>
                   </div>
                 </div>
                 
-                <Button className="w-full bg-primary hover:bg-primary/90 text-[11px] font-extrabold uppercase tracking-widest py-6 h-auto shadow-lg shadow-primary/20">
+                <Button
+                  onClick={handleExportReport}
+                  className="w-full bg-primary hover:bg-primary/90 text-[11px] font-extrabold uppercase tracking-widest py-6 h-auto shadow-lg shadow-primary/20"
+                >
                   <Download className="w-4 h-4 mr-2" /> Gerar Executive Sourcing Report
                 </Button>
               </div>
