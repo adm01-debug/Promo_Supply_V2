@@ -44,7 +44,9 @@ export const usePermissions = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase.rpc('get_my_permissions');
+      // A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast
+      // libera o typecheck até `types.ts` ser regenerado.
+      const { data, error } = await supabase.rpc('get_my_permissions' as never);
       if (error) throw error;
 
       // Reshape to the same structure consumers expect
