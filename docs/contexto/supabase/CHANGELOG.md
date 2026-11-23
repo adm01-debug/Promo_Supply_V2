@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-23 22:12 UTC
+
+- **functions** alterado (1): `public.generate_sequential_number(prefix text, table_name text)`
+
 ## 2026-11-23 20:12 UTC
 
 - **functions** adicionado (1): `public.get_my_permissions()`
