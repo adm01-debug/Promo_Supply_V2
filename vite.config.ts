@@ -90,23 +90,13 @@ export default defineConfig(({ mode }) => ({
               },
             },
           },
-          // Supabase REST (transactional) — NetworkFirst, short TTL
+          // Supabase REST (transactional) — NetworkOnly: respostas dependem do JWT/RLS
+          // e nao devem ficar no Cache Storage (vazamento entre usuarios/tenants).
           {
             urlPattern: /^https:\/\/lmypcdfsrgfftzhxawao\.supabase\.co\/rest\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "supabase-rest-cache",
-              networkTimeoutSeconds: 10,
-              expiration: {
-                maxEntries: 300,
-                maxAgeSeconds: 60 * 5,
-              },
-              cacheableResponse: {
-                statuses: [200],
-              },
-            },
+            handler: "NetworkOnly",
           },
-          // Supabase Storage (files/images) — CacheFirst, longer TTL
+                    // Supabase Storage (files/images) — CacheFirst, longer TTL
           {
             urlPattern: /^https:\/\/lmypcdfsrgfftzhxawao\.supabase\.co\/storage\/.*/i,
             handler: "CacheFirst",
