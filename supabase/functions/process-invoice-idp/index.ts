@@ -45,6 +45,16 @@ serve(async (req) => {
       });
     }
 
+    // QA-023: Ensure the requested path belongs to this user; rejects cross-user access.
+    // Upload path is always "uploads/{user_id}/{filename}" (see DocumentosFiscais.tsx).
+    const expectedPrefix = `uploads/${user.id}/`;
+    if (!filePath.startsWith(expectedPrefix)) {
+      return new Response(JSON.stringify({ error: "Acesso negado: arquivo nao pertence ao usuario" }), {
+        status: 403,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
     logger.info("Iniciando processamento de nota fiscal", { filePath, userId: user.id });
 
     const supabaseAdmin = createClient(

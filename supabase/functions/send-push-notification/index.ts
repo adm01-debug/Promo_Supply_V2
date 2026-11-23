@@ -74,8 +74,8 @@ Deno.serve(async (req) => {
 
   try {
     // SECURITY: Validate user authentication
-    const _pushUserId = await verifyAuthUser(req);
-    const rlPush = await checkRateLimit({ identifier: _pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
+    const pushUserId = await verifyAuthUser(req);
+    const rlPush = await checkRateLimit({ identifier: pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
     if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, corsHeaders);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -92,16 +92,62 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // QA-021: Verify caller has admin or coordinator role before sending push notifications
+    const { data: roleRow, error: roleErr } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', pushUserId)
+      .maybeSingle();
+    if (roleErr || !roleRow || !['admin', 'coordinator'].includes(roleRow.role)) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: admin or coordinator role required to send push notifications' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // QA-021: Resolve caller's organization to restrict push targeting
+    const { data: profileRow } = await supabase
+      .from('profiles')
+      .select('current_organization_id')
+      .eq('user_id', pushUserId)
+      .maybeSingle();
+    const callerOrgId = profileRow?.current_organization_id ?? null;
+
     const body: PushPayload = await req.json();
 
     logger.info('Received push notification request');
 
     const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
 
+    // QA-021: If targeting specific users, verify they all belong to the caller's organization
+    if (user_ids && user_ids.length > 0 && callerOrgId) {
+      const { data: targetProfiles, error: profilesErr } = await supabase
+        .from('profiles')
+        .select('user_id, current_organization_id')
+        .in('user_id', user_ids);
+      if (profilesErr) throw profilesErr;
+      const outsiders = (targetProfiles ?? []).filter(p => p.current_organization_id !== callerOrgId);
+      if (outsiders.length > 0) {
+        return new Response(
+          JSON.stringify({ error: 'Forbidden: cannot send push to users outside your organization' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     let query = supabase.from('push_subscriptions').select('*');
-    
+
     if (user_ids && user_ids.length > 0) {
       query = query.in('user_id', user_ids);
+    } else if (callerOrgId) {
+      // QA-021: When no user_ids specified, restrict to caller's organization via profiles
+      const { data: orgUserIds } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('current_organization_id', callerOrgId);
+      const ids = (orgUserIds ?? []).map(p => p.user_id);
+      if (ids.length > 0) query = query.in('user_id', ids);
     }
 
     const { data: subscriptions, error: subError } = await query;

@@ -32,7 +32,8 @@ export const WorkflowContract = z.discriminatedUnion("action", [
     action: z.literal('approve_step'),
     instance_id: z.string().uuid(),
     node_id: z.string().uuid(),
-    approver_id: z.string().uuid(),
+    // QA-022: approver_id from body is ignored; server uses user.id from JWT.
+    approver_id: z.string().uuid().optional(),
     comment: z.string().max(1000).optional()
   }),
   z.object({
@@ -40,7 +41,8 @@ export const WorkflowContract = z.discriminatedUnion("action", [
     instance_id: z.string().uuid(),
     node_id: z.string().uuid(),
     decision: ciEnum(['approve', 'reject']),
-    approver_id: z.string().uuid(),
+    // QA-022: approver_id from body is ignored; server uses user.id from JWT.
+    approver_id: z.string().uuid().optional(),
     comment: z.string().max(1000).optional()
   })
 ]);

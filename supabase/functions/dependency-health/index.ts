@@ -337,15 +337,8 @@ function computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry): 
   };
 }
 
-async function fetchStaticFallback(origin: string): Promise<DependencyHealthSnapshot | null> {
-  try {
-    const res = await fetch(`${origin}/dependency-health.json`, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
+// fetchStaticFallback removed (QA-026): was an SSRF vector — Origin/Referer spoofing allowed
+// server-side fetch to attacker-controlled URLs.
 
 async function handleHistory(): Promise<Response> {
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -485,12 +478,8 @@ async function handleGet(req: Request): Promise<Response> {
     return json(data.payload);
   }
 
-  // Fallback to static JSON from Origin (or referer)
-  const origin = req.headers.get("origin") ?? req.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "";
-  if (origin) {
-    const fallback = await fetchStaticFallback(origin);
-    if (fallback) return json(fallback);
-  }
+  // QA-026: Origin/Referer-based fallback removed — it was an SSRF vector (server-side
+  // fetch to attacker-controlled URL via spoofed Origin header). Falls through to stub.
 
   // Last-resort stub
   const stub: DependencyHealthSnapshot = {
