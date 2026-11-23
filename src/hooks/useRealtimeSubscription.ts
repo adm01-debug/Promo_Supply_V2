@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { abrirCanalPostgres } from '@/lib/realtime';
 import { useQueryClient } from '@tanstack/react-query';
@@ -99,23 +99,31 @@ export function useRealtimeSubscription({
 
   const tablesKey = tables.join(',');
 
+    // Quase todo consumidor passa um literal (ex.: ['fornecedores']) — isto é, um array
+    // novo a cada render. Sem memoizar por chave, o efeito abaixo refazia o canal em toda
+    // renderização e os eventos que chegassem nesse intervalo eram perdidos.
+    const tableNames = useMemo(
+      () => (tablesKey ? (tablesKey.split(',') as TableName[]) : []),
+      [tablesKey]
+    );
+
   useEffect(() => {
-    if (!enabled || tables.length === 0) return;
+      if (!enabled || tableNames.length === 0) return;
 
     // SECURITY: Tenant-scoped tables require an active tenant before subscribing.
     // Without it, Postgres CDC would broadcast every tenant's rows to this client
     // (RLS does NOT filter Realtime payloads on its own).
-    const needsTenant = tables.some((t) => TENANT_SCOPED_TABLES.has(t));
+      const needsTenant = tableNames.some((t) => TENANT_SCOPED_TABLES.has(t));
     if (needsTenant && !tenantId) {
-      logger.debug('Realtime: skipping subscription, awaiting tenantId', { tables });
+        logger.debug('Realtime: skipping subscription, awaiting tenantId', { tables: tableNames });
       return;
     }
 
     // Scope channel name by tenant so each tenant has an isolated channel.
-    const channelName = `realtime-${tenantId ?? 'global'}-${tables.join('-')}`;
+      const channelName = `realtime-${tenantId ?? 'global'}-${tablesKey.replace(/,/g, '-')}`;
     let channel = abrirCanalPostgres(channelName);
 
-    tables.forEach((table) => {
+      tableNames.forEach((table) => {
       const isTenantScoped = TENANT_SCOPED_TABLES.has(table);
       const config: { event: '*'; schema: 'public'; table: string; filter?: string } = {
         event: '*',
@@ -159,5 +167,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tables]);
+  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tableNames]);
 }
