@@ -43,13 +43,13 @@ export function useFornecedores(filters?: FornecedorFilters) {
   const { data: fornecedores = [], isLoading: loading, error, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
-      if (!tenantId) return [];
+          if (!organizationId) return [];
 
       let query = supabase
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
         .order('razao_social', { ascending: true })
-        .eq('organization_id', organizationId || tenantId);
+        .eq('organization_id', organizationId);
 
       if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
@@ -62,7 +62,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       if (fetchError) throw fetchError;
       return data as Fornecedor[];
     },
-    enabled: !!user && !!tenantId,
+          enabled: !!user && !!organizationId,
     staleTime: 60_000,
   });
 
@@ -85,8 +85,8 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
   // Create new fornecedor
   const createFornecedor = useCallback(async (input: CreateFornecedorInput) => {
-    if (!user || !tenantId) {
-      toast.error('Você precisa estar logado');
+    if (!user || !organizationId || !tenantId) {
+          toast.error('Você precisa estar logado em uma organização');
       return null;
     }
 
@@ -133,8 +133,8 @@ export function useFornecedores(filters?: FornecedorFilters) {
           condicoes_pagamento: input.condicoes_pagamento,
           observacoes: input.observacoes,
           created_by: user.id,
-          organization_id: tenantId,
-          tenant_id: tenantId,
+                    organization_id: organizationId,
+                    tenant_id: tenantId,
         })
         .select()
         .single();
@@ -162,7 +162,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
-  }, [user, tenantId, queryClient, validateCNPJ]);
+  }, [user, tenantId, organizationId, queryClient, validateCNPJ]);
 
   // Update fornecedor
   const updateFornecedor = useCallback(async (id: string, updates: Partial<Fornecedor>) => {
@@ -234,15 +234,15 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
 // Hook for KPIs optimized with RPC and React Query
 export function useFornecedoresKPIs() {
-  const { user, tenantId } = useAuth();
+  const { user, organizationId } = useAuth();
 
   const { data: kpis = { total: 0, ativos: 0, integradosApi: 0, mediaAvaliacao: 0 }, isLoading } = useQuery({
-    queryKey: ['fornecedores-kpis', user?.id, tenantId],
+    queryKey: ['fornecedores-kpis', user?.id, organizationId],
     queryFn: async () => {
-      if (!tenantId) return { total: 0, ativos: 0, integradosApi: 0, mediaAvaliacao: 0 };
+      if (!organizationId) return { total: 0, ativos: 0, integradosApi: 0, mediaAvaliacao: 0 };
       
       const { data, error } = await supabase.rpc('get_fornecedores_kpis', { 
-        p_organization_id: tenantId 
+        p_organization_id: organizationId 
       });
 
       if (error) {
@@ -257,7 +257,7 @@ export function useFornecedoresKPIs() {
         mediaAvaliacao: number; 
       };
     },
-    enabled: !!user && !!tenantId,
+    enabled: !!user && !!organizationId,
     staleTime: 60_000,
   });
 
