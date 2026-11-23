@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { logger } from '@/lib/logger';
 import { 
@@ -51,7 +51,7 @@ const GerarOrdem = () => {
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
   const [mensagemEmail, setMensagemEmail] = useState("");
   const [assuntoEmail, setAssuntoEmail] = useState("");
-  const [frete, setFrete] = useState(150);
+  const [frete, setFrete] = useState(0);
   const [desconto, setDesconto] = useState(0);
   const [observacoes, setObservacoes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -99,21 +99,28 @@ const GerarOrdem = () => {
     staleTime: 60_000,
   });
 
-  // Create a unified data shape
+  // Cotacao alvo: preco de origem da OC. Sem ela nao ha valor real para gravar.
+    const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
+
+    const quantidadeCotacao = Number(selectedCotacao?.quantidade ?? 0) || Number(solicitacaoData?.quantidade ?? 0);
+    // O preco vem da cotacao vencedora. O valor estimado da solicitacao e' chute
+    // do solicitante, nao preco negociado, e servia apenas de fallback.
+    const valorUnitario = Number(selectedCotacao?.valor_unitario ?? 0)
+      || (Number(solicitacaoData?.valor_estimado ?? 0) / Math.max(Number(solicitacaoData?.quantidade ?? 1), 1));
+
+    // Create a unified data shape
   const solicitacao = {
     id: solicitacaoData?.id || 'N/A',
     produto: solicitacaoData?.descricao || 'Produto',
-    quantidade: solicitacaoData?.quantidade || 0,
-    quantidadeReal: solicitacaoData?.quantidade || 0,
+      quantidade: quantidadeCotacao,
+      quantidadeReal: quantidadeCotacao,
     tipo: 'produto',
     empresa: 'Promo Supply',
     vendedor: '',
     prazoEntrega: solicitacaoData?.data_necessidade || new Date().toISOString(),
-    valorUnitario: Number(solicitacaoData?.valor_estimado || 0) / Math.max(solicitacaoData?.quantidade || 1, 1),
+      valorUnitario,
     fornecedorSelecionado: '',
   };
-
-  const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
 
   const fornecedor = useMemo(() => {
     if (selectedCotacao?.fornecedor_id) {
@@ -135,9 +142,19 @@ const GerarOrdem = () => {
 
   const ordemNumero = "A DEFINIR";
 
-  // Cálculos financeiros
-  const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
+  // Calculos financeiros — frete e desconto vem da cotacao vencedora; o `|| 12`
+    // era placeholder de maquete e o frete fixo de 150 inventava valor na OC.
+    const subtotal = solicitacao.valorUnitario * solicitacao.quantidadeReal;
   const total = subtotal + frete - desconto;
+
+    useEffect(() => {
+      if (!selectedCotacao) return;
+      setFrete(Number(selectedCotacao.valor_frete ?? 0));
+      const bruto = Number(selectedCotacao.valor_unitario ?? 0) * quantidadeCotacao;
+      const pct = Number(selectedCotacao.desconto_percentual ?? 0);
+      setDesconto(pct > 0 ? Number(((bruto * pct) / 100).toFixed(2)) : 0);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCotacao?.id, selectedCotacao?.valor_frete, selectedCotacao?.desconto_percentual, selectedCotacao?.valor_unitario, quantidadeCotacao]);
 
   const gerarMensagemWhatsApp = () => {
     setMensagemWhatsApp(buildWhatsAppMessage(
@@ -185,6 +202,17 @@ const GerarOrdem = () => {
       return;
     }
 
+        // Sem cotacao nao existe preco negociado: gerar a OC com valor estimado (ou
+        // com um padrao) gravaria valor errado no pedido e no financeiro.
+        if (!selectedCotacao || !(solicitacao.valorUnitario > 0) || !(solicitacao.quantidadeReal > 0)) {
+          toast({
+            title: "Erro",
+            description: "Selecione a cotação vencedora: a ordem de compra é emitida com o preço dela.",
+            variant: "destructive"
+          });
+          return;
+        }
+
     setIsSubmitting(true);
     try {
       const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
@@ -199,7 +227,7 @@ const GerarOrdem = () => {
         observacoes: observacoes,
         itens: [{
           descricao: solicitacaoData.titulo || 'Produto',
-          quantidade: solicitacaoData.quantidade || 1,
+          quantidade: solicitacao.quantidadeReal || 1,
           unidade: solicitacaoData.unidade || 'un',
           valor_unitario: solicitacao.valorUnitario,
           pim_product_id: pimProductId ?? undefined,
@@ -241,7 +269,7 @@ const GerarOrdem = () => {
       itens: [{
         descricao: solicitacao.produto,
         quantidade: solicitacao.quantidadeReal,
-        valor_unitario: solicitacao.valorUnitario || 12,
+        valor_unitario: solicitacao.valorUnitario,
       }],
       subtotal,
       frete,
@@ -475,7 +503,7 @@ const GerarOrdem = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Valor Unitário</span>
-                  <span className="font-medium">R$ {(solicitacao.valorUnitario || 12).toFixed(2)}</span>
+                  <span className="font-medium">R$ {solicitacao.valorUnitario.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Quantidade</span>
@@ -553,8 +581,10 @@ const GerarOrdem = () => {
                 <Button 
                   onClick={finalizarOrdem} 
                   className="w-full gap-2 gradient-primary h-12 text-lg"
-                  disabled={isSubmitting || !fornecedor.id}
-                  title={!fornecedor.id ? 'Selecione uma cotacao com fornecedor definido para gerar a OC' : undefined}
+                  disabled={isSubmitting || !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)}
+                                    title={!fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)
+                                      ? 'Selecione uma cotacao com fornecedor e preco definidos para gerar a OC'
+                                      : undefined}
                 >
                   {isSubmitting ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Gerando Ordem...</>

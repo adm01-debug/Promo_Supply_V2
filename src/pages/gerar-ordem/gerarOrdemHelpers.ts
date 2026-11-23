@@ -39,7 +39,7 @@ Gostaríamos de confirmar o pedido abaixo:
 
 📦 *Produto:* ${solicitacao.produto}
 📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
-💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
+💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario).toFixed(2)}
 ${frete > 0 ? `🚚 *Frete:* R$ ${frete.toFixed(2)}` : '🚚 *Frete:* Grátis'}
 ${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
 💵 *TOTAL:* ${formatCurrency(total)}
@@ -77,7 +77,7 @@ DADOS DO PEDIDO:
 • Tipo: ${getTipoLabel(solicitacao.tipo)}
 
 VALORES:
-• Valor Unitário: R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
+• Valor Unitário: R$ ${(solicitacao.valorUnitario).toFixed(2)}
 • Subtotal: ${formatCurrency(subtotal)}
 • Frete: ${frete > 0 ? `R$ ${frete.toFixed(2)}` : 'Grátis'}
 ${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}

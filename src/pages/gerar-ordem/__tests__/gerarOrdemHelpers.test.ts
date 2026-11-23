@@ -173,3 +173,25 @@ describe('buildEmailMessage', () => {
     expect(corpo).toContain('Serviço');
   });
 });
+
+// ─── NEG-03: o preco da OC vem da cotacao, nunca de um valor fixo ─────────────
+
+describe('buildWhatsAppMessage/buildEmailMessage sem fallback de R$ 12', () => {
+  it('nao inventa R$ 12,00 quando o valor unitario e zero', () => {
+    const zerado = makeOrder({ valorUnitario: 0 });
+
+    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).not.toContain('12.00');
+    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).toContain('0.00');
+
+    const { corpo } = buildEmailMessage(zerado, 'OC-001', 0, 0, 0, 0, '');
+    expect(corpo).not.toContain('12.00');
+  });
+
+  it('reproduz o valor unitario da cotacao vencedora', () => {
+    const daCotacao = makeOrder({ valorUnitario: 23, quantidadeReal: 200 });
+
+    expect(buildWhatsAppMessage(makeSupplier(), daCotacao, 'OC-001', 4600, 200, 0, '')).toContain('23.00');
+    const { corpo } = buildEmailMessage(daCotacao, 'OC-001', 4600, 4800, 200, 0, '');
+    expect(corpo).toContain('23.00');
+  });
+});
