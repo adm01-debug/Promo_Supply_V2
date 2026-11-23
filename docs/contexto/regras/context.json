@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
+  "sha": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 19:35 UTC",
-  "files_total": 1332,
-  "code_files": 1161,
-  "code_lines": 199768,
+  "generated_at": "2026-11-23 19:38 UTC",
+  "files_total": 1333,
+  "code_files": 1162,
+  "code_lines": 199785,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b36a83ed7798c5ec",
+ "facts_hash": "18b24fbbe478c61b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 404,
    ".tsx": 352,
-   ".sql": 330,
+   ".sql": 331,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -22549,6 +22549,21 @@
      "v_sla"
     ]
    },
+   "get_my_permissions": {
+    "args": "",
+    "returns": "TABLE(module TEXT, action TEXT)",
+    "lang": "sql",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "SELECT p.module, p.action FROM public.user_roles ur JOIN public.role_permissions rp ON ur.role = rp.role JOIN public.permissions p ON rp.permission_id = p.id WHERE ur.user_id = auth.uid()",
+    "raises": [],
+    "tables": [
+     "permissions",
+     "role_permissions",
+     "user_roles"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -27157,6 +27172,7 @@
    "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
    "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql",
    "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+   "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
    "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "src/integrations/supabase/types.ts"
   ],
@@ -31088,6 +31104,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_my_permissions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_my_permissions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
    }
   ],
   "raises": [
@@ -35170,7 +35202,7 @@
   {
    "module": "src/hooks",
    "files": 74,
-   "lines": 13217,
+   "lines": 13213,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -36142,8 +36174,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 328,
-   "lines": 26940,
+   "files": 329,
+   "lines": 26961,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -39160,6 +39192,9 @@
    "get_fornecedores_kpis": [
     "src/hooks/useFornecedores.ts",
     "src/lib/supabaseRpc.ts"
+   ],
+   "get_my_permissions": [
+    "src/hooks/usePermissions.ts"
    ],
    "get_pagamentos_kpis": [
     "src/hooks/usePagamentos.ts",
@@ -42367,10 +42402,6 @@
     "value": "granted"
    },
    {
-    "file": "src/hooks/usePermissions.ts",
-    "value": "admin"
-   },
-   {
     "file": "src/hooks/useRealPushNotifications.ts",
     "value": "granted"
    },
@@ -42555,6 +42586,10 @@
    {
     "file": "src/hooks/useMFA.ts",
     "text": "Check if MFA is required for this session"
+   },
+   {
+    "file": "src/hooks/usePermissions.ts",
+    "text": "A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast"
    },
    {
     "file": "src/hooks/usePermissions.ts",
@@ -53528,12 +53563,6 @@
     "kind": "filtra"
    },
    {
-    "file": "src/hooks/usePermissions.ts",
-    "field": "role",
-    "value": "admin",
-    "kind": "compara"
-   },
-   {
     "file": "src/hooks/usePrefetch.ts",
     "field": "status",
     "value": "ativo",
@@ -57162,6 +57191,10 @@
    {
     "file": "src/hooks/usePasswordResetRequests.ts",
     "line": "expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h from now"
+   },
+   {
+    "file": "src/hooks/usePermissions.ts",
+    "line": "staleTime: 5 * 60 * 1000,"
    },
    {
     "file": "src/hooks/usePrefetch.ts",
@@ -76339,6 +76372,21 @@
      "v_sla"
     ]
    },
+   "get_my_permissions": {
+    "args": "",
+    "returns": "TABLE(module TEXT, action TEXT)",
+    "lang": "sql",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "SELECT p.module, p.action FROM public.user_roles ur JOIN public.role_permissions rp ON ur.role = rp.role JOIN public.permissions p ON rp.permission_id = p.id WHERE ur.user_id = auth.uid()",
+    "raises": [],
+    "tables": [
+     "permissions",
+     "role_permissions",
+     "user_roles"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -78595,7 +78643,6 @@
      "admin": [
       "compara:src/components/security/PermissionMatrix.tsx",
       "compara:src/features/auth/hooks/useAuth.tsx",
-      "compara:src/hooks/usePermissions.ts",
       "filtra:supabase/functions/check-expiry-alerts/index.ts",
       "filtra:supabase/functions/check-sla-alerts/index.ts",
       "filtra:supabase/functions/weekly-report/index.ts",
@@ -81283,6 +81330,7 @@
    "get_failed_login_count",
    "get_fornecedores_kpis",
    "get_my_organization",
+   "get_my_permissions",
    "get_pagamentos_kpis",
    "get_pedidos_kpis",
    "get_solicitacoes_kpis",
@@ -85153,6 +85201,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "get_my_permissions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_my_permissions",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
    }
   ],
   "guards": [
@@ -100741,7 +100805,7 @@
   },
   "src/hooks/usePermissions.ts": {
    "path": "src/hooks/usePermissions.ts",
-   "lines": 159,
+   "lines": 167,
    "exports": [
     "interface Permission",
     "interface RolePermission",
@@ -100757,32 +100821,20 @@
     {
      "table": "role_permissions",
      "op": "select"
-    },
-    {
-     "table": "role_permissions",
-     "op": "select"
     }
    ],
-   "table_cols": {
-    "role_permissions": [
-     "role"
-    ]
-   },
-   "status_values": [
-    {
-     "field": "role",
-     "value": "admin",
-     "kind": "compara"
-    }
-   ],
-   "role_checks": [
-    "admin"
+   "rpc": [
+    "get_my_permissions"
    ],
    "rule_comments": [
+    "A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast",
     "Check if user has specific permission"
    ],
    "hooks": [
     "usePermissions"
+   ],
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
    ]
   },
   "src/hooks/usePrefetch.ts": {
@@ -101917,7 +101969,7 @@
   },
   "src/hooks/__tests__/usePermissions.test.tsx": {
    "path": "src/hooks/__tests__/usePermissions.test.tsx",
-   "lines": 133,
+   "lines": 121,
    "is_test": true,
    "role_checks": [
     "any",
@@ -101925,6 +101977,9 @@
     "delete",
     "manage_ips",
     "view"
+   ],
+   "rule_comments": [
+    "Mock supabase.rpc to return the permission rows"
    ],
    "tests": [
     "usePermissions",
@@ -116061,6 +116116,10 @@
    "path": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
    "lines": 84
   },
+  "supabase/migrations/20261123120000_get_my_permissions_rpc.sql": {
+   "path": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
+   "lines": 21
+  },
   "supabase/migrations/20261125140000_integracao_promo_design.sql": {
    "path": "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "lines": 24
@@ -116288,10 +116347,21 @@
   }
  },
  "git": {
-  "sha": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
+  "sha": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "25ed3a7",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)",
+    "files": [
+     "src/hooks/__tests__/usePermissions.test.tsx",
+     "src/hooks/usePermissions.ts",
+     "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
+    ]
+   },
    {
     "sha": "81a44e1",
     "date": "2026-11-23",
@@ -116652,17 +116722,6 @@
      "src/components/compras/SourcingHistoryConsole.tsx",
      "src/lib/__tests__/sourcingAnalytics.test.ts",
      "src/lib/sourcingAnalytics.ts"
-    ]
-   },
-   {
-    "sha": "2a98db8",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)",
-    "files": [
-     "src/lib/__tests__/negotiationOutreach.test.ts",
-     "src/lib/negotiationOutreach.ts",
-     "src/pages/negociacao-ia/NegociacaoIA.tsx"
     ]
    }
   ],

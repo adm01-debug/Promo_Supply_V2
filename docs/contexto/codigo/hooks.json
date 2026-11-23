@@ -1680,13 +1680,15 @@
    "hooks_exportados": [
     "usePermissions"
    ],
-   "linhas": 159,
+   "linhas": 167,
    "dominio": "hooks",
    "tabelas": [
     "permissions",
     "role_permissions"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "get_my_permissions"
+   ],
    "edges": [],
    "hooks_internos": [
     "useAuth",

@@ -738,7 +738,7 @@
   {
    "arquivo": "src/hooks/__tests__/usePermissions.test.tsx",
    "tipo": "unit",
-   "linhas": 133,
+   "linhas": 121,
    "testa": [
     "src/features/auth/index.ts",
     "src/hooks/usePermissions.ts",

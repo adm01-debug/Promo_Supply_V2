@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)",
    "fix(seguranca): versiona o seed de permissions e role_permissions (#296)",
    "feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)",
    "fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)",
-   "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)",
-   "fix(cors): todas as edges derivam o CORS da requisicao (#334)"
+   "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)"
   ]
  },
  "pr_template": null,

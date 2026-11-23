@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81a44e11fd` · branch `main` · 2026-11-23 19:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `25ed3a7cfb` · branch `main` · 2026-11-23 19:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1140,7 +1140,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `qualification_status` | `pending` | compara | `src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `qualification_status` | `qualified` | compara | `src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
-| `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`src/hooks/usePermissions.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>… +2 |
+| `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts`<br>… +1 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
 | `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/guided-buying-ai/index.ts`<br>… +2 |
 | `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +4 |
@@ -1858,6 +1858,7 @@ _nenhum item encontrado_
 | `syncTimeoutRef.current = setTimeout(() => { syncPendingOperations(); }, 1000);` | `src/hooks/useOfflineSync.ts` |
 | `syncTimeoutRef.current = setTimeout(syncPendingOperations, 2000);` | `src/hooks/useOfflineSync.ts` |
 | `expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h from now` | `src/hooks/usePasswordResetRequests.ts` |
+| `staleTime: 5 * 60 * 1000,` | `src/hooks/usePermissions.ts` |
 | `const PREFETCH_CACHE_TIME = 5 * 60 * 1000;` | `src/hooks/usePrefetch.ts` |
 | `const diff = (new Date(r.deliveryDate!).getTime() - new Date(r.purchaseDate).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/usePurchaseHistory.ts` |
 | `const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);` | `src/hooks/useSecurityLogs.ts` |
@@ -2397,7 +2398,6 @@ _nenhum item encontrado_
 | `granted` | `src/features/layout/components/RealNotificationCenter.tsx` |
 | `denied` | `src/hooks/useApprovalNotifications.ts` |
 | `granted` | `src/hooks/useApprovalNotifications.ts` |
-| `admin` | `src/hooks/usePermissions.ts` |
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
@@ -2640,6 +2640,7 @@ _nenhum item encontrado_
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
 | QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de | `src/hooks/useMFA.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |
+| A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast | `src/hooks/usePermissions.ts` |
 | Check if user has specific permission | `src/hooks/usePermissions.ts` |
 | * Prefetch keys must match the live query keys used by feature hooks so that | `src/hooks/usePrefetch.ts` |
 | Check browser notification permission | `src/hooks/useRealPushNotifications.ts` |

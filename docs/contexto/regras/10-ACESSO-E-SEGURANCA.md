@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81a44e11fd` · branch `main` · 2026-11-23 19:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `25ed3a7cfb` · branch `main` · 2026-11-23 19:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -309,6 +309,7 @@
 - `get_failed_login_count`
 - `get_fornecedores_kpis`
 - `get_my_organization`
+- `get_my_permissions`
 - `get_pagamentos_kpis`
 - `get_pedidos_kpis`
 - `get_solicitacoes_kpis`
@@ -465,7 +466,7 @@ Middleware matcher (Next.js): nenhum
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
 | grant | anon, authenticated | execute | `has_role`, `has_permission`, `get_user_role`, `is_ip_blocked`, `log_login_attempt` |
-| grant | authenticated | execute | `generate_sequential_number`, `find_approval_rule`, `get_effective_approver`, `is_account_locked`, `record_failed_login`, `clear_login_lockout`, `check_budget_availability`, `log_login_attempt`, `has_role`, `has_permission`, `get_user_role`, `update_estoque_saldo`, `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics` … +48 |
+| grant | authenticated | execute | `generate_sequential_number`, `find_approval_rule`, `get_effective_approver`, `is_account_locked`, `record_failed_login`, `clear_login_lockout`, `check_budget_availability`, `log_login_attempt`, `has_role`, `has_permission`, `get_user_role`, `update_estoque_saldo`, `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics` … +49 |
 | grant | authenticated | insert | `telemetry_logs` |
 | grant | authenticated | select | `system_alerts`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `deadlock_snapshots`, `v_system_health_overview`, `health_scan_runs`, `security_definer_baseline`, `mv_dashboard_kpis`, `audit_logs_legacy_20260712`, `table_size_snapshots`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal` … +8 |
 | grant | authenticated | select, insert | `audit_logs`, `audit_logs`, `telemetry_logs`, `audit_logs` |
@@ -481,7 +482,7 @@ Middleware matcher (Next.js): nenhum
 | grant | service_role | select, insert, update, delete | `cron_watchdog_seen` |
 | grant | service_role | usage, select | `wal_rate_snapshots_id_seq`, `checkpoint_snapshots_id_seq` |
 | grant | service_role, authenticated | execute | `check_rate_limit` |
-| revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +2 |
+| revoke | PUBLIC | all | `update_estoque_saldo`, `exec_sql`, `count_legacy_storage_urls`, `alerts_severity_timeseries`, `alerts_mttr_by_type`, `alerts_noisy_scanners`, `resolve_alert`, `ensure_audit_logs_partition`, `archive_audit_logs_older_than`, `archive_telemetry_logs_older_than`, `simulate_scan_sla_loop`, `scan_table_growth`, `scan_unused_indexes`, `scan_duplicate_indexes`, `scan_txid_wraparound` … +3 |
 | revoke | PUBLIC | execute | `check_rate_limit`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +29 |
 | revoke | PUBLIC, anon | all | `cron_job_staleness`, `verificar_integridade_audit_logs` |
 | revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis`, `get_compras_dashboard_metrics`, `get_compras_dashboard_metrics`, `user_belongs_to_tenant`, `get_compras_dashboard_metrics`, `auto_transition_solicitacao_on_workflow_approved` |

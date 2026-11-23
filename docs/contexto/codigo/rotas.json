@@ -4827,6 +4827,7 @@
     "get_cost_center_performance_report",
     "get_effective_approver",
     "get_fornecedores_kpis",
+    "get_my_permissions",
     "get_pagamentos_kpis",
     "get_pedidos_kpis",
     "get_solicitacoes_kpis"

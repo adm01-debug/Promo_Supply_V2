@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `81a44e11fdc5019f047ea2abde15e1fdac2a911e` (2026-11-23T16:28:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2` (2026-11-23T16:30:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (756), SQL (330), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (756), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1331 |
+| arquivos_total | 1332 |
 | arquivos_codigo | 829 |
-| linhas_codigo | 172605 |
+| linhas_codigo | 172601 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 91 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 328 |
+| migrations | 329 |
 | cron_jobs | 74 |
 | testes | 203 |
 | workflows | 13 |
@@ -309,7 +309,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (9), admin (7), system (7), assistant (1)
+- papéis no código: user (9), system (7), admin (6), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
 - feature flags: nenhuma
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `25ed3a7` fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)
 - 2026-11-23 `81a44e1` fix(seguranca): versiona o seed de permissions e role_permissions (#296)
 - 2026-11-23 `fdeede4` feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)
 - 2026-11-23 `b2c53db` fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `013232a` fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)
 - 2026-11-23 `d16d88c` fix(contrato): escapeHtml tambem escapa apostrofo (#328)
 - 2026-11-23 `e02eb15` fix(mfa): remove backup codes inseguros e sem consumidor (#327)
-- 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

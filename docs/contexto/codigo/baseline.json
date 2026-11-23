@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
+  "commit": "25ed3a7cfb036b9be912c5fa4973aa4b9ac56df2",
   "branch": "main",
-  "data_commit": "2026-11-23T16:28:27-03:00",
+  "data_commit": "2026-11-23T16:30:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "25ed3a7",
+    "data": "2026-11-23",
+    "assunto": "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)"
+   },
    {
     "sha": "81a44e1",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "87d6784",
     "data": "2026-11-23",
     "assunto": "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)"
-   },
-   {
-    "sha": "6f38b3e",
-    "data": "2026-11-23",
-    "assunto": "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)"
    }
   ],
-  "arquivos_mudados_7d": 344,
+  "arquivos_mudados_7d": 347,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 287
+    "commits": 288
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1331,
+  "arquivos_total": 1332,
   "arquivos_codigo": 829,
-  "linhas_codigo": 172605,
+  "linhas_codigo": 172601,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -330,7 +330,7 @@
   "hooks": 91,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 328,
+  "migrations": 329,
   "cron_jobs": 74,
   "testes": 203,
   "workflows": 13,
@@ -440,7 +440,7 @@
   },
   "src/hooks": {
    "arquivos": 74,
-   "linhas": 13217
+   "linhas": 13213
   },
   "src/i18n": {
    "arquivos": 1,
