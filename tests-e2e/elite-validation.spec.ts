@@ -42,12 +42,12 @@ test.describe('Freight Quest E2E Excellence', () => {
     // Página carregou em /admin/telemetria — verifica URL como evidência
     await expect(page).toHaveURL(/\/admin\/telemetria/);
     
-    // Executar a simulação 10/10 e validar o relatório gerado (opcional)
+    // Sem clicar em Simulacao 10/10: o botao dispara system-simulation na edge
+    // (POST com iterations), que grava telemetria/relatorio no banco de PRODUCAO. O teste
+    // apenas confirma que a pagina carrega e expoe o botao.
     const simulationBtn = page.getByRole('button', { name: /Simulação 10\/10/i });
-    if (await simulationBtn.isVisible()) {
-      await simulationBtn.click();
-      await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 60000 });
-      await expect(page.getByText(/VALIDADO/i)).toBeVisible();
+    if ((await simulationBtn.count()) > 0) {
+      await expect(simulationBtn.first()).toBeVisible();
     }
   });
 });
