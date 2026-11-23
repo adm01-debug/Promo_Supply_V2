@@ -49,6 +49,11 @@ const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
   atrasado: ['pago', 'parcial', 'cancelado'],
 };
 
+  function canTransition(from: string, to: string): boolean {
+    const allowed = VALID_PAGAMENTO_TRANSITIONS[from];
+    return !allowed || allowed.includes(to);
+  }
+
 async function fetchPagamentosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PagamentoFilters) {
   if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
@@ -204,6 +209,20 @@ export function usePagamentos(filters?: PagamentoFilters) {
   }, [user, updatePagamento]);
 
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status']) => {
+      const validIds: string[] = [];
+      const blocked: string[] = [];
+      for (const id of ids) {
+        const current = pagamentos.find(p => p.id === id);
+        if (current && !canTransition(current.status, newStatus)) {
+          blocked.push(`${current.numero} (${current.status})`);
+        } else {
+          validIds.push(id);
+        }
+      }
+      if (validIds.length === 0) {
+        toast.error(`Nenhum pagamento pode ir para ${newStatus}: ${blocked.join(', ')}`);
+        return false;
+      }
     try {
       const updates: Database['public']['Tables']['pagamentos']['Update'] = { status: newStatus };
       if (newStatus === 'pago') updates.data_pagamento = new Date().toISOString().split('T')[0];
@@ -211,9 +230,12 @@ export function usePagamentos(filters?: PagamentoFilters) {
         updates.aprovador_id = user.id;
         updates.data_aprovacao = new Date().toISOString();
       }
-      const { error } = await supabase.from('pagamentos').update(updates).in('id', ids);
+        const { error } = await supabase.from('pagamentos').update(updates).in('id', validIds);
       if (error) throw error;
-      toast.success(`${ids.length} pagamento(s) atualizado(s)!`);
+        if (blocked.length > 0) {
+          toast.error(`${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join(', ')}`);
+        }
+        toast.success(`${validIds.length} pagamento(s) atualizado(s)!`);
       invalidate();
       return true;
     } catch (err: unknown) {
@@ -221,7 +243,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar pagamentos: ' + msg);
       return false;
     }
-  }, [user, invalidate]);
+    }, [user, invalidate, pagamentos]);
 
   const deletePagamento = useCallback(async (id: string) => {
     try {

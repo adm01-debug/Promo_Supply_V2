@@ -122,9 +122,11 @@ _(vazio)_
 - [ ] 073 — Migration: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
 - [ ] 074 — Aplicação: Selecionar a cotacao vencedora aprova a solicitacao e pula o workflow de alcada inteiro — onda 2 — Crítica — NEG-01
 - [x] 075 — O valor da ordem de compra vem do valor estimado da solicitacao, nunca da cotacao vencedora, e cai para R$ 12,00 fixos quando nao ha estimativa — onda 2 — Crítica — NEG-03
-- [ ] 076 — (parte 1/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
-- [ ] 077 — (parte 2/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
-- [ ] 078 — Ordem de compra é gravada com o valor ESTIMADO da solicitação (ou R$ 12 fixo), ignorando o preço da cotação selecionada, e o total do pedido não bate  — onda 2 — Crítica — UI-02
+- [x] 076 — (parte 1/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
+- [x] 077 — (parte 2/2) Nenhum pagamento pode ser pago pela tela: não existe ação de aprovar e 'pendente → pago' é transição inválida — onda 2 — Crítica — UI-01
+  - Evidencia: PR #344 - PagamentoDetailModal ganhou o botao "Aprovar Pagamento" (chama approvePagamento, que grava aprovador_id/data_aprovacao) quando status=pendente, com aviso na aba Pagar; bulkUpdateStatus passou a validar a transicao item a item (canTransition) e nao grava nada quando o lote inteiro e invalido; selectedForSchedule passou a aceitar so aprovado e o botao AGENDAR fica desabilitado sem aprovados. Teste novo src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx: 2 passed (pendente->agendado recusado; lote misto grava so o aprovado). npm run typecheck exit 0, eslint exit 0 nos 4 arquivos. NAO VERIFICADO: clique real em /pagamentos (nao ha sessao autenticada de navegador nesta sessao) - a prova e o teste de hook mais o fato de approvePagamento, antes orfao, agora estar ligado a UI.
+- [~] 078 — Ordem de compra é gravada com o valor ESTIMADO da solicitação (ou R$ 12 fixo), ignorando o preço da cotação selecionada, e o total do pedido não bate  — onda 2 — Crítica — UI-02
+  - Evidencia: mesma causa raiz da 075 (PR #343) - GerarOrdem.tsx passou a derivar unitario/frete/desconto da cotacao vencedora e a bloquear a geracao sem cotacao com preco > 0, e os fallbacks `|| 12` e `useState(150)` foram removidos. Nao se aplica mais.
 - [ ] 079 — Todo fornecedor cadastrado pela tela nasce sem organização e nunca aparece na lista — onda 2 — Crítica — VAL-12
 - [ ] 080 — O tempo real reinscreve o canal a cada render e perde eventos — onda 2 — Alta — HK-02
 - [ ] 081 — Os indicadores da tela de Fornecedores mostram sempre zero — onda 2 — Alta — HK-03

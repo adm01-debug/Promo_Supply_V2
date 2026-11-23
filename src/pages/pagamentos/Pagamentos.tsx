@@ -67,7 +67,7 @@ const Pagamentos = () => {
     [pagamentos]
   );
   const selectedForSchedule = useMemo(() =>
-    pagamentos.filter(p => selectedIds.includes(p.id) && ['pendente', 'aprovado'].includes(p.status)),
+      pagamentos.filter(p => selectedIds.includes(p.id) && p.status === 'aprovado'),
     [pagamentos, selectedIds]
   );
 
@@ -186,8 +186,8 @@ const Pagamentos = () => {
               </TabsList>
               
               {selectedIds.length > 0 && (
-                <EliteButton variant="outline" size="sm" onClick={() => setScheduleModalOpen(true)} className="rounded-xl border-dashed border-primary/40 text-primary">
-                  <CalendarClock className="w-4 h-4 mr-2" /> AGENDAR {selectedIds.length} SELECIONADOS
+                <EliteButton variant="outline" size="sm" onClick={() => setScheduleModalOpen(true)} className="rounded-xl border-dashed border-primary/40 text-primary" disabled={selectedForSchedule.length === 0} title={selectedForSchedule.length === 0 ? "Só pagamentos aprovados podem ser agendados" : undefined}>
+                                  <CalendarClock className="w-4 h-4 mr-2" /> AGENDAR {selectedForSchedule.length} SELECIONADOS
                 </EliteButton>
               )}
             </div>
@@ -278,6 +278,11 @@ const Pagamentos = () => {
           if (ok) setModalOpen(false);
           return ok;
         }}
+                onAprovarPagamento={async (id) => {
+                  const ok = await approvePagamento(id);
+                  if (ok) setModalOpen(false);
+                  return ok;
+                }}
       />
       <PagamentoScheduleModal 
         open={scheduleModalOpen} 
