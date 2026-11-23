@@ -1037,11 +1037,12 @@
    "hooks_exportados": [
     "useDashboardKPIs"
    ],
-   "linhas": 197,
+   "linhas": 226,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [
-    "get_compras_dashboard_metrics"
+    "get_compras_dashboard_metrics",
+    "get_compras_sla_metrics"
    ],
    "edges": [],
    "hooks_internos": [

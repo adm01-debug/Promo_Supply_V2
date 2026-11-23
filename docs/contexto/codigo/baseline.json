@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
+  "commit": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
   "branch": "main",
-  "data_commit": "2026-11-23T16:21:41-03:00",
+  "data_commit": "2026-11-23T16:25:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b2c53db",
+    "data": "2026-11-23",
+    "assunto": "fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)"
+   },
    {
     "sha": "334a384",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "0369433",
     "data": "2026-11-23",
     "assunto": "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)"
-   },
-   {
-    "sha": "81f63a5",
-    "data": "2026-11-23",
-    "assunto": "docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)"
    }
   ],
-  "arquivos_mudados_7d": 338,
+  "arquivos_mudados_7d": 339,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -266,6 +266,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 5
+   },
+   {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 5
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": "docs/agentes/mapa-repo.md",
     "mudancas": 4
-   },
-   {
-    "arquivo": "scripts/realtime-audit.ts",
-    "mudancas": 4
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 284
+    "commits": 285
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1325,
+  "arquivos_total": 1326,
   "arquivos_codigo": 826,
-  "linhas_codigo": 171973,
+  "linhas_codigo": 172065,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -330,7 +330,7 @@
   "hooks": 91,
   "edge_functions": 40,
   "tabelas": 164,
-  "migrations": 325,
+  "migrations": 326,
   "cron_jobs": 74,
   "testes": 202,
   "workflows": 13,
@@ -440,7 +440,7 @@
   },
   "src/hooks": {
    "arquivos": 74,
-   "linhas": 13134
+   "linhas": 13217
   },
   "src/i18n": {
    "arquivos": 1,
@@ -448,7 +448,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10443
+   "linhas": 10452
   },
   "src/lib": {
    "arquivos": 55,
@@ -554,7 +554,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10384
+   "linhas": 10393
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

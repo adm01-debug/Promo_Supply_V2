@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
+  "sha": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 19:22 UTC",
-  "files_total": 1326,
-  "code_files": 1155,
-  "code_lines": 198931,
+  "generated_at": "2026-11-23 19:27 UTC",
+  "files_total": 1327,
+  "code_files": 1156,
+  "code_lines": 199107,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ba5f60d19937f5aa",
+ "facts_hash": "66bfe4be7a664b10",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -265,7 +265,7 @@
   "languages": {
    ".ts": 401,
    ".tsx": 352,
-   ".sql": 327,
+   ".sql": 328,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -22522,6 +22522,26 @@
      "v_resolved"
     ]
    },
+   "get_compras_sla_metrics": {
+    "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_now TIMESTAMPTZ := NOW(); v_interval INTERVAL; v_start_date TIMESTAMPTZ; v_prev_start TIMESTAMPTZ; v_sla JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) - v_interval; v_prev_start := v_start_date - v_interval; WITH base AS ( SELECT GREATEST(p.data_entrega - s.data_necessidade, 0) AS dias_atraso, …",
+    "raises": [
+     "not authenticated",
+     "forbidden"
+    ],
+    "tables": [
+     "base",
+     "get_user_grupo_id",
+     "pedidos",
+     "solicitacoes",
+     "v_sla"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -27120,6 +27140,7 @@
    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
    "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
    "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+   "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31197,6 +31218,16 @@
     "function": "verificar_integridade_audit_logs",
     "msg": "Apenas administradores podem verificar a integridade da auditoria",
     "src": "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql"
+   },
+   {
+    "function": "get_compras_sla_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
+   },
+   {
+    "function": "get_compras_sla_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
    }
   ],
   "seed": [
@@ -35083,7 +35114,7 @@
   {
    "module": "src/hooks",
    "files": 74,
-   "lines": 13134,
+   "lines": 13217,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35314,7 +35345,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10443,
+   "lines": 10452,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -36053,8 +36084,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 325,
-   "lines": 26735,
+   "files": 326,
+   "lines": 26819,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -39034,6 +39065,9 @@
    "get_compras_dashboard_metrics": [
     "src/hooks/useDashboardKPIs.ts",
     "src/lib/supabaseRpc.ts"
+   ],
+   "get_compras_sla_metrics": [
+    "src/hooks/useDashboardKPIs.ts"
    ],
    "get_cost_center_performance_report": [
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
@@ -42408,6 +42442,10 @@
    {
     "file": "src/hooks/useCooldown.ts",
     "text": "Baseado em deadline absoluto: imune a throttling de aba em background."
+   },
+   {
+    "file": "src/hooks/useDashboardKPIs.ts",
+    "text": "SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode"
    },
    {
     "file": "src/hooks/useFornecedores.ts",
@@ -61623,6 +61661,18 @@
    },
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "useDashboardKPIs — SLA vem da RPC, não de literal"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "usa avgSla e taxaSlaReal devolvidos por get_compras_sla_metrics"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "name": "não derruba o dashboard quando a RPC de SLA falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "name": "useDashboardKPIs — economia percentual sem arredondar"
    },
    {
@@ -76048,6 +76098,26 @@
      "v_resolved"
     ]
    },
+   "get_compras_sla_metrics": {
+    "args": "p_organization_id uuid, p_period text DEFAULT '6m'::text, p_category_id uuid DEFAULT NULL::uuid, p_supplier_id uuid DEFAULT NULL::uuid",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_now TIMESTAMPTZ := NOW(); v_interval INTERVAL; v_start_date TIMESTAMPTZ; v_prev_start TIMESTAMPTZ; v_sla JSONB; BEGIN IF auth.uid() IS NULL THEN RAISE EXCEPTION 'not authenticated' USING ERRCODE = '42501'; END IF; IF p_organization_id IS DISTINCT FROM public.get_user_grupo_id() THEN RAISE EXCEPTION 'forbidden' USING ERRCODE = '42501'; END IF; v_interval := CASE p_period WHEN '1m' THEN INTERVAL '1 month' WHEN '3m' THEN INTERVAL '3 months' WHEN '1y' THEN INTERVAL '1 year' ELSE INTERVAL '6 months' END; v_start_date := date_trunc('day', v_now) - v_interval; v_prev_start := v_start_date - v_interval; WITH base AS ( SELECT GREATEST(p.data_entrega - s.data_necessidade, 0) AS dias_atraso, …",
+    "raises": [
+     "not authenticated",
+     "forbidden"
+    ],
+    "tables": [
+     "base",
+     "get_user_grupo_id",
+     "pedidos",
+     "solicitacoes",
+     "v_sla"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -76408,6 +76478,16 @@
     "function": "verificar_integridade_audit_logs",
     "msg": "Apenas administradores podem verificar a integridade da auditoria",
     "src": "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql"
+   },
+   {
+    "function": "get_compras_sla_metrics",
+    "msg": "not authenticated",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
+   },
+   {
+    "function": "get_compras_sla_metrics",
+    "msg": "forbidden",
+    "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
    }
   ],
   "db_generated": [
@@ -80961,6 +81041,7 @@
    "fx_convert",
    "generate_sequential_number",
    "get_compras_dashboard_metrics",
+   "get_compras_sla_metrics",
    "get_cron_job_staleness",
    "get_dashboard_kpis",
    "get_db_health_snapshot",
@@ -99241,7 +99322,7 @@
   },
   "src/hooks/useDashboardKPIs.ts": {
    "path": "src/hooks/useDashboardKPIs.ts",
-   "lines": 197,
+   "lines": 226,
    "exports": [
     "interface KPIComparison",
     "interface PipelineData",
@@ -99249,7 +99330,11 @@
     "function useDashboardKPIs"
    ],
    "rpc": [
-    "get_compras_dashboard_metrics"
+    "get_compras_dashboard_metrics",
+    "get_compras_sla_metrics"
+   ],
+   "rule_comments": [
+    "SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode"
    ],
    "hooks": [
     "useDashboardKPIs"
@@ -101547,7 +101632,7 @@
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
    "path": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-   "lines": 120,
+   "lines": 174,
    "is_test": true,
    "rule_comments": [
     "passou a responder 'forbidden' para organização que não é a do chamador."
@@ -101556,6 +101641,9 @@
     "useDashboardKPIs — parâmetro da organização",
     "envia organizationId (grupo) como p_organization_id, nunca o tenantId",
     "não chama a RPC sem organização no perfil",
+    "useDashboardKPIs — SLA vem da RPC, não de literal",
+    "usa avgSla e taxaSlaReal devolvidos por get_compras_sla_metrics",
+    "não derruba o dashboard quando a RPC de SLA falha",
     "useDashboardKPIs — economia percentual sem arredondar",
     "R$ 873,60 sobre volume %d → %s%%",
     "volume zero → 0 (sem divisão por zero)"
@@ -101716,7 +101804,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10384,
+   "lines": 10393,
    "exports": [
     "type Json",
     "type Database",
@@ -115566,6 +115654,10 @@
    "path": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
    "lines": 191
   },
+  "supabase/migrations/20261123093000_sla_real_no_dashboard.sql": {
+   "path": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+   "lines": 84
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -115789,10 +115881,22 @@
   }
  },
  "git": {
-  "sha": "334a3848a5c4eb6db64aa1d88c7314c362ece37a",
+  "sha": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b2c53db",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)",
+    "files": [
+     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+     "src/hooks/useDashboardKPIs.ts",
+     "src/integrations/supabase/types.ts",
+     "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
+    ]
+   },
    {
     "sha": "334a384",
     "date": "2026-11-23",
@@ -116151,19 +116255,6 @@
      "supabase/functions/escalate-solicitacao/recipients.test.ts",
      "supabase/functions/escalate-solicitacao/recipients.ts"
     ]
-   },
-   {
-    "sha": "c15161d",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat: escala solicitacao e alerta comprador com notificacao real (#301)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-     "supabase/functions/escalate-solicitacao/index.ts",
-     "supabase/functions/escalate-solicitacao/recipients.test.ts",
-     "supabase/functions/escalate-solicitacao/recipients.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -116190,6 +116281,14 @@
    [
     "docs/qa/05-PROGRESSO.md",
     3
+   ],
+   [
+    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    2
+   ],
+   [
+    "src/hooks/useDashboardKPIs.ts",
+    2
    ],
    [
     "supabase/functions/ai-demand-prediction/index.ts",
@@ -116237,14 +116336,6 @@
    ],
    [
     "src/pages/auth/Auth.tsx",
-    2
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "src/components/compras/SourcingHistoryConsole.tsx",
     2
    ]
   ]

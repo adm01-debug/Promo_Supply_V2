@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `334a3848a5` · branch `main` · 2026-11-23 19:22 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b2c53dbed4` · branch `main` · 2026-11-23 19:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -300,6 +300,7 @@
 - `fx_convert`
 - `generate_sequential_number`
 - `get_compras_dashboard_metrics`
+- `get_compras_sla_metrics`
 - `get_cron_job_staleness`
 - `get_dashboard_kpis`
 - `get_db_health_snapshot`

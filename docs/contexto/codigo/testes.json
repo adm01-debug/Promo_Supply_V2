@@ -711,11 +711,11 @@
   {
    "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
    "tipo": "unit",
-   "linhas": 120,
+   "linhas": 174,
    "testa": [
     "src/hooks/useDashboardKPIs.ts"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",

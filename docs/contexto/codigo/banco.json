@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 325,
+ "migrations": 326,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -226,6 +226,7 @@
   "fx_convert",
   "generate_sequential_number",
   "get_compras_dashboard_metrics",
+  "get_compras_sla_metrics",
   "get_cost_center_performance_report",
   "get_cron_job_staleness",
   "get_dashboard_kpis",
@@ -23490,6 +23491,11 @@
    "nome": "get_compras_dashboard_metrics",
    "definida": true,
    "usada_em": 2
+  },
+  {
+   "nome": "get_compras_sla_metrics",
+   "definida": true,
+   "usada_em": 1
   },
   {
    "nome": "get_cost_center_performance_report",

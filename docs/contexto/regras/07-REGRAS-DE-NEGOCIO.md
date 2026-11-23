@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `334a3848a5` · branch `main` · 2026-11-23 19:22 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b2c53dbed4` · branch `main` · 2026-11-23 19:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -810,6 +810,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `audit_logs_bloquear_alteracao` | audit_logs e append-only: DELETE permitido apenas pela retencao legal de 5 anos (apply_lgpd_retention) | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `audit_logs_bloquear_truncate` | audit_logs e append-only: TRUNCATE bloqueado (ISO 27001 A.8.15) | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `verificar_integridade_audit_logs` | Apenas administradores podem verificar a integridade da auditoria | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
+| `get_compras_sla_metrics` | not authenticated | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
+| `get_compras_sla_metrics` | forbidden | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2393,7 +2395,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2751 testes em 151 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2754 testes em 151 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2489,6 +2491,7 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
+| `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 9 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — SLA vem da RPC, não de literal … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
@@ -2500,7 +2503,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
-| `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 6 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — economia percentual sem arredondar … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
@@ -2624,6 +2626,7 @@ _nenhum item encontrado_
 | null = faixa aberta (sem limite superior) */ | `src/hooks/useCatalogoPim.ts` |
 | origem da regra, ex: 'spot_customization' */ | `src/hooks/useCatalogoPim.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
+| SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode | `src/hooks/useDashboardKPIs.ts` |
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
 | QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de | `src/hooks/useMFA.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `334a3848a5c4eb6db64aa1d88c7314c362ece37a` (2026-11-23T16:21:41-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b2c53dbed402d6d2857327bdd1f337afdb42bfd1` (2026-11-23T16:25:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (753), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (753), SQL (328), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1325 |
+| arquivos_total | 1326 |
 | arquivos_codigo | 826 |
-| linhas_codigo | 171973 |
+| linhas_codigo | 172065 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 91 |
 | edge_functions | 40 |
 | tabelas | 164 |
-| migrations | 325 |
+| migrations | 326 |
 | cron_jobs | 74 |
 | testes | 202 |
 | workflows | 13 |
@@ -417,6 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `b2c53db` fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)
 - 2026-11-23 `334a384` fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)
 - 2026-11-23 `d355ef3` fix(cors): todas as edges derivam o CORS da requisicao (#334)
 - 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
@@ -431,7 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
 - 2026-11-23 `e33a738` fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)
 - 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
-- 2026-11-23 `959a649` fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
