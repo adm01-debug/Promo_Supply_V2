@@ -38,6 +38,7 @@
 | `punchout-encrypt` | `user_tenants` |
 | `punchout-receive` | `profiles`, `punchout_catalogs`, `punchout_sessions`, `solicitacoes` |
 | `punchout-setup` | `punchout_catalogs`, `punchout_sessions`, `user_tenants` |
+| `receive-os-sync` | `profiles`, `solicitacoes`, `tenants`, `user_tenants` |
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
 | `send-push-notification` | `profiles`, `push_subscriptions`, `user_roles` |
@@ -78,20 +79,21 @@
 | `pagamentos` | `check-expiry-alerts`, `check-sla-alerts`, `weekly-report` |
 | `pedidos` | `check-sla-alerts`, `escalate-solicitacao`, `weekly-report`, `weekly-summary-report` |
 | `produtos` | `guided-buying-ai` |
-| `profiles` | `check-cotacao-followup`, `escalate-solicitacao`, `migrate-storage-paths`, `punchout-receive`, `send-push-notification` |
+| `profiles` | `check-cotacao-followup`, `escalate-solicitacao`, `migrate-storage-paths`, `punchout-receive`, `receive-os-sync`, `send-push-notification` |
 | `punchout_catalogs` | `punchout-receive`, `punchout-setup` |
 | `punchout_sessions` | `punchout-receive`, `punchout-setup` |
 | `push_subscriptions` | `send-push-notification` |
 | `query_telemetry` | `external-db-bridge` |
-| `solicitacoes` | `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `weekly-report`, `weekly-summary-report` |
+| `solicitacoes` | `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `receive-os-sync`, `weekly-report`, `weekly-summary-report` |
 | `spot_api_sync_log` | `spot-api` |
 | `spot_pedidos` | `spot-api`, `spot-proxy` |
 | `spot_sessions` | `spot-api`, `spot-proxy` |
 | `sso_configurations` | `scim-v2` |
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
+| `tenants` | `receive-os-sync` |
 | `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `send-push-notification`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
-| `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup` |
+| `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup`, `receive-os-sync` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
 | `webauthn_credentials` | `webauthn-authenticate`, `webauthn-register` |
