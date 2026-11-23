@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
+  "commit": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
   "branch": "main",
-  "data_commit": "2026-11-23T16:25:50-03:00",
+  "data_commit": "2026-11-23T16:28:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "81a44e1",
+    "data": "2026-11-23",
+    "assunto": "fix(seguranca): versiona o seed de permissions e role_permissions (#296)"
+   },
+   {
+    "sha": "fdeede4",
+    "data": "2026-11-23",
+    "assunto": "feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)"
+   },
    {
     "sha": "b2c53db",
     "data": "2026-11-23",
@@ -121,19 +131,9 @@
     "sha": "6f38b3e",
     "data": "2026-11-23",
     "assunto": "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)"
-   },
-   {
-    "sha": "88646df",
-    "data": "2026-11-23",
-    "assunto": "fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)"
-   },
-   {
-    "sha": "0369433",
-    "data": "2026-11-23",
-    "assunto": "fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)"
    }
   ],
-  "arquivos_mudados_7d": 339,
+  "arquivos_mudados_7d": 344,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "pasta": "src/pages/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 285
+    "commits": 287
    },
    {
     "autor": "dependabot[bot]",
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1326,
-  "arquivos_codigo": 826,
-  "linhas_codigo": 172065,
+  "arquivos_total": 1331,
+  "arquivos_codigo": 829,
+  "linhas_codigo": 172605,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,11 +328,11 @@
   "modulos": 87,
   "componentes": 330,
   "hooks": 91,
-  "edge_functions": 40,
+  "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 326,
+  "migrations": 328,
   "cron_jobs": 74,
-  "testes": 202,
+  "testes": 203,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -491,8 +491,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 107,
-   "linhas": 18060
+   "arquivos": 110,
+   "linhas": 18600
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -705,6 +705,7 @@
    "fiscal-orchestrator",
    "maintain-partitions",
    "process-outbox",
+   "receive-os-sync",
    "send-push-notification",
    "workflow-engine"
   ],

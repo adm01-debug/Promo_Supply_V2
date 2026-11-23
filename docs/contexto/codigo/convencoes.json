@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (115)",
    "outro (43)",
-   "co-localizado (*.test) (34)"
+   "co-localizado (*.test) (35)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): versiona o seed de permissions e role_permissions (#296)",
+   "feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)",
    "fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)",
    "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)",
-   "fix(cors): todas as edges derivam o CORS da requisicao (#334)",
-   "fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)",
-   "fix(auth): preserva a rota e avisa quando a sessao expira (#329)"
+   "fix(cors): todas as edges derivam o CORS da requisicao (#334)"
   ]
  },
  "pr_template": null,

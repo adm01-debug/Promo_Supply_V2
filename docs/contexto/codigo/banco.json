@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 326,
+ "migrations": 328,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -13410,6 +13410,7 @@
     "escalate-solicitacao",
     "migrate-storage-paths",
     "punchout-receive",
+    "receive-os-sync",
     "send-push-notification"
    ],
    "triggers": [
@@ -15501,6 +15502,13 @@
      "default": null,
      "ref": null
     },
+    "external_ref": {
+     "tipo": "text",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "fornecedor_id": {
      "tipo": "uuid",
      "nn": false,
@@ -15782,6 +15790,11 @@
      "unico": false
     },
     {
+     "nome": "idx_solicitacoes_external_ref",
+     "colunas": "external_ref",
+     "unico": true
+    },
+    {
      "nome": "idx_solicitacoes_fornecedor_id",
      "colunas": "fornecedor_id",
      "unico": false
@@ -15881,7 +15894,8 @@
      "prazo_entrega",
      "fornecedor_selecionado",
      "valor_unitario",
-     "valor_total"
+     "valor_total",
+     "external_ref"
     ],
     "so_no_types": []
    },
@@ -15890,6 +15904,7 @@
     "check-sla-alerts",
     "escalate-solicitacao",
     "punchout-receive",
+    "receive-os-sync",
     "weekly-report",
     "weekly-summary-report"
    ],
@@ -20097,7 +20112,9 @@
     "so_no_types": []
    },
    "usada_no_front": 0,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "receive-os-sync"
+   ],
    "triggers": [
     "grant_tenant_access_on_insert_trigger",
     "trg_grant_tenant_access",
@@ -20105,7 +20122,7 @@
     "update_tenants_updated_at"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "unspsc_codes": {
    "colunas": {
@@ -20563,7 +20580,8 @@
     "_shared",
     "erp-credential-encrypt",
     "punchout-encrypt",
-    "punchout-setup"
+    "punchout-setup",
+    "receive-os-sync"
    ],
    "triggers": [],
    "sem_rls": false,
@@ -23485,7 +23503,7 @@
   {
    "nome": "generate_sequential_number",
    "definida": true,
-   "usada_em": 11
+   "usada_em": 12
   },
   {
    "nome": "get_compras_dashboard_metrics",

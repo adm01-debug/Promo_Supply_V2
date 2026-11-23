@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b2c53dbed4` · branch `main` · 2026-11-23 19:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81a44e11fd` · branch `main` · 2026-11-23 19:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -107,7 +107,7 @@
 | `secret_rotation_schedule` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
 | `security_definer_baseline` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `security_logs` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `solicitacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 31 colunas | migration |
+| `solicitacoes` | _(sem COMMENT ON TABLE — significado não documentado)_ | 32 colunas | migration |
 | `sourcing_awards` | _(sem COMMENT ON TABLE — significado não documentado)_ | 13 colunas | migration |
 | `sourcing_event_criteria` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
 | `sourcing_event_lots` | _(sem COMMENT ON TABLE — significado não documentado)_ | 12 colunas | migration |
@@ -238,6 +238,7 @@
 | `devolucoes` | `numero, pedido_id, fornecedor_id, solicitante_id, status, tipo, motivo, motivo_detalhe, valor_total, resolucao, observacoes, data_aprovacao, data_envio, codigo_rastreamento, transportadora` | `( 'DEV-' \|\| to_char(now(), 'YYYYMMDDHH24MISS') \|\| '-B', v_pedido_b, v_forn_b, v_solicitante, 'em_transito', 'troca', 'troca', 'Cliente solicitou troca por modelo diferente.', 480.50, 'reposicao', '[SEED] devolução em trânsito para fornecedor', now() - interval '5 days', now() - interval '2 days', 'BR' \|\| (random() * 1e10)::bigint::text, 'Correios' ) RETURNING id INTO v_dev_id_2` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
 | `devolucoes` | `numero, pedido_id, fornecedor_id, solicitante_id, status, tipo, motivo, motivo_detalhe, valor_total, resolucao, observacoes, data_aprovacao, data_envio, data_recebimento_fornecedor` | `( 'DEV-' \|\| to_char(now(), 'YYYYMMDDHH24MISS') \|\| '-C', v_pedido_a, v_forn_a, v_solicitante, 'credito_emitido', 'garantia', 'garantia', 'Garantia acionada dentro do prazo de 90 dias.', 2750.75, 'credito', '[SEED] crédito emitido pelo fornecedor', now() - interval '20 days', now() - interval '15 days', now() - interval '7 days' ) RETURNING id INTO v_dev_id_3` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
 | `creditos_fornecedor` | `fornecedor_id, devolucao_id, tipo, valor, valor_utilizado, saldo, status, descricao, data_emissao` | `( v_forn_a, v_dev_id_3, 'credito_devolucao', 2750.75, 0, 2750.75, 'ativo', '[SEED] crédito gerado automaticamente para devolução concluída', now() - interval '7 days' )` | `supabase/migrations/20260806180000_seed_devolucoes_creditos.sql` |
+| `permissions` | `name, description, module, action` | `('solicitacoes.view', 'Visualizar solicitações', 'solicitacoes', 'view'), ('solicitacoes.create', 'Criar solicitações', 'solicitacoes', 'create'), ('solicitacoes.edit', 'Editar solicitações', 'solicitacoes', 'edit'), ('solicitacoes.delete', 'Excluir solicitações', 'solicitacoes', 'delete'), ('solicitacoes.approve', 'Aprovar solicitações', 'solicitacoes', 'approve'), ('cotacoes.view', 'Visualizar c …` | `supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql` |
 
 ## Auditoria de consistência (código × schema) — trate como NÃO VERIFICADO
 

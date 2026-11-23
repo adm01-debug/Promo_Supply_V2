@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b2c53dbed4` · branch `main` · 2026-11-23 19:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81a44e11fd` · branch `main` · 2026-11-23 19:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1013,7 +1013,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `PROCESSING` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `SUBSCRIBED` | compara | `src/features/layout/components/SupplierChat.tsx` |
 | `status` | `aceito` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
-| `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +1 |
+| `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +2 |
 | `status` | `analyzing` | compara | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `applied` | compara | `src/components/compras/contract/ContractDetailsTabs.tsx`<br>`supabase/functions/generate-contract-pdf/index.ts` |
 | `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx` |
@@ -1079,10 +1079,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +11 |
+| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>… +12 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +13 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
-| `status` | `processed` | escreve | `supabase/functions/_shared/idempotency.ts` |
+| `status` | `processed` | compara, escreve | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
 | `status` | `processing` | compara | `src/components/ui/indicators/StatusIndicator.tsx` |
 | `status` | `publicada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `published` | compara, escreve | `src/components/compras/ActiveSourcingWidget.tsx`<br>`src/pages/sourcing/RFxCreate.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
@@ -1127,7 +1127,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tipo` | `garantia` | compara | `src/pages/devolucoes/Devolucoes.tsx`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `tipo` | `internacional` | compara | `src/pages/cotacao/cotacaoHelpers.ts`<br>`src/pages/fornecedores/fornecedorHelpers.ts` |
 | `tipo` | `local` | compara | `src/pages/cotacao/cotacaoHelpers.ts`<br>`src/pages/fornecedores/fornecedorHelpers.ts` |
-| `tipo` | `material` | compara, escreve | `src/pages/solicitacoes/solicitacoesHelpers.ts`<br>`supabase/functions/punchout-receive/solicitation.ts` |
+| `tipo` | `material` | compara, escreve | `src/pages/solicitacoes/solicitacoesHelpers.ts`<br>`supabase/functions/punchout-receive/solicitation.ts`<br>`supabase/functions/receive-os-sync/mapping.ts` |
 | `tipo` | `menor_preco` | escreve | `src/pages/licitacoes/Licitacoes.tsx` |
 | `tipo` | `produto` | escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/gerar-ordem/GerarOrdem.tsx` |
 | `tipo` | `saida` | compara, escreve | `src/pages/estoque/GestaoEstoque.tsx` |
@@ -1606,6 +1606,10 @@ _nenhum item encontrado_
   ```
   return `${currency} ${value.toFixed(2)}`;
   ```
+- **validateOsPayload(payload: OsPayload)** — `supabase/functions/receive-os-sync/mapping.ts`
+  ```
+  osId: string; quantidade: number
+  ```
 - **computeIkm(authSecret: Bytes, ecdhSecret: Bytes, receiverPub: Bytes, senderPub: Bytes,)** — `supabase/functions/send-push-notification/webpush.ts`
   ```
   const info = concatBytes( new TextEncoder().encode("WebPush: info\0"), receiverPub, senderPub, ); const prk = await hmacSha256(authSecret, ecdhSecret); return hkdfExpand(prk, info, 32);
@@ -1783,6 +1787,7 @@ _nenhum item encontrado_
 | `DEFAULT_TTL_MINUTES` | `1440` | `supabase/functions/punchout-receive/session.ts` |
 | `MAX_TITULO` | `200` | `supabase/functions/punchout-receive/solicitation.ts` |
 | `MAX_DESCRICAO` | `2000` | `supabase/functions/punchout-receive/solicitation.ts` |
+| `SOURCE` | `"receive-os-sync"` | `supabase/functions/receive-os-sync/index.ts` |
 | `LANG` | `"PT"` | `supabase/functions/spot-api/index.ts` |
 | `REQUEST_TIMEOUT_MS` | `120_000` | `supabase/functions/spot-api/index.ts` |
 | `UPSERT_BATCH` | `500` | `supabase/functions/spot-api/index.ts` |
@@ -2065,6 +2070,8 @@ _nenhum item encontrado_
 | 10 | `supabase/functions/health-dashboard/index.ts` |
 | 20 | `supabase/functions/health-dashboard/index.ts` |
 | 50 | `supabase/functions/health-dashboard/index.ts` |
+| 1 | `supabase/functions/receive-os-sync/index.ts` |
+| 2 | `supabase/functions/receive-os-sync/index.ts` |
 | 1 | `supabase/functions/spot-api/index.ts` |
 | 10 | `supabase/functions/spot-proxy/index.ts` |
 | 1 | `supabase/functions/webauthn-authenticate/index.ts` |
@@ -2375,7 +2382,7 @@ _nenhum item encontrado_
 | Sem usuário | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +231 linhas — lista completa em `context.json` | |
+| … +236 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2395,7 +2402,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2754 testes em 151 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2769 testes em 152 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2480,6 +2487,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/logLevel.test.ts` | 16 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `scripts/lib/seguranca-processo.test.mjs` | 15 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell · resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH … |
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
+| `supabase/functions/receive-os-sync/mapping.test.ts` | 15 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
@@ -2553,7 +2561,9 @@ _nenhum item encontrado_
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 
-_nenhum item encontrado_
+| Evento | Arquivo |
+|---|---|
+| `string` | `supabase/functions/receive-os-sync/index.ts` |
 
 ## M. Efeitos colaterais (e-mail, SMS, cobrança, fila — não são idempotentes por padrão)
 
@@ -2738,6 +2748,9 @@ _nenhum item encontrado_
 | Deve estar no tenant corrente como admin ou coordinator (mesma regra da | `supabase/functions/punchout-encrypt/index.ts` |
 | M-05: rate limit por IP (webhooks anônimos). | `supabase/functions/punchout-receive/index.ts` |
 | The PunchOut shared secret must never be returned to the browser. | `supabase/functions/punchout-setup/index.ts` |
+| erro transitorio nao pode envenenar a chave, senao o retry do dispatcher | `supabase/functions/receive-os-sync/index.ts` |
+| * Regras de negocio que este arquivo garante: | `supabase/functions/receive-os-sync/mapping.ts` |
+| - `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega | `supabase/functions/receive-os-sync/mapping.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |

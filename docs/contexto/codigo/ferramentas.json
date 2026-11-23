@@ -3,8 +3,8 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (753)",
-   "SQL (328)",
+   "TypeScript (756)",
+   "SQL (330)",
    "Markdown (100)",
    "JavaScript (70)",
    "JSON (24)",
@@ -667,6 +667,7 @@
    "GITHUB_DISPATCH_TOKEN",
    "GITHUB_REPO_RAW_BASE",
    "OPENROUTER_API_KEY",
+   "PROMO_DESIGN_WEBHOOK_SECRET",
    "PSV2_ENCRYPTION_KEY",
    "PUNCHOUT_SESSION_TTL_MINUTES",
    "RESEND_API_KEY",
@@ -829,6 +830,7 @@
    "CRON_SECRET",
    "GITHUB_DISPATCH_TOKEN",
    "OPENROUTER_API_KEY",
+   "PROMO_DESIGN_WEBHOOK_SECRET",
    "RESEND_API_KEY",
    "SCIM_BEARER_TOKEN",
    "SEFAZ_API_TOKEN",

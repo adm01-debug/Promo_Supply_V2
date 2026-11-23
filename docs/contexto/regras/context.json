@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
+  "sha": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 19:27 UTC",
-  "files_total": 1327,
-  "code_files": 1156,
-  "code_lines": 199107,
+  "generated_at": "2026-11-23 19:35 UTC",
+  "files_total": 1332,
+  "code_files": 1161,
+  "code_lines": 199768,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "66bfe4be7a664b10",
+ "facts_hash": "b36a83ed7798c5ec",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,9 +263,9 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 401,
+   ".ts": 404,
    ".tsx": 352,
-   ".sql": 328,
+   ".sql": 330,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -635,6 +635,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+     },
+     {
+      "name": "external_ref",
+      "type": "TEXT",
+      "fk": "",
+      "generated": "",
+      "src": "supabase/migrations/20261125140000_integracao_promo_design.sql"
      }
     ],
     "constraints": [],
@@ -26453,6 +26460,14 @@
     "unique": false,
     "where": "",
     "src": "supabase/migrations/20261121160000_pim_refs_compras.sql"
+   },
+   {
+    "name": "idx_solicitacoes_external_ref",
+    "table": "solicitacoes",
+    "columns": "external_ref",
+    "unique": true,
+    "where": "WHERE external_ref IS NOT NULL",
+    "src": "supabase/migrations/20261125140000_integracao_promo_design.sql"
    }
   ],
   "cron_jobs": [
@@ -27140,7 +27155,9 @@
    "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql",
    "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
    "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+   "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql",
    "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
+   "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31314,6 +31331,12 @@
     "columns": "fornecedor_id, devolucao_id, tipo, valor, valor_utilizado, saldo, status, descricao, data_emissao",
     "values": "( v_forn_a, v_dev_id_3, 'credito_devolucao', 2750.75, 0, 2750.75, 'ativo', '[SEED] crédito gerado automaticamente para devolução concluída', now() - interval '7 days' )",
     "src": "supabase/migrations/20260806180000_seed_devolucoes_creditos.sql"
+   },
+   {
+    "table": "permissions",
+    "columns": "name, description, module, action",
+    "values": "('solicitacoes.view', 'Visualizar solicitações', 'solicitacoes', 'view'), ('solicitacoes.create', 'Criar solicitações', 'solicitacoes', 'create'), ('solicitacoes.edit', 'Editar solicitações', 'solicitacoes', 'edit'), ('solicitacoes.delete', 'Excluir solicitações', 'solicitacoes', 'delete'), ('solicitacoes.approve', 'Aprovar solicitações', 'solicitacoes', 'approve'), ('cotacoes.view', 'Visualizar c …",
+    "src": "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql"
    }
   ],
   "comments": {
@@ -31334,7 +31357,8 @@
    "column:audit_logs.sequencia": "Posicao na cadeia de integridade. Preenchida pelo trigger z_audit_logs_hash; o DEFAULT 0 e sentinela e nunca persiste.",
    "column:audit_logs.hash_anterior": "Hash do registro anterior da cadeia (GENESIS no primeiro). Preenchida pelo trigger z_audit_logs_hash; o DEFAULT e sentinela e nunca persiste.",
    "column:audit_logs.registro_hash": "SHA-256 do conteudo canonico + hash_anterior. Preenchida pelo trigger z_audit_logs_hash; o DEFAULT e sentinela e nunca persiste.",
-   "table:cron_watchdog_seen": "Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico."
+   "table:cron_watchdog_seen": "Ancora de primeira observacao de cada job do pg_cron. Permite ao cron_watchdog distinguir job recem-agendado de job quebrado sem historico.",
+   "column:solicitacoes.external_ref": "Chave de idempotencia da origem externa (ex.: service_orders.id do Promo Design)."
   },
   "types_file": "src/integrations/supabase/types.ts",
   "dynamic_ddl": [
@@ -32255,6 +32279,38 @@
     ],
     "side_effects": [],
     "webhook_events": [],
+    "idempotency": true
+   },
+   {
+    "name": "receive-os-sync",
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "methods": [
+     "OPTIONS"
+    ],
+    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
+    "tables": [
+     "profiles",
+     "solicitacoes",
+     "tenants",
+     "user_tenants",
+     "webhook_events"
+    ],
+    "env": [
+     "PROMO_DESIGN_WEBHOOK_SECRET",
+     "SUPABASE_SERVICE_ROLE_KEY",
+     "SUPABASE_URL"
+    ],
+    "external": [],
+    "invokes": [],
+    "doc": "",
+    "errors": [
+     "insert solicitacoes: ${error.message}",
+     "numero: ${numeroError.message}"
+    ],
+    "side_effects": [],
+    "webhook_events": [
+     "string"
+    ],
     "idempotency": true
    },
    {
@@ -35893,8 +35949,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 107,
-   "lines": 18060,
+   "files": 110,
+   "lines": 18600,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35928,6 +35984,7 @@
     "sso_configurations",
     "system_alerts",
     "telemetry_logs",
+    "tenants",
     "user_roles",
     "user_tenants",
     "v_system_health_overview",
@@ -35983,6 +36040,7 @@
     "extraction.ts: ExtractedInvoice, SYSTEM_PROMPT, normalizeExtraction, faltamCamposObrigatorios, parseGatewayContent, extractionUnavailable",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
+    "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
     "auth.ts: ScimGateDecision, timingSafeEqual, evaluateScimGate, sha256Hex",
     "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth",
     "sessions.ts: PORTAL_SESSION_TAG, PORTAL_SESSION_TTL_MS, SpotSessionRow, PortalSessionPick, isPortalSession, pickPortalSession"
@@ -36084,8 +36142,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 326,
-   "lines": 26819,
+   "files": 328,
+   "lines": 26940,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37136,6 +37194,7 @@
      "supabase/functions/escalate-solicitacao/recipients.ts",
      "supabase/functions/migrate-storage-paths/index.ts",
      "supabase/functions/punchout-receive/index.ts",
+     "supabase/functions/receive-os-sync/index.ts",
      "supabase/functions/send-push-notification/index.ts"
     ]
    },
@@ -37306,13 +37365,15 @@
      "src/tests/integration/supabase-db.test.ts",
      "supabase/functions/check-sla-alerts/index.ts",
      "supabase/functions/escalate-solicitacao/index.ts",
+     "supabase/functions/receive-os-sync/index.ts",
      "supabase/functions/weekly-report/index.ts",
      "supabase/functions/weekly-summary-report/index.ts"
     ],
     "insert": [
      "src/components/compras/NovaSolicitacaoModal.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/pages/admin/DeveloperDocs.tsx"
+     "src/pages/admin/DeveloperDocs.tsx",
+     "supabase/functions/receive-os-sync/index.ts"
     ],
     "ref": [
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
@@ -37545,6 +37606,11 @@
      "supabase/functions/telemetry/index.ts"
     ]
    },
+   "tenants": {
+    "select": [
+     "supabase/functions/receive-os-sync/index.ts"
+    ]
+   },
    "toString": {
     "ref": [
      "scripts/ci/inventario-types/banco.unit.mjs"
@@ -37593,6 +37659,7 @@
      "supabase/functions/erp-credential-encrypt/index.ts",
      "supabase/functions/punchout-encrypt/index.ts",
      "supabase/functions/punchout-setup/index.ts",
+     "supabase/functions/receive-os-sync/index.ts",
      "tests-rls/rls-isolation.test.ts"
     ],
     "update": [
@@ -38264,6 +38331,7 @@
     "data_necessidade",
     "departamento",
     "descricao",
+    "external_ref",
     "fornecedor_id",
     "id",
     "justificativa",
@@ -38374,6 +38442,10 @@
    ],
    "tabela_de_fixture": [
     "x"
+   ],
+   "tenants": [
+    "id",
+    "status"
    ],
    "user_filter_preferences": [
     "filters",
@@ -38664,6 +38736,9 @@
    "PROD": [
     "src/lib/logger.ts"
    ],
+   "PROMO_DESIGN_WEBHOOK_SECRET": [
+    "supabase/functions/receive-os-sync/index.ts"
+   ],
    "PSV2_ENCRYPTION_KEY": [
     "supabase/functions/_shared/punchout_crypto.ts",
     "supabase/functions/erp-credential-encrypt/index.ts",
@@ -38845,6 +38920,7 @@
     "supabase/functions/process-outbox/index.ts",
     "supabase/functions/punchout-receive/index.ts",
     "supabase/functions/punchout-setup/index.ts",
+    "supabase/functions/receive-os-sync/index.ts",
     "supabase/functions/run-audit/index.ts",
     "supabase/functions/run-audit/rls_test.ts",
     "supabase/functions/scim-v2/index.ts",
@@ -38896,6 +38972,7 @@
     "supabase/functions/punchout-encrypt/index.ts",
     "supabase/functions/punchout-receive/index.ts",
     "supabase/functions/punchout-setup/index.ts",
+    "supabase/functions/receive-os-sync/index.ts",
     "supabase/functions/run-audit/index.ts",
     "supabase/functions/run-audit/rls_test.ts",
     "supabase/functions/scim-v2/index.ts",
@@ -39060,7 +39137,8 @@
     "src/hooks/usePagamentos.ts",
     "src/lib/supabaseRpc.ts",
     "src/pages/recebimento/pedidoComplementar.ts",
-    "supabase/functions/punchout-receive/index.ts"
+    "supabase/functions/punchout-receive/index.ts",
+    "supabase/functions/receive-os-sync/index.ts"
    ],
    "get_compras_dashboard_metrics": [
     "src/hooks/useDashboardKPIs.ts",
@@ -39642,7 +39720,6 @@
    "telemetry_logs_202609",
    "telemetry_logs_legacy_20260712",
    "temp_file_snapshots",
-   "tenants",
    "unspsc_codes",
    "user_organizations",
    "wal_rate_snapshots",
@@ -41916,6 +41993,26 @@
     "msg": "Unauthorized"
    },
    {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "msg": "insert solicitacoes: ${error.message}"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "msg": "numero: ${numeroError.message}"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "msg": "os_number"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "msg": "produto"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "msg": "quantidade"
+   },
+   {
     "file": "supabase/functions/send-push-notification/index.ts",
     "msg": "Não autorizado: token ausente"
    },
@@ -42890,6 +42987,18 @@
    {
     "file": "supabase/functions/punchout-setup/index.ts",
     "text": "The PunchOut shared secret must never be returned to the browser."
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "text": "erro transitorio nao pode envenenar a chave, senao o retry do dispatcher"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "text": "* Regras de negocio que este arquivo garante:"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "text": "- `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega"
    },
    {
     "file": "supabase/functions/run-audit/rls_test.ts",
@@ -50338,6 +50447,11 @@
     "value": "2000"
    },
    {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "name": "SOURCE",
+    "value": "\"receive-os-sync\""
+   },
+   {
     "file": "supabase/functions/spot-api/index.ts",
     "name": "LANG",
     "value": "\"PT\""
@@ -55994,6 +56108,42 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "field": "status",
+    "value": "processed",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "field": "status",
+    "value": "active",
+    "kind": "filtra"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "field": "tipo",
+    "value": "material",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "field": "status",
+    "value": "pendente",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "field": "tipo",
+    "value": "material",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "field": "status",
+    "value": "pendente",
+    "kind": "escreve"
+   },
+   {
     "file": "supabase/functions/spot-api/index.ts",
     "field": "status",
     "value": "quota_blocked",
@@ -56762,6 +56912,12 @@
     "name": "formatMoney",
     "params": "value: number, currency: string",
     "body": "return `${currency} ${value.toFixed(2)}`;"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.ts",
+    "name": "validateOsPayload",
+    "params": "payload: OsPayload",
+    "body": "osId: string; quantidade: number"
    },
    {
     "file": "supabase/functions/send-push-notification/webpush.ts",
@@ -68612,6 +68768,66 @@
     "name": "título longo é truncado para caber na coluna"
    },
    {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "tipo material e status pendente: unicos valores aceitos pelo schema vivo"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "external_ref = os_id: chave de idempotencia da origem"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "numero e tenant vem do chamador, nao do payload"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "titulo cita a OS e o produto"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "descricao carrega tecnica, material, SKU e cliente"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "observacoes marcam a origem e o os_id"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "prazo_entrega vira data_necessidade em YYYY-MM-DD"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "prazo invalido vira null em vez de derrubar o insert"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "quantidade decimal e arredondada e nunca abaixo de 1"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "sem unidade assume "
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "os_id ausente ou nao-UUID e erro de payload"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "os_number e produto sao obrigatorios"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "quantidade zero ou negativa e erro de payload"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "erro de payload carrega o campo culpado"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/mapping.test.ts",
+    "name": "campos de texto sao truncados no limite da coluna"
+   },
+   {
     "file": "supabase/functions/scim-v2/auth.test.ts",
     "name": "timingSafeEqual: iguais e diferentes"
    },
@@ -68880,7 +69096,12 @@
     "name": "finance do tenant A não consegue atualizar contract do tenant B"
    }
   ],
-  "webhook_events": [],
+  "webhook_events": [
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "event": "string"
+   }
+  ],
   "side_effects": [
    {
     "file": "src/components/compras/ContractDetailsModal.tsx",
@@ -76701,6 +76922,14 @@
     "limit": "50"
    },
    {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "limit": "1"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "limit": "2"
+   },
+   {
     "file": "supabase/functions/spot-api/index.ts",
     "limit": "1"
    },
@@ -77729,7 +77958,8 @@
       "compara:src/pages/contratos/Contratos.tsx",
       "compara:src/pages/portal-fornecedor/PortalFornecedor.tsx",
       "escreve:supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
-      "filtra:supabase/functions/check-expiry-alerts/index.ts"
+      "filtra:supabase/functions/check-expiry-alerts/index.ts",
+      "filtra:supabase/functions/receive-os-sync/index.ts"
      ],
      "draft": [
       "compara:src/pages/sourcing/RFxDetails.tsx",
@@ -77797,6 +78027,7 @@
       "escreve:src/pages/acompanhamento/AcompanhamentoHelpers.ts",
       "escreve:src/pages/documentos/DocumentosFiscais.tsx",
       "escreve:supabase/functions/punchout-receive/solicitation.ts",
+      "escreve:supabase/functions/receive-os-sync/mapping.ts",
       "filtra:src/components/mobile/BottomNavigation.tsx",
       "filtra:src/hooks/useApprovalWorkflow.ts",
       "filtra:src/hooks/useSidebarBadges.ts",
@@ -78227,6 +78458,7 @@
       "escreve:src/types/legacyTypes.ts"
      ],
      "processed": [
+      "compara:supabase/functions/receive-os-sync/index.ts",
       "escreve:supabase/functions/_shared/idempotency.ts"
      ],
      "escalado": [
@@ -78329,7 +78561,8 @@
      ],
      "material": [
       "compara:src/pages/solicitacoes/solicitacoesHelpers.ts",
-      "escreve:supabase/functions/punchout-receive/solicitation.ts"
+      "escreve:supabase/functions/punchout-receive/solicitation.ts",
+      "escreve:supabase/functions/receive-os-sync/mapping.ts"
      ],
      "servico": [
       "compara:src/pages/solicitacoes/solicitacoesHelpers.ts"
@@ -80967,6 +81200,7 @@
    "supabase/functions/process-outbox/index.ts",
    "supabase/functions/punchout-receive/index.ts",
    "supabase/functions/punchout-setup/index.ts",
+   "supabase/functions/receive-os-sync/index.ts",
    "supabase/functions/run-audit/index.ts",
    "supabase/functions/run-audit/rls_test.ts",
    "supabase/functions/scim-v2/index.ts",
@@ -112761,6 +112995,171 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/receive-os-sync/index.ts": {
+   "path": "supabase/functions/receive-os-sync/index.ts",
+   "lines": 241,
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "user_tenants",
+     "op": "select"
+    },
+    {
+     "table": "tenants",
+     "op": "select"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "insert,select"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "email",
+     "tenant_id"
+    ],
+    "user_tenants": [
+     "is_default",
+     "tenant_id"
+    ],
+    "tenants": [
+     "id",
+     "status"
+    ],
+    "solicitacoes": [
+     "external_ref",
+     "id",
+     "numero"
+    ]
+   },
+   "rpc": [
+    "generate_sequential_number"
+   ],
+   "env": [
+    "PROMO_DESIGN_WEBHOOK_SECRET",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "errors": [
+    "insert solicitacoes: ${error.message}",
+    "numero: ${numeroError.message}"
+   ],
+   "params": [
+    {
+     "name": "SOURCE",
+     "value": "\"receive-os-sync\""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "processed",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "active",
+     "kind": "filtra"
+    }
+   ],
+   "rule_comments": [
+    "erro transitorio nao pode envenenar a chave, senao o retry do dispatcher"
+   ],
+   "webhook_events": [
+    "string"
+   ],
+   "pagination": [
+    "1",
+    "2"
+   ],
+   "uses_service_role": true
+  },
+  "supabase/functions/receive-os-sync/mapping.test.ts": {
+   "path": "supabase/functions/receive-os-sync/mapping.test.ts",
+   "lines": 141,
+   "is_test": true,
+   "errors": [
+    "deveria ter lancado"
+   ],
+   "rule_comments": [
+    "â”€â”€ Texto longo nao estoura o limite da coluna â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
+   ],
+   "tests": [
+    "tipo material e status pendente: unicos valores aceitos pelo schema vivo",
+    "external_ref = os_id: chave de idempotencia da origem",
+    "numero e tenant vem do chamador, nao do payload",
+    "titulo cita a OS e o produto",
+    "descricao carrega tecnica, material, SKU e cliente",
+    "observacoes marcam a origem e o os_id",
+    "prazo_entrega vira data_necessidade em YYYY-MM-DD",
+    "prazo invalido vira null em vez de derrubar o insert",
+    "quantidade decimal e arredondada e nunca abaixo de 1",
+    "sem unidade assume ",
+    "os_id ausente ou nao-UUID e erro de payload",
+    "os_number e produto sao obrigatorios",
+    "quantidade zero ou negativa e erro de payload",
+    "erro de payload carrega o campo culpado",
+    "campos de texto sao truncados no limite da coluna"
+   ]
+  },
+  "supabase/functions/receive-os-sync/mapping.ts": {
+   "path": "supabase/functions/receive-os-sync/mapping.ts",
+   "lines": 158,
+   "exports": [
+    "interface OsPayload",
+    "interface OsEventBody",
+    "interface SolicitacaoDraft",
+    "class OsPayloadError",
+    "function validateOsPayload",
+    "function buildSolicitacaoDraft",
+    "function toInsertRow"
+   ],
+   "errors": [
+    "os_number",
+    "produto",
+    "quantidade"
+   ],
+   "status_values": [
+    {
+     "field": "tipo",
+     "value": "material",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "pendente",
+     "kind": "escreve"
+    },
+    {
+     "field": "tipo",
+     "value": "material",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "pendente",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* Regras de negocio que este arquivo garante:",
+    "- `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega"
+   ],
+   "calc_fns": [
+    {
+     "name": "validateOsPayload",
+     "params": "payload: OsPayload",
+     "body": "osId: string; quantidade: number"
+    }
+   ]
+  },
   "supabase/functions/run-audit/index.ts": {
    "path": "supabase/functions/run-audit/index.ts",
    "lines": 103,
@@ -115654,9 +116053,17 @@
    "path": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
    "lines": 191
   },
+  "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql": {
+   "path": "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql",
+   "lines": 97
+  },
   "supabase/migrations/20261123093000_sla_real_no_dashboard.sql": {
    "path": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
    "lines": 84
+  },
+  "supabase/migrations/20261125140000_integracao_promo_design.sql": {
+   "path": "supabase/migrations/20261125140000_integracao_promo_design.sql",
+   "lines": 24
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -115881,10 +116288,32 @@
   }
  },
  "git": {
-  "sha": "b2c53dbed402d6d2857327bdd1f337afdb42bfd1",
+  "sha": "81a44e11fdc5019f047ea2abde15e1fdac2a911e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "81a44e1",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): versiona o seed de permissions e role_permissions (#296)",
+    "files": [
+     "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql"
+    ]
+   },
+   {
+    "sha": "fdeede4",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "supabase/functions/receive-os-sync/index.ts",
+     "supabase/functions/receive-os-sync/mapping.test.ts",
+     "supabase/functions/receive-os-sync/mapping.ts",
+     "supabase/migrations/20261125140000_integracao_promo_design.sql"
+    ]
+   },
    {
     "sha": "b2c53db",
     "date": "2026-11-23",
@@ -116235,26 +116664,6 @@
      "src/lib/negotiationOutreach.ts",
      "src/pages/negociacao-ia/NegociacaoIA.tsx"
     ]
-   },
-   {
-    "sha": "32f87b2",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)",
-    "files": [
-     "src/components/compras/SourcingHistoryConsole.tsx"
-    ]
-   },
-   {
-    "sha": "954238f",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)",
-    "files": [
-     "supabase/functions/escalate-solicitacao/index.ts",
-     "supabase/functions/escalate-solicitacao/recipients.test.ts",
-     "supabase/functions/escalate-solicitacao/recipients.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -116281,6 +116690,10 @@
    [
     "docs/qa/05-PROGRESSO.md",
     3
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
    ],
    [
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -116332,10 +116745,6 @@
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
-    2
-   ],
-   [
-    "src/pages/auth/Auth.tsx",
     2
    ]
   ]

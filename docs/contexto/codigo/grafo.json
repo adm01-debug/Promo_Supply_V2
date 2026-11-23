@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 624,
- "arestas": 2781,
+ "nos": 626,
+ "arestas": 2785,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -57,11 +57,11 @@
    "importado_por": 54
   },
   {
-   "arquivo": "src/components/ui/skeleton.tsx",
-   "importado_por": 43
+   "arquivo": "supabase/functions/_shared/security.ts",
+   "importado_por": 44
   },
   {
-   "arquivo": "supabase/functions/_shared/security.ts",
+   "arquivo": "src/components/ui/skeleton.tsx",
    "importado_por": 43
   },
   {
@@ -74,7 +74,7 @@
   },
   {
    "arquivo": "supabase/functions/_shared/http.ts",
-   "importado_por": 31
+   "importado_por": 32
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",

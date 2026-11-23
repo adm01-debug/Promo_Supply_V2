@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "pasta": "supabase/functions",
- "total": 40,
+ "total": 41,
  "verify_jwt_false": [
   "dependency-health",
   "punchout-receive",
@@ -1021,6 +1021,44 @@
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
    "testes": 0
+  },
+  {
+   "nome": "receive-os-sync",
+   "entrada": "supabase/functions/receive-os-sync/index.ts",
+   "arquivos": 2,
+   "linhas": 399,
+   "verify_jwt": true,
+   "metodos": [
+    "OPTIONS",
+    "POST"
+   ],
+   "tabelas": [
+    "profiles",
+    "solicitacoes",
+    "tenants",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "generate_sequential_number"
+   ],
+   "env": [
+    "PROMO_DESIGN_WEBHOOK_SECRET",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "buckets": [],
+   "chama_edges": [],
+   "hosts_externos": [],
+   "usa_shared": [
+    "http.ts",
+    "idempotency.ts",
+    "security.ts"
+   ],
+   "chamada_pelo_front": [],
+   "chamada_por_edges": [],
+   "chamada_por_sql_ou_cron": false,
+   "orfa": true,
+   "testes": 1
   },
   {
    "nome": "run-audit",

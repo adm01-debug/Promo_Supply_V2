@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b2c53dbed402d6d2857327bdd1f337afdb42bfd1` (2026-11-23T16:25:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `81a44e11fdc5019f047ea2abde15e1fdac2a911e` (2026-11-23T16:28:27-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (753), SQL (328), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (756), SQL (330), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1326 |
-| arquivos_codigo | 826 |
-| linhas_codigo | 172065 |
+| arquivos_total | 1331 |
+| arquivos_codigo | 829 |
+| linhas_codigo | 172605 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -44,11 +44,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | modulos | 87 |
 | componentes | 330 |
 | hooks | 91 |
-| edge_functions | 40 |
+| edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 326 |
+| migrations | 328 |
 | cron_jobs | 74 |
-| testes | 202 |
+| testes | 203 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (34)
+- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (35)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -210,6 +210,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `punchout-receive` (verify_jwt=false) — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
+- `receive-os-sync` — tabelas: profiles, solicitacoes, tenants, user_tenants; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
 - `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
@@ -305,7 +306,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
 - webhooks recebidos: dependency-health, punchout-receive, scim-v2, webauthn-authenticate
-- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
+- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
 - papéis no código: user (9), admin (7), system (7), assistant (1)
@@ -317,7 +318,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rotas_sem_arquivo: 0
 - componentes_ambiguos: 0
 - menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
-- edges_orfas: 6 — ex.: alert-dispatcher, fiscal-orchestrator, maintain-partitions
+- edges_orfas: 7 — ex.: alert-dispatcher, fiscal-orchestrator, maintain-partitions
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
@@ -336,7 +337,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (16)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
 - package.json (12)
 - .github/workflows/main.yml (9)
@@ -417,6 +418,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `81a44e1` fix(seguranca): versiona o seed de permissions e role_permissions (#296)
+- 2026-11-23 `fdeede4` feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)
 - 2026-11-23 `b2c53db` fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)
 - 2026-11-23 `334a384` fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)
 - 2026-11-23 `d355ef3` fix(cors): todas as edges derivam o CORS da requisicao (#334)
@@ -430,8 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `d16d88c` fix(contrato): escapeHtml tambem escapa apostrofo (#328)
 - 2026-11-23 `e02eb15` fix(mfa): remove backup codes inseguros e sem consumidor (#327)
 - 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
-- 2026-11-23 `e33a738` fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)
-- 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
