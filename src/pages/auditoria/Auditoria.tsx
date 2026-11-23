@@ -55,10 +55,12 @@ const Auditoria = () => {
     loadLogs();
   }, [loadLogs]);
 
-  // Log page view for demonstration
+  // Registra a visualização apenas para quem realmente enxerga a trilha (admin),
+  // evitando gravar auditoria de um acesso que a RLS vai devolver vazio.
   useEffect(() => {
+    if (!isAdmin) return;
     auditHelpers.logView('relatorio', 'auditoria', 'Visualização da página de Auditoria');
-  }, []);
+  }, [isAdmin]);
 
   const handleSearch = () => {
     setPage(0);

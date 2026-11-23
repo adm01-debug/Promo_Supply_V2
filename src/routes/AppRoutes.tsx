@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
+import type { AppRole } from "@/features/auth/types/authRoles";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 
 import { Shell } from "@/features/layout/components/Shell";
@@ -66,6 +67,18 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 /** Harness dev-only usado pelos testes E2E do painel de rede XBZ. */
 const XbzNetworkPanelHarness = lazy(() => import("@/pages/dev/XbzNetworkPanelHarness"));
 
+/**
+ * Papéis exigidos por rota, derivados das policies de RLS de `SELECT` vigentes.
+ * Rotas sem `requiredRole` continuam acessíveis a qualquer sessão autenticada.
+ */
+const ROLES_ORDEM: AppRole[] = ["admin", "coordinator", "buyer", "finance"];
+const ROLES_FINANCEIRO: AppRole[] = ["admin", "coordinator", "finance", "buyer"];
+const ROLES_CONTRATO: AppRole[] = ["admin", "coordinator", "finance", "buyer"];
+const ROLES_APROVACAO: AppRole[] = ["admin", "coordinator", "finance"];
+const ROLES_ORCAMENTO: AppRole[] = ["admin", "coordinator", "finance"];
+const ROLES_ADMIN: AppRole[] = ["admin"];
+const ROLES_LICITACAO: AppRole[] = ["admin", "coordinator"];
+
 export const AnimatedRoutes = () => {
   const location = useLocation();
 
@@ -83,43 +96,43 @@ export const AnimatedRoutes = () => {
           <Route element={<ProtectedRoute><Shell /></ProtectedRoute>}>
             <Route path="/" element={<Navigate to="/compras" replace />} />
             <Route path="/compras" element={<ModuleErrorBoundary module="dashboard"><RouteSkeleton variant="dashboard"><ComprasDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/cotacao" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="table"><Cotacao /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/cotacao/:id" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="form"><Cotacao /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/cotacao" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="table"><Cotacao /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/cotacao/:id" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="form"><Cotacao /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/solicitacoes" element={<ModuleErrorBoundary module="solicitacoes"><RouteSkeleton variant="table"><Solicitacoes /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/pedidos" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Pedidos /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/pagamentos" element={<ModuleErrorBoundary module="pagamentos"><RouteSkeleton variant="table"><Pagamentos /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/fornecedores" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><Fornecedores /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/acompanhamento" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Acompanhamento /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/gerar-ordem" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><GerarOrdem /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/relatorios" element={<ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="dashboard"><Relatorios /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/relatorios/negociacoes" element={<ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><RelatorioNegociacoes /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/aprovacoes" element={<ModuleErrorBoundary module="solicitacoes"><RouteSkeleton variant="table"><Aprovacoes /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/supplier-performance" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><SupplierPerformance /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/dashboard-executivo" element={<ModuleErrorBoundary module="dashboard"><RouteSkeleton variant="dashboard"><DashboardExecutivo /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/buyer-performance" element={<ModuleErrorBoundary module="dashboard"><RouteSkeleton variant="dashboard"><BuyerPerformanceDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/historico-compras" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><HistoricoCompras /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/contratos" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><Contratos /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/compliance" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><ComplianceDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/auditoria" element={<ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><Auditoria /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/pedidos" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Pedidos /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/pagamentos" element={<ProtectedRoute requiredRole={ROLES_FINANCEIRO}><ModuleErrorBoundary module="pagamentos"><RouteSkeleton variant="table"><Pagamentos /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/fornecedores" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><Fornecedores /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/acompanhamento" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Acompanhamento /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/gerar-ordem" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><GerarOrdem /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/relatorios" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="dashboard"><Relatorios /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/relatorios/negociacoes" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><RelatorioNegociacoes /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/aprovacoes" element={<ProtectedRoute requiredRole={ROLES_APROVACAO}><ModuleErrorBoundary module="solicitacoes"><RouteSkeleton variant="table"><Aprovacoes /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/supplier-performance" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><SupplierPerformance /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/dashboard-executivo" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="dashboard"><RouteSkeleton variant="dashboard"><DashboardExecutivo /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/buyer-performance" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="dashboard"><RouteSkeleton variant="dashboard"><BuyerPerformanceDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/historico-compras" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><HistoricoCompras /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/contratos" element={<ProtectedRoute requiredRole={ROLES_CONTRATO}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><Contratos /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/compliance" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><ComplianceDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/auditoria" element={<ProtectedRoute requiredRole={ROLES_ADMIN}><ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><Auditoria /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/seguranca" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><Seguranca /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/catalogo-spot" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoSpot /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/catalogo-xbz" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoXbz /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/catalogo-spot" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoSpot /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/catalogo-xbz" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoXbz /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
 
-            <Route path="/qualificacao-fornecedores" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><QualificacaoFornecedores /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/orcamentos" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Orcamentos /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/negociacao-ia" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><NegociacaoIA /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/qualificacao-fornecedores" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><QualificacaoFornecedores /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/orcamentos" element={<ProtectedRoute requiredRole={ROLES_ORCAMENTO}><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Orcamentos /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/negociacao-ia" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><NegociacaoIA /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/kanban" element={<ModuleErrorBoundary module="solicitacoes"><RouteSkeleton variant="kanban"><KanbanWorkflow /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/documentos-fiscais" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><DocumentosFiscais /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/recompra-inteligente" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="dashboard"><RecompraInteligente /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/devolucoes" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Devolucoes /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/documentos-fiscais" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><DocumentosFiscais /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/recompra-inteligente" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="dashboard"><RecompraInteligente /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/devolucoes" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Devolucoes /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/catalogo-produtos" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><CatalogoProdutos /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/estoque" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><GestaoEstoque /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/sourcing" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="table"><Sourcing /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/sourcing/novo" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="form"><RFxCreate /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/sourcing/:id" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><RFxDetails /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/sourcing/:id/auction" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><AuctionRoom /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/licitacoes" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Licitacoes /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/recebimento" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><RecebimentoOffline /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/sourcing" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="table"><Sourcing /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/sourcing/novo" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="form"><RFxCreate /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/sourcing/:id" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><RFxDetails /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/sourcing/:id/auction" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><AuctionRoom /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/licitacoes" element={<ProtectedRoute requiredRole={ROLES_LICITACAO}><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Licitacoes /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/recebimento" element={<ProtectedRoute requiredRole={ROLES_ORDEM}><ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><RecebimentoOffline /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/admin/telemetria" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AdminTelemetria /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/admin/dependency-health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><DependencyHealth /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/admin/sso" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><SSOConfig /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
