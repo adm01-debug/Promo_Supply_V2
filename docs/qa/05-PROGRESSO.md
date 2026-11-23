@@ -68,7 +68,7 @@ _(vazio)_
 - [ ] 027 — `current_tenant_id()` lê uma informação do token que nada preenche: devolve sempre nulo e cinco funcionalidades morrem em silêncio — onda 1 — Alta — RLS-02
 - [ ] 028 — Movimentar estoque não exige papel e a trigger privilegiada atualiza o saldo sem conferir a empresa do item — onda 1 — Alta — RLS-03
 - [ ] 029 — Migration: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
-- [ ] 0 — Aplicação: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
+- [ ] 030 — Aplicação: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
 - [x] 031 — XSS armazenado no HTML do contrato: `payment_terms` e `item.unit` interpolados sem escape e injetados com `document.write` na origem do app — onda 1 — Alta — SEC-01
   - Evidencia: PR #315 (mergeada) - escape HTML em payment_terms e item.unit; generate-contract-pdf sanitiza antes de injetar.
 - [x] 032 — (parte 1/2) `window.open(notification.action_url)` sem allowlist aceita `javascript:` vindo da tabela `notifications`, que um usuário do mesmo grupo p — onda 1 — Alta — SEC-02
