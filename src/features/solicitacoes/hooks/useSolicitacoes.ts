@@ -51,7 +51,26 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
+/**
+ * Chave unica da listagem. O prefetch (`src/hooks/usePrefetch.ts`) precisa montar
+ * a MESMA chave do hook, senao grava uma entrada que ninguem le. Foi o que
+ * aconteceu quando `empresaIds` entrou na chave e o prefetch ficou para tras.
+ */
+export function solicitacoesQueryKey(
+  userId: string | undefined,
+  organizationId: string | null | undefined,
+  filters?: SolicitacaoFilters,
+) {
+  return [
+    'solicitacoes', userId, organizationId,
+    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
+    filters?.page, filters?.pageSize,
+    filters?.empresaIds ?? 'all',
+  ] as const;
+}
+
+export async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
   if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
@@ -98,13 +117,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   const queryClient = useQueryClient();
   const { createWorkflow } = useApprovalWorkflow();
 
-  const queryKey = useMemo(() => [
-    'solicitacoes', user?.id, organizationId,
-    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
-    filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
-    filters?.page, filters?.pageSize,
-    filters?.empresaIds ?? 'all',
-  ], [user?.id, organizationId, filters]);
+  const queryKey = useMemo(
+    () => solicitacoesQueryKey(user?.id, organizationId, filters),
+    [user?.id, organizationId, filters],
+  );
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
