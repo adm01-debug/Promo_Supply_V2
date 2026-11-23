@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d16d88cc4e` · branch `main` · 2026-11-23 15:19 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b48d6441c1` · branch `main` · 2026-11-23 15:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -405,6 +405,7 @@
 
 | Rota | Guard | Roles | Arquivo |
 |---|---|---|---|
+| /acompanhamento | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
 | /admin | ProtectedRoute | admin | `scripts/ci/inventario-types/rotas.unit.mjs` |
 | /admin/dependency-health | ProtectedRoute | admin | `src/routes/AppRoutes.tsx` |
 | /admin/docs | ProtectedRoute | admin | `src/routes/AppRoutes.tsx` |
@@ -419,8 +420,39 @@
 | /admin/telemetria | ProtectedRoute | admin | `src/routes/AppRoutes.tsx` |
 | /admin/workflows | ProtectedRoute | admin | `src/routes/AppRoutes.tsx` |
 | /app | ProtectedRoute |  | `scripts/ai-context/gerar.unit.mjs` |
+| /aprovacoes | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /auditoria | ProtectedRoute |  | `src/features/auth/__tests__/ProtectedRoute.test.tsx` |
+| /auditoria | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /buyer-performance | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /catalogo-spot | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /catalogo-xbz | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /compliance | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /contratos | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /cotacao | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /cotacao/:id | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /dashboard-executivo | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
 | /dentro2 | ProtectedRoute | c | `scripts/ci/inventario-types/rotas.unit.mjs` |
+| /devolucoes | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /documentos-fiscais | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /fornecedores | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /gerar-ordem | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /historico-compras | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /licitacoes | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /negociacao-ia | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /orcamentos | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /pagamentos | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /pedidos | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
 | /portal-fornecedor | ProtectedRoute | supplier, admin | `src/routes/AppRoutes.tsx` |
+| /qualificacao-fornecedores | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /recebimento | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /recompra-inteligente | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /relatorios | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /relatorios/negociacoes | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /sourcing | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /sourcing/:id | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /sourcing/:id/auction | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /sourcing/novo | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
+| /supplier-performance | ProtectedRoute |  | `src/routes/AppRoutes.tsx` |
 
 Guards usados: Protected, ProtectedRoute
 

@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 623,
- "arestas": 2771,
+ "nos": 624,
+ "arestas": 2777,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/features/auth/index.ts",
-   "importado_por": 73
+   "importado_por": 74
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -62,7 +62,7 @@
   },
   {
    "arquivo": "supabase/functions/_shared/security.ts",
-   "importado_por": 38
+   "importado_por": 39
   },
   {
    "arquivo": "src/components/ui/progress.tsx",
@@ -218,7 +218,7 @@
   {
    "modulo": "components/ui",
    "depende_de": 2,
-   "importado_por": 59
+   "importado_por": 60
   },
   {
    "modulo": "hooks",
@@ -247,7 +247,7 @@
   },
   {
    "modulo": "features/auth",
-   "depende_de": 2,
+   "depende_de": 3,
    "importado_por": 21
   },
   {

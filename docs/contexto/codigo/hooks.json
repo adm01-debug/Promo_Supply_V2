@@ -265,7 +265,7 @@
   {
    "arquivo": "src/features/auth/hooks/useAuth.tsx",
    "hooks_exportados": [],
-   "linhas": 342,
+   "linhas": 351,
    "dominio": "features/auth",
    "tabelas": [
     "profiles",
@@ -360,7 +360,7 @@
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/hooks/useApprovalRules.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/features/cotacoes/hooks/useCotacoes.ts",
@@ -440,7 +440,7 @@
    "hooks_exportados": [
     "useCommandPalette"
    ],
-   "linhas": 372,
+   "linhas": 386,
    "dominio": "features/layout",
    "tabelas": [],
    "rpcs": [],
@@ -450,6 +450,7 @@
     "useEffect",
     "useMemo",
     "useNavigate",
+    "useSidebarBadges",
     "useState",
     "useTheme"
    ],
@@ -1403,8 +1404,9 @@
     "useNavigate"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 3,
    "usado_por_arquivos": [
+    "src/features/layout/components/CommandPalette.tsx",
     "src/features/layout/components/KeyboardShortcutsDialog.tsx",
     "src/features/layout/components/MainLayout.tsx"
    ],
@@ -2021,9 +2023,10 @@
     "useEmpresaFilter"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/features/layout/components/AppSidebar.tsx"
+    "src/features/layout/components/AppSidebar.tsx",
+    "src/features/layout/components/CommandPalette.tsx"
    ],
    "coberto_por_testes": 0
   },

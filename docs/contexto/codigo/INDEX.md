@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d16d88cc4e17cd6000a173afb5bdba1c685acc99` (2026-11-23T11:47:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b48d6441c1a50a2d783dced7c5b5cd18c784c34a` (2026-11-23T12:27:18-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (748), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (752), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1320 |
-| arquivos_codigo | 821 |
-| linhas_codigo | 171389 |
+| arquivos_total | 1324 |
+| arquivos_codigo | 825 |
+| linhas_codigo | 171727 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 198 |
+| testes | 201 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (114), outro (43), co-localizado (*.test) (31)
+- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (33)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -308,7 +308,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (9), system (7), admin (6), assistant (1)
+- papéis no código: user (9), admin (7), system (7), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
 - feature flags: nenhuma
@@ -417,6 +417,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `b48d644` fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)
+- 2026-11-23 `a8582d4` fix(auth): preserva a rota e avisa quando a sessao expira (#329)
+- 2026-11-23 `4358c8c` chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)
+- 2026-11-23 `fa08c73` fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)
+- 2026-11-23 `55aab7a` fix(cors): health-dashboard deixa de liberar qualquer origem (#333)
+- 2026-11-23 `718302a` fix(palette): atalhos e badges do Command Palette passam a ser reais (#330)
+- 2026-11-23 `013232a` fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)
 - 2026-11-23 `d16d88c` fix(contrato): escapeHtml tambem escapa apostrofo (#328)
 - 2026-11-23 `e02eb15` fix(mfa): remove backup codes inseguros e sem consumidor (#327)
 - 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
@@ -425,13 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `959a649` fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)
 - 2026-11-23 `07960cf` fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)
 - 2026-11-23 `2d78471` fix(auth): desabilita autocadastro público (QA 008+009) (#319)
-- 2026-11-23 `3833aac` fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320
-- 2026-11-23 `73dce42` fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)
-- 2026-11-23 `1060124` fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)
-- 2026-11-23 `87d6784` fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)
-- 2026-11-23 `6f38b3e` fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)
-- 2026-11-23 `88646df` fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)
-- 2026-11-23 `0369433` fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

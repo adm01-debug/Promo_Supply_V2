@@ -1625,6 +1625,7 @@
     "components/security",
     "components/settings",
     "features/aprovacoes",
+    "features/auth",
     "features/empresas",
     "features/layout",
     "hooks",
@@ -1743,8 +1744,8 @@
   {
    "modulo": "features/auth",
    "arquivos": 7,
-   "testes": 3,
-   "linhas": 501,
+   "testes": 4,
+   "linhas": 534,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1814,6 +1815,7 @@
     "routes"
    ],
    "depende_de_modulos": [
+    "components/ui",
     "integrations/supabase",
     "lib"
    ],
@@ -1942,7 +1944,7 @@
    "modulo": "features/layout",
    "arquivos": 32,
    "testes": 4,
-   "linhas": 5089,
+   "linhas": 5103,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3667,7 +3669,7 @@
    "modulo": "pages/auditoria",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 394,
+   "linhas": 396,
    "itens_menu": [
     "Auditoria"
    ],
@@ -3729,7 +3731,7 @@
    "modulo": "pages/auth",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 378,
+   "linhas": 385,
    "itens_menu": [],
    "telas": [
     "/auth"
@@ -7350,7 +7352,7 @@
    "modulo": "routes",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 158,
+   "linhas": 171,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

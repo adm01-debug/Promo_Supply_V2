@@ -3007,7 +3007,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 8,
+   "usado_por": 9,
    "orfao": false
   },
   {
@@ -3637,7 +3637,7 @@
     "ProtectedRoute"
    ],
    "export_default": null,
-   "linhas": 45,
+   "linhas": 69,
    "dominio": "features/auth",
    "hooks_locais": [
     "useAuth"
@@ -3653,7 +3653,7 @@
     "AuthProvider"
    ],
    "export_default": null,
-   "linhas": 342,
+   "linhas": 351,
    "dominio": "features/auth",
    "hooks_locais": [],
    "tabelas": [
@@ -3794,11 +3794,12 @@
     "CommandPalette"
    ],
    "export_default": "CommandPalette",
-   "linhas": 372,
+   "linhas": 386,
    "dominio": "features/layout",
    "hooks_locais": [
     "useAuth",
-    "useCommandPalette"
+    "useCommandPalette",
+    "useSidebarBadges"
    ],
    "tabelas": [],
    "edges": [],
@@ -4428,7 +4429,7 @@
     "Auditoria"
    ],
    "export_default": "Auditoria",
-   "linhas": 394,
+   "linhas": 396,
    "dominio": "pages/auditoria",
    "hooks_locais": [
     "useAuth"
@@ -4444,7 +4445,7 @@
     "Auth"
    ],
    "export_default": "Auth",
-   "linhas": 317,
+   "linhas": 324,
    "dominio": "pages/auth",
    "hooks_locais": [
     "useAccountLockout",
@@ -5502,7 +5503,7 @@
     "AnimatedRoutes"
    ],
    "export_default": null,
-   "linhas": 158,
+   "linhas": 171,
    "dominio": "routes",
    "hooks_locais": [],
    "tabelas": [],

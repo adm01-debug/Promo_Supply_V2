@@ -1605,6 +1605,7 @@
    "src/features/aprovacoes/types/approval.types.ts"
   ],
   "src/features/auth/components/ProtectedRoute.tsx": [
+   "src/components/ui/illustrated-empty-state.tsx",
    "src/features/auth/index.ts",
    "src/lib/feedbackToast.ts"
   ],
@@ -1700,7 +1701,9 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/command.tsx",
    "src/features/auth/index.ts",
-   "src/hooks/useFuseSearch.ts"
+   "src/hooks/useFuseSearch.ts",
+   "src/hooks/useKeyboardShortcuts.ts",
+   "src/hooks/useSidebarBadges.ts"
   ],
   "src/features/layout/components/GuidedBuyingAssistant.tsx": [
    "src/components/ui/button.tsx",
@@ -3368,6 +3371,7 @@
   "src/routes/AppRoutes.tsx": [
    "src/components/navigation/RouteSkeleton.tsx",
    "src/features/auth/components/ProtectedRoute.tsx",
+   "src/features/auth/types/authRoles.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
    "src/features/layout/components/PageLoader.tsx",
    "src/features/layout/components/Shell.tsx",
@@ -3609,7 +3613,8 @@
    "supabase/functions/_shared/validation.ts"
   ],
   "supabase/functions/health-dashboard/index.ts": [
-   "supabase/functions/_shared/http.ts"
+   "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/maintain-partitions/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
@@ -3664,7 +3669,8 @@
   "supabase/functions/scim-v2/index.ts": [
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/rate_limit.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/scim-v2/auth.ts"
   ],
   "supabase/functions/send-push-notification/index.ts": [
    "supabase/functions/_shared/logger.ts",

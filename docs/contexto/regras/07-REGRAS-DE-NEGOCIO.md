@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d16d88cc4e` · branch `main` · 2026-11-23 15:19 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b48d6441c1` · branch `main` · 2026-11-23 15:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2258,6 +2258,8 @@ _nenhum item encontrado_
 |        aria-live= | `src/components/ui/undo-toast.tsx` |
 | Acesso restrito. Você não tem permissão para acessar esta área. | `src/features/auth/components/ProtectedRoute.tsx` |
 | Erro ao alterar organização | `src/features/auth/hooks/useAuth.tsx` |
+| Sua sessao expirou. Entre novamente para continuar. | `src/features/auth/hooks/useAuth.tsx` |
+| Sua sessao foi encerrada em outra aba. | `src/features/auth/hooks/useAuth.tsx` |
 | useAuth must be used within an AuthProvider | `src/features/auth/hooks/useAuthContext.ts` |
 | Erro ao adicionar cotação:  | `src/features/cotacoes/hooks/useCotacoes.ts` |
 | Erro ao atualizar:  | `src/features/cotacoes/hooks/useCotacoes.ts` |
@@ -2371,9 +2373,7 @@ _nenhum item encontrado_
 | Sem usuário | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
-| CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
-| … +229 linhas — lista completa em `context.json` | |
+| … +231 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2382,6 +2382,7 @@ _nenhum item encontrado_
 | `granted` | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | `admin` | `src/components/security/PermissionMatrix.tsx` |
 | `admin` | `src/features/auth/hooks/useAuth.tsx` |
+| `admin` | `src/features/layout/components/CommandPalette.tsx` |
 | `user` | `src/features/layout/components/GuidedBuyingAssistant.tsx` |
 | `denied` | `src/features/layout/components/RealNotificationCenter.tsx` |
 | `granted` | `src/features/layout/components/RealNotificationCenter.tsx` |
@@ -2392,7 +2393,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2726 testes em 147 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2748 testes em 150 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2483,6 +2484,7 @@ _nenhum item encontrado_
 | `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
 | `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 12 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
+| `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
@@ -2509,9 +2511,11 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
+| `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 5 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 5 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
+| `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
@@ -2648,6 +2652,7 @@ _nenhum item encontrado_
 | **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuário logado. | `src/pages/admin/DeveloperDocs.tsx` |
 | Dialog de Adicionar/Editar Regra SoD | `src/pages/admin/WorkflowAdmin.tsx` |
 | Dialog Adicionar/Editar Regra SoD */} | `src/pages/admin/WorkflowAdmin.tsx` |
+| Registra a visualização apenas para quem realmente enxerga a trilha (admin), | `src/pages/auditoria/Auditoria.tsx` |
 | Validation schemas | `src/pages/auth/Auth.tsx` |
 | automática: cada clique consome 1 requisição do limite. | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | Tamanho mínimo de `busca` aceito pela XBZ (abaixo disso `consultaEstoque` devolve []). */ | `src/pages/catalogo-xbz/xbzHelpers.ts` |
@@ -2731,7 +2736,6 @@ _nenhum item encontrado_
 | The PunchOut shared secret must never be returned to the browser. | `supabase/functions/punchout-setup/index.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
-| Fail closed: the SCIM bearer token must match either a tenant hash or the | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |

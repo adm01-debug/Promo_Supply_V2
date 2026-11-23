@@ -42,6 +42,7 @@
   "supabase/functions/_shared/xbz_catalog_cache.ts",
   "supabase/functions/_shared/xbz_client.ts",
   "supabase/functions/_shared/xbz_crypto.ts",
+  "supabase/functions/_shared/xbz_date_tz.test.ts",
   "supabase/functions/_shared/xbz_fiscal_cache.test.ts",
   "supabase/functions/_shared/xbz_fiscal_cache.ts",
   "supabase/functions/_shared/xbz_pedido_map.test.ts",
@@ -690,7 +691,7 @@
    "nome": "health-dashboard",
    "entrada": "supabase/functions/health-dashboard/index.ts",
    "arquivos": 1,
-   "linhas": 157,
+   "linhas": 156,
    "verify_jwt": true,
    "metodos": [
     "GET",
@@ -717,7 +718,8 @@
    "chama_edges": [],
    "hosts_externos": [],
    "usa_shared": [
-    "http.ts"
+    "http.ts",
+    "security.ts"
    ],
    "chamada_pelo_front": [
     "src/pages/admin/AlertDetail.tsx"
@@ -1050,8 +1052,8 @@
   {
    "nome": "scim-v2",
    "entrada": "supabase/functions/scim-v2/index.ts",
-   "arquivos": 1,
-   "linhas": 270,
+   "arquivos": 2,
+   "linhas": 312,
    "verify_jwt": false,
    "metodos": [
     "DELETE",
@@ -1083,7 +1085,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 1
+   "testes": 2
   },
   {
    "nome": "send-push-notification",

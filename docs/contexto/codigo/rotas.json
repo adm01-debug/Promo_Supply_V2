@@ -106,6 +106,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -721,6 +722,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -800,6 +802,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -872,6 +875,7 @@
     "useFeedback",
     "useFeedbackPreferences",
     "useId",
+    "useLocation",
     "useMemo",
     "useNavigate",
     "useRef",
@@ -914,6 +918,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -1041,6 +1046,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -1347,6 +1353,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -1640,6 +1647,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2094,6 +2102,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2153,6 +2162,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2246,6 +2256,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2339,6 +2350,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2422,6 +2434,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2494,6 +2507,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2601,6 +2615,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2674,6 +2689,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2748,6 +2764,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -2865,6 +2882,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -3153,6 +3171,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -3210,6 +3229,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -3501,6 +3521,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -3583,6 +3604,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -3968,6 +3990,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -4262,6 +4285,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -4317,6 +4341,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -4375,6 +4400,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -4441,6 +4467,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -4932,6 +4959,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -5007,6 +5035,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -5083,6 +5112,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -5159,6 +5189,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],
@@ -5235,6 +5266,7 @@
   {
    "protegida": true,
    "wrappers": [
+    "ProtectedRoute",
     "ModuleErrorBoundary",
     "RouteSkeleton"
    ],

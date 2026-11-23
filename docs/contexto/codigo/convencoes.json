@@ -21,9 +21,9 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (114)",
+   "co-localizado (__tests__) (115)",
    "outro (43)",
-   "co-localizado (*.test) (31)"
+   "co-localizado (*.test) (33)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(contrato): escapeHtml tambem escapa apostrofo (#328)",
-   "fix(mfa): remove backup codes inseguros e sem consumidor (#327)",
-   "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)",
-   "fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)",
-   "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)"
+   "fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)",
+   "fix(auth): preserva a rota e avisa quando a sessao expira (#329)",
+   "chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)",
+   "fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)",
+   "fix(cors): health-dashboard deixa de liberar qualquer origem (#333)"
   ]
  },
  "pr_template": null,
