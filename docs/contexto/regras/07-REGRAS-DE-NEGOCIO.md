@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c31873719f` · branch `main` · 2026-11-23 20:33 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4ea48051b1` · branch `main` · 2026-11-23 21:00 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1532,7 +1532,7 @@ _nenhum item encontrado_
   ```
 - **GerarOrdem()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
-  const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get("solicitacao"); const cotacaoId = searchParams.get("cotacao"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(""); const [mensagemEmail, setMensagemEmail] = useState(""); const [assuntoEmail, setAssuntoEmail] = useState(""); const [frete, setFrete] = useState(150); const [desconto, setDe …
+  { const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get("solicitacao"); const cotacaoId = searchParams.get("cotacao"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(""); const [mensagemEmail, setMensagemEmail] = useState(""); const [assuntoEmail, setAssuntoEmail] = useSt
   ```
 - **gerarMensagemWhatsApp()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
@@ -2383,7 +2383,7 @@ _nenhum item encontrado_
 | Sem usuário | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +236 linhas — lista completa em `context.json` | |
+| … +237 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2402,7 +2402,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2778 testes em 155 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2781 testes em 155 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2429,13 +2429,13 @@ _nenhum item encontrado_
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |
 | `src/lib/__tests__/filterClearReporter.test.ts` | 32 | buildClearReport · returns empty report when no fields provided · excludes field with null value · excludes field with undefined value … |
+| `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 32 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/stores/__tests__/slaSettingsStore.test.ts` | 32 | initial state · has default warningThresholdDays of 3 · has default criticalThresholdDays of 1 · has default checkIntervalMinutes of 1 … |
 | `src/schemas/__tests__/solicitacao.schema.test.ts` | 31 | solicitacaoSchema · accepts fully valid input · applies default observacoes as empty string · applies default centroCusto as empty string … |
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |
 | `src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts` | 30 | mockPendingApprovals · has 3 items · each item has required string fields · each item has numeric fields … |
 | `src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts` | 30 | historicoMensal · has 6 months of data · every item has mes, economia, volume, percentual, cotacoes · all economia values are positive … |
 | `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 30 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
-| `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 29 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/components/ui/__tests__/enhanced-search-helpers.test.ts` | 28 | typeLabels · covers all 5 result types · solicitacao →  · pedido →  … |
 | `src/hooks/__tests__/keyboardShortcutsData.test.ts` | 28 | getShortcutsList · is a function · returns an array · returns 4 categories … |
 | `src/lib/__tests__/feedbackToast.test.ts` | 28 | toast · is defined · exposes success, error, warning, info, dismiss, promise, loading, custom · toast.success … |
@@ -2679,6 +2679,8 @@ _nenhum item encontrado_
 | Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | risco/prazo: so calcula o que os dados das cotacoes permitem afirmar. | `src/pages/cotacao/cotacaoHelpers.ts` |
+| do solicitante, nao preco negociado, e servia apenas de fallback. | `src/pages/gerar-ordem/GerarOrdem.tsx` |
+| Calculos financeiros — frete e desconto vem da cotacao vencedora; o `\|\| 12` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
 | * A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um | `src/pages/recebimento/pedidoComplementar.ts` |

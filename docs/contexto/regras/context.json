@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c31873719fb5c43922fdd1ddf6b2b55ba5ad5468",
+  "sha": "4ea48051b171d0d60da4d9c7ed43127318c37d27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 20:33 UTC",
+  "generated_at": "2026-11-23 21:00 UTC",
   "files_total": 1336,
   "code_files": 1165,
-  "code_lines": 199949,
+  "code_lines": 200000,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5fd9328db16ba4aa",
+ "facts_hash": "8e0cc352e74752d0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35582,7 +35582,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30335,
+   "lines": 30386,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41694,6 +41694,10 @@
     "msg": "Dados insuficientes para gerar a ordem."
    },
    {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "msg": "Selecione a cotação vencedora: a ordem de compra é emitida com o preço dela."
+   },
+   {
     "file": "src/pages/historico/HistoricoCompras.tsx",
     "msg": "Sem dados para exportar"
    },
@@ -42732,6 +42736,14 @@
    {
     "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "text": "risco/prazo: so calcula o que os dados das cotacoes permitem afirmar."
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "text": "do solicitante, nao preco negociado, e servia apenas de fallback."
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "text": "Calculos financeiros — frete e desconto vem da cotacao vencedora; o `|| 12`"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -56838,7 +56850,7 @@
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "name": "GerarOrdem",
     "params": "",
-    "body": "const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get(\"solicitacao\"); const cotacaoId = searchParams.get(\"cotacao\"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(\"\"); const [mensagemEmail, setMensagemEmail] = useState(\"\"); const [assuntoEmail, setAssuntoEmail] = useState(\"\"); const [frete, setFrete] = useState(150); const [desconto, setDe …"
+    "body": "{ const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get(\"solicitacao\"); const cotacaoId = searchParams.get(\"cotacao\"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(\"\"); const [mensagemEmail, setMensagemEmail] = useState(\"\"); const [assuntoEmail, setAssuntoEmail] = useSt"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -66273,6 +66285,18 @@
    {
     "file": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
     "name": "includes tipo label for the order type"
+   },
+   {
+    "file": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+    "name": "buildWhatsAppMessage/buildEmailMessage sem fallback de R$ 12"
+   },
+   {
+    "file": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+    "name": "nao inventa R$ 12,00 quando o valor unitario e zero"
+   },
+   {
+    "file": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+    "name": "reproduz o valor unitario da cotacao vencedora"
    },
    {
     "file": "src/pages/historico/__tests__/historicoColors.test.ts",
@@ -106436,7 +106460,7 @@
   },
   "src/pages/gerar-ordem/GerarOrdem.tsx": {
    "path": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "lines": 583,
+   "lines": 613,
    "exports": [
     "default GerarOrdem"
    ],
@@ -106473,7 +106497,8 @@
     "/acompanhamento"
    ],
    "errors": [
-    "Dados insuficientes para gerar a ordem."
+    "Dados insuficientes para gerar a ordem.",
+    "Selecione a cotação vencedora: a ordem de compra é emitida com o preço dela."
    ],
    "status_values": [
     {
@@ -106493,13 +106518,15 @@
     }
    ],
    "rule_comments": [
+    "do solicitante, nao preco negociado, e servia apenas de fallback.",
+    "Calculos financeiros — frete e desconto vem da cotacao vencedora; o `|| 12`",
     "Desconto Editável */}"
    ],
    "calc_fns": [
     {
      "name": "GerarOrdem",
      "params": "",
-     "body": "const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get(\"solicitacao\"); const cotacaoId = searchParams.get(\"cotacao\"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(\"\"); const [mensagemEmail, setMensagemEmail] = useState(\"\"); const [assuntoEmail, setAssuntoEmail] = useState(\"\"); const [frete, setFrete] = useState(150); const [desconto, setDe …"
+     "body": "{ const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get(\"solicitacao\"); const cotacaoId = searchParams.get(\"cotacao\"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(\"\"); const [mensagemEmail, setMensagemEmail] = useState(\"\"); const [assuntoEmail, setAssuntoEmail] = useSt"
     },
     {
      "name": "gerarMensagemWhatsApp",
@@ -106527,7 +106554,7 @@
   },
   "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts": {
    "path": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-   "lines": 176,
+   "lines": 197,
    "is_test": true,
    "tests": [
     "getTipoLabel",
@@ -106558,7 +106585,10 @@
     "omits desconto line when 0",
     "includes observacoes section when provided",
     "omits OBSERVAÇÕES section when empty",
-    "includes tipo label for the order type"
+    "includes tipo label for the order type",
+    "buildWhatsAppMessage/buildEmailMessage sem fallback de R$ 12",
+    "nao inventa R$ 12,00 quando o valor unitario e zero",
+    "reproduz o valor unitario da cotacao vencedora"
    ]
   },
   "src/pages/historico/HistoricoCompras.tsx": {
@@ -116420,10 +116450,22 @@
   }
  },
  "git": {
-  "sha": "c31873719fb5c43922fdd1ddf6b2b55ba5ad5468",
+  "sha": "4ea48051b171d0d60da4d9c7ed43127318c37d27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4ea4805",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/gerar-ordem/GerarOrdem.tsx",
+     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+     "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
+    ]
+   },
    {
     "sha": "c318737",
     "date": "2026-11-23",
@@ -116779,28 +116821,12 @@
      "src/pages/admin/PunchOutCatalogs.tsx",
      "supabase/functions/generate-contract-pdf/index.ts"
     ]
-   },
-   {
-    "sha": "6f38b3e",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)",
-    "files": [
-     "index.html",
-     "src/features/auth/hooks/useAuth.tsx",
-     "vercel.json",
-     "vite.config.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    4
-   ],
-   [
-    "src/features/auth/hooks/useAuth.tsx",
-    4
+    5
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
@@ -116812,6 +116838,10 @@
    ],
    [
     "src/features/auth/components/ProtectedRoute.tsx",
+    3
+   ],
+   [
+    "src/features/auth/hooks/useAuth.tsx",
     3
    ],
    [

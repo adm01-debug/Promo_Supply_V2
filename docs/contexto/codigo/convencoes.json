@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)",
    "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)",
    "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)",
    "chore(qa): marca a etapa 042 como concluida (#337)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#303)",
-   "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)"
+   "chore(db): sincronizar types.ts com o banco [auto] (#303)"
   ]
  },
  "pr_template": null,

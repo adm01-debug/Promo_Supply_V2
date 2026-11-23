@@ -1243,11 +1243,11 @@
   {
    "arquivo": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 176,
+   "linhas": 197,
    "testa": [
     "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
    ],
-   "casos": 26
+   "casos": 28
   },
   {
    "arquivo": "src/pages/historico/__tests__/historicoColors.test.ts",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c31873719fb5c43922fdd1ddf6b2b55ba5ad5468",
+  "commit": "4ea48051b171d0d60da4d9c7ed43127318c37d27",
   "branch": "main",
-  "data_commit": "2026-11-23T17:32:48-03:00",
+  "data_commit": "2026-11-23T17:59:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "4ea4805",
+    "data": "2026-11-23",
+    "assunto": "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)"
+   },
    {
     "sha": "c318737",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "07960cf",
     "data": "2026-11-23",
     "assunto": "fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)"
-   },
-   {
-    "sha": "2d78471",
-    "data": "2026-11-23",
-    "assunto": "fix(auth): desabilita autocadastro público (QA 008+009) (#319)"
    }
   ],
-  "arquivos_mudados_7d": 351,
+  "arquivos_mudados_7d": 353,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -242,6 +242,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 6
+   },
+   {
     "arquivo": "scripts/automation.config.json",
     "mudancas": 6
    },
@@ -259,10 +263,6 @@
    },
    {
     "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
     "mudancas": 5
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 291
+    "commits": 292
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1335,
   "arquivos_codigo": 832,
-  "linhas_codigo": 172765,
+  "linhas_codigo": 172816,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30335
+   "linhas": 30386
   },
   "src/routes": {
    "arquivos": 1,
@@ -633,12 +633,12 @@
    "linhas": 638
   },
   {
-   "arquivo": "src/components/compras/ComparadorCotacoes.tsx",
-   "linhas": 604
+   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+   "linhas": 613
   },
   {
-   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "linhas": 583
+   "arquivo": "src/components/compras/ComparadorCotacoes.tsx",
+   "linhas": 604
   },
   {
    "arquivo": "src/components/compras/BulkOperationsPreview.tsx",
