@@ -325,21 +325,29 @@ export const useApprovalWorkflow = () => {
   // ── Escalation polling (local UX guard — server cron is the real enforcer) ─
 
   const checkEscalations = useCallback(async () => {
+      if (!organizationId) return;
     try {
-      const { data: overdue } = await supabase.from('approval_workflows')
+        const { data: overdue, error: overdueError } = await supabase.from('approval_workflows')
         .select('*, approval_rules(*)')
         .eq('status', 'pending')
         .lt('prazo_limite', new Date().toISOString())
         .is('escalado_em', null);
+        if (overdueError) throw overdueError;
       if (!overdue?.length) return;
       for (const wf of overdue) {
         const rule = wf.approval_rules;
         if (!rule?.escalacao_automatica || !rule?.escalacao_para) continue;
-        await supabase.from('approval_workflows').update({
+          // Só escala quem ainda não foi escalado: dois navegadores abertos rodam este
+          // polling e o UPDATE cego criava duas etapas para o mesmo aprovador.
+          const { data: escalados, error: escalateError } = await supabase.from('approval_workflows').update({
           status: 'escalated', escalado_em: new Date().toISOString(), escalado_para: rule.escalacao_para,
-        }).eq('id', wf.id);
+          }).eq('id', wf.id).is('escalado_em', null).select('id');
+          if (escalateError) throw escalateError;
+          if (!escalados?.length) continue;
         await supabase.from('approval_steps').insert({
           workflow_id: wf.id, etapa: wf.etapa_atual + 1, aprovador_id: rule.escalacao_para,
+            // Sem organization_id a etapa nasce invisível: fetchPendingSteps filtra por ele.
+            organization_id: organizationId,
           prazo_limite: new Date(Date.now() + rule.tempo_limite_horas * 3600_000).toISOString(),
         });
         await supabase.from('approval_history').insert({
@@ -350,7 +358,7 @@ export const useApprovalWorkflow = () => {
       await fetchPendingWorkflows();
       await fetchPendingSteps();
     } catch (error) { logger.error('Error checking escalations', { error }); }
-  }, [fetchPendingWorkflows, fetchPendingSteps]);
+    }, [fetchPendingWorkflows, fetchPendingSteps, organizationId]);
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
 
