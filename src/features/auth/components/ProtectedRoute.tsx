@@ -1,13 +1,22 @@
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { ReactNode, useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 import type { AppRole } from '@/features/auth';
+import { toast } from '@/lib/feedbackToast';
 
 interface ProtectedRouteProps {
   children: ReactNode;
   requiredRole?: AppRole | AppRole[];
 }
+
+const AccessDenied = ({ to }: { to: string }) => {
+  const location = useLocation();
+  useEffect(() => {
+    toast.warning('Acesso restrito. Você não tem permissão para acessar esta área.', { id: 'access-denied' });
+  }, [location.pathname]);
+  return <Navigate to={to} replace />;
+};
 
 export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading, hasRole } = useAuth();
@@ -28,7 +37,7 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   if (requiredRole && !hasRole(requiredRole)) {
-    return <Navigate to="/" replace />;
+    return <AccessDenied to="/compras" />;
   }
 
   return <>{children}</>;

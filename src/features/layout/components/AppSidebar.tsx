@@ -50,6 +50,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { useAuth } from "@/features/auth";
+import type { AppRole } from "@/features/auth";
 import { useCriticalAlertsBadge } from "@/hooks/useCriticalAlertsBadge";
 import { useSidebarBadges } from "@/hooks/useSidebarBadges";
 
@@ -59,12 +60,16 @@ interface NavItemDef {
   href: string;
   /** Key into SidebarBadges for a live count. Static badge is gone. */
   badgeKey?: 'solicitacoes' | 'cotacoes' | 'pagamentos' | 'aprovacoes';
+  /** If set, item is only shown to users with this role. */
+  requiredRole?: AppRole | AppRole[];
 }
 
 interface NavSection {
   id: string;
   label: string;
   items: NavItemDef[];
+  /** If set, entire section is only shown when user has this role. */
+  requiredRole?: AppRole | AppRole[];
 }
 
 const sections: NavSection[] = [
@@ -135,18 +140,17 @@ const sections: NavSection[] = [
     items: [
       { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badgeKey: 'aprovacoes' },
       { title: "Auditoria", icon: History, href: "/auditoria" },
-      { title: "Workflows", icon: Settings2, href: "/admin/workflows" },
-      { title: "Segurança", icon: Shield, href: "/seguranca" },
-      { title: "PunchOut", icon: ShoppingCart, href: "/admin/punchout" },
-      { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
-      { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
-      { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
-      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
-      { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
-      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria" },
-      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health" },
-      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso" },
-      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration" },
+      { title: "Workflows", icon: Settings2, href: "/admin/workflows", requiredRole: 'admin' },
+      { title: "PunchOut", icon: ShoppingCart, href: "/admin/punchout", requiredRole: 'admin' },
+      { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp", requiredRole: 'admin' },
+      { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline", requiredRole: 'admin' },
+      { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal", requiredRole: 'admin' },
+      { title: "Documentação", icon: BookOpen, href: "/admin/docs", requiredRole: 'admin' },
+      { title: "Saúde do Sistema", icon: Activity, href: "/admin/health", requiredRole: 'admin' },
+      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria", requiredRole: 'admin' },
+      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health", requiredRole: 'admin' },
+      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso", requiredRole: 'admin' },
+      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration", requiredRole: 'admin' },
     ],
   },
 ];
@@ -267,6 +271,7 @@ const SidebarSection = ({
   badges,
   sectionBadge = 0,
   sectionBadgeCritical = false,
+  hasRole,
 }: {
   section: NavSection;
   pathname: string;
@@ -275,46 +280,54 @@ const SidebarSection = ({
   badges: Record<string, number>;
   sectionBadge?: number;
   sectionBadgeCritical?: boolean;
-}) => (
-  <div className="space-y-0.5">
-    {/* Section label — hidden when collapsed */}
-    {!collapsed && (
-      <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
-          {section.label}
-        </p>
-        {sectionBadge > 0 && (
-          <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
-        )}
-      </div>
-    )}
-    {collapsed && (
-      <div className="relative my-1.5 mx-2">
-        <div className="h-px bg-border/40" />
-        {sectionBadge > 0 && (
-          <span
-            className={cn(
-              "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
-              sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
-            )}
-            aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
-          />
-        )}
-      </div>
-    )}
+  hasRole: (role: AppRole | AppRole[]) => boolean;
+}) => {
+  const visibleItems = section.items.filter(
+    (item) => !item.requiredRole || hasRole(item.requiredRole)
+  );
+  if (visibleItems.length === 0) return null;
 
-    {section.items.map((item) => (
-      <SidebarItem
-        key={item.href}
-        item={item}
-        active={isItemActive(pathname, item.href)}
-        collapsed={collapsed}
-        criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
-        liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
-      />
-    ))}
-  </div>
-);
+  return (
+    <div className="space-y-0.5">
+      {/* Section label — hidden when collapsed */}
+      {!collapsed && (
+        <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
+            {section.label}
+          </p>
+          {sectionBadge > 0 && (
+            <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
+          )}
+        </div>
+      )}
+      {collapsed && (
+        <div className="relative my-1.5 mx-2">
+          <div className="h-px bg-border/40" />
+          {sectionBadge > 0 && (
+            <span
+              className={cn(
+                "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+                sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
+              )}
+              aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
+            />
+          )}
+        </div>
+      )}
+
+      {visibleItems.map((item) => (
+        <SidebarItem
+          key={item.href}
+          item={item}
+          active={isItemActive(pathname, item.href)}
+          collapsed={collapsed}
+          criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
+          liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
+        />
+      ))}
+    </div>
+  );
+};
 
 /* ─── Main Sidebar ─── */
 interface AppSidebarProps {
@@ -324,7 +337,7 @@ interface AppSidebarProps {
 
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
-  const { signOut } = useAuth();
+  const { signOut, hasRole } = useAuth();
   const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
   const { data: badgeData } = useSidebarBadges();
   const badges = badgeData ?? { solicitacoes: 0, cotacoes: 0, pagamentos: 0, aprovacoes: 0 };
@@ -399,6 +412,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             badges={badges as unknown as Record<string, number>}
             sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
             sectionBadgeCritical={section.id === "admin"}
+            hasRole={hasRole}
           />
         ))}
       </nav>
