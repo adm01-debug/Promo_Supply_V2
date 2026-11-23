@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 197,
+ "total": 198,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 180
+  "unit": 181
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 30
+   "arquivos": 31
   },
   {
    "padrao": "tests-e2e/",
@@ -240,7 +240,7 @@
   {
    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
    "tipo": "unit",
-   "linhas": 900,
+   "linhas": 904,
    "testa": [
     "scripts/db-explain-analyze.ts",
     "scripts/realtime-audit.ts",
@@ -1435,9 +1435,9 @@
   {
    "arquivo": "src/tests/integration/supabase-db.test.ts",
    "tipo": "unit",
-   "linhas": 221,
+   "linhas": 232,
    "testa": [],
-   "casos": 12
+   "casos": 13
   },
   {
    "arquivo": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
@@ -1463,6 +1463,15 @@
     "src/types/legacyTypes.ts"
    ],
    "casos": 22
+  },
+  {
+   "arquivo": "supabase/functions/_shared/cors-allowlist.test.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [
+    "supabase/functions/_shared/security.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
@@ -1587,7 +1596,7 @@
   {
    "arquivo": "supabase/functions/dependency-health/index.test.ts",
    "tipo": "unit",
-   "linhas": 227,
+   "linhas": 229,
    "testa": [],
    "casos": 6
   },
@@ -1662,7 +1671,7 @@
   {
    "arquivo": "supabase/functions/telemetry/index.test.ts",
    "tipo": "unit",
-   "linhas": 121,
+   "linhas": 124,
    "testa": [],
    "casos": 4
   },
@@ -1745,7 +1754,7 @@
   {
    "arquivo": "tests-e2e/workflow-advanced.spec.ts",
    "tipo": "e2e",
-   "linhas": 53,
+   "linhas": 55,
    "testa": [],
    "casos": 3
   },
@@ -1759,9 +1768,9 @@
   {
    "arquivo": "tests-rls/rls-isolation.test.ts",
    "tipo": "unit",
-   "linhas": 213,
+   "linhas": 257,
    "testa": [],
-   "casos": 9
+   "casos": 10
   }
  ],
  "sql": [],
@@ -1912,6 +1921,7 @@
   "supabase/functions/_shared/logger.ts": 1,
   "supabase/functions/_shared/notifications.ts": 1,
   "supabase/functions/_shared/punchout_crypto.ts": 1,
+  "supabase/functions/_shared/security.ts": 1,
   "supabase/functions/_shared/spot_api.ts": 1,
   "supabase/functions/_shared/xbz_catalog_cache.ts": 1,
   "supabase/functions/_shared/xbz_client.ts": 1,

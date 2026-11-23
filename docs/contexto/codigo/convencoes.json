@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (114)",
    "outro (43)",
-   "co-localizado (*.test) (30)"
+   "co-localizado (*.test) (31)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(auth): desabilita autocadastro público (QA 008+009) (#319)",
-   "fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320)",
-   "fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)",
-   "fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)",
-   "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)"
+   "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)",
+   "fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)",
+   "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)",
+   "fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)",
+   "fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)"
   ]
  },
  "pr_template": null,

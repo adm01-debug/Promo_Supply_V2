@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2d78471b73b4abf98aa1a68b52eb6e6fef6e3ef9` (2026-11-23T10:49:21-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `99345f55a55e834c881a9c117cbbf4bba270e165` (2026-11-23T11:21:58-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (747), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (748), SQL (327), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1319 |
-| arquivos_codigo | 820 |
-| linhas_codigo | 171398 |
+| arquivos_total | 1320 |
+| arquivos_codigo | 821 |
+| linhas_codigo | 171518 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 325 |
 | cron_jobs | 74 |
-| testes | 197 |
+| testes | 198 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (114), outro (43), co-localizado (*.test) (30)
+- testes: co-localizado (__tests__) (114), outro (43), co-localizado (*.test) (31)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -193,7 +193,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `check-cotacao-followup` — tabelas: cotacoes, notifications, profiles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-expiry-alerts` — tabelas: contracts, cotacoes, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `check-sla-alerts` — tabelas: pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
-- `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
+- `dependency-health` (verify_jwt=false) — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
 - `erp-credential-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
 - `erp-sync` — tabelas: erp_connections, erp_sync_log; chamada por 1 arquivo(s) do front
 - `escalate-solicitacao` — tabelas: approval_history, pedidos, profiles, solicitacoes, user_roles; chamada por 1 arquivo(s) do front
@@ -208,7 +208,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `process-solicitacao-neural` — tabelas: -; chamada por 2 arquivo(s) do front
 - `punchout-encrypt` — tabelas: user_tenants; chamada por 1 arquivo(s) do front
-- `punchout-receive` — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
+- `punchout-receive` (verify_jwt=false) — tabelas: profiles, punchout_catalogs, punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
 - `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
@@ -217,7 +217,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
 - `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
-- `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
+- `webauthn-authenticate` (verify_jwt=false) — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
 - `weekly-report` — tabelas: cotacoes, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
 - `weekly-summary-report` — tabelas: cotacoes, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
@@ -304,7 +304,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
-- webhooks recebidos: scim-v2
+- webhooks recebidos: dependency-health, punchout-receive, scim-v2, webauthn-authenticate
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
@@ -349,7 +349,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - scripts/automation.config.json (6)
 - .github/workflows/types-sync.yml (5)
 - docs/agentes/github-ci.md (5)
-- src/pages/acompanhamento/Acompanhamento.tsx (5)
+- scripts/ci/scripts-operacionais.unit.mjs (5)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -417,6 +417,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `99345f5` fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)
+- 2026-11-23 `e33a738` fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)
+- 2026-11-23 `46b4cd6` chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)
+- 2026-11-23 `959a649` fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)
+- 2026-11-23 `07960cf` fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)
 - 2026-11-23 `2d78471` fix(auth): desabilita autocadastro público (QA 008+009) (#319)
 - 2026-11-23 `3833aac` fix(seguranca): autoriza push por papel/tenant, blinda approver_id, valida filePath e remove SSRF (QA 021-023+026) (#320
 - 2026-11-23 `73dce42` fix(filtros): propaga filtro de empresa em pedidos, pagamentos, solicitacoes e badges (QA 013-015) (#318)
@@ -427,11 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `0369433` fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)
 - 2026-11-23 `81f63a5` docs(qa): auditoria QA completa do sistema + plano de correcao por etapas (#307)
 - 2026-11-22 `d9c58bc` feat(sourcing): substitui dados ficticios por metricas reais no console (#306)
-- 2026-11-22 `2a98db8` feat(negociacao): WhatsApp e e-mail taticos abrem contato real do fornecedor (#305)
-- 2026-11-22 `32f87b2` feat(sourcing): exporta dossier real em CSV e Selecionar Tudo aplica categorias (#304)
-- 2026-11-22 `954238f` fix: usa acoes validas do CHECK em approval_history no escalonamento (#302)
-- 2026-11-22 `c15161d` feat: escala solicitacao e alerta comprador com notificacao real (#301)
-- 2026-11-22 `ec90e1e` fix: liga o Desfazer Global do historico ao undoStore real (#300)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

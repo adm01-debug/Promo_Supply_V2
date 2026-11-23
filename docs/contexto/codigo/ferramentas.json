@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (747)",
+   "TypeScript (748)",
    "SQL (327)",
    "Markdown (100)",
    "JavaScript (70)",
@@ -837,7 +837,10 @@
    "VITE_BITRIX_WEBHOOK_URL"
   ],
   "webhooks_recebidos": [
-   "scim-v2"
+   "dependency-health",
+   "punchout-receive",
+   "scim-v2",
+   "webauthn-authenticate"
   ],
   "realtime": []
  },

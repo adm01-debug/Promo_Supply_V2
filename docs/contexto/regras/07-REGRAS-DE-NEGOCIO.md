@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2d78471b73` · branch `main` · 2026-11-23 14:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `99345f55a5` · branch `main` · 2026-11-23 14:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2392,7 +2392,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2722 testes em 146 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2726 testes em 147 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2480,8 +2480,8 @@ _nenhum item encontrado_
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
+| `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
-| `src/tests/integration/supabase-db.test.ts` | 12 | required tables exist · approval_workflows has required columns · approval_steps has required columns · cron_heartbeats table is queryable … |
 | `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 12 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
@@ -2490,11 +2490,11 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
-| `tests-rls/rls-isolation.test.ts` | 9 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
+| `tests-rls/rls-isolation.test.ts` | 8 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
@@ -2523,10 +2523,11 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
+| `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
-| `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
+| `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |

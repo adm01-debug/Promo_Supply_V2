@@ -4,12 +4,16 @@
  "pasta": "supabase/functions",
  "total": 40,
  "verify_jwt_false": [
-  "scim-v2"
+  "dependency-health",
+  "punchout-receive",
+  "scim-v2",
+  "webauthn-authenticate"
  ],
  "shared": [
   "supabase/functions/_shared/ai_gateway.ts",
   "supabase/functions/_shared/circuit_breaker.ts",
   "supabase/functions/_shared/contracts.ts",
+  "supabase/functions/_shared/cors-allowlist.test.ts",
   "supabase/functions/_shared/cronHealth.ts",
   "supabase/functions/_shared/external-bridge-allowlist.test.ts",
   "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -376,7 +380,7 @@
    "entrada": "supabase/functions/dependency-health/index.ts",
    "arquivos": 1,
    "linhas": 697,
-   "verify_jwt": true,
+   "verify_jwt": false,
    "metodos": [
     "GET",
     "OPTIONS",
@@ -932,7 +936,7 @@
    "entrada": "supabase/functions/punchout-receive/index.ts",
    "arquivos": 3,
    "linhas": 371,
-   "verify_jwt": true,
+   "verify_jwt": false,
    "metodos": [
     "OPTIONS",
     "POST"
@@ -1282,7 +1286,7 @@
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
    "linhas": 254,
-   "verify_jwt": true,
+   "verify_jwt": false,
    "metodos": [
     "OPTIONS",
     "POST"

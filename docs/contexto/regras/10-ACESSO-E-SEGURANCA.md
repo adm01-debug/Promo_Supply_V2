@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2d78471b73` · branch `main` · 2026-11-23 14:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `99345f55a5` · branch `main` · 2026-11-23 14:52 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -397,6 +397,9 @@
 ## Edge functions públicas (sem JWT — qualquer um chama)
 
 - `scim-v2`
+- `punchout-receive`
+- `webauthn-authenticate`
+- `dependency-health`
 
 ## Rotas protegidas no front
 

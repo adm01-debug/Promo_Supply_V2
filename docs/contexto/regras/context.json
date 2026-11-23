@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2d78471b73b4abf98aa1a68b52eb6e6fef6e3ef9",
+  "sha": "99345f55a55e834c881a9c117cbbf4bba270e165",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 14:15 UTC",
-  "files_total": 1320,
-  "code_files": 1149,
-  "code_lines": 198356,
+  "generated_at": "2026-11-23 14:52 UTC",
+  "files_total": 1321,
+  "code_files": 1150,
+  "code_lines": 198476,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "70b5ea33ab863399",
+ "facts_hash": "9b2a565e0617f9c9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 396,
+   ".ts": 397,
    ".tsx": 351,
    ".sql": 327,
    ".mjs": 67,
@@ -273,7 +273,10 @@
   "monorepo_packages": [],
   "supabase_config": {
    "functions_no_jwt": [
-    "scim-v2"
+    "scim-v2",
+    "punchout-receive",
+    "webauthn-authenticate",
+    "dependency-health"
    ],
    "auth": {}
   },
@@ -31741,7 +31744,7 @@
      "OPTIONS",
      "POST"
     ],
-    "auth": "service_role (ignora RLS) + valida JWT do usuário",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "audit_logs",
      "dependency_health",
@@ -32163,7 +32166,7 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "profiles",
      "punchout_catalogs",
@@ -32432,7 +32435,7 @@
     "methods": [
      "OPTIONS"
     ],
-    "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
+    "auth": "PÚBLICA (verify_jwt=false em config.toml)",
     "tables": [
      "user_tenants",
      "webauthn_challenges",
@@ -34162,7 +34165,7 @@
   {
    "module": "scripts",
    "files": 79,
-   "lines": 29286,
+   "lines": 29290,
    "tables": [
     "a",
     "a_tabela",
@@ -35643,7 +35646,7 @@
   {
    "module": "src/tests",
    "files": 11,
-   "lines": 899,
+   "lines": 910,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35707,8 +35710,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 102,
-   "lines": 17562,
+   "files": 103,
+   "lines": 17621,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35804,9 +35807,9 @@
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
     "circuit_breaker.ts: INT-01: Circuit breaker leve em memória por instância de edge function. Estados: CLOSED → (falhas ≥ threshold) → OPEN → (após cooldown) → HALF_OPEN → CLOSED Uso: const cb = getBreaker(\"spot\", { failureThreshold: 5, cooldownMs: 30_000 }); if (!cb.canRequest()) throw new Error(\"circuit_open\"); try { c …",
     "contracts.ts: @ts-ignore - Deno remote import",
+    "cors-allowlist.test.ts: Allowlist de CORS (QA 045): cobre o furo do comparador de curinga e o comportamento de buildCorsHeaders com e sem ALLOWED_ORIGINS. Rodar: deno test supabase/functions/_shared/cors-allowlist.test.ts",
     "cronHealth.ts: F-052: Cron heartbeat utility. Call `recordCronHeartbeat` at the end of every cron edge function to register last-run state. Uses `upsert_cron_heartbeat` RPC (SECURITY DEFINER) so the service-role client can write without bypassing RLS explicitly. Usage: import { recordCronHeartbeat } from \"../_shar …",
-    "external-bridge-allowlist.test.ts: Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts",
-    "external-bridge-allowlist.ts: Allowlist de tabelas e RPCs autorizadas para o `external-db-bridge`. Regra de ouro (A-01 · AUDITORIA_BACKEND_V2): a bridge só executa contra objetos declarados aqui. Qualquer requisição fora dessa lista é rejeitada com 403 ANTES de tocar no banco externo — sem esta camada um usuário autenticado pode …"
+    "external-bridge-allowlist.test.ts: Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts"
    ],
    "deps": [
     "https:"
@@ -35816,6 +35819,7 @@
     "supabase/functions/_shared/ai_gateway.ts",
     "supabase/functions/_shared/circuit_breaker.ts",
     "supabase/functions/_shared/contracts.ts",
+    "supabase/functions/_shared/cors-allowlist.test.ts",
     "supabase/functions/_shared/cronHealth.ts",
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     "supabase/functions/_shared/external-bridge-allowlist.ts",
@@ -35891,8 +35895,7 @@
     "supabase/functions/punchout-receive/solicitation.test.ts",
     "supabase/functions/punchout-receive/solicitation.ts",
     "supabase/functions/punchout-setup/index.ts",
-    "supabase/functions/run-audit/index.ts",
-    "supabase/functions/run-audit/rls_test.ts"
+    "supabase/functions/run-audit/index.ts"
    ]
   },
   {
@@ -35990,7 +35993,7 @@
   {
    "module": "tests-e2e",
    "files": 9,
-   "lines": 551,
+   "lines": 553,
    "tables": [],
    "exports": [
     "fixtures.ts: test",
@@ -36019,7 +36022,7 @@
   {
    "module": "tests-rls",
    "files": 1,
-   "lines": 213,
+   "lines": 257,
    "tables": [
     "audit_logs",
     "contracts",
@@ -36033,6 +36036,8 @@
    ],
    "deps": [
     "@supabase/supabase-js",
+    "node:fs",
+    "node:path",
     "vitest"
    ],
    "imports_modules": [],
@@ -36108,15 +36113,13 @@
    },
    "approval_history": {
     "select": [
-     "src/hooks/useApprovalHistory.ts"
+     "src/hooks/useApprovalHistory.ts",
+     "src/tests/integration/supabase-db.test.ts"
     ],
     "insert": [
      "src/hooks/useApprovalWorkflow.ts",
      "supabase/functions/check-approval-escalations/index.ts",
      "supabase/functions/escalate-solicitacao/index.ts"
-    ],
-    "delete": [
-     "src/tests/integration/supabase-db.test.ts"
     ]
    },
    "approval_rules": {
@@ -37602,6 +37605,7 @@
     "organization_id"
    ],
    "approval_history": [
+    "id",
     "workflow_id"
    ],
    "approval_rules": [
@@ -38324,6 +38328,7 @@
     "supabase/functions/alert-dispatcher/index.ts"
    ],
    "ALLOWED_ORIGINS": [
+    "supabase/functions/_shared/cors-allowlist.test.ts",
     "supabase/functions/_shared/security.ts"
    ],
    "ANTHROPIC_API_KEY": [
@@ -38515,6 +38520,9 @@
     "scripts/ai-context/gerar.unit.mjs",
     "supabase/functions/alert-dispatcher/index.ts",
     "supabase/functions/check-cotacao-followup/index.ts"
+   ],
+   "RLS_ALLOW_WRITES": [
+    "tests-rls/rls-isolation.test.ts"
    ],
    "RLS_TEST_USER_A": [
     "tests-rls/rls-isolation.test.ts"
@@ -67646,6 +67654,10 @@
    },
    {
     "file": "src/tests/integration/supabase-db.test.ts",
+    "name": "nenhuma linha de approval_history carrega marcador de teste"
+   },
+   {
+    "file": "src/tests/integration/supabase-db.test.ts",
     "name": "required tables exist"
    },
    {
@@ -67963,6 +67975,22 @@
    {
     "file": "src/types/__tests__/legacyTypes.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "curinga nao casa o dominio raiz nem origem invalida"
    },
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
@@ -68446,7 +68474,7 @@
    },
    {
     "file": "tests-e2e/workflow-advanced.spec.ts",
-    "name": "Multi-step Solicitation Flow"
+    "name": "Multi-step Solicitation Flow (abre o formulario, sem gravar)"
    },
    {
     "file": "tests-e2e/workflow-advanced.spec.ts",
@@ -68526,15 +68554,11 @@
    },
    {
     "file": "tests-rls/rls-isolation.test.ts",
-    "name": "usuário A não consegue inserir pedido com tenant_id de B"
+    "name": "policies de escrita cross-tenant sao RESTRICTIVE e exigem tenant_in_my_group"
    },
    {
     "file": "tests-rls/rls-isolation.test.ts",
     "name": "finance/admin do tenant A não lê %s do tenant B (cross-tenant leak)"
-   },
-   {
-    "file": "tests-rls/rls-isolation.test.ts",
-    "name": "finance do tenant A não consegue inserir pagamento no tenant B"
    },
    {
     "file": "tests-rls/rls-isolation.test.ts",
@@ -80767,7 +80791,10 @@
    "xbz_sync_watchdog"
   ],
   "public_functions": [
-   "scim-v2"
+   "scim-v2",
+   "punchout-receive",
+   "webauthn-authenticate",
+   "dependency-health"
   ],
   "auth_config": {},
   "grants": [
@@ -88629,7 +88656,7 @@
   },
   "scripts/ci/scripts-operacionais.unit.mjs": {
    "path": "scripts/ci/scripts-operacionais.unit.mjs",
-   "lines": 900,
+   "lines": 904,
    "channels": [
     " em uma linha)",
     " na mesma linha)",
@@ -108185,12 +108212,12 @@
   },
   "src/tests/integration/supabase-db.test.ts": {
    "path": "src/tests/integration/supabase-db.test.ts",
-   "lines": 221,
+   "lines": 232,
    "is_test": true,
    "tables": [
     {
      "table": "approval_history",
-     "op": "delete"
+     "op": "select"
     },
     {
      "table": "approval_workflows",
@@ -108230,6 +108257,9 @@
     }
    ],
    "table_cols": {
+    "approval_history": [
+     "id"
+    ],
     "approval_workflows": [
      "etapa_atual",
      "id",
@@ -108278,12 +108308,14 @@
    ],
    "rule_comments": [
     "INTEGRATION_TESTS=true    – Required gate to prevent accidental runs",
+    "nada porque nenhum teste usava o marcador. Substituido por uma checagem somente",
     "Function must exist (error would be \"function does not exist\")",
     "No rule should match a negative value — expect null",
     "Function must exist; result may be empty array or null"
    ],
    "doc": "F-051: Real Supabase integration tests. These tests connect to a live Supabase instance and verify the actual schema, RLS policies, and stored functions. PREREQUISITES Set the following env vars (use a staging/test project, never production): VITE_SUPABASE_URL – Supabase project URL SUPABASE_SERVICE …",
    "tests": [
+    "nenhuma linha de approval_history carrega marcador de teste",
     "required tables exist",
     "approval_workflows has required columns",
     "approval_steps has required columns",
@@ -108586,6 +108618,27 @@
      "params": "schema: z.ZodSchema, payload: any",
      "body": "const result = schema.safeParse(payload); if (!result.success) { return { isValid: false, errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`) }; } return { isValid: true, data: result.data };"
     }
+   ]
+  },
+  "supabase/functions/_shared/cors-allowlist.test.ts": {
+   "path": "supabase/functions/_shared/cors-allowlist.test.ts",
+   "lines": 51,
+   "is_test": true,
+   "env": [
+    "ALLOWED_ORIGINS"
+   ],
+   "params": [
+    {
+     "name": "ORIGEM",
+     "value": "'https://app.exemplo.com'"
+    }
+   ],
+   "doc": "Allowlist de CORS (QA 045): cobre o furo do comparador de curinga e o comportamento de buildCorsHeaders com e sem ALLOWED_ORIGINS. Rodar: deno test supabase/functions/_shared/cors-allowlist.test.ts",
+   "tests": [
+    "sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem",
+    "ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada",
+    "curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto",
+    "curinga nao casa o dominio raiz nem origem invalida"
    ]
   },
   "supabase/functions/_shared/cronHealth.ts": {
@@ -109088,7 +109141,7 @@
   },
   "supabase/functions/_shared/security.ts": {
    "path": "supabase/functions/_shared/security.ts",
-   "lines": 415,
+   "lines": 418,
    "exports": [
     "type SupabaseClientLike",
     "const buildCorsHeaders",
@@ -110674,7 +110727,7 @@
   },
   "supabase/functions/dependency-health/index.test.ts": {
    "path": "supabase/functions/dependency-health/index.test.ts",
-   "lines": 227,
+   "lines": 229,
    "is_test": true,
    "env": [
     "QA_ADMIN_EMAIL",
@@ -112402,7 +112455,7 @@
   },
   "supabase/functions/telemetry/index.test.ts": {
    "path": "supabase/functions/telemetry/index.test.ts",
-   "lines": 121,
+   "lines": 124,
    "is_test": true,
    "env": [
     "QA_USER_EMAIL",
@@ -114816,10 +114869,10 @@
    "rule_comments": [
     "* Playwright E2E Elite Validation",
     "Simulates real user flows with deep validation and zero-tolerance for errors.",
-    "Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)"
+    "Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)",
+    "apenas confirma que a pagina carrega e expoe o botao."
    ],
    "temporal": [
-    "await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 60000 });",
     "await page.waitForURL(/\\/admin\\/telemetria|\\/auth/, { timeout: 3000 }).catch(() => {});"
    ],
    "tests": [
@@ -114869,14 +114922,14 @@
   },
   "tests-e2e/workflow-advanced.spec.ts": {
    "path": "tests-e2e/workflow-advanced.spec.ts",
-   "lines": 53,
+   "lines": 55,
    "is_test": true,
    "temporal": [
     "await page.waitForURL(/\\/dashboard|\\/auth/, { timeout: 3000 }).catch(() => {});"
    ],
    "tests": [
     "Advanced Workflow & Security Tests",
-    "Multi-step Solicitation Flow",
+    "Multi-step Solicitation Flow (abre o formulario, sem gravar)",
     "Responsiveness & Mobile Viewport",
     "Performance Gate: Dashboard Loading"
    ]
@@ -114908,7 +114961,7 @@
   },
   "tests-rls/rls-isolation.test.ts": {
    "path": "tests-rls/rls-isolation.test.ts",
-   "lines": 213,
+   "lines": 257,
    "is_test": true,
    "tables": [
     {
@@ -114950,6 +115003,7 @@
     "count_legacy_storage_urls"
    ],
    "env": [
+    "RLS_ALLOW_WRITES",
     "RLS_TEST_USER_A",
     "RLS_TEST_USER_B",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -114961,7 +115015,11 @@
    "rule_comments": [
     "Aceito: erro de permissão OU lista vazia.",
     "Rejeitado: qualquer linha retornada, ou erro que não seja de permissão/RLS.",
-    "* Regressão da Onda 122: role privilegiada (finance/admin/buyer) NÃO pode"
+    "gravava lixo de teste no cliente, e o UPDATE sem `.limit()` cancelava contratos reais.",
+    "escrita so roda com RLS_ALLOW_WRITES=true, que existe apenas em projeto descartavel.",
+    "Espelha src/tests/security/rls-tenant-isolation-restrictive.test.ts: a regra e",
+    "* Regressão da Onda 122: role privilegiada (finance/admin/buyer) NÃO pode",
+    "`.limit()`, sobre TODOS os contratos do tenant B. Agora o filtro inclui um id que nao"
    ],
    "doc": "RLS regression suite — valida isolamento multi-tenant nas tabelas críticas. Estratégia pragmática: usa o client anon (sem sessão) e verifica que TODAS as tabelas sensíveis rejeitam leitura anônima. Isso protege contra o pior tipo de regressão de RLS (vazamento cross-tenant / cross-user via anon key) …",
    "tests": [
@@ -114970,9 +115028,8 @@
     "anon não consegue inserir em audit_logs",
     "anon não consegue chamar RPC administrativa count_legacy_storage_urls",
     "usuário A não vê linhas do tenant de B em %s",
-    "usuário A não consegue inserir pedido com tenant_id de B",
+    "policies de escrita cross-tenant sao RESTRICTIVE e exigem tenant_in_my_group",
     "finance/admin do tenant A não lê %s do tenant B (cross-tenant leak)",
-    "finance do tenant A não consegue inserir pagamento no tenant B",
     "finance do tenant A não consegue atualizar contract do tenant B"
    ],
    "pagination": [
@@ -114983,10 +115040,62 @@
   }
  },
  "git": {
-  "sha": "2d78471b73b4abf98aa1a68b52eb6e6fef6e3ef9",
+  "sha": "99345f55a55e834c881a9c117cbbf4bba270e165",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "99345f5",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)",
+    "files": [
+     "supabase/functions/_shared/cors-allowlist.test.ts",
+     "supabase/functions/_shared/security.ts"
+    ]
+   },
+   {
+    "sha": "e33a738",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edge): declara verify_jwt=false no config.toml para as 4 funcoes publicas (#322)",
+    "files": [
+     "deploy_edge_functions_promo_supply.sh",
+     "scripts/ci/scripts-operacionais.unit.mjs",
+     "supabase/config.toml"
+    ]
+   },
+   {
+    "sha": "46b4cd6",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore(docs): marca etapas QA concluidas no progresso com evidencia (#321)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
+   {
+    "sha": "959a649",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)",
+    "files": [
+     "src/tests/integration/supabase-db.test.ts",
+     "tests-e2e/elite-validation.spec.ts",
+     "tests-e2e/workflow-advanced.spec.ts",
+     "tests-rls/rls-isolation.test.ts"
+    ]
+   },
+   {
+    "sha": "07960cf",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(testes): remove credencial QA em claro dos testes de telemetry e dependency-health (QA 001) (#323)",
+    "files": [
+     "supabase/functions/dependency-health/index.test.ts",
+     "supabase/functions/telemetry/index.test.ts"
+    ]
+   },
    {
     "sha": "2d78471",
     "date": "2026-11-23",
@@ -115259,84 +115368,19 @@
      "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
      "src/pages/cotacao/cotacaoHelpers.ts"
     ]
-   },
-   {
-    "sha": "0051cc3",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(cotacao): busca cotacoes registradas em vez de simular fornecedores (#286)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/cotacao/cotacaoHelpers.ts"
-    ]
-   },
-   {
-    "sha": "d2c6d78",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(compras): compara precos com cotacoes reais em vez de Math.random (#285)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/components/compras/PriceComparator.tsx",
-     "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
-     "src/components/compras/price-comparator/priceComparatorHelpers.ts"
-    ]
-   },
-   {
-    "sha": "752b1f5",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(sla): calcula SLA por fornecedor com pedidos reais em vez de Math.random (#284)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/components/compras/SLABySupplierAnalysis.tsx",
-     "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
-     "src/components/compras/sla-analysis/slaAnalysisData.ts",
-     "src/components/compras/sla-analysis/useSupplierSlaData.ts"
-    ]
-   },
-   {
-    "sha": "47920c1",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(idp): extrai nota fiscal de verdade em vez de simular dados (#283)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "supabase/functions/process-invoice-idp/extraction.test.ts",
-     "supabase/functions/process-invoice-idp/extraction.ts",
-     "supabase/functions/process-invoice-idp/index.ts"
-    ]
-   },
-   {
-    "sha": "acd4583",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)",
-    "files": [
-     "src/pages/admin/FiscalDashboard.tsx",
-     "src/pages/admin/SourcingPipeline.tsx",
-     "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
-     "src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "docs/pendencias/_indice.md",
-    6
-   ],
    [
     "src/features/auth/hooks/useAuth.tsx",
     3
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "docs/qa/05-PROGRESSO.md",
     2
    ],
    [
-    "supabase/functions/process-invoice-idp/index.ts",
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
    ],
    [
@@ -115356,51 +115400,55 @@
     2
    ],
    [
-    "src/pages/cotacao/Cotacao.tsx",
+    "docs/pendencias/_indice.md",
     2
    ],
    [
-    "src/pages/cotacao/cotacaoHelpers.ts",
-    2
+    "supabase/functions/_shared/cors-allowlist.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/security.ts",
+    1
+   ],
+   [
+    "deploy_edge_functions_promo_supply.sh",
+    1
+   ],
+   [
+    "scripts/ci/scripts-operacionais.unit.mjs",
+    1
+   ],
+   [
+    "supabase/config.toml",
+    1
+   ],
+   [
+    "src/tests/integration/supabase-db.test.ts",
+    1
+   ],
+   [
+    "tests-e2e/elite-validation.spec.ts",
+    1
+   ],
+   [
+    "tests-e2e/workflow-advanced.spec.ts",
+    1
+   ],
+   [
+    "tests-rls/rls-isolation.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/dependency-health/index.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/telemetry/index.test.ts",
+    1
    ],
    [
     "src/features/auth/hooks/AuthContext.ts",
-    1
-   ],
-   [
-    "src/pages/auth/Auth.tsx",
-    1
-   ],
-   [
-    "supabase/functions/_shared/contracts.ts",
-    1
-   ],
-   [
-    "supabase/functions/dependency-health/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useDashboardKPIs.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useDashboardKPIs.ts",
     1
    ]
   ]
