@@ -46,9 +46,11 @@ async function isSupabaseReachable(): Promise<boolean> {
 
 const SUPABASE_AVAILABLE = await isSupabaseReachable();
 
-// QA admin (see mem://reference/qa-credentials)
-const QA_ADMIN_EMAIL = Deno.env.get("QA_ADMIN_EMAIL") ?? "qa-admin@promobrindes.test";
-const QA_ADMIN_PASSWORD = Deno.env.get("QA_ADMIN_PASSWORD") ?? "QaTest@2026!";
+// Sem fallback literal: a credencial admin so entra por secret (QA_ADMIN_EMAIL/QA_ADMIN_PASSWORD).
+// Sem as duas variaveis o teste admin e pulado.
+const QA_ADMIN_EMAIL = Deno.env.get("QA_ADMIN_EMAIL") ?? "";
+const QA_ADMIN_PASSWORD = Deno.env.get("QA_ADMIN_PASSWORD") ?? "";
+const HAS_QA_ADMIN = QA_ADMIN_EMAIL !== "" && QA_ADMIN_PASSWORD !== "";
 
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
@@ -179,7 +181,7 @@ Deno.test({
 
 Deno.test({
   name: "POST dependency-health (admin) → 200 or config-dependent error",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_ADMIN),
   async fn() {
   const token = await signIn(QA_ADMIN_EMAIL, QA_ADMIN_PASSWORD);
   if (!token) {

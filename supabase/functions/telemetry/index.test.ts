@@ -17,8 +17,11 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/telemetry`;
 
-const QA_EMAIL = Deno.env.get("QA_USER_EMAIL") ?? "qa-admin@promobrindes.test";
-const QA_PASSWORD = Deno.env.get("QA_USER_PASSWORD") ?? "QaTest@2026!";
+// Sem fallback literal: a credencial so entra por secret (QA_USER_EMAIL/QA_USER_PASSWORD).
+// Sem as duas variaveis os testes autenticados sao pulados em vez de usarem uma conta fixa.
+const QA_EMAIL = Deno.env.get("QA_USER_EMAIL") ?? "";
+const QA_PASSWORD = Deno.env.get("QA_USER_PASSWORD") ?? "";
+const HAS_QA_CREDS = QA_EMAIL !== "" && QA_PASSWORD !== "";
 
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
@@ -78,7 +81,7 @@ Deno.test({
 
 Deno.test({
   name: "telemetry accepts { batch: [...] } from the frontend logger",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
   if (!token) return; // skip when QA creds ausentes
@@ -95,7 +98,7 @@ Deno.test({
 
 Deno.test({
   name: "telemetry accepts single-entry payload",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
   if (!token) return;
@@ -107,7 +110,7 @@ Deno.test({
 
 Deno.test({
   name: "telemetry filtra entradas sem message em vez de retornar 400",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
   if (!token) return;
