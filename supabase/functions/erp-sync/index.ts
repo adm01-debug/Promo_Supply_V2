@@ -1,7 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse } from "../_shared/validation.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { ERPSyncContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { getIdempotentResponse, recordIdempotentResponse, deriveIdempotencyKey } from "../_shared/idempotency.ts";

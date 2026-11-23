@@ -14,7 +14,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
-import { validateBody, errorResponse, buildCorsHeaders } from "../_shared/validation.ts";
+import { validateBody, errorResponse } from "../_shared/validation.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 import { z } from "https://esm.sh/zod@3.22.4";
