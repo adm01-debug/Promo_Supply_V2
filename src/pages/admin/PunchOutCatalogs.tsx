@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { openExternalUrl } from '@/lib/security';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
@@ -154,7 +155,7 @@ const PunchOutCatalogs = () => {
 
       toast.success("Sessão PunchOut iniciada");
       if (data.mock_redirect) {
-        window.open(data.mock_redirect, '_blank');
+        openExternalUrl(data.mock_redirect);
       }
     } catch (err: unknown) {
       toast.error("Erro ao iniciar PunchOut: " + (err as Error).message);

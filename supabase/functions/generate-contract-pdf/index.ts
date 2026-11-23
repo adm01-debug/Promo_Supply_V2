@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
       <tr>
         <td style="padding:8px;border:1px solid #ddd;">${i + 1}</td>
         <td style="padding:8px;border:1px solid #ddd;">${escapeHtml(String(item.item_name))}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.unit}</td>
+        <td style="padding:8px;border:1px solid #ddd;text-align:center;">${escapeHtml(String(item.unit ?? ""))}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right;">${item.quantity}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right;">${formatBRL(Number(item.unit_price))}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right;font-weight:bold;">${formatBRL(Number(item.total_price))}</td>
@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
 
   <h2 style="color:#1e40af;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">4. VALOR E CONDIÇÕES DE PAGAMENTO</h2>
   <p><strong>Valor Total:</strong> ${formatBRL(Number(contract.total_value))}</p>
-  <p><strong>Condições:</strong> ${contract.payment_terms || "Conforme negociação"}</p>
+  <p><strong>Condições:</strong> ${escapeHtml(String(contract.payment_terms || "Conforme negociação"))}</p>
 
   ${(items || []).length > 0 ? `
   <h2 style="color:#1e40af;border-bottom:1px solid #e5e7eb;padding-bottom:8px;">5. ITENS CONTRATADOS</h2>
