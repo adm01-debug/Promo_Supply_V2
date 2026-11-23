@@ -207,21 +207,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error as Error | null };
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, fullName: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    const normalizedEmail = email.trim().toLowerCase();
-
-    const { error } = await supabase.auth.signUp({
-      email: normalizedEmail,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
-    return { error: error as Error | null };
+  // Autocadastro desabilitado — contas são criadas pelo administrador.
+  const signUp = useCallback(async (_email: string, _password: string, _fullName: string) => {
+    return { error: new Error('Autocadastro desabilitado. Solicite acesso ao administrador.') };
   }, []);
 
   // Limpa caches do service worker para evitar vazamento de dados entre usuarios/tenants.

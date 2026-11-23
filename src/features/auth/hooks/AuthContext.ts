@@ -20,6 +20,7 @@ export interface AuthContextType {
   availableEmpresas: Empresa[];
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  /** @deprecated Autocadastro desabilitado — contas são criadas pelo administrador. */
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   /** @deprecated use setSelectedEmpresa */
