@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (119)",
+   "co-localizado (__tests__) (120)",
    "outro (43)",
    "co-localizado (*.test) (37)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)",
    "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)",
    "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)",
    "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)",
-   "fix: receive-os-sync sem verify_jwt (webhook HMAC)",
-   "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)"
+   "fix: receive-os-sync sem verify_jwt (webhook HMAC)"
   ]
  },
  "pr_template": null,

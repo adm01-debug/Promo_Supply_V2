@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cd9ae3fd31` · branch `main` · 2026-11-23 22:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d150caf4a4` · branch `main` · 2026-11-23 22:43 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2406,7 +2406,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2789 testes em 158 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2792 testes em 159 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2552,6 +2552,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 3 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
+| `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
 | `src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx` | 3 | KPIs do painel fiscal derivados de fiscal_events · mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa · calcula autorizadas, pendentes, erros e latencia media real |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |

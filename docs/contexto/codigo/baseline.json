@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cd9ae3fd315c9b9325d8520806c841b6a09c6944",
+  "commit": "d150caf4a41e567de0f4e1843c0fd8ae6e284dfe",
   "branch": "main",
-  "data_commit": "2026-11-23T19:35:01-03:00",
+  "data_commit": "2026-11-23T19:43:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d150caf",
+    "data": "2026-11-23",
+    "assunto": "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)"
+   },
    {
     "sha": "cd9ae3f",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "e02eb15",
     "data": "2026-11-23",
     "assunto": "fix(mfa): remove backup codes inseguros e sem consumidor (#327)"
-   },
-   {
-    "sha": "99345f5",
-    "data": "2026-11-23",
-    "assunto": "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)"
    }
   ],
-  "arquivos_mudados_7d": 358,
+  "arquivos_mudados_7d": 359,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "pasta": "src/features/auth",
@@ -214,6 +214,10 @@
     "mudancas": 12
    },
    {
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 10
+   },
+   {
     "arquivo": ".github/workflows/main.yml",
     "mudancas": 9
    },
@@ -223,10 +227,6 @@
    },
    {
     "arquivo": "docs/prod-readiness.md",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
     "mudancas": 9
    },
    {
@@ -247,10 +247,6 @@
    },
    {
     "arquivo": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "AGENTS.md",
     "mudancas": 6
    },
    {
@@ -290,6 +286,10 @@
     "mudancas": 5
    },
    {
+    "arquivo": "AGENTS.md",
+    "mudancas": 5
+   },
+   {
     "arquivo": "docs/agentes/github-ci.md",
     "mudancas": 5
    },
@@ -318,9 +318,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1338,
-  "arquivos_codigo": 835,
-  "linhas_codigo": 173133,
+  "arquivos_total": 1339,
+  "arquivos_codigo": 836,
+  "linhas_codigo": 173220,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +332,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 209,
+  "testes": 210,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -439,8 +439,8 @@
    "linhas": 8680
   },
   "src/hooks": {
-   "arquivos": 78,
-   "linhas": 13570
+   "arquivos": 79,
+   "linhas": 13657
   },
   "src/i18n": {
    "arquivos": 1,

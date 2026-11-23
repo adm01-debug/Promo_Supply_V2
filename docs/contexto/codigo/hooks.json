@@ -1856,7 +1856,7 @@
    "hooks_exportados": [
     "useRealtimeSubscription"
    ],
-   "linhas": 164,
+   "linhas": 172,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -1865,6 +1865,7 @@
     "useAuth",
     "useCallback",
     "useEffect",
+    "useMemo",
     "useQueryClient",
     "useRef"
    ],
@@ -1882,7 +1883,7 @@
     "src/pages/dashboard/ComprasDashboard.tsx",
     "src/pages/solicitacoes/Solicitacoes.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useRecentlyViewed.ts",
