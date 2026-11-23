@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `294d385c218139bb8cdd79d61233fa38c5ff9537` (2026-11-23T17:20:13-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c31873719fb5c43922fdd1ddf6b2b55ba5ad5468` (2026-11-23T17:32:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (758), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (759), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1334 |
-| arquivos_codigo | 831 |
-| linhas_codigo | 172680 |
+| arquivos_total | 1335 |
+| arquivos_codigo | 832 |
+| linhas_codigo | 172765 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 205 |
+| testes | 206 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (26), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (115), outro (43), co-localizado (*.test) (37)
+- testes: co-localizado (__tests__) (116), outro (43), co-localizado (*.test) (37)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -78,7 +78,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 3 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
-| hooks | 0 | 0 | 62 | 58 | 7 | 59 |
+| hooks | 0 | 0 | 62 | 61 | 7 | 59 |
 | lib | 0 | 0 | 26 | 58 | 8 | 47 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `c318737` fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)
 - 2026-11-23 `294d385` fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)
 - 2026-11-23 `9fd5491` chore(qa): marca a etapa 042 como concluida (#337)
 - 2026-11-23 `50aa142` chore(db): sincronizar types.ts com o banco [auto] (#303)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `4358c8c` chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)
 - 2026-11-23 `fa08c73` fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)
 - 2026-11-23 `55aab7a` fix(cors): health-dashboard deixa de liberar qualquer origem (#333)
-- 2026-11-23 `718302a` fix(palette): atalhos e badges do Command Palette passam a ser reais (#330)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

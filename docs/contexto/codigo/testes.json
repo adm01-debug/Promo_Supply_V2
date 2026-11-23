@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 205,
+ "total": 206,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 188
+  "unit": 189
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 115
+   "arquivos": 116
   },
   {
    "padrao": "outro",
@@ -745,6 +745,15 @@
     "src/integrations/supabase/client.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+   "tipo": "unit",
+   "linhas": 77,
+   "testa": [
+    "src/hooks/usePrefetch.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
@@ -1910,6 +1919,7 @@
   "src/hooks/useImageCompression.ts": 1,
   "src/hooks/useKeyboardShortcuts.ts": 1,
   "src/hooks/usePermissions.ts": 2,
+  "src/hooks/usePrefetch.ts": 1,
   "src/hooks/useRecentlyViewed.ts": 1,
   "src/hooks/useSpotIntegration.ts": 1,
   "src/hooks/useWorkflowDLQ.ts": 1,
@@ -2104,7 +2114,6 @@
    "src/hooks/usePagamentos.ts",
    "src/hooks/usePasswordResetRequests.ts",
    "src/hooks/usePerformanceMonitor.ts",
-   "src/hooks/usePrefetch.ts",
    "src/hooks/useProdutoFornecedores.ts",
    "src/hooks/useProdutos.ts",
    "src/hooks/usePurchaseHistory.ts",

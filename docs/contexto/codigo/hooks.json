@@ -542,7 +542,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 368,
+   "linhas": 384,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "cost_centers",
@@ -563,9 +563,10 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "usado_por_arquivos": [
-    "src/features/solicitacoes/index.ts"
+    "src/features/solicitacoes/index.ts",
+    "src/hooks/usePrefetch.ts"
    ],
    "coberto_por_testes": 2
   },
@@ -1707,7 +1708,7 @@
    "hooks_exportados": [
     "usePrefetch"
    ],
-   "linhas": 211,
+   "linhas": 203,
    "dominio": "hooks",
    "tabelas": [
     "contracts",
@@ -1729,7 +1730,7 @@
    "usado_por_arquivos": [
     "src/components/PrefetchLink.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useProdutoFornecedores.ts",

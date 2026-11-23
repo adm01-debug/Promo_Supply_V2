@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 626,
- "arestas": 2785,
+ "arestas": 2786,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -222,7 +222,7 @@
   },
   {
    "modulo": "hooks",
-   "depende_de": 10,
+   "depende_de": 11,
    "importado_por": 44
   },
   {
@@ -283,7 +283,7 @@
   {
    "modulo": "features/solicitacoes",
    "depende_de": 5,
-   "importado_por": 5
+   "importado_por": 6
   },
   {
    "modulo": "pages/acompanhamento",

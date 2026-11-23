@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "294d385c218139bb8cdd79d61233fa38c5ff9537",
+  "sha": "c31873719fb5c43922fdd1ddf6b2b55ba5ad5468",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 20:20 UTC",
-  "files_total": 1335,
-  "code_files": 1164,
-  "code_lines": 199864,
+  "generated_at": "2026-11-23 20:33 UTC",
+  "files_total": 1336,
+  "code_files": 1165,
+  "code_lines": 199949,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "eb451fbe2eb0f1ee",
+ "facts_hash": "5fd9328db16ba4aa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 406,
-   ".tsx": 352,
+   ".tsx": 353,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35164,13 +35164,13 @@
   {
    "module": "src/features/solicitacoes",
    "files": 6,
-   "lines": 733,
+   "lines": 749,
    "tables": [
     "cost_centers",
     "solicitacoes"
    ],
    "exports": [
-    "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, useSolicitacoes, useSolicitacoesKPIs",
+    "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, solicitacoesQueryKey, fetchSolicitacoesData, useSolicitacoes",
     "solicitacao.schemas.ts: SolicitacaoStatusSchema, SolicitacaoPrioridadeSchema, CreateSolicitacaoSchema, CreateSolicitacaoInput"
    ],
    "docs": [
@@ -35201,8 +35201,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 74,
-   "lines": 13213,
+   "files": 75,
+   "lines": 13282,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35326,6 +35326,7 @@
     "src/components",
     "src/features/auth",
     "src/features/empresas",
+    "src/features/solicitacoes",
     "src/integrations",
     "src/lib",
     "src/pages",
@@ -35403,6 +35404,7 @@
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/usePermissions.test.tsx",
+    "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
     "src/hooks/__tests__/useToastReducer.test.ts",
     "src/hooks/__tests__/useWorkflowDLQ.test.ts",
@@ -61963,6 +61965,18 @@
    {
     "file": "src/hooks/__tests__/usePermissions.test.tsx",
     "name": "should return false if no role is present"
+   },
+   {
+    "file": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+    "name": "usePrefetch · solicitacoes (HK-01)"
+   },
+   {
+    "file": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+    "name": "preenche a chave que a listagem consome, com o formato { data, totalCount }"
+   },
+   {
+    "file": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+    "name": "nao grava mais a chave curta de 13 posicoes"
    },
    {
     "file": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
@@ -98513,11 +98527,13 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 368,
+   "lines": 384,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
     "interface SolicitacaoFilters",
+    "function solicitacoesQueryKey",
+    "function fetchSolicitacoesData",
     "function useSolicitacoes",
     "function useSolicitacoesKPIs"
    ],
@@ -100867,15 +100883,11 @@
   },
   "src/hooks/usePrefetch.ts": {
    "path": "src/hooks/usePrefetch.ts",
-   "lines": 211,
+   "lines": 203,
    "exports": [
     "function usePrefetch"
    ],
    "tables": [
-    {
-     "table": "solicitacoes",
-     "op": "select"
-    },
     {
      "table": "pedidos",
      "op": "select"
@@ -100902,11 +100914,6 @@
     }
    ],
    "table_cols": {
-    "solicitacoes": [
-     "organization_id",
-     "status",
-     "valor_estimado"
-    ],
     "pedidos": [
      "organization_id"
     ],
@@ -100922,6 +100929,11 @@
     ],
     "contracts": [
      "organization_id"
+    ],
+    "solicitacoes": [
+     "organization_id",
+     "status",
+     "valor_estimado"
     ]
    },
    "params": [
@@ -102014,6 +102026,16 @@
     "should return default permissions for admin",
     "should check user permissions correctly for non-admin",
     "should return false if no role is present"
+   ]
+  },
+  "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx": {
+   "path": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+   "lines": 77,
+   "is_test": true,
+   "tests": [
+    "usePrefetch · solicitacoes (HK-01)",
+    "preenche a chave que a listagem consome, com o formato { data, totalCount }",
+    "nao grava mais a chave curta de 13 posicoes"
    ]
   },
   "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx": {
@@ -116398,10 +116420,22 @@
   }
  },
  "git": {
-  "sha": "294d385c218139bb8cdd79d61233fa38c5ff9537",
+  "sha": "c31873719fb5c43922fdd1ddf6b2b55ba5ad5468",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c318737",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
+     "src/hooks/usePrefetch.ts"
+    ]
+   },
    {
     "sha": "294d385",
     "date": "2026-11-23",
@@ -116757,25 +116791,16 @@
      "vercel.json",
      "vite.config.ts"
     ]
-   },
-   {
-    "sha": "88646df",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)",
-    "files": [
-     "src/pages/historico/HistoricoSourcingTab.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
-    "src/features/auth/hooks/useAuth.tsx",
+    "docs/qa/05-PROGRESSO.md",
     4
    ],
    [
-    "docs/qa/05-PROGRESSO.md",
-    3
+    "src/features/auth/hooks/useAuth.tsx",
+    4
    ],
    [
     "supabase/functions/workflow-engine/index.ts",
@@ -116788,6 +116813,10 @@
    [
     "src/features/auth/components/ProtectedRoute.tsx",
     3
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    2
    ],
    [
     "supabase/functions/_shared/validation.ts",
@@ -116843,10 +116872,6 @@
    ],
    [
     "supabase/functions/process-invoice-idp/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/scim-v2/index.ts",
     2
    ]
   ]

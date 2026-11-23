@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (115)",
+   "co-localizado (__tests__) (116)",
    "outro (43)",
    "co-localizado (*.test) (37)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)",
    "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)",
    "chore(qa): marca a etapa 042 como concluida (#337)",
    "chore(db): sincronizar types.ts com o banco [auto] (#303)",
-   "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)",
-   "fix(seguranca): versiona o seed de permissions e role_permissions (#296)"
+   "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)"
   ]
  },
  "pr_template": null,
