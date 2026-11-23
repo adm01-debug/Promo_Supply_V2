@@ -416,11 +416,24 @@ export function xbzCancelarPedido(c: XbzPortalCredentials, pedidoNumero: string)
 
 // ------------------------------------------------------------- normalização
 
-/** Converte datas da XBZ tratando a sentinela 2000-01-01 como null. */
+/**
+ * Data/hora do XBZ em ISO UTC.
+ *
+ * O XBZ manda data/hora SEM offset ("2026-11-20T09:15:30"). Date.parse trata essa
+ * string como hora LOCAL do runtime: em UTC da 09:15:30Z; em America/Sao_Paulo da
+ * 12:15:30Z. O resultado dependia do fuso de QUEM executava - a edge rodava em UTC,
+ * mas o mesmo codigo rodando local (ou num teste) dava 3h de diferenca. Aqui a
+ * ausencia de offset e fixada em UTC explicitamente, entao o valor e identico em
+ * qualquer ambiente e igual ao que a producao ja gravava.
+ */
+const TEM_OFFSET = /(?:Z|[+-]\d{2}:?\d{2})$/i;
+
 export function parseXbzDate(value: unknown): string | null {
   if (typeof value !== "string" || !value) return null;
   if (value.startsWith("2000-01-01T00:00:00")) return null;
-  const ts = Date.parse(value);
+  const semEspaco = value.trim().replace(" ", "T");
+  const comOffset = TEM_OFFSET.test(semEspaco) ? semEspaco : `${semEspaco}Z`;
+  const ts = Date.parse(comOffset);
   return Number.isNaN(ts) ? null : new Date(ts).toISOString();
 }
 
