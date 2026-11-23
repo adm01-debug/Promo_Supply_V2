@@ -54,7 +54,7 @@ export function errorResponse(
   
   if (msgLower.includes('validation error') || msgLower.includes('invalid json')) {
     status = 400;
-  } else if (msgLower.includes('auth') || msgLower.includes('sessão inválida') || msgLower.includes('unauthorized')) {
+  } else if (msgLower.includes('auth') || msgLower.includes('autorizado') || msgLower.includes('sessão inválida') || msgLower.includes('unauthorized')) {
     status = 401;
   } else if (msgLower.includes('security error') || msgLower.includes('isolation violation') || msgLower.includes('permission denied')) {
     status = 403;
