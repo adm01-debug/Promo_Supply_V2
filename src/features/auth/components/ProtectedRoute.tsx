@@ -20,6 +20,7 @@ const AccessDenied = ({ to }: { to: string }) => {
 
 export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading, hasRole } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -33,7 +34,16 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    // QA-043: guarda a rota de origem para o login devolver o usuario ao lugar
+    // onde ele estava. Vai no state do router, nao em localStorage - morre com
+    // a navegacao e nao vaza entre contas na mesma maquina.
+    return (
+      <Navigate
+        to="/auth"
+        replace
+        state={{ from: location.pathname + location.search }}
+      />
+    );
   }
 
   if (requiredRole && !hasRole(requiredRole)) {
