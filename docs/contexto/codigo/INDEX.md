@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6f38b3e43200d6d24e66d7d58832fb40e3b14baa` (2026-11-23T08:20:25-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `106012493fe29f53c2ba27236d507f674edfc89b` (2026-11-23T08:31:38-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,11 +36,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1319 |
 | arquivos_codigo | 820 |
-| linhas_codigo | 171421 |
+| linhas_codigo | 171471 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
-| itens_menu | 48 |
+| itens_menu | 47 |
 | modulos | 87 |
 | componentes | 330 |
 | hooks | 91 |
@@ -76,7 +76,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
-| features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
+| features/auth | 0 | 0 | 7 | 3 | 1 | 3 |
 | features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
 | hooks | 0 | 0 | 62 | 57 | 7 | 59 |
 | lib | 0 | 0 | 26 | 57 | 8 | 47 |
@@ -115,7 +115,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/recompra | 1 | 1 | 1 | 4 | 2 | 6 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 7 | 2 | 8 |
-| pages/seguranca | 1 | 1 | 1 | 85 | 12 | 67 |
+| pages/seguranca | 0 | 1 | 1 | 85 | 12 | 67 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 14 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
@@ -308,7 +308,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (9), system (7), admin (5), assistant (1)
+- papéis no código: user (9), system (7), admin (6), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
 - feature flags: nenhuma
@@ -417,6 +417,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `1060124` fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)
+- 2026-11-23 `87d6784` fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)
 - 2026-11-23 `6f38b3e` fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)
 - 2026-11-23 `88646df` fix(sourcing): substitui numeros inventados por dados reais no HistoricoSourcingTab (#313)
 - 2026-11-23 `0369433` fix(scim): gera token por empresa e aceita hash alem do segredo global (#295)
@@ -430,8 +432,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-22 `ff7a555` chore(docs): registra no indice os fixes de SLA, permissions, SCIM e OC (#299)
 - 2026-11-22 `cba3145` fix(ordem): nao gera OC com fornecedor errado quando falta cotacao (#297)
 - 2026-11-22 `a23aea5` fix(palette): "Sair" do Command Palette encerra a sessao (#294)
-- 2026-11-22 `53725ba` fix(aprovacoes): rejeitar workflow marca a solicitacao como rejeitada (#293)
-- 2026-11-22 `ad0c42d` fix(recebimento): nao marca pedido como entregue recebendo 1 unidade (#292)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

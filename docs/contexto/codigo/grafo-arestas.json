@@ -1605,7 +1605,8 @@
    "src/features/aprovacoes/types/approval.types.ts"
   ],
   "src/features/auth/components/ProtectedRoute.tsx": [
-   "src/features/auth/index.ts"
+   "src/features/auth/index.ts",
+   "src/lib/feedbackToast.ts"
   ],
   "src/features/auth/hooks/AuthContext.ts": [
    "src/features/auth/schemas/auth.schemas.ts",
@@ -1790,6 +1791,7 @@
    "src/components/ui/switch.tsx",
    "src/components/ui/tabs.tsx",
    "src/hooks/useRealPushNotifications.ts",
+   "src/lib/security.ts",
    "src/lib/utils.ts"
   ],
   "src/features/layout/components/SLASettingsPanel.tsx": [
@@ -2390,7 +2392,8 @@
    "src/hooks/useFornecedores.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
-   "src/lib/feedbackToast.ts"
+   "src/lib/feedbackToast.ts",
+   "src/lib/security.ts"
   ],
   "src/pages/admin/SSOConfig.tsx": [
    "src/components/ui/alert.tsx",

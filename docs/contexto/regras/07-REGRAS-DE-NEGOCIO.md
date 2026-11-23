@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6f38b3e432` · branch `main` · 2026-11-23 11:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `106012493f` · branch `main` · 2026-11-23 12:10 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2256,6 +2256,7 @@ _nenhum item encontrado_
 | useFormField should be used within <FormField> | `src/components/ui/form.tsx` |
 | useSidebar must be used within a SidebarProvider. | `src/components/ui/sidebar.tsx` |
 |        aria-live= | `src/components/ui/undo-toast.tsx` |
+| Acesso restrito. Você não tem permissão para acessar esta área. | `src/features/auth/components/ProtectedRoute.tsx` |
 | Erro ao alterar organização | `src/features/auth/hooks/useAuth.tsx` |
 | useAuth must be used within an AuthProvider | `src/features/auth/hooks/useAuthContext.ts` |
 | Erro ao adicionar cotação:  | `src/features/cotacoes/hooks/useCotacoes.ts` |
@@ -2372,8 +2373,7 @@ _nenhum item encontrado_
 | Webhook Slack inválido (deve começar com https://hooks.slack.com/) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Webhook URL inválido (obrigatório https://) | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | ; import { Button } from  | `src/pages/admin/DependencyHealth.tsx` |
-| CI já em execução | `src/pages/admin/DependencyHealth.tsx` |
-| … +231 linhas — lista completa em `context.json` | |
+| … +232 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

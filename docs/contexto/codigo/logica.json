@@ -511,13 +511,14 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 87,
+   "usado_por": 88,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
     "components/notifications",
     "components/security",
     "components/settings",
+    "features/auth",
     "features/cotacoes",
     "features/layout",
     "features/pedidos",
@@ -970,10 +971,11 @@
    "arquivo": "src/lib/security.ts",
    "camada": "lib",
    "exports": [
+    "openExternalUrl",
     "security"
    ],
    "export_default": null,
-   "linhas": 71,
+   "linhas": 91,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -984,10 +986,13 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 0,
-   "usado_por_modulos": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "features/layout",
+    "pages/admin"
+   ],
    "coberto_por_testes": 1,
-   "orfao": true
+   "orfao": false
   },
   {
    "arquivo": "src/lib/sourcingAnalytics.ts",

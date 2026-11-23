@@ -617,7 +617,7 @@
     "ContractDetailsModal"
    ],
    "export_default": null,
-   "linhas": 366,
+   "linhas": 371,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -3637,7 +3637,7 @@
     "ProtectedRoute"
    ],
    "export_default": null,
-   "linhas": 36,
+   "linhas": 45,
    "dominio": "features/auth",
    "hooks_locais": [
     "useAuth"
@@ -3718,7 +3718,7 @@
     "MobileSidebarTrigger"
    ],
    "export_default": null,
-   "linhas": 479,
+   "linhas": 493,
    "dominio": "features/layout",
    "hooks_locais": [
     "useAuth",
@@ -3951,7 +3951,7 @@
     "RealNotificationCenter"
    ],
    "export_default": null,
-   "linhas": 374,
+   "linhas": 375,
    "dominio": "features/layout",
    "hooks_locais": [
     "useRealPushNotifications"
@@ -4301,7 +4301,7 @@
     "PunchOutCatalogs"
    ],
    "export_default": "PunchOutCatalogs",
-   "linhas": 295,
+   "linhas": 296,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth",

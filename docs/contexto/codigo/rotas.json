@@ -5,7 +5,7 @@
   "urls": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
-  "itens_menu": 48,
+  "itens_menu": 47,
   "lazy": 75
  },
  "urls": [
@@ -493,7 +493,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 27
+   "arquivos_puxados": 28
   },
   {
    "protegida": true,
@@ -1342,7 +1342,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 341
+   "arquivos_puxados": 342
   },
   {
    "protegida": true,
@@ -1635,7 +1635,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 346
+   "arquivos_puxados": 347
   },
   {
    "protegida": true,
@@ -2087,7 +2087,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 337
+   "arquivos_puxados": 338
   },
   {
    "protegida": true,
@@ -3146,7 +3146,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 337
+   "arquivos_puxados": 338
   },
   {
    "protegida": true,
@@ -3494,7 +3494,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 338
+   "arquivos_puxados": 339
   },
   {
    "protegida": true,
@@ -3957,7 +3957,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 336
+   "arquivos_puxados": 337
   },
   {
    "protegida": true,
@@ -4251,7 +4251,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 339
+   "arquivos_puxados": 340
   },
   {
    "protegida": true,
@@ -4810,7 +4810,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 358
+   "arquivos_puxados": 359
   },
   {
    "protegida": true,
@@ -5398,15 +5398,6 @@
    "papeis_nao_resolvidos": null,
    "definido_em": "src/features/layout/components/AppSidebar.tsx",
    "resolve_para": "src/pages/admin/HealthDashboard.tsx"
-  },
-  {
-   "rotulo": "Segurança",
-   "destino": "/seguranca",
-   "grupo": "Admin",
-   "papeis": [],
-   "papeis_nao_resolvidos": null,
-   "definido_em": "src/features/layout/components/AppSidebar.tsx",
-   "resolve_para": "src/pages/seguranca/Seguranca.tsx"
   },
   {
    "rotulo": "Sourcing Pipeline",

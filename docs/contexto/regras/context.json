@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6f38b3e43200d6d24e66d7d58832fb40e3b14baa",
+  "sha": "106012493fe29f53c2ba27236d507f674edfc89b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 11:51 UTC",
+  "generated_at": "2026-11-23 12:10 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198379,
+  "code_lines": 198429,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a2940e21ca6a238b",
+ "facts_hash": "2666fa8f753a7b0d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34423,7 +34423,7 @@
   {
    "module": "src/components",
    "files": 263,
-   "lines": 49229,
+   "lines": 49234,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34657,7 +34657,7 @@
   {
    "module": "src/features/auth",
    "files": 10,
-   "lines": 877,
+   "lines": 886,
    "tables": [
     "profiles",
     "user_roles",
@@ -34758,7 +34758,7 @@
   {
    "module": "src/features/layout",
    "files": 36,
-   "lines": 5802,
+   "lines": 5817,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -35181,7 +35181,7 @@
   {
    "module": "src/lib",
    "files": 56,
-   "lines": 6808,
+   "lines": 6828,
    "tables": [
     "profiles"
    ],
@@ -35206,7 +35206,7 @@
     "safeDisplay.ts: SafeDisplayOptions, safeDisplay",
     "safeTruncate.ts: safeTruncate",
     "secureStorage.ts: secureStorage",
-    "security.ts: security",
+    "security.ts: security, openExternalUrl",
     "sourcingAnalytics.ts: SourcingRecordLike, SupplierLike, RepurchasePrediction, CategoryBenchmark, TrendPoint, productKeyOf",
     "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
@@ -35304,7 +35304,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30475,
+   "lines": 30476,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -40637,6 +40637,10 @@
    {
     "file": "src/components/ui/undo-toast.tsx",
     "msg": "\n      aria-live="
+   },
+   {
+    "file": "src/features/auth/components/ProtectedRoute.tsx",
+    "msg": "Acesso restrito. Você não tem permissão para acessar esta área."
    },
    {
     "file": "src/features/auth/hooks/useAuth.tsx",
@@ -90796,7 +90800,7 @@
   },
   "src/components/compras/ContractDetailsModal.tsx": {
    "path": "src/components/compras/ContractDetailsModal.tsx",
-   "lines": 366,
+   "lines": 371,
    "exports": [
     "function ContractDetailsModal"
    ],
@@ -96270,9 +96274,12 @@
   },
   "src/features/auth/components/ProtectedRoute.tsx": {
    "path": "src/features/auth/components/ProtectedRoute.tsx",
-   "lines": 36,
+   "lines": 45,
    "exports": [
     "const ProtectedRoute"
+   ],
+   "errors": [
+    "Acesso restrito. Você não tem permissão para acessar esta área."
    ]
   },
   "src/features/auth/hooks/AuthContext.ts": {
@@ -96646,7 +96653,7 @@
   },
   "src/features/layout/components/AppSidebar.tsx": {
    "path": "src/features/layout/components/AppSidebar.tsx",
-   "lines": 479,
+   "lines": 493,
    "exports": [
     "const AppSidebar",
     "const MobileSidebarTrigger"
@@ -96811,7 +96818,7 @@
   },
   "src/features/layout/components/RealNotificationCenter.tsx": {
    "path": "src/features/layout/components/RealNotificationCenter.tsx",
-   "lines": 374,
+   "lines": 375,
    "exports": [
     "function RealNotificationCenter"
    ],
@@ -101401,9 +101408,10 @@
   },
   "src/lib/security.ts": {
    "path": "src/lib/security.ts",
-   "lines": 71,
+   "lines": 91,
    "exports": [
-    "const security"
+    "const security",
+    "function openExternalUrl"
    ],
    "rule_comments": [
     "Handles sanitization, security validation and audit logging."
@@ -103231,7 +103239,7 @@
   },
   "src/pages/admin/PunchOutCatalogs.tsx": {
    "path": "src/pages/admin/PunchOutCatalogs.tsx",
-   "lines": 295,
+   "lines": 296,
    "exports": [
     "default PunchOutCatalogs"
    ],
@@ -114945,10 +114953,33 @@
   }
  },
  "git": {
-  "sha": "6f38b3e43200d6d24e66d7d58832fb40e3b14baa",
+  "sha": "106012493fe29f53c2ba27236d507f674edfc89b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1060124",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(ux): filtra menu lateral por papel e avisa acesso negado (QA 016+017) (#316)",
+    "files": [
+     "src/features/auth/components/ProtectedRoute.tsx",
+     "src/features/layout/components/AppSidebar.tsx"
+    ]
+   },
+   {
+    "sha": "87d6784",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): blinda XSS em contratos e window.open sem validacao (QA 031+032) (#315)",
+    "files": [
+     "src/components/compras/ContractDetailsModal.tsx",
+     "src/features/layout/components/RealNotificationCenter.tsx",
+     "src/lib/security.ts",
+     "src/pages/admin/PunchOutCatalogs.tsx",
+     "supabase/functions/generate-contract-pdf/index.ts"
+    ]
+   },
    {
     "sha": "6f38b3e",
     "date": "2026-11-23",
@@ -115250,34 +115281,12 @@
      "supabase/functions/spot-proxy/sessions.ts",
      "supabase/functions/spot-proxy/sessions_test.ts"
     ]
-   },
-   {
-    "sha": "8e9d432",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(edge): alerta de contrato vencendo e vencido nunca era emitido (#278)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/pendencias/_indice.md",
-     "supabase/functions/check-expiry-alerts/contractExpiry.ts",
-     "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
-     "supabase/functions/check-expiry-alerts/index.ts"
-    ]
-   },
-   {
-    "sha": "94f73a1",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(ci): fallback do canal de migration reconhece erro de ownership (#246)",
-    "files": [
-     ".github/workflows/aplicar-migration-prod.yml"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/pendencias/_indice.md",
-    10
+    9
    ],
    [
     "src/components/compras/SourcingHistoryConsole.tsx",
@@ -115296,10 +115305,6 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
     "src/pages/cotacao/Cotacao.tsx",
     2
    ],
@@ -115310,6 +115315,34 @@
    [
     "supabase/functions/spot-proxy/index.ts",
     2
+   ],
+   [
+    "src/features/auth/components/ProtectedRoute.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/AppSidebar.tsx",
+    1
+   ],
+   [
+    "src/components/compras/ContractDetailsModal.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/RealNotificationCenter.tsx",
+    1
+   ],
+   [
+    "src/lib/security.ts",
+    1
+   ],
+   [
+    "src/pages/admin/PunchOutCatalogs.tsx",
+    1
+   ],
+   [
+    "supabase/functions/generate-contract-pdf/index.ts",
+    1
    ],
    [
     "index.html",
@@ -115329,30 +115362,6 @@
    ],
    [
     "src/pages/historico/HistoricoSourcingTab.tsx",
-    1
-   ],
-   [
-    "src/pages/admin/SSOConfig.tsx",
-    1
-   ],
-   [
-    "supabase/functions/scim-v2/index.ts",
-    1
-   ],
-   [
-    "docs/qa/00-RESUMO.md",
-    1
-   ],
-   [
-    "docs/qa/01-INVENTARIO.md",
-    1
-   ],
-   [
-    "docs/qa/02-CENARIOS.md",
-    1
-   ],
-   [
-    "docs/qa/03-ACHADOS.md",
     1
    ]
   ]
