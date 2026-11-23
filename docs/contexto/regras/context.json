@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "88646dfa9832c5d29874db988e21e1bd4aba7726",
+  "sha": "6f38b3e43200d6d24e66d7d58832fb40e3b14baa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 11:08 UTC",
+  "generated_at": "2026-11-23 11:51 UTC",
   "files_total": 1320,
   "code_files": 1149,
-  "code_lines": 198373,
+  "code_lines": 198379,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d0e2c411e30ce5db",
+ "facts_hash": "a2940e21ca6a238b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34103,7 +34103,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 857,
+   "lines": 847,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -34657,7 +34657,7 @@
   {
    "module": "src/features/auth",
    "files": 10,
-   "lines": 861,
+   "lines": 877,
    "tables": [
     "profiles",
     "user_roles",
@@ -87255,7 +87255,7 @@
   },
   "vite.config.ts": {
    "path": "vite.config.ts",
-   "lines": 331,
+   "lines": 321,
    "exports": [
     "default defineConfig"
    ],
@@ -96285,7 +96285,7 @@
   },
   "src/features/auth/hooks/useAuth.tsx": {
    "path": "src/features/auth/hooks/useAuth.tsx",
-   "lines": 338,
+   "lines": 354,
    "exports": [
     "const AuthProvider"
    ],
@@ -114945,10 +114945,22 @@
   }
  },
  "git": {
-  "sha": "88646dfa9832c5d29874db988e21e1bd4aba7726",
+  "sha": "6f38b3e43200d6d24e66d7d58832fb40e3b14baa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6f38b3e",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)",
+    "files": [
+     "index.html",
+     "src/features/auth/hooks/useAuth.tsx",
+     "vercel.json",
+     "vite.config.ts"
+    ]
+   },
    {
     "sha": "88646df",
     "date": "2026-11-23",
@@ -115260,21 +115272,6 @@
     "files": [
      ".github/workflows/aplicar-migration-prod.yml"
     ]
-   },
-   {
-    "sha": "e469807",
-    "date": "2026-11-22",
-    "author": "adm01-debug",
-    "subject": "fix(kpis): remove dados ficticios da aba de KPIs e deriva tudo do banco (#277)",
-    "files": [
-     "src/components/compras/AdvancedProcurementKPIs.tsx",
-     "src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts",
-     "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
-     "src/components/compras/procurement-kpis/deriveKpiSnapshot.ts",
-     "src/components/compras/procurement-kpis/kpiColors.ts",
-     "src/components/compras/procurement-kpis/kpiMockData.ts",
-     "src/hooks/useExecutiveDashboardData.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -115315,6 +115312,22 @@
     2
    ],
    [
+    "index.html",
+    1
+   ],
+   [
+    "src/features/auth/hooks/useAuth.tsx",
+    1
+   ],
+   [
+    "vercel.json",
+    1
+   ],
+   [
+    "vite.config.ts",
+    1
+   ],
+   [
     "src/pages/historico/HistoricoSourcingTab.tsx",
     1
    ],
@@ -115340,22 +115353,6 @@
    ],
    [
     "docs/qa/03-ACHADOS.md",
-    1
-   ],
-   [
-    "docs/qa/04-PLANO.md",
-    1
-   ],
-   [
-    "docs/qa/05-PROGRESSO.md",
-    1
-   ],
-   [
-    "src/lib/__tests__/sourcingAnalytics.test.ts",
-    1
-   ],
-   [
-    "src/lib/sourcingAnalytics.ts",
     1
    ]
   ]

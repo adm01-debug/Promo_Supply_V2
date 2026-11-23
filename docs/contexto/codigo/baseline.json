@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "88646dfa9832c5d29874db988e21e1bd4aba7726",
+  "commit": "6f38b3e43200d6d24e66d7d58832fb40e3b14baa",
   "branch": "main",
-  "data_commit": "2026-11-23T08:02:42-03:00",
+  "data_commit": "2026-11-23T08:20:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6f38b3e",
+    "data": "2026-11-23",
+    "assunto": "fix(seguranca): cabecalhos HTTP reais e cache SW isolado por usuario (#314)"
+   },
    {
     "sha": "88646df",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "acd4583",
     "data": "2026-11-22",
     "assunto": "fix(kpis): substitui numeros fixos por agregados reais em fiscal e sourcing (#282)"
-   },
-   {
-    "sha": "6b0ce59",
-    "data": "2026-11-22",
-    "assunto": "feat(spot): botao Finalizar Pedido passa a chamar o checkout real (#281)"
    }
   ],
-  "arquivos_mudados_7d": 295,
+  "arquivos_mudados_7d": 298,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 262
+    "commits": 263
    },
    {
     "autor": "dependabot[bot]",
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1319,
   "arquivos_codigo": 820,
-  "linhas_codigo": 171415,
+  "linhas_codigo": 171421,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/features": {
    "arquivos": 64,
-   "linhas": 8504
+   "linhas": 8520
   },
   "src/hooks": {
    "arquivos": 74,
@@ -540,7 +540,7 @@
   },
   "vite.config.ts": {
    "arquivos": 1,
-   "linhas": 331
+   "linhas": 321
   },
   "vitest.config.ts": {
    "arquivos": 1,

@@ -734,7 +734,7 @@
    "build": null,
    "rewrites": 1,
    "redirects": 0,
-   "headers": 0,
+   "headers": 1,
    "ignore_command": null,
    "crons": []
   }

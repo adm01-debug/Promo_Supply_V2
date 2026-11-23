@@ -3653,7 +3653,7 @@
     "AuthProvider"
    ],
    "export_default": null,
-   "linhas": 338,
+   "linhas": 354,
    "dominio": "features/auth",
    "hooks_locais": [],
    "tabelas": [

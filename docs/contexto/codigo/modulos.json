@@ -1744,7 +1744,7 @@
    "modulo": "features/auth",
    "arquivos": 7,
    "testes": 3,
-   "linhas": 487,
+   "linhas": 503,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

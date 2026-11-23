@@ -265,7 +265,7 @@
   {
    "arquivo": "src/features/auth/hooks/useAuth.tsx",
    "hooks_exportados": [],
-   "linhas": 338,
+   "linhas": 354,
    "dominio": "features/auth",
    "tabelas": [
     "profiles",
