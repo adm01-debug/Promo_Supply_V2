@@ -1333,11 +1333,11 @@
   {
    "arquivo": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 230,
+   "linhas": 355,
    "testa": [
     "src/pages/recebimento/recebimentoHelpers.ts"
    ],
-   "casos": 29
+   "casos": 41
   },
   {
    "arquivo": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",

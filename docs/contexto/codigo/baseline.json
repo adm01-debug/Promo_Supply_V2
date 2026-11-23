@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8",
+  "commit": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
   "branch": "main",
-  "data_commit": "2026-11-23T19:50:53-03:00",
+  "data_commit": "2026-11-23T20:26:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5f2b99e",
+    "data": "2026-11-23",
+    "assunto": "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)"
+   },
    {
     "sha": "2b1df86",
     "data": "2026-11-23",
@@ -126,11 +131,6 @@
     "sha": "013232a",
     "data": "2026-11-23",
     "assunto": "fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)"
-   },
-   {
-    "sha": "d16d88c",
-    "data": "2026-11-23",
-    "assunto": "fix(contrato): escapeHtml tambem escapa apostrofo (#328)"
    }
   ],
   "arquivos_mudados_7d": 360,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 69
+    "mudancas": 68
    },
    {
     "pasta": "src/components/ui",
@@ -176,16 +176,16 @@
     "mudancas": 19
    },
    {
+    "pasta": "src/pages/recebimento",
+    "mudancas": 19
+   },
+   {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 17
    },
    {
     "pasta": "src/components/security",
     "mudancas": 17
-   },
-   {
-    "pasta": "src/pages/recebimento",
-    "mudancas": 16
    },
    {
     "pasta": "supabase/functions/punchout-receive",
@@ -210,12 +210,12 @@
     "mudancas": 12
    },
    {
-    "arquivo": "package.json",
+    "arquivo": "docs/qa/05-PROGRESSO.md",
     "mudancas": 12
    },
    {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 11
+    "arquivo": "package.json",
+    "mudancas": 12
    },
    {
     "arquivo": "bun.lock",
@@ -266,6 +266,14 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "supabase/config.toml",
     "mudancas": 6
    },
@@ -287,14 +295,6 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
     "mudancas": 5
    }
   ],
@@ -320,7 +320,7 @@
  "contagens": {
   "arquivos_total": 1340,
   "arquivos_codigo": 837,
-  "linhas_codigo": 173370,
+  "linhas_codigo": 173600,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -460,7 +460,7 @@
   },
   "src/pages": {
    "arquivos": 129,
-   "linhas": 30391
+   "linhas": 30621
   },
   "src/routes": {
    "arquivos": 1,

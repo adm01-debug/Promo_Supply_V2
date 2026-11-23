@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)",
    "fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)",
    "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)",
    "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)",
-   "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)",
-   "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)"
+   "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)"
   ]
  },
  "pr_template": null,

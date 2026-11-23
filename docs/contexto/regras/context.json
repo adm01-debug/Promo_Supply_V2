@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8",
+  "sha": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-23 22:52 UTC",
+  "generated_at": "2026-11-23 23:27 UTC",
   "files_total": 1341,
   "code_files": 1170,
-  "code_lines": 200554,
+  "code_lines": 200784,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b086004134c23ddc",
+ "facts_hash": "17fdd0507fe5c600",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35588,7 +35588,7 @@
   {
    "module": "src/pages",
    "files": 129,
-   "lines": 30391,
+   "lines": 30621,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37154,8 +37154,7 @@
     "ref": [
      "scripts/ci/inventario-types/banco.unit.mjs",
      "scripts/ci/inventario-types/gates.unit.mjs",
-     "scripts/ci/inventario-types/repo.unit.mjs",
-     "src/pages/recebimento/RecebimentoOffline.tsx"
+     "scripts/ci/inventario-types/repo.unit.mjs"
     ],
     "insert": [
      "src/features/pedidos/hooks/usePedidos.ts",
@@ -37164,7 +37163,8 @@
     ],
     "update": [
      "src/features/pedidos/hooks/usePedidos.ts",
-     "src/pages/acompanhamento/Acompanhamento.tsx"
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/recebimento/RecebimentoOffline.tsx"
     ],
     "delete": [
      "src/features/pedidos/hooks/usePedidos.ts",
@@ -41758,6 +41758,10 @@
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
     "msg": "Pedido complementar nao gerado: pedido original sem empresa definida"
+   },
+   {
+    "file": "src/pages/recebimento/RecebimentoOffline.tsx",
+    "msg": "Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}"
    },
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -54867,6 +54871,12 @@
     "kind": "filtra"
    },
    {
+    "file": "src/pages/recebimento/recebimentoHelpers.ts",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
     "file": "src/pages/recompra/RecompraInteligente.tsx",
     "field": "status",
     "value": "sugerido",
@@ -56907,6 +56917,12 @@
     "name": "applyPeriodPreset",
     "params": "preset: string",
     "body": "setPeriodPreset(preset); const today = new Date(); switch (preset) { case \"7d\": setDateRange({ from: subDays(today, 7), to: today }); break; case \"30d\": setDateRange({ from: subDays(today, 30), to: today }); break; case \"90d\": setDateRange({ from: subDays(today, 90), to: today }); break; case \"thisMonth\": setDateRange({ from: startOfMonth(today), to: endOfMonth(today) }); break; case \"lastMonth\": { const lm = subMonths(today, 1); setDateRange({ from: startOfMonth(lm), to: endOfMonth(lm) }); brea …"
+   },
+   {
+    "file": "src/pages/recebimento/recebimentoHelpers.ts",
+    "name": "aplicarStatusRecebimento",
+    "params": "atualizarPedido: AtualizarPedido, pedidoId: string, statusAtual: string, alvo: 'entregue' | 'parcial', observacoes: stri",
+    "body": "const caminho = caminhoDeStatus(statusAtual, alvo); if (!caminho) return `Transicao de status invalida: ${statusAtual} -> ${alvo}`; /* Sem transicao a aplicar, um UPDATE so para as observacoes do recebimento. */ const passos: (string | null)[] = caminho.length > 0 ? caminho : [null]; for (const [i, status] of passos.entries()) { const campos: CamposStatusPedido = {}; if (status) campos.status = status; if (i === 0 && observacoes !== null) campos.observacoes = observacoes; if (status === 'entregu …"
    },
    {
     "file": "supabase/functions/_shared/circuit_breaker.ts",
@@ -66703,6 +66719,62 @@
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
     "name": "usa so a observacao geral quando nao ha nota por item"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "caminhoDeStatus"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "nao gera transicao quando o pedido ja esta no alvo"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "aprovado nao pula direto para entregue nem para parcial"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "enviado vai direto para entregue mas passa por em_transito no parcial"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "em_transito entrega ou parcializa em um passo"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "parcial completa pelo caminho ja existente"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "pendente chega ao recebimento passando pela aprovacao"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "sem caminho legal devolve null em vez de gravar status proibido"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "toda aresta produzida existe na maquina de estados do banco"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "aplicarStatusRecebimento"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "passa por em_transito antes de entregar um pedido aprovado"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "devolve a mensagem do banco e para no primeiro passo que falhar"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "nao toca no banco quando nao existe caminho legal"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "so grava observacoes quando o pedido ja esta no status alvo"
    },
    {
     "file": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
@@ -78332,6 +78404,7 @@
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
       "compara:src/hooks/useBuyerPerformanceData.ts",
       "compara:src/pages/acompanhamento/Acompanhamento.tsx",
+      "compara:src/pages/recebimento/recebimentoHelpers.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
       "compara:supabase/migrations/20260315151408_8ffa629b-ebf8-41cd-a770-8b0d78746e04.sql",
@@ -107449,11 +107522,15 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 425,
+   "lines": 447,
    "exports": [
     "function RecebimentoOffline"
    ],
    "tables": [
+    {
+     "table": "pedidos",
+     "op": "update"
+    },
     {
      "table": "pedidos",
      "op": "select"
@@ -107463,16 +107540,8 @@
      "op": "update"
     },
     {
-     "table": "pedidos",
-     "op": "ref"
-    },
-    {
      "table": "pedido_itens",
      "op": "update"
-    },
-    {
-     "table": "pedidos",
-     "op": "ref"
     }
    ],
    "table_cols": {
@@ -107490,6 +107559,7 @@
    "errors": [
     "Erro ao buscar pedidos",
     "Pedido complementar nao gerado: pedido original sem empresa definida",
+    "Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}",
     "Sem conexão — modo offline ativo"
    ],
    "status_values": [
@@ -107557,7 +107627,7 @@
   },
   "src/pages/recebimento/recebimentoHelpers.ts": {
    "path": "src/pages/recebimento/recebimentoHelpers.ts",
-   "lines": 138,
+   "lines": 221,
    "exports": [
     "interface PendingOrder",
     "interface OrderItem",
@@ -107572,8 +107642,26 @@
     "function buildPendingLines",
     "function isLineComplete",
     "function statusFromReceived",
+    "function caminhoDeStatus",
+    "interface CamposStatusPedido",
+    "type AtualizarPedido",
+    "function aplicarStatusRecebimento",
     "function buildReceivingObservation",
     "function defaultForecastDate"
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ],
+   "calc_fns": [
+    {
+     "name": "aplicarStatusRecebimento",
+     "params": "atualizarPedido: AtualizarPedido, pedidoId: string, statusAtual: string, alvo: 'entregue' | 'parcial', observacoes: stri",
+     "body": "const caminho = caminhoDeStatus(statusAtual, alvo); if (!caminho) return `Transicao de status invalida: ${statusAtual} -> ${alvo}`; /* Sem transicao a aplicar, um UPDATE so para as observacoes do recebimento. */ const passos: (string | null)[] = caminho.length > 0 ? caminho : [null]; for (const [i, status] of passos.entries()) { const campos: CamposStatusPedido = {}; if (status) campos.status = status; if (i === 0 && observacoes !== null) campos.observacoes = observacoes; if (status === 'entregu …"
+    }
    ],
    "temporal": [
     "return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split(\"T\")[0];"
@@ -107595,7 +107683,7 @@
   },
   "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts": {
    "path": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-   "lines": 230,
+   "lines": 355,
    "is_test": true,
    "tests": [
     "OFFLINE_STORAGE_KEY",
@@ -107631,7 +107719,21 @@
     "buildReceivingObservation",
     "devolve null quando nao ha observacao",
     "consolida observacoes de itens e a geral",
-    "usa so a observacao geral quando nao ha nota por item"
+    "usa so a observacao geral quando nao ha nota por item",
+    "caminhoDeStatus",
+    "nao gera transicao quando o pedido ja esta no alvo",
+    "aprovado nao pula direto para entregue nem para parcial",
+    "enviado vai direto para entregue mas passa por em_transito no parcial",
+    "em_transito entrega ou parcializa em um passo",
+    "parcial completa pelo caminho ja existente",
+    "pendente chega ao recebimento passando pela aprovacao",
+    "sem caminho legal devolve null em vez de gravar status proibido",
+    "toda aresta produzida existe na maquina de estados do banco",
+    "aplicarStatusRecebimento",
+    "passa por em_transito antes de entregar um pedido aprovado",
+    "devolve a mensagem do banco e para no primeiro passo que falhar",
+    "nao toca no banco quando nao existe caminho legal",
+    "so grava observacoes quando o pedido ja esta no status alvo"
    ]
   },
   "src/pages/recompra/RecompraInteligente.tsx": {
@@ -116646,10 +116748,22 @@
   }
  },
  "git": {
-  "sha": "2b1df86ade557fa7e69cb9ec57b08dcf4ffd0ca8",
+  "sha": "5f2b99e87a7ee476e2bd241fa7f64aba95cdaba4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5f2b99e",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+     "src/pages/recebimento/recebimentoHelpers.ts"
+    ]
+   },
    {
     "sha": "2b1df86",
     "date": "2026-11-23",
@@ -116995,24 +117109,12 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "959a649",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(testes): remove escrita em producao do RLS, E2E e integracao (QA 002+003) (#324)",
-    "files": [
-     "src/tests/integration/supabase-db.test.ts",
-     "tests-e2e/elite-validation.spec.ts",
-     "tests-e2e/workflow-advanced.spec.ts",
-     "tests-rls/rls-isolation.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    10
+    11
    ],
    [
     "supabase/config.toml",
@@ -117071,23 +117173,23 @@
     2
    ],
    [
+    "src/pages/recebimento/RecebimentoOffline.tsx",
+    1
+   ],
+   [
+    "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    1
+   ],
+   [
+    "src/pages/recebimento/recebimentoHelpers.ts",
+    1
+   ],
+   [
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     1
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useRealtimeSubscription.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     1
    ]
   ]

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2b1df86ade` · branch `main` · 2026-11-23 22:52 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f2b99e87a` · branch `main` · 2026-11-23 23:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1051,7 +1051,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `empty` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `encerrada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `encontrado` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/pages/cotacao/cotacaoHelpers.ts` |
-| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +11 |
+| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +12 |
 | `status` | `enviado` | compara | `src/components/pedidos/PedidoMobileCard.tsx` |
 | `status` | `erro` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx` |
 | `status` | `error` | compara, escreve | `src/components/ui/indicators/StepAndHealth.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/FiscalDashboard.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/integrity_test.ts`<br>… +7 |
@@ -1549,6 +1549,10 @@ _nenhum item encontrado_
 - **applyPeriodPreset(preset: string)** — `src/pages/historico/HistoricoCompras.tsx`
   ```
   setPeriodPreset(preset); const today = new Date(); switch (preset) { case "7d": setDateRange({ from: subDays(today, 7), to: today }); break; case "30d": setDateRange({ from: subDays(today, 30), to: today }); break; case "90d": setDateRange({ from: subDays(today, 90), to: today }); break; case "thisMonth": setDateRange({ from: startOfMonth(today), to: endOfMonth(today) }); break; case "lastMonth": { const lm = subMonths(today, 1); setDateRange({ from: startOfMonth(lm), to: endOfMonth(lm) }); brea …
+  ```
+- **aplicarStatusRecebimento(atualizarPedido: AtualizarPedido, pedidoId: string, statusAtual: string, alvo: 'entregue' | 'parcial', observacoes: stri)** — `src/pages/recebimento/recebimentoHelpers.ts`
+  ```
+  const caminho = caminhoDeStatus(statusAtual, alvo); if (!caminho) return `Transicao de status invalida: ${statusAtual} -> ${alvo}`; /* Sem transicao a aplicar, um UPDATE so para as observacoes do recebimento. */ const passos: (string | null)[] = caminho.length > 0 ? caminho : [null]; for (const [i, status] of passos.entries()) { const campos: CamposStatusPedido = {}; if (status) campos.status = status; if (i === 0 && observacoes !== null) campos.observacoes = observacoes; if (status === 'entregu …
   ```
 - **canRequest()** — `supabase/functions/_shared/circuit_breaker.ts`
   ```
@@ -2387,7 +2391,7 @@ _nenhum item encontrado_
 | Email inválido | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Falha: ${(e as Error).message} | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Sem usuário | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +239 linhas — lista completa em `context.json` | |
+| … +240 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2406,7 +2410,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2795 testes em 160 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2809 testes em 160 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2418,6 +2422,7 @@ _nenhum item encontrado_
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
+| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 48 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
@@ -2428,7 +2433,6 @@ _nenhum item encontrado_
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
-| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 34 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/pages/compliance/__tests__/complianceHelpers.test.ts` | 33 | actionTypeLabels · has entries for warning, standard_fine, double_fine, temp_block, permanent_block · each entry has label, color, and icon · warning label is  … |
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |
