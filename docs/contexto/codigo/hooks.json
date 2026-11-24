@@ -265,9 +265,10 @@
   {
    "arquivo": "src/features/auth/hooks/useAuth.tsx",
    "hooks_exportados": [],
-   "linhas": 351,
+   "linhas": 444,
    "dominio": "features/auth",
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants"
@@ -288,7 +289,7 @@
    "usado_por_arquivos": [
     "src/features/auth/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/features/auth/hooks/useAuthContext.ts",

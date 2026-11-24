@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 224,
+ "total": 225,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 207
+  "unit": 208
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 131
+   "arquivos": 132
   },
   {
    "padrao": "outro",
@@ -576,6 +576,16 @@
     "src/components/ui/indicators/StatusIndicator.tsx"
    ],
    "casos": 19
+  },
+  {
+   "arquivo": "src/features/auth/__tests__/activeSession.test.ts",
+   "tipo": "unit",
+   "linhas": 141,
+   "testa": [
+    "src/features/auth/hooks/useAuth.tsx",
+    "src/lib/logger.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/features/auth/__tests__/ProtectedRoute.test.tsx",
@@ -2059,6 +2069,7 @@
   "src/components/ui/indicators/StatusIndicator.tsx": 1,
   "src/components/ui/tooltip.tsx": 1,
   "src/features/auth/components/ProtectedRoute.tsx": 1,
+  "src/features/auth/hooks/useAuth.tsx": 1,
   "src/features/auth/index.ts": 3,
   "src/features/auth/schemas/auth.schemas.ts": 1,
   "src/features/auth/types/authRoles.ts": 1,
@@ -2102,7 +2113,7 @@
   "src/lib/filterClearReporter.ts": 1,
   "src/lib/haptics.ts": 1,
   "src/lib/imageCompression.ts": 1,
-  "src/lib/logger.ts": 3,
+  "src/lib/logger.ts": 4,
   "src/lib/negotiationOutreach.ts": 1,
   "src/lib/paginatedFetch.ts": 1,
   "src/lib/pdfGenerator.ts": 1,
@@ -2245,7 +2256,6 @@
    "src/components/ui/form.tsx",
    "src/components/ui/sidebar.tsx",
    "src/components/ui/undo-toast.tsx",
-   "src/features/auth/hooks/useAuth.tsx",
    "src/features/auth/hooks/useAuthContext.ts",
    "src/features/cotacoes/hooks/useCotacoes.ts",
    "src/features/empresas/hooks/useEmpresaFilter.ts",

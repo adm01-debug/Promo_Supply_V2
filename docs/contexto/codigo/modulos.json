@@ -85,6 +85,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -238,6 +239,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "system_alerts",
     "telemetry_logs",
@@ -521,6 +523,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -868,6 +871,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "licitacao_lances",
@@ -1080,6 +1084,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "notification_preferences",
     "notifications",
     "profiles",
@@ -1145,6 +1150,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -1254,6 +1260,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "fiscal_documents",
@@ -1339,6 +1346,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "pedido_itens",
     "pedidos",
@@ -1522,6 +1530,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -1747,8 +1756,8 @@
   {
    "modulo": "features/auth",
    "arquivos": 7,
-   "testes": 4,
-   "linhas": 534,
+   "testes": 5,
+   "linhas": 627,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1766,6 +1775,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants"
@@ -1786,6 +1796,7 @@
    "diretos": {
     "edges": [],
     "tabelas": [
+     "active_sessions",
      "profiles",
      "user_roles",
      "user_tenants"
@@ -1853,6 +1864,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "cotacoes",
     "profiles",
@@ -2049,6 +2061,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -2217,6 +2230,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "pedido_itens",
     "pedidos",
@@ -2295,6 +2309,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -3016,6 +3031,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -3431,6 +3447,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "alert_subscriptions",
     "audit_logs",
     "erp_connections",
@@ -3630,6 +3647,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -3704,6 +3722,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "profiles",
     "user_roles",
@@ -3768,6 +3787,7 @@
     "webauthn-register"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -3841,6 +3861,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "cotacoes",
     "fornecedores",
@@ -3910,6 +3931,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "produto_fornecedores",
@@ -4074,6 +4096,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4298,6 +4321,7 @@
     "xbz-proxy"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4425,6 +4449,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "fornecedores",
     "penalty_escalation_config",
     "profiles",
@@ -4573,6 +4598,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4706,6 +4732,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "contract_documents",
     "contract_history",
     "contract_items",
@@ -4794,6 +4821,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4913,6 +4941,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_workflows",
     "categorias",
     "category_strategies",
@@ -5064,6 +5093,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "devolucao_itens",
@@ -5197,6 +5227,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "estoque",
     "estoque_movimentacoes",
@@ -5271,6 +5302,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "cotacoes",
     "devolucoes",
@@ -5350,6 +5382,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "cotacoes",
     "fornecedores",
@@ -5436,6 +5469,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "cost_centers",
     "fornecedores",
     "pedido_itens",
@@ -5642,6 +5676,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -5770,6 +5805,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "cotacoes",
     "fornecedores",
     "negotiation_analyses",
@@ -5927,6 +5963,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -6067,6 +6104,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "fiscal_documents",
@@ -6156,6 +6194,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "devolucao_itens",
@@ -6323,6 +6362,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -6542,6 +6582,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -6673,6 +6714,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "pedido_itens",
     "pedidos",
     "profiles",
@@ -6742,6 +6784,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "fornecedores",
     "pedido_itens",
     "profiles",
@@ -6813,6 +6856,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "cotacoes",
     "fornecedores",
@@ -6892,6 +6936,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "category_strategies",
     "fornecedores",
     "pedido_itens",
@@ -7223,6 +7268,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -7315,6 +7361,7 @@
     "telemetry"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedor_categorias",
     "fornecedores",

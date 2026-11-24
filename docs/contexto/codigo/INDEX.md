@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d541138030eb647ff06c12cee44a2a4c5c299e44` (2026-11-24T00:38:16-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `700e3fd55076f5e59f1e66fd677169a22618b58d` (2026-11-24T01:04:12-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (778), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (779), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1354 |
-| arquivos_codigo | 851 |
-| linhas_codigo | 175313 |
+| arquivos_total | 1355 |
+| arquivos_codigo | 852 |
+| linhas_codigo | 175547 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 224 |
+| testes | 225 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (131), outro (43), co-localizado (*.test) (40)
+- testes: co-localizado (__tests__) (132), outro (43), co-localizado (*.test) (40)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -70,54 +70,54 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
-| components/admin | 0 | 0 | 9 | 4 | 1 | 5 |
-| components/compras | 0 | 0 | 105 | 81 | 9 | 56 |
+| components/admin | 0 | 0 | 9 | 4 | 1 | 6 |
+| components/compras | 0 | 0 | 105 | 81 | 9 | 57 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
-| components/pagamentos | 0 | 0 | 9 | 12 | 1 | 9 |
+| components/pagamentos | 0 | 0 | 9 | 12 | 1 | 10 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
-| features/auth | 0 | 0 | 7 | 3 | 1 | 3 |
-| features/layout | 0 | 0 | 32 | 78 | 9 | 52 |
+| features/auth | 0 | 0 | 7 | 3 | 1 | 4 |
+| features/layout | 0 | 0 | 32 | 78 | 9 | 53 |
 | hooks | 0 | 0 | 62 | 61 | 7 | 59 |
-| lib | 0 | 0 | 27 | 58 | 8 | 47 |
+| lib | 0 | 0 | 27 | 58 | 8 | 48 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
-| pages/admin | 10 | 11 | 14 | 7 | 11 | 19 |
+| pages/admin | 10 | 11 | 14 | 7 | 11 | 20 |
 | pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
-| pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 11 |
-| pages/auditoria | 1 | 1 | 1 | 3 | 2 | 4 |
-| pages/auth | 0 | 2 | 2 | 5 | 3 | 4 |
-| pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
-| pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
-| pages/catalogo-spot | 1 | 1 | 6 | 84 | 11 | 56 |
-| pages/catalogo-xbz | 1 | 1 | 10 | 80 | 10 | 52 |
-| pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
-| pages/configuracoes | 1 | 1 | 1 | 78 | 9 | 52 |
-| pages/contratos | 1 | 1 | 1 | 4 | 2 | 9 |
-| pages/cotacao | 1 | 2 | 2 | 14 | 2 | 14 |
-| pages/dashboard | 3 | 2 | 2 | 29 | 3 | 26 |
+| pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 12 |
+| pages/auditoria | 1 | 1 | 1 | 3 | 2 | 5 |
+| pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
+| pages/buyer | 1 | 1 | 3 | 5 | 1 | 9 |
+| pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 8 |
+| pages/catalogo-spot | 1 | 1 | 6 | 84 | 11 | 57 |
+| pages/catalogo-xbz | 1 | 1 | 10 | 80 | 10 | 53 |
+| pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
+| pages/configuracoes | 1 | 1 | 1 | 78 | 9 | 53 |
+| pages/contratos | 1 | 1 | 1 | 4 | 2 | 10 |
+| pages/cotacao | 1 | 2 | 2 | 14 | 2 | 15 |
+| pages/dashboard | 3 | 2 | 2 | 29 | 3 | 27 |
 | pages/dev | 0 | 1 | 1 | 3 | 2 | 0 |
-| pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
+| pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 10 |
 | pages/documentos | 1 | 1 | 1 | 2 | 2 | 2 |
-| pages/estoque | 1 | 1 | 1 | 5 | 1 | 7 |
-| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 12 |
-| pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 9 |
-| pages/historico | 1 | 1 | 7 | 13 | 1 | 9 |
+| pages/estoque | 1 | 1 | 1 | 5 | 1 | 8 |
+| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 13 |
+| pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 10 |
+| pages/historico | 1 | 1 | 7 | 13 | 1 | 10 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 78 | 9 | 52 |
-| pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 7 |
-| pages/orcamentos | 1 | 1 | 1 | 79 | 9 | 53 |
-| pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 9 |
-| pages/pedidos | 1 | 1 | 3 | 17 | 1 | 11 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 79 | 9 | 53 |
-| pages/qualificacao | 1 | 1 | 1 | 79 | 9 | 56 |
-| pages/recebimento | 1 | 1 | 4 | 3 | 1 | 5 |
-| pages/recompra | 1 | 1 | 1 | 4 | 2 | 6 |
-| pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
-| pages/relatorios | 1 | 1 | 2 | 7 | 2 | 8 |
+| pages/licitacoes | 1 | 1 | 2 | 78 | 9 | 53 |
+| pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 8 |
+| pages/orcamentos | 1 | 1 | 1 | 79 | 9 | 54 |
+| pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 10 |
+| pages/pedidos | 1 | 1 | 3 | 17 | 1 | 12 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 79 | 9 | 54 |
+| pages/qualificacao | 1 | 1 | 1 | 79 | 9 | 57 |
+| pages/recebimento | 1 | 1 | 4 | 3 | 1 | 6 |
+| pages/recompra | 1 | 1 | 1 | 4 | 2 | 7 |
+| pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 10 |
+| pages/relatorios | 1 | 1 | 2 | 7 | 2 | 9 |
 | pages/seguranca | 0 | 1 | 1 | 85 | 12 | 67 |
-| pages/solicitacoes | 1 | 1 | 2 | 21 | 2 | 14 |
-| pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
+| pages/solicitacoes | 1 | 1 | 2 | 21 | 2 | 15 |
+| pages/sourcing | 1 | 4 | 4 | 8 | 1 | 16 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
 
 ## Rotas (url → arquivo)
@@ -351,7 +351,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-edge-functions.yml (6)
 - .github/workflows/main.yml (6)
 - scripts/automation.config.json (6)
-- src/features/solicitacoes/hooks/useSolicitacoes.ts (6)
+- src/features/auth/hooks/useAuth.tsx (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -419,6 +419,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `700e3fd` feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)
 - 2026-11-24 `d541138` fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)
 - 2026-11-24 `b08b364` feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)
 - 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
@@ -433,7 +434,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `7ea54f2` fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)
 - 2026-11-23 `2827890` test(palette): trava atalhos e badges do Command Palette no registry real (#353)
 - 2026-11-23 `619c2bb` fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)
-- 2026-11-23 `5f2b99e` fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

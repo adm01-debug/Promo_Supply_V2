@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d541138030eb647ff06c12cee44a2a4c5c299e44",
+  "commit": "700e3fd55076f5e59f1e66fd677169a22618b58d",
   "branch": "main",
-  "data_commit": "2026-11-24T00:38:16-03:00",
+  "data_commit": "2026-11-24T01:04:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "700e3fd",
+    "data": "2026-11-24",
+    "assunto": "feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)"
+   },
    {
     "sha": "d541138",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "294d385",
     "data": "2026-11-23",
     "assunto": "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)"
-   },
-   {
-    "sha": "9fd5491",
-    "data": "2026-11-23",
-    "assunto": "chore(qa): marca a etapa 042 como concluida (#337)"
    }
   ],
-  "arquivos_mudados_7d": 384,
+  "arquivos_mudados_7d": 385,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "src/features/auth",
-    "mudancas": 21
+    "mudancas": 23
    },
    {
     "pasta": "src/components/security",
@@ -254,6 +254,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 6
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
     "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1354,
-  "arquivos_codigo": 851,
-  "linhas_codigo": 175313,
+  "arquivos_total": 1355,
+  "arquivos_codigo": 852,
+  "linhas_codigo": 175547,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 224,
+  "testes": 225,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -431,8 +431,8 @@
    "linhas": 49238
   },
   "src/features": {
-   "arquivos": 67,
-   "linhas": 8930
+   "arquivos": 68,
+   "linhas": 9164
   },
   "src/hooks": {
    "arquivos": 82,

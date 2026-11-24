@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d541138030` · branch `main` · 2026-11-24 03:38 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `700e3fd550` · branch `main` · 2026-11-24 04:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2422,7 +2422,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2883 testes em 173 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2892 testes em 174 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2520,6 +2520,7 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
+| `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 9 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — SLA vem da RPC, não de literal … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |

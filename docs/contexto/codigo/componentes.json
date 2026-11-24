@@ -3650,13 +3650,15 @@
   {
    "arquivo": "src/features/auth/hooks/useAuth.tsx",
    "exports": [
+    "ACTIVE_SESSION_STORAGE_KEY",
     "AuthProvider"
    ],
    "export_default": null,
-   "linhas": 351,
+   "linhas": 444,
    "dominio": "features/auth",
    "hooks_locais": [],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants"

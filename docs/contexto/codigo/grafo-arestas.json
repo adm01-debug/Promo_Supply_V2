@@ -1620,7 +1620,8 @@
    "src/features/auth/types/authRoles.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts",
-   "src/lib/query-client.ts"
+   "src/lib/query-client.ts",
+   "src/lib/storageFiles.ts"
   ],
   "src/features/auth/hooks/useAuthContext.ts": [
    "src/features/auth/hooks/AuthContext.ts"

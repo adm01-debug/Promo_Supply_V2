@@ -195,6 +195,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants"
@@ -211,7 +212,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -290,6 +291,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "erp_connections",
     "erp_sync_log",
     "profiles",
@@ -309,7 +311,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 24
+   "arquivos_puxados": 25
   },
   {
    "protegida": true,
@@ -374,6 +376,7 @@
     "useAuth"
    ],
    "tabelas": [
+    "active_sessions",
     "alert_subscriptions",
     "health_scan_runs",
     "profiles",
@@ -398,7 +401,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 23
+   "arquivos_puxados": 24
   },
   {
    "protegida": true,
@@ -472,6 +475,7 @@
     "useRealtimeSubscription"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "fornecedores",
     "profiles",
@@ -494,7 +498,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -564,6 +568,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "sso_configurations",
     "user_roles",
@@ -581,7 +586,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 22
+   "arquivos_puxados": 23
   },
   {
    "protegida": true,
@@ -700,6 +705,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -717,7 +723,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 22
+   "arquivos_puxados": 23
   },
   {
    "protegida": true,
@@ -769,6 +775,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -797,7 +804,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 59
+   "arquivos_puxados": 60
   },
   {
    "protegida": true,
@@ -833,6 +840,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "profiles",
     "user_roles",
@@ -850,7 +858,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 30
+   "arquivos_puxados": 31
   },
   {
    "protegida": false,
@@ -891,6 +899,7 @@
     "useWebAuthn"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -913,7 +922,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 23
+   "arquivos_puxados": 24
   },
   {
    "protegida": false,
@@ -954,6 +963,7 @@
     "useWebAuthn"
    ],
    "tabelas": [
+    "active_sessions",
     "profiles",
     "user_roles",
     "user_tenants",
@@ -976,7 +986,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 23
+   "arquivos_puxados": 24
   },
   {
    "protegida": true,
@@ -1016,6 +1026,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "cotacoes",
     "fornecedores",
@@ -1036,7 +1047,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -1085,6 +1096,7 @@
     "useProdutos"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "produto_fornecedores",
@@ -1104,7 +1116,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 33
+   "arquivos_puxados": 34
   },
   {
    "protegida": true,
@@ -1321,6 +1333,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -1621,6 +1634,7 @@
     "useXbzIntegration"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -1745,6 +1759,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "fornecedores",
     "penalty_escalation_config",
     "profiles",
@@ -1764,7 +1779,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -1834,6 +1849,7 @@
     "useUpcomingDeliveries"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_workflows",
     "categorias",
     "cotacoes",
@@ -1875,7 +1891,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 75
+   "arquivos_puxados": 76
   },
   {
    "protegida": true,
@@ -2079,6 +2095,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -2202,6 +2219,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "contract_documents",
     "contract_history",
     "contract_items",
@@ -2285,6 +2303,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -2318,7 +2337,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 68
+   "arquivos_puxados": 69
   },
   {
    "protegida": true,
@@ -2379,6 +2398,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -2412,7 +2432,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 68
+   "arquivos_puxados": 69
   },
   {
    "protegida": true,
@@ -2474,6 +2494,7 @@
     "useUndoStore"
    ],
    "tabelas": [
+    "active_sessions",
     "category_strategies",
     "dashboard_filter_favorites",
     "pagamentos",
@@ -2496,7 +2517,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 67
+   "arquivos_puxados": 68
   },
   {
    "protegida": true,
@@ -2546,6 +2567,7 @@
     "useRealtimeSubscription"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "devolucao_itens",
@@ -2569,7 +2591,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 41
+   "arquivos_puxados": 42
   },
   {
    "protegida": true,
@@ -2658,6 +2680,7 @@
     "useProdutos"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "estoque",
     "estoque_movimentacoes",
@@ -2677,7 +2700,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -2725,6 +2748,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "cotacoes",
     "fornecedores",
@@ -2751,7 +2775,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 59
+   "arquivos_puxados": 60
   },
   {
    "protegida": true,
@@ -2802,6 +2826,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "cotacoes",
     "fornecedores",
@@ -2826,7 +2851,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 37
+   "arquivos_puxados": 38
   },
   {
    "protegida": true,
@@ -2883,6 +2908,7 @@
     "useUndoableAction"
    ],
    "tabelas": [
+    "active_sessions",
     "cost_centers",
     "fornecedores",
     "pedido_itens",
@@ -2904,7 +2930,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 47
+   "arquivos_puxados": 48
   },
   {
    "protegida": true,
@@ -3149,6 +3175,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -3272,6 +3299,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "cotacoes",
     "fornecedores",
     "negotiation_analyses",
@@ -3292,7 +3320,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   },
   {
    "protegida": true,
@@ -3499,6 +3527,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -3645,6 +3674,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "fiscal_documents",
@@ -3736,6 +3766,7 @@
     "useSwipeGesture"
    ],
    "tabelas": [
+    "active_sessions",
     "audit_logs",
     "creditos_fornecedor",
     "devolucao_itens",
@@ -3762,7 +3793,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 69
+   "arquivos_puxados": 70
   },
   {
    "protegida": true,
@@ -3969,6 +4000,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4262,6 +4294,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -4389,6 +4422,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "pedido_itens",
     "pedidos",
     "profiles",
@@ -4407,7 +4441,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 29
+   "arquivos_puxados": 30
   },
   {
    "protegida": true,
@@ -4447,6 +4481,7 @@
     "useFeedbackPreferences"
    ],
    "tabelas": [
+    "active_sessions",
     "fornecedores",
     "pedido_itens",
     "profiles",
@@ -4466,7 +4501,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 18
+   "arquivos_puxados": 19
   },
   {
    "protegida": true,
@@ -4511,6 +4546,7 @@
     "useToast"
    ],
    "tabelas": [
+    "active_sessions",
     "category_strategies",
     "fornecedores",
     "pedido_itens",
@@ -4533,7 +4569,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 53
+   "arquivos_puxados": 54
   },
   {
    "protegida": true,
@@ -4573,6 +4609,7 @@
     "useRelatorioNegociacoes"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "cotacoes",
     "fornecedores",
@@ -4594,7 +4631,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 31
+   "arquivos_puxados": 32
   },
   {
    "protegida": true,
@@ -4995,6 +5032,7 @@
     "useWorkflowDLQ"
    ],
    "tabelas": [
+    "active_sessions",
     "approval_delegations",
     "approval_history",
     "approval_rules",
@@ -5076,6 +5114,7 @@
     "useSourcingEvents"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "licitacao_lances",
@@ -5103,7 +5142,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 21
+   "arquivos_puxados": 22
   },
   {
    "protegida": true,
@@ -5153,6 +5192,7 @@
     "useSourcingEvents"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "licitacao_lances",
@@ -5180,7 +5220,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 21
+   "arquivos_puxados": 22
   },
   {
    "protegida": true,
@@ -5230,6 +5270,7 @@
     "useSourcingEvents"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedores",
     "licitacao_lances",
@@ -5257,7 +5298,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 19
+   "arquivos_puxados": 20
   },
   {
    "protegida": true,
@@ -5306,6 +5347,7 @@
     "useSourcingEvents"
    ],
    "tabelas": [
+    "active_sessions",
     "categorias",
     "fornecedor_categorias",
     "fornecedores",
@@ -5334,7 +5376,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 22
+   "arquivos_puxados": 23
   },
   {
    "protegida": true,
@@ -5370,6 +5412,7 @@
     "useSupplierScorecardData"
    ],
    "tabelas": [
+    "active_sessions",
     "devolucoes",
     "fornecedores",
     "pedidos",
@@ -5389,7 +5432,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 29
   }
  ],
  "rotas_http_backend": [],
