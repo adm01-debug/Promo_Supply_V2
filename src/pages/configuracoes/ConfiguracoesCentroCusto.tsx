@@ -24,7 +24,12 @@ import {
 import { useSolicitacoes, type CostCenter } from '@/features/solicitacoes';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
 import { formatCurrency } from '@/lib/utils';
+import {
+  mensagemCodigoCentroCustoJaCadastrado,
+  mensagemDuplicidadeCentroCusto,
+} from '@/lib/unicidadeCadastro';
 import { 
   Building2, Plus, Edit2, Trash2, Search, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';
@@ -102,11 +107,27 @@ const ConfiguracoesCentroCusto = () => {
       return;
     }
 
+    // cost_centers.code e UNIQUE global (cost_centers_code_key nao inclui a
+    // empresa): a checagem pega o duplicado visivel e o 23505 do catch cobre o
+    // de outra empresa, que a RLS esconde desta consulta.
+    const codigo = form.code.trim();
     setIsSaving(true);
     try {
+      const { data: codigoExistente, error: erroChecagem } = await supabase
+        .from('cost_centers')
+        .select('id, name')
+        .eq('code', codigo)
+        .maybeSingle();
+      if (erroChecagem) {
+        logger.warn('Nao foi possivel checar codigo de centro de custo duplicado', { error: erroChecagem });
+      } else if (codigoExistente && codigoExistente.id !== editingCC?.id) {
+        toast.error(mensagemCodigoCentroCustoJaCadastrado(codigo, codigoExistente.name));
+        return;
+      }
+
       const payload = {
         name: form.name,
-        code: form.code,
+        code: codigo,
         is_active: form.is_active,
         manager_id: form.manager_id || null,
         department: form.department || null,
@@ -132,7 +153,7 @@ const ConfiguracoesCentroCusto = () => {
       queryClient.invalidateQueries({ queryKey: ['cost-centers'] });
       setIsDialogOpen(false);
     } catch (error: unknown) {
-      toast.error('Erro ao salvar: ' + (error as Error).message);
+          toast.error(mensagemDuplicidadeCentroCusto(error, codigo) ?? 'Erro ao salvar: ' + (error as Error).message);
     } finally {
       setIsSaving(false);
     }
