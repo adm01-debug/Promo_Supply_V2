@@ -6218,8 +6218,8 @@
   {
    "modulo": "pages/portal-fornecedor",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 556,
+   "testes": 2,
+   "linhas": 575,
    "itens_menu": [],
    "telas": [
     "/portal-fornecedor"

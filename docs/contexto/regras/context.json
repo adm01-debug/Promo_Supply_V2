@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "28278908ce7fe206abcf26c3ffaba3799ab6f3c3",
+  "sha": "7ea54f28c200ded745f94dd265a6e4da9a3d0448",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 00:35 UTC",
-  "files_total": 1344,
-  "code_files": 1173,
-  "code_lines": 201119,
+  "generated_at": "2026-11-24 01:19 UTC",
+  "files_total": 1345,
+  "code_files": 1174,
+  "code_lines": 201264,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "189c84f8dbb4bfc0",
+ "facts_hash": "8636f6745d847adc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 408,
-   ".tsx": 359,
+   ".tsx": 360,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35592,8 +35592,8 @@
   },
   {
    "module": "src/pages",
-   "files": 129,
-   "lines": 30621,
+   "files": 130,
+   "lines": 30766,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -66582,6 +66582,26 @@
    {
     "file": "src/pages/historico/__tests__/historicoHelpers.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    "name": "PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06)"
+   },
+   {
+    "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    "name": "mantem o convite desabilitado e explica o motivo"
+   },
+   {
+    "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    "name": "nao chama signInWithOtp, entao nao cria usuario no GoTrue"
+   },
+   {
+    "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    "name": "quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo"
+   },
+   {
+    "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    "name": "nao regride o painel: apos selecionar o fornecedor as abas continuam disponiveis"
    },
    {
     "file": "src/pages/portal-fornecedor/__tests__/portalFornecedorData.test.ts",
@@ -107523,7 +107543,7 @@
   },
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": {
    "path": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
-   "lines": 430,
+   "lines": 449,
    "exports": [
     "function PortalFornecedor"
    ],
@@ -107662,6 +107682,18 @@
    ],
    "pagination": [
     "50"
+   ]
+  },
+  "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx": {
+   "path": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+   "lines": 126,
+   "is_test": true,
+   "tests": [
+    "PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06)",
+    "mantem o convite desabilitado e explica o motivo",
+    "nao chama signInWithOtp, entao nao cria usuario no GoTrue",
+    "quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo",
+    "nao regride o painel: apos selecionar o fornecedor as abas continuam disponiveis"
    ]
   },
   "src/pages/portal-fornecedor/__tests__/portalFornecedorData.test.ts": {
@@ -116962,10 +116994,21 @@
   }
  },
  "git": {
-  "sha": "28278908ce7fe206abcf26c3ffaba3799ab6f3c3",
+  "sha": "7ea54f28c200ded745f94dd265a6e4da9a3d0448",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7ea54f2",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+     "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx"
+    ]
+   },
    {
     "sha": "2827890",
     "date": "2026-11-23",
@@ -117316,22 +117359,12 @@
      "src/components/security/MFASettings.tsx",
      "src/hooks/useMFA.ts"
     ]
-   },
-   {
-    "sha": "99345f5",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(edge): allowlist de CORS so aceita subdominio real do curinga (QA 045) (#325)",
-    "files": [
-     "supabase/functions/_shared/cors-allowlist.test.ts",
-     "supabase/functions/_shared/security.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    12
+    13
    ],
    [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
@@ -117390,6 +117423,14 @@
     2
    ],
    [
+    "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+    1
+   ],
+   [
+    "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
+    1
+   ],
+   [
     "src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx",
     1
    ],
@@ -117399,14 +117440,6 @@
    ],
    [
     "src/lib/__tests__/creditoFornecedor.test.ts",
-    1
-   ],
-   [
-    "src/lib/creditoFornecedor.ts",
-    1
-   ],
-   [
-    "src/pages/recebimento/RecebimentoOffline.tsx",
     1
    ]
   ]

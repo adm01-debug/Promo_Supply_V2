@@ -5254,7 +5254,7 @@
     "PortalFornecedor"
    ],
    "export_default": "PortalFornecedor",
-   "linhas": 430,
+   "linhas": 449,
    "dominio": "pages/portal-fornecedor",
    "hooks_locais": [
     "useAuth",
