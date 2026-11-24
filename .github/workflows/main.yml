@@ -74,6 +74,21 @@ jobs:
       - name: Run Vitest (Frontend)
         run: bun run test
 
+      # Gate de tipos das edges. deno test nao faz type-check: sem este passo uma
+      # regressao de tipo em supabase/functions/ entra na main sem ninguem ver.
+      # Escopo: supabase/functions/*/index.ts (uma entrada por edge). Roda antes dos testes
+      # para o erro aparecer como tipo, e nao como falha de teste.
+      - name: Type-check Edge Functions (deno check)
+        run: |
+          total=0
+          falhas=0
+          for f in supabase/functions/*/index.ts; do
+            total=$((total+1))
+            if ! deno check --no-lock "$f"; then falhas=$((falhas+1)); fi
+          done
+          echo "deno check: total=$total falhas=$falhas"
+          [ "$falhas" -eq 0 ]
+
       - name: Run Deno Tests (Edge Functions)
         run: |
           # Deno integration tests skip gracefully when Supabase is unavailable.
