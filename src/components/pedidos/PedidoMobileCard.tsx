@@ -131,6 +131,7 @@ export const PedidoMobileCard = ({
         className={cn(
           "relative overflow-hidden transition-all duration-300",
           "hover:shadow-lg active:shadow-md",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
           "border-l-4",
           status === 'pendente' && "border-l-amber-500",
           status === 'aprovado' && "border-l-blue-500",
@@ -140,6 +141,10 @@ export const PedidoMobileCard = ({
           status === 'cancelado' && "border-l-red-500",
           config.glowColor
         )}
+        role="button"
+        tabIndex={0}
+        aria-label={`Ver detalhes do pedido ${pedido.numero}`}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onView(pedido); } }}
         onClick={() => onView(pedido)}
       >
         {/* Gradient Background */}
