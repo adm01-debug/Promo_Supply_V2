@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
+  "commit": "8477e9ad4628535ef792ef499ef7b43cb9020898",
   "branch": "main",
-  "data_commit": "2026-11-24T18:08:47-03:00",
+  "data_commit": "2026-11-24T18:18:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8477e9a",
+    "data": "2026-11-24",
+    "assunto": "fix(ci): fallback do aplicar-migration-prod cobre \"must be owner of function\" (#446)"
+   },
    {
     "sha": "a2f2741",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "c3726dd",
     "data": "2026-11-24",
     "assunto": "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)"
-   },
-   {
-    "sha": "0f24e15",
-    "data": "2026-11-24",
-    "assunto": "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)"
    }
   ],
   "arquivos_mudados_7d": 481,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 291
+    "commits": 292
    },
    {
     "autor": "dependabot[bot]",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 3
+    "commits": 2
    }
   ]
  },

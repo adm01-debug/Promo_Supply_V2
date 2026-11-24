@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ci): fallback do aplicar-migration-prod cobre \"must be owner of function\" (#446)",
    "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)",
    "ci: adiciona gate de tipos (deno check) das edge functions (#359)",
    "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)",
-   "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)",
-   "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)"
+   "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)"
   ]
  },
  "pr_template": null,

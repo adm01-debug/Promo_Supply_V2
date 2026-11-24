@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8` (2026-11-24T18:08:47-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8477e9ad4628535ef792ef499ef7b43cb9020898` (2026-11-24T18:18:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `8477e9a` fix(ci): fallback do aplicar-migration-prod cobre "must be owner of function" (#446)
 - 2026-11-24 `a2f2741` chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)
 - 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
 - 2026-11-24 `2be0c92` fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `0d51bc4` fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)
 - 2026-11-24 `728759e` fix: matriz de transicoes de status alinhada ao banco (#394)
 - 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
-- 2026-11-24 `73aaa9d` fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

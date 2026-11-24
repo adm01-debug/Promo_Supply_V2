@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
+  "sha": "8477e9ad4628535ef792ef499ef7b43cb9020898",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 21:10 UTC",
+  "generated_at": "2026-11-24 21:20 UTC",
   "files_total": 1446,
   "code_files": 1273,
   "code_lines": 213823,
@@ -121966,10 +121966,19 @@
   }
  },
  "git": {
-  "sha": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
+  "sha": "8477e9ad4628535ef792ef499ef7b43cb9020898",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8477e9a",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(ci): fallback do aplicar-migration-prod cobre \"must be owner of function\" (#446)",
+    "files": [
+     ".github/workflows/aplicar-migration-prod.yml"
+    ]
+   },
    {
     "sha": "a2f2741",
     "date": "2026-11-24",
@@ -122312,23 +122321,12 @@
     "files": [
      "supabase/functions/receive-os-sync/index.ts"
     ]
-   },
-   {
-    "sha": "3edfbd2",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/EnhancedBulkActionsBar.tsx",
-     "src/features/layout/components/SupplierChat.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    24
+    23
    ],
    [
     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -122375,6 +122373,10 @@
     2
    ],
    [
+    ".github/workflows/aplicar-migration-prod.yml",
+    1
+   ],
+   [
     "bun.lock",
     1
    ],
@@ -122400,10 +122402,6 @@
    ],
    [
     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
     1
    ]
   ]
