@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c3726dd3f80c902fbe9d5b6703eef961a9362ab8` (2026-11-24T11:57:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `da3107b5df6eb95d8c8bed06e514bc364db93705` (2026-11-24T12:06:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1415 |
 | arquivos_codigo | 909 |
-| linhas_codigo | 183325 |
+| linhas_codigo | 183360 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `da3107b` feat: registra no log quando o numero da solicitacao colide (#431)
 - 2026-11-24 `c3726dd` fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)
 - 2026-11-24 `0f24e15` fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)
 - 2026-11-24 `0165b41` test: prova o retry quando o numero da solicitacao colide (#427)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `2d1e512` fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)
 - 2026-11-24 `db1bf92` chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)
 - 2026-11-24 `b996391` fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)
-- 2026-11-24 `1b88913` fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

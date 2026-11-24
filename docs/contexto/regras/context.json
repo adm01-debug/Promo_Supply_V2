@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c3726dd3f80c902fbe9d5b6703eef961a9362ab8",
+  "sha": "da3107b5df6eb95d8c8bed06e514bc364db93705",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 14:57 UTC",
+  "generated_at": "2026-11-24 15:06 UTC",
   "files_total": 1416,
   "code_files": 1243,
-  "code_lines": 210551,
+  "code_lines": 210586,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "603ab7f955544107",
+ "facts_hash": "9519da3a781aa4a9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36159,7 +36159,7 @@
   {
    "module": "supabase/functions",
    "files": 118,
-   "lines": 19419,
+   "lines": 19454,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -71296,6 +71296,10 @@
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
     "name": "banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "colisao de numero fica no log como evento auditavel"
    },
    {
     "file": "supabase/functions/receive-os-sync/mapping.test.ts",
@@ -117482,7 +117486,7 @@
   },
   "supabase/functions/receive-os-sync/create-solicitacao.test.ts": {
    "path": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-   "lines": 162,
+   "lines": 184,
    "is_test": true,
    "params": [
     {
@@ -117496,12 +117500,13 @@
     "reenvio idempotente devolve a solicitacao existente sem inserir de novo",
     "erro que nao e colisao sobe na primeira tentativa",
     "colisao que nao cede desiste depois de 5 tentativas",
-    "banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente"
+    "banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente",
+    "colisao de numero fica no log como evento auditavel"
    ]
   },
   "supabase/functions/receive-os-sync/create-solicitacao.ts": {
    "path": "supabase/functions/receive-os-sync/create-solicitacao.ts",
-   "lines": 77,
+   "lines": 90,
    "exports": [
     "function createSolicitacao"
    ],
@@ -120810,10 +120815,20 @@
   }
  },
  "git": {
-  "sha": "c3726dd3f80c902fbe9d5b6703eef961a9362ab8",
+  "sha": "da3107b5df6eb95d8c8bed06e514bc364db93705",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "da3107b",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "feat: registra no log quando o numero da solicitacao colide (#431)",
+    "files": [
+     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+     "supabase/functions/receive-os-sync/create-solicitacao.ts"
+    ]
+   },
    {
     "sha": "c3726dd",
     "date": "2026-11-24",
@@ -121151,21 +121166,20 @@
      "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
      "src/pages/documentos/conciliacaoFiscal.ts"
     ]
-   },
-   {
-    "sha": "8c81633",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    24
+    23
+   ],
+   [
+    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    3
+   ],
+   [
+    "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    3
    ],
    [
     "supabase/functions/receive-os-sync/index.ts",
@@ -121178,14 +121192,6 @@
    [
     "eslint.config.js",
     3
-   ],
-   [
-    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-    2
-   ],
-   [
-    "supabase/functions/receive-os-sync/create-solicitacao.ts",
-    2
    ],
    [
     "supabase/functions/receive-os-sync/mapping.ts",

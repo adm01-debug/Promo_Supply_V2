@@ -1031,7 +1031,7 @@
    "nome": "receive-os-sync",
    "entrada": "supabase/functions/receive-os-sync/index.ts",
    "arquivos": 3,
-   "linhas": 463,
+   "linhas": 476,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",

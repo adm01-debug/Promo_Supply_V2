@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat: registra no log quando o numero da solicitacao colide (#431)",
    "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)",
    "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)",
    "test: prova o retry quando o numero da solicitacao colide (#427)",
-   "fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)",
-   "fix(mobile): liga a area segura do iOS com viewport-fit=cover (#425)"
+   "fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)"
   ]
  },
  "pr_template": null,
