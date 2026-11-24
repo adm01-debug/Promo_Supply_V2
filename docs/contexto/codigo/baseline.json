@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fc4c451ab2a81daa955db62650444987b85e7de6",
+  "commit": "1be13b9da9436f7e4d1d98047d0ff36334065697",
   "branch": "main",
-  "data_commit": "2026-11-24T00:12:01-03:00",
+  "data_commit": "2026-11-24T00:19:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1be13b9",
+    "data": "2026-11-24",
+    "assunto": "security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)"
+   },
    {
     "sha": "fc4c451",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "25ed3a7",
     "data": "2026-11-23",
     "assunto": "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)"
-   },
-   {
-    "sha": "81a44e1",
-    "data": "2026-11-23",
-    "assunto": "fix(seguranca): versiona o seed de permissions e role_permissions (#296)"
    }
   ],
   "arquivos_mudados_7d": 380,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "pasta": "src/components/ui",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -230,7 +230,7 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/main.yml",
+    "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 7
    },
    {
@@ -243,6 +243,10 @@
    },
    {
     "arquivo": ".github/workflows/deploy-edge-functions.yml",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/main.yml",
     "mudancas": 6
    },
    {
@@ -275,10 +279,6 @@
    },
    {
     "arquivo": "supabase/functions/dependency-health/index.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 6
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1352,
   "arquivos_codigo": 849,
-  "linhas_codigo": 174811,
+  "linhas_codigo": 174822,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 115,
-   "linhas": 18981
+   "linhas": 18992
   },
   "tailwind.config.ts": {
    "arquivos": 1,

@@ -1684,11 +1684,11 @@
   {
    "arquivo": "supabase/functions/_shared/security.timing.test.ts",
    "tipo": "unit",
-   "linhas": 81,
+   "linhas": 97,
    "testa": [
     "supabase/functions/_shared/security.ts"
    ],
-   "casos": 5
+   "casos": 7
   },
   {
    "arquivo": "supabase/functions/_shared/validation.error_response.test.ts",

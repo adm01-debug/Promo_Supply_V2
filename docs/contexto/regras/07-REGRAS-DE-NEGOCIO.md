@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fc4c451ab2` · branch `main` · 2026-11-24 03:12 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1be13b9da9` · branch `main` · 2026-11-24 03:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2416,7 +2416,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2871 testes em 171 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2873 testes em 171 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2528,6 +2528,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
+| `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
@@ -2545,7 +2546,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
-| `supabase/functions/_shared/security.timing.test.ts` | 5 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fc4c451ab2a81daa955db62650444987b85e7de6` (2026-11-24T00:12:01-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1be13b9da9436f7e4d1d98047d0ff36334065697` (2026-11-24T00:19:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1352 |
 | arquivos_codigo | 849 |
-| linhas_codigo | 174811 |
+| linhas_codigo | 174822 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -337,20 +337,20 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (23)
+- docs/qa/05-PROGRESSO.md (24)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
 - bun.lock (9)
 - docs/prod-readiness.md (9)
 - package.json (9)
 - docs/pendencias/_ordem.md (8)
-- .github/workflows/main.yml (7)
+- supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/workflow-engine/index.ts (7)
 - supabase/functions/xbz-proxy/index.ts (7)
 - .github/workflows/deploy-edge-functions.yml (6)
+- .github/workflows/main.yml (6)
 - scripts/automation.config.json (6)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (6)
-- src/integrations/supabase/types.ts (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
 - 2026-11-24 `fc4c451` security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)
 - 2026-11-23 `6e74b0d` fix(menu): marca o Dashboard como ativo na tela inicial (#362)
 - 2026-11-23 `33cb8a0` fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `5f2b99e` fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)
 - 2026-11-23 `2b1df86` fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)
 - 2026-11-23 `d150caf` fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)
-- 2026-11-23 `cd9ae3f` fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fc4c451ab2a81daa955db62650444987b85e7de6",
+  "sha": "1be13b9da9436f7e4d1d98047d0ff36334065697",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 03:12 UTC",
+  "generated_at": "2026-11-24 03:21 UTC",
   "files_total": 1353,
   "code_files": 1182,
-  "code_lines": 201995,
+  "code_lines": 202006,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "af803a671d8c814c",
+ "facts_hash": "4764cd2fd8abdfc7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36027,7 +36027,7 @@
   {
    "module": "supabase/functions",
    "files": 115,
-   "lines": 18981,
+   "lines": 18992,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36118,7 +36118,7 @@
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
     "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
-    "auth.ts: ScimGateDecision, timingSafeEqual, evaluateScimGate, sha256Hex",
+    "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex",
     "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth",
     "sessions.ts: PORTAL_SESSION_TAG, PORTAL_SESSION_TTL_MS, SpotSessionRow, PortalSessionPick, isPortalSession, pickPortalSession"
    ],
@@ -69096,6 +69096,14 @@
    {
     "file": "supabase/functions/_shared/security.timing.test.ts",
     "name": "spot-api nao usa mais comparacao direta de segredo"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "punchout-receive compara o shared secret do fornecedor com a helper"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "scim-v2 nao mantem copia propria da comparacao de tempo constante"
    },
    {
     "file": "supabase/functions/_shared/validation.error_response.test.ts",
@@ -111172,7 +111180,7 @@
   },
   "supabase/functions/_shared/security.timing.test.ts": {
    "path": "supabase/functions/_shared/security.timing.test.ts",
-   "lines": 81,
+   "lines": 97,
    "is_test": true,
    "env": [
     "CRON_SECRET",
@@ -111187,7 +111195,9 @@
     "verifyCronSecret aceita so o CRON_SECRET exato",
     "verifyCronSecret sem CRON_SECRET aceita a service role key exata",
     "verifyCronSecret sem nenhum segredo configurado e fail-closed",
-    "spot-api nao usa mais comparacao direta de segredo"
+    "spot-api nao usa mais comparacao direta de segredo",
+    "punchout-receive compara o shared secret do fornecedor com a helper",
+    "scim-v2 nao mantem copia propria da comparacao de tempo constante"
    ],
    "uses_service_role": true
   },
@@ -114282,10 +114292,9 @@
   },
   "supabase/functions/scim-v2/auth.ts": {
    "path": "supabase/functions/scim-v2/auth.ts",
-   "lines": 70,
+   "lines": 65,
    "exports": [
     "type ScimGateDecision",
-    "function timingSafeEqual",
     "function evaluateScimGate",
     "function sha256Hex"
    ],
@@ -117349,10 +117358,22 @@
   }
  },
  "git": {
-  "sha": "fc4c451ab2a81daa955db62650444987b85e7de6",
+  "sha": "1be13b9da9436f7e4d1d98047d0ff36334065697",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1be13b9",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/security.timing.test.ts",
+     "supabase/functions/punchout-receive/index.ts",
+     "supabase/functions/scim-v2/auth.ts"
+    ]
+   },
    {
     "sha": "fc4c451",
     "date": "2026-11-24",
@@ -117730,24 +117751,12 @@
      "supabase/functions/xbz-proxy/index.ts",
      "supabase/functions/xbz-sync-pedidos/index.ts"
     ]
-   },
-   {
-    "sha": "b48d644",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)",
-    "files": [
-     "src/features/auth/__tests__/ProtectedRoute.test.tsx",
-     "src/features/auth/components/ProtectedRoute.tsx",
-     "src/pages/auditoria/Auditoria.tsx",
-     "src/routes/AppRoutes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    21
    ],
    [
     "supabase/functions/webauthn-authenticate/index.ts",
@@ -117764,6 +117773,14 @@
    [
     "supabase/functions/workflow-engine/index.ts",
     3
+   ],
+   [
+    "supabase/functions/_shared/security.timing.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/punchout-receive/index.ts",
+    2
    ],
    [
     "supabase/functions/check-approval-escalations/index.ts",
@@ -117802,10 +117819,6 @@
     2
    ],
    [
-    "src/features/auth/__tests__/ProtectedRoute.test.tsx",
-    2
-   ],
-   [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
     2
    ],
@@ -117819,10 +117832,6 @@
    ],
    [
     "supabase/functions/ai-negotiation/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/ai-supplier-suggestion/index.ts",
     2
    ]
   ]
