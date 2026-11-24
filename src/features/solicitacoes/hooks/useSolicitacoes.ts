@@ -57,6 +57,35 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
+const MOTIVO_DEPENDENTES_SOLICITACAO =
+  'Solicitação com cotação ou histórico de aprovação não pode ser excluída: use o status Cancelada para encerrar sem perder o histórico.';
+
+/**
+ * cotacoes.solicitacao_id e approval_workflows.solicitacao_id estao em ON DELETE
+ * CASCADE e approval_history.solicitacao_id em SET NULL: o DELETE apagava as
+ * propostas de fornecedor (com preco) e a trilha de aprovacao, ou deixava o
+ * historico orfao. A exclusao so passa quando nao ha nenhum desses filhos.
+ */
+async function solicitacoesComDependentes(ids: string[]): Promise<Set<string>> {
+  const [cotacoes, workflows, historico] = await Promise.all([
+    supabase.from('cotacoes').select('solicitacao_id').in('solicitacao_id', ids),
+    supabase.from('approval_workflows').select('solicitacao_id').in('solicitacao_id', ids),
+    supabase.from('approval_history').select('solicitacao_id').in('solicitacao_id', ids),
+  ]);
+
+  const erro = cotacoes.error ?? workflows.error ?? historico.error;
+  if (erro) throw erro;
+
+  const bloqueados = new Set<string>();
+  for (const resultado of [cotacoes, workflows, historico]) {
+    const linhas = (resultado.data ?? []) as Array<{ solicitacao_id: string | null }>;
+    for (const linha of linhas) {
+      if (linha.solicitacao_id) bloqueados.add(linha.solicitacao_id);
+    }
+  }
+  return bloqueados;
+}
+
 /**
  * Chave unica da listagem. O prefetch (`src/hooks/usePrefetch.ts`) precisa montar
  * a MESMA chave do hook, senao grava uma entrada que ninguem le. Foi o que
@@ -275,6 +304,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [solicitacoes, updateSolicitacao]);
 
   const deleteSolicitacao = useCallback(async (id: string) => {
+    let bloqueados: Set<string>;
+    try {
+      bloqueados = await solicitacoesComDependentes([id]);
+    } catch {
+      toast.error('Não foi possível conferir o histórico da solicitação. Exclusão cancelada.');
+      return false;
+    }
+    if (bloqueados.has(id)) {
+      toast.error(MOTIVO_DEPENDENTES_SOLICITACAO);
+      return false;
+    }
     try {
       const { data, error } = await supabase.from('solicitacoes').delete().eq('id', id).select('id');
       if (error) throw error;
@@ -290,12 +330,28 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [invalidate]);
 
   const bulkDelete = useCallback(async (ids: string[]) => {
+    let bloqueados: Set<string>;
     try {
-      const { data, error } = await supabase.from('solicitacoes').delete().in('id', ids).select('id');
+      bloqueados = await solicitacoesComDependentes(ids);
+    } catch {
+      toast.error('Não foi possível conferir o histórico das solicitações. Exclusão cancelada.');
+      return false;
+    }
+    const liberados = ids.filter((id) => !bloqueados.has(id));
+    if (liberados.length === 0) {
+      toast.error(MOTIVO_DEPENDENTES_SOLICITACAO);
+      return false;
+    }
+    try {
+      const { data, error } = await supabase.from('solicitacoes').delete().in('id', liberados).select('id');
       if (error) throw error;
-      if (!data?.length) throw new Error(SEM_PERMISSAO);
-      toast.success(`${data.length} de ${ids.length} solicitação(ões) excluída(s)!`);
-      invalidate();
+      const excluidos = data?.length ?? 0;
+      if (excluidos > 0) invalidate();
+      if (excluidos < ids.length) {
+        toast.warning(`${excluidos} de ${ids.length} solicitação(ões) excluída(s). ${MOTIVO_DEPENDENTES_SOLICITACAO}`);
+        return false;
+      }
+      toast.success(`${excluidos} de ${ids.length} solicitação(ões) excluída(s)!`);
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
