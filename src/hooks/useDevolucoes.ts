@@ -171,7 +171,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
 
       // Auto-generate credit when status is credito_emitido
       if (newStatus === 'credito_emitido' && dev.fornecedor_id) {
-        await supabase.from('creditos_fornecedor').insert({
+        const { error: creditoError } = await supabase.from('creditos_fornecedor').insert({
           fornecedor_id: dev.fornecedor_id,
           devolucao_id: id,
           tipo: 'credito_devolucao',
@@ -181,6 +181,18 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           created_by: user?.id,
           tenant_id: tenantId || organizationId,
         } as never);
+        if (creditoError) {
+          // Credito e status sao um par: se o credito nao gravou, o status volta para o anterior
+          // em vez de deixar a devolucao presa em credito_emitido sem nenhum credito.
+          const { error: rollbackError } = await supabase.from('devolucoes').update({ status: dev.status }).eq('id', id);
+          queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
+          toast.error(
+            rollbackError
+              ? `Credito nao gerado: ${creditoError.message}. Status NAO revertido: ${rollbackError.message}`
+              : `Credito nao gerado: ${creditoError.message}. Status mantido em "${dev.status}".`
+          );
+          return false;
+        }
         toast.success('Crédito gerado automaticamente!');
       }
 
