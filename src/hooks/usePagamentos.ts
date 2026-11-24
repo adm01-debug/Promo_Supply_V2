@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { TRANSICOES_PAGAMENTO_BANCO, transicaoPermitidaNaTela } from '@/lib/statusTransitionsBanco';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Json, Database } from '@/integrations/supabase/types';
 
@@ -39,20 +40,13 @@ export interface PagamentoFilters {
   empresaIds?: string[] | null;
 }
 
-const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
-  pendente: ['aprovado', 'cancelado'],
-  aprovado: ['agendado', 'pago', 'parcial', 'cancelado'],
-  agendado: ['pago', 'parcial', 'cancelado'],
-  pago: ['parcial'],
-  parcial: ['pago', 'parcial', 'cancelado'],
-  cancelado: [],
-  atrasado: ['pago', 'parcial', 'cancelado'],
-};
+// Matriz unica do banco (src/lib/statusTransitionsBanco.ts): a copia local
+// divergia dela e a tela barrava transicao que o banco aceita.
+const VALID_PAGAMENTO_TRANSITIONS = TRANSICOES_PAGAMENTO_BANCO;
 
-  function canTransition(from: string, to: string): boolean {
-    const allowed = VALID_PAGAMENTO_TRANSITIONS[from];
-    return !allowed || allowed.includes(to);
-  }
+function canTransition(from: string, to: string): boolean {
+  return transicaoPermitidaNaTela(VALID_PAGAMENTO_TRANSITIONS, from, to);
+}
 
 async function fetchPagamentosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PagamentoFilters) {
   if (!userId || !organizationId) return { data: [], totalCount: 0 };
@@ -164,8 +158,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       const current = pagamentos.find(p => p.id === id);
       logger.info('Atualizando pagamento', { id, currentStatus: current?.status, updates });
       if (current) {
-        const allowed = VALID_PAGAMENTO_TRANSITIONS[current.status];
-        if (allowed && !allowed.includes(updates.status)) {
+        // Mesma transicao passa (o banco aceita no-op): sem isso 'parcial ->
+        // parcial' era recusado aqui e o valor pago nao podia ser corrigido.
+        if (!canTransition(current.status, updates.status)) {
           toast.error(`Transição inválida: ${current.status} → ${updates.status}`);
           return false;
         }
