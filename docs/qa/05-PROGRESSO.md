@@ -43,7 +43,8 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
   - Evidencia: PR #319 (merge pendente autorizacao) - Auth.tsx: aba Criar Conta removida; useAuth.signUp() retorna erro bloqueador.
 - [x] 009 — Aplicação: A aba 'Criar Conta' de /auth é pública e o trigger handle_new_user dá papel 'buyer' e vincula o novo usuário ao único grupo de produção — onda 1 — Crítica — AUT-02
   - Evidencia: PR #319 - useAuth.signUp() nao chama supabase.auth.signUp(); AuthContext.signUp marcado @deprecated.
-- [ ] 010 — O sistema de permissões granulares está morto para todo papel não-admin: usePermissions lê permissions/role_permissions direto, e a RLS dessas duas ta — onda 1 — Alta — AUT-03
+- [x] 010 — O sistema de permissões granulares está morto para todo papel não-admin: usePermissions lê permissions/role_permissions direto, e a RLS dessas duas ta — onda 1 — Alta — AUT-03
+  - Evidencia: PR #317 (mergeada) - RPC get_my_permissions SECURITY DEFINER (bypassa a RLS de permissions/role_permissions), policies PERMISSIVE e usePermissions lendo a RPC; verificado em producao com exec_sql: get_my_permissions() retorna as permissoes do papel do usuario logado.
 - [ ] 011 — (parte 1/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
 - [ ] 012 — (parte 2/2) TenantSwitcher diz 'Organização alterada com sucesso!' sem alterar nada: user_tenants só tem policy de SELECT, então os dois UPDATE de swi — onda 1 — Alta — AUT-04
 - [x] 013 — (parte 1/3) O seletor de empresa do cabeçalho ('Foco em empresa') não filtra nada: selectedEmpresaId só é consumido por useEmpresaFilter, que não tem  — onda 1 — Alta — AUT-05
