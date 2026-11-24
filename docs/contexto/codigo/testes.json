@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 251,
+ "total": 252,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 233
+  "unit": 234
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 157
+   "arquivos": 158
   },
   {
    "padrao": "outro",
@@ -1569,6 +1569,15 @@
    "casos": 19
   },
   {
+   "arquivo": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+   "tipo": "unit",
+   "linhas": 98,
+   "testa": [
+    "src/pages/documentos/conciliacaoFiscal.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
    "tipo": "unit",
    "linhas": 208,
@@ -2414,6 +2423,7 @@
   "src/pages/dashboard/ComprasDashboard.tsx": 1,
   "src/pages/devolucoes/DevolucoesModals.tsx": 1,
   "src/pages/devolucoes/devolucoesData.ts": 1,
+  "src/pages/documentos/conciliacaoFiscal.ts": 1,
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
   "src/pages/historico/HistoricoHelpers.tsx": 2,

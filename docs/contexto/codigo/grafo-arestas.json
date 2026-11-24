@@ -2883,7 +2883,8 @@
    "src/integrations/supabase/types.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/logger.ts",
-   "src/lib/utils.ts"
+   "src/lib/utils.ts",
+   "src/pages/documentos/conciliacaoFiscal.ts"
   ],
   "src/pages/estoque/GestaoEstoque.tsx": [
    "src/components/ui/badge.tsx",

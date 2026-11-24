@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `005038d187` · branch `main` · 2026-11-24 09:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d8d2b563df` · branch `main` · 2026-11-24 09:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -209,6 +209,7 @@
 | `XBZ_FILTROS_FINANCEIROS` (TS) | { value: 0, label: 'Todos' }, { value: 2, label: 'Somente pagos' }, { value: 3, label: 'Somente pendentes' }, |  | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `XbzNetworkLevel` (TS) | collecting \| below \| warning \| healthy |  | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `XbzTrendDirection` (TS) | unknown \| degrading \| stable \| improving |  | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| `MotivoConciliacao` (TS) | vinculo-unico \| sem-candidato \| valor-em-outro-fornecedor \| ambiguo \| fornecedor-desconhecido |  | `src/pages/documentos/conciliacaoFiscal.ts` |
 | `SaudeDoPrazoStatus` (TS) | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo |  | `src/pages/pedidos/pedidosHelpers.ts` |
 | `AuditActionType` (TS) | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel |  | `src/services/auditTypes.ts` |
 | `AuditEntityType` (TS) | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio |  | `src/services/auditTypes.ts` |
@@ -297,6 +298,8 @@
 | status | valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `reposicao_enviada` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `validada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/DocumentosFiscais.tsx` |
+| status | valor `matched` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/conciliacaoFiscal.ts` |
+| status | valor `unmatched` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/documentos/conciliacaoFiscal.ts` |
 | status | valor `publicada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`escreve:src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | status | valor `encerrada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`escreve:src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | status | valor `rascunho` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`escreve:supabase/functions/punchout-receive/solicitation.ts` |

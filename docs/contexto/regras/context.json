@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "005038d1876080a748d41e64a63ff84c091cf806",
+  "sha": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:35 UTC",
-  "files_total": 1390,
-  "code_files": 1219,
-  "code_lines": 207458,
+  "generated_at": "2026-11-24 09:45 UTC",
+  "files_total": 1392,
+  "code_files": 1221,
+  "code_lines": 207738,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "30eafec3d6d35c99",
+ "facts_hash": "a9b76cb75fa7dfc4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 431,
+   ".ts": 433,
    ".tsx": 382,
    ".sql": 331,
    ".mjs": 67,
@@ -34762,7 +34762,7 @@
   {
    "module": "src/components",
    "files": 270,
-   "lines": 50548,
+   "lines": 50570,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35703,8 +35703,8 @@
   },
   {
    "module": "src/pages",
-   "files": 140,
-   "lines": 32590,
+   "files": 142,
+   "lines": 32848,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36987,6 +36987,7 @@
      "src/hooks/useSupplierQualification.ts",
      "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/dashboard/ComprasDashboard.tsx",
+     "src/pages/documentos/DocumentosFiscais.tsx",
      "src/pages/gerar-ordem/GerarOrdem.tsx",
      "src/pages/negociacao-ia/NegociacaoIA.tsx",
      "src/pages/portal-fornecedor/PortalFornecedor.tsx",
@@ -40340,6 +40341,11 @@
     "values": "unknown | degrading | stable | improving"
    },
    {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "name": "MotivoConciliacao",
+    "values": "vinculo-unico | sem-candidato | valor-em-outro-fornecedor | ambiguo | fornecedor-desconhecido"
+   },
+   {
     "file": "src/pages/pedidos/pedidosHelpers.ts",
     "name": "SaudeDoPrazoStatus",
     "values": "entregue | atrasado | critico | atencao | no_prazo | sem_prazo"
@@ -41919,7 +41925,15 @@
    },
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "msg": "Fornecedor da nota nao identificado: importe o XML ou vincule manualmente."
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "msg": "IA não retornou dados extraídos"
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "msg": "Mais de um pedido do mesmo fornecedor com este valor: escolha manual necessaria."
    },
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
@@ -43020,6 +43034,14 @@
    {
     "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "text": "risco/prazo: so calcula o que os dados das cotacoes permitem afirmar."
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "text": "* Regra de conciliacao de NF-e com pedido."
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "text": "Somente os digitos do CNPJ, para comparar o emitente do XML com o cadastro. */"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -50635,6 +50657,11 @@
     "value": "\"__none__\""
    },
    {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "name": "TOLERANCIA_VALOR_CONCILIACAO",
+    "value": "0.01"
+   },
+   {
     "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
     "name": "DIAS_DE_FOLGA_TOTAL",
     "value": "90"
@@ -54728,6 +54755,12 @@
    },
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "field": "status",
+    "value": "matched",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "field": "reconciliation_status",
     "value": "matched",
     "kind": "compara"
@@ -54785,6 +54818,36 @@
     "field": "status",
     "value": "aprovado",
     "kind": "filtra"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "field": "status",
+    "value": "matched",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "field": "status",
+    "value": "unmatched",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "field": "status",
+    "value": "matched",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "field": "status",
+    "value": "unmatched",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "field": "status",
+    "value": "unmatched",
+    "kind": "escreve"
    },
    {
     "file": "src/pages/estoque/GestaoEstoque.tsx",
@@ -57247,6 +57310,12 @@
     "name": "computeComplianceKPIs",
     "params": "data: ComplianceData[]",
     "body": "const infractors = data.filter(d => d.penalty_count > 0 || d.late_deliveries > 0 || d.rejected_count > 0); const compliant = data.filter(d => d.on_time_rate >= 95 && d.penalty_count === 0); const totalPenaltyValue = data.reduce((s, d) => s + Number(d.total_penalty_value), 0); const avgOnTimeRate = data.length > 0 ? data.reduce((s, d) => s + Number(d.on_time_rate), 0) / data.length : 0; return { infractors, compliant, totalPenaltyValue, avgOnTimeRate };"
+   },
+   {
+    "file": "src/pages/documentos/conciliacaoFiscal.ts",
+    "name": "valorNumerico",
+    "params": "valor: number | string | null | undefined",
+    "body": "if (valor === null || valor === undefined || valor === \"\") return null; const numero = Number(valor); return Number.isFinite(numero) ? numero : null;"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -67293,6 +67362,38 @@
    {
     "file": "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
     "name": "all resolucao keys use snake_case (no spaces)"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "conciliacao de NF-e com pedido"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "nao casa a nota com pedido de outro fornecedor so porque o valor e igual"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "deixa sem vinculo quando o valor so existe em pedido de outro fornecedor"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "nao adivinha quando a nota nao tem fornecedor identificado"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "mantem a tolerancia de um centavo e ignora valor ausente"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "fornecedor do emitente da nota"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    "name": "normaliza o CNPJ para digitos e resolve o cadastro"
    },
    {
     "file": "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
@@ -78652,6 +78753,10 @@
     "limit": "200"
    },
    {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "limit": "500"
+   },
+   {
     "file": "src/pages/kanban/KanbanWorkflow.tsx",
     "limit": "200"
    },
@@ -80229,6 +80334,13 @@
      "validada": [
       "compara:src/pages/documentos/DocumentosFiscais.tsx",
       "escreve:src/pages/documentos/DocumentosFiscais.tsx"
+     ],
+     "matched": [
+      "compara:src/pages/documentos/DocumentosFiscais.tsx",
+      "escreve:src/pages/documentos/conciliacaoFiscal.ts"
+     ],
+     "unmatched": [
+      "escreve:src/pages/documentos/conciliacaoFiscal.ts"
      ],
      "em_andamento": [
       "compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx",
@@ -89258,6 +89370,21 @@
    },
    {
     "kind": "status",
+    "msg": "valor `matched` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/documentos/DocumentosFiscais.tsx",
+     "escreve:src/pages/documentos/conciliacaoFiscal.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `unmatched` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:src/pages/documentos/conciliacaoFiscal.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `publicada` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx",
@@ -97780,7 +97907,7 @@
   },
   "src/components/pagamentos/ThreeWayMatchPanel.tsx": {
    "path": "src/components/pagamentos/ThreeWayMatchPanel.tsx",
-   "lines": 115,
+   "lines": 137,
    "exports": [
     "const ThreeWayMatchPanel"
    ],
@@ -97799,6 +97926,7 @@
      "numero_nf"
     ],
     "pedidos": [
+     "fornecedor_id",
      "id",
      "numero",
      "status",
@@ -108871,7 +108999,7 @@
   },
   "src/pages/documentos/DocumentosFiscais.tsx": {
    "path": "src/pages/documentos/DocumentosFiscais.tsx",
-   "lines": 369,
+   "lines": 398,
    "exports": [
     "default DocumentosFiscais"
    ],
@@ -108882,6 +109010,10 @@
     },
     {
      "table": "pedidos",
+     "op": "select"
+    },
+    {
+     "table": "fornecedores",
      "op": "select"
     },
     {
@@ -108905,6 +109037,10 @@
      "status",
      "valor_total"
     ],
+    "fornecedores": [
+     "cnpj",
+     "id"
+    ],
     "fiscal_documents": [
      "id"
     ]
@@ -108919,7 +109055,9 @@
     "Erro ao processar XML. Verifique o formato do arquivo.",
     "Erro ao processar com IA: ",
     "Erro na conciliação",
+    "Fornecedor da nota nao identificado: importe o XML ou vincule manualmente.",
     "IA não retornou dados extraídos",
+    "Mais de um pedido do mesmo fornecedor com este valor: escolha manual necessaria.",
     "Não foi possível ler os campos obrigatórios (número e valor total) da nota. "
    ],
    "status_values": [
@@ -108932,6 +109070,11 @@
      "field": "status",
      "value": "pendente",
      "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "matched",
+     "kind": "compara"
     },
     {
      "field": "reconciliation_status",
@@ -108986,7 +109129,88 @@
    ],
    "pagination": [
     "100",
-    "200"
+    "200",
+    "500"
+   ]
+  },
+  "src/pages/documentos/conciliacaoFiscal.ts": {
+   "path": "src/pages/documentos/conciliacaoFiscal.ts",
+   "lines": 131,
+   "exports": [
+    "const TOLERANCIA_VALOR_CONCILIACAO",
+    "interface PedidoConciliacao",
+    "interface NotaConciliacao",
+    "type MotivoConciliacao",
+    "interface ResultadoConciliacao",
+    "const normalizarCnpj",
+    "const resolverFornecedorPorCnpj",
+    "const conciliarNotaComPedido"
+   ],
+   "enums": [
+    {
+     "name": "MotivoConciliacao",
+     "values": "vinculo-unico | sem-candidato | valor-em-outro-fornecedor | ambiguo | fornecedor-desconhecido"
+    }
+   ],
+   "params": [
+    {
+     "name": "TOLERANCIA_VALOR_CONCILIACAO",
+     "value": "0.01"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "matched",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unmatched",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "matched",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unmatched",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "unmatched",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* Regra de conciliacao de NF-e com pedido.",
+    "Somente os digitos do CNPJ, para comparar o emitente do XML com o cadastro. */"
+   ],
+   "doc": "Regra de conciliacao de NF-e com pedido. O valor total sozinho nao identifica um pedido: dois fornecedores diferentes podem emitir notas do mesmo valor. Por isso o vinculo automatico exige fornecedor igual e candidato unico; qualquer ambiguidade fica sem vinculo, com o motivo gravado para o financei …",
+   "calc_fns": [
+    {
+     "name": "valorNumerico",
+     "params": "valor: number | string | null | undefined",
+     "body": "if (valor === null || valor === undefined || valor === \"\") return null; const numero = Number(valor); return Number.isFinite(numero) ? numero : null;"
+    }
+   ]
+  },
+  "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts": {
+   "path": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+   "lines": 98,
+   "is_test": true,
+   "tests": [
+    "conciliacao de NF-e com pedido",
+    "nao casa a nota com pedido de outro fornecedor so porque o valor e igual",
+    "deixa sem vinculo quando o valor so existe em pedido de outro fornecedor",
+    "nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor",
+    "nao adivinha quando a nota nao tem fornecedor identificado",
+    "mantem a tolerancia de um centavo e ignora valor ausente",
+    "fornecedor do emitente da nota",
+    "normaliza o CNPJ para digitos e resolve o cadastro"
    ]
   },
   "src/pages/estoque/GestaoEstoque.tsx": {
@@ -119439,10 +119663,32 @@
   }
  },
  "git": {
-  "sha": "005038d1876080a748d41e64a63ff84c091cf806",
+  "sha": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d8d2b56",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+     "src/pages/documentos/conciliacaoFiscal.ts"
+    ]
+   },
+   {
+    "sha": "8c81633",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "005038d",
     "date": "2026-11-24",
@@ -119783,30 +120029,6 @@
      "src/features/auth/__tests__/activeSession.test.ts",
      "src/features/auth/hooks/useAuth.tsx"
     ]
-   },
-   {
-    "sha": "d541138",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/security/PasswordResetRequestsPanel.tsx",
-     "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
-     "src/hooks/usePasswordResetRequests.ts"
-    ]
-   },
-   {
-    "sha": "b08b364",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/auth/Auth.tsx",
-     "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
-     "src/routes/AppRoutes.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -119837,6 +120059,22 @@
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
+   ],
+   [
+    "src/components/pagamentos/ThreeWayMatchPanel.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/DocumentosFiscais.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
+    1
+   ],
+   [
+    "src/pages/documentos/conciliacaoFiscal.ts",
+    1
    ],
    [
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
@@ -119872,22 +120110,6 @@
    ],
    [
     "supabase/functions/check-approval-escalations/index.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useFornecedores.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/unicidadeCadastro.test.ts",
-    1
-   ],
-   [
-    "src/lib/unicidadeCadastro.ts",
     1
    ]
   ]

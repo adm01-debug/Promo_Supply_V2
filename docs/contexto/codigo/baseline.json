@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "005038d1876080a748d41e64a63ff84c091cf806",
+  "commit": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
   "branch": "main",
-  "data_commit": "2026-11-24T06:34:59-03:00",
+  "data_commit": "2026-11-24T06:44:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d8d2b56",
+    "data": "2026-11-24",
+    "assunto": "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)"
+   },
+   {
+    "sha": "8c81633",
+    "data": "2026-11-24",
+    "assunto": "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)"
+   },
    {
     "sha": "005038d",
     "data": "2026-11-24",
@@ -121,19 +131,9 @@
     "sha": "92ec304",
     "data": "2026-11-24",
     "assunto": "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)"
-   },
-   {
-    "sha": "ae23749",
-    "data": "2026-11-24",
-    "assunto": "fix(exportacao): CSV de pedidos sai com as colunas reais e toast honesto (QA 104) (#371)"
-   },
-   {
-    "sha": "28478d2",
-    "data": "2026-11-24",
-    "assunto": "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)"
    }
   ],
-  "arquivos_mudados_7d": 438,
+  "arquivos_mudados_7d": 441,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 52
+    "mudancas": 54
    },
    {
     "pasta": "src/features/layout",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/features/solicitacoes",
-    "mudancas": 20
+    "mudancas": 19
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 52
+    "mudancas": 54
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -218,23 +218,19 @@
     "mudancas": 9
    },
    {
-    "arquivo": "bun.lock",
-    "mudancas": 8
-   },
-   {
     "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 8
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 7
+   },
+   {
     "arquivo": "package.json",
-    "mudancas": 8
+    "mudancas": 7
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 7
    },
    {
@@ -263,6 +259,10 @@
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 6
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1389,
-  "arquivos_codigo": 886,
-  "linhas_codigo": 180274,
+  "arquivos_total": 1391,
+  "arquivos_codigo": 888,
+  "linhas_codigo": 180554,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 251,
+  "testes": 252,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 270,
-   "linhas": 50548
+   "linhas": 50570
   },
   "src/features": {
    "arquivos": 82,
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 140,
-   "linhas": 32590
+   "arquivos": 142,
+   "linhas": 32848
   },
   "src/routes": {
    "arquivos": 1,

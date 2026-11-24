@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `005038d187` · branch `main` · 2026-11-24 09:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d8d2b563df` · branch `main` · 2026-11-24 09:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1068,6 +1068,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `idle` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx` |
 | `status` | `in_progress` | compara | `src/components/compras/ActiveSourcingWidget.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `in_transit` | compara | `src/components/compras/DeliveryCalendar.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
+| `status` | `matched` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/documentos/conciliacaoFiscal.ts` |
 | `status` | `negotiation` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `no_prazo` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `status` | `normal` | escreve | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
@@ -1114,6 +1115,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `todas` | compara | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +2 |
 | `status` | `unknown` | compara | `src/pages/admin/DependencyHealth.tsx` |
+| `status` | `unmatched` | escreve | `src/pages/documentos/conciliacaoFiscal.ts` |
 | `status` | `upcoming` | compara, escreve | `src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/StatusTimeline.tsx` |
 | `status` | `utilizado` | escreve | `src/lib/creditoFornecedor.ts` |
 | `status` | `validada` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx` |
@@ -1212,6 +1214,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | XBZ_FILTROS_FINANCEIROS | { value: 0, label: 'Todos' }, { value: 2, label: 'Somente pagos' }, { value: 3, label: 'Somente pendentes' }, | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | XbzNetworkLevel | collecting \| below \| warning \| healthy | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | XbzTrendDirection | unknown \| degrading \| stable \| improving | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| MotivoConciliacao | vinculo-unico \| sem-candidato \| valor-em-outro-fornecedor \| ambiguo \| fornecedor-desconhecido | `src/pages/documentos/conciliacaoFiscal.ts` |
 | SaudeDoPrazoStatus | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo | `src/pages/pedidos/pedidosHelpers.ts` |
 | AuditActionType | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel | `src/services/auditTypes.ts` |
 | AuditEntityType | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio | `src/services/auditTypes.ts` |
@@ -1551,6 +1554,10 @@ _nenhum item encontrado_
   ```
   const infractors = data.filter(d => d.penalty_count > 0 || d.late_deliveries > 0 || d.rejected_count > 0); const compliant = data.filter(d => d.on_time_rate >= 95 && d.penalty_count === 0); const totalPenaltyValue = data.reduce((s, d) => s + Number(d.total_penalty_value), 0); const avgOnTimeRate = data.length > 0 ? data.reduce((s, d) => s + Number(d.on_time_rate), 0) / data.length : 0; return { infractors, compliant, totalPenaltyValue, avgOnTimeRate };
   ```
+- **valorNumerico(valor: number | string | null | undefined)** — `src/pages/documentos/conciliacaoFiscal.ts`
+  ```
+  if (valor === null || valor === undefined || valor === "") return null; const numero = Number(valor); return Number.isFinite(numero) ? numero : null;
+  ```
 - **GerarOrdem()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
   { const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get("solicitacao"); const cotacaoId = searchParams.get("cotacao"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(""); const [mensagemEmail, setMensagemEmail] = useState(""); const [assuntoEmail, setAssuntoEmail] = useSt
@@ -1776,6 +1783,7 @@ _nenhum item encontrado_
 | `TREND_MIN_SAMPLES` | `6` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `NON_PARENT` | `"__none__"` | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
+| `TOLERANCIA_VALOR_CONCILIACAO` | `0.01` | `src/pages/documentos/conciliacaoFiscal.ts` |
 | `DIAS_DE_FOLGA_TOTAL` | `90` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `URGENCIA_SEM_PRAZO` | `0.35` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
@@ -2093,6 +2101,7 @@ _nenhum item encontrado_
 | 40 | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | 100 | `src/pages/documentos/DocumentosFiscais.tsx` |
 | 200 | `src/pages/documentos/DocumentosFiscais.tsx` |
+| 500 | `src/pages/documentos/DocumentosFiscais.tsx` |
 | 200 | `src/pages/kanban/KanbanWorkflow.tsx` |
 | 20 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | 50 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
@@ -2425,7 +2434,7 @@ _nenhum item encontrado_
 | O login por passkey nao devolveu token de sessao | `src/hooks/useWebAuthn.ts` |
 | Operação cancelada pelo usuário | `src/hooks/useWebAuthn.ts` |
 | WebAuthn não é suportado neste navegador | `src/hooks/useWebAuthn.ts` |
-| … +254 linhas — lista completa em `context.json` | |
+| … +256 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2443,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3093 testes em 200 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3101 testes em 201 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2558,6 +2567,7 @@ _nenhum item encontrado_
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
+| `src/pages/documentos/__tests__/conciliacaoFiscal.test.ts` | 8 | conciliacao de NF-e com pedido · nao casa a nota com pedido de outro fornecedor so porque o valor e igual · deixa sem vinculo quando o valor so existe em pedido de outro fornecedor · nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
@@ -2775,6 +2785,8 @@ _nenhum item encontrado_
 | Tamanho máximo da janela deslizante de amostras. */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | risco/prazo: so calcula o que os dados das cotacoes permitem afirmar. | `src/pages/cotacao/cotacaoHelpers.ts` |
+| * Regra de conciliacao de NF-e com pedido. | `src/pages/documentos/conciliacaoFiscal.ts` |
+| Somente os digitos do CNPJ, para comparar o emitente do XML com o cadastro. */ | `src/pages/documentos/conciliacaoFiscal.ts` |
 | do solicitante, nao preco negociado, e servia apenas de fallback. | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Calculos financeiros — frete e desconto vem da cotacao vencedora; o `\|\| 12` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |

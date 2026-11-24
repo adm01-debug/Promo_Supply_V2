@@ -2645,6 +2645,7 @@
    ],
    "tabelas": [
     "fiscal_documents",
+    "fornecedores",
     "pedidos"
    ],
    "rpcs": [],
@@ -2655,7 +2656,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 13
+   "arquivos_puxados": 14
   },
   {
    "protegida": true,
