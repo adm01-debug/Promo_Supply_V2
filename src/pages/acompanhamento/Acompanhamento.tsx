@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
@@ -281,12 +281,20 @@ const Acompanhamento = () => {
               { label: 'ATENÇÃO', count: emAtencao.length, color: 'text-amber-600', bg: 'bg-amber-500/10', key: 'atencao' },
               { label: 'TRÂNSITO', count: pedidosState.filter(p => ['PAGO', 'EM_TRANSITO'].includes(p.status)).length, color: 'text-purple-600', bg: 'bg-purple-500/10', key: 'transito' },
               { label: 'NO PRAZO', count: noPrazo.length, color: 'text-emerald-600', bg: 'bg-emerald-500/10', key: 'prazo' },
-            ].map((stat) => (
+            ].map((stat) => {
+              const filtravel = stat.key !== 'transito' && stat.key !== 'prazo';
+              const alternarFiltroSLA = () => setFiltroSLA(filtroSLA === stat.key ? 'todos' : stat.key as 'atrasados' | 'criticos' | 'atencao');
+              return (
               <motion.div
                 key={stat.key}
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => stat.key !== 'transito' && stat.key !== 'prazo' && setFiltroSLA(filtroSLA === stat.key ? 'todos' : stat.key as 'atrasados' | 'criticos' | 'atencao')}
+                role={filtravel ? 'button' : undefined}
+                tabIndex={filtravel ? 0 : undefined}
+                aria-pressed={filtravel ? filtroSLA === stat.key : undefined}
+                aria-label={filtravel ? `Filtrar SLA por ${stat.label}` : undefined}
+                onClick={() => filtravel && alternarFiltroSLA()}
+                onKeyDown={(e) => { if (!filtravel) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternarFiltroSLA(); } }}
                 className={cn(
                   "p-5 rounded-[2rem] border border-border/40 backdrop-blur-xl cursor-pointer transition-all shadow-lg shadow-black/5",
                   filtroSLA === stat.key ? "bg-background border-primary shadow-primary/10" : "bg-card/40 hover:bg-card/60"
@@ -302,7 +310,8 @@ const Acompanhamento = () => {
                 <p className="text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground">{stat.label}</p>
                 <p className={cn("text-2xl font-black mt-1", stat.color)}>{stat.count}</p>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
 
           <AnimatePresence>
@@ -328,7 +337,11 @@ const Acompanhamento = () => {
                           <div 
                             key={pedido.id} 
                             onClick={() => setPedidoDetalhes(pedido)}
-                            className="flex items-center justify-between p-3 rounded-xl bg-background/60 hover:bg-background transition-all cursor-pointer group border border-transparent hover:border-destructive/20"
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Ver detalhes do pedido #${pedido.id}`}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPedidoDetalhes(pedido); } }}
+                            className="flex items-center justify-between p-3 rounded-xl bg-background/60 hover:bg-background transition-all cursor-pointer group border border-transparent hover:border-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40"
                           >
                             <div className="flex items-center gap-3">
                               <Badge className={cn("border-none font-black text-[10px] py-1", pedido.sla.bgColor, pedido.sla.color)}>#{pedido.id}</Badge>
@@ -416,7 +429,7 @@ const Acompanhamento = () => {
                                 </div>
                                 <h3 className="text-lg font-bold text-foreground leading-tight">{pedido.produto}</h3>
                               </div>
-                              <EliteButton variant="ghost" size="icon" onClick={() => setPedidoDetalhes(pedido)} className="h-10 w-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <EliteButton variant="ghost" size="icon" onClick={() => setPedidoDetalhes(pedido)} aria-label={`Ver detalhes do pedido #${pedido.id}`} className="h-10 w-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity">
                                 <Eye className="w-5 h-5" />
                               </EliteButton>
                             </div>
