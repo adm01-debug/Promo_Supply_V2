@@ -3714,10 +3714,14 @@
    "supabase/functions/_shared/idempotency.ts",
    "supabase/functions/_shared/security.ts"
   ],
+  "supabase/functions/receive-os-sync/create-solicitacao.ts": [
+   "supabase/functions/receive-os-sync/mapping.ts"
+  ],
   "supabase/functions/receive-os-sync/index.ts": [
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/idempotency.ts",
    "supabase/functions/_shared/security.ts",
+   "supabase/functions/receive-os-sync/create-solicitacao.ts",
    "supabase/functions/receive-os-sync/mapping.ts"
   ],
   "supabase/functions/run-audit/index.ts": [

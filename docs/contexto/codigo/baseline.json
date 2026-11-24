@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fa27d6fb9d4f5348b4e6115de7ce4bf0cee7834d",
+  "commit": "0165b4121f53ed3199215fa17824bfb561817329",
   "branch": "main",
-  "data_commit": "2026-11-24T11:26:17-03:00",
+  "data_commit": "2026-11-24T11:30:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0165b41",
+    "data": "2026-11-24",
+    "assunto": "test: prova o retry quando o numero da solicitacao colide (#427)"
+   },
    {
     "sha": "fa27d6f",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "eeaf28f",
     "data": "2026-11-24",
     "assunto": "fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)"
-   },
-   {
-    "sha": "67eee5c",
-    "data": "2026-11-24",
-    "assunto": "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)"
    }
   ],
-  "arquivos_mudados_7d": 458,
+  "arquivos_mudados_7d": 460,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 190
+    "mudancas": 189
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
@@ -214,10 +214,6 @@
     "mudancas": 12
    },
    {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "mudancas": 9
-   },
-   {
     "arquivo": "bun.lock",
     "mudancas": 8
    },
@@ -231,6 +227,10 @@
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 8
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1411,
-  "arquivos_codigo": 906,
-  "linhas_codigo": 182987,
+  "arquivos_total": 1413,
+  "arquivos_codigo": 908,
+  "linhas_codigo": 183123,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 270,
+  "testes": 271,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -487,8 +487,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 116,
-   "linhas": 19238
+   "arquivos": 118,
+   "linhas": 19374
   },
   "tailwind.config.ts": {
    "arquivos": 1,

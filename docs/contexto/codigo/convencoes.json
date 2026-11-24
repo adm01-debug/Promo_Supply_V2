@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (176)",
    "outro (43)",
-   "co-localizado (*.test) (41)"
+   "co-localizado (*.test) (42)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "test: prova o retry quando o numero da solicitacao colide (#427)",
    "fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)",
    "fix(mobile): liga a area segura do iOS com viewport-fit=cover (#425)",
    "fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)",
-   "fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)",
-   "fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)"
+   "fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)"
   ]
  },
  "pr_template": null,

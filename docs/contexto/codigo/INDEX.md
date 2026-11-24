@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa27d6fb9d4f5348b4e6115de7ce4bf0cee7834d` (2026-11-24T11:26:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0165b4121f53ed3199215fa17824bfb561817329` (2026-11-24T11:30:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (833), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (835), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1411 |
-| arquivos_codigo | 906 |
-| linhas_codigo | 182987 |
+| arquivos_total | 1413 |
+| arquivos_codigo | 908 |
+| linhas_codigo | 183123 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 270 |
+| testes | 271 |
 | workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (28), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (176), outro (43), co-localizado (*.test) (41)
+- testes: co-localizado (__tests__) (176), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -342,11 +342,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
-- src/pages/acompanhamento/Acompanhamento.tsx (9)
 - bun.lock (8)
 - docs/pendencias/_ordem.md (8)
 - package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
+- src/pages/acompanhamento/Acompanhamento.tsx (8)
 - src/integrations/supabase/types.ts (7)
 - src/pages/pedidos/Pedidos.tsx (7)
 - src/pages/recebimento/RecebimentoOffline.tsx (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `0165b41` test: prova o retry quando o numero da solicitacao colide (#427)
 - 2026-11-24 `fa27d6f` fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)
 - 2026-11-24 `00e99d9` fix(mobile): liga a area segura do iOS com viewport-fit=cover (#425)
 - 2026-11-24 `5c29b8c` fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `1b88913` fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)
 - 2026-11-24 `69fe938` fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)
 - 2026-11-24 `66c9eb7` chore(lint): liga o gate de acessibilidade no eslint (#413)
-- 2026-11-24 `ea97162` fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

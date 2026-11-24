@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fa27d6fb9d4f5348b4e6115de7ce4bf0cee7834d",
+  "sha": "0165b4121f53ed3199215fa17824bfb561817329",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 14:26 UTC",
-  "files_total": 1412,
-  "code_files": 1239,
-  "code_lines": 210171,
+  "generated_at": "2026-11-24 14:30 UTC",
+  "files_total": 1414,
+  "code_files": 1241,
+  "code_lines": 210307,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ac0f98ed49891b35",
+ "facts_hash": "bb2e88dbfa413ad1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 433,
+   ".ts": 435,
    ".tsx": 400,
    ".sql": 331,
    ".mjs": 67,
@@ -32348,11 +32348,7 @@
     "external": [],
     "invokes": [],
     "doc": "",
-    "errors": [
-     "insert solicitacoes: ${error.message}",
-     "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
-     "numero: ${numeroError.message}"
-    ],
+    "errors": [],
     "side_effects": [],
     "webhook_events": [
      "string"
@@ -36133,8 +36129,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 116,
-   "lines": 19238,
+   "files": 118,
+   "lines": 19374,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36224,6 +36220,7 @@
     "extraction.ts: ExtractedInvoice, SYSTEM_PROMPT, normalizeExtraction, faltamCamposObrigatorios, parseGatewayContent, extractionUnavailable",
     "session.ts: getSessionTtlMinutes, isPunchOutSessionExpired",
     "solicitation.ts: CartItem, SolicitacaoInsert, buildCartDescription, buildCartTitle, buildSolicitacaoFromCart",
+    "create-solicitacao.ts: createSolicitacao",
     "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
     "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex",
     "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth",
@@ -37584,7 +37581,7 @@
      "src/tests/integration/supabase-db.test.ts",
      "supabase/functions/check-sla-alerts/index.ts",
      "supabase/functions/escalate-solicitacao/index.ts",
-     "supabase/functions/receive-os-sync/index.ts",
+     "supabase/functions/receive-os-sync/create-solicitacao.ts",
      "supabase/functions/weekly-report/index.ts",
      "supabase/functions/weekly-summary-report/index.ts"
     ],
@@ -37592,7 +37589,7 @@
      "src/components/compras/NovaSolicitacaoModal.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/pages/admin/DeveloperDocs.tsx",
-     "supabase/functions/receive-os-sync/index.ts"
+     "supabase/functions/receive-os-sync/create-solicitacao.ts"
     ],
     "ref": [
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
@@ -39380,7 +39377,7 @@
     "src/lib/supabaseRpc.ts",
     "src/pages/recebimento/pedidoComplementar.ts",
     "supabase/functions/punchout-receive/index.ts",
-    "supabase/functions/receive-os-sync/index.ts"
+    "supabase/functions/receive-os-sync/create-solicitacao.ts"
    ],
    "get_compras_dashboard_metrics": [
     "src/hooks/useDashboardKPIs.ts",
@@ -42421,15 +42418,15 @@
     "msg": "PunchOut cart has no items"
    },
    {
-    "file": "supabase/functions/receive-os-sync/index.ts",
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
     "msg": "insert solicitacoes: ${error.message}"
    },
    {
-    "file": "supabase/functions/receive-os-sync/index.ts",
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
     "msg": "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)"
    },
    {
-    "file": "supabase/functions/receive-os-sync/index.ts",
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
     "msg": "numero: ${numeroError.message}"
    },
    {
@@ -51015,14 +51012,14 @@
     "value": "2000"
    },
    {
-    "file": "supabase/functions/receive-os-sync/index.ts",
-    "name": "SOURCE",
-    "value": "\"receive-os-sync\""
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    "name": "MAX_TENTATIVAS_NUMERO",
+    "value": "5"
    },
    {
     "file": "supabase/functions/receive-os-sync/index.ts",
-    "name": "MAX_TENTATIVAS_NUMERO",
-    "value": "5"
+    "name": "SOURCE",
+    "value": "\"receive-os-sync\""
    },
    {
     "file": "supabase/functions/spot-api/index.ts",
@@ -71210,6 +71207,22 @@
    {
     "file": "supabase/functions/punchout-setup/seguranca.test.ts",
     "name": "punchout-setup escopa a chave de idempotencia por usuario"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "numero em colisao e regerado: a entrega nao morre em 500"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "reenvio idempotente devolve a solicitacao existente sem regerar numero"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "erro que nao e colisao sobe na primeira tentativa"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "colisao que nao cede desiste depois de 5 tentativas"
    },
    {
     "file": "supabase/functions/receive-os-sync/mapping.test.ts",
@@ -117344,9 +117357,64 @@
     "punchout-setup escopa a chave de idempotencia por usuario"
    ]
   },
+  "supabase/functions/receive-os-sync/create-solicitacao.test.ts": {
+   "path": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+   "lines": 132,
+   "is_test": true,
+   "params": [
+    {
+     "name": "TENANT",
+     "value": "\"11111111-1111-4111-8111-111111111111\""
+    }
+   ],
+   "tests": [
+    "numero em colisao e regerado: a entrega nao morre em 500",
+    "reenvio idempotente devolve a solicitacao existente sem regerar numero",
+    "erro que nao e colisao sobe na primeira tentativa",
+    "colisao que nao cede desiste depois de 5 tentativas"
+   ]
+  },
+  "supabase/functions/receive-os-sync/create-solicitacao.ts": {
+   "path": "supabase/functions/receive-os-sync/create-solicitacao.ts",
+   "lines": 63,
+   "exports": [
+    "function createSolicitacao"
+   ],
+   "tables": [
+    {
+     "table": "solicitacoes",
+     "op": "insert,select"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "solicitacoes": [
+     "external_ref",
+     "id",
+     "numero"
+    ]
+   },
+   "rpc": [
+    "generate_sequential_number"
+   ],
+   "errors": [
+    "insert solicitacoes: ${error.message}",
+    "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
+    "numero: ${numeroError.message}"
+   ],
+   "params": [
+    {
+     "name": "MAX_TENTATIVAS_NUMERO",
+     "value": "5"
+    }
+   ]
+  },
   "supabase/functions/receive-os-sync/index.ts": {
    "path": "supabase/functions/receive-os-sync/index.ts",
-   "lines": 266,
+   "lines": 207,
    "tables": [
     {
      "table": "profiles",
@@ -117358,14 +117426,6 @@
     },
     {
      "table": "tenants",
-     "op": "select"
-    },
-    {
-     "table": "solicitacoes",
-     "op": "insert,select"
-    },
-    {
-     "table": "solicitacoes",
      "op": "select"
     }
    ],
@@ -117381,35 +117441,18 @@
     "tenants": [
      "id",
      "status"
-    ],
-    "solicitacoes": [
-     "external_ref",
-     "id",
-     "numero"
     ]
    },
-   "rpc": [
-    "generate_sequential_number"
-   ],
    "env": [
     "PROMO_CHAMPIONS_WEBHOOK_SECRET",
     "PROMO_DESIGN_WEBHOOK_SECRET",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
-   "errors": [
-    "insert solicitacoes: ${error.message}",
-    "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
-    "numero: ${numeroError.message}"
-   ],
    "params": [
     {
      "name": "SOURCE",
      "value": "\"receive-os-sync\""
-    },
-    {
-     "name": "MAX_TENTATIVAS_NUMERO",
-     "value": "5"
     }
    ],
    "status_values": [
@@ -120638,10 +120681,21 @@
   }
  },
  "git": {
-  "sha": "fa27d6fb9d4f5348b4e6115de7ce4bf0cee7834d",
+  "sha": "0165b4121f53ed3199215fa17824bfb561817329",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0165b41",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "test: prova o retry quando o numero da solicitacao colide (#427)",
+    "files": [
+     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+     "supabase/functions/receive-os-sync/create-solicitacao.ts",
+     "supabase/functions/receive-os-sync/index.ts"
+    ]
+   },
    {
     "sha": "fa27d6f",
     "date": "2026-11-24",
@@ -120976,21 +121030,16 @@
      "src/features/pedidos/hooks/usePedidos.ts",
      "src/pages/gerar-ordem/GerarOrdem.tsx"
     ]
-   },
-   {
-    "sha": "4accdce",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    25
+   ],
+   [
+    "supabase/functions/receive-os-sync/index.ts",
+    3
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -120999,10 +121048,6 @@
    [
     "eslint.config.js",
     3
-   ],
-   [
-    "supabase/functions/receive-os-sync/index.ts",
-    2
    ],
    [
     "src/components/compras/EnhancedBulkActionsBar.tsx",
@@ -121037,6 +121082,14 @@
     2
    ],
    [
+    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    1
+   ],
+   [
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     1
    ],
@@ -121058,14 +121111,6 @@
    ],
    [
     "src/components/compras/ComparadorCotacoes.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ContractModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
     1
    ]
   ]

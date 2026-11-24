@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 270,
+ "total": 271,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 252
+  "unit": 253
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 41
+   "arquivos": 42
   },
   {
    "padrao": "tests-e2e/",
@@ -2282,6 +2282,16 @@
    "casos": 2
   },
   {
+   "arquivo": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    "supabase/functions/receive-os-sync/mapping.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "supabase/functions/receive-os-sync/mapping.test.ts",
    "tipo": "unit",
    "linhas": 163,
@@ -2650,7 +2660,8 @@
   "supabase/functions/process-invoice-idp/extraction.ts": 1,
   "supabase/functions/punchout-receive/session.ts": 1,
   "supabase/functions/punchout-receive/solicitation.ts": 1,
-  "supabase/functions/receive-os-sync/mapping.ts": 1,
+  "supabase/functions/receive-os-sync/create-solicitacao.ts": 1,
+  "supabase/functions/receive-os-sync/mapping.ts": 2,
   "supabase/functions/scim-v2/auth.ts": 1,
   "supabase/functions/send-push-notification/webpush.ts": 1,
   "supabase/functions/spot-proxy/sessions.ts": 1

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fa27d6fb9d` · branch `main` · 2026-11-24 14:26 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0165b4121f` · branch `main` · 2026-11-24 14:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1833,8 +1833,8 @@ _nenhum item encontrado_
 | `DEFAULT_TTL_MINUTES` | `1440` | `supabase/functions/punchout-receive/session.ts` |
 | `MAX_TITULO` | `200` | `supabase/functions/punchout-receive/solicitation.ts` |
 | `MAX_DESCRICAO` | `2000` | `supabase/functions/punchout-receive/solicitation.ts` |
+| `MAX_TENTATIVAS_NUMERO` | `5` | `supabase/functions/receive-os-sync/create-solicitacao.ts` |
 | `SOURCE` | `"receive-os-sync"` | `supabase/functions/receive-os-sync/index.ts` |
-| `MAX_TENTATIVAS_NUMERO` | `5` | `supabase/functions/receive-os-sync/index.ts` |
 | `LANG` | `"PT"` | `supabase/functions/spot-api/index.ts` |
 | `REQUEST_TIMEOUT_MS` | `120_000` | `supabase/functions/spot-api/index.ts` |
 | `UPSERT_BATCH` | `500` | `supabase/functions/spot-api/index.ts` |
@@ -2458,7 +2458,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3213 testes em 219 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3217 testes em 220 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2647,6 +2647,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
 | `supabase/functions/_shared/validation.error_response.test.ts` | 4 | errorResponse:  · errorResponse:  · errorResponse: unauthorized e sessao invalida virem 401 · errorResponse: demais categorias seguem iguais |
+| `supabase/functions/receive-os-sync/create-solicitacao.test.ts` | 4 | numero em colisao e regerado: a entrega nao morre em 500 · reenvio idempotente devolve a solicitacao existente sem regerar numero · erro que nao e colisao sobe na primeira tentativa · colisao que nao cede desiste depois de 5 tentativas |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
