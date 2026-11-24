@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d6a5f1880fd175a79e12852634b1d1ade5d29e1c",
+  "sha": "73a583d662180ae6f5647ba37d4f5650943a5224",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:17 UTC",
-  "files_total": 1347,
-  "code_files": 1176,
-  "code_lines": 201548,
+  "generated_at": "2026-11-24 02:27 UTC",
+  "files_total": 1348,
+  "code_files": 1177,
+  "code_lines": 201619,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e23ff33c05be7164",
+ "facts_hash": "58f21175e53f27ad",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 409,
+   ".ts": 410,
    ".tsx": 361,
    ".sql": 331,
    ".mjs": 67,
@@ -36023,8 +36023,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 113,
-   "lines": 18834,
+   "files": 114,
+   "lines": 18905,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36147,6 +36147,7 @@
     "supabase/functions/_shared/integrity_test.ts",
     "supabase/functions/_shared/logLevel.test.ts",
     "supabase/functions/_shared/logLevel.ts",
+    "supabase/functions/_shared/logger-escopo.test.ts",
     "supabase/functions/_shared/logger.fuzz.test.ts",
     "supabase/functions/_shared/logger.ts",
     "supabase/functions/_shared/notifications.test.ts",
@@ -36210,8 +36211,7 @@
     "supabase/functions/process-solicitacao-neural/index.ts",
     "supabase/functions/punchout-encrypt/index.ts",
     "supabase/functions/punchout-receive/index.ts",
-    "supabase/functions/punchout-receive/session.test.ts",
-    "supabase/functions/punchout-receive/session.ts"
+    "supabase/functions/punchout-receive/session.test.ts"
    ]
   },
   {
@@ -43027,6 +43027,10 @@
    {
     "file": "supabase/functions/check-expiry-alerts/contractExpiry_test.ts",
     "text": "Regras do alerta de vencimento de contrato."
+   },
+   {
+    "file": "supabase/functions/check-sla-alerts/index.ts",
+    "text": "minimo usado pelas helpers locais, a mesma convencao de _shared/notifications.ts."
    },
    {
     "file": "supabase/functions/erp-credential-encrypt/index.ts",
@@ -68951,6 +68955,14 @@
    {
     "file": "supabase/functions/_shared/logLevel.test.ts",
     "name": "context circular nao quebra a construcao da linha"
+   },
+   {
+    "file": "supabase/functions/_shared/logger-escopo.test.ts",
+    "name": "QA 069 ${edge} declara o logger antes do try"
+   },
+   {
+    "file": "supabase/functions/_shared/logger-escopo.test.ts",
+    "name": "QA 069 ${edge} nao esconde o logger atras de typeof"
    },
    {
     "file": "supabase/functions/_shared/notifications.test.ts",
@@ -110765,6 +110777,18 @@
    "doc": "Helpers puros e testáveis para normalização de nível de log e construção do payload persistido em `telemetry_logs`. Extraídos de `telemetry/index.ts` para permitir property tests sem levantar o runtime HTTP do Deno.",
    "uses_service_role": true
   },
+  "supabase/functions/_shared/logger-escopo.test.ts": {
+   "path": "supabase/functions/_shared/logger-escopo.test.ts",
+   "lines": 43,
+   "is_test": true,
+   "rule_comments": [
+    "* O teste le o `index.ts` (o modulo chama `Deno.serve` na carga, entao nao pode"
+   ],
+   "tests": [
+    "QA 069 ${edge} declara o logger antes do try",
+    "QA 069 ${edge} nao esconde o logger atras de typeof"
+   ]
+  },
   "supabase/functions/_shared/logger.fuzz.test.ts": {
    "path": "supabase/functions/_shared/logger.fuzz.test.ts",
    "lines": 328,
@@ -111871,7 +111895,7 @@
   },
   "supabase/functions/check-approval-escalations/index.ts": {
    "path": "supabase/functions/check-approval-escalations/index.ts",
-   "lines": 250,
+   "lines": 249,
    "tables": [
     {
      "table": "approval_steps",
@@ -112444,7 +112468,7 @@
   },
   "supabase/functions/check-sla-alerts/index.ts": {
    "path": "supabase/functions/check-sla-alerts/index.ts",
-   "lines": 320,
+   "lines": 332,
    "tables": [
     {
      "table": "pedidos",
@@ -112578,6 +112602,9 @@
      "value": "admin",
      "kind": "filtra"
     }
+   ],
+   "rule_comments": [
+    "minimo usado pelas helpers locais, a mesma convencao de _shared/notifications.ts."
    ],
    "temporal": [
     "const INTEGRATION_LOOKBACK_MS = 6 * 60 * 60 * 1000; // 6h: só alerta falhas numa janela recente",
@@ -112945,7 +112972,7 @@
   },
   "supabase/functions/external-db-bridge/index.ts": {
    "path": "supabase/functions/external-db-bridge/index.ts",
-   "lines": 312,
+   "lines": 313,
    "tables": [
     {
      "table": "query_telemetry",
@@ -113010,7 +113037,7 @@
   },
   "supabase/functions/fiscal-orchestrator/index.ts": {
    "path": "supabase/functions/fiscal-orchestrator/index.ts",
-   "lines": 175,
+   "lines": 177,
    "tables": [
     {
      "table": "fiscal_events",
@@ -113122,7 +113149,7 @@
   },
   "supabase/functions/guided-buying-ai/index.ts": {
    "path": "supabase/functions/guided-buying-ai/index.ts",
-   "lines": 162,
+   "lines": 164,
    "tables": [
     {
      "table": "produtos",
@@ -113420,7 +113447,7 @@
   },
   "supabase/functions/process-outbox/index.ts": {
    "path": "supabase/functions/process-outbox/index.ts",
-   "lines": 135,
+   "lines": 137,
    "tables": [
     {
      "table": "integration_outbox",
@@ -114593,7 +114620,7 @@
   },
   "supabase/functions/webauthn-authenticate/index.ts": {
    "path": "supabase/functions/webauthn-authenticate/index.ts",
-   "lines": 255,
+   "lines": 256,
    "tables": [
     {
      "table": "webauthn_credentials",
@@ -114890,7 +114917,7 @@
   },
   "supabase/functions/weekly-summary-report/index.ts": {
    "path": "supabase/functions/weekly-summary-report/index.ts",
-   "lines": 118,
+   "lines": 119,
    "tables": [
     {
      "table": "solicitacoes",
@@ -114987,7 +115014,7 @@
   },
   "supabase/functions/workflow-engine/index.ts": {
    "path": "supabase/functions/workflow-engine/index.ts",
-   "lines": 174,
+   "lines": 182,
    "tables": [
     {
      "table": "workflow_instances",
@@ -117133,10 +117160,34 @@
   }
  },
  "git": {
-  "sha": "d6a5f1880fd175a79e12852634b1d1ade5d29e1c",
+  "sha": "73a583d662180ae6f5647ba37d4f5650943a5224",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "73a583d",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/cronHealth.ts",
+     "supabase/functions/_shared/logger-escopo.test.ts",
+     "supabase/functions/_shared/simulation-engine.ts",
+     "supabase/functions/check-approval-escalations/index.ts",
+     "supabase/functions/check-sla-alerts/index.ts",
+     "supabase/functions/external-db-bridge/index.ts",
+     "supabase/functions/fiscal-orchestrator/index.ts",
+     "supabase/functions/guided-buying-ai/index.ts",
+     "supabase/functions/migrate-storage-paths/index.ts",
+     "supabase/functions/process-outbox/index.ts",
+     "supabase/functions/run-audit/index.ts",
+     "supabase/functions/system-simulation/index.ts",
+     "supabase/functions/webauthn-authenticate/index.ts",
+     "supabase/functions/weekly-summary-report/index.ts",
+     "supabase/functions/workflow-engine/index.ts"
+    ]
+   },
    {
     "sha": "d6a5f18",
     "date": "2026-11-23",
@@ -117494,21 +117545,60 @@
     "files": [
      "supabase/functions/health-dashboard/index.ts"
     ]
-   },
-   {
-    "sha": "718302a",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(palette): atalhos e badges do Command Palette passam a ser reais (#330)",
-    "files": [
-     "src/features/layout/components/CommandPalette.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    16
+    17
+   ],
+   [
+    "supabase/functions/fiscal-orchestrator/index.ts",
+    3
+   ],
+   [
+    "supabase/functions/guided-buying-ai/index.ts",
+    3
+   ],
+   [
+    "supabase/functions/workflow-engine/index.ts",
+    3
+   ],
+   [
+    "supabase/functions/check-approval-escalations/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/check-sla-alerts/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/external-db-bridge/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/migrate-storage-paths/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/process-outbox/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/run-audit/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/system-simulation/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/webauthn-authenticate/index.ts",
+    2
+   ],
+   [
+    "supabase/functions/weekly-summary-report/index.ts",
+    2
    ],
    [
     "supabase/functions/punchout-setup/index.ts",
@@ -117537,54 +117627,6 @@
    [
     "supabase/functions/ai-supplier-suggestion/index.ts",
     2
-   ],
-   [
-    "supabase/functions/erp-sync/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/fiscal-orchestrator/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/guided-buying-ai/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/process-solicitacao-neural/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/telemetry/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/scim-v2/index.ts",
-    2
-   ],
-   [
-    "src/features/auth/components/ProtectedRoute.tsx",
-    2
-   ],
-   [
-    "supabase/functions/_shared/logger.fuzz.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/logger.ts",
-    1
-   ],
-   [
-    "supabase/functions/punchout-setup/seguranca.test.ts",
-    1
-   ],
-   [
-    "src/features/auth/__tests__/useAuth.test.tsx",
-    1
    ]
   ]
  }

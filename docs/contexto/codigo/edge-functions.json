@@ -26,6 +26,7 @@
   "supabase/functions/_shared/integrity_test.ts",
   "supabase/functions/_shared/logLevel.test.ts",
   "supabase/functions/_shared/logLevel.ts",
+  "supabase/functions/_shared/logger-escopo.test.ts",
   "supabase/functions/_shared/logger.fuzz.test.ts",
   "supabase/functions/_shared/logger.ts",
   "supabase/functions/_shared/notifications.test.ts",
@@ -243,7 +244,7 @@
    "nome": "check-approval-escalations",
    "entrada": "supabase/functions/check-approval-escalations/index.ts",
    "arquivos": 1,
-   "linhas": 250,
+   "linhas": 249,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -350,7 +351,7 @@
    "nome": "check-sla-alerts",
    "entrada": "supabase/functions/check-sla-alerts/index.ts",
    "arquivos": 2,
-   "linhas": 378,
+   "linhas": 390,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -542,7 +543,7 @@
    "nome": "external-db-bridge",
    "entrada": "supabase/functions/external-db-bridge/index.ts",
    "arquivos": 1,
-   "linhas": 312,
+   "linhas": 313,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -582,7 +583,7 @@
    "nome": "fiscal-orchestrator",
    "entrada": "supabase/functions/fiscal-orchestrator/index.ts",
    "arquivos": 1,
-   "linhas": 175,
+   "linhas": 177,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -659,7 +660,7 @@
    "nome": "guided-buying-ai",
    "entrada": "supabase/functions/guided-buying-ai/index.ts",
    "arquivos": 1,
-   "linhas": 162,
+   "linhas": 164,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -841,7 +842,7 @@
    "nome": "process-outbox",
    "entrada": "supabase/functions/process-outbox/index.ts",
    "arquivos": 1,
-   "linhas": 135,
+   "linhas": 137,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1333,7 +1334,7 @@
    "nome": "webauthn-authenticate",
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
-   "linhas": 255,
+   "linhas": 256,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -1442,7 +1443,7 @@
    "nome": "weekly-summary-report",
    "entrada": "supabase/functions/weekly-summary-report/index.ts",
    "arquivos": 1,
-   "linhas": 118,
+   "linhas": 119,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1477,7 +1478,7 @@
    "nome": "workflow-engine",
    "entrada": "supabase/functions/workflow-engine/index.ts",
    "arquivos": 1,
-   "linhas": 174,
+   "linhas": 182,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

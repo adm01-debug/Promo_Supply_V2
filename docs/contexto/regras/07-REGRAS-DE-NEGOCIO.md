@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d6a5f1880f` · branch `main` · 2026-11-24 02:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `73a583d662` · branch `main` · 2026-11-24 02:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2416,7 +2416,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2844 testes em 165 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2846 testes em 166 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2582,6 +2582,7 @@ _nenhum item encontrado_
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
+| `supabase/functions/_shared/logger-escopo.test.ts` | 2 | QA 069 ${edge} declara o logger antes do try · QA 069 ${edge} nao esconde o logger atras de typeof |
 | `supabase/functions/_shared/validation.log_body.test.ts` | 2 | validateBody: corpo invalido nao vaza os valores para o log · validateBody: JSON malformado loga a causa e mantem a mensagem |
 | `supabase/functions/punchout-setup/seguranca.test.ts` | 2 | punchout-setup autentica antes de consultar o cache de idempotencia · punchout-setup escopa a chave de idempotencia por usuario |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |
@@ -2763,6 +2764,7 @@ _nenhum item encontrado_
 | Dias inteiros entre hoje e o vencimento. Negativo = ja venceu. */ | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | - `pending_approval` nao alerta: ainda nao vale nada para o negocio | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | Regras do alerta de vencimento de contrato. | `supabase/functions/check-expiry-alerts/contractExpiry_test.ts` |
+| minimo usado pelas helpers locais, a mesma convencao de _shared/notifications.ts. | `supabase/functions/check-sla-alerts/index.ts` |
 | com segredos PunchOut ou XBZ. O front envia o plaintext (HTTPS) apenas no | `supabase/functions/erp-credential-encrypt/index.ts` |
 | M-05: rate-limit 30 req/min por usuário (sync é operação pesada). | `supabase/functions/erp-sync/index.ts` |
 | integration is a stub and must be implemented per connection.type. | `supabase/functions/erp-sync/index.ts` |
