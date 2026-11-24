@@ -103,3 +103,69 @@ Deno.test("assertBridgeRequest: múltiplos filtros, um inválido entre válidos,
   assertEquals(r.ok, false);
   if (!r.ok) assertEquals(r.status, 400);
 });
+
+Deno.test("assertBridgeRequest: selectColumns \"*\" e permitido", () => {
+  const r = assertBridgeRequest({ operation: "select", table: "v_compras_catalogo", selectColumns: "*" });
+  assertEquals(r.ok, true);
+});
+
+Deno.test("assertBridgeRequest: selectColumns com lista de colunas simples e permitido", () => {
+  const r = assertBridgeRequest({
+    operation: "select",
+    table: "v_compras_catalogo",
+    selectColumns: "sku, nome,preco_faixa",
+  });
+  assertEquals(r.ok, true);
+});
+
+Deno.test("assertBridgeRequest: selectColumns com recurso embutido retorna 400", () => {
+  const r = assertBridgeRequest({
+    operation: "select",
+    table: "v_compras_catalogo",
+    selectColumns: "*,tenants(*)",
+  });
+  assertEquals(r.ok, false);
+  if (!r.ok) assertEquals(r.status, 400);
+});
+
+Deno.test("assertBridgeRequest: selectColumns com alias de recurso embutido retorna 400", () => {
+  const r = assertBridgeRequest({
+    operation: "select",
+    table: "v_compras_catalogo",
+    selectColumns: "nome:tabela(*)",
+  });
+  assertEquals(r.ok, false);
+  if (!r.ok) assertEquals(r.status, 400);
+});
+
+Deno.test("assertBridgeRequest: selectColumns vazio retorna 400", () => {
+  const r = assertBridgeRequest({ operation: "select", table: "v_compras_catalogo", selectColumns: "" });
+  assertEquals(r.ok, false);
+  if (!r.ok) assertEquals(r.status, 400);
+});
+
+Deno.test("assertBridgeRequest: chave de filtro com separador de query retorna 400", () => {
+  const r = assertBridgeRequest({
+    operation: "select",
+    table: "v_compras_catalogo",
+    filters: { "nome&limit": "x" },
+  });
+  assertEquals(r.ok, false);
+  if (!r.ok) assertEquals(r.status, 400);
+});
+
+Deno.test("assertBridgeRequest: chave de filtro snake_case e permitida", () => {
+  const r = assertBridgeRequest({
+    operation: "select",
+    table: "v_compras_catalogo",
+    filters: { preco_faixa_min: { operator: "gte", value: 10 } },
+  });
+  assertEquals(r.ok, true);
+});
+
+Deno.test("index do bridge envia selectColumns para a allowlist", async () => {
+  const src = await Deno.readTextFile(new URL("../external-db-bridge/index.ts", import.meta.url));
+  const chamada = src.match(/assertBridgeRequest\(\{[^}]*\}\)/);
+  assertEquals(chamada !== null, true);
+  assertEquals(chamada ? chamada[0].includes("selectColumns") : false, true);
+});

@@ -46,6 +46,19 @@ export const ALLOWED_COUNT_MODES = new Set<string>(["none", "exact", "planned"])
 
 /** Limite máximo por chamada — evita dump silencioso. */
 export const MAX_SELECT_LIMIT = 500;
+/** Identificador simples aceito em coluna e chave de filtro - sem `(`, `)`, `:`, `.` nem espaco. */
+const SAFE_IDENTIFIER = /^[a-z0-9_]+$/;
+
+/**
+ * `*` ou lista de colunas separadas por virgula. Recursos embutidos do PostgREST
+ * (`nome:tabela(*)`, `tabela(coluna)`) sao recusados: eles leem tabela fora da allowlist.
+ */
+function isSafeSelectList(raw: string): boolean {
+  const value = raw.trim();
+  if (value === "*") return true;
+  if (!value) return false;
+  return value.split(",").every((part) => SAFE_IDENTIFIER.test(part.trim()));
+}
 
 /** Resultado da validação; se `ok=false`, `reason` explica o motivo. */
 export type BridgeAuthzResult =
@@ -57,6 +70,7 @@ export function assertBridgeRequest(input: {
   table?: string;
   rpcName?: string;
   countMode?: string;
+  selectColumns?: string;
   filters?: Record<string, unknown>;
   limit?: number;
 }): BridgeAuthzResult {
@@ -84,8 +98,22 @@ export function assertBridgeRequest(input: {
     return { ok: false, status: 400, reason: `limit exceeds ${MAX_SELECT_LIMIT}` };
   }
 
+  if (
+    input.selectColumns !== undefined &&
+    (typeof input.selectColumns !== "string" || !isSafeSelectList(input.selectColumns))
+  ) {
+    return {
+      ok: false,
+      status: 400,
+      reason: `selectColumns "${String(input.selectColumns)}" not allowed`,
+    };
+  }
+
   if (input.filters) {
     for (const [key, raw] of Object.entries(input.filters)) {
+      if (!SAFE_IDENTIFIER.test(key)) {
+        return { ok: false, status: 400, reason: `filter key "${key}" not allowed` };
+      }
       if (raw && typeof raw === "object") {
         const op = (raw as { operator?: string }).operator;
         if (op && !ALLOWED_FILTER_OPERATORS.has(op)) {
