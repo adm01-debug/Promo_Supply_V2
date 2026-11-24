@@ -10,21 +10,19 @@ export async function createSolicitacao(
   payload: OsPayload,
   tenantId: string,
 ): Promise<{ id: string; numero: string }> {
-  // generate_sequential_number trava o advisory lock na propria transacao do
-  // RPC, que termina antes do INSERT daqui. Duas chamadas simultaneas recebem o
-  // mesmo numero e a segunda quebra em solicitacoes_numero_key. Regerar e
-  // tentar de novo resolve: a tentativa seguinte ja enxerga a linha comitada.
+  // O numero NAO e' gerado aqui: quem preenche e' o trigger BEFORE INSERT
+  // trg_assign_numero_solicitacao, dentro da transacao do INSERT. Antes, o
+  // generate_sequential_number por RPC soltava o advisory lock no fim da
+  // transacao do RPC e duas entregas simultaneas pegavam o mesmo numero.
+  // O retry abaixo e' rede de seguranca para colisao residual (tela gravando
+  // numero por fora enquanto a entrega acontece).
   const MAX_TENTATIVAS_NUMERO = 5;
+  // Preenchido so quando o banco ainda nao tem o trigger (migration pendente).
+  let numeroDeReserva: string | null = null;
 
   for (let tentativa = 1; ; tentativa += 1) {
-    const { data: numeroData, error: numeroError } = await admin.rpc(
-      "generate_sequential_number",
-      { prefix: "SOL", table_name: "solicitacoes" },
-    );
-    if (numeroError) throw new Error(`numero: ${numeroError.message}`);
-
     const draft = buildSolicitacaoDraft(payload, {
-      numero: String(numeroData),
+      numero: numeroDeReserva,
       tenantId,
     });
 
@@ -36,6 +34,22 @@ export async function createSolicitacao(
 
     if (!error) {
       return { id: data.id as string, numero: data.numero as string };
+    }
+
+    // 23502 = numero NOT NULL violado -> o trigger do banco nao existe ainda.
+    // Gera pelo RPC e tenta de novo, para a entrega funcionar com ou sem a
+    // migration aplicada.
+    if (
+      error.code === "23502" && /numero/.test(error.message) &&
+      numeroDeReserva === null
+    ) {
+      const { data: gerado, error: erroNumero } = await admin.rpc(
+        "generate_sequential_number",
+        { prefix: "SOL", table_name: "solicitacoes" },
+      );
+      if (erroNumero) throw new Error(`numero: ${erroNumero.message}`);
+      numeroDeReserva = String(gerado);
+      continue;
     }
 
     if (error.code === "23505") {
@@ -54,7 +68,7 @@ export async function createSolicitacao(
         continue;
       }
       throw new Error(
-        `insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)`,
+        `insert solicitacoes: ${error.message} (apos ${tentativa} tentativas)`,
       );
     }
 
