@@ -29,6 +29,15 @@ export default tseslint.config(
         "warn",
         { controlComponents: ["Button"] },
       ],
+            "jsx-a11y/label-has-associated-control": [
+              "warn",
+              {
+                labelComponents: ["Label"],
+                controlComponents: ["Input", "Textarea", "Button", "SelectTrigger"],
+                assert: "either",
+                depth: 3,
+              },
+            ],
       "react-refresh/only-export-components": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "warn",
