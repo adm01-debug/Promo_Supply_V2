@@ -117,27 +117,37 @@ async function createSolicitacao(
   payload: OsPayload,
   tenantId: string,
 ): Promise<{ id: string; numero: string }> {
-  const { data: numeroData, error: numeroError } = await admin.rpc(
-    "generate_sequential_number",
-    { prefix: "SOL", table_name: "solicitacoes" },
-  );
-  if (numeroError) throw new Error(`numero: ${numeroError.message}`);
+  // generate_sequential_number toma o advisory lock na propria transacao do RPC,
+  // que termina antes do INSERT. Duas chamadas simultaneas recebem o mesmo
+  // numero e a segunda quebra em solicitacoes_numero_key. Regerar e tentar de
+  // novo resolve, porque a tentativa seguinte ja enxerga a linha comitada.
+  const MAX_TENTATIVAS_NUMERO = 5;
 
-  const draft = buildSolicitacaoDraft(payload, {
-    numero: String(numeroData),
-    tenantId,
-  });
+  for (let tentativa = 1; ; tentativa += 1) {
+    const { data: numeroData, error: numeroError } = await admin.rpc(
+      "generate_sequential_number",
+      { prefix: "SOL", table_name: "solicitacoes" },
+    );
+    if (numeroError) throw new Error(`numero: ${numeroError.message}`);
 
-  const { data, error } = await admin
-    .from("solicitacoes")
-    .insert(toInsertRow(draft))
-    .select("id, numero")
-    .single();
+    const draft = buildSolicitacaoDraft(payload, {
+      numero: String(numeroData),
+      tenantId,
+    });
 
-  if (error) {
-    // 23505 = reenvio concorrente ja inseriu com o mesmo external_ref.
-    // Nao e falha: devolvemos a linha existente para a resposta ser idempotente.
+    const { data, error } = await admin
+      .from("solicitacoes")
+      .insert(toInsertRow(draft))
+      .select("id, numero")
+      .single();
+
+    if (!error) {
+      return { id: data.id as string, numero: data.numero as string };
+    }
+
     if (error.code === "23505") {
+      // 23505 = reenvio concorrente ja inseriu com o mesmo external_ref.
+      // Nao e falha: devolvemos a linha existente para a resposta ser idempotente.
       const { data: existing } = await admin
         .from("solicitacoes")
         .select("id, numero")
@@ -146,11 +156,17 @@ async function createSolicitacao(
       if (existing) {
         return { id: existing.id as string, numero: existing.numero as string };
       }
+      if (tentativa < MAX_TENTATIVAS_NUMERO) {
+        await new Promise((resolve) => setTimeout(resolve, 25 * tentativa));
+        continue;
+      }
+      throw new Error(
+        `insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)`,
+      );
     }
+
     throw new Error(`insert solicitacoes: ${error.message}`);
   }
-
-  return { id: data.id as string, numero: data.numero as string };
 }
 
 serve(async (req) => {
