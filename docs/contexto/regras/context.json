@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "72256cb95dafa7282abbdbba507c06da2df4c8c2",
+  "sha": "4e72f55167d33767d5e4592a8b1e1cc5b7d9cc8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 07:33 UTC",
-  "files_total": 1381,
-  "code_files": 1210,
-  "code_lines": 206188,
+  "generated_at": "2026-11-24 07:43 UTC",
+  "files_total": 1382,
+  "code_files": 1211,
+  "code_lines": 206345,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "34dc4e59fd7baac8",
+ "facts_hash": "9a49f8def33f7cf4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 428,
-   ".tsx": 376,
+   ".tsx": 377,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35308,8 +35308,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 83,
-   "lines": 14187,
+   "files": 84,
+   "lines": 14344,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35509,6 +35509,7 @@
     "src/hooks/__tests__/keyboardShortcutsData.test.ts",
     "src/hooks/__tests__/permissionsConstants.test.ts",
     "src/hooks/__tests__/useApprovalHistory.test.ts",
+    "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
@@ -35521,8 +35522,7 @@
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
     "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
-    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
-    "src/hooks/__tests__/useToastReducer.test.ts"
+    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx"
    ]
   },
   {
@@ -62742,6 +62742,22 @@
    {
     "file": "src/hooks/__tests__/useApprovalHistory.test.ts",
     "name": "fetchAllHistory keeps allHistory empty on error"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+    "name": "useApprovalWorkflow · escolha de alcada (NEG-15)"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+    "name": "usa a regra devolvida pela RPC quando ela e da empresa do usuario"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+    "name": "ignora id devolvido pela RPC que nao esta na lista da empresa do usuario"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+    "name": "nao escolhe regra por conta propria quando a RPC nao devolve nada"
    },
    {
     "file": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
@@ -100991,7 +101007,7 @@
   },
   "src/hooks/useApprovalRules.ts": {
    "path": "src/hooks/useApprovalRules.ts",
-   "lines": 171,
+   "lines": 165,
    "exports": [
     "const useApprovalRules"
    ],
@@ -101055,7 +101071,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 461,
+   "lines": 460,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -103967,6 +103983,31 @@
     "fetchHistory returns [] on error",
     "fetchAllHistory populates allHistory state",
     "fetchAllHistory keeps allHistory empty on error"
+   ]
+  },
+  "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx": {
+   "path": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+   "lines": 164,
+   "is_test": true,
+   "params": [
+    {
+     "name": "ORG",
+     "value": "'df60b900-ede4-45db-8573-da40d13bf767'"
+    },
+    {
+     "name": "GESTOR_CC",
+     "value": "'u-gestor-cc'"
+    },
+    {
+     "name": "APROVADOR",
+     "value": "'u-aprovador'"
+    }
+   ],
+   "tests": [
+    "useApprovalWorkflow · escolha de alcada (NEG-15)",
+    "usa a regra devolvida pela RPC quando ela e da empresa do usuario",
+    "ignora id devolvido pela RPC que nao esta na lista da empresa do usuario",
+    "nao escolhe regra por conta propria quando a RPC nao devolve nada"
    ]
   },
   "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx": {
@@ -119035,10 +119076,22 @@
   }
  },
  "git": {
-  "sha": "72256cb95dafa7282abbdbba507c06da2df4c8c2",
+  "sha": "4e72f55167d33767d5e4592a8b1e1cc5b7d9cc8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4e72f55",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+     "src/hooks/useApprovalRules.ts",
+     "src/hooks/useApprovalWorkflow.ts"
+    ]
+   },
    {
     "sha": "72256cb",
     "date": "2026-11-24",
@@ -119407,18 +119460,6 @@
      "supabase/functions/punchout-setup/index.ts",
      "supabase/functions/punchout-setup/seguranca.test.ts"
     ]
-   },
-   {
-    "sha": "d32b847",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/auth/__tests__/ProtectedRoute.test.tsx",
-     "src/features/auth/__tests__/useAuth.test.tsx",
-     "src/pages/auth/__tests__/Auth.destino.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -119433,6 +119474,10 @@
    [
     "src/pages/solicitacoes/Solicitacoes.tsx",
     3
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    2
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -119453,6 +119498,14 @@
    [
     "supabase/functions/webauthn-authenticate/index.ts",
     2
+   ],
+   [
+    "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useApprovalRules.ts",
+    1
    ],
    [
     "src/components/compras/KanbanBoard.tsx",
@@ -119488,18 +119541,6 @@
    ],
    [
     "src/components/compras/EnhancedBulkActionsBar.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/exclusaoPedido.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     1
    ]
   ]

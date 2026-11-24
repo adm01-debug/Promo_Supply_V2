@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 243,
+ "total": 244,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 225
+  "unit": 226
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 150
+   "arquivos": 151
   },
   {
    "padrao": "outro",
@@ -857,6 +857,15 @@
     "src/hooks/useApprovalHistory.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
+   "tipo": "unit",
+   "linhas": 164,
+   "testa": [
+    "src/hooks/useApprovalWorkflow.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
@@ -2266,7 +2275,7 @@
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
   "src/hooks/use-toast.ts": 1,
   "src/hooks/useApprovalHistory.ts": 1,
-  "src/hooks/useApprovalWorkflow.ts": 3,
+  "src/hooks/useApprovalWorkflow.ts": 4,
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useFeedback.ts": 1,

@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (150)",
+   "co-localizado (__tests__) (151)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)",
    "fix(pedidos): Kanban so entrega via Recebimento (#383)",
    "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)",
    "﻿fix(pedidos): exclusao de pedido exige status pendente ou cancelado (#384)",
-   "﻿fix(contrato): seletor de fornecedor grava o id do cadastro em supplier_id (#382)",
-   "fix(alcada): matriz usa pessoas reais e recusa aprovador vazio (#381)"
+   "﻿fix(contrato): seletor de fornecedor grava o id do cadastro em supplier_id (#382)"
   ]
  },
  "pr_template": null,

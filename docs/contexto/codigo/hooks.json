@@ -788,7 +788,7 @@
    "hooks_exportados": [
     "useApprovalRules"
    ],
-   "linhas": 171,
+   "linhas": 165,
    "dominio": "hooks",
    "tabelas": [
     "approval_delegations",
@@ -816,7 +816,7 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 461,
+   "linhas": 460,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",
@@ -849,7 +849,7 @@
     "src/pages/aprovacoes/Aprovacoes.tsx",
     "src/pages/aprovacoes/aprovacoesData.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/useBudgetManagement.ts",
