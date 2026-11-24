@@ -83,6 +83,13 @@ vi.mock("@/features/solicitacoes/hooks/useFluxosAprovacao", () => ({
   useFluxosAprovacao: () => ({ fluxos: {}, historicos: {}, loading: false }),
 }));
 
+// A pagina resolve o nome do gestor com useQuery; este teste nao monta
+// QueryClientProvider e nao esta medindo esse dado - o mapa fica vazio.
+const semNomes = new Map<string, string>();
+vi.mock("@/features/solicitacoes/hooks/useNomesDeGestor", () => ({
+  useNomesDeGestor: () => semNomes,
+}));
+
 const renderSolicitacoes = () =>
   render(
     <MemoryRouter>

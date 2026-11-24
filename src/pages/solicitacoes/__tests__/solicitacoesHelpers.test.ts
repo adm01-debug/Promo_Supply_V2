@@ -7,6 +7,9 @@ import {
   adaptToLegacyFormat,
   statusConfig,
   posicoesDaMatriz,
+  nomeDoGestor,
+  SEM_GESTOR,
+  GESTOR_SEM_NOME,
 } from '../solicitacoesHelpers';
 import type { Solicitacao } from '@/features/solicitacoes';
 
@@ -132,14 +135,50 @@ describe('adaptToLegacyFormat', () => {
     expect(result.status).toBe('ENTREGUE');
   });
 
-  it('uses observacoes as vendedor', () => {
-    const result = adaptToLegacyFormat(makeSolicitacao({ observacoes: 'João Silva' }));
+  it('nao le mais observacoes: texto livre nao vira nome de gestor', () => {
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: null, observacoes: 'João Silva' }));
+    expect(result.vendedor).toBe(SEM_GESTOR);
+  });
+
+  it('solicitacao sem aprovador_id (legado) mostra "Sem gestor"', () => {
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: null }));
+    expect(result.vendedor).toBe(SEM_GESTOR);
+  });
+
+  it('vendedor e o nome do gestor gravado em aprovador_id', () => {
+    const nomes = new Map([['user-9', 'João Silva']]);
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: 'user-9' }), nomes);
     expect(result.vendedor).toBe('João Silva');
   });
 
-  it('defaults vendedor to "Vendedor" when observacoes is null', () => {
-    const result = adaptToLegacyFormat(makeSolicitacao({ observacoes: null }));
-    expect(result.vendedor).toBe('Vendedor');
+  it('id gravado com espacos em volta ainda encontra o nome', () => {
+    const nomes = new Map([['user-9', 'João Silva']]);
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: '  user-9  ' }), nomes);
+    expect(result.vendedor).toBe('João Silva');
+  });
+
+  it('id sem nome carregado nao vira "Sem gestor": o gestor existe', () => {
+    const nomes = new Map([['user-9', 'João Silva']]);
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: 'user-fora-do-mapa' }), nomes);
+    expect(result.vendedor).toBe(GESTOR_SEM_NOME);
+    expect(result.vendedor).not.toBe(SEM_GESTOR);
+  });
+
+  it('nome em branco no mapa cai em "Gestor nao identificado"', () => {
+    const nomes = new Map([['user-9', '   ']]);
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: 'user-9' }), nomes);
+    expect(result.vendedor).toBe(GESTOR_SEM_NOME);
+  });
+
+  it('sem o mapa (perfis ainda nao carregados) nao inventa nome', () => {
+    const result = adaptToLegacyFormat(makeSolicitacao({ aprovador_id: 'user-9' }));
+    expect(result.vendedor).toBe(GESTOR_SEM_NOME);
+  });
+
+  it('nomeDoGestor aceita a solicitacao crua do banco', () => {
+    const nomes = new Map([['user-9', 'João Silva']]);
+    expect(nomeDoGestor({ aprovador_id: 'user-9' }, nomes)).toBe('João Silva');
+    expect(nomeDoGestor({ aprovador_id: null }, nomes)).toBe(SEM_GESTOR);
   });
 
   it('uses data_necessidade as prazoEntrega', () => {
@@ -255,5 +294,22 @@ describe('Solicitacoes.tsx nao posiciona os pontos da matriz pelo indice', () =>
     expect(fonte).toContain('ponto.base');
     expect(fonte).not.toContain('i * 7');
     expect(fonte).not.toContain('valorTotal / 10000');
+  });
+});
+
+describe('Solicitacoes.tsx resolve o gestor pelo aprovador_id', () => {
+  const fonte = readFileSync(join(process.cwd(), 'src/pages/solicitacoes/Solicitacoes.tsx'), 'utf-8');
+  const hook = readFileSync(join(process.cwd(), 'src/features/solicitacoes/hooks/useNomesDeGestor.ts'), 'utf-8');
+
+  it('passa o mapa de nomes para o adaptador', () => {
+    expect(fonte).toContain('useNomesDeGestor(solicitacoes.map((s) => s.aprovador_id))');
+    expect(fonte).toContain('adaptToLegacyFormat(s, nomesDeGestor)');
+    expect(fonte).not.toContain('solicitacoes.map(adaptToLegacyFormat)');
+  });
+
+  it('o mapa sai de profiles.user_id', () => {
+    expect(hook).toContain(".from('profiles')");
+    expect(hook).toContain('user_id, full_name, display_name, email');
+    expect(hook).toContain(".in('user_id', ids)");
   });
 });
