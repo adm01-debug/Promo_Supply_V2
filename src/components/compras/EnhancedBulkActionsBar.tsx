@@ -154,6 +154,7 @@ export function EnhancedBulkActionsBar({
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Button
+                aria-label={isExpanded ? "Recolher prévia da seleção" : "Expandir prévia da seleção"}
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -192,6 +193,7 @@ export function EnhancedBulkActionsBar({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
+                    aria-label="Mais ações da seleção"
                     variant="ghost"
                     size="icon"
                     className="h-11 w-11 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 border border-white/10"

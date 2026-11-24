@@ -129,15 +129,15 @@ export function ChatArea({
             <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
             <span className="text-[10px] font-black uppercase tracking-widest text-primary">IA INSIGHT</span>
           </div>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+          <Button aria-label="Ligar para o contato" variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
             <Phone className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+          <Button aria-label="Chamada de vídeo" variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
             <Video className="w-4 h-4" />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl transition-all">
+              <Button aria-label="Mais ações do contato" variant="ghost" size="icon" className="h-9 w-9 rounded-xl transition-all">
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -218,7 +218,7 @@ export function ChatArea({
       <div className="p-5 border-t bg-gradient-to-t from-card to-card/90 backdrop-blur-2xl relative z-20">
         <div className="flex items-center gap-4">
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-full bg-muted/40 hover:bg-primary/10 hover:text-primary transition-all shadow-inner border border-white/5">
+            <Button aria-label="Anexar arquivo" variant="ghost" size="icon" className="h-11 w-11 rounded-full bg-muted/40 hover:bg-primary/10 hover:text-primary transition-all shadow-inner border border-white/5">
               <Paperclip className="w-5 h-5" />
             </Button>
           </motion.div>
@@ -237,7 +237,7 @@ export function ChatArea({
               disabled={sendingMessage}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full opacity-40 hover:opacity-100 hover:bg-primary/10 transition-all">
+              <Button aria-label="Inserir emoji" variant="ghost" size="icon" className="h-9 w-9 rounded-full opacity-40 hover:opacity-100 hover:bg-primary/10 transition-all">
                 <Smile className="w-5 h-5" />
               </Button>
             </div>
@@ -248,6 +248,7 @@ export function ChatArea({
             whileTap={{ scale: 0.92 }}
           >
             <Button
+              aria-label="Enviar mensagem"
               size="icon"
               className={cn(
                 "h-12 w-12 flex-shrink-0 rounded-full shadow-2xl transition-all duration-500",
