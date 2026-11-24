@@ -28,6 +28,7 @@ import { PageHeaderStats } from "@/components/ui/page-header";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
+import { useAuth } from "@/features/auth";
 import { useSolicitacoes } from "@/features/solicitacoes";
 import { useFluxosAprovacao } from "@/features/solicitacoes/hooks/useFluxosAprovacao";
 import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
@@ -60,6 +61,7 @@ import {
 import { BulkPlanningConsole } from "@/components/compras/BulkPlanningConsole";
 
 const Solicitacoes = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todas");
   const [tipoFilter, setTipoFilter] = useState("todos");
@@ -92,11 +94,20 @@ const Solicitacoes = () => {
   }, [searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
   const { empresaIds } = useEmpresaFilter();
+  // "Meus Itens" e um recorte por solicitante, nao um status: mandar 'OWN' em
+  // `status` fazia a consulta virar status=pendente.
+  const apenasMeus = statusFilter === "OWN";
   const { solicitacoes, loading, updateStatus, bulkDelete, bulkUpdateStatus, refetch } = useSolicitacoes({
     search: searchTerm || undefined,
-    status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
+    status: statusFilter !== 'todas' && !apenasMeus ? mapLegacyStatusToDb(statusFilter) : undefined,
+    solicitanteId: apenasMeus ? user?.id : undefined,
     empresaIds,
   });
+
+  const solicitantePorId = useMemo(
+    () => new Map(solicitacoes.map((s) => [s.id, s.solicitante_id])),
+    [solicitacoes],
+  );
 
   useRealtimeSubscription({
     tables: ['solicitacoes'],
@@ -113,7 +124,9 @@ const Solicitacoes = () => {
         s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.produto.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
+      const matchesStatus = apenasMeus
+        ? solicitantePorId.get(s.id) === user?.id
+        : statusFilter === "todas" || s.status === statusFilter;
       const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
 
       const solicitacaoDate = new Date(s.prazoEntrega);
@@ -126,7 +139,7 @@ const Solicitacoes = () => {
 
       return matchesSearch && matchesStatus && matchesTipo && matchesDateFrom && matchesDateTo && matchesValorMin && matchesValorMax;
     });
-  }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
+  }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters, apenasMeus, solicitantePorId, user?.id]);
 
   const pontosMatriz = useMemo(
     () => posicoesDaMatriz(filteredSolicitacoes.slice(0, 15)),

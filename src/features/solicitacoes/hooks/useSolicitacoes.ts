@@ -32,6 +32,12 @@ export interface SolicitacaoFilters {
   status?: string;
   tipo?: string;
   prioridade?: string;
+  /**
+   * Recorte por quem pediu ("Meus Itens"). Antes a tela mandava o valor 'OWN'
+   * em `status`, que o mapLegacyStatusToDb convertia em 'pendente' - ou seja,
+   * o filtro devolvia as solicitacoes pendentes de qualquer pessoa.
+   */
+  solicitanteId?: string;
   dateFrom?: string;
   dateTo?: string;
   valorMin?: number;
@@ -63,7 +69,7 @@ export function solicitacoesQueryKey(
 ) {
   return [
     'solicitacoes', userId, organizationId,
-    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
+    filters?.status, filters?.tipo, filters?.prioridade, filters?.solicitanteId, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
     filters?.empresaIds ?? 'all',
@@ -97,6 +103,7 @@ export async function fetchSolicitacoesData(userId: string | undefined, organiza
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
   if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
   if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
+  if (filters?.solicitanteId) query = query.eq('solicitante_id', filters.solicitanteId);
   if (filters?.search) {
     const s = escapeIlike(filters.search);
     query = query.or(`titulo.ilike.%${s}%,numero.ilike.%${s}%,descricao.ilike.%${s}%`);
