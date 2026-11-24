@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { ACTIVE_SESSION_STORAGE_KEY } from '@/features/auth/hooks/useAuth';
 import { logger } from '@/lib/logger';
 
 export interface SecurityLog {
@@ -241,6 +242,28 @@ export const useSecurityLogs = () => {
     },
   });
 
+  // QA 037: "Encerrar Sessao" so apagava a linha e nao derrubava ninguem. O GoTrue
+  // revoga os refresh tokens das OUTRAS sessoes com scope 'others' (esta continua),
+  // e as linhas correspondentes saem da lista.
+  const terminateOtherSessions = useMutation({
+    mutationFn: async () => {
+      if (!user?.id) throw new Error('Acesso negado');
+
+      const { error: signOutError } = await supabase.auth.signOut({ scope: 'others' });
+      if (signOutError) throw signOutError;
+
+      const currentId = typeof window !== 'undefined'
+        ? window.localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+        : null;
+      const query = supabase.from('active_sessions').delete().eq('user_id', user.id);
+      const { error } = currentId ? await query.neq('id', currentId) : await query;
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['active-sessions'] });
+    },
+  });
+
   // Get stats
   const getStats = () => {
     const now = new Date();
@@ -282,6 +305,7 @@ export const useSecurityLogs = () => {
     addToWhitelist,
     removeFromWhitelist,
     terminateSession,
+    terminateOtherSessions,
     getStats,
   };
 };
