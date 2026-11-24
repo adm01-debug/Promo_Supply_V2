@@ -1,4 +1,5 @@
 import { type Dispatch, type SetStateAction } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,14 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { type ApprovalDelegation } from "@/hooks/useApprovalWorkflow";
-
-const mockUsers = [
-  { id: "user-1", nome: "João Silva", cargo: "Gestor" },
-  { id: "user-2", nome: "Maria Santos", cargo: "Coordenadora" },
-  { id: "user-3", nome: "Carlos Lima", cargo: "Diretor Financeiro" },
-  { id: "user-4", nome: "Ana Oliveira", cargo: "Gerente de Compras" },
-  { id: "user-5", nome: "Roberto Costa", cargo: "CEO" },
-];
+import { montarPessoas } from "@/features/solicitacoes/pessoasDaEmpresa";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -26,7 +21,31 @@ interface Props {
   loading: boolean;
 }
 
-export const ApprovalDelegationModal = ({ open, onOpenChange, editingDelegation, setEditingDelegation, onSave, loading }: Props) => (
+export const ApprovalDelegationModal = ({ open, onOpenChange, editingDelegation, setEditingDelegation, onSave, loading }: Props) => {
+  // `delegante_id`/`delegado_id` sao uuid e a RLS compara `auth.uid()` com eles,
+  // entao a pessoa escolhida tem que ser `profiles.user_id`; sem `user_id` nao
+  // existe delegacao possivel.
+  const { data: pessoas = [] } = useQuery({
+    queryKey: ["aprovadores-disponiveis"],
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, display_name, email")
+        .order("full_name", { ascending: true })
+        .limit(200);
+      if (error) throw error;
+      return montarPessoas(data ?? []);
+    },
+  });
+
+  // A tabela tem CHECK `data_fim > data_inicio`; gravar fora de ordem devolve
+  // erro cru do banco.
+  const dataInicio = typeof editingDelegation?.data_inicio === "string" ? editingDelegation.data_inicio.split("T")[0] : "";
+  const dataFim = typeof editingDelegation?.data_fim === "string" ? editingDelegation.data_fim.split("T")[0] : "";
+  const datasInvalidas = Boolean(dataInicio && dataFim && dataFim <= dataInicio);
+
+  return (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent aria-describedby="dialog-desc" className="sm:max-w-lg">
       <DialogHeader>
@@ -41,32 +60,36 @@ export const ApprovalDelegationModal = ({ open, onOpenChange, editingDelegation,
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>Delegante (Quem delega) *</Label>
-            <Select value={editingDelegation.delegante_id || ''} onValueChange={(v) => setEditingDelegation({ ...editingDelegation, delegante_id: v })}>
+            <Select value={editingDelegation.delegante_id || ''} onValueChange={(v) => setEditingDelegation({ ...editingDelegation, delegante_id: v, delegado_id: editingDelegation.delegado_id === v ? '' : editingDelegation.delegado_id })}>
               <SelectTrigger><SelectValue placeholder="Selecione quem está delegando" /></SelectTrigger>
               <SelectContent>
-                {mockUsers.map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                {pessoas.map(user => <SelectItem key={user.id} value={user.id}>{user.nome}</SelectItem>)}
               </SelectContent>
             </Select>
+            {pessoas.length === 0 && <p className="text-xs text-muted-foreground">Nenhum usuário visível para o seu perfil.</p>}
           </div>
           <div className="space-y-2">
             <Label>Delegado (Quem recebe) *</Label>
             <Select value={editingDelegation.delegado_id || ''} onValueChange={(v) => setEditingDelegation({ ...editingDelegation, delegado_id: v })}>
               <SelectTrigger><SelectValue placeholder="Selecione quem irá aprovar" /></SelectTrigger>
               <SelectContent>
-                {mockUsers.filter(u => u.id !== editingDelegation.delegante_id).map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                {pessoas.filter(u => u.id !== editingDelegation.delegante_id).map(user => <SelectItem key={user.id} value={user.id}>{user.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Data Início *</Label>
-              <Input type="date" value={typeof editingDelegation.data_inicio === 'string' ? editingDelegation.data_inicio.split('T')[0] : ''} onChange={(e) => setEditingDelegation({ ...editingDelegation, data_inicio: e.target.value })} />
+              <Input type="date" value={dataInicio} onChange={(e) => setEditingDelegation({ ...editingDelegation, data_inicio: e.target.value })} />
             </div>
             <div className="space-y-2">
               <Label>Data Fim *</Label>
-              <Input type="date" value={typeof editingDelegation.data_fim === 'string' ? editingDelegation.data_fim.split('T')[0] : ''} onChange={(e) => setEditingDelegation({ ...editingDelegation, data_fim: e.target.value })} />
+              <Input type="date" value={dataFim} onChange={(e) => setEditingDelegation({ ...editingDelegation, data_fim: e.target.value })} />
             </div>
           </div>
+          {datasInvalidas && (
+            <p className="text-xs text-destructive">A data final precisa ser depois da data inicial.</p>
+          )}
           <div className="space-y-2">
             <Label>Valor Máximo (opcional)</Label>
             <Input type="number" value={editingDelegation.valor_maximo || ''} onChange={(e) => setEditingDelegation({ ...editingDelegation, valor_maximo: Number(e.target.value) || undefined })} placeholder="Sem limite" />
@@ -88,8 +111,9 @@ export const ApprovalDelegationModal = ({ open, onOpenChange, editingDelegation,
 
       <DialogFooter>
         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-        <Button onClick={onSave} disabled={loading}>{editingDelegation?.id ? "Salvar Alterações" : "Criar Delegação"}</Button>
+        <Button onClick={onSave} disabled={loading || datasInvalidas}>{editingDelegation?.id ? "Salvar Alterações" : "Criar Delegação"}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
-);
+  );
+};
