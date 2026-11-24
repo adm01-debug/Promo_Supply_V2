@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 226,
+ "total": 227,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 209
+  "unit": 210
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 133
+   "arquivos": 134
   },
   {
    "padrao": "outro",
@@ -1417,6 +1417,15 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+   "tipo": "unit",
+   "linhas": 39,
+   "testa": [
+    "src/lib/exportData.ts"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
    "tipo": "unit",
    "linhas": 126,
@@ -2120,7 +2129,7 @@
   "src/lib/clearFiltersShortcut.ts": 1,
   "src/lib/creditoFornecedor.ts": 1,
   "src/lib/dbMapping.ts": 1,
-  "src/lib/exportData.ts": 2,
+  "src/lib/exportData.ts": 3,
   "src/lib/feedbackToast.ts": 3,
   "src/lib/filterClearReporter.ts": 1,
   "src/lib/haptics.ts": 1,

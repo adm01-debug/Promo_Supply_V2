@@ -5223,7 +5223,7 @@
     "Pedidos"
    ],
    "export_default": "Pedidos",
-   "linhas": 356,
+   "linhas": 363,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "useEmpresaFilter",

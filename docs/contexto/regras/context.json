@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "28478d2aa4d3d16c78c69c08d410be36f7e32e02",
+  "sha": "ae23749eca308f8fb6e4ff1c4e6b27618bd93232",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:26 UTC",
-  "files_total": 1357,
-  "code_files": 1186,
-  "code_lines": 203101,
+  "generated_at": "2026-11-24 04:33 UTC",
+  "files_total": 1358,
+  "code_files": 1187,
+  "code_lines": 203147,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "24b2de84813421c3",
+ "facts_hash": "164165ae9fab24ee",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 413,
+   ".ts": 414,
    ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
@@ -35658,8 +35658,8 @@
   },
   {
    "module": "src/pages",
-   "files": 133,
-   "lines": 31386,
+   "files": 134,
+   "lines": 31432,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -66910,6 +66910,22 @@
    {
     "file": "src/pages/historico/__tests__/historicoHelpers.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+    "name": "exportacao de pedidos"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+    "name": "usa o conjunto canonico de colunas em vez de lista vazia"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+    "name": "o objeto exportado declara todas as chaves de pedidoColumns"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+    "name": "nao anuncia sucesso quando nao ha pedido para exportar"
    },
    {
     "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
@@ -108208,7 +108224,7 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 356,
+   "lines": 363,
    "exports": [
     "default Pedidos"
    ]
@@ -108218,6 +108234,17 @@
    "lines": 52,
    "exports": [
     "const PedidosKPIs"
+   ]
+  },
+  "src/pages/pedidos/__tests__/pedidosExportacao.test.ts": {
+   "path": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+   "lines": 39,
+   "is_test": true,
+   "tests": [
+    "exportacao de pedidos",
+    "usa o conjunto canonico de colunas em vez de lista vazia",
+    "o objeto exportado declara todas as chaves de pedidoColumns",
+    "nao anuncia sucesso quando nao ha pedido para exportar"
    ]
   },
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": {
@@ -117732,10 +117759,21 @@
   }
  },
  "git": {
-  "sha": "28478d2aa4d3d16c78c69c08d410be36f7e32e02",
+  "sha": "ae23749eca308f8fb6e4ff1c4e6b27618bd93232",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ae23749",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(exportacao): CSV de pedidos sai com as colunas reais e toast honesto (QA 104) (#371)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/pedidos/__tests__/pedidosExportacao.test.ts"
+    ]
+   },
    {
     "sha": "28478d2",
     "date": "2026-11-24",
@@ -118079,19 +118117,12 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "50aa142",
-    "date": "2026-11-23",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#303)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    27
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -118120,6 +118151,14 @@
    [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
     2
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    1
+   ],
+   [
+    "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
+    1
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
@@ -118159,14 +118198,6 @@
    ],
    [
     "src/hooks/usePasswordResetRequests.ts",
-    1
-   ],
-   [
-    "src/pages/auth/Auth.tsx",
-    1
-   ],
-   [
-    "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
     1
    ]
   ]

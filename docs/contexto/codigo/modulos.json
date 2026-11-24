@@ -6160,8 +6160,8 @@
   {
    "modulo": "pages/pedidos",
    "arquivos": 3,
-   "testes": 0,
-   "linhas": 870,
+   "testes": 1,
+   "linhas": 877,
    "itens_menu": [
     "Pedidos"
    ],
