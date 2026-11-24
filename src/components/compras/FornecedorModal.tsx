@@ -166,7 +166,7 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
                 value={formData.tipo}
                 onValueChange={(value) => setFormData({ ...formData, tipo: value as Fornecedor["tipo"] })}
               >
-                <SelectTrigger>
+                <SelectTrigger id="tipo">
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
@@ -179,9 +179,9 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
           </div>
 
           <div className="space-y-2">
-            <Label>Ramos de Atuação</Label>
+            <Label htmlFor="ramos">Ramos de Atuação</Label>
             <Select onValueChange={handleAddRamo}>
-              <SelectTrigger>
+              <SelectTrigger id="ramos">
                 <SelectValue placeholder="Adicionar ramo" />
               </SelectTrigger>
               <SelectContent>
@@ -194,7 +194,7 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
               {formData.ramos.map(ramo => (
                 <Badge key={ramo} variant="secondary" className="gap-1">
                   {ramo}
-                  <button type="button" onClick={() => handleRemoveRamo(ramo)}>
+                  <button type="button" aria-label={`Remover ramo ${ramo}`} onClick={() => handleRemoveRamo(ramo)}>
                     <X className="w-3 h-3" />
                   </button>
                 </Badge>
@@ -208,7 +208,7 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
               value={formData.vendeProduto}
               onValueChange={(value) => setFormData({ ...formData, vendeProduto: value as Fornecedor["vendeProduto"] })}
             >
-              <SelectTrigger>
+              <SelectTrigger id="vendeProduto">
                 <SelectValue placeholder="Selecione o tipo de produto" />
               </SelectTrigger>
               <SelectContent>
