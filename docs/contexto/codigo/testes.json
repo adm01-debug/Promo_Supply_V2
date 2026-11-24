@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 245,
+ "total": 248,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 227
+  "unit": 230
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 152
+   "arquivos": 155
   },
   {
    "padrao": "outro",
@@ -905,6 +905,16 @@
    "casos": 1
   },
   {
+   "arquivo": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+   "tipo": "unit",
+   "linhas": 146,
+   "testa": [
+    "src/hooks/useFornecedores.ts",
+    "src/lib/feedbackToast.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",
    "tipo": "unit",
    "linhas": 112,
@@ -1294,6 +1304,15 @@
    "casos": 22
   },
   {
+   "arquivo": "src/lib/__tests__/unicidadeCadastro.test.ts",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "src/lib/unicidadeCadastro.ts"
+   ],
+   "casos": 7
+  },
+  {
    "arquivo": "src/lib/__tests__/utils.test.ts",
    "tipo": "unit",
    "linhas": 114,
@@ -1484,6 +1503,16 @@
     "src/pages/compliance/complianceHelpers.ts"
    ],
    "casos": 29
+  },
+  {
+   "arquivo": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+   "tipo": "unit",
+   "linhas": 120,
+   "testa": [
+    "src/lib/feedbackToast.ts",
+    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
@@ -2290,7 +2319,7 @@
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useFeedback.ts": 1,
-  "src/hooks/useFornecedores.ts": 2,
+  "src/hooks/useFornecedores.ts": 3,
   "src/hooks/useFuseSearch.ts": 1,
   "src/hooks/useGeoRestriction.ts": 1,
   "src/hooks/useImageCompression.ts": 1,
@@ -2312,7 +2341,7 @@
   "src/lib/creditoFornecedor.ts": 1,
   "src/lib/dbMapping.ts": 1,
   "src/lib/exportData.ts": 3,
-  "src/lib/feedbackToast.ts": 5,
+  "src/lib/feedbackToast.ts": 7,
   "src/lib/filterClearReporter.ts": 1,
   "src/lib/haptics.ts": 1,
   "src/lib/imageCompression.ts": 1,
@@ -2332,6 +2361,7 @@
   "src/lib/storageFiles.ts": 1,
   "src/lib/supabaseQuery.ts": 1,
   "src/lib/supabaseRpc.ts": 1,
+  "src/lib/unicidadeCadastro.ts": 1,
   "src/lib/utils.ts": 1,
   "src/locales/en/translation.json": 1,
   "src/locales/es/translation.json": 1,
@@ -2351,6 +2381,7 @@
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,
+  "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx": 1,
   "src/pages/cotacao/Cotacao.tsx": 1,
   "src/pages/cotacao/cotacaoHelpers.ts": 1,
   "src/pages/dashboard/ComprasDashboard.tsx": 1,
@@ -2425,7 +2456,6 @@
    "src/pages/catalogo-spot/CatalogoSpot.tsx",
    "src/pages/catalogo-xbz/CatalogoXbz.tsx",
    "src/pages/compliance/ComplianceDashboard.tsx",
-   "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
    "src/pages/contratos/Contratos.tsx",
    "src/pages/dashboard/DashboardExecutivo.tsx",
    "src/pages/dev/XbzNetworkPanelHarness.tsx",

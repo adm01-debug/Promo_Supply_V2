@@ -2393,7 +2393,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11679,
+   "linhas": 11702,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2797,7 +2797,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 22,
+   "testes": 23,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -2969,9 +2969,9 @@
   },
   {
    "modulo": "lib",
-   "arquivos": 27,
+   "arquivos": 28,
    "testes": 0,
-   "linhas": 2748,
+   "linhas": 2819,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3268,7 +3268,7 @@
   {
    "modulo": "lib/__tests__",
    "arquivos": 0,
-   "testes": 30,
+   "testes": 31,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -4524,8 +4524,8 @@
   {
    "modulo": "pages/configuracoes",
    "arquivos": 1,
-   "testes": 0,
-   "linhas": 336,
+   "testes": 1,
+   "linhas": 357,
    "itens_menu": [
     "Centros de Custo"
    ],

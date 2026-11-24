@@ -1,10 +1,10 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 42,
+ "total": 43,
  "por_camada": {
   "integrations": 3,
-  "lib": 27,
+  "lib": 28,
   "python": 3,
   "schemas": 1,
   "services": 3,
@@ -580,7 +580,7 @@
     "pages/relatorios",
     "pages/sourcing"
    ],
-   "coberto_por_testes": 5,
+   "coberto_por_testes": 7,
    "orfao": false
   },
   {
@@ -707,7 +707,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "usado_por_modulos": [
     "components/compras",
     "components/feedback",
@@ -725,6 +725,7 @@
     "pages/admin-telemetria",
     "pages/auth",
     "pages/compliance",
+    "pages/configuracoes",
     "pages/contratos",
     "pages/documentos",
     "pages/gerar-ordem",
@@ -1190,6 +1191,36 @@
    "usado_por_modulos": [],
    "coberto_por_testes": 1,
    "orfao": true
+  },
+  {
+   "arquivo": "src/lib/unicidadeCadastro.ts",
+   "camada": "lib",
+   "exports": [
+    "MENSAGEM_CHAVE_DUPLICADA",
+    "mensagemCnpjJaCadastrado",
+    "mensagemCodigoCentroCustoJaCadastrado",
+    "mensagemCodigoFornecedorJaCadastrado",
+    "mensagemDuplicidadeCentroCusto",
+    "mensagemDuplicidadeFornecedor",
+    "somenteDigitos"
+   ],
+   "export_default": null,
+   "linhas": 71,
+   "tabelas": [],
+   "rpcs": [],
+   "edges": [],
+   "env": [],
+   "externos": [],
+   "zod_schemas": 0,
+   "flags": [],
+   "papeis": [],
+   "usado_por": 2,
+   "usado_por_modulos": [
+    "hooks",
+    "pages/configuracoes"
+   ],
+   "coberto_por_testes": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/lib/utils.ts",

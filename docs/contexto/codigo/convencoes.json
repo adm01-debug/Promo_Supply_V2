@@ -16,12 +16,12 @@
    "src/components (11)"
   ],
   "servicos_logica": [
-   "src/lib (27)",
+   "src/lib (28)",
    "src/stores (5)",
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (152)",
+   "co-localizado (__tests__) (155)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)",
    "fix: cotacao manual grava condicao, validade e observacoes (#388)",
    "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)",
    "fix(pedidos): Kanban so entrega via Recebimento (#383)",
-   "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)",
-   "﻿fix(pedidos): exclusao de pedido exige status pendente ou cancelado (#384)"
+   "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)"
   ]
  },
  "pr_template": null,

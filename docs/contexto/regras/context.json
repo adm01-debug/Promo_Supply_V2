@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b58ed9d3f91baf44c54e6cfb8ca47fa6a0e52f86",
+  "sha": "66773c67c724bb39dbca5350cd32d70b175d2cc6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 07:55 UTC",
-  "files_total": 1383,
-  "code_files": 1212,
-  "code_lines": 206538,
+  "generated_at": "2026-11-24 08:02 UTC",
+  "files_total": 1387,
+  "code_files": 1216,
+  "code_lines": 206982,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b0f2135d8b082ac1",
+ "facts_hash": "b0b499754e31cf3a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,8 +263,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 428,
-   ".tsx": 378,
+   ".ts": 430,
+   ".tsx": 380,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35308,8 +35308,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 84,
-   "lines": 14344,
+   "files": 85,
+   "lines": 14513,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35513,6 +35513,7 @@
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
+    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
@@ -35521,8 +35522,7 @@
     "src/hooks/__tests__/usePermissions.test.tsx",
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
-    "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx"
+    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx"
    ]
   },
   {
@@ -35572,8 +35572,8 @@
   },
   {
    "module": "src/lib",
-   "files": 58,
-   "lines": 6994,
+   "files": 60,
+   "lines": 7128,
    "tables": [
     "profiles"
    ],
@@ -35604,6 +35604,7 @@
     "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
+    "unicidadeCadastro.ts: somenteDigitos, MENSAGEM_CHAVE_DUPLICADA, mensagemCnpjJaCadastrado, mensagemCodigoFornecedorJaCadastrado, mensagemCodigoCentroCustoJaCadastrado, mensagemDuplicidadeFornecedor",
     "utils.ts: cn, generateUniqueKey, formatCurrency, parseDateValue, formatDate, formatDateTime",
     "fuzzSeed.ts: mulberry32, FuzzRng, createFuzzRng"
    ],
@@ -35662,6 +35663,7 @@
     "src/lib/storageFiles.ts",
     "src/lib/supabaseQuery.ts",
     "src/lib/supabaseRpc.ts",
+    "src/lib/unicidadeCadastro.ts",
     "src/lib/utils.ts",
     "src/lib/__tests__/clearFiltersShortcut.test.ts",
     "src/lib/__tests__/creditoFornecedor.test.ts",
@@ -35692,14 +35694,15 @@
     "src/lib/__tests__/storageFiles.test.ts",
     "src/lib/__tests__/supabaseQuery.test.ts",
     "src/lib/__tests__/supabaseRpc.test.ts",
+    "src/lib/__tests__/unicidadeCadastro.test.ts",
     "src/lib/__tests__/utils.test.ts",
     "src/lib/types/browser-extensions.d.ts"
    ]
   },
   {
    "module": "src/pages",
-   "files": 139,
-   "lines": 32325,
+   "files": 140,
+   "lines": 32466,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35898,6 +35901,7 @@
     "src/pages/compliance/complianceHelpers.ts",
     "src/pages/compliance/__tests__/complianceHelpers.test.ts",
     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+    "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
     "src/pages/contratos/Contratos.tsx",
     "src/pages/cotacao/Cotacao.tsx",
     "src/pages/cotacao/cotacaoHelpers.ts",
@@ -35909,8 +35913,7 @@
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx",
     "src/pages/devolucoes/devolucoesData.ts",
-    "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
-    "src/pages/devolucoes/__tests__/devolucoesModals.test.ts"
+    "src/pages/devolucoes/__tests__/devolucoesData.test.ts"
    ]
   },
   {
@@ -36734,7 +36737,8 @@
    "cost_centers": {
     "select": [
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/hooks/usePurchaseHistory.ts"
+     "src/hooks/usePurchaseHistory.ts",
+     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx"
     ],
     "update": [
      "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx"
@@ -41408,10 +41412,6 @@
    },
    {
     "file": "src/hooks/useFornecedores.ts",
-    "msg": "Erro ao cadastrar fornecedor: "
-   },
-   {
-    "file": "src/hooks/useFornecedores.ts",
     "msg": "Erro ao excluir: "
    },
    {
@@ -41869,10 +41869,6 @@
    {
     "file": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
     "msg": "Erro ao excluir: "
-   },
-   {
-    "file": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-    "msg": "Erro ao salvar: "
    },
    {
     "file": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
@@ -42953,6 +42949,10 @@
    {
     "file": "src/lib/security.ts",
     "text": "Handles sanitization, security validation and audit logging."
+   },
+   {
+    "file": "src/lib/unicidadeCadastro.ts",
+    "text": "usada na pre-checagem e (b) a traducao do 23505 em frase de negocio."
    },
    {
     "file": "src/lib/utils.ts",
@@ -62868,6 +62868,30 @@
     "name": "grava organization_id com o id da ORGANIZACAO, nao o do tenant"
    },
    {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "useFornecedores · createFornecedor (VAL-09)"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "consulta o CNPJ sem mascara e barra antes do insert quando ja existe"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde)"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "mantem o cadastro funcionando quando nao ha duplicidade"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "nao bloqueia o cadastro quando a pre-checagem falha por outro motivo"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    "name": "nao consulta CNPJ quando o fornecedor e cadastrado sem CNPJ"
+   },
+   {
     "file": "src/hooks/__tests__/useFuseSearch.test.ts",
     "name": "normalizeText"
    },
@@ -65684,6 +65708,38 @@
     "name": "each wrapper calls rpc exactly once per invocation"
    },
    {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "unicidadeCadastro (VAL-09)"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "normaliza CNPJ mascarado para digitos"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "cita o fornecedor dono do CNPJ quando o nome e conhecido"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "explica o codigo de centro de custo com e sem o nome do dono"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "traduz 23505 de CNPJ e de codigo de fornecedor sem vazar o texto do Postgres"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "cai na mensagem generica em 23505 de constraint desconhecida"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "nao intercepta erro que nao e de unicidade"
+   },
+   {
+    "file": "src/lib/__tests__/unicidadeCadastro.test.ts",
+    "name": "traduz 23505 de cost_centers_code_key com o codigo informado"
+   },
+   {
     "file": "src/lib/__tests__/utils.test.ts",
     "name": "returns empty string for no arguments"
    },
@@ -66770,6 +66826,22 @@
    {
     "file": "src/pages/compliance/__tests__/complianceHelpers.test.ts",
     "name": "returns a new array"
+   },
+   {
+    "file": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+    "name": "ConfiguracoesCentroCusto · codigo unico (VAL-09)"
+   },
+   {
+    "file": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+    "name": "barra o codigo ja usado e diz qual centro de custo o usa"
+   },
+   {
+    "file": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+    "name": "traduz o 23505 quando o codigo existe em outra empresa"
+   },
+   {
+    "file": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+    "name": "cria o centro de custo quando o codigo esta livre"
    },
    {
     "file": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
@@ -102173,7 +102245,7 @@
   },
   "src/hooks/useFornecedores.ts": {
    "path": "src/hooks/useFornecedores.ts",
-   "lines": 266,
+   "lines": 289,
    "exports": [
     "type Fornecedor",
     "interface CreateFornecedorInput",
@@ -102182,6 +102254,10 @@
     "function useFornecedoresKPIs"
    ],
    "tables": [
+    {
+     "table": "fornecedores",
+     "op": "select"
+    },
     {
      "table": "fornecedores",
      "op": "select"
@@ -102238,7 +102314,6 @@
     "CNPJ inválido. Verifique os dígitos verificadores.",
     "Email inválido.",
     "Erro ao atualizar: ",
-    "Erro ao cadastrar fornecedor: ",
     "Erro ao excluir: ",
     "Você precisa estar logado em uma organização"
    ],
@@ -104152,6 +104227,19 @@
     "grava organization_id com o id da ORGANIZACAO, nao o do tenant"
    ]
   },
+  "src/hooks/__tests__/useFornecedores.unicidade.test.tsx": {
+   "path": "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+   "lines": 146,
+   "is_test": true,
+   "tests": [
+    "useFornecedores · createFornecedor (VAL-09)",
+    "consulta o CNPJ sem mascara e barra antes do insert quando ja existe",
+    "traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde)",
+    "mantem o cadastro funcionando quando nao ha duplicidade",
+    "nao bloqueia o cadastro quando a pre-checagem falha por outro motivo",
+    "nao consulta CNPJ quando o fornecedor e cadastrado sem CNPJ"
+   ]
+  },
   "src/hooks/__tests__/useFuseSearch.test.ts": {
    "path": "src/hooks/__tests__/useFuseSearch.test.ts",
    "lines": 112,
@@ -104965,6 +105053,23 @@
      "body": "return supabase.rpc(\"is_account_locked\", params) as unknown as RpcResult<AccountLockStatus>;"
     }
    ]
+  },
+  "src/lib/unicidadeCadastro.ts": {
+   "path": "src/lib/unicidadeCadastro.ts",
+   "lines": 71,
+   "exports": [
+    "function somenteDigitos",
+    "const MENSAGEM_CHAVE_DUPLICADA",
+    "function mensagemCnpjJaCadastrado",
+    "function mensagemCodigoFornecedorJaCadastrado",
+    "function mensagemCodigoCentroCustoJaCadastrado",
+    "function mensagemDuplicidadeFornecedor",
+    "function mensagemDuplicidadeCentroCusto"
+   ],
+   "rule_comments": [
+    "usada na pre-checagem e (b) a traducao do 23505 em frase de negocio."
+   ],
+   "doc": "`fornecedores.cnpj`, `fornecedores.codigo` e `cost_centers.code` sao UNIQUE globais no banco - nao incluem a empresa (tenant). Quando a segunda empresa usa o mesmo valor, o Postgres devolve 23505 citando um registro que a RLS esconde dela, entao o erro cru nao diz nada ao usuario. Aqui ficam (a) a n …"
   },
   "src/lib/utils.ts": {
    "path": "src/lib/utils.ts",
@@ -105868,6 +105973,21 @@
     "passes through data from successful rpc call",
     "passes through error from failed rpc call",
     "each wrapper calls rpc exactly once per invocation"
+   ]
+  },
+  "src/lib/__tests__/unicidadeCadastro.test.ts": {
+   "path": "src/lib/__tests__/unicidadeCadastro.test.ts",
+   "lines": 63,
+   "is_test": true,
+   "tests": [
+    "unicidadeCadastro (VAL-09)",
+    "normaliza CNPJ mascarado para digitos",
+    "cita o fornecedor dono do CNPJ quando o nome e conhecido",
+    "explica o codigo de centro de custo com e sem o nome do dono",
+    "traduz 23505 de CNPJ e de codigo de fornecedor sem vazar o texto do Postgres",
+    "cai na mensagem generica em 23505 de constraint desconhecida",
+    "nao intercepta erro que nao e de unicidade",
+    "traduz 23505 de cost_centers_code_key com o codigo informado"
    ]
   },
   "src/lib/__tests__/utils.test.ts": {
@@ -108154,13 +108274,17 @@
   },
   "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx": {
    "path": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-   "lines": 336,
+   "lines": 357,
    "exports": [
     "default ConfiguracoesCentroCusto"
    ],
    "tables": [
     {
      "table": "profiles",
+     "op": "select"
+    },
+    {
+     "table": "cost_centers",
      "op": "select"
     },
     {
@@ -108182,12 +108306,13 @@
      "id"
     ],
     "cost_centers": [
-     "id"
+     "code",
+     "id",
+     "name"
     ]
    },
    "errors": [
     "Erro ao excluir: ",
-    "Erro ao salvar: ",
     "Preencha nome e código"
    ],
    "params": [
@@ -108195,6 +108320,17 @@
      "name": "NON_PARENT",
      "value": "\"__none__\""
     }
+   ]
+  },
+  "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx": {
+   "path": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+   "lines": 120,
+   "is_test": true,
+   "tests": [
+    "ConfiguracoesCentroCusto · codigo unico (VAL-09)",
+    "barra o codigo ja usado e diz qual centro de custo o usa",
+    "traduz o 23505 quando o codigo existe em outra empresa",
+    "cria o centro de custo quando o codigo esta livre"
    ]
   },
   "src/pages/contratos/Contratos.tsx": {
@@ -119151,10 +119287,25 @@
   }
  },
  "git": {
-  "sha": "b58ed9d3f91baf44c54e6cfb8ca47fa6a0e52f86",
+  "sha": "66773c67c724bb39dbca5350cd32d70b175d2cc6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "66773c6",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+     "src/hooks/useFornecedores.ts",
+     "src/lib/__tests__/unicidadeCadastro.test.ts",
+     "src/lib/unicidadeCadastro.ts",
+     "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+     "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx"
+    ]
+   },
    {
     "sha": "b58ed9d",
     "date": "2026-11-24",
@@ -119525,17 +119676,6 @@
      "supabase/functions/weekly-summary-report/index.ts",
      "supabase/functions/workflow-engine/index.ts"
     ]
-   },
-   {
-    "sha": "d6a5f18",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/logger.fuzz.test.ts",
-     "supabase/functions/_shared/logger.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -119580,6 +119720,30 @@
     2
    ],
    [
+    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useFornecedores.ts",
+    1
+   ],
+   [
+    "src/lib/__tests__/unicidadeCadastro.test.ts",
+    1
+   ],
+   [
+    "src/lib/unicidadeCadastro.ts",
+    1
+   ],
+   [
+    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+    1
+   ],
+   [
+    "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
+    1
+   ],
+   [
     "src/components/compras/CotacaoManualModal.tsx",
     1
    ],
@@ -119593,30 +119757,6 @@
    ],
    [
     "src/hooks/useApprovalRules.ts",
-    1
-   ],
-   [
-    "src/components/compras/KanbanBoard.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/statusTransitions.ts",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     1
    ]
   ]

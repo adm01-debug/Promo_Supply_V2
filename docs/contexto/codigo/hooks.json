@@ -1286,7 +1286,7 @@
     "useFornecedores",
     "useFornecedoresKPIs"
    ],
-   "linhas": 266,
+   "linhas": 289,
    "dominio": "hooks",
    "tabelas": [
     "fornecedores"
@@ -1316,7 +1316,7 @@
     "src/pages/licitacoes/Licitacoes.tsx",
     "src/pages/pedidos/Pedidos.tsx"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/useFuseSearch.ts",

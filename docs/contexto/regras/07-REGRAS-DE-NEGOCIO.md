@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b58ed9d3f9` · branch `main` · 2026-11-24 07:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66773c67c7` · branch `main` · 2026-11-24 08:02 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2380,7 +2380,6 @@ _nenhum item encontrado_
 | CNPJ inválido. Verifique os dígitos verificadores. | `src/hooks/useFornecedores.ts` |
 | Email inválido. | `src/hooks/useFornecedores.ts` |
 | Erro ao atualizar:  | `src/hooks/useFornecedores.ts` |
-| Erro ao cadastrar fornecedor:  | `src/hooks/useFornecedores.ts` |
 | Erro ao excluir:  | `src/hooks/useFornecedores.ts` |
 | Você precisa estar logado em uma organização | `src/hooks/useFornecedores.ts` |
 | Configurações de geo-restrição ainda não carregaram. Aguarde e tente novamente. | `src/hooks/useGeoRestriction.ts` |
@@ -2427,7 +2426,8 @@ _nenhum item encontrado_
 | O login por passkey nao devolveu token de sessao | `src/hooks/useWebAuthn.ts` |
 | Operação cancelada pelo usuário | `src/hooks/useWebAuthn.ts` |
 | WebAuthn não é suportado neste navegador | `src/hooks/useWebAuthn.ts` |
-| … +254 linhas — lista completa em `context.json` | |
+| handler returned false | `src/hooks/useWorkflowDLQ.ts` |
+| … +252 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2445,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3061 testes em 194 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3079 testes em 197 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2558,6 +2558,7 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
+| `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
@@ -2573,6 +2574,7 @@ _nenhum item encontrado_
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 6 | transicaoDeStatusPermitida · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido · não devolve pedido concluído para uma etapa anterior … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
+| `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
@@ -2605,6 +2607,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
+| `src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx` | 4 | ConfiguracoesCentroCusto · codigo unico (VAL-09) · barra o codigo ja usado e diz qual centro de custo o usa · traduz o 23505 quando o codigo existe em outra empresa · cria o centro de custo quando o codigo esta livre |
 | `src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx` | 4 | acao de excluir na lista de pedidos · some quando o pedido selecionado ja entrou no ciclo de recebimento · continua disponivel para pedido pendente · some na selecao mista de pendente com entregue |
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
@@ -2756,6 +2759,7 @@ _nenhum item encontrado_
 | Se o ellipsis já não cabe, apenas trunca sem sufixo. | `src/lib/safeDisplay.ts` |
 | * Trunca uma string em no máximo `maxUnits` UTF-16 code units SEM quebrar | `src/lib/safeTruncate.ts` |
 | Handles sanitization, security validation and audit logging. | `src/lib/security.ts` |
+| usada na pre-checagem e (b) a traducao do 23505 em frase de negocio. | `src/lib/unicidadeCadastro.ts` |
 | exibia 14/06 para "2024-06-15" e recusava "hoje" no prazo de entrega. | `src/lib/utils.ts` |
 | **Validação Rigorosa:** Shared utilities para validação de esquemas \`zod\` em Edge Functions e chamadas RPC. | `src/pages/admin/DeveloperDocs.tsx` |
 | **Filtro por Tenant:** Cada query no banco de dados deve incluir implicitamente ou explicitamente o \`tenant_id\` do usuário logado. | `src/pages/admin/DeveloperDocs.tsx` |

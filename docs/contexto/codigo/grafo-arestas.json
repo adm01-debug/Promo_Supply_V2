@@ -2074,6 +2074,7 @@
    "src/lib/feedbackToast.ts",
    "src/lib/logger.ts",
    "src/lib/supabaseQuery.ts",
+   "src/lib/unicidadeCadastro.ts",
    "src/services/auditService.ts"
   ],
   "src/hooks/useGeoRestriction.ts": [
@@ -2738,6 +2739,8 @@
    "src/features/solicitacoes/index.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
+   "src/lib/logger.ts",
+   "src/lib/unicidadeCadastro.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/contratos/Contratos.tsx": [
