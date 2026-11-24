@@ -202,6 +202,17 @@ const GerarOrdem = () => {
       return;
     }
 
+    // A OC so nasce de solicitacao aprovada: para pendente/em_cotacao/rejeitada o UPDATE de
+    // status e recusado pelo banco, e a OC ficava gravada sem nenhuma aprovacao vigente.
+    if (solicitacaoData.status !== 'aprovada') {
+      toast({
+        title: "Erro",
+        description: `A solicitação está em "${solicitacaoData.status}" e só gera ordem de compra quando estiver aprovada.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
         // Sem cotacao nao existe preco negociado: gerar a OC com valor estimado (ou
         // com um padrao) gravaria valor errado no pedido e no financeiro.
         if (!selectedCotacao || !(solicitacao.valorUnitario > 0) || !(solicitacao.quantidadeReal > 0)) {
@@ -241,10 +252,19 @@ const GerarOrdem = () => {
       if (pedido) {
         // Se houver solicitação, atualiza status
         if (solicitacaoId) {
-          await supabase
+          const { error: statusError } = await supabase
             .from('solicitacoes')
             .update({ status: 'em_andamento' })
             .eq('id', solicitacaoId);
+          // A OC ja esta gravada: se a promocao da solicitacao falhar, o operador precisa
+          // saber disso em vez de ver "Ordem Gerada!" com a solicitacao parada no status anterior.
+          if (statusError) {
+            toast({
+              title: "Ordem salva, mas a solicitação não foi atualizada",
+              description: statusError.message,
+              variant: "destructive"
+            });
+          }
         }
 
         toast({
@@ -581,10 +601,12 @@ const GerarOrdem = () => {
                 <Button 
                   onClick={finalizarOrdem} 
                   className="w-full gap-2 gradient-primary h-12 text-lg"
-                  disabled={isSubmitting || !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)}
-                                    title={!fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)
-                                      ? 'Selecione uma cotacao com fornecedor e preco definidos para gerar a OC'
-                                      : undefined}
+                  disabled={isSubmitting || !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0) || solicitacaoData?.status !== 'aprovada'}
+                                    title={solicitacaoData && solicitacaoData.status !== 'aprovada'
+                                      ? 'A solicitacao precisa estar aprovada para gerar a ordem de compra'
+                                      : !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)
+                                        ? 'Selecione uma cotacao com fornecedor e preco definidos para gerar a OC'
+                                        : undefined}
                 >
                   {isSubmitting ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Gerando Ordem...</>
