@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)",
    "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)",
    "fix: filtro \"Meus Itens\" recorta por solicitante em vez de status (etapa 108) (#376)",
    "fix: fluxo de aprovacao e historico reais no card de solicitacao (etapa 107) (#375)",
-   "fix: entidade solicitante e gestor responsavel com dado real (etapas 101 e 102) (#374)",
-   "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)"
+   "fix: entidade solicitante e gestor responsavel com dado real (etapas 101 e 102) (#374)"
   ]
  },
  "pr_template": null,

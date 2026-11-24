@@ -869,7 +869,7 @@
   {
    "arquivo": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
    "tipo": "unit",
-   "linhas": 77,
+   "linhas": 79,
    "testa": [
     "src/hooks/usePrefetch.ts"
    ],

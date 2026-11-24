@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ea55bfb6b039b09f15086d8e81c01b4383e0634a` (2026-11-24T02:39:22-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e2ea7353a89911a9ce421445e03fb24caca98add` (2026-11-24T03:03:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1367 |
 | arquivos_codigo | 864 |
-| linhas_codigo | 177301 |
+| linhas_codigo | 177303 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -339,7 +339,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (36)
+- docs/qa/05-PROGRESSO.md (37)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (10)
 - bun.lock (9)
@@ -420,6 +420,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `e2ea735` fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)
 - 2026-11-24 `ea55bfb` fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)
 - 2026-11-24 `77d4e5f` fix: filtro "Meus Itens" recorta por solicitante em vez de status (etapa 108) (#376)
 - 2026-11-24 `94d908c` fix: fluxo de aprovacao e historico reais no card de solicitacao (etapa 107) (#375)
@@ -434,7 +435,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `d541138` fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)
 - 2026-11-24 `b08b364` feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)
 - 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
-- 2026-11-24 `fc4c451` security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

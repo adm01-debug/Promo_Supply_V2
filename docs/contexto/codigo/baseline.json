@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ea55bfb6b039b09f15086d8e81c01b4383e0634a",
+  "commit": "e2ea7353a89911a9ce421445e03fb24caca98add",
   "branch": "main",
-  "data_commit": "2026-11-24T02:39:22-03:00",
+  "data_commit": "2026-11-24T03:03:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e2ea735",
+    "data": "2026-11-24",
+    "assunto": "fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)"
+   },
    {
     "sha": "ea55bfb",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "2827890",
     "data": "2026-11-23",
     "assunto": "test(palette): trava atalhos e badges do Command Palette no registry real (#353)"
-   },
-   {
-    "sha": "619c2bb",
-    "data": "2026-11-23",
-    "assunto": "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)"
    }
   ],
   "arquivos_mudados_7d": 409,
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "pasta": "src/lib/__tests__",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1367,
   "arquivos_codigo": 864,
-  "linhas_codigo": 177301,
+  "linhas_codigo": 177303,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 83,
-   "linhas": 14185
+   "linhas": 14187
   },
   "src/i18n": {
    "arquivos": 1,
