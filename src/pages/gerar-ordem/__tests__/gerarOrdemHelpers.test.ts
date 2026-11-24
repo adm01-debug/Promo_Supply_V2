@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from '../gerarOrdemHelpers';
-
-vi.mock('@/lib/utils', () => ({
-  formatCurrency: (value: number) => `R$ ${value.toFixed(2).replace('.', ',')}`,
-}));
+import {
+  getTipoLabel,
+  buildWhatsAppMessage,
+  buildEmailMessage,
+  formatarEnderecoEntrega,
+} from '../gerarOrdemHelpers';
 
 const makeSupplier = (overrides = {}) => ({
   nome_fantasia: 'Acme Ltda',
@@ -193,5 +194,88 @@ describe('buildWhatsAppMessage/buildEmailMessage sem fallback de R$ 12', () => {
     expect(buildWhatsAppMessage(makeSupplier(), daCotacao, 'OC-001', 4600, 200, 0, '')).toContain('23.00');
     const { corpo } = buildEmailMessage(daCotacao, 'OC-001', 4600, 4800, 200, 0, '');
     expect(corpo).toContain('23.00');
+  });
+});
+
+// --- QA 227: endereco real da empresa no e-mail, nunca placeholder ---
+
+describe('formatarEnderecoEntrega', () => {
+  it('monta a linha completa a partir do jsonb do tenant', () => {
+    const endereco = {
+      logradouro: 'Av. Paulista',
+      numero: '1000',
+      complemento: '10o andar',
+      bairro: 'Bela Vista',
+      cidade: 'Sao Paulo',
+      uf: 'SP',
+      cep: '01310-100',
+    };
+    expect(formatarEnderecoEntrega(endereco)).toBe(
+      'Av. Paulista, 1000 - 10o andar - Bela Vista - Sao Paulo/SP - CEP 01310-100'
+    );
+  });
+
+  it('devolve null para jsonb vazio e para valores ausentes', () => {
+    expect(formatarEnderecoEntrega({})).toBeNull();
+    expect(formatarEnderecoEntrega(null)).toBeNull();
+    expect(formatarEnderecoEntrega(undefined)).toBeNull();
+    expect(formatarEnderecoEntrega([])).toBeNull();
+    expect(formatarEnderecoEntrega(42)).toBeNull();
+    expect(formatarEnderecoEntrega({ numero: '   ' })).toBeNull();
+  });
+
+  it('aceita campos numericos (jsonb com numero sem aspas)', () => {
+    expect(
+      formatarEnderecoEntrega({ logradouro: 'Rua A', numero: 1200, cidade: 'Osasco', uf: 'SP' })
+    ).toBe('Rua A, 1200 - Osasco/SP');
+  });
+
+  it('aceita cidade/UF sem logradouro', () => {
+    expect(formatarEnderecoEntrega({ cidade: 'Campinas', uf: 'SP' })).toBe('Campinas/SP');
+  });
+
+  it('aceita endereco ja em texto', () => {
+    expect(formatarEnderecoEntrega('  Rua das Flores, 12  ')).toBe('Rua das Flores, 12');
+  });
+});
+
+describe('buildEmailMessage - bloco DADOS PARA ENTREGA', () => {
+  it('omite o bloco quando a empresa nao tem endereco', () => {
+    const { corpo } = buildEmailMessage(makeOrder(), 'OC-001', 1250, 1250, 0, 0, '', {
+      empresa: 'Promo Supply',
+      endereco: null,
+    });
+    expect(corpo).not.toContain('DADOS PARA ENTREGA');
+    expect(corpo).not.toContain('Endere\u00e7o da empresa');
+  });
+
+  it('omite o bloco quando o parametro de entrega nem e passado', () => {
+    const { corpo } = buildEmailMessage(makeOrder(), 'OC-001', 1250, 1250, 0, 0, '');
+    expect(corpo).not.toContain('DADOS PARA ENTREGA');
+    expect(corpo).not.toContain('Endere\u00e7o da empresa');
+  });
+
+  it('imprime o endereco da empresa selecionada quando existe', () => {
+    const { corpo } = buildEmailMessage(makeOrder(), 'OC-001', 1250, 1250, 0, 0, '', {
+      empresa: 'Promo Supply Filial Sul',
+      endereco: 'Av. Paulista, 1000 - Sao Paulo/SP',
+    });
+    expect(corpo).toContain('DADOS PARA ENTREGA');
+    expect(corpo).toContain('Promo Supply Filial Sul');
+    expect(corpo).toContain('Av. Paulista, 1000 - Sao Paulo/SP');
+    expect(corpo).not.toContain('Endere\u00e7o da empresa');
+  });
+});
+
+describe('buildEmailMessage - formato real do dinheiro (sem mock de @/lib/utils)', () => {
+  it('usa o formatCurrency real, com separador de milhar', () => {
+    const { corpo } = buildEmailMessage(makeOrder(), 'OC-001', 1250, 1250, 0, 0, '');
+    expect(corpo).toContain('1.250,00');
+  });
+
+  it('nao inventa valor unitario quando a cotacao veio zerada', () => {
+    const { corpo } = buildEmailMessage(makeOrder({ valorUnitario: 0 }), 'OC-001', 0, 0, 0, 0, '');
+    expect(corpo).not.toContain('12.00');
+    expect(corpo).toContain('0.00');
   });
 });
