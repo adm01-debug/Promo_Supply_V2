@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 15:12 UTC
+
+- **functions** adicionado (1): `public.assign_numero_solicitacao()`
+- **functions** alterado (1): `public.generate_sequential_number(prefix text, table_name text)`
+- **triggers** adicionado (1): `public.solicitacoes.trg_assign_numero_solicitacao`
+
 ## 2026-11-24 04:19 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_27`

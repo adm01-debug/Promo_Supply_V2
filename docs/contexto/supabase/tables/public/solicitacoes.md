@@ -203,6 +203,7 @@
 |---|---|---|---|---|---|
 | a0_guard_solicitacao_escrita | BEFORE | INSERT OR UPDATE | ROW | enabled | public.guard_solicitacao_escrita |
 | a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
+| trg_assign_numero_solicitacao | BEFORE | INSERT | ROW | enabled | public.assign_numero_solicitacao |
 | trg_auto_approve_low_value | BEFORE | INSERT | ROW | enabled | public.auto_approve_low_value_solicitacao |
 | trg_update_budget_on_solicitacao | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.update_budget_on_solicitacao_change |
 | trg_update_solicitacoes_updated_at | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
