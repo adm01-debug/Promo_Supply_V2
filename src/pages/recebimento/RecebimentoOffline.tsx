@@ -35,12 +35,21 @@ import {
   statusFromReceived,
   aplicarStatusRecebimento,
   buildReceivingObservation,
+  gravarItensRecebidos,
 } from "./recebimentoHelpers";
 import type { CamposStatusPedido } from "./recebimentoHelpers";
 import { createComplementaryOrder } from "./pedidoComplementar";
 
 const atualizarPedido = async (pedidoId: string, campos: CamposStatusPedido) =>
   await supabase.from("pedidos").update(campos).eq("id", pedidoId);
+
+/** `.select("id")` devolve as linhas afetadas: 0 linhas = a RLS filtrou em silencio. */
+const atualizarItem = async (itemId: string, quantidade: number) =>
+  await supabase
+    .from("pedido_itens")
+    .update({ quantidade_recebida: quantidade })
+    .eq("id", itemId)
+    .select("id");
 
 export default function RecebimentoOffline() {
   const { user } = useAuth();
@@ -82,7 +91,7 @@ export default function RecebimentoOffline() {
       const { data: pedidos, error } = await supabase
         .from("pedidos")
         .select(`
-          id, numero, valor_total, status, data_previsao,
+          id, numero, valor_total, status, observacoes, data_previsao,
           fornecedor:fornecedores(razao_social),
           pedido_itens(id, descricao, quantidade, quantidade_recebida, unidade, valor_unitario, pim_product_id, pim_variant_id, codigo_fornecedor, ncm, ipi_rate)
         `)
@@ -98,6 +107,7 @@ export default function RecebimentoOffline() {
         data_previsao: p.data_previsao,
         valor_total: p.valor_total || 0,
         status: p.status,
+        observacoes: p.observacoes,
         itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number; pim_product_id: string | null; pim_variant_id: string | null; codigo_fornecedor: string | null; ncm: string | null; ipi_rate: number | null }>).map((i) => ({
           id: i.id,
           descricao: i.descricao,
@@ -190,11 +200,16 @@ export default function RecebimentoOffline() {
 
     if (isOnline) {
       try {
-        for (const item of entry.items) {
-          await supabase
-            .from("pedido_itens")
-            .update({ quantidade_recebida: item.quantidade_recebida })
-            .eq("id", item.item_id);
+        const erroItens = await gravarItensRecebidos(entry.items, atualizarItem);
+        if (erroItens) {
+          // A RLS filtra em silencio e o supabase-js nao lanca: guarda a entrada para
+          // o sync tentar de novo em vez de anunciar recebimento registrado.
+          const entries = [...offlineEntries, entry];
+          saveOfflineEntries(entries);
+          setOfflineEntries(entries);
+          toast.warning(`Recebimento nao registrado: ${erroItens}`);
+          setSaving(false);
+          return;
         }
 
         const newStatus = statusFromReceived(selectedOrder.itens, receivedQty);
@@ -204,7 +219,7 @@ export default function RecebimentoOffline() {
             selectedOrder.id,
             selectedOrder.status,
             newStatus,
-            buildReceivingObservation(itemNotes, generalNote),
+            buildReceivingObservation(itemNotes, generalNote, selectedOrder.observacoes ?? null),
           );
           if (erroStatus) {
             // A quantidade foi gravada, mas o pedido nao avancou: guarda a entrada
@@ -262,12 +277,8 @@ export default function RecebimentoOffline() {
 
     for (const entry of unsynced) {
       try {
-        for (const item of entry.items) {
-          await supabase
-            .from("pedido_itens")
-            .update({ quantidade_recebida: item.quantidade_recebida })
-            .eq("id", item.item_id);
-        }
+        const erroItens = await gravarItensRecebidos(entry.items, atualizarItem);
+        if (erroItens) throw new Error(erroItens);
 
         const order = orders.find(o => o.id === entry.pedido_id);
         // Sem o pedido em memoria nao da para comparar quantidade pedida x recebida:
@@ -281,6 +292,11 @@ export default function RecebimentoOffline() {
             entry.pedido_id,
             (order as PendingOrder).status,
             newStatus,
+            buildReceivingObservation(
+              Object.fromEntries(entry.items.map(i => [i.item_id, i.observacao])),
+              entry.observacao_geral,
+              order?.observacoes ?? null,
+            ),
           );
           if (erroStatus) throw new Error(erroStatus);
         }

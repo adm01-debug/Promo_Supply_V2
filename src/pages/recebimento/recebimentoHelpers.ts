@@ -5,6 +5,8 @@ export interface PendingOrder {
   data_previsao: string | null;
   valor_total: number;
   status: string;
+  /** Observacoes atuais do pedido: o recebimento acrescenta em vez de substituir. */
+  observacoes?: string | null;
   itens: OrderItem[];
 }
 
@@ -200,10 +202,37 @@ export async function aplicarStatusRecebimento(
   return null;
 }
 
+/** Atualiza a quantidade recebida de um item; o resultado do PostgREST nunca lanca. */
+export type AtualizarItem = (
+  itemId: string,
+  quantidade: number,
+) => Promise<{ data: unknown[] | null; error: { message: string } | null }>;
+
+/**
+ * Grava a quantidade recebida de cada item conferindo o erro e as linhas afetadas:
+ * a RLS filtra a linha em silencio (0 linhas, sem erro) e o supabase-js nao lanca,
+ * entao a tela anunciava recebimento registrado com a quantidade intacta. Devolve a
+ * mensagem do primeiro item que nao gravou, ou null quando todos gravaram.
+ */
+export async function gravarItensRecebidos(
+  items: { item_id: string; quantidade_recebida: number }[],
+  atualizarItem: AtualizarItem,
+): Promise<string | null> {
+  for (const item of items) {
+    const { data, error } = await atualizarItem(item.item_id, item.quantidade_recebida);
+    if (error) return `Item ${item.item_id}: ${error.message}`;
+    if (!data || data.length === 0) {
+      return `Item ${item.item_id}: nenhuma linha atualizada (sem permissao ou fora da empresa)`;
+    }
+  }
+  return null;
+}
+
 /** Observacoes do recebimento consolidadas para a coluna `pedidos.observacoes`. */
 export function buildReceivingObservation(
   itemNotes: Record<string, string>,
   generalNote: string,
+  existente: string | null = null,
 ): string | null {
   const lines = Object.entries(itemNotes)
     .map(([, note]) => note.trim())
@@ -211,7 +240,15 @@ export function buildReceivingObservation(
   const parts: string[] = [];
   if (lines.length > 0) parts.push(`Itens: ${lines.join(" | ")}`);
   if (generalNote.trim()) parts.push(generalNote.trim());
-  return parts.length > 0 ? parts.join(" — ") : null;
+  // Sem nota nova devolve null: `aplicarStatusRecebimento` so grava observacoes
+  // quando recebe uma string, entao null preserva a observacao que a OC gravou.
+  if (parts.length === 0) return null;
+  const nova = parts.join(" — ");
+  const anterior = existente?.trim();
+  if (!anterior) return nova;
+  // O sync offline repete a gravacao: sem esta checagem a nota seria duplicada.
+  if (anterior.includes(nova)) return anterior;
+  return `${anterior} — ${nova}`;
 }
 
 /** Data de previsao do pedido complementar: 7 dias a frente, em YYYY-MM-DD. */
