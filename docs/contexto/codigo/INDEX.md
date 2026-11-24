@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f1dd0101072135b2332ca575fde6e568bfd1d6e3` (2026-11-24T18:07:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8` (2026-11-24T18:08:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -341,18 +341,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/qa/05-PROGRESSO.md (96)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
+- bun.lock (9)
 - docs/ci/README.md (9)
+- package.json (9)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
-- bun.lock (8)
 - docs/pendencias/_ordem.md (8)
-- package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (7)
-- src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
 - src/pages/recebimento/RecebimentoOffline.tsx (7)
 - src/pages/solicitacoes/Solicitacoes.tsx (7)
+- supabase/functions/xbz-proxy/index.ts (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `a2f2741` chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)
 - 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
 - 2026-11-24 `2be0c92` fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)
 - 2026-11-24 `b1db1c7` fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `728759e` fix: matriz de transicoes de status alinhada ao banco (#394)
 - 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
 - 2026-11-24 `73aaa9d` fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)
-- 2026-11-24 `3beb6da` fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

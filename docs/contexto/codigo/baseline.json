@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
+  "commit": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
   "branch": "main",
-  "data_commit": "2026-11-24T18:07:12-03:00",
+  "data_commit": "2026-11-24T18:08:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a2f2741",
+    "data": "2026-11-24",
+    "assunto": "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)"
+   },
    {
     "sha": "f1dd010",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "0f24e15",
     "data": "2026-11-24",
     "assunto": "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)"
-   },
-   {
-    "sha": "0165b41",
-    "data": "2026-11-24",
-    "assunto": "test: prova o retry quando o numero da solicitacao colide (#427)"
    }
   ],
   "arquivos_mudados_7d": 481,
@@ -210,7 +210,15 @@
     "mudancas": 16
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 9
+   },
+   {
     "arquivo": "docs/ci/README.md",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "package.json",
     "mudancas": 9
    },
    {
@@ -218,15 +226,7 @@
     "mudancas": 9
    },
    {
-    "arquivo": "bun.lock",
-    "mudancas": 8
-   },
-   {
     "arquivo": "docs/pendencias/_ordem.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "package.json",
     "mudancas": 8
    },
    {
@@ -239,10 +239,6 @@
    },
    {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
    {
@@ -278,6 +274,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/auth/Auth.tsx",
     "mudancas": 6
    },
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 292
+    "commits": 291
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 6
+    "commits": 7
    },
    {
     "autor": "github-actions[bot]",

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
+  "sha": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 21:08 UTC",
+  "generated_at": "2026-11-24 21:10 UTC",
   "files_total": 1446,
   "code_files": 1273,
   "code_lines": 213823,
@@ -121966,10 +121966,20 @@
   }
  },
  "git": {
-  "sha": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
+  "sha": "a2f2741e7d55b9cb22ec6b160db77e4ed3fdfaa8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a2f2741",
+    "date": "2026-11-24",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
    {
     "sha": "f1dd010",
     "date": "2026-11-24",
@@ -122313,23 +122323,12 @@
      "src/components/compras/EnhancedBulkActionsBar.tsx",
      "src/features/layout/components/SupplierChat.tsx"
     ]
-   },
-   {
-    "sha": "d2d869a",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/layout/components/GuidedBuyingAssistant.tsx",
-     "src/features/layout/components/QuickActionsFAB.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    24
    ],
    [
     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -122376,6 +122375,14 @@
     2
    ],
    [
+    "bun.lock",
+    1
+   ],
+   [
+    "package.json",
+    1
+   ],
+   [
     ".github/workflows/main.yml",
     1
    ],
@@ -122397,14 +122404,6 @@
    ],
    [
     "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
-    1
-   ],
-   [
-    "src/features/layout/__tests__/menuMobile.test.tsx",
-    1
-   ],
-   [
-    "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
     1
    ]
   ]
