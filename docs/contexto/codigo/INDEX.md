@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `73a583d662180ae6f5647ba37d4f5650943a5224` (2026-11-23T23:26:44-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `aac5577aa2f27e321cffc4c42e384b65bb416c12` (2026-11-23T23:42:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (771), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (772), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1347 |
-| arquivos_codigo | 844 |
-| linhas_codigo | 174435 |
+| arquivos_total | 1348 |
+| arquivos_codigo | 845 |
+| linhas_codigo | 174503 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 217 |
+| testes | 218 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (125), outro (43), co-localizado (*.test) (39)
+- testes: co-localizado (__tests__) (126), outro (43), co-localizado (*.test) (39)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -337,12 +337,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (19)
+- docs/qa/05-PROGRESSO.md (20)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/ci/README.md (12)
-- package.json (10)
+- docs/ci/README.md (11)
 - bun.lock (9)
 - docs/prod-readiness.md (9)
+- package.json (9)
 - docs/pendencias/_ordem.md (8)
 - .github/workflows/main.yml (7)
 - supabase/functions/punchout-receive/index.ts (7)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `aac5577` fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)
 - 2026-11-23 `73a583d` fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)
 - 2026-11-23 `d6a5f18` fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)
 - 2026-11-23 `fb36e10` fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `a1f9fe0` fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)
 - 2026-11-23 `368fe97` fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)
 - 2026-11-23 `77ddaeb` fix: receive-os-sync sem verify_jwt (webhook HMAC)
-- 2026-11-23 `4ea4805` fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

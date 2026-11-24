@@ -2223,7 +2223,7 @@
     "useSpotSyncStatus",
     "useTriggerSpotSync"
    ],
-   "linhas": 181,
+   "linhas": 187,
    "dominio": "pages/catalogo-spot",
    "tabelas": [
     "spot_api_sync_log",
@@ -2246,7 +2246,7 @@
     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
     "src/pages/catalogo-spot/SpotSyncPanel.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/pages/portal-fornecedor/portalFornecedorData.ts",

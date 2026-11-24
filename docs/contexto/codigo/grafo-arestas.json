@@ -2595,7 +2595,8 @@
    "src/lib/feedbackToast.ts"
   ],
   "src/pages/catalogo-spot/useSpotCatalog.ts": [
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/supabaseQuery.ts"
   ],
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": [
    "src/components/ui/alert.tsx",

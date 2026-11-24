@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "73a583d662180ae6f5647ba37d4f5650943a5224",
+  "sha": "aac5577aa2f27e321cffc4c42e384b65bb416c12",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:27 UTC",
-  "files_total": 1348,
-  "code_files": 1177,
-  "code_lines": 201619,
+  "generated_at": "2026-11-24 02:42 UTC",
+  "files_total": 1349,
+  "code_files": 1178,
+  "code_lines": 201687,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "58f21175e53f27ad",
+ "facts_hash": "130476a54a4f17d5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 410,
-   ".tsx": 361,
+   ".tsx": 362,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35621,8 +35621,8 @@
   },
   {
    "module": "src/pages",
-   "files": 131,
-   "lines": 30833,
+   "files": 132,
+   "lines": 30901,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35795,6 +35795,7 @@
     "src/pages/catalogo-spot/spotHelpers.ts",
     "src/pages/catalogo-spot/useSpotCatalog.ts",
     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
+    "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
     "src/pages/catalogo-xbz/CatalogoXbz.tsx",
     "src/pages/catalogo-xbz/XbzCarrinhoTab.tsx",
     "src/pages/catalogo-xbz/XbzCatalogoTab.tsx",
@@ -35829,8 +35830,7 @@
     "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
     "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
     "src/pages/documentos/DocumentosFiscais.tsx",
-    "src/pages/estoque/GestaoEstoque.tsx",
-    "src/pages/fornecedores/Fornecedores.tsx"
+    "src/pages/estoque/GestaoEstoque.tsx"
    ]
   },
   {
@@ -65659,6 +65659,22 @@
    {
     "file": "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "name": "resolves colon-prefixed string as relative path against base (opens window)"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+    "name": "useSpotProducts / filtro de busca (SEC-10)"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+    "name": "busca comum sai com o termo literal nas duas colunas"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+    "name": "nao deixa "
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+    "name": "busca em branco nao acrescenta clausula"
    },
    {
     "file": "src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts",
@@ -105810,7 +105826,7 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 181,
+   "lines": 187,
    "exports": [
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
@@ -105958,6 +105974,17 @@
     "blocks external hostname with error toast",
     "blocks http://spotgifts.evil.com (subdomain attack)",
     "resolves colon-prefixed string as relative path against base (opens window)"
+   ]
+  },
+  "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx": {
+   "path": "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+   "lines": 62,
+   "is_test": true,
+   "tests": [
+    "useSpotProducts / filtro de busca (SEC-10)",
+    "busca comum sai com o termo literal nas duas colunas",
+    "nao deixa ",
+    "busca em branco nao acrescenta clausula"
    ]
   },
   "src/pages/catalogo-xbz/CatalogoXbz.tsx": {
@@ -117160,10 +117187,21 @@
   }
  },
  "git": {
-  "sha": "73a583d662180ae6f5647ba37d4f5650943a5224",
+  "sha": "aac5577aa2f27e321cffc4c42e384b65bb416c12",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "aac5577",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts"
+    ]
+   },
    {
     "sha": "73a583d",
     "date": "2026-11-23",
@@ -117536,21 +117574,12 @@
      "supabase/functions/scim-v2/auth.ts",
      "supabase/functions/scim-v2/index.ts"
     ]
-   },
-   {
-    "sha": "55aab7a",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(cors): health-dashboard deixa de liberar qualquer origem (#333)",
-    "files": [
-     "supabase/functions/health-dashboard/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    17
+    18
    ],
    [
     "supabase/functions/fiscal-orchestrator/index.ts",

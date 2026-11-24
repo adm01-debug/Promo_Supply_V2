@@ -3956,8 +3956,8 @@
   {
    "modulo": "pages/catalogo-spot",
    "arquivos": 6,
-   "testes": 1,
-   "linhas": 1150,
+   "testes": 2,
+   "linhas": 1156,
    "itens_menu": [
     "SPOT / Stricker"
    ],

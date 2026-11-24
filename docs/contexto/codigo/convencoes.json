@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (125)",
+   "co-localizado (__tests__) (126)",
    "outro (43)",
    "co-localizado (*.test) (39)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)",
    "fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)",
    "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)",
    "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)",
-   "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)",
-   "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)"
+   "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)"
   ]
  },
  "pr_template": null,
