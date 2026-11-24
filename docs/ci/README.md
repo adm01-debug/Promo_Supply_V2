@@ -4,7 +4,7 @@
 > `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.
 > Para mudar o que está aqui, mude o bloco no YAML.
 
-**14 workflows.**
+**15 workflows.**
 
 | Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |
 |---|---|---|---|---|---|---|---|
@@ -19,6 +19,7 @@
 | Freight Quest CI/CD | [`main.yml`](../../.github/workflows/main.yml) | push em main/develop e pull_request para main | lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml | — | — |
 | Notifica falha na main | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | workflow_run (conclusao dos workflows deste repo na main) | issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main | a falha do workflow original fica sem issue de acompanhamento | o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main` | — | — |
 | Paridade migrations x banco (semanal) | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | toda segunda 09:00 UTC (06:00 em Sao Paulo), dispatch manual e push em main que toque o verificador ou a allowlist | o job roda scripts/ci/paridade-migrations-banco.sql no banco de producao e compara a saida com o que supabase/migrations/ declara | o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist | abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail | — | — |
+| Provisionar secret do webhook Promo Champions | [`provisionar-secret-champions-webhook.yml`](../../.github/workflows/provisionar-secret-champions-webhook.yml) | dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar o segredo | a Management API responde 200/201 no POST e o GET seguinte lista PROMO_CHAMPIONS_WEBHOOK_SECRET | 403/erro da API deixa o job vermelho e nenhum valor e' gravado parcialmente (uma chamada, um payload) | o resumo do run lista apenas NOMES de secrets, nunca valores | — | — |
 | Provisionar secret do webhook Promo Design | [`provisionar-secret-design-sync.yml`](../../.github/workflows/provisionar-secret-design-sync.yml) | dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar o segredo | a Management API responde 200/201 no POST e o GET seguinte lista PROMO_DESIGN_WEBHOOK_SECRET | 403/erro da API deixa o job vermelho e nenhum valor e' gravado parcialmente (uma chamada, um payload) | o resumo do run lista apenas NOMES de secrets, nunca valores | — | — |
 | Provisionar VAPID na edge de push | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar as chaves | a Management API responde 200 para o post de secrets e o GET seguinte lista VAPID_PUBLIC_KEY e VAPID_PRIVATE_KEY no projeto oficial | 403/erro da API deixa o job vermelho e NENHUMA chave e' gravada parcialmente (uma chamada, um payload) | o resumo do run lista os nomes das secrets publicadas (nunca os valores) e o ref do projeto | — | — |
 | types-sync | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch | src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2) | PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente | PR de types e issue de gate | — | — |
@@ -102,6 +103,13 @@
 - **Quando falha:** o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist
 - **Quem é avisado:** abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail
 
+### Provisionar secret do webhook Promo Champions (`provisionar-secret-champions-webhook.yml`)
+
+- **Gatilho:** dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar o segredo
+- **O que prova:** a Management API responde 200/201 no POST e o GET seguinte lista PROMO_CHAMPIONS_WEBHOOK_SECRET
+- **Quando falha:** 403/erro da API deixa o job vermelho e nenhum valor e' gravado parcialmente (uma chamada, um payload)
+- **Quem é avisado:** o resumo do run lista apenas NOMES de secrets, nunca valores
+
 ### Provisionar secret do webhook Promo Design (`provisionar-secret-design-sync.yml`)
 
 - **Gatilho:** dispatch manual com confirmacao APLICAR; roda so quando o dono decidir publicar o segredo
@@ -150,6 +158,8 @@
 | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | **issue-aberta-depois-do-verde** | a issue nao fecha sozinha; quem corrigiu fecha a issue (nenhum workflow sabe dizer que a causa raiz foi resolvida) |
 | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | **objeto-renomeado** | politica/indice que mudou de nome nao esta "faltando"; registre a excecao na allowlist com o nome novo como motivo |
 | [`paridade-banco.yml`](../../.github/workflows/paridade-banco.yml) | **secret-ausente** | sem SUPABASE_DB_URL o job falha fechado de proposito -- relatar paridade sem ler o banco seria mentira |
+| [`provisionar-secret-champions-webhook.yml`](../../.github/workflows/provisionar-secret-champions-webhook.yml) | **sem-eco-de-valor** | o segredo chega por secret do repositorio e nunca aparece no log |
+| [`provisionar-secret-champions-webhook.yml`](../../.github/workflows/provisionar-secret-champions-webhook.yml) | **sem-geracao** | gerar o valor aqui invalidaria o segredo configurado no lado emissor (Promo Champions) |
 | [`provisionar-secret-design-sync.yml`](../../.github/workflows/provisionar-secret-design-sync.yml) | **sem-eco-de-valor** | o segredo chega por secret do repositorio e nunca aparece no log |
 | [`provisionar-secret-design-sync.yml`](../../.github/workflows/provisionar-secret-design-sync.yml) | **sem-geracao** | gerar o valor aqui invalidaria o segredo configurado no lado emissor (Promo Design) |
 | [`provisionar-vapid.yml`](../../.github/workflows/provisionar-vapid.yml) | **sem-eco-de-valor** | a chave privada nunca aparece no log; o workflow imprime apenas nomes |
