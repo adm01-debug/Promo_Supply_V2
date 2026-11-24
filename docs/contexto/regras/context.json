@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d08b3c43234fd16d2584d584f2b2ceabf5dd70c5",
+  "sha": "eb55789ed7cd07e93d6b2f3ebab1a757d832c4ce",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 10:57 UTC",
-  "files_total": 1398,
-  "code_files": 1226,
-  "code_lines": 208800,
+  "generated_at": "2026-11-24 11:11 UTC",
+  "files_total": 1400,
+  "code_files": 1228,
+  "code_lines": 208939,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ad548e9a366ef9b4",
+ "facts_hash": "e125fc00949719c7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -271,7 +271,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 387,
+   ".tsx": 389,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33730,7 +33730,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 305,
+  "components_count": 306,
   "hooks": [
    {
     "name": "useContacts",
@@ -34768,8 +34768,8 @@
   },
   {
    "module": "src/components",
-   "files": 270,
-   "lines": 50570,
+   "files": 271,
+   "lines": 50634,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35110,8 +35110,8 @@
   },
   {
    "module": "src/features/layout",
-   "files": 38,
-   "lines": 6019,
+   "files": 39,
+   "lines": 6094,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -35176,6 +35176,7 @@
     "src/stores"
    ],
    "file_list": [
+    "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
     "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
     "src/features/layout/components/AdvancedSearch.tsx",
     "src/features/layout/components/AppSidebar.tsx",
@@ -59447,6 +59448,18 @@
     "name": "regra com aprovador real e salva"
    },
    {
+    "file": "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+    "name": "PendingApprovalsList acessibilidade (UX-04 1/4)"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+    "name": "o menu de acoes de cada aprovacao tem nome acessivel"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+    "name": "nao sobra botao so-icone sem nome no cartao da aprovacao"
+   },
+   {
     "file": "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
     "name": "ApprovalRuleModal usa pessoas e categorias reais"
    },
@@ -61597,6 +61610,26 @@
    {
     "file": "src/features/auth/types/__tests__/authRoles.test.ts",
     "name": "every color value contains at least two CSS class segments"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    "name": "AppSidebar acessibilidade (UX-04 1/4)"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    "name": "sidebar recolhida: os links de modulo continuam com nome acessivel"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    "name": "sidebar recolhida: os dois controles do rodape tem nome"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    "name": "sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    "name": "nenhum link da sidebar fica sem nome acessivel (recolhida ou expandida)"
    },
    {
     "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
@@ -96134,6 +96167,16 @@
     "regra com aprovador real e salva"
    ]
   },
+  "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx": {
+   "path": "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+   "lines": 64,
+   "is_test": true,
+   "tests": [
+    "PendingApprovalsList acessibilidade (UX-04 1/4)",
+    "o menu de acoes de cada aprovacao tem nome acessivel",
+    "nao sobra botao so-icone sem nome no cartao da aprovacao"
+   ]
+  },
   "src/components/compras/approval/ApprovalDelegationModal.tsx": {
    "path": "src/components/compras/approval/ApprovalDelegationModal.tsx",
    "lines": 120,
@@ -99970,6 +100013,18 @@
     "useEmpresaFilter"
    ]
   },
+  "src/features/layout/__tests__/AppSidebar.a11y.test.tsx": {
+   "path": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+   "lines": 72,
+   "is_test": true,
+   "tests": [
+    "AppSidebar acessibilidade (UX-04 1/4)",
+    "sidebar recolhida: os links de modulo continuam com nome acessivel",
+    "sidebar recolhida: os dois controles do rodape tem nome",
+    "sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label",
+    "nenhum link da sidebar fica sem nome acessivel (recolhida ou expandida)"
+   ]
+  },
   "src/features/layout/__tests__/AppSidebar.ativo.test.ts": {
    "path": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
    "lines": 49,
@@ -100027,7 +100082,7 @@
   },
   "src/features/layout/components/AppSidebar.tsx": {
    "path": "src/features/layout/components/AppSidebar.tsx",
-   "lines": 494,
+   "lines": 497,
    "exports": [
     "function isItemActive",
     "const AppSidebar",
@@ -120089,10 +120144,23 @@
   }
  },
  "git": {
-  "sha": "d08b3c43234fd16d2584d584f2b2ceabf5dd70c5",
+  "sha": "eb55789ed7cd07e93d6b2f3ebab1a757d832c4ce",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "eb55789",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/PendingApprovalsList.tsx",
+     "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+     "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+     "src/features/layout/components/AppSidebar.tsx"
+    ]
+   },
    {
     "sha": "d08b3c4",
     "date": "2026-11-24",
@@ -120441,21 +120509,6 @@
      "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
      "src/features/solicitacoes/pessoasDaEmpresa.ts"
     ]
-   },
-   {
-    "sha": "9269c98",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
-     "src/pages/pedidos/pedidosHelpers.ts",
-     "src/pages/solicitacoes/Solicitacoes.tsx",
-     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-     "src/pages/solicitacoes/solicitacoesHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120469,10 +120522,6 @@
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    3
-   ],
-   [
-    "src/pages/solicitacoes/Solicitacoes.tsx",
     3
    ],
    [
@@ -120504,8 +120553,24 @@
     2
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
+    "src/pages/solicitacoes/Solicitacoes.tsx",
     2
+   ],
+   [
+    "src/components/compras/PendingApprovalsList.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
+    1
+   ],
+   [
+    "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/AppSidebar.tsx",
+    1
    ],
    [
     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
@@ -120525,18 +120590,6 @@
    ],
    [
     ".github/workflows/provisionar-secret-design-sync.yml",
-    1
-   ],
-   [
-    "docs/ci/README.md",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d08b3c43234fd16d2584d584f2b2ceabf5dd70c5",
+  "commit": "eb55789ed7cd07e93d6b2f3ebab1a757d832c4ce",
   "branch": "main",
-  "data_commit": "2026-11-24T07:57:00-03:00",
+  "data_commit": "2026-11-24T08:11:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "eb55789",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)"
+   },
    {
     "sha": "d08b3c4",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "5f14e85",
     "data": "2026-11-24",
     "assunto": "fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)"
-   },
-   {
-    "sha": "e2ea735",
-    "data": "2026-11-24",
-    "assunto": "fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)"
    }
   ],
-  "arquivos_mudados_7d": 447,
+  "arquivos_mudados_7d": 450,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 179
+    "mudancas": 181
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -149,11 +149,11 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 49
+    "mudancas": 51
    },
    {
     "pasta": "docs/pendencias/_indice.md",
@@ -189,7 +189,7 @@
    },
    {
     "pasta": "src/features/solicitacoes",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -234,10 +234,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
@@ -263,6 +259,10 @@
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "mudancas": 6
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1397,
-  "arquivos_codigo": 893,
-  "linhas_codigo": 181616,
+  "arquivos_total": 1399,
+  "arquivos_codigo": 895,
+  "linhas_codigo": 181755,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 257,
+  "testes": 259,
   "workflows": 14,
   "scripts": 50,
   "docs_md": 100
@@ -427,12 +427,12 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 270,
-   "linhas": 50570
+   "arquivos": 271,
+   "linhas": 50634
   },
   "src/features": {
-   "arquivos": 84,
-   "linhas": 10750
+   "arquivos": 85,
+   "linhas": 10825
   },
   "src/hooks": {
    "arquivos": 89,

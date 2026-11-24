@@ -419,7 +419,7 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 23,
+   "testes": 24,
    "linhas": 25840,
    "itens_menu": [],
    "telas": [],
@@ -1970,8 +1970,8 @@
   {
    "modulo": "features/layout",
    "arquivos": 32,
-   "testes": 6,
-   "linhas": 5104,
+   "testes": 7,
+   "linhas": 5107,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

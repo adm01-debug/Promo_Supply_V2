@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d08b3c4323` · branch `main` · 2026-11-24 10:57 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `eb55789ed7` · branch `main` · 2026-11-24 11:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3141 testes em 206 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3149 testes em 208 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2596,6 +2596,7 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
+| `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
@@ -2632,6 +2633,7 @@ _nenhum item encontrado_
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
+| `src/components/compras/__tests__/pendingApprovalsA11y.test.tsx` | 3 | PendingApprovalsList acessibilidade (UX-04 1/4) · o menu de acoes de cada aprovacao tem nome acessivel · nao sobra botao so-icone sem nome no cartao da aprovacao |
 | `src/components/security/__tests__/PasskeyManager.pendente.test.tsx` | 3 | PasskeyManager / anuncio honesto (SEC-11) · nao promete login por biometria enquanto o servidor recusa · botao Adicionar Passkey fica desabilitado |
 | `src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx` | 3 | usePedidos · ordem de compra so com solicitacao aprovada (NEG-06) · nao cria a ordem quando a solicitacao nao esta aprovada · cria a ordem quando a solicitacao esta aprovada |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx` | 3 | createSolicitacao com auto aprovacao do banco · nao cria workflow quando o banco devolve a solicitacao ja aprovada · cria o workflow quando o banco devolve a solicitacao pendente |
