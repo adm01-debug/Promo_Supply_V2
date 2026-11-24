@@ -7,6 +7,96 @@ import { toast } from 'sonner';
 import type { AppRole } from '../types/authRoles';
 import { UserProfileSchema, type UserProfile, type Tenant } from '../schemas/auth.schemas';
 import { AuthContext } from './AuthContext';
+import { getStorageTenantId } from '@/lib/storageFiles';
+
+/** Id da linha em `active_sessions` que representa este navegador (lido pelo painel de Seguranca). */
+export const ACTIVE_SESSION_STORAGE_KEY = 'promo-supply:active-session-id';
+
+/**
+ * QA 038: `active_sessions.session_token` e UNIQUE e o trigger `sanitize_session_token`
+ * corta qualquer valor em 8 caracteres + "...redacted". Um JWT colidiria no UNIQUE,
+ * porque todo access token do Supabase comeca com "eyJhbGci"; por isso gravamos um id
+ * curto e aleatorio por navegador.
+ */
+const newSessionToken = (): string => {
+  const raw =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().replace(/-/g, '')
+      : Math.random().toString(16).slice(2).padEnd(12, '0');
+  return raw.slice(0, 12);
+};
+
+/**
+ * QA 038: registra a sessao do navegador em `active_sessions` para o painel "Sessoes
+ * Ativas". Cria a linha no primeiro login e atualiza nos seguintes (id guardado em
+ * localStorage). Falha de RLS/rede nunca bloqueia o login.
+ */
+export async function registerActiveSession(userId: string, session: Session): Promise<void> {
+  try {
+    const tenantId = await getStorageTenantId(userId, null);
+    if (!tenantId) return;
+    const nowIso = new Date().toISOString();
+    const expiresIso = new Date(
+      (session.expires_at ?? Math.floor(Date.now() / 1000) + 3600) * 1000
+    ).toISOString();
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 500) : null;
+    const payload = {
+      last_activity: nowIso,
+      expires_at: expiresIso,
+      tenant_id: tenantId,
+      user_agent: userAgent,
+    };
+
+    const storedId = window.localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY);
+    if (storedId) {
+      const { data, error } = await supabase
+        .from('active_sessions')
+        .update(payload)
+        .eq('id', storedId)
+        .eq('user_id', userId)
+        .select('id');
+      if (!error && data && data.length > 0) return;
+    }
+
+    // Sem isso o painel acumula linha expirada de todo login antigo.
+    await supabase.from('active_sessions').delete().eq('user_id', userId).lt('expires_at', nowIso);
+
+    const { data, error } = await supabase
+      .from('active_sessions')
+      .insert({
+        ...payload,
+        user_id: userId,
+        session_token: newSessionToken(),
+        device_info: {
+          language: typeof navigator !== 'undefined' ? navigator.language : null,
+          platform: typeof navigator !== 'undefined' ? navigator.platform : null,
+        },
+      })
+      .select('id')
+      .single();
+    if (error) throw error;
+    if (data?.id) window.localStorage.setItem(ACTIVE_SESSION_STORAGE_KEY, data.id);
+  } catch (error) {
+    logger.warn('Falha ao registrar sessao ativa', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+/** Remove a linha desta sessao ao sair; apagar a linha e o que o painel sabe fazer de verdade. */
+export async function unregisterActiveSession(): Promise<void> {
+  try {
+    const storedId = window.localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY);
+    if (!storedId) return;
+    await supabase.from('active_sessions').delete().eq('id', storedId);
+  } catch (error) {
+    logger.warn('Falha ao remover sessao ativa', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  } finally {
+    window.localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY);
+  }
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -147,6 +237,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (session?.user) {
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
             if (event === 'SIGNED_IN') setLoading(true);
+            if (event === 'SIGNED_IN') void registerActiveSession(session.user.id, session);
             setTimeout(() => {
               if (!mounted) return;
               fetchUserData(session.user.id).finally(() => {
@@ -242,6 +333,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // so a late-arriving Promise cannot restore the outgoing user's profile/role.
     fetchGenerationRef.current += 1;
     fetchedUserIdRef.current = null;
+    // Antes do signOut: depois dele nao ha JWT e a policy de DELETE nao vale mais.
+    await unregisterActiveSession();
     await clearSwCaches();
     await supabase.auth.signOut();
     queryClient.clear();
