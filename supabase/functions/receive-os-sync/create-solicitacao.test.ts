@@ -31,11 +31,16 @@ interface InsertResult {
 function fakeAdmin(roteiro: {
   inserts: InsertResult[];
   existente?: Record<string, unknown> | null;
+  numeroDoRpc?: string;
 }) {
-  const chamadas = { insert: 0, existente: 0 };
+  const chamadas = { insert: 0, existente: 0, rpc: 0 };
   const linhas: Record<string, unknown>[] = [];
 
   const client = {
+    rpc: (_nome: string, _args: unknown) => {
+      chamadas.rpc += 1;
+      return Promise.resolve({ data: roteiro.numeroDoRpc ?? null, error: null });
+    },
     from: (_tabela: string) => ({
       insert: (row: Record<string, unknown>) => ({
         select: (_cols: string) => ({
@@ -132,4 +137,26 @@ Deno.test("colisao que nao cede desiste depois de 5 tentativas", async () => {
     "apos 5 tentativas",
   );
   assertEquals(chamadas.insert, 5);
+});
+Deno.test("banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente", async () => {
+  const { client, chamadas, linhas } = fakeAdmin({
+    inserts: [
+      {
+        error: {
+          code: "23502",
+          message: 'null value in column "numero" of relation "solicitacoes" violates not-null constraint',
+        },
+      },
+      { data: { id: "sol-fallback", numero: "SOL-000777" } },
+    ],
+    numeroDoRpc: "SOL-000777",
+  });
+
+  const r = await createSolicitacao(client, payload(), TENANT);
+
+  assertEquals(r, { id: "sol-fallback", numero: "SOL-000777" });
+  assertEquals(chamadas.rpc, 1);
+  assertEquals(chamadas.insert, 2);
+  assertEquals(linhas[0].numero, null);
+  assertEquals(linhas[1].numero, "SOL-000777");
 });

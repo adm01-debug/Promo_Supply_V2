@@ -17,9 +17,15 @@ export async function createSolicitacao(
   // O retry abaixo e' rede de seguranca para colisao residual (tela gravando
   // numero por fora enquanto a entrega acontece).
   const MAX_TENTATIVAS_NUMERO = 5;
-  const draft = buildSolicitacaoDraft(payload, { tenantId });
+  // Preenchido so quando o banco ainda nao tem o trigger (migration pendente).
+  let numeroDeReserva: string | null = null;
 
   for (let tentativa = 1; ; tentativa += 1) {
+    const draft = buildSolicitacaoDraft(payload, {
+      numero: numeroDeReserva,
+      tenantId,
+    });
+
     const { data, error } = await admin
       .from("solicitacoes")
       .insert(toInsertRow(draft))
@@ -28,6 +34,22 @@ export async function createSolicitacao(
 
     if (!error) {
       return { id: data.id as string, numero: data.numero as string };
+    }
+
+    // 23502 = numero NOT NULL violado -> o trigger do banco nao existe ainda.
+    // Gera pelo RPC e tenta de novo, para a entrega funcionar com ou sem a
+    // migration aplicada.
+    if (
+      error.code === "23502" && /numero/.test(error.message) &&
+      numeroDeReserva === null
+    ) {
+      const { data: gerado, error: erroNumero } = await admin.rpc(
+        "generate_sequential_number",
+        { prefix: "SOL", table_name: "solicitacoes" },
+      );
+      if (erroNumero) throw new Error(`numero: ${erroNumero.message}`);
+      numeroDeReserva = String(gerado);
+      continue;
     }
 
     if (error.code === "23505") {
