@@ -1,115 +1,205 @@
 /**
- * Mock data and constants for the Aprovacoes page.
- * Extracted to reduce the main component size.
+ * Agregacoes reais da tela de Aprovacoes (QA 099/100).
+ *
+ * Este modulo era "Mock data and constants": os 5 KPIs (3/28/2/4.2h/1), a serie
+ * Jul-Dez, a distribuicao 149/15/3/5, os gargalos e o historico SOL-2024-150
+ * eram literais exibidos como se fossem medicao. Agora tudo deriva de
+ * approval_history / approval_workflows / approval_steps, recortado pelo periodo
+ * escolhido; o que nao tem amostra volta null e a tela mostra "-" em vez de um
+ * numero inventado.
  */
 
-export interface ApprovalHistoryItem {
-  id: string;
-  solicitacao: string;
-  valor: number;
-  acao: string;
-  por: string;
-  data: string;
-}
+import type {
+  ApprovalHistoryItem,
+  ApprovalTrendItem,
+  BottleneckItem,
+  StatusDistributionItem,
+} from "@/features/aprovacoes";
+import type { ApprovalHistory, ApprovalStep } from "@/hooks/useApprovalWorkflow";
 
-export interface ApprovalTrendItem {
-  mes: string;
-  aprovadas: number;
-  rejeitadas: number;
+export const JANELA_MESES: Record<string, number> = { "1m": 1, "3m": 3, "6m": 6, "12m": 12 };
+
+const MES_CURTO = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+const VERDE = "#10b981";
+const VERMELHO = "#ef4444";
+const AMBAR = "#f59e0b";
+const ROXO = "#8b5cf6";
+
+export interface ResumoAprovacoes {
   pendentes: number;
-  tempoMedio: number;
-}
-
-export interface ApprovalByValueRangeItem {
-  faixa: string;
-  quantidade: number;
-  tempoMedio: number;
-}
-
-export interface ApprovalByApproverItem {
-  nome: string;
   aprovadas: number;
   rejeitadas: number;
-  tempoMedio: number;
+  escalacoes: number;
+  tempoMedioHoras: number | null;
+  taxaAprovacao: number | null;
 }
 
-export interface BottleneckItem {
-  etapa: string;
-  tempo: number;
-  percentual: number;
+/** Inicio da janela do seletor de periodo, contado a partir de agora. */
+export function inicioDaJanela(periodo: string, agora: Date = new Date()): Date {
+  const meses = JANELA_MESES[periodo] ?? 6;
+  const inicio = new Date(agora.getTime());
+  inicio.setMonth(inicio.getMonth() - meses);
+  return inicio;
 }
 
-export interface StatusDistributionItem {
-  name: string;
-  value: number;
-  color: string;
+export function dentroDaJanela(valor: string | null | undefined, inicio: Date): boolean {
+  if (!valor) return false;
+  const quando = new Date(valor).getTime();
+  return Number.isFinite(quando) && quando >= inicio.getTime();
 }
 
-export interface WeeklyTrendItem {
-  dia: string;
-  quantidade: number;
-  tempoMedio: number;
-}
-
-export const approvalHistory: ApprovalHistoryItem[] = [
-  { id: "1", solicitacao: "SOL-2024-150", valor: 12500, acao: "Aprovado", por: "Você", data: "2024-12-15 14:30" },
-  { id: "2", solicitacao: "SOL-2024-148", valor: 8200, acao: "Aprovado", por: "Você", data: "2024-12-14 10:15" },
-  { id: "3", solicitacao: "SOL-2024-145", valor: 3500, acao: "Rejeitado", por: "Você", data: "2024-12-13 16:45" },
-  { id: "4", solicitacao: "SOL-2024-142", valor: 45000, acao: "Escalado", por: "Sistema", data: "2024-12-12 09:00" },
-];
-
-export const approvalStats = {
-  pendentes: 3,
-  aprovadasMes: 28,
-  rejeitadasMes: 2,
-  tempoMedioAprovacao: "4.2h",
-  escalacoesMes: 1,
+const horasEntre = (de: string | null | undefined, ate: string | null | undefined): number | null => {
+  if (!de || !ate) return null;
+  const inicio = new Date(de).getTime();
+  const fim = new Date(ate).getTime();
+  if (!Number.isFinite(inicio) || !Number.isFinite(fim) || fim < inicio) return null;
+  return (fim - inicio) / 3_600_000;
 };
 
-export const approvalTrendData: ApprovalTrendItem[] = [
-  { mes: "Jul", aprovadas: 22, rejeitadas: 3, pendentes: 2, tempoMedio: 5.2 },
-  { mes: "Ago", aprovadas: 25, rejeitadas: 2, pendentes: 4, tempoMedio: 4.8 },
-  { mes: "Set", aprovadas: 18, rejeitadas: 4, pendentes: 1, tempoMedio: 6.1 },
-  { mes: "Out", aprovadas: 30, rejeitadas: 1, pendentes: 3, tempoMedio: 3.9 },
-  { mes: "Nov", aprovadas: 26, rejeitadas: 3, pendentes: 2, tempoMedio: 4.5 },
-  { mes: "Dez", aprovadas: 28, rejeitadas: 2, pendentes: 3, tempoMedio: 4.2 },
-];
+const media = (valores: number[]): number | null =>
+  valores.length === 0 ? null : valores.reduce((acc, valor) => acc + valor, 0) / valores.length;
 
-export const approvalByValueRange: ApprovalByValueRangeItem[] = [
-  { faixa: "< R$5K", quantidade: 45, tempoMedio: 2.1 },
-  { faixa: "R$5K-10K", quantidade: 32, tempoMedio: 3.5 },
-  { faixa: "R$10K-25K", quantidade: 18, tempoMedio: 5.8 },
-  { faixa: "R$25K-50K", quantidade: 8, tempoMedio: 12.4 },
-  { faixa: "> R$50K", quantidade: 3, tempoMedio: 24.0 },
-];
+/** Tempo entre a criacao da etapa e a decisao, so para etapas decididas dentro da janela. */
+export function tempoMedioDecisaoHoras(steps: ApprovalStep[], inicio: Date): number | null {
+  const duracoes: number[] = [];
+  for (const step of steps) {
+    if (step.status !== "approved" && step.status !== "rejected") continue;
+    if (!dentroDaJanela(step.decidido_em, inicio)) continue;
+    const horas = horasEntre(step.created_at, step.decidido_em);
+    if (horas !== null) duracoes.push(horas);
+  }
+  return media(duracoes);
+}
 
-export const approvalByApprover: ApprovalByApproverItem[] = [
-  { nome: "Carlos Diretor", aprovadas: 45, rejeitadas: 3, tempoMedio: 3.2 },
-  { nome: "Ana Coordenadora", aprovadas: 38, rejeitadas: 5, tempoMedio: 4.5 },
-  { nome: "Roberto Gerente", aprovadas: 28, rejeitadas: 2, tempoMedio: 5.1 },
-  { nome: "Maria Supervisora", aprovadas: 22, rejeitadas: 4, tempoMedio: 6.8 },
-];
+export function resumirAprovacoes(
+  history: ApprovalHistory[],
+  pendentes: number,
+  steps: ApprovalStep[],
+  inicio: Date,
+): ResumoAprovacoes {
+  const naJanela = history.filter((h) => dentroDaJanela(h.created_at, inicio));
+  const aprovadas = naJanela.filter((h) => h.acao === "approved").length;
+  const rejeitadas = naJanela.filter((h) => h.acao === "rejected").length;
+  const escalacoes = naJanela.filter((h) => h.acao === "escalated").length;
+  const decididas = aprovadas + rejeitadas;
 
-export const bottleneckData: BottleneckItem[] = [
-  { etapa: "Aguardando Aprovador", tempo: 2.8, percentual: 42 },
-  { etapa: "Em Análise", tempo: 1.2, percentual: 18 },
-  { etapa: "Aguardando Documentos", tempo: 1.8, percentual: 27 },
-  { etapa: "Revisão Final", tempo: 0.9, percentual: 13 },
-];
+  return {
+    pendentes,
+    aprovadas,
+    rejeitadas,
+    escalacoes,
+    tempoMedioHoras: tempoMedioDecisaoHoras(steps, inicio),
+    taxaAprovacao: decididas > 0 ? (aprovadas / decididas) * 100 : null,
+  };
+}
 
-export const statusDistribution: StatusDistributionItem[] = [
-  { name: "Aprovadas", value: 149, color: "#10b981" },
-  { name: "Rejeitadas", value: 15, color: "#ef4444" },
-  { name: "Pendentes", value: 3, color: "#f59e0b" },
-  { name: "Escaladas", value: 5, color: "#8b5cf6" },
-];
+/**
+ * Serie mes a mes da janela. `pendentes` do mes e o que segue aberto hoje naquele
+ * mes (nao da para reconstruir o passado sem historico de status), e `tempoMedio`
+ * e a media das etapas decididas naquele mes - 0 quando nao houve decisao.
+ */
+export function serieMensal(
+  history: ApprovalHistory[],
+  steps: ApprovalStep[],
+  periodo: string,
+  agora: Date = new Date(),
+): ApprovalTrendItem[] {
+  const meses = JANELA_MESES[periodo] ?? 6;
+  const primeiro = new Date(agora.getFullYear(), agora.getMonth() - (meses - 1), 1);
+  const baldes: ApprovalTrendItem[] = [];
+  for (let i = 0; i < meses; i++) {
+    const ref = new Date(primeiro.getFullYear(), primeiro.getMonth() + i, 1);
+    baldes.push({ mes: MES_CURTO[ref.getMonth()], aprovadas: 0, rejeitadas: 0, pendentes: 0, tempoMedio: 0 });
+  }
 
-export const weeklyTrend: WeeklyTrendItem[] = [
-  { dia: "Seg", quantidade: 8, tempoMedio: 3.5 },
-  { dia: "Ter", quantidade: 12, tempoMedio: 4.2 },
-  { dia: "Qua", quantidade: 10, tempoMedio: 3.8 },
-  { dia: "Qui", quantidade: 9, tempoMedio: 4.5 },
-  { dia: "Sex", quantidade: 6, tempoMedio: 5.2 },
-];
+  const indiceDe = (valor: string | null | undefined): number | null => {
+    if (!valor) return null;
+    const quando = new Date(valor);
+    if (!Number.isFinite(quando.getTime()) || quando < primeiro) return null;
+    const indice = (quando.getFullYear() - primeiro.getFullYear()) * 12 + (quando.getMonth() - primeiro.getMonth());
+    return indice >= 0 && indice < baldes.length ? indice : null;
+  };
 
-export const COLORS = ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6'];
+  for (const h of history) {
+    const indice = indiceDe(h.created_at);
+    if (indice === null) continue;
+    if (h.acao === "approved") baldes[indice].aprovadas += 1;
+    else if (h.acao === "rejected") baldes[indice].rejeitadas += 1;
+  }
+
+  const duracoes: number[][] = baldes.map(() => []);
+  for (const step of steps) {
+    if (step.status !== "approved" && step.status !== "rejected") continue;
+    const indice = indiceDe(step.decidido_em);
+    if (indice === null) continue;
+    const horas = horasEntre(step.created_at, step.decidido_em);
+    if (horas !== null) duracoes[indice].push(horas);
+  }
+  duracoes.forEach((lista, indice) => {
+    const valor = media(lista);
+    baldes[indice].tempoMedio = valor === null ? 0 : Number(valor.toFixed(1));
+  });
+
+  return baldes;
+}
+
+/** Contagem real dos workflows por status (nao so os pendentes). */
+export function distribuicaoPorStatus(workflows: { status: string }[]): StatusDistributionItem[] {
+  const contagem: Record<string, number> = { approved: 0, rejected: 0, pending: 0, escalated: 0 };
+  for (const workflow of workflows) {
+    if (workflow.status in contagem) contagem[workflow.status] += 1;
+  }
+  return [
+    { name: "Aprovadas", value: contagem.approved, color: VERDE },
+    { name: "Rejeitadas", value: contagem.rejected, color: VERMELHO },
+    { name: "Pendentes", value: contagem.pending, color: AMBAR },
+    { name: "Escaladas", value: contagem.escalated, color: ROXO },
+  ];
+}
+
+/** Etapas em aberto: quanto tempo cada etapa ja espera e o peso dela no total. */
+export function gargalos(steps: ApprovalStep[], agora: Date = new Date()): BottleneckItem[] {
+  const esperaPorEtapa = new Map<number, number[]>();
+  for (const step of steps) {
+    if (step.status !== "pending") continue;
+    const horas = horasEntre(step.created_at, agora.toISOString());
+    if (horas === null) continue;
+    const lista = esperaPorEtapa.get(step.etapa) ?? [];
+    lista.push(horas);
+    esperaPorEtapa.set(step.etapa, lista);
+  }
+
+  const total = [...esperaPorEtapa.values()].reduce(
+    (acc, lista) => acc + lista.reduce((soma, horas) => soma + horas, 0),
+    0,
+  );
+
+  return [...esperaPorEtapa.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([etapa, lista]) => {
+      const soma = lista.reduce((acc, horas) => acc + horas, 0);
+      return {
+        etapa: `${etapa}a etapa`,
+        tempo: Number((soma / lista.length).toFixed(1)),
+        percentual: total > 0 ? Math.round((soma / total) * 100) : 0,
+      };
+    });
+}
+
+const valorDoDetalhe = (detalhes: Record<string, unknown> | null | undefined): number => {
+  const valor = detalhes?.valor;
+  return typeof valor === "number" && Number.isFinite(valor) ? valor : 0;
+};
+
+/** Historico do banco no formato da lista - sem fallback de mock quando vazio. */
+export function historicoDaLista(history: ApprovalHistory[]): ApprovalHistoryItem[] {
+  return history.map((h) => ({
+    id: h.id,
+    solicitacao: h.solicitacao_id ? h.solicitacao_id.substring(0, 8) : "N/A",
+    valor: valorDoDetalhe(h.detalhes),
+    acao: h.acao,
+    por: h.usuario_nome || "Sistema",
+    data: new Date(h.created_at).toLocaleString("pt-BR"),
+  }));
+}

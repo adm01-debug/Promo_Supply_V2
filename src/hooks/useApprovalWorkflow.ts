@@ -38,6 +38,11 @@ export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
   const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
+  // Tudo o que ja passou pela aprovacao existe so no espelho filtrado de pendentes
+  // ate aqui: sem estas duas listas a tela de Aprovacoes nao tinha como contar
+  // decididos nem medir tempo de decisao (QA 099/100).
+  const [allWorkflows, setAllWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
+  const [allSteps, setAllSteps] = useState<ApprovalStep[]>([]);
   const [loading, setLoading] = useState(false);
 
   const rulesApi = useApprovalRules();
@@ -78,6 +83,32 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
     } catch (error) { logger.error('Error fetching pending steps', { error }); }
+  }, [user, organizationId]);
+
+  const fetchAllWorkflows = useCallback(async () => {
+    if (!user || !organizationId) return;
+    try {
+      const { data, error } = await supabase
+        .from('approval_workflows')
+        .select('*, solicitacoes:solicitacoes(numero, titulo, prioridade)')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      setAllWorkflows((data ?? []) as unknown as ApprovalWorkflowWithRelations[]);
+    } catch (error) { logger.error('Error fetching all workflows', { error }); }
+  }, [user, organizationId]);
+
+  const fetchAllSteps = useCallback(async () => {
+    if (!user || !organizationId) return;
+    try {
+      const { data, error } = await supabase.from('approval_steps').select('*')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false })
+        .limit(500);
+      if (error) throw error;
+      setAllSteps((data || []) as ApprovalStep[]);
+    } catch (error) { logger.error('Error fetching all steps', { error }); }
   }, [user, organizationId]);
 
   // ── Workflow creation ────────────────────────────────────────────────────
@@ -368,8 +399,10 @@ export const useApprovalWorkflow = () => {
       fetchDelegationsRef.current(),
       fetchPendingWorkflows(),
       fetchPendingSteps(),
+      fetchAllWorkflows(),
+      fetchAllSteps(),
     ]);
-  }, [fetchPendingWorkflows, fetchPendingSteps]);
+  }, [fetchPendingWorkflows, fetchPendingSteps, fetchAllWorkflows, fetchAllSteps]);
 
   useEffect(() => {
     latestCheckEscalations = checkEscalations;
@@ -397,6 +430,8 @@ export const useApprovalWorkflow = () => {
     delegations: rulesApi.delegations,
     workflows,
     pendingSteps,
+    allWorkflows,
+    allSteps,
     allHistory: historyApi.allHistory,
     loading: loading || rulesApi.loading,
     // Fetches
@@ -404,6 +439,8 @@ export const useApprovalWorkflow = () => {
     fetchDelegations: rulesApi.fetchDelegations,
     fetchPendingWorkflows,
     fetchPendingSteps,
+    fetchAllWorkflows,
+    fetchAllSteps,
     fetchHistory: historyApi.fetchHistory,
     fetchAllHistory: historyApi.fetchAllHistory,
     // Rule/delegation mutations
