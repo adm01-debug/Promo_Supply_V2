@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0d83f6140b9ba572f132b7869a8a48d85368c4dd",
+  "sha": "773117bdb3f862d7c05c6d6c1c7fd31a45af1cc4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:33 UTC",
-  "files_total": 1421,
-  "code_files": 1248,
-  "code_lines": 211464,
+  "generated_at": "2026-11-24 15:41 UTC",
+  "files_total": 1424,
+  "code_files": 1251,
+  "code_lines": 211975,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e3f58f42252c473b",
+ "facts_hash": "d2095320d1d7cc6c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 436,
-   ".tsx": 405,
+   ".tsx": 408,
    ".sql": 332,
    ".mjs": 67,
    ".py": 5,
@@ -32890,6 +32890,13 @@
     "file": "scripts/ci/inventario-types/rotas.unit.mjs"
    },
    {
+    "path": "*",
+    "component": "",
+    "guard": "",
+    "roles": [],
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx"
+   },
+   {
     "path": "/",
     "component": "A",
     "guard": "",
@@ -33764,7 +33771,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 314,
+  "components_count": 316,
   "hooks": [
    {
     "name": "useContacts",
@@ -34803,8 +34810,8 @@
   },
   {
    "module": "src/components",
-   "files": 278,
-   "lines": 51355,
+   "files": 280,
+   "lines": 51649,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35752,8 +35759,8 @@
   },
   {
    "module": "src/pages",
-   "files": 151,
-   "lines": 34377,
+   "files": 152,
+   "lines": 34594,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -59680,6 +59687,22 @@
     "name": "o hook de aprovacoes passa a expor erro e a sinalizar fetch em curso"
    },
    {
+    "file": "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+    "name": "PendingApprovalsList - "
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+    "name": "mostra os eventos do workflow da aprovacao, nao os de outro workflow"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+    "name": "lista os eventos mais recentes primeiro"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+    "name": "sem eventos, diz que nao ha historico em vez de abrir um dialogo vazio"
+   },
+   {
     "file": "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx",
     "name": "SolicitacaoCard - nome acess\\u00edvel dos controles"
    },
@@ -59694,6 +59717,22 @@
    {
     "file": "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx",
     "name": "n\\u00e3o deixa nenhum bot\\u00e3o do cart\\u00e3o sem nome acess\\u00edvel"
+   },
+   {
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "name": "SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253)"
+   },
+   {
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "name": "o CONECTAR leva o comprador a tela de catalogo de produtos"
+   },
+   {
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "name": "o LISTAR tambem navega quando o produto ja tem parceiros"
+   },
+   {
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "name": "sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho"
    },
    {
     "file": "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
@@ -68026,6 +68065,30 @@
    {
     "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
     "name": "com a consulta bem sucedida e vazia, o estado vazio legitimo continua igual"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253)"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "o botao abre o dialogo de filtros"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "as localizacoes do filtro saem dos itens reais do estoque"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "filtrar por localizacao reduz a tabela ao item daquela localizacao"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "filtrar por situacao do saldo isola quem esta abaixo do minimo"
+   },
+   {
+    "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    "name": "conta os filtros ativos e limpar devolve a lista completa"
    },
    {
     "file": "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
@@ -95551,7 +95614,7 @@
   },
   "src/components/compras/PendingApprovalsList.tsx": {
    "path": "src/components/compras/PendingApprovalsList.tsx",
-   "lines": 499,
+   "lines": 559,
    "exports": [
     "const PendingApprovalsList"
    ],
@@ -95727,7 +95790,7 @@
   },
   "src/components/compras/ProductionRoutingEngine.tsx": {
    "path": "src/components/compras/ProductionRoutingEngine.tsx",
-   "lines": 188,
+   "lines": 203,
    "exports": [
     "const ProductionRoutingEngine",
     "const SourcingIntelligenceBanner"
@@ -95744,6 +95807,9 @@
      "produto_id"
     ]
    },
+   "navigates": [
+    "/catalogo-produtos"
+   ],
    "status_values": [
     {
      "field": "status",
@@ -96855,6 +96921,23 @@
     "o hook de aprovacoes passa a expor erro e a sinalizar fetch em curso"
    ]
   },
+  "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx": {
+   "path": "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+   "lines": 121,
+   "is_test": true,
+   "transition_maps": [
+    {
+     "name": "workflow",
+     "body": "id: \"wf-1\", solicitacao_id: \"sol-1\", valor: 1500, created_at: \"2026-03-01T10:00:00.000Z\", prazo_limite: \"2026-03-10T12:00:00.000Z\", total_etapas: 3, solicitacoes: { numero: \"SOL-1\", titulo: \"Compra de uniformes\", prioridade: \"normal\", solicitante: { full_name: \"Carla Dias\" }, }, categorias: { nome: \"Uniformes\" },"
+    }
+   ],
+   "tests": [
+    "PendingApprovalsList - ",
+    "mostra os eventos do workflow da aprovacao, nao os de outro workflow",
+    "lista os eventos mais recentes primeiro",
+    "sem eventos, diz que nao ha historico em vez de abrir um dialogo vazio"
+   ]
+  },
   "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx": {
    "path": "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx",
    "lines": 49,
@@ -96864,6 +96947,25 @@
     "nomeia o gatilho s\\u00f3-\\u00edcone do fluxo de aprova\\u00e7\\u00e3o",
     "mant\\u00e9m o r\\u00f3tulo textual do gatilho de contexto",
     "n\\u00e3o deixa nenhum bot\\u00e3o do cart\\u00e3o sem nome acess\\u00edvel"
+   ]
+  },
+  "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx": {
+   "path": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+   "lines": 98,
+   "is_test": true,
+   "routes": [
+    {
+     "path": "*",
+     "component": "",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "tests": [
+    "SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253)",
+    "o CONECTAR leva o comprador a tela de catalogo de produtos",
+    "o LISTAR tambem navega quando o produto ja tem parceiros",
+    "sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho"
    ]
   },
   "src/components/compras/approval/ApprovalDelegationModal.tsx": {
@@ -110469,7 +110571,7 @@
   },
   "src/pages/estoque/GestaoEstoque.tsx": {
    "path": "src/pages/estoque/GestaoEstoque.tsx",
-   "lines": 359,
+   "lines": 434,
    "exports": [
     "default GestaoEstoque"
    ],
@@ -110503,6 +110605,19 @@
      "value": "saida",
      "kind": "compara"
     }
+   ]
+  },
+  "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx": {
+   "path": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+   "lines": 142,
+   "is_test": true,
+   "tests": [
+    "GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253)",
+    "o botao abre o dialogo de filtros",
+    "as localizacoes do filtro saem dos itens reais do estoque",
+    "filtrar por localizacao reduz a tabela ao item daquela localizacao",
+    "filtrar por situacao do saldo isola quem esta abaixo do minimo",
+    "conta os filtros ativos e limpar devolve a lista completa"
    ]
   },
   "src/pages/fornecedores/Fornecedores.tsx": {
@@ -121067,10 +121182,25 @@
   }
  },
  "git": {
-  "sha": "0d83f6140b9ba572f132b7869a8a48d85368c4dd",
+  "sha": "773117bdb3f862d7c05c6d6c1c7fd31a45af1cc4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "773117b",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/PendingApprovalsList.tsx",
+     "src/components/compras/ProductionRoutingEngine.tsx",
+     "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+     "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+     "src/pages/estoque/GestaoEstoque.tsx",
+     "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx"
+    ]
+   },
    {
     "sha": "0d83f61",
     "date": "2026-11-24",
@@ -121406,26 +121536,20 @@
      "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
      "src/hooks/usePagamentos.ts"
     ]
-   },
-   {
-    "sha": "e14e3a5",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)",
-    "files": [
-     ".github/workflows/provisionar-secret-design-sync.yml",
-     "docs/ci/README.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    23
+    24
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     4
+   ],
+   [
+    "src/components/compras/PendingApprovalsList.tsx",
+    3
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -121448,10 +121572,6 @@
     3
    ],
    [
-    "src/components/compras/PendingApprovalsList.tsx",
-    2
-   ],
-   [
     "supabase/functions/receive-os-sync/mapping.ts",
     2
    ],
@@ -121468,8 +121588,24 @@
     2
    ],
    [
-    "docs/ci/README.md",
-    2
+    "src/components/compras/ProductionRoutingEngine.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    1
+   ],
+   [
+    "src/pages/estoque/GestaoEstoque.tsx",
+    1
+   ],
+   [
+    "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
+    1
    ],
    [
     "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
@@ -121481,22 +121617,6 @@
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
-    1
-   ],
-   [
-    "src/pages/documentos/DocumentosFiscais.tsx",
-    1
-   ],
-   [
-    "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
-    1
-   ],
-   [
-    "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/Solicitacoes.tsx",
     1
    ]
   ]

@@ -419,8 +419,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 30,
-   "linhas": 25902,
+   "testes": 32,
+   "linhas": 25977,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5272,8 +5272,8 @@
   {
    "modulo": "pages/estoque",
    "arquivos": 1,
-   "testes": 0,
-   "linhas": 359,
+   "testes": 1,
+   "linhas": 434,
    "itens_menu": [
     "Estoque"
    ],

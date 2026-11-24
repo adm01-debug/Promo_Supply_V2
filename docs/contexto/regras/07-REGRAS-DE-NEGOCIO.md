@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0d83f6140b` · branch `main` · 2026-11-24 15:33 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `773117bdb3` · branch `main` · 2026-11-24 15:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2461,7 +2461,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3261 testes em 226 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3275 testes em 229 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2608,6 +2608,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
+| `src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx` | 6 | GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253) · o botao abre o dialogo de filtros · as localizacoes do filtro saem dos itens reais do estoque · filtrar por localizacao reduz a tabela ao item daquela localizacao … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx` | 6 | Solicitacoes - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta no lugar do  · o botao de nova tentativa chama o refetch do hook · pede a pagina ao hook, em vez de aceitar a fatia padrao … |
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
@@ -2636,7 +2637,9 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
 | `src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx` | 4 | EnhancedBulkActionsBar - nome acess\u00edvel das a\u00e7\u00f5es · nomeia o gatilho s\u00f3-\u00edcone do menu de a\u00e7\u00f5es da sele\u00e7\u00e3o · nomeia o gatilho s\u00f3-\u00edcone que expande e recolhe a pr\u00e9via · n\u00e3o deixa nenhum bot\u00e3o da barra sem nome acess\u00edvel |
+| `src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx` | 4 | PendingApprovalsList -  · mostra os eventos do workflow da aprovacao, nao os de outro workflow · lista os eventos mais recentes primeiro · sem eventos, diz que nao ha historico em vez de abrir um dialogo vazio |
 | `src/components/compras/__tests__/solicitacaoCardA11y.test.tsx` | 4 | SolicitacaoCard - nome acess\u00edvel dos controles · nomeia o gatilho s\u00f3-\u00edcone do fluxo de aprova\u00e7\u00e3o · mant\u00e9m o r\u00f3tulo textual do gatilho de contexto · n\u00e3o deixa nenhum bot\u00e3o do cart\u00e3o sem nome acess\u00edvel |
+| `src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx` | 4 | SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253) · o CONECTAR leva o comprador a tela de catalogo de produtos · o LISTAR tambem navega quando o produto ja tem parceiros · sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
 | `src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx` | 4 | ChatArea - nome acess\u00edvel dos controles s\u00f3-\u00edcone · nomeia as a\u00e7\u00f5es do cabe\u00e7alho do contato · nomeia as a\u00e7\u00f5es do compositor de mensagem · n\u00e3o deixa nenhum bot\u00e3o do chat sem nome acess\u00edvel |
 | `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |

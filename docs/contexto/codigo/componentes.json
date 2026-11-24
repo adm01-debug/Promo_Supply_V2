@@ -1251,7 +1251,7 @@
     "PendingApprovalsList"
    ],
    "export_default": null,
-   "linhas": 499,
+   "linhas": 559,
    "dominio": "components/compras",
    "hooks_locais": [
     "useApprovalNotifications",
@@ -1321,7 +1321,7 @@
     "SourcingIntelligenceBanner"
    ],
    "export_default": null,
-   "linhas": 188,
+   "linhas": 203,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -2862,7 +2862,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 60,
+   "usado_por": 61,
    "orfao": false
   },
   {
@@ -4923,7 +4923,7 @@
     "GestaoEstoque"
    ],
    "export_default": "GestaoEstoque",
-   "linhas": 359,
+   "linhas": 434,
    "dominio": "pages/estoque",
    "hooks_locais": [
     "useEstoque",

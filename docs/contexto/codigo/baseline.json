@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0d83f6140b9ba572f132b7869a8a48d85368c4dd",
+  "commit": "773117bdb3f862d7c05c6d6c1c7fd31a45af1cc4",
   "branch": "main",
-  "data_commit": "2026-11-24T12:32:48-03:00",
+  "data_commit": "2026-11-24T12:41:07-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "773117b",
+    "data": "2026-11-24",
+    "assunto": "fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)"
+   },
    {
     "sha": "0d83f61",
     "data": "2026-11-24",
@@ -126,22 +131,17 @@
     "sha": "c42cabb",
     "data": "2026-11-24",
     "assunto": "ci: provisiona o segredo do webhook Promo Champions (#411)"
-   },
-   {
-    "sha": "57ebeb0",
-    "data": "2026-11-24",
-    "assunto": "feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)"
    }
   ],
-  "arquivos_mudados_7d": 458,
+  "arquivos_mudados_7d": 462,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 191
+    "mudancas": 195
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 79
+    "mudancas": 80
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 79
+    "mudancas": 80
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1420,
-  "arquivos_codigo": 914,
-  "linhas_codigo": 184238,
+  "arquivos_total": 1423,
+  "arquivos_codigo": 917,
+  "linhas_codigo": 184749,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 330,
   "cron_jobs": 74,
-  "testes": 277,
+  "testes": 280,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 278,
-   "linhas": 51355
+   "arquivos": 280,
+   "linhas": 51649
   },
   "src/features": {
    "arquivos": 86,
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 151,
-   "linhas": 34377
+   "arquivos": 152,
+   "linhas": 34594
   },
   "src/routes": {
    "arquivos": 1,
@@ -645,8 +645,8 @@
    "linhas": 568
   },
   {
-   "arquivo": "src/components/compras/ContractModal.tsx",
-   "linhas": 557
+   "arquivo": "src/components/compras/PendingApprovalsList.tsx",
+   "linhas": 559
   }
  ],
  "qualidade": {
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 33
+  "arquivos_acima_500_linhas": 34
  },
  "todos": [
   {

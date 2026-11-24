@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 637,
- "arestas": 2829,
+ "arestas": 2830,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -41,12 +41,12 @@
    "importado_por": 65
   },
   {
-   "arquivo": "src/components/ui/label.tsx",
+   "arquivo": "src/components/ui/dialog.tsx",
    "importado_por": 61
   },
   {
-   "arquivo": "src/components/ui/dialog.tsx",
-   "importado_por": 60
+   "arquivo": "src/components/ui/label.tsx",
+   "importado_por": 61
   },
   {
    "arquivo": "src/components/ui/select.tsx",
