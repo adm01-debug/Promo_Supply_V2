@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { escapeIlike } from '@/lib/supabaseQuery';
 
 /**
  * Leitura do cache local da API oficial SPOT.
@@ -65,8 +66,13 @@ export function useSpotProducts(filters: SpotCatalogFilters) {
         .order('name')
         .limit(SPOT_CATALOG_PAGE_SIZE);
 
-      if (filters.search.trim()) {
-        const term = `%${filters.search.trim()}%`;
+      // Etapa QA 060 (SEC-10): o termo vinha cru para dentro do `.or()`, e `,` `(` `)`
+      // sao delimitadores estruturais do PostgREST - a busca podia fechar o grupo e
+      // acrescentar condicoes na consulta. escapeIlike e o mesmo helper dos outros 8
+      // filtros de busca do app.
+      const searchTerm = escapeIlike(filters.search);
+      if (searchTerm) {
+        const term = `%${searchTerm}%`;
         query = query.or(`name.ilike.${term},reference.ilike.${term}`);
       }
       if (filters.collection) {
