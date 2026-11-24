@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 248,
+ "total": 249,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 230
+  "unit": 231
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 40
+   "arquivos": 41
   },
   {
    "padrao": "tests-e2e/",
@@ -2002,6 +2002,13 @@
    "casos": 5
   },
   {
+   "arquivo": "supabase/functions/check-approval-escalations/index.test.ts",
+   "tipo": "unit",
+   "linhas": 85,
+   "testa": [],
+   "casos": 7
+  },
+  {
    "arquivo": "supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts",
    "tipo": "unit",
    "linhas": 81,
@@ -2544,7 +2551,6 @@
    "ai-supplier-risk",
    "ai-supplier-suggestion",
    "alert-dispatcher",
-   "check-approval-escalations",
    "erp-credential-encrypt",
    "erp-sync",
    "external-db-bridge",

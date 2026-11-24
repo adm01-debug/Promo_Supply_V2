@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66773c67c7` · branch `main` · 2026-11-24 08:02 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c4f8690ebc` · branch `main` · 2026-11-24 08:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -304,7 +304,6 @@
 | status | valor `descartado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/recompra/RecompraInteligente.tsx` |
 | status | valor `aceito` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/recompra/RecompraInteligente.tsx` |
 | status | valor `PENDENTE` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/types/legacyTypes.ts` |
-| status | valor `expirado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-approval-escalations/index.ts` |
 | status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `ALL` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |

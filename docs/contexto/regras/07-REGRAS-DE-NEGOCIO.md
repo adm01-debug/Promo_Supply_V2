@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66773c67c7` · branch `main` · 2026-11-24 08:02 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c4f8690ebc` · branch `main` · 2026-11-24 08:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1046,7 +1046,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `descartado` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `down` | compara | `src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `draft` | compara, escreve | `src/components/compras/ContractModal.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
-| `status` | `em_andamento` | compara, escreve | `src/pages/gerar-ordem/GerarOrdem.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/functions/check-approval-escalations/index.ts` |
+| `status` | `em_andamento` | compara, escreve | `src/pages/gerar-ordem/GerarOrdem.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `em_cotacao` | filtra | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | `status` | `em_transito` | compara, escreve | `src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `empty` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
@@ -1056,12 +1056,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `enviado` | compara | `src/components/pedidos/PedidoMobileCard.tsx` |
 | `status` | `erro` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx` |
 | `status` | `error` | compara, escreve | `src/components/ui/indicators/StepAndHealth.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/FiscalDashboard.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/integrity_test.ts`<br>… +7 |
-| `status` | `escalado` | escreve | `supabase/functions/check-approval-escalations/index.ts` |
-| `status` | `escalated` | escreve | `src/hooks/useApprovalWorkflow.ts` |
+| `status` | `escalated` | escreve | `src/hooks/useApprovalWorkflow.ts`<br>`supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `evaluation` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `execution` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `expirada` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
-| `status` | `expirado` | escreve | `supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `expired` | compara | `src/pages/portal-fornecedor/PortalFornecedor.tsx` |
 | `status` | `failed` | compara, escreve | `src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/punchout-receive/index.ts` |
 | `status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
@@ -1080,8 +1078,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
-| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +13 |
-| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +13 |
+| `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +12 |
+| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +14 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `processed` | compara, escreve | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
 | `status` | `processing` | compara | `src/components/ui/indicators/StatusIndicator.tsx` |
@@ -1105,7 +1103,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `searching` | compara | `src/components/compras/BuscaAutomatica.tsx` |
 | `status` | `sent` | escreve | `src/features/layout/components/chat/ChatArea.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
 | `status` | `signed` | escreve | `src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts` |
-| `status` | `skipped` | compara, escreve | `src/components/settings/TourSettingsPanel.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
+| `status` | `skipped` | compara, escreve | `src/components/settings/TourSettingsPanel.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/check-approval-escalations/index.ts`<br>… +1 |
 | `status` | `slow` | compara | `supabase/functions/external-db-bridge/index.ts` |
 | `status` | `solicitada` | escreve | `src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `succeeded` | compara | `supabase/migrations/20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql` |
@@ -2445,7 +2443,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3079 testes em 197 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3084 testes em 198 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2596,6 +2594,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
+| `supabase/functions/check-approval-escalations/index.test.ts` | 5 | nenhum status em portugues e usado como filtro ou como valor gravado · o filtro de passos vencidos usa pending · o guarda do workflow usa pending · todo status gravado pertence aos CHECK de approval_steps/approval_workflows … |
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "66773c67c724bb39dbca5350cd32d70b175d2cc6",
+  "sha": "c4f8690ebc79dab38fc287f5b8be750226f8abc8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 08:02 UTC",
-  "files_total": 1387,
-  "code_files": 1216,
-  "code_lines": 206982,
+  "generated_at": "2026-11-24 08:08 UTC",
+  "files_total": 1388,
+  "code_files": 1217,
+  "code_lines": 207067,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b0b499754e31cf3a",
+ "facts_hash": "daead0e50e2fc61e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 430,
+   ".ts": 431,
    ".tsx": 380,
    ".sql": 331,
    ".mjs": 67,
@@ -36106,8 +36106,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 115,
-   "lines": 19086,
+   "files": 116,
+   "lines": 19171,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36264,6 +36264,7 @@
     "supabase/functions/ai-supplier-risk/index.ts",
     "supabase/functions/ai-supplier-suggestion/index.ts",
     "supabase/functions/alert-dispatcher/index.ts",
+    "supabase/functions/check-approval-escalations/index.test.ts",
     "supabase/functions/check-approval-escalations/index.ts",
     "supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts",
     "supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts",
@@ -36293,8 +36294,7 @@
     "supabase/functions/process-invoice-idp/index.ts",
     "supabase/functions/process-outbox/index.ts",
     "supabase/functions/process-solicitacao-neural/index.ts",
-    "supabase/functions/punchout-encrypt/index.ts",
-    "supabase/functions/punchout-receive/index.ts"
+    "supabase/functions/punchout-encrypt/index.ts"
    ]
   },
   {
@@ -55912,13 +55912,13 @@
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "field": "status",
-    "value": "escalado",
+    "value": "escalated",
     "kind": "escreve"
    },
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "field": "status",
-    "value": "expirado",
+    "value": "skipped",
     "kind": "escreve"
    },
    {
@@ -55942,19 +55942,19 @@
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "field": "status",
-    "value": "em_andamento",
+    "value": "pending",
     "kind": "compara"
    },
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "field": "status",
-    "value": "pendente",
+    "value": "pending",
     "kind": "filtra"
    },
    {
     "file": "supabase/functions/check-approval-escalations/index.ts",
     "field": "status",
-    "value": "pendente",
+    "value": "pending",
     "kind": "filtra"
    },
    {
@@ -70304,6 +70304,26 @@
     "name": "mascararPortador: oculta CPF/RG para a auditoria"
    },
    {
+    "file": "supabase/functions/check-approval-escalations/index.test.ts",
+    "name": "nenhum status em portugues e usado como filtro ou como valor gravado"
+   },
+   {
+    "file": "supabase/functions/check-approval-escalations/index.test.ts",
+    "name": "o filtro de passos vencidos usa pending"
+   },
+   {
+    "file": "supabase/functions/check-approval-escalations/index.test.ts",
+    "name": "o guarda do workflow usa pending"
+   },
+   {
+    "file": "supabase/functions/check-approval-escalations/index.test.ts",
+    "name": "todo status gravado pertence aos CHECK de approval_steps/approval_workflows"
+   },
+   {
+    "file": "supabase/functions/check-approval-escalations/index.test.ts",
+    "name": "toda acao do historico pertence ao CHECK de approval_history"
+   },
+   {
     "file": "supabase/functions/escalate-solicitacao/recipients.test.ts",
     "name": "gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant"
    },
@@ -79713,6 +79733,7 @@
       "compara:src/pages/admin/FiscalDashboard.tsx",
       "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "compara:src/pages/qualificacao/QualificacaoFornecedores.tsx",
+      "compara:supabase/functions/check-approval-escalations/index.ts",
       "escreve:src/components/compras/DigitalSignature.tsx",
       "escreve:src/components/compras/ProductionRoutingEngine.tsx",
       "escreve:src/components/compras/digital-signature/signatureHelpers.ts",
@@ -79726,6 +79747,7 @@
       "filtra:src/hooks/useApprovalWorkflow.ts",
       "filtra:src/hooks/usePasswordResetRequests.ts",
       "filtra:src/hooks/useSidebarBadges.ts",
+      "filtra:supabase/functions/check-approval-escalations/index.ts",
       "filtra:supabase/functions/process-outbox/index.ts"
      ],
      "delayed": [
@@ -79769,7 +79791,6 @@
       "filtra:src/components/mobile/BottomNavigation.tsx",
       "filtra:src/hooks/useApprovalWorkflow.ts",
       "filtra:src/hooks/useSidebarBadges.ts",
-      "filtra:supabase/functions/check-approval-escalations/index.ts",
       "filtra:supabase/functions/check-cotacao-followup/index.ts",
       "filtra:supabase/functions/check-expiry-alerts/index.ts",
       "filtra:supabase/functions/check-sla-alerts/index.ts"
@@ -79962,6 +79983,7 @@
       "compara:src/hooks/useApprovalWorkflow.ts",
       "compara:src/pages/admin/DependencyHealth.tsx",
       "escreve:src/hooks/useApprovalWorkflow.ts",
+      "escreve:supabase/functions/check-approval-escalations/index.ts",
       "escreve:supabase/functions/dependency-health/index.ts"
      ],
      "online": [
@@ -80034,7 +80056,8 @@
       "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts"
      ],
      "escalated": [
-      "escreve:src/hooks/useApprovalWorkflow.ts"
+      "escreve:src/hooks/useApprovalWorkflow.ts",
+      "escreve:supabase/functions/check-approval-escalations/index.ts"
      ],
      "solicitada": [
       "escreve:src/hooks/useDevolucoes.ts",
@@ -80136,7 +80159,6 @@
      ],
      "em_andamento": [
       "compara:src/pages/licitacoes/LicitacaoDetailDialog.tsx",
-      "compara:supabase/functions/check-approval-escalations/index.ts",
       "escreve:src/pages/gerar-ordem/GerarOrdem.tsx",
       "escreve:src/pages/licitacoes/LicitacaoDetailDialog.tsx"
      ],
@@ -80185,12 +80207,6 @@
      "processed": [
       "compara:supabase/functions/receive-os-sync/index.ts",
       "escreve:supabase/functions/_shared/idempotency.ts"
-     ],
-     "escalado": [
-      "escreve:supabase/functions/check-approval-escalations/index.ts"
-     ],
-     "expirado": [
-      "escreve:supabase/functions/check-approval-escalations/index.ts"
      ],
      "expirada": [
       "escreve:supabase/functions/check-expiry-alerts/index.ts"
@@ -89218,13 +89234,6 @@
     "msg": "valor `PENDENTE` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:src/types/legacyTypes.ts"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `expirado` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:supabase/functions/check-approval-escalations/index.ts"
     ]
    },
    {
@@ -114031,6 +114040,18 @@
    ],
    "uses_service_role": true
   },
+  "supabase/functions/check-approval-escalations/index.test.ts": {
+   "path": "supabase/functions/check-approval-escalations/index.test.ts",
+   "lines": 85,
+   "is_test": true,
+   "tests": [
+    "nenhum status em portugues e usado como filtro ou como valor gravado",
+    "o filtro de passos vencidos usa pending",
+    "o guarda do workflow usa pending",
+    "todo status gravado pertence aos CHECK de approval_steps/approval_workflows",
+    "toda acao do historico pertence ao CHECK de approval_history"
+   ]
+  },
   "supabase/functions/check-approval-escalations/index.ts": {
    "path": "supabase/functions/check-approval-escalations/index.ts",
    "lines": 249,
@@ -114082,12 +114103,12 @@
    "status_values": [
     {
      "field": "status",
-     "value": "escalado",
+     "value": "escalated",
      "kind": "escreve"
     },
     {
      "field": "status",
-     "value": "expirado",
+     "value": "skipped",
      "kind": "escreve"
     },
     {
@@ -114107,17 +114128,17 @@
     },
     {
      "field": "status",
-     "value": "em_andamento",
+     "value": "pending",
      "kind": "compara"
     },
     {
      "field": "status",
-     "value": "pendente",
+     "value": "pending",
      "kind": "filtra"
     },
     {
      "field": "status",
-     "value": "pendente",
+     "value": "pending",
      "kind": "filtra"
     }
    ],
@@ -119287,10 +119308,21 @@
   }
  },
  "git": {
-  "sha": "66773c67c724bb39dbca5350cd32d70b175d2cc6",
+  "sha": "c4f8690ebc79dab38fc287f5b8be750226f8abc8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c4f8690",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: edge de escalonamento passa a usar o status que o banco aceita (#390)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/check-approval-escalations/index.test.ts",
+     "supabase/functions/check-approval-escalations/index.ts"
+    ]
+   },
    {
     "sha": "66773c6",
     "date": "2026-11-24",
@@ -119652,30 +119684,6 @@
      "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
      "src/pages/catalogo-spot/useSpotCatalog.ts"
     ]
-   },
-   {
-    "sha": "73a583d",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/cronHealth.ts",
-     "supabase/functions/_shared/logger-escopo.test.ts",
-     "supabase/functions/_shared/simulation-engine.ts",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts",
-     "supabase/functions/external-db-bridge/index.ts",
-     "supabase/functions/fiscal-orchestrator/index.ts",
-     "supabase/functions/guided-buying-ai/index.ts",
-     "supabase/functions/migrate-storage-paths/index.ts",
-     "supabase/functions/process-outbox/index.ts",
-     "supabase/functions/run-audit/index.ts",
-     "supabase/functions/system-simulation/index.ts",
-     "supabase/functions/webauthn-authenticate/index.ts",
-     "supabase/functions/weekly-summary-report/index.ts",
-     "supabase/functions/workflow-engine/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -119708,16 +119716,16 @@
     2
    ],
    [
-    "supabase/functions/external-db-bridge/index.ts",
-    2
-   ],
-   [
     "supabase/functions/_shared/security.timing.test.ts",
     2
    ],
    [
-    "supabase/functions/webauthn-authenticate/index.ts",
-    2
+    "supabase/functions/check-approval-escalations/index.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/check-approval-escalations/index.ts",
+    1
    ],
    [
     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
