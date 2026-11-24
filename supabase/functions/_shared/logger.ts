@@ -8,6 +8,9 @@ import { safeTruncate } from "./logLevel.ts";
 
 const MAX_LOG_MESSAGE_LEN = 45000;
 const MAX_ERR_MESSAGE_LEN = 500;
+// QA 049: profundidade maxima da redacao de contexto (protege contra ciclo).
+const MAX_SANITIZE_DEPTH = 8;
+const SENSITIVE_KEYS = ['password', 'token', 'secret', 'key', 'auth', 'cvv', 'authorization'];
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -83,17 +86,37 @@ export class EdgeLogger {
 
   private sanitizeContext(context?: Record<string, unknown>): Record<string, unknown> | undefined {
     if (!context) return undefined;
-    
-    const sensitiveKeys = ['password', 'token', 'secret', 'key', 'auth', 'cvv', 'authorization'];
-    const sanitized = { ...context };
+    return this.redactValue(context, 0) as Record<string, unknown>;
+  }
 
-    for (const key of Object.keys(sanitized)) {
-      if (sensitiveKeys.some(s => key.toLowerCase().includes(s))) {
-        sanitized[key] = '[REDACTED]';
-      }
+  /**
+   * QA 049 (EDGA-09): a redacao precisa descer nos objetos e arrays aninhados.
+   * Antes, `sanitizeContext` so olhava as chaves de primeiro nivel, entao
+   * `{ body: { senha: "..." } }` ia inteiro para `telemetry_logs`.
+   *
+   * Valores que nao sao objeto simples (Date, Error, Map, typed array...) sao
+   * devolvidos como estao; reconstrui-los viraria `{}` e perderia o diagnostico.
+   */
+  private redactValue(value: unknown, depth: number): unknown {
+    if (depth >= MAX_SANITIZE_DEPTH) return '[TRUNCATED]';
+    if (Array.isArray(value)) return value.map((item) => this.redactValue(item, depth + 1));
+    if (!this.isPlainObject(value)) return value;
+
+    const sanitized: Record<string, unknown> = {};
+    for (const [key, item] of Object.entries(value)) {
+      sanitized[key] = this.isSensitiveKey(key) ? '[REDACTED]' : this.redactValue(item, depth + 1);
     }
-
     return sanitized;
+  }
+
+  private isPlainObject(value: unknown): value is Record<string, unknown> {
+    if (value === null || typeof value !== "object") return false;
+    const proto = Object.getPrototypeOf(value);
+    return proto === Object.prototype || proto === null;
+  }
+
+  private isSensitiveKey(key: string): boolean {
+    return SENSITIVE_KEYS.some((s) => key.toLowerCase().includes(s));
   }
 
   public info(message: string, context?: Record<string, unknown>) {
