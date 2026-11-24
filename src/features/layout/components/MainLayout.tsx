@@ -43,6 +43,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useKeyboardShortcuts();
   useGlobalUndo();
@@ -63,6 +64,19 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const fecharComEsc = (evento: KeyboardEvent) => {
+      if (evento.key !== 'Escape') return;
+      setMobileMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+
+    document.addEventListener('keydown', fecharComEsc);
+    return () => document.removeEventListener('keydown', fecharComEsc);
+  }, [mobileMenuOpen]);
 
   return (
     <div className="min-h-screen text-foreground pb-16 md:pb-0 overflow-x-hidden selection:bg-primary/30">
@@ -88,10 +102,13 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
         )}
       </AnimatePresence>
 
-      <div className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)] md:hidden",
-        mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)] md:hidden",
+          mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full invisible pointer-events-none"
+        )}
+        aria-hidden={!mobileMenuOpen}
+      >
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
       </div>
 
@@ -103,17 +120,16 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           <div className="w-full px-4 md:px-8 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="md:hidden flex items-center gap-2">
-                {isHome && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setMobileMenuOpen(true)}
-                    className="h-10 w-10 rounded-xl bg-muted border border-border"
-                    aria-label="Abrir menu"
-                  >
-                    <Menu className="w-5 h-5 text-violet-400" />
-                  </Button>
-                )}
+                <Button
+                  ref={menuButtonRef}
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMobileMenuOpen(true)}
+                  className="h-10 w-10 rounded-xl bg-muted border border-border"
+                  aria-label="Abrir menu"
+                >
+                  <Menu className="w-5 h-5 text-violet-400" />
+                </Button>
               </div>
 
               
