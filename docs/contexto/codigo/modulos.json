@@ -6239,7 +6239,7 @@
    "modulo": "pages/pedidos",
    "arquivos": 4,
    "testes": 5,
-   "linhas": 1068,
+   "linhas": 1077,
    "itens_menu": [
     "Pedidos"
    ],
@@ -6788,8 +6788,8 @@
   {
    "modulo": "pages/recebimento",
    "arquivos": 4,
-   "testes": 2,
-   "linhas": 1031,
+   "testes": 3,
+   "linhas": 1040,
    "itens_menu": [
     "Recebimento"
    ],

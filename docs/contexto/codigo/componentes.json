@@ -5244,7 +5244,7 @@
     "Pedidos"
    ],
    "export_default": "Pedidos",
-   "linhas": 369,
+   "linhas": 378,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "useEmpresaFilter",
@@ -5313,7 +5313,7 @@
     "RecebimentoOffline"
    ],
    "export_default": "RecebimentoOffline",
-   "linhas": 463,
+   "linhas": 472,
    "dominio": "pages/recebimento",
    "hooks_locais": [
     "useAuth"

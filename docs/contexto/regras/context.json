@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
+  "sha": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 12:41 UTC",
-  "files_total": 1405,
-  "code_files": 1232,
-  "code_lines": 209222,
+  "generated_at": "2026-11-24 13:01 UTC",
+  "files_total": 1406,
+  "code_files": 1233,
+  "code_lines": 209356,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c6660f18c99cfba8",
+ "facts_hash": "a4182f005d940086",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 393,
+   ".tsx": 394,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35726,8 +35726,8 @@
   },
   {
    "module": "src/pages",
-   "files": 143,
-   "lines": 33071,
+   "files": 144,
+   "lines": 33205,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -68142,11 +68142,19 @@
    },
    {
     "file": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
-    "name": "Pedidos - nome acess\\u00edvel da a\\u00e7\\u00e3o de linha"
+    "name": "Pedidos - a\\u00e7\\u00e3o de linha acess\\u00edvel por teclado"
    },
    {
     "file": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
-    "name": "nomeia o bot\\u00e3o s\\u00f3-\\u00edcone de a\\u00e7\\u00f5es da linha"
+    "name": "nomeia o bot\\u00e3o s\\u00f3-\\u00edcone da linha com o pedido que ele abre"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
+    "name": "abre o detalhe do pedido ao clicar no bot\\u00e3o da linha"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
+    "name": "preserva o clique na linha inteira para quem usa mouse"
    },
    {
     "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
@@ -68595,6 +68603,26 @@
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
     "name": "so grava observacoes quando o pedido ja esta no status alvo"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    "name": "RecebimentoOffline - selecao de pedido acessivel por teclado"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    "name": "seleciona o pedido no clique"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    "name": "seleciona o pedido com Enter"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    "name": "seleciona o pedido com a barra de espaco"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    "name": "nao reage a teclas que nao acionam controle"
    },
    {
     "file": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
@@ -110580,7 +110608,7 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 369,
+   "lines": 378,
    "exports": [
     "default Pedidos"
    ]
@@ -110670,11 +110698,13 @@
   },
   "src/pages/pedidos/__tests__/pedidosA11y.test.tsx": {
    "path": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
-   "lines": 59,
+   "lines": 82,
    "is_test": true,
    "tests": [
-    "Pedidos - nome acess\\u00edvel da a\\u00e7\\u00e3o de linha",
-    "nomeia o bot\\u00e3o s\\u00f3-\\u00edcone de a\\u00e7\\u00f5es da linha"
+    "Pedidos - a\\u00e7\\u00e3o de linha acess\\u00edvel por teclado",
+    "nomeia o bot\\u00e3o s\\u00f3-\\u00edcone da linha com o pedido que ele abre",
+    "abre o detalhe do pedido ao clicar no bot\\u00e3o da linha",
+    "preserva o clique na linha inteira para quem usa mouse"
    ]
   },
   "src/pages/pedidos/__tests__/pedidosExportacao.test.ts": {
@@ -110935,7 +110965,7 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 463,
+   "lines": 472,
    "exports": [
     "function RecebimentoOffline"
    ],
@@ -111159,6 +111189,18 @@
     "devolve a mensagem do banco e para no primeiro passo que falhar",
     "nao toca no banco quando nao existe caminho legal",
     "so grava observacoes quando o pedido ja esta no status alvo"
+   ]
+  },
+  "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx": {
+   "path": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+   "lines": 93,
+   "is_test": true,
+   "tests": [
+    "RecebimentoOffline - selecao de pedido acessivel por teclado",
+    "seleciona o pedido no clique",
+    "seleciona o pedido com Enter",
+    "seleciona o pedido com a barra de espaco",
+    "nao reage a teclas que nao acionam controle"
    ]
   },
   "src/pages/recompra/RecompraInteligente.tsx": {
@@ -120266,10 +120308,23 @@
   }
  },
  "git": {
-  "sha": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
+  "sha": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "69fe938",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx"
+    ]
+   },
    {
     "sha": "66c9eb7",
     "date": "2026-11-24",
@@ -120614,18 +120669,6 @@
      "src/components/compras/approval/ApprovalRuleModal.tsx",
      "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx"
     ]
-   },
-   {
-    "sha": "5f14e85",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/pedidos/PedidoDetailsDialog.tsx",
-     "src/pages/pedidos/__tests__/followUpPedido.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -120638,11 +120681,15 @@
     4
    ],
    [
-    "src/components/compras/EnhancedBulkActionsBar.tsx",
+    "src/pages/pedidos/Pedidos.tsx",
+    3
+   ],
+   [
+    "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
     2
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
+    "src/components/compras/EnhancedBulkActionsBar.tsx",
     2
    ],
    [
@@ -120651,10 +120698,6 @@
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
-    2
-   ],
-   [
-    "src/pages/pedidos/PedidoDetailsDialog.tsx",
     2
    ],
    [
@@ -120678,8 +120721,12 @@
     2
    ],
    [
-    "src/pages/cotacao/Cotacao.tsx",
-    2
+    "src/pages/recebimento/RecebimentoOffline.tsx",
+    1
+   ],
+   [
+    "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+    1
    ],
    [
     "bun.lock",
@@ -120703,10 +120750,6 @@
    ],
    [
     "src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/SolicitacaoCard.tsx",
     1
    ]
   ]

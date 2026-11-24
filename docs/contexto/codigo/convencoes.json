@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (169)",
+   "co-localizado (__tests__) (170)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)",
    "chore(lint): liga o gate de acessibilidade no eslint (#413)",
    "fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)",
    "fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)",
-   "ci: provisiona o segredo do webhook Promo Champions (#411)",
-   "feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)"
+   "ci: provisiona o segredo do webhook Promo Champions (#411)"
   ]
  },
  "pr_template": null,

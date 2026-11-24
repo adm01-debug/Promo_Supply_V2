@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
+  "commit": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
   "branch": "main",
-  "data_commit": "2026-11-24T09:40:34-03:00",
+  "data_commit": "2026-11-24T09:59:08-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "69fe938",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)"
+   },
    {
     "sha": "66c9eb7",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "72256cb",
     "data": "2026-11-24",
     "assunto": "fix(pedidos): Kanban so entrega via Recebimento (#383)"
-   },
-   {
-    "sha": "d0c644d",
-    "data": "2026-11-24",
-    "assunto": "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)"
    }
   ],
-  "arquivos_mudados_7d": 457,
+  "arquivos_mudados_7d": 458,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 182
+    "mudancas": 180
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "pasta": "src/features/layout",
@@ -176,12 +176,12 @@
     "mudancas": 25
    },
    {
-    "pasta": "src/features/auth",
-    "mudancas": 23
+    "pasta": "src/pages/recebimento",
+    "mudancas": 24
    },
    {
-    "pasta": "src/pages/recebimento",
-    "mudancas": 22
+    "pasta": "src/features/auth",
+    "mudancas": 23
    },
    {
     "pasta": "src/components/security",
@@ -192,14 +192,14 @@
     "mudancas": 20
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 17
+    "pasta": "src/pages/pedidos",
+    "mudancas": 19
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -235,6 +235,14 @@
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/pages/pedidos/Pedidos.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
     "mudancas": 7
    },
    {
@@ -278,14 +286,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/pedidos/Pedidos.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
     "mudancas": 6
    },
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1404,
-  "arquivos_codigo": 899,
-  "linhas_codigo": 182038,
+  "arquivos_total": 1405,
+  "arquivos_codigo": 900,
+  "linhas_codigo": 182172,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 263,
+  "testes": 264,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 143,
-   "linhas": 33071
+   "arquivos": 144,
+   "linhas": 33205
   },
   "src/routes": {
    "arquivos": 1,

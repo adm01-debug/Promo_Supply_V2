@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 263,
+ "total": 264,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 245
+  "unit": 246
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 169
+   "arquivos": 170
   },
   {
    "padrao": "outro",
@@ -1729,11 +1729,11 @@
   {
    "arquivo": "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
    "tipo": "unit",
-   "linhas": 59,
+   "linhas": 82,
    "testa": [
     "src/pages/pedidos/Pedidos.tsx"
    ],
-   "casos": 1
+   "casos": 3
   },
   {
    "arquivo": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
@@ -1789,6 +1789,15 @@
     "src/pages/recebimento/recebimentoHelpers.ts"
    ],
    "casos": 48
+  },
+  {
+   "arquivo": "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 93,
+   "testa": [
+    "src/pages/recebimento/RecebimentoOffline.tsx"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
@@ -2539,6 +2548,7 @@
   "src/pages/pedidos/pedidosHelpers.ts": 1,
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": 1,
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
+  "src/pages/recebimento/RecebimentoOffline.tsx": 1,
   "src/pages/recebimento/pedidoComplementar.ts": 1,
   "src/pages/recebimento/recebimentoHelpers.ts": 2,
   "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts": 1,
@@ -2617,7 +2627,6 @@
    "src/pages/orcamentos/Orcamentos.tsx",
    "src/pages/pagamentos/Pagamentos.tsx",
    "src/pages/qualificacao/QualificacaoFornecedores.tsx",
-   "src/pages/recebimento/RecebimentoOffline.tsx",
    "src/pages/recompra/RecompraInteligente.tsx",
    "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
    "src/pages/relatorios/Relatorios.tsx",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66c9eb7756` · branch `main` · 2026-11-24 12:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `69fe938ba7` · branch `main` · 2026-11-24 13:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3165 testes em 212 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3172 testes em 213 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2605,6 +2605,7 @@ _nenhum item encontrado_
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
+| `src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx` | 5 | RecebimentoOffline - selecao de pedido acessivel por teclado · seleciona o pedido no clique · seleciona o pedido com Enter · seleciona o pedido com a barra de espaco … |
 | `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
@@ -2627,6 +2628,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx` | 4 | ConfiguracoesCentroCusto · codigo unico (VAL-09) · barra o codigo ja usado e diz qual centro de custo o usa · traduz o 23505 quando o codigo existe em outra empresa · cria o centro de custo quando o codigo esta livre |
 | `src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx` | 4 | acao de excluir na lista de pedidos · some quando o pedido selecionado ja entrou no ciclo de recebimento · continua disponivel para pedido pendente · some na selecao mista de pendente com entregue |
+| `src/pages/pedidos/__tests__/pedidosA11y.test.tsx` | 4 | Pedidos - a\u00e7\u00e3o de linha acess\u00edvel por teclado · nomeia o bot\u00e3o s\u00f3-\u00edcone da linha com o pedido que ele abre · abre o detalhe do pedido ao clicar no bot\u00e3o da linha · preserva o clique na linha inteira para quem usa mouse |
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
@@ -2662,7 +2664,6 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
-| `src/pages/pedidos/__tests__/pedidosA11y.test.tsx` | 2 | Pedidos - nome acess\u00edvel da a\u00e7\u00e3o de linha · nomeia o bot\u00e3o s\u00f3-\u00edcone de a\u00e7\u00f5es da linha |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/_shared/logger-escopo.test.ts` | 2 | QA 069 ${edge} declara o logger antes do try · QA 069 ${edge} nao esconde o logger atras de typeof |
 | `supabase/functions/_shared/validation.log_body.test.ts` | 2 | validateBody: corpo invalido nao vaza os valores para o log · validateBody: JSON malformado loga a causa e mantem a mensagem |
