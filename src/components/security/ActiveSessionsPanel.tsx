@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Monitor, Smartphone, Globe, Trash2, Loader2, AlertTriangle } from 'lucide-react';
+import { Monitor, Smartphone, Globe, Trash2, Loader2, AlertTriangle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,24 +7,44 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { toast } from '@/lib/feedbackToast';
 import { useSecurityLogs, ActiveSession } from '@/hooks/useSecurityLogs';
 import { useAuth } from '@/features/auth';
+import { ACTIVE_SESSION_STORAGE_KEY } from '@/features/auth/hooks/useAuth';
 import { format } from "date-fns/format";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { ptBR } from "date-fns/locale/pt-BR";
 
 export const ActiveSessionsPanel = () => {
-  const { activeSessions, isLoading, terminateSession } = useSecurityLogs();
+  const { activeSessions, isLoading, terminateSession, terminateOtherSessions } = useSecurityLogs();
   const { user } = useAuth();
   const [sessionToTerminate, setSessionToTerminate] = useState<ActiveSession | null>(null);
+  const [confirmOthers, setConfirmOthers] = useState(false);
+  // Id da linha gravada por este navegador (QA 038): sem ele todas as linhas do
+  // usuario apareciam como "Voce".
+  const currentSessionId = typeof window !== 'undefined'
+    ? window.localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY)
+    : null;
+  const otherOwnSessions = (activeSessions ?? []).filter(
+    (s) => s.id !== currentSessionId && s.user_id === user?.id
+  );
 
   const handleTerminate = async () => {
     if (!sessionToTerminate) return;
 
     try {
       await terminateSession.mutateAsync(sessionToTerminate.id);
-      toast.success('Sessão encerrada');
+      toast.success('Registro removido da lista');
       setSessionToTerminate(null);
     } catch (error) {
       toast.error('Erro ao encerrar sessão');
+    }
+  };
+
+  const handleTerminateOthers = async () => {
+    try {
+      await terminateOtherSessions.mutateAsync();
+      toast.success('Outras sessões encerradas');
+      setConfirmOthers(false);
+    } catch (error) {
+      toast.error('Erro ao encerrar as outras sessões');
     }
   };
 
@@ -76,8 +96,15 @@ export const ActiveSessionsPanel = () => {
             Sessões Ativas
           </CardTitle>
           <CardDescription>
-            Gerencie os dispositivos conectados à sua conta
+            Dispositivos que entraram na sua conta. A sessão é registrada no login;
+            remover uma linha só apaga o registro desta lista.
           </CardDescription>
+          {otherOwnSessions.length > 0 && (
+            <Button variant="outline" size="sm" onClick={() => setConfirmOthers(true)}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Encerrar outras sessões ({otherOwnSessions.length})
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           {!activeSessions || activeSessions.length === 0 ? (
@@ -90,7 +117,7 @@ export const ActiveSessionsPanel = () => {
               {activeSessions.map((session) => {
                 const DeviceIcon = getDeviceIcon(session.user_agent);
                 const { browser, os } = parseUserAgent(session.user_agent);
-                const isCurrentUser = session.user_id === user?.id;
+                const isThisDevice = session.id === currentSessionId;
 
                 return (
                   <div
@@ -104,9 +131,9 @@ export const ActiveSessionsPanel = () => {
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{browser} em {os}</span>
-                          {isCurrentUser && (
+                          {isThisDevice && (
                             <Badge variant="secondary" className="text-xs">
-                              Você
+                              Este dispositivo
                             </Badge>
                           )}
                         </div>
@@ -150,10 +177,11 @@ export const ActiveSessionsPanel = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-warning" />
-              Encerrar Sessão
+              Remover da lista
             </DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja encerrar esta sessão? O usuário será desconectado imediatamente.
+              O registro deste dispositivo sai da lista, mas o acesso não é revogado.
+              Para derrubar os outros dispositivos, use "Encerrar outras sessões".
             </DialogDescription>
           </DialogHeader>
 
@@ -181,10 +209,44 @@ export const ActiveSessionsPanel = () => {
               {terminateSession.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Removendo...
+                </>
+              ) : (
+                'Remover'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* QA 037: revogacao real das outras sessoes (scope 'others' do GoTrue) */}
+      <Dialog open={confirmOthers} onOpenChange={setConfirmOthers}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-warning" />
+              Encerrar outras sessões
+            </DialogTitle>
+            <DialogDescription>
+              Os outros dispositivos perdem o acesso e precisam entrar de novo.
+              Esta sessão continua ativa.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOthers(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleTerminateOthers}
+              disabled={terminateOtherSessions.isPending}
+            >
+              {terminateOtherSessions.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Encerrando...
                 </>
               ) : (
-                'Encerrar Sessão'
+                'Encerrar outras sessões'
               )}
             </Button>
           </DialogFooter>
@@ -193,3 +255,4 @@ export const ActiveSessionsPanel = () => {
     </>
   );
 };
+
