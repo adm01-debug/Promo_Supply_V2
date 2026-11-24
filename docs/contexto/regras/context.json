@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c4f8690ebc79dab38fc287f5b8be750226f8abc8",
+  "sha": "a865fce2e7fa0216e8e4bbc3fdd710e6050631b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 08:08 UTC",
+  "generated_at": "2026-11-24 09:24 UTC",
   "files_total": 1388,
   "code_files": 1217,
-  "code_lines": 207067,
+  "code_lines": 207169,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "daead0e50e2fc61e",
+ "facts_hash": "6c223af256362ae4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35702,7 +35702,7 @@
   {
    "module": "src/pages",
    "files": 140,
-   "lines": 32466,
+   "lines": 32568,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -67846,6 +67846,18 @@
    {
     "file": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
     "name": "devolve a data de 7 dias a frente em YYYY-MM-DD"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
+    "name": "createComplementaryOrder"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
+    "name": "copia organization_id e tenant_id do pedido original"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
+    "name": "nao gera complementar sem organization_id: ficaria invisivel em toda tela"
    },
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
@@ -110044,7 +110056,7 @@
   },
   "src/pages/recebimento/pedidoComplementar.ts": {
    "path": "src/pages/recebimento/pedidoComplementar.ts",
-   "lines": 100,
+   "lines": 106,
    "exports": [
     "interface ComplementaryResult",
     "function createComplementaryOrder"
@@ -110074,6 +110086,7 @@
      "endereco_entrega",
      "fornecedor_id",
      "id",
+     "organization_id",
      "solicitacao_id",
      "tenant_id"
     ]
@@ -110131,7 +110144,7 @@
   },
   "src/pages/recebimento/__tests__/pedidoComplementar.test.ts": {
    "path": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
-   "lines": 36,
+   "lines": 132,
    "is_test": true,
    "tests": [
     "buildPendingLines",
@@ -110140,7 +110153,10 @@
     "ignora item recebido acima do pedido, sem gerar saldo negativo",
     "usa ",
     "defaultForecastDate",
-    "devolve a data de 7 dias a frente em YYYY-MM-DD"
+    "devolve a data de 7 dias a frente em YYYY-MM-DD",
+    "createComplementaryOrder",
+    "copia organization_id e tenant_id do pedido original",
+    "nao gera complementar sem organization_id: ficaria invisivel em toda tela"
    ]
   },
   "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts": {
@@ -119308,10 +119324,21 @@
   }
  },
  "git": {
-  "sha": "c4f8690ebc79dab38fc287f5b8be750226f8abc8",
+  "sha": "a865fce2e7fa0216e8e4bbc3fdd710e6050631b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a865fce",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: pedido complementar herda organization_id do pedido original (#397)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
+     "src/pages/recebimento/pedidoComplementar.ts"
+    ]
+   },
    {
     "sha": "c4f8690",
     "date": "2026-11-24",
@@ -119673,17 +119700,6 @@
      "src/hooks/useWebAuthn.ts",
      "supabase/functions/webauthn-authenticate/index.ts"
     ]
-   },
-   {
-    "sha": "aac5577",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -119718,6 +119734,14 @@
    [
     "supabase/functions/_shared/security.timing.test.ts",
     2
+   ],
+   [
+    "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
+    1
+   ],
+   [
+    "src/pages/recebimento/pedidoComplementar.ts",
+    1
    ],
    [
     "supabase/functions/check-approval-escalations/index.test.ts",
@@ -119757,14 +119781,6 @@
    ],
    [
     "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalRules.ts",
     1
    ]
   ]

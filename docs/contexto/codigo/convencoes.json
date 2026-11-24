@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: pedido complementar herda organization_id do pedido original (#397)",
    "fix: edge de escalonamento passa a usar o status que o banco aceita (#390)",
    "fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)",
    "fix: cotacao manual grava condicao, validade e observacoes (#388)",
-   "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)",
-   "fix(pedidos): Kanban so entrega via Recebimento (#383)"
+   "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)"
   ]
  },
  "pr_template": null,

@@ -1645,11 +1645,12 @@
   {
    "arquivo": "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
    "tipo": "unit",
-   "linhas": 36,
+   "linhas": 132,
    "testa": [
+    "src/pages/recebimento/pedidoComplementar.ts",
     "src/pages/recebimento/recebimentoHelpers.ts"
    ],
-   "casos": 5
+   "casos": 7
   },
   {
    "arquivo": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
@@ -2402,6 +2403,7 @@
   "src/pages/pedidos/pedidosHelpers.ts": 1,
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": 1,
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
+  "src/pages/recebimento/pedidoComplementar.ts": 1,
   "src/pages/recebimento/recebimentoHelpers.ts": 2,
   "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts": 1,
   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts": 1,
