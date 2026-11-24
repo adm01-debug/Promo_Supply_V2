@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Settings, Plus, Trash2, Edit2, Users, DollarSign, Clock, ArrowRight, AlertTriangle, GitBranch, Zap, ChevronDown, ChevronUp, Target } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,19 +12,9 @@ import { useApprovalWorkflow, ApprovalRule, ApprovalDelegation } from "@/hooks/u
 import { toast } from "@/lib/feedbackToast";
 import { ApprovalRuleModal } from "./approval/ApprovalRuleModal";
 import { ApprovalDelegationModal } from "./approval/ApprovalDelegationModal";
-
-const mockUsers = [
-  { id: "user-1", nome: "João Silva", cargo: "Gestor", email: "joao@empresa.com" },
-  { id: "user-2", nome: "Maria Santos", cargo: "Coordenadora", email: "maria@empresa.com" },
-  { id: "user-3", nome: "Carlos Lima", cargo: "Diretor Financeiro", email: "carlos@empresa.com" },
-  { id: "user-4", nome: "Ana Oliveira", cargo: "Gerente de Compras", email: "ana@empresa.com" },
-  { id: "user-5", nome: "Roberto Costa", cargo: "CEO", email: "roberto@empresa.com" },
-];
-
-const mockCategories = [
-  { id: "cat-1", nome: "Material de Escritório" }, { id: "cat-2", nome: "Equipamentos" },
-  { id: "cat-3", nome: "Serviços" }, { id: "cat-4", nome: "Marketing" }, { id: "cat-5", nome: "Brindes Promocionais" },
-];
+import { montarPessoas } from "@/features/solicitacoes/pessoasDaEmpresa";
+import { useProdutos } from "@/hooks/useProdutos";
+import { supabase } from "@/integrations/supabase/client";
 
 export const DynamicApprovalMatrix = () => {
   const { rules, delegations, loading, saveRule, deleteRule, saveDelegation, deleteDelegation } = useApprovalWorkflow();
@@ -35,16 +26,46 @@ export const DynamicApprovalMatrix = () => {
   const [itemToDelete, setItemToDelete] = useState<{ type: 'rule' | 'delegation', id: string } | null>(null);
   const [isWorkflowOpen, setIsWorkflowOpen] = useState(true);
 
+  // Mesma queryKey dos modais: a lista de pessoas e carregada uma vez e serve
+  // para os seletores e para resolver os nomes das regras/delegacoes ja salvas.
+  const { data: pessoas = [], isLoading: carregandoPessoas } = useQuery({
+    queryKey: ["aprovadores-disponiveis"],
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, display_name, email")
+        .order("full_name", { ascending: true })
+        .limit(200);
+      if (error) throw error;
+      return montarPessoas(data ?? []);
+    },
+  });
+  const { categorias } = useProdutos();
+
   const sortedRules = useMemo(() => [...rules].sort((a, b) => a.valor_min - b.valor_min), [rules]);
   const activeDelegations = useMemo(() => delegations.filter(d => { const now = new Date(); return d.ativo && new Date(d.data_inicio) <= now && new Date(d.data_fim) >= now; }), [delegations]);
 
-  const getUserName = (userId: string) => mockUsers.find(u => u.id === userId)?.nome || userId;
-  const getCategoryName = (categoryId?: string) => categoryId ? mockCategories.find(c => c.id === categoryId)?.nome : "Todas";
+  // Nome do dono do id; id sem perfil e dito com clareza em vez de despejar o uuid na tela.
+  const getUserName = (userId: string) => {
+    if (!userId) return "Não definido";
+    const nome = pessoas.find(p => p.id === userId)?.nome;
+    if (nome) return nome;
+    return carregandoPessoas ? "Carregando…" : "Usuário não encontrado";
+  };
+  const getCategoryName = (categoryId?: string) => {
+    if (!categoryId) return "Todas";
+    return categorias.find(c => c.id === categoryId)?.nome ?? "Categoria removida";
+  };
   const formatCurrency = (value: number) => value >= 999999999 ? "∞" : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
   const handleSaveRule = async () => {
     if (!editingRule) return;
-    if (!editingRule.nome || editingRule.aprovadores?.length === 0) { toast.error('Preencha todos os campos obrigatórios'); return; }
+    // `aprovadores: [{ user_id: '', ordem: 1 }]` tem length 1 e id vazio: sem esta
+    // checagem a regra nascia com aprovador em branco e o insert em
+    // `approval_steps` falhava por uuid invalido.
+    const semAprovador = !editingRule.aprovadores?.length || editingRule.aprovadores.some(a => !a.user_id);
+    if (!editingRule.nome || semAprovador) { toast.error('Dê um nome à regra e escolha o aprovador de cada etapa'); return; }
     await saveRule(editingRule as ApprovalRule);
     setRuleModalOpen(false);
     setEditingRule(null);
@@ -52,7 +73,8 @@ export const DynamicApprovalMatrix = () => {
 
   const handleSaveDelegation = async () => {
     if (!editingDelegation) return;
-    if (!editingDelegation.delegante_id || !editingDelegation.delegado_id || !editingDelegation.data_fim) { toast.error('Preencha todos os campos obrigatórios'); return; }
+    if (!editingDelegation.delegante_id || !editingDelegation.delegado_id || !editingDelegation.data_inicio || !editingDelegation.data_fim) { toast.error('Preencha todos os campos obrigatórios'); return; }
+    if (editingDelegation.data_fim <= editingDelegation.data_inicio) { toast.error('A data final precisa ser depois da data inicial'); return; }
     await saveDelegation(editingDelegation as ApprovalDelegation);
     setDelegationModalOpen(false);
     setEditingDelegation(null);
