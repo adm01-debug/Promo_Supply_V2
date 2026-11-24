@@ -1946,8 +1946,8 @@
   {
    "modulo": "features/layout",
    "arquivos": 32,
-   "testes": 5,
-   "linhas": 5103,
+   "testes": 6,
+   "linhas": 5104,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `33cb8a001a` · branch `main` · 2026-11-24 02:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6e74b0d809` · branch `main` · 2026-11-24 02:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2416,7 +2416,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2858 testes em 169 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2866 testes em 170 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2518,6 +2518,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
+| `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
 | `src/tests/integration/contract-validation.test.ts` | 8 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should fail with invalid currency (negative total) … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |

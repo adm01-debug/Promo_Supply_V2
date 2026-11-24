@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 220,
+ "total": 221,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 203
+  "unit": 204
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 128
+   "arquivos": 129
   },
   {
    "padrao": "outro",
@@ -614,6 +614,15 @@
     "src/features/auth/types/authRoles.ts"
    ],
    "casos": 19
+  },
+  {
+   "arquivo": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+   "tipo": "unit",
+   "linhas": 49,
+   "testa": [
+    "src/features/layout/components/AppSidebar.tsx"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx",
@@ -2026,6 +2035,7 @@
   "src/features/auth/index.ts": 3,
   "src/features/auth/schemas/auth.schemas.ts": 1,
   "src/features/auth/types/authRoles.ts": 1,
+  "src/features/layout/components/AppSidebar.tsx": 1,
   "src/features/layout/components/CommandPalette.tsx": 1,
   "src/features/layout/components/search/searchConfig.ts": 1,
   "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx": 1,

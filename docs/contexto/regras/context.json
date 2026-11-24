@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "33cb8a001a25ad19dad7aa36842900caa057d68c",
+  "sha": "6e74b0d8095d2f2714afce38389f5d16149cdc06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:49 UTC",
-  "files_total": 1351,
-  "code_files": 1180,
-  "code_lines": 201853,
+  "generated_at": "2026-11-24 02:58 UTC",
+  "files_total": 1352,
+  "code_files": 1181,
+  "code_lines": 201903,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7b8fc5ecaaf1d532",
+ "facts_hash": "22993a80150fe155",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 410,
+   ".ts": 411,
    ".tsx": 364,
    ".sql": 331,
    ".mjs": 67,
@@ -35062,12 +35062,12 @@
   },
   {
    "module": "src/features/layout",
-   "files": 37,
-   "lines": 5969,
+   "files": 38,
+   "lines": 6019,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
-    "AppSidebar.tsx: AppSidebar, MobileSidebarTrigger",
+    "AppSidebar.tsx: isItemActive, AppSidebar, MobileSidebarTrigger",
     "Breadcrumbs.tsx: Breadcrumbs",
     "ClearFiltersShortcutEditor.tsx: ClearFiltersShortcutEditor",
     "CommandPalette.tsx: CommandPalette, useCommandPalette",
@@ -35109,6 +35109,8 @@
     "fuse.js",
     "lucide-react",
     "next-themes",
+    "node:fs",
+    "node:path",
     "react",
     "react-i18next",
     "react-markdown",
@@ -35126,6 +35128,7 @@
     "src/stores"
    ],
    "file_list": [
+    "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
     "src/features/layout/components/AdvancedSearch.tsx",
     "src/features/layout/components/AppSidebar.tsx",
     "src/features/layout/components/Breadcrumbs.tsx",
@@ -60911,6 +60914,38 @@
    {
     "file": "src/features/auth/types/__tests__/authRoles.test.ts",
     "name": "every color value contains at least two CSS class segments"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "AppSidebar / isItemActive (AUT-10)"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "marca o Dashboard em /compras"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "marca o Dashboard tambem na raiz, antes do redirect"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "sobrevive ao href antigo "
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "o item Dashboard aponta para /compras, nao para a rota de redirect"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "nao marca o Dashboard em outra tela"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "nao marca o Dashboard numa subtela de compras"
+   },
+   {
+    "file": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    "name": "mantem a correspondencia exata dos outros itens"
    },
    {
     "file": "src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx",
@@ -98257,6 +98292,21 @@
     "useEmpresaFilter"
    ]
   },
+  "src/features/layout/__tests__/AppSidebar.ativo.test.ts": {
+   "path": "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+   "lines": 49,
+   "is_test": true,
+   "tests": [
+    "AppSidebar / isItemActive (AUT-10)",
+    "marca o Dashboard em /compras",
+    "marca o Dashboard tambem na raiz, antes do redirect",
+    "sobrevive ao href antigo ",
+    "o item Dashboard aponta para /compras, nao para a rota de redirect",
+    "nao marca o Dashboard em outra tela",
+    "nao marca o Dashboard numa subtela de compras",
+    "mantem a correspondencia exata dos outros itens"
+   ]
+  },
   "src/features/layout/components/AdvancedSearch.tsx": {
    "path": "src/features/layout/components/AdvancedSearch.tsx",
    "lines": 251,
@@ -98299,8 +98349,9 @@
   },
   "src/features/layout/components/AppSidebar.tsx": {
    "path": "src/features/layout/components/AppSidebar.tsx",
-   "lines": 493,
+   "lines": 494,
    "exports": [
+    "function isItemActive",
     "const AppSidebar",
     "const MobileSidebarTrigger"
    ]
@@ -117253,10 +117304,21 @@
   }
  },
  "git": {
-  "sha": "33cb8a001a25ad19dad7aa36842900caa057d68c",
+  "sha": "6e74b0d8095d2f2714afce38389f5d16149cdc06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6e74b0d",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(menu): marca o Dashboard como ativo na tela inicial (#362)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+     "src/features/layout/components/AppSidebar.tsx"
+    ]
+   },
    {
     "sha": "33cb8a0",
     "date": "2026-11-23",
@@ -117633,15 +117695,6 @@
      "src/features/auth/components/ProtectedRoute.tsx",
      "src/features/auth/hooks/useAuth.tsx",
      "src/pages/auth/Auth.tsx"
-    ]
-   },
-   {
-    "sha": "4358c8c",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
     ]
    }
   ],

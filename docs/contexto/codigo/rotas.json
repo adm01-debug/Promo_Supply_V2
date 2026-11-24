@@ -5739,7 +5739,7 @@
   },
   {
    "rotulo": "Dashboard",
-   "destino": "/",
+   "destino": "/compras",
    "grupo": "Visão Geral",
    "papeis": [],
    "papeis_nao_resolvidos": null,
