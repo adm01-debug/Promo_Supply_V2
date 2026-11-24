@@ -63,6 +63,19 @@ export async function createSolicitacao(
       if (existing) {
         return { id: existing.id as string, numero: existing.numero as string };
       }
+            // Colisao que nao e reenvio. Com o numero gerado dentro do INSERT
+            // (trigger trg_assign_numero_solicitacao) o banco serializa e isso nao
+            // acontece; se aparecer, alguem gravou numero por fora (tela). Fica no
+            // log porque antes era invisivel: a entrega so parecia lenta.
+            console.warn(
+              JSON.stringify({
+                evento: "solicitacao.numero_colidiu",
+                external_ref: draft.external_ref,
+                numero: draft.numero ?? null,
+                tentativa,
+                detalhe: error.message,
+              }),
+            );
       if (tentativa < MAX_TENTATIVAS_NUMERO) {
         await new Promise((resolve) => setTimeout(resolve, 25 * tentativa));
         continue;

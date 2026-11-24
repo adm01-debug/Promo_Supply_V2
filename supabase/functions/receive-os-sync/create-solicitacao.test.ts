@@ -160,3 +160,25 @@ Deno.test("banco sem o trigger: cai no RPC e entrega mesmo com a migration pende
   assertEquals(linhas[0].numero, null);
   assertEquals(linhas[1].numero, "SOL-000777");
 });
+Deno.test("colisao de numero fica no log como evento auditavel", async () => {
+  const visto: string[] = [];
+  const warnOriginal = console.warn;
+  console.warn = (...args: unknown[]) => {
+    visto.push(String(args[0]));
+  };
+  try {
+    const { client } = fakeAdmin({
+      inserts: [COLISAO_DE_NUMERO, { data: { id: "sol-nova", numero: "SOL-000125" } }],
+      existente: null,
+    });
+    await createSolicitacao(client, payload(), TENANT);
+  } finally {
+    console.warn = warnOriginal;
+  }
+
+  assertEquals(visto.length, 1);
+  const evento = JSON.parse(visto[0]);
+  assertEquals(evento.evento, "solicitacao.numero_colidiu");
+  assertEquals(evento.external_ref, OS_ID);
+  assertEquals(evento.tentativa, 1);
+});
