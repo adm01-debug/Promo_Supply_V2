@@ -35,7 +35,7 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
       if (!pagamento.pedido_id) return null;
       const { data } = await supabase
         .from('pedidos')
-        .select('id, numero, valor_total, status')
+        .select('id, numero, valor_total, status, fornecedor_id')
         .eq('id', pagamento.pedido_id)
         .maybeSingle();
       return data;
@@ -55,7 +55,20 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
     const allMatch = valores.length > 1 && valores.every(v => Math.abs(v - valores[0]) < 0.01);
     const hasDivergence = valores.length > 1 && !allMatch;
 
-    return { items, allMatch, hasDivergence, matchCount: items.filter(i => i.found).length };
+    // Nota de outro fornecedor nao e match, mesmo com o valor identico.
+    const fornecedorDivergente = !!(
+      pedido?.fornecedor_id &&
+      nf?.fornecedor_id &&
+      pedido.fornecedor_id !== nf.fornecedor_id
+    );
+
+    return {
+      items,
+      allMatch: allMatch && !fornecedorDivergente,
+      hasDivergence,
+      fornecedorDivergente,
+      matchCount: items.filter(i => i.found).length,
+    };
   }, [pedido, nf, pagamento]);
 
   return (
@@ -100,6 +113,15 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
           );
         })}
       </div>
+
+      {matchStatus.fornecedorDivergente && (
+        <div className="p-2 rounded bg-destructive/5 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+          <p className="text-xs text-destructive flex items-center gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            Nota fiscal de fornecedor diferente do pedido. Confira o vinculo antes de pagar.
+          </p>
+        </div>
+      )}
 
       {matchStatus.hasDivergence && (
         <div className="p-2 rounded bg-destructive/5 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
