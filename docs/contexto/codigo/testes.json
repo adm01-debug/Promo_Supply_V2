@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 222,
+ "total": 223,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 205
+  "unit": 206
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 129
+   "arquivos": 130
   },
   {
    "padrao": "outro",
@@ -1214,6 +1214,15 @@
    "casos": 4
   },
   {
+   "arquivo": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+   "tipo": "unit",
+   "linhas": 148,
+   "testa": [
+    "src/pages/auth/Auth.tsx"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
    "tipo": "unit",
    "linhas": 121,
@@ -2110,7 +2119,7 @@
   "src/pages/admin/SourcingPipeline.tsx": 1,
   "src/pages/admin/alertRunbooks.ts": 1,
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
-  "src/pages/auth/Auth.tsx": 1,
+  "src/pages/auth/Auth.tsx": 2,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
   "src/pages/catalogo-spot/useSpotCatalog.ts": 1,

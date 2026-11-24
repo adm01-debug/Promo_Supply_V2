@@ -4442,10 +4442,11 @@
   {
    "arquivo": "src/pages/auth/Auth.tsx",
    "exports": [
-    "Auth"
+    "Auth",
+    "NovaSenhaPage"
    ],
    "export_default": "Auth",
-   "linhas": 324,
+   "linhas": 539,
    "dominio": "pages/auth",
    "hooks_locais": [
     "useAccountLockout",
@@ -5503,7 +5504,7 @@
     "AnimatedRoutes"
    ],
    "export_default": null,
-   "linhas": 171,
+   "linhas": 181,
    "dominio": "routes",
    "hooks_locais": [],
    "tabelas": [],

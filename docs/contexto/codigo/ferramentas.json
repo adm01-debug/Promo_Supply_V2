@@ -3,7 +3,7 @@
  "format_version": 2,
  "stack": {
   "linguagens": [
-   "TypeScript (776)",
+   "TypeScript (777)",
    "SQL (331)",
    "Markdown (100)",
    "JavaScript (70)",
@@ -892,7 +892,8 @@
   "rotas_publicas": [
    "/__dev/xbz-network-panel",
    "/*",
-   "/auth"
+   "/auth",
+   "/auth/nova-senha"
   ],
   "menu_com_papeis": [],
   "tabelas_sem_rls": []

@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (129)",
+   "co-localizado (__tests__) (130)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)",
    "security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)",
    "security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)",
    "fix(menu): marca o Dashboard como ativo na tela inicial (#362)",
-   "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)",
-   "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)"
+   "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)"
   ]
  },
  "pr_template": null,

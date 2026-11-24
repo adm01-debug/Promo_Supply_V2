@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1be13b9da9` · branch `main` · 2026-11-24 03:21 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b08b364f62` · branch `main` · 2026-11-24 03:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1254,6 +1254,11 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```ts
   { email: z.string().email('Email inválido'), password: z.string().min(1, 'Senha é obrigatória'), }
   ```
+- **novaSenhaSchema** (`src/pages/auth/Auth.tsx`, z.object, encadeia refine):
+  ```ts
+  { password: z.string().min(8, 'A senha deve ter ao menos 8 caracteres'), confirm: z.string().min(1, 'Confirme a senha'), }
+  ```
+  - Regras cruzadas (refine): “As senhas não coincidem”
 - **solicitacaoSchema** (`src/schemas/solicitacao.schema.ts`, z.object):
   ```ts
   { empresa: z.string().min(1, "Selecione a empresa"), vendedor: z.string().min(1, "Selecione o vendedor"), produto: z.string().min(2, "O nome do produto deve ter pelo menos 2 caracteres").max(200, "Nome do produto muito longo"), categoriaId: z.string().min(1, "Selecione a categoria"), quantidade: z.number().int().positive("A quantidade deve ser maior que zero"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, "Informe o prazo de entrega").refine((val) => { const date = parseDateValue(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, "O prazo de entrega deve ser uma data futura"), observacoes: z.string().max(2000, "As observações não podem exceder 2000 caracteres").optional().default(""), …
@@ -1882,6 +1887,7 @@ _nenhum item encontrado_
 | `.gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())` | `src/pages/admin/HealthDashboard.tsx` |
 | `const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin/ScanRunsSlaCard.tsx` |
 | `const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
+| `const timer = setTimeout(async () => { const { data } = await supabase.auth.getSession(); if (!ativo) return; setEstadoSessao(data.session ? 'ok' : 'invalida'); …` | `src/pages/auth/Auth.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/pages/cotacao/Cotacao.tsx` |
 | `setTimeout(() => setCopiado(null), 2000);` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
@@ -2397,7 +2403,7 @@ _nenhum item encontrado_
 | Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Status inválido para o Kanban: ${novoStatus} | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| … +243 linhas — lista completa em `context.json` | |
+| … +245 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2416,7 +2422,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2873 testes em 171 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2879 testes em 172 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2531,6 +2537,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
+| `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |

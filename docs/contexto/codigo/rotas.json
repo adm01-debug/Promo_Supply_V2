@@ -2,11 +2,11 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "resumo": {
-  "urls": 55,
+  "urls": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 47,
-  "lazy": 75
+  "lazy": 76
  },
  "urls": [
   {
@@ -863,6 +863,69 @@
    "tipo": "tela",
    "caminho": "/auth",
    "componente": "Auth",
+   "arquivo": "src/pages/auth/Auth.tsx",
+   "definida_em": "src/routes/AppRoutes.tsx",
+   "redireciona": null,
+   "hooks": [
+    "useAccountLockout",
+    "useAuth",
+    "useCallback",
+    "useContext",
+    "useEffect",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useId",
+    "useLocation",
+    "useMemo",
+    "useNavigate",
+    "useRef",
+    "useState",
+    "useTheme",
+    "useWebAuthn"
+   ],
+   "hooks_locais": [
+    "useAccountLockout",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useWebAuthn"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
+    "webauthn_credentials"
+   ],
+   "rpcs": [
+    "clear_login_lockout",
+    "current_tenant_id",
+    "is_account_locked",
+    "log_login_attempt",
+    "record_failed_login"
+   ],
+   "edges": [
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "canais_realtime": [],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "arquivos_puxados": 23
+  },
+  {
+   "protegida": false,
+   "wrappers": [
+    "Suspense"
+   ],
+   "pai": null,
+   "indice": false,
+   "lazy": true,
+   "tipo": "tela",
+   "caminho": "/auth/nova-senha",
+   "componente": "NovaSenha",
    "arquivo": "src/pages/auth/Auth.tsx",
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
@@ -5801,6 +5864,7 @@
   "Licitacoes": "src/pages/licitacoes/Licitacoes.tsx",
   "NegociacaoIA": "src/pages/negociacao-ia/NegociacaoIA.tsx",
   "NotFound": "src/pages/NotFound.tsx",
+  "NovaSenha": "src/pages/auth/Auth.tsx",
   "Orcamentos": "src/pages/orcamentos/Orcamentos.tsx",
   "Pagamentos": "src/pages/pagamentos/Pagamentos.tsx",
   "Pedidos": "src/pages/pedidos/Pedidos.tsx",

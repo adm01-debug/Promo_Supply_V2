@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1be13b9da9436f7e4d1d98047d0ff36334065697",
+  "sha": "b08b364f6241325841f355c30e0eb0338328e268",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 03:21 UTC",
-  "files_total": 1353,
-  "code_files": 1182,
-  "code_lines": 202006,
+  "generated_at": "2026-11-24 03:32 UTC",
+  "files_total": 1354,
+  "code_files": 1183,
+  "code_lines": 202379,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4764cd2fd8abdfc7",
+ "facts_hash": "d580b326dd41d97c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 412,
-   ".tsx": 364,
+   ".tsx": 365,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33134,6 +33134,27 @@
     "file": "src/pages/auth/__tests__/Auth.destino.test.tsx"
    },
    {
+    "path": "/auth",
+    "component": "Auth",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx"
+   },
+   {
+    "path": "/auth",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx"
+   },
+   {
+    "path": "/auth/nova-senha",
+    "component": "NovaSenhaPage",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx"
+   },
+   {
     "path": "/ação",
     "component": "Acao",
     "guard": "",
@@ -33216,6 +33237,13 @@
     "guard": "",
     "roles": [],
     "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx"
+   },
+   {
+    "path": "/compras",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx"
    },
    {
     "path": "/compras",
@@ -35624,8 +35652,8 @@
   },
   {
    "module": "src/pages",
-   "files": 132,
-   "lines": 30901,
+   "files": 133,
+   "lines": 31264,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35689,7 +35717,7 @@
     "Aprovacoes.tsx: Aprovacoes",
     "aprovacoesData.ts: ApprovalHistoryItem, ApprovalTrendItem, ApprovalByValueRangeItem, ApprovalByApproverItem, BottleneckItem, StatusDistributionItem",
     "Auditoria.tsx: Auditoria",
-    "Auth.tsx: Auth",
+    "Auth.tsx: NovaSenhaPage, Auth",
     "AuthBranding.tsx: AuthBackground, AuthBrandingPanel",
     "BuyerComparisonView.tsx: BuyerComparisonView",
     "BuyerPerformanceDashboard.tsx: BuyerPerformanceDashboard",
@@ -35786,6 +35814,7 @@
     "src/pages/auth/Auth.tsx",
     "src/pages/auth/AuthBranding.tsx",
     "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
     "src/pages/buyer/BuyerComparisonView.tsx",
     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
     "src/pages/buyer/buyerDashboardHelpers.tsx",
@@ -35832,14 +35861,13 @@
     "src/pages/devolucoes/devolucoesData.ts",
     "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
     "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
-    "src/pages/documentos/DocumentosFiscais.tsx",
-    "src/pages/estoque/GestaoEstoque.tsx"
+    "src/pages/documentos/DocumentosFiscais.tsx"
    ]
   },
   {
    "module": "src/routes",
    "files": 1,
-   "lines": 171,
+   "lines": 181,
    "tables": [],
    "exports": [
     "AppRoutes.tsx: AnimatedRoutes"
@@ -39889,6 +39917,18 @@
     "chain": []
    },
    {
+    "file": "src/pages/auth/Auth.tsx",
+    "name": "novaSenhaSchema",
+    "kind": "object",
+    "body": "{ password: z.string().min(8, 'A senha deve ter ao menos 8 caracteres'), confirm: z.string().min(1, 'Confirme a senha'), }",
+    "refines": [
+     "As senhas não coincidem"
+    ],
+    "chain": [
+     "refine"
+    ]
+   },
+   {
     "file": "src/schemas/solicitacao.schema.ts",
     "name": "solicitacaoSchema",
     "kind": "object",
@@ -41644,6 +41684,14 @@
    {
     "file": "src/pages/auth/Auth.tsx",
     "msg": "Muitas tentativas falhadas. Conta bloqueada por ${lockoutResult.lockoutMinutes} minuto(s)."
+   },
+   {
+    "file": "src/pages/auth/Auth.tsx",
+    "msg": "Não foi possível alterar a senha. O link pode ter expirado — solicite outro."
+   },
+   {
+    "file": "src/pages/auth/Auth.tsx",
+    "msg": "Não foi possível enviar o link agora. Tente novamente em instantes."
    },
    {
     "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
@@ -57398,6 +57446,10 @@
     "line": "const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();"
    },
    {
+    "file": "src/pages/auth/Auth.tsx",
+    "line": "const timer = setTimeout(async () => { const { data } = await supabase.auth.getSession(); if (!ativo) return; setEstadoSessao(data.session ? 'ok' : 'invalida'); …"
+   },
+   {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "line": "staleTime: 5 * 60 * 1000,"
    },
@@ -65552,6 +65604,30 @@
    {
     "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
     "name": "recusa origem apontando para o proprio /auth e cai na raiz"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "Auth: recuperacao de senha (etapa 035 / AUT-03)"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "sem email digitado, nao dispara o link e explica o que falta"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "com email digitado, envia o link apontando para a rota de nova senha"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "link expirado ou invalido avisa em vez de mostrar o formulario"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "sessao de recuperacao valida mostra o formulario e recusa senhas diferentes"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    "name": "senha valida e salva, encerra a sessao de recuperacao e volta para o login"
    },
    {
     "file": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
@@ -105697,12 +105773,16 @@
   },
   "src/pages/auth/Auth.tsx": {
    "path": "src/pages/auth/Auth.tsx",
-   "lines": 324,
+   "lines": 539,
    "exports": [
+    "const NovaSenhaPage",
     "default Auth"
    ],
    "rpc": [
     "log_login_attempt"
+   ],
+   "navigates": [
+    "/auth"
    ],
    "errors": [
     ";\nimport { FloatingInput } from ",
@@ -105710,7 +105790,9 @@
     "Email ou senha incorretos. ${lockoutResult.remainingAttempts} tentativa(s) restante(s).",
     "Erro ao entrar com Google",
     "Informe seu email para usar Passkey",
-    "Muitas tentativas falhadas. Conta bloqueada por ${lockoutResult.lockoutMinutes} minuto(s)."
+    "Muitas tentativas falhadas. Conta bloqueada por ${lockoutResult.lockoutMinutes} minuto(s).",
+    "Não foi possível alterar a senha. O link pode ter expirado — solicite outro.",
+    "Não foi possível enviar o link agora. Tente novamente em instantes."
    ],
    "zod": [
     {
@@ -105719,10 +105801,24 @@
      "body": "{ email: z.string().email('Email inválido'), password: z.string().min(1, 'Senha é obrigatória'), }",
      "refines": [],
      "chain": []
+    },
+    {
+     "name": "novaSenhaSchema",
+     "kind": "object",
+     "body": "{ password: z.string().min(8, 'A senha deve ter ao menos 8 caracteres'), confirm: z.string().min(1, 'Confirme a senha'), }",
+     "refines": [
+      "As senhas não coincidem"
+     ],
+     "chain": [
+      "refine"
+     ]
     }
    ],
    "rule_comments": [
     "Validation schemas"
+   ],
+   "temporal": [
+    "const timer = setTimeout(async () => { const { data } = await supabase.auth.getSession(); if (!ativo) return; setEstadoSessao(data.session ? 'ok' : 'invalida'); …"
    ]
   },
   "src/pages/auth/AuthBranding.tsx": {
@@ -105763,6 +105859,48 @@
     "sem origem registrada cai na raiz, que o AppRoutes manda para /compras",
     "recusa origem protocol-relative (//evil.com) e cai na raiz",
     "recusa origem apontando para o proprio /auth e cai na raiz"
+   ]
+  },
+  "src/pages/auth/__tests__/Auth.novaSenha.test.tsx": {
+   "path": "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+   "lines": 148,
+   "is_test": true,
+   "routes": [
+    {
+     "path": "/auth",
+     "component": "Auth",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/compras",
+     "component": "div",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/auth/nova-senha",
+     "component": "NovaSenhaPage",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/auth",
+     "component": "div",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "temporal": [
+    "await screen.findByText(/Este link de recuperação é inválido ou expirou/i, undefined, { timeout: 4000 }),"
+   ],
+   "tests": [
+    "Auth: recuperacao de senha (etapa 035 / AUT-03)",
+    "sem email digitado, nao dispara o link e explica o que falta",
+    "com email digitado, envia o link apontando para a rota de nova senha",
+    "link expirado ou invalido avisa em vez de mostrar o formulario",
+    "sessao de recuperacao valida mostra o formulario e recusa senhas diferentes",
+    "senha valida e salva, encerra a sessao de recuperacao e volta para o login"
    ]
   },
   "src/pages/buyer/BuyerComparisonView.tsx": {
@@ -108930,7 +109068,7 @@
   },
   "src/routes/AppRoutes.tsx": {
    "path": "src/routes/AppRoutes.tsx",
-   "lines": 171,
+   "lines": 181,
    "exports": [
     "const AnimatedRoutes"
    ],
@@ -117358,10 +117496,22 @@
   }
  },
  "git": {
-  "sha": "1be13b9da9436f7e4d1d98047d0ff36334065697",
+  "sha": "b08b364f6241325841f355c30e0eb0338328e268",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b08b364",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/auth/Auth.tsx",
+     "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+     "src/routes/AppRoutes.tsx"
+    ]
+   },
    {
     "sha": "1be13b9",
     "date": "2026-11-24",
@@ -117704,118 +117854,31 @@
      "supabase/functions/telemetry/index.ts",
      "supabase/functions/workflow-engine/index.ts"
     ]
-   },
-   {
-    "sha": "d355ef3",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(cors): todas as edges derivam o CORS da requisicao (#334)",
-    "files": [
-     "supabase/functions/_shared/cors-sem-constante.test.ts",
-     "supabase/functions/_shared/validation.ts",
-     "supabase/functions/ai-demand-prediction/index.ts",
-     "supabase/functions/ai-negotiation/index.ts",
-     "supabase/functions/ai-supplier-risk/index.ts",
-     "supabase/functions/ai-supplier-suggestion/index.ts",
-     "supabase/functions/alert-dispatcher/index.ts",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/check-expiry-alerts/index.ts",
-     "supabase/functions/check-sla-alerts/index.ts",
-     "supabase/functions/dependency-health/index.ts",
-     "supabase/functions/erp-credential-encrypt/index.ts",
-     "supabase/functions/erp-sync/index.ts",
-     "supabase/functions/external-db-bridge/index.ts",
-     "supabase/functions/fiscal-orchestrator/index.ts",
-     "supabase/functions/generate-contract-pdf/index.ts",
-     "supabase/functions/guided-buying-ai/index.ts",
-     "supabase/functions/maintain-partitions/index.ts",
-     "supabase/functions/migrate-storage-paths/index.ts",
-     "supabase/functions/process-invoice-idp/index.ts",
-     "supabase/functions/process-outbox/index.ts",
-     "supabase/functions/process-solicitacao-neural/index.ts",
-     "supabase/functions/punchout-encrypt/index.ts",
-     "supabase/functions/punchout-receive/index.ts",
-     "supabase/functions/punchout-setup/index.ts",
-     "supabase/functions/run-audit/index.ts",
-     "supabase/functions/scim-v2/index.ts",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/spot-proxy/index.ts",
-     "supabase/functions/system-simulation/index.ts",
-     "supabase/functions/telemetry/index.ts",
-     "supabase/functions/webauthn-authenticate/index.ts",
-     "supabase/functions/webauthn-register/index.ts",
-     "supabase/functions/weekly-report/index.ts",
-     "supabase/functions/weekly-summary-report/index.ts",
-     "supabase/functions/workflow-engine/index.ts",
-     "supabase/functions/xbz-proxy/index.ts",
-     "supabase/functions/xbz-sync-pedidos/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    21
-   ],
-   [
-    "supabase/functions/webauthn-authenticate/index.ts",
-    3
-   ],
-   [
-    "supabase/functions/fiscal-orchestrator/index.ts",
-    3
-   ],
-   [
-    "supabase/functions/guided-buying-ai/index.ts",
-    3
-   ],
-   [
-    "supabase/functions/workflow-engine/index.ts",
-    3
+    22
    ],
    [
     "supabase/functions/_shared/security.timing.test.ts",
     2
    ],
    [
-    "supabase/functions/punchout-receive/index.ts",
+    "supabase/functions/webauthn-authenticate/index.ts",
     2
    ],
    [
-    "supabase/functions/check-approval-escalations/index.ts",
+    "supabase/functions/fiscal-orchestrator/index.ts",
     2
    ],
    [
-    "supabase/functions/check-sla-alerts/index.ts",
+    "supabase/functions/guided-buying-ai/index.ts",
     2
    ],
    [
-    "supabase/functions/external-db-bridge/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/migrate-storage-paths/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/process-outbox/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/run-audit/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/system-simulation/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/weekly-summary-report/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/punchout-setup/index.ts",
+    "supabase/functions/workflow-engine/index.ts",
     2
    ],
    [
@@ -117823,16 +117886,56 @@
     2
    ],
    [
-    "supabase/functions/_shared/validation.ts",
-    2
+    "src/pages/auth/Auth.tsx",
+    1
    ],
    [
-    "supabase/functions/ai-demand-prediction/index.ts",
-    2
+    "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
+    1
    ],
    [
-    "supabase/functions/ai-negotiation/index.ts",
-    2
+    "src/routes/AppRoutes.tsx",
+    1
+   ],
+   [
+    "supabase/functions/punchout-receive/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/scim-v2/auth.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/security.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-api/index.ts",
+    1
+   ],
+   [
+    "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
+    1
+   ],
+   [
+    "src/features/layout/components/AppSidebar.tsx",
+    1
+   ],
+   [
+    "src/components/security/PasskeyManager.tsx",
+    1
+   ],
+   [
+    "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useWebAuthn.ts",
+    1
    ]
   ]
  }

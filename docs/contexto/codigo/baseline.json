@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1be13b9da9436f7e4d1d98047d0ff36334065697",
+  "commit": "b08b364f6241325841f355c30e0eb0338328e268",
   "branch": "main",
-  "data_commit": "2026-11-24T00:19:45-03:00",
+  "data_commit": "2026-11-24T00:31:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b08b364",
+    "data": "2026-11-24",
+    "assunto": "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)"
+   },
    {
     "sha": "1be13b9",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "50aa142",
     "data": "2026-11-23",
     "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#303)"
-   },
-   {
-    "sha": "25ed3a7",
-    "data": "2026-11-23",
-    "assunto": "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)"
    }
   ],
-  "arquivos_mudados_7d": 380,
+  "arquivos_mudados_7d": 381,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -164,12 +164,12 @@
     "mudancas": 29
    },
    {
-    "pasta": "src/pages/catalogo-xbz",
+    "pasta": "docs/qa/05-PROGRESSO.md",
     "mudancas": 25
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 24
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 25
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -266,6 +266,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/auth/Auth.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "supabase/functions/_shared/security.ts",
     "mudancas": 6
    },
@@ -290,10 +294,6 @@
     "mudancas": 5
    },
    {
-    "arquivo": "scripts/realtime-audit.ts",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
     "mudancas": 5
    }
@@ -314,10 +314,10 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1352,
-  "arquivos_codigo": 849,
-  "linhas_codigo": 174822,
-  "rotas": 55,
+  "arquivos_total": 1353,
+  "arquivos_codigo": 850,
+  "linhas_codigo": 175195,
+  "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 47,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 222,
+  "testes": 223,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -455,12 +455,12 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 132,
-   "linhas": 30901
+   "arquivos": 133,
+   "linhas": 31264
   },
   "src/routes": {
    "arquivos": 1,
-   "linhas": 171
+   "linhas": 181
   },
   "src/schemas": {
    "arquivos": 2,
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 30
+  "arquivos_acima_500_linhas": 31
  },
  "todos": [
   {

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1be13b9da9436f7e4d1d98047d0ff36334065697` (2026-11-24T00:19:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b08b364f6241325841f355c30e0eb0338328e268` (2026-11-24T00:31:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (776), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (777), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,10 +34,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1352 |
-| arquivos_codigo | 849 |
-| linhas_codigo | 174822 |
-| rotas | 55 |
+| arquivos_total | 1353 |
+| arquivos_codigo | 850 |
+| linhas_codigo | 175195 |
+| rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 47 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 222 |
+| testes | 223 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (129), outro (43), co-localizado (*.test) (40)
+- testes: co-localizado (__tests__) (130), outro (43), co-localizado (*.test) (40)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -86,7 +86,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 11 |
 | pages/auditoria | 1 | 1 | 1 | 3 | 2 | 4 |
-| pages/auth | 0 | 1 | 2 | 5 | 3 | 4 |
+| pages/auth | 0 | 2 | 2 | 5 | 3 | 4 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
 | pages/catalogo-spot | 1 | 1 | 6 | 84 | 11 | 56 |
@@ -140,6 +140,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `/aprovacoes` [tela] → src/pages/aprovacoes/Aprovacoes.tsx (protegida)
 - `/auditoria` [tela] → src/pages/auditoria/Auditoria.tsx (protegida)
 - `/auth` [tela] → src/pages/auth/Auth.tsx
+- `/auth/nova-senha` [tela] → src/pages/auth/Auth.tsx
 - `/buyer-performance` [tela] → src/pages/buyer/BuyerPerformanceDashboard.tsx (protegida)
 - `/catalogo-produtos` [tela] → src/pages/catalogo-produtos/CatalogoProdutos.tsx (protegida)
 - `/catalogo-spot` [tela] → src/pages/catalogo-spot/CatalogoSpot.tsx (protegida)
@@ -311,7 +312,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Permissões / papéis
 - papéis no código: user (9), system (7), admin (6), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
-- guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth
+- guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth, /auth/nova-senha
 - feature flags: nenhuma
 
 ## Alertas (baseline.json → alertas)
@@ -337,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (24)
+- docs/qa/05-PROGRESSO.md (25)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
 - bun.lock (9)
@@ -418,6 +419,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `b08b364` feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)
 - 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
 - 2026-11-24 `fc4c451` security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)
 - 2026-11-23 `6e74b0d` fix(menu): marca o Dashboard como ativo na tela inicial (#362)
@@ -432,7 +434,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `619c2bb` fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)
 - 2026-11-23 `5f2b99e` fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)
 - 2026-11-23 `2b1df86` fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)
-- 2026-11-23 `d150caf` fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

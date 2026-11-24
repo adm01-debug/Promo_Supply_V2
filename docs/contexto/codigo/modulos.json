@@ -3745,11 +3745,12 @@
   {
    "modulo": "pages/auth",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 385,
+   "testes": 2,
+   "linhas": 600,
    "itens_menu": [],
    "telas": [
-    "/auth"
+    "/auth",
+    "/auth/nova-senha"
    ],
    "rotas_http": [],
    "componentes": 2,
@@ -7377,7 +7378,7 @@
    "modulo": "routes",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 171,
+   "linhas": 181,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
