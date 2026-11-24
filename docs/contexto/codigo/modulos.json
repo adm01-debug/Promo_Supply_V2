@@ -417,8 +417,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 20,
-   "linhas": 25768,
+   "testes": 21,
+   "linhas": 25804,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4767,6 +4767,7 @@
     "contract_items",
     "contract_penalties",
     "contracts",
+    "fornecedores",
     "order_contracts",
     "profiles",
     "user_roles",

@@ -2225,6 +2225,7 @@
     "useFeedbackPreferences",
     "useMemo",
     "useNavigate",
+    "useQuery",
     "useRef",
     "useState",
     "useToast"
@@ -2242,6 +2243,7 @@
     "contract_items",
     "contract_penalties",
     "contracts",
+    "fornecedores",
     "order_contracts",
     "profiles",
     "user_roles",

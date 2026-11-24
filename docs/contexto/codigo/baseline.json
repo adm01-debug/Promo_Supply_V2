@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6a89324929efa1f5ac14435c74036cec9a79a8f5",
+  "commit": "2f53e1037cc21db8360751ddb7283c604bcd65a0",
   "branch": "main",
-  "data_commit": "2026-11-24T03:28:20-03:00",
+  "data_commit": "2026-11-24T03:40:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2f53e10",
+    "data": "2026-11-24",
+    "assunto": "﻿fix(contrato): seletor de fornecedor grava o id do cadastro em supplier_id (#382)"
+   },
    {
     "sha": "6a89324",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "d6a5f18",
     "data": "2026-11-23",
     "assunto": "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)"
-   },
-   {
-    "sha": "fb36e10",
-    "data": "2026-11-23",
-    "assunto": "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)"
    }
   ],
-  "arquivos_mudados_7d": 415,
+  "arquivos_mudados_7d": 417,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 173
+    "mudancas": 175
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "pasta": "src/lib/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 40
+    "mudancas": 41
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1370,
-  "arquivos_codigo": 867,
-  "linhas_codigo": 178009,
+  "arquivos_total": 1371,
+  "arquivos_codigo": 868,
+  "linhas_codigo": 178268,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 235,
+  "testes": 236,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 267,
-   "linhas": 49957
+   "arquivos": 268,
+   "linhas": 50216
   },
   "src/features": {
    "arquivos": 75,
@@ -650,7 +650,7 @@
   }
  ],
  "qualidade": {
-  "any": 107,
+  "any": 128,
   "console_log": 85,
   "ts_ignore": 0,
   "eslint_disable": 1,

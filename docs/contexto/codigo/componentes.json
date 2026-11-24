@@ -646,13 +646,14 @@
     "ContractModal"
    ],
    "export_default": null,
-   "linhas": 519,
+   "linhas": 555,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
     "contract_history",
     "contract_items",
-    "contracts"
+    "contracts",
+    "fornecedores"
    ],
    "edges": [],
    "usado_por": 1,

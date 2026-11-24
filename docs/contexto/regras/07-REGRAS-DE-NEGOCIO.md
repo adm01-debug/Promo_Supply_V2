@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6a89324929` · branch `main` · 2026-11-24 06:28 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2f53e1037c` · branch `main` · 2026-11-24 06:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1022,7 +1022,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts`<br>`supabase/functions/weekly-report/index.ts`<br>… +2 |
 | `status` | `aprovado` | compara, escreve, filtra | `src/components/compras/OrderPreviewModal.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/usePagamentos.ts`<br>`src/pages/documentos/DocumentosFiscais.tsx`<br>… +2 |
 | `status` | `atencao` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
-| `status` | `ativo` | compara, escreve, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +14 |
+| `status` | `ativo` | compara, escreve, filtra | `src/components/compras/ContractModal.tsx`<br>`src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>… +15 |
 | `status` | `atrasado` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts`<br>`src/pages/pedidos/pedidosHelpers.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts` |
 | `status` | `atual` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx` |
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
@@ -2445,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3008 testes em 184 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3014 testes em 185 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2567,6 +2567,7 @@ _nenhum item encontrado_
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
+| `src/components/compras/__tests__/contractFornecedorId.test.tsx` | 6 | ContractModal grava o fornecedor do cadastro · oferece so os fornecedores ativos, com id real e sem sufixo de status · sem fornecedor escolhido nao salva e avisa · salva supplier_id com o id do cadastro e supplier_name como copia congelada … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
