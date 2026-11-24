@@ -23,6 +23,7 @@ import { PedidoDetailsDialog } from "@/pages/pedidos/PedidoDetailsDialog";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { toast } from "@/lib/feedbackToast";
+import { saudeDoPrazo } from "@/pages/pedidos/pedidosHelpers";
 import { format } from "date-fns/format";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
 import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
@@ -263,6 +264,7 @@ const Pedidos = () => {
                       {filteredPedidos.map((pedido, index) => {
                         const config = statusConfig[pedido.status] || statusConfig["pendente"];
                         const StatusIcon = config.icon;
+                        const sla = saudeDoPrazo(pedido);
                         return (
                           <motion.tr 
                             key={pedido.id}
@@ -296,22 +298,19 @@ const Pedidos = () => {
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2" title={sla.detalhe}>
                                 <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden">
                                   <motion.div 
                                     initial={{ width: 0 }}
-                                    animate={{ width: index % 3 === 0 ? '40%' : '85%' }}
-                                    className={cn(
-                                      "h-full rounded-full",
-                                      index % 3 === 0 ? "bg-amber-500" : "bg-emerald-500"
-                                    )} 
+                                    animate={{ width: `${sla.largura}%` }}
+                                    className={cn("h-full rounded-full", sla.barra)} 
                                   />
                                 </div>
                                 <span className={cn(
                                   "text-[10px] font-black uppercase tracking-tighter",
-                                  index % 3 === 0 ? "text-amber-400" : "text-emerald-400"
+                                  sla.texto
                                 )}>
-                                  {index % 3 === 0 ? "ATENÇÃO" : "NO PRAZO"}
+                                  {sla.rotulo}
                                 </span>
                               </div>
                             </TableCell>

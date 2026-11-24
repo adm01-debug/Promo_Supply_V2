@@ -41,7 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
-import { mapLegacyStatusToDb, adaptToLegacyFormat } from "./solicitacoesHelpers";
+import { mapLegacyStatusToDb, adaptToLegacyFormat, posicoesDaMatriz } from "./solicitacoesHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
@@ -126,6 +126,11 @@ const Solicitacoes = () => {
       return matchesSearch && matchesStatus && matchesTipo && matchesDateFrom && matchesDateTo && matchesValorMin && matchesValorMax;
     });
   }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
+
+  const pontosMatriz = useMemo(
+    () => posicoesDaMatriz(filteredSolicitacoes.slice(0, 15)),
+    [filteredSolicitacoes],
+  );
 
   const stats = useMemo(() => {
     const pending = filteredSolicitacoes.filter(s => ['AGUARDANDO_COTACAO', 'EM_COTACAO'].includes(s.status)).length;
@@ -389,17 +394,15 @@ const Solicitacoes = () => {
                     <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 text-[8px] font-black uppercase text-zinc-600 tracking-widest">IMPACTO FINANCEIRO</div>
                     
                     {/* Simplified Scatter Plot Dots */}
-                    {filteredSolicitacoes.slice(0, 15).map((s, i) => (
+                    {pontosMatriz.map((ponto, i) => (
                       <motion.div
-                        key={s.id}
+                        key={ponto.id}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: i * 0.1 }}
                         className="absolute w-3 h-3 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.5)] cursor-pointer hover:scale-150 transition-transform"
-                        style={{ 
-                          left: `${(i * 7) + 10}%`, 
-                          bottom: `${(s.valorTotal ? (s.valorTotal / 10000) * 100 : 20) + 10}%` 
-                        }}
+                        title={`${ponto.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} - ${ponto.diasRestantes === null ? 'sem prazo definido' : `${ponto.diasRestantes} dia(s) ate a data necessaria`}`}
+                        style={{ left: `${ponto.esquerda}%`, bottom: `${ponto.base}%` }}
                       />
                     ))}
                   </div>
