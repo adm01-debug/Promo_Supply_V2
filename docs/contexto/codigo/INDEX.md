@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cd9b099e5d8d1f57f74f3f9e77e4c762d3407ddc` (2026-11-24T10:49:01-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d2d869a33eecf59196845f5e62fcb80ba7a4ce2a` (2026-11-24T11:00:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (71)
+- docs/qa/05-PROGRESSO.md (72)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `d2d869a` fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)
 - 2026-11-24 `cd9b099` fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)
 - 2026-11-24 `9398283` fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)
 - 2026-11-24 `004f06d` fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
 - 2026-11-24 `57ebeb0` feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)
 - 2026-11-24 `eb55789` fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)
-- 2026-11-24 `d08b3c4` fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
