@@ -208,6 +208,27 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
 
   const deleteDevolucao = useCallback(async (id: string) => {
     try {
+      // Devolucao que ja gerou credito nao pode ser apagada: a FK de
+      // creditos_fornecedor.devolucao_id e SET NULL e o credito ficaria orfao,
+      // com saldo sem origem.
+      const devolucao = devolucoes.find((item) => item.id === id);
+      const { count, error: erroCredito } = await supabase
+        .from('creditos_fornecedor')
+        .select('id', { count: 'exact', head: true })
+        .eq('devolucao_id', id);
+
+      if (erroCredito) {
+        toast.error('Nao foi possivel conferir o credito da devolucao. Exclusao cancelada.');
+        return false;
+      }
+
+      if ((count ?? 0) > 0 || devolucao?.status === 'credito_emitido') {
+        toast.error(
+          'Devolucao com credito gerado nao pode ser excluida: o credito do fornecedor ficaria sem origem.'
+        );
+        return false;
+      }
+
       const { error } = await supabase.from('devolucoes').delete().eq('id', id);
       if (error) throw error;
       toast.success('Devolução excluída!');
@@ -217,7 +238,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
-  }, [queryClient]);
+  }, [devolucoes, queryClient]);
 
   useRealtimeSubscription({
     tables: ['devolucoes'],
