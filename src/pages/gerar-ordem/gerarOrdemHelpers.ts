@@ -53,6 +53,54 @@ Atenciosamente,
 Equipe de Compras - Promo Supply`;
 }
 
+export interface DadosEntrega {
+  /** Nome da empresa emitente da ordem (nome fantasia, razao social ou name). */
+  empresa?: string | null;
+  /** Endereco ja formatado da empresa. Sem ele o bloco e omitido. */
+  endereco?: string | null;
+}
+
+const CAMPOS_ENDERECO: readonly (readonly string[])[] = [
+  ["logradouro", "rua", "endereco", "street"],
+  ["numero", "n", "number"],
+  ["complemento", "complement"],
+  ["bairro", "neighborhood"],
+  ["cidade", "municipio", "city"],
+  ["uf", "estado", "state"],
+  ["cep", "zip", "zipcode", "postal_code"],
+];
+
+/**
+ * Normaliza `tenants.endereco_fiscal` (jsonb livre) em uma linha legivel.
+ * Devolve `null` quando nao ha nenhum campo reconhecido - e o sinal para o
+ * e-mail omitir o bloco de entrega em vez de imprimir um placeholder.
+ */
+export function formatarEnderecoEntrega(endereco: unknown): string | null {
+  if (typeof endereco === "string") return endereco.trim() || null;
+  if (!endereco || typeof endereco !== "object" || Array.isArray(endereco)) return null;
+
+  const dados = endereco as Record<string, unknown>;
+  const texto = (chaves: readonly string[]): string | null => {
+    for (const chave of chaves) {
+      const valor = dados[chave];
+      if (typeof valor === "string" && valor.trim()) return valor.trim();
+      if (typeof valor === "number" && Number.isFinite(valor)) return String(valor);
+    }
+    return null;
+  };
+
+  const [rua, numero, complemento, bairro, cidade, uf, cep] = CAMPOS_ENDERECO.map(texto);
+  const via = rua ? (numero ? `${rua}, ${numero}` : rua) : numero;
+  const local = [cidade, uf].filter(Boolean).join("/");
+  const partes = [
+    [via, complemento].filter(Boolean).join(" - "),
+    [bairro, local].filter(Boolean).join(" - "),
+    cep ? `CEP ${cep}` : null,
+  ].filter((parte) => Boolean(parte));
+
+  return partes.length > 0 ? partes.join(" - ") : null;
+}
+
 export function buildEmailMessage(
   solicitacao: OrderData,
   ordemNumero: string,
@@ -61,7 +109,13 @@ export function buildEmailMessage(
   frete: number,
   desconto: number,
   observacoes: string,
+  entrega?: DadosEntrega | null,
 ): { assunto: string; corpo: string } {
+  const nomeEntrega = entrega?.empresa?.trim() || "Promo Supply";
+  const enderecoEntrega = entrega?.endereco?.trim() || null;
+  const blocoEntrega = enderecoEntrega
+    ? `\nDADOS PARA ENTREGA:\n${nomeEntrega}\n${enderecoEntrega}`
+    : "";
   const assunto = `Ordem de Compra ${ordemNumero} - ${solicitacao.produto}`;
   const corpo = `Prezados,
 
@@ -86,10 +140,7 @@ ${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
 CONDIÇÕES:
 • Pagamento: À vista via PIX
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
-DADOS PARA ENTREGA:
-Promo Supply
-[Endereço da empresa]
+${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}${blocoEntrega}
 
 ═══════════════════════════════════════════
 

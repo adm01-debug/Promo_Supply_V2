@@ -34,14 +34,14 @@ import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
 import { useCatalogoPim } from "@/hooks/useCatalogoPim";
 
-import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
+import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage, formatarEnderecoEntrega } from './gerarOrdemHelpers';
 import { formatCurrency } from "@/lib/utils";
 import { generateOrderPDF } from "@/lib/pdfGenerator";
 import { LegacyFornecedor } from "@/types/legacyTypes";
 import { useAuth } from "@/features/auth";
 
 const GerarOrdem = () => {
-  const { user } = useAuth();
+  const { user, tenantId, selectedEmpresaId } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("solicitacao");
@@ -74,6 +74,26 @@ const GerarOrdem = () => {
       return data;
     },
     enabled: !!solicitacaoId,
+  });
+
+  // Etapa QA 227: o e-mail ao fornecedor imprimia o placeholder "[Endereco da
+  // empresa]". O endereco real vem de `tenants.endereco_fiscal` da empresa em
+  // foco no seletor do header; empresa sem endereco cadastrado omite o bloco.
+  const empresaId = selectedEmpresaId ?? tenantId ?? null;
+  const { data: empresaEntrega } = useQuery({
+    queryKey: ['gerar-ordem-empresa', empresaId],
+    queryFn: async () => {
+      if (!empresaId) return null;
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('name, nome_fantasia, razao_social, endereco_fiscal')
+        .eq('id', empresaId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!empresaId,
+    staleTime: 300_000,
   });
 
   const pimProductId = (solicitacaoData as { pim_product_id?: string | null } | null)?.pim_product_id ?? null;
@@ -166,6 +186,14 @@ const GerarOrdem = () => {
   const gerarMensagemEmail = () => {
     const { assunto, corpo } = buildEmailMessage(
       solicitacao, ordemNumero, subtotal, total, frete, desconto, observacoes,
+      {
+        empresa:
+          empresaEntrega?.nome_fantasia ||
+          empresaEntrega?.razao_social ||
+          empresaEntrega?.name ||
+          null,
+        endereco: formatarEnderecoEntrega(empresaEntrega?.endereco_fiscal),
+      },
     );
     setAssuntoEmail(assunto);
     setMensagemEmail(corpo);
