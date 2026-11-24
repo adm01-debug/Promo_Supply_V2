@@ -246,7 +246,7 @@ export function SupplierChat() {
   return (
     <>
       <Button 
-        className="fixed bottom-6 right-24 h-14 w-14 rounded-full shadow-lg z-50 gradient-primary shadow-glow-primary border-none" 
+        className="fixed bottom-36 md:bottom-6 right-24 h-14 w-14 rounded-full shadow-lg z-50 gradient-primary shadow-glow-primary border-none" 
         onClick={() => setIsOpen(true)}
       >
         <MessageCircle className="h-6 w-6" />
