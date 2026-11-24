@@ -59,7 +59,17 @@ import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
 import { resolveApprovalDeadline } from "./pending-approvals/deadlineFallback";
 
 export const PendingApprovalsList = () => {
-  const { pendingSteps, workflows, allHistory, approveStep, rejectStep, loading: workflowLoading, fetchAllHistory } = useApprovalWorkflow();
+  const {
+    pendingSteps,
+    workflows,
+    allHistory,
+    approveStep,
+    rejectStep,
+    loading: workflowLoading,
+    error: workflowError,
+    fetchAllHistory,
+    fetchPendingSteps,
+  } = useApprovalWorkflow();
   const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -320,7 +330,28 @@ export const PendingApprovalsList = () => {
       </div>
 
       {/* List */}
-      {filteredApprovals.length === 0 ? (
+      {workflowError && !workflowLoading ? (
+        <div role="alert" className="text-center py-12">
+          <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-destructive" />
+          <p className="text-lg font-medium text-destructive">Não foi possível carregar as aprovações</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto break-words">{workflowError}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4"
+            onClick={() => { void fetchPendingSteps(); void fetchAllHistory(); }}
+          >
+            Tentar de novo
+          </Button>
+        </div>
+      ) : workflowLoading && approvals.length === 0 ? (
+        <div className="space-y-3" aria-busy="true" aria-live="polite">
+          <p className="text-sm text-muted-foreground">Carregando aprovações pendentes...</p>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-24 rounded-xl border border-border bg-muted/40 animate-pulse" />
+          ))}
+        </div>
+      ) : filteredApprovals.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <Check className="w-16 h-16 mx-auto mb-4 text-success" />
           <p className="text-lg font-medium">Nenhuma aprovação pendente</p>

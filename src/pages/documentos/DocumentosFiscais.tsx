@@ -34,7 +34,7 @@ const DocumentosFiscais = () => {
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: documents, isLoading } = useQuery({
+  const { data: documents, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["fiscal-documents"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -248,6 +248,13 @@ const DocumentosFiscais = () => {
     d.chave_acesso?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const semDadosConfiaveis = isLoading || isError;
+  // O erro do PostgREST e um objeto simples ({ message, details, hint }), nao um
+  // Error: `String(error)` imprimiria "[object Object]" na tela (QA 251).
+  const mensagemErro = error instanceof Error
+    ? error.message
+    : ((error as { message?: string } | null)?.message ?? String(error));
+
   const stats = {
     total: documents?.length || 0,
     matched: documents?.filter(d => d.reconciliation_status === "matched").length || 0,
@@ -280,7 +287,7 @@ const DocumentosFiscais = () => {
               <CardContent className="p-4 flex items-center gap-3">
                 <s.icon className={`h-8 w-8 ${s.color}`} />
                 <div>
-                  <p className="text-2xl font-bold">{s.value}</p>
+                  <p className="text-2xl font-bold">{semDadosConfiaveis ? "—" : s.value}</p>
                   <p className="text-xs text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>
@@ -377,7 +384,31 @@ const DocumentosFiscais = () => {
                     </TableCell>
                   </TableRow>
                 ))}
-                {(!filtered || filtered.length === 0) && (
+                {isLoading && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin inline" aria-hidden="true" />
+                      Carregando documentos fiscais...
+                    </TableCell>
+                  </TableRow>
+                )}
+                {isError && !isLoading && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="py-8">
+                      <div role="alert" className="flex flex-col items-center gap-2 text-center">
+                        <AlertTriangle className="h-6 w-6 text-destructive" aria-hidden="true" />
+                        <p className="font-medium text-destructive">Não foi possível carregar os documentos fiscais</p>
+                        <p className="text-xs text-muted-foreground max-w-lg break-words">
+                          {mensagemErro}
+                        </p>
+                        <Button size="sm" variant="outline" onClick={() => { void refetch(); }}>
+                          Tentar de novo
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+                {!isLoading && !isError && (!filtered || filtered.length === 0) && (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       Nenhum documento fiscal importado
