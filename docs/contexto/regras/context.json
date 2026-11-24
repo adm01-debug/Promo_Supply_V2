@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "67eee5c65f956aec4ed12edf9d0413c5f4e0e542",
+  "sha": "eeaf28fa08f1b634421b740695378129f528d764",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:49 UTC",
-  "files_total": 1394,
-  "code_files": 1223,
-  "code_lines": 208035,
+  "generated_at": "2026-11-24 09:56 UTC",
+  "files_total": 1396,
+  "code_files": 1225,
+  "code_lines": 208440,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "83f6c46a58de81a1",
+ "facts_hash": "15953ae51df726c3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 384,
+   ".tsx": 386,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35211,15 +35211,16 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 8,
-   "lines": 745,
+   "files": 9,
+   "lines": 924,
    "tables": [
     "pedido_itens",
     "pedidos",
+    "receiving_checklists",
     "solicitacoes"
    ],
    "exports": [
-    "exclusaoPedido.ts: STATUS_PEDIDO_EXCLUIVEL, MOTIVO_EXCLUSAO_BLOQUEADA, statusPermiteExcluirPedido, selecaoTemExclusaoBloqueada, mensagemExclusaoParcial",
+    "exclusaoPedido.ts: STATUS_PEDIDO_EXCLUIVEL, MOTIVO_EXCLUSAO_BLOQUEADA, MOTIVO_EXCLUSAO_COM_CHECKLIST, statusPermiteExcluirPedido, selecaoTemExclusaoBloqueada, mensagemExclusaoParcial",
     "statusTransitions.ts: VALID_PEDIDO_TRANSITIONS, KANBAN_TO_DB_STATUS, KANBAN_STATUS_SEM_ESCRITA, transicaoDeStatusPermitida",
     "usePedidos.ts: Pedido, PedidoItem, CreatePedidoInput, PedidoFilters, usePedidos, usePedidosKPIs"
    ],
@@ -35247,19 +35248,21 @@
     "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
     "src/features/pedidos/hooks/usePedidos.ts",
     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 14,
-   "lines": 1539,
+   "files": 15,
+   "lines": 1765,
    "tables": [
     "approval_history",
     "approval_steps",
     "approval_workflows",
     "cost_centers",
+    "cotacoes",
     "profiles",
     "solicitacoes"
    ],
@@ -35301,6 +35304,7 @@
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
@@ -36523,6 +36527,7 @@
    "approval_history": {
     "select": [
      "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useApprovalHistory.ts",
      "src/tests/integration/supabase-db.test.ts"
     ],
@@ -36570,6 +36575,7 @@
     "select": [
      "src/components/compras/CriticalAlertsBar.tsx",
      "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useApprovalWorkflow.ts",
      "src/hooks/useSidebarBadges.ts",
      "src/tests/integration/supabase-db.test.ts"
@@ -36757,6 +36763,7 @@
      "src/components/compras/BuyerPerformancePanel.tsx",
      "src/components/compras/PriceComparator.tsx",
      "src/features/cotacoes/hooks/useCotacoes.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/usePrefetch.ts",
      "src/hooks/useSidebarBadges.ts",
@@ -37451,6 +37458,11 @@
    "real": {
     "ref": [
      "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+    ]
+   },
+   "receiving_checklists": {
+    "select": [
+     "src/features/pedidos/hooks/usePedidos.ts"
     ]
    },
    "repurchase_suggestions": {
@@ -38504,6 +38516,9 @@
    ],
    "query_telemetry": [
     "created_at"
+   ],
+   "receiving_checklists": [
+    "pedido_id"
    ],
    "repurchase_suggestions": [
     "id",
@@ -39901,7 +39916,6 @@
    "financial_audit_logs",
    "historico_compras",
    "organizations",
-   "receiving_checklists",
    "saved_filters",
    "scim_provisioning_log",
    "secret_rotation_schedule",
@@ -41269,6 +41283,14 @@
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Não foi possível conferir o recebimento do pedido. Exclusão cancelada."
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada."
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Pedido não encontrado"
    },
    {
@@ -41285,6 +41307,10 @@
    },
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "msg": "${excluidos} de ${ids.length} solicitação(ões) excluída(s). ${MOTIVO_DEPENDENTES_SOLICITACAO}"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "msg": "Erro ao atualizar: "
    },
    {
@@ -41294,6 +41320,14 @@
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "msg": "Erro ao excluir: "
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "msg": "Não foi possível conferir o histórico da solicitação. Exclusão cancelada."
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "msg": "Não foi possível conferir o histórico das solicitações. Exclusão cancelada."
    },
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -62130,6 +62164,26 @@
     "name": "não bloqueia quando o status atual é nulo ou desconhecido"
    },
    {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "name": "usePedidos - exclusao guardada por checklist de recebimento"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "name": "recusa excluir pedido com checklist de recebimento"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "name": "bulkDelete recusa o lote inteiro quando algum pedido tem checklist"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "name": "erro na contagem de checklist cancela a exclusao"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "name": "exclui pedido sem checklist"
+   },
+   {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "name": "usePedidos - exclusao so em pedido pendente ou cancelado"
    },
@@ -62300,6 +62354,38 @@
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
     "name": "cria o workflow quando o banco devolve a solicitacao pendente"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "useSolicitacoes - exclusao guardada por historico"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "recusa excluir solicitacao que tem cotacao de fornecedor"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "recusa excluir solicitacao que so tem historico de aprovacao"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "erro na contagem cancela a exclusao em vez de apagar"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "exclui solicitacao sem cotacao nem historico"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "bulkDelete com todo o lote bloqueado nao apaga nada"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "bulkDelete parcial apaga so as liberadas e avisa"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    "name": "bulkDelete sem dependentes exclui o lote inteiro"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -100510,10 +100596,11 @@
   },
   "src/features/pedidos/exclusaoPedido.ts": {
    "path": "src/features/pedidos/exclusaoPedido.ts",
-   "lines": 25,
+   "lines": 28,
    "exports": [
     "const STATUS_PEDIDO_EXCLUIVEL",
     "const MOTIVO_EXCLUSAO_BLOQUEADA",
+    "const MOTIVO_EXCLUSAO_COM_CHECKLIST",
     "function statusPermiteExcluirPedido",
     "function selecaoTemExclusaoBloqueada",
     "function mensagemExclusaoParcial"
@@ -100560,7 +100647,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 384,
+   "lines": 427,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -100570,6 +100657,10 @@
     "function usePedidosKPIs"
    ],
    "tables": [
+    {
+     "table": "receiving_checklists",
+     "op": "select"
+    },
     {
      "table": "pedidos",
      "op": "select"
@@ -100604,6 +100695,9 @@
     }
    ],
    "table_cols": {
+    "receiving_checklists": [
+     "pedido_id"
+    ],
     "pedidos": [
      "comprador_id",
      "condicao_pagamento",
@@ -100641,6 +100735,8 @@
     "Erro ao criar pedido: ",
     "Erro ao excluir pedidos: ",
     "Erro ao excluir: ",
+    "Não foi possível conferir o recebimento do pedido. Exclusão cancelada.",
+    "Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada.",
     "Pedido não encontrado",
     "Só é possível gerar ordem de compra de uma solicitação aprovada",
     "Transição inválida: ${pedido.status} → ${newStatus}",
@@ -100677,6 +100773,18 @@
     "não devolve pedido concluído para uma etapa anterior",
     "permite corrigir o status de um pedido cancelado",
     "não bloqueia quando o status atual é nulo ou desconhecido"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "tests": [
+    "usePedidos - exclusao guardada por checklist de recebimento",
+    "recusa excluir pedido com checklist de recebimento",
+    "bulkDelete recusa o lote inteiro quando algum pedido tem checklist",
+    "erro na contagem de checklist cancela a exclusao",
+    "exclui pedido sem checklist"
    ]
   },
   "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx": {
@@ -100939,7 +101047,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 402,
+   "lines": 458,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -100950,6 +101058,18 @@
     "function useSolicitacoesKPIs"
    ],
    "tables": [
+    {
+     "table": "cotacoes",
+     "op": "select"
+    },
+    {
+     "table": "approval_workflows",
+     "op": "select"
+    },
+    {
+     "table": "approval_history",
+     "op": "select"
+    },
     {
      "table": "solicitacoes",
      "op": "select"
@@ -100980,6 +101100,15 @@
     }
    ],
    "table_cols": {
+    "cotacoes": [
+     "solicitacao_id"
+    ],
+    "approval_workflows": [
+     "solicitacao_id"
+    ],
+    "approval_history": [
+     "solicitacao_id"
+    ],
     "solicitacoes": [
      "aprovador_id",
      "categoria_id",
@@ -101028,9 +101157,12 @@
     "get_solicitacoes_kpis"
    ],
    "errors": [
+    "${excluidos} de ${ids.length} solicitação(ões) excluída(s). ${MOTIVO_DEPENDENTES_SOLICITACAO}",
     "Erro ao atualizar: ",
     "Erro ao criar solicitação: ",
     "Erro ao excluir: ",
+    "Não foi possível conferir o histórico da solicitação. Exclusão cancelada.",
+    "Não foi possível conferir o histórico das solicitações. Exclusão cancelada.",
     "Solicitação não encontrada",
     "Transição inválida: ${sol.status} → ${newStatus}",
     "Você precisa estar logado em uma organização"
@@ -101082,6 +101214,21 @@
     "createSolicitacao com auto aprovacao do banco",
     "nao cria workflow quando o banco devolve a solicitacao ja aprovada",
     "cria o workflow quando o banco devolve a solicitacao pendente"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+   "lines": 170,
+   "is_test": true,
+   "tests": [
+    "useSolicitacoes - exclusao guardada por historico",
+    "recusa excluir solicitacao que tem cotacao de fornecedor",
+    "recusa excluir solicitacao que so tem historico de aprovacao",
+    "erro na contagem cancela a exclusao em vez de apagar",
+    "exclui solicitacao sem cotacao nem historico",
+    "bulkDelete com todo o lote bloqueado nao apaga nada",
+    "bulkDelete parcial apaga so as liberadas e avisa",
+    "bulkDelete sem dependentes exclui o lote inteiro"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx": {
@@ -119790,10 +119937,24 @@
   }
  },
  "git": {
-  "sha": "67eee5c65f956aec4ed12edf9d0413c5f4e0e542",
+  "sha": "eeaf28fa08f1b634421b740695378129f528d764",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "eeaf28f",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/exclusaoPedido.ts",
+     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+    ]
+   },
    {
     "sha": "67eee5c",
     "date": "2026-11-24",
@@ -120147,18 +120308,6 @@
      "supabase/functions/_shared/external-bridge-allowlist.ts",
      "supabase/functions/external-db-bridge/index.ts"
     ]
-   },
-   {
-    "sha": "e20b078",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/security/ActiveSessionsPanel.tsx",
-     "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
-     "src/hooks/useSecurityLogs.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120168,6 +120317,10 @@
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
+    4
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     3
    ],
    [
@@ -120177,6 +120330,10 @@
    [
     "src/pages/solicitacoes/Solicitacoes.tsx",
     3
+   ],
+   [
+    "src/features/pedidos/exclusaoPedido.ts",
+    2
    ],
    [
     "src/hooks/useDevolucoes.ts",
@@ -120195,8 +120352,12 @@
     2
    ],
    [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    2
+    "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+    1
    ],
    [
     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
@@ -120228,18 +120389,6 @@
    ],
    [
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
-    1
-   ],
-   [
-    "src/pages/gerar-ordem/GerarOrdem.tsx",
-    1
-   ],
-   [
-    "src/integrations/supabase/types.ts",
-    1
-   ],
-   [
-    "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
     1
    ]
   ]

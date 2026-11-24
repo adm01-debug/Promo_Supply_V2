@@ -513,11 +513,12 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 384,
+   "linhas": 427,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
     "pedidos",
+    "receiving_checklists",
     "solicitacoes"
    ],
    "rpcs": [
@@ -538,7 +539,7 @@
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
@@ -593,10 +594,13 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 402,
+   "linhas": 458,
    "dominio": "features/solicitacoes",
    "tabelas": [
+    "approval_history",
+    "approval_workflows",
     "cost_centers",
+    "cotacoes",
     "solicitacoes"
    ],
    "rpcs": [
@@ -619,7 +623,7 @@
     "src/features/solicitacoes/index.ts",
     "src/hooks/usePrefetch.ts"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",

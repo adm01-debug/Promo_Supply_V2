@@ -2557,7 +2557,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 3,
+   "usada_no_front": 4,
    "usada_em_edges": [
     "check-approval-escalations",
     "escalate-solicitacao"
@@ -3208,7 +3208,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 4,
+   "usada_no_front": 5,
    "usada_em_edges": [
     "check-approval-escalations"
    ],
@@ -6074,7 +6074,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 11,
+   "usada_no_front": 12,
    "usada_em_edges": [
     "check-cotacao-followup",
     "check-expiry-alerts",
@@ -14394,13 +14394,13 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 0,
+   "usada_no_front": 1,
    "usada_em_edges": [],
    "triggers": [
     "trg_calc_checklist_score"
    ],
    "sem_rls": false,
-   "nao_usada": true
+   "nao_usada": false
   },
   "repurchase_suggestions": {
    "colunas": {

@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 254,
+ "total": 256,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 236
+  "unit": 238
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 160
+   "arquivos": 162
   },
   {
    "padrao": "outro",
@@ -758,6 +758,15 @@
    "casos": 5
   },
   {
+   "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/features/pedidos/hooks/usePedidos.ts"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
    "tipo": "unit",
    "linhas": 116,
@@ -801,6 +810,15 @@
     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
+   "tipo": "unit",
+   "linhas": 170,
+   "testa": [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -2359,10 +2377,10 @@
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
   "src/features/pedidos/exclusaoPedido.ts": 1,
-  "src/features/pedidos/hooks/usePedidos.ts": 2,
+  "src/features/pedidos/hooks/usePedidos.ts": 3,
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
-  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 4,
+  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 5,
   "src/features/solicitacoes/index.ts": 1,
   "src/features/solicitacoes/pessoasDaEmpresa.ts": 1,
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,

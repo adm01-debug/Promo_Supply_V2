@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `67eee5c65f` · branch `main` · 2026-11-24 09:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `eeaf28fa08` · branch `main` · 2026-11-24 09:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2348,13 +2348,18 @@ _nenhum item encontrado_
 | Erro ao criar pedido:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao excluir pedidos:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao excluir:  | `src/features/pedidos/hooks/usePedidos.ts` |
+| Não foi possível conferir o recebimento do pedido. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
+| Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Pedido não encontrado | `src/features/pedidos/hooks/usePedidos.ts` |
 | Só é possível gerar ordem de compra de uma solicitação aprovada | `src/features/pedidos/hooks/usePedidos.ts` |
 | Transição inválida: ${pedido.status} → ${newStatus} | `src/features/pedidos/hooks/usePedidos.ts` |
 | Você precisa estar logado em uma organização | `src/features/pedidos/hooks/usePedidos.ts` |
+| ${excluidos} de ${ids.length} solicitação(ões) excluída(s). ${MOTIVO_DEPENDENTES_SOLICITACAO} | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Erro ao atualizar:  | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Erro ao criar solicitação:  | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Erro ao excluir:  | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
+| Não foi possível conferir o histórico da solicitação. Exclusão cancelada. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
+| Não foi possível conferir o histórico das solicitações. Exclusão cancelada. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Solicitação não encontrada | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Transição inválida: ${sol.status} → ${newStatus} | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | Você precisa estar logado em uma organização | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
@@ -2429,12 +2434,7 @@ _nenhum item encontrado_
 | Erro ao atualizar documento | `src/hooks/useSupplierQualification.ts` |
 | Erro de segurança. Verifique se está usando HTTPS. | `src/hooks/useWebAuthn.ts` |
 | Failed to create credential | `src/hooks/useWebAuthn.ts` |
-| Failed to get credential | `src/hooks/useWebAuthn.ts` |
-| Falha ao remover passkey | `src/hooks/useWebAuthn.ts` |
-| Nao foi possivel abrir a sessao com a passkey | `src/hooks/useWebAuthn.ts` |
-| Nenhuma passkey registrada para este email | `src/hooks/useWebAuthn.ts` |
-| O login por passkey nao abriu sessao | `src/hooks/useWebAuthn.ts` |
-| … +260 linhas — lista completa em `context.json` | |
+| … +265 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3109 testes em 203 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3122 testes em 205 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2565,6 +2565,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
+| `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
 | `src/pages/documentos/__tests__/conciliacaoFiscal.test.ts` | 8 | conciliacao de NF-e com pedido · nao casa a nota com pedido de outro fornecedor so porque o valor e igual · deixa sem vinculo quando o valor so existe em pedido de outro fornecedor · nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor … |
@@ -2595,6 +2596,7 @@ _nenhum item encontrado_
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
+| `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
