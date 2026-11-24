@@ -330,7 +330,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 72,
+   "usado_por": 73,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -592,7 +592,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 384,
+   "linhas": 391,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "cost_centers",
@@ -618,7 +618,7 @@
     "src/features/solicitacoes/index.ts",
     "src/hooks/usePrefetch.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",

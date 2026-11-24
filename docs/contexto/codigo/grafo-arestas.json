@@ -3341,6 +3341,7 @@
    "src/components/ui/page-header.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/sheet.tsx",
+   "src/features/auth/index.ts",
    "src/features/empresas/hooks/useEmpresaFilter.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",

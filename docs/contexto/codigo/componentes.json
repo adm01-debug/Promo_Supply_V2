@@ -5418,10 +5418,11 @@
     "Solicitacoes"
    ],
    "export_default": "Solicitacoes",
-   "linhas": 457,
+   "linhas": 470,
    "dominio": "pages/solicitacoes",
    "hooks_locais": [
     "useAccountFilters",
+    "useAuth",
     "useEmpresaFilter",
     "useFluxosAprovacao",
     "useRealtimeSubscription",

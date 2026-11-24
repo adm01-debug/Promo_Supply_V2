@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "94d908ce16dffcf3fb77e39b2f27d721d8301e34",
+  "sha": "77d4e5f04b397f7525ae7215202475bf3e9c7b27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 05:10 UTC",
-  "files_total": 1366,
-  "code_files": 1195,
-  "code_lines": 204219,
+  "generated_at": "2026-11-24 05:24 UTC",
+  "files_total": 1367,
+  "code_files": 1196,
+  "code_lines": 204329,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "20a72942d81ed87c",
+ "facts_hash": "5a899e2f80b62ae8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 422,
+   ".ts": 423,
    ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
@@ -35238,8 +35238,8 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 12,
-   "lines": 1326,
+   "files": 13,
+   "lines": 1423,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35286,6 +35286,7 @@
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
     "src/features/solicitacoes/schemas/solicitacao.schemas.ts",
     "src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts"
@@ -35684,7 +35685,7 @@
   {
    "module": "src/pages",
    "files": 136,
-   "lines": 31824,
+   "lines": 31837,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -61914,6 +61915,38 @@
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
     "name": "updateSolicitacao com linha afetada continua retornando true"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "filtro "
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "a consulta filtra por solicitante_id e nao por status"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "sem o recorte a consulta nao filtra solicitante_id"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "status e solicitante coexistem quando os dois vem preenchidos"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "a chave de cache separa "
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "a tela nao trata OWN como status"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "nao mapeia OWN para status do banco"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    "name": "manda o id do usuario como recorte e compara pelo solicitante da linha"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
@@ -100023,7 +100056,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 384,
+   "lines": 391,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -100162,6 +100195,21 @@
     "updateSolicitacao com 0 linhas afetadas retorna false e mostra erro",
     "bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false",
     "updateSolicitacao com linha afetada continua retornando true"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+   "lines": 90,
+   "is_test": true,
+   "tests": [
+    "filtro ",
+    "a consulta filtra por solicitante_id e nao por status",
+    "sem o recorte a consulta nao filtra solicitante_id",
+    "status e solicitante coexistem quando os dois vem preenchidos",
+    "a chave de cache separa ",
+    "a tela nao trata OWN como status",
+    "nao mapeia OWN para status do banco",
+    "manda o id do usuario como recorte e compara pelo solicitante da linha"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx": {
@@ -109704,7 +109752,7 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 457,
+   "lines": 470,
    "exports": [
     "default Solicitacoes"
    ]
@@ -118466,10 +118514,22 @@
   }
  },
  "git": {
-  "sha": "94d908ce16dffcf3fb77e39b2f27d721d8301e34",
+  "sha": "77d4e5f04b397f7525ae7215202475bf3e9c7b27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "77d4e5f",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: filtro \"Meus Itens\" recorta por solicitante em vez de status (etapa 108) (#376)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/pages/solicitacoes/Solicitacoes.tsx"
+    ]
+   },
    {
     "sha": "94d908c",
     "date": "2026-11-24",
@@ -118828,25 +118888,16 @@
      "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
      "src/hooks/useLicitacoes.ts"
     ]
-   },
-   {
-    "sha": "77ddaeb",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix: receive-os-sync sem verify_jwt (webhook HMAC)",
-    "files": [
-     "supabase/config.toml"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    28
+    29
    ],
    [
     "src/pages/solicitacoes/Solicitacoes.tsx",
-    2
+    3
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -118885,6 +118936,14 @@
     2
    ],
    [
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    1
+   ],
+   [
     "src/components/compras/SolicitacaoCard.tsx",
     1
    ],
@@ -118910,14 +118969,6 @@
    ],
    [
     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     1
    ]
   ]

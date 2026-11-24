@@ -1830,6 +1830,7 @@
     "pages/recebimento",
     "pages/recompra",
     "pages/seguranca",
+    "pages/solicitacoes",
     "routes"
    ],
    "depende_de_modulos": [
@@ -2290,8 +2291,8 @@
   {
    "modulo": "features/solicitacoes",
    "arquivos": 7,
-   "testes": 5,
-   "linhas": 756,
+   "testes": 6,
+   "linhas": 763,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -7264,7 +7265,7 @@
    "modulo": "pages/solicitacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 572,
+   "linhas": 585,
    "itens_menu": [
     "Solicitações"
    ],
@@ -7354,6 +7355,7 @@
     "components/compras",
     "components/organisms",
     "components/ui",
+    "features/auth",
     "features/empresas",
     "features/layout",
     "features/solicitacoes",
