@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePedidos } from "@/features/pedidos";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn, formatCurrency } from "@/lib/utils";
 import { emitHubEvent } from "@/lib/hubEvents";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
-import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
+import { SupplierInteractionLog, type InteracaoFornecedor } from "@/components/compras/SupplierInteractionLog";
 import { NovaDevolucaoModal } from "@/pages/devolucoes/DevolucoesModals";
 
 const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
@@ -39,6 +39,59 @@ const statusSteps = [
   { id: 'entregue', label: 'ENTREGUE', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400' },
 ];
 
+
+export interface NotificacaoFollowUp {
+  id: string;
+  title: string;
+  message: string;
+  action_url: string | null;
+  created_at: string;
+  read: boolean | null;
+}
+
+export interface CotacaoFollowUpPedido {
+  id: string;
+  last_follow_up_at?: string | null;
+  follow_up_status?: string | null;
+}
+
+/**
+ * Monta o historico apenas com o que esta gravado: o follow-up do agendador na
+ * cotacao do pedido e as notificacoes `cotacao_followup` que apontam para ela.
+ * Sem registro, devolve lista vazia - o log nao inventa conversa.
+ */
+export function montarInteracoesPedido(
+  cotacao: CotacaoFollowUpPedido | null | undefined,
+  notificacoes: NotificacaoFollowUp[] = [],
+): InteracaoFornecedor[] {
+  const interacoes: InteracaoFornecedor[] = [];
+
+  if (cotacao?.last_follow_up_at) {
+    interacoes.push({
+      id: `follow-up-${cotacao.id}`,
+      origem: 'sistema',
+      texto: 'Follow-up automatico enviado ao fornecedor pelo agendador (cotacao sem resposta ha mais de 48h).',
+      quando: cotacao.last_follow_up_at,
+      situacao: cotacao.follow_up_status ?? null,
+    });
+  }
+
+  for (const notificacao of notificacoes) {
+    interacoes.push({
+      id: notificacao.id,
+      origem: 'sistema',
+      texto: notificacao.message || notificacao.title,
+      quando: notificacao.created_at,
+      situacao: notificacao.read ? 'lida' : 'nao lida',
+    });
+  }
+
+  return interacoes.sort((a, b) => {
+    const quandoA = a.quando ? new Date(a.quando).getTime() : 0;
+    const quandoB = b.quando ? new Date(b.quando).getTime() : 0;
+    return quandoB - quandoA;
+  });
+}
 
 interface Props {
   open: boolean;
@@ -120,6 +173,55 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
     },
     enabled: !!pedido?.id && open
   });
+
+  const { data: cotacaoFollowUp, isLoading: carregandoCotacaoFollowUp } = useQuery({
+    queryKey: ['pedido-cotacao-followup', pedido?.id, pedido?.cotacao_id, pedido?.solicitacao_id, pedido?.fornecedor_id],
+    queryFn: async () => {
+      if (!pedido) return null;
+      if (pedido.cotacao_id) {
+        const { data, error } = await supabase
+          .from('cotacoes')
+          .select('id, last_follow_up_at, follow_up_status')
+          .eq('id', pedido.cotacao_id)
+          .maybeSingle();
+        if (error) throw error;
+        return data ?? null;
+      }
+      if (!pedido.solicitacao_id) return null;
+      const { data, error } = await supabase
+        .from('cotacoes')
+        .select('id, last_follow_up_at, follow_up_status')
+        .eq('solicitacao_id', pedido.solicitacao_id)
+        .eq('fornecedor_id', pedido.fornecedor_id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      return data?.[0] ?? null;
+    },
+    enabled: open && !!pedido?.id,
+  });
+
+  const { data: notificacoesFollowUp = [], isLoading: carregandoNotificacoesFollowUp } = useQuery({
+    queryKey: ['pedido-followup-notificacoes', cotacaoFollowUp?.id],
+    queryFn: async () => {
+      if (!cotacaoFollowUp?.id) return [];
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('id, title, message, action_url, created_at, read')
+        .eq('type', 'cotacao_followup')
+        .eq('action_url', `/cotacao?id=${cotacaoFollowUp.id}`)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: open && !!cotacaoFollowUp?.id,
+  });
+
+  const interacoesPedido = useMemo(
+    () => montarInteracoesPedido(cotacaoFollowUp, notificacoesFollowUp as NotificacaoFollowUp[]),
+    [cotacaoFollowUp, notificacoesFollowUp],
+  );
+  const carregandoFollowUp = carregandoCotacaoFollowUp || carregandoNotificacoesFollowUp;
 
   if (!pedido) return null;
   const config = statusConfig[pedido.status] || statusConfig["pendente"];
@@ -221,7 +323,11 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                         </div>
                         
                         <SourcingIntelligenceBanner items={itens as unknown as Parameters<typeof SourcingIntelligenceBanner>[0]['items']} />
-                        <SupplierInteractionLog supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social} />
+                        <SupplierInteractionLog
+                          supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social}
+                          interacoes={interacoesPedido}
+                          carregando={carregandoFollowUp}
+                        />
                       </Card>
                     </div>
 
