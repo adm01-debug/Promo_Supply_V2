@@ -4779,13 +4779,13 @@
   {
    "arquivo": "src/pages/cotacao/Cotacao.tsx",
    "exports": [
-    "Cotacao"
+    "Cotacao",
+    "ResumoFollowUpCotacao"
    ],
    "export_default": "Cotacao",
-   "linhas": 389,
+   "linhas": 400,
    "dominio": "pages/cotacao",
    "hooks_locais": [
-    "useAuth",
     "useCotacoes",
     "useFornecedores",
     "useSolicitacoes"
@@ -5207,15 +5207,19 @@
   {
    "arquivo": "src/pages/pedidos/PedidoDetailsDialog.tsx",
    "exports": [
+    "CotacaoFollowUpPedido",
+    "NotificacaoFollowUp",
     "PedidoDetailsDialog"
    ],
    "export_default": null,
-   "linhas": 462,
+   "linhas": 568,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "usePedidos"
    ],
    "tabelas": [
+    "cotacoes",
+    "notifications",
     "pedido_itens"
    ],
    "edges": [],

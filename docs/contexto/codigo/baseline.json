@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e2ea7353a89911a9ce421445e03fb24caca98add",
+  "commit": "5f14e8513d9a4572163219892f5afc001965fd93",
   "branch": "main",
-  "data_commit": "2026-11-24T03:03:32-03:00",
+  "data_commit": "2026-11-24T03:11:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5f14e85",
+    "data": "2026-11-24",
+    "assunto": "fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)"
+   },
    {
     "sha": "e2ea735",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "7ea54f2",
     "data": "2026-11-23",
     "assunto": "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)"
-   },
-   {
-    "sha": "2827890",
-    "data": "2026-11-23",
-    "assunto": "test(palette): trava atalhos e badges do Command Palette no registry real (#353)"
    }
   ],
-  "arquivos_mudados_7d": 409,
+  "arquivos_mudados_7d": 410,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "pasta": "src/lib/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 37
+    "mudancas": 38
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1367,
-  "arquivos_codigo": 864,
-  "linhas_codigo": 177303,
+  "arquivos_total": 1368,
+  "arquivos_codigo": 865,
+  "linhas_codigo": 177574,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 232,
+  "testes": 233,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 136,
-   "linhas": 31837
+   "arquivos": 137,
+   "linhas": 32108
   },
   "src/routes": {
    "arquivos": 1,
@@ -641,12 +641,12 @@
    "linhas": 568
   },
   {
-   "arquivo": "src/components/compras/PriceComparator.tsx",
-   "linhas": 557
+   "arquivo": "src/pages/pedidos/PedidoDetailsDialog.tsx",
+   "linhas": 568
   },
   {
-   "arquivo": "supabase/functions/xbz-proxy/index.ts",
-   "linhas": 541
+   "arquivo": "src/components/compras/PriceComparator.tsx",
+   "linhas": 557
   }
  ],
  "qualidade": {
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 31
+  "arquivos_acima_500_linhas": 32
  },
  "todos": [
   {

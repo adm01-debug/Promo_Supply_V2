@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e2ea7353a8` · branch `main` · 2026-11-24 06:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f14e8513d` · branch `main` · 2026-11-24 06:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -932,7 +932,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `contract_expiring` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `contratos` | compara, escreve | `src/features/layout/components/AdvancedSearch.tsx`<br>`src/features/layout/components/search/SearchResultsList.tsx` |
 | `type` | `cotacao_expiring` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
-| `type` | `cotacao_followup` | escreve, filtra | `supabase/functions/check-cotacao-followup/index.ts`<br>`supabase/functions/check-expiry-alerts/index.ts` |
+| `type` | `cotacao_followup` | escreve, filtra | `src/pages/pedidos/PedidoDetailsDialog.tsx`<br>`supabase/functions/check-cotacao-followup/index.ts`<br>`supabase/functions/check-expiry-alerts/index.ts` |
 | `type` | `create` | compara, escreve | `src/hooks/useOfflineSync.ts` |
 | `type` | `create_workflow` | compara | `src/hooks/useApprovalWorkflow.ts` |
 | `type` | `critical` | compara | `src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/hooks/useApprovalNotifications.ts` |
@@ -1902,7 +1902,6 @@ _nenhum item encontrado_
 | `const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();` | `src/pages/admin-telemetria/AdminTelemetria.tsx` |
 | `const timer = setTimeout(async () => { const { data } = await supabase.auth.getSession(); if (!ativo) return; setEstadoSessao(data.session ? 'ok' : 'invalida'); …` | `src/pages/auth/Auth.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
-| `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/pages/cotacao/Cotacao.tsx` |
 | `setTimeout(() => setCopiado(null), 2000);` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | `case "30d": setDateRange({ from: subDays(today, 30), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
 | `case "7d": setDateRange({ from: subDays(today, 7), to: today }); break;` | `src/pages/historico/HistoricoCompras.tsx` |
@@ -2093,6 +2092,7 @@ _nenhum item encontrado_
 | 200 | `src/pages/kanban/KanbanWorkflow.tsx` |
 | 20 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | 50 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
+| 1 | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
 | 50 | `src/pages/portal-fornecedor/portalFornecedorData.ts` |
 | 50 | `src/pages/recompra/RecompraInteligente.tsx` |
 | 500 | `src/pages/recompra/RecompraInteligente.tsx` |
@@ -2437,10 +2437,9 @@ _nenhum item encontrado_
 | `denied` | `src/hooks/useApprovalNotifications.ts` |
 | `granted` | `src/hooks/useApprovalNotifications.ts` |
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
-| `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2975 testes em 181 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2990 testes em 182 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2529,6 +2528,7 @@ _nenhum item encontrado_
 | `scripts/lib/seguranca-processo.test.mjs` | 15 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell · resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH … |
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
 | `src/lib/__tests__/creditoFornecedor.test.ts` | 15 | calcularAbatimentoCredito · acumula o valor utilizado em vez de substituir · marca o credito como utilizado quando o saldo zera · nunca deixa o saldo negativo … |
+| `src/pages/pedidos/__tests__/followUpPedido.test.tsx` | 15 | montarInteracoesPedido · sem cotacao e sem notificacao devolve lista vazia, sem dialogo fabricado · cotacao sem last_follow_up_at nao gera registro de follow-up · usa a data e o status reais do follow-up gravado na cotacao … |
 | `supabase/functions/receive-os-sync/mapping.test.ts` | 15 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts` | 14 | montarPessoas · usa o user_id como id, que e o valor de aprovador_id · cai para display_name e depois e-mail quando nao ha nome completo · descarta linha sem user_id: sem id nao ha o que gravar … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
@@ -2752,6 +2752,7 @@ _nenhum item encontrado_
 | Calculos financeiros — frete e desconto vem da cotacao vencedora; o `\|\| 12` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
+| * Monta o historico apenas com o que esta gravado: o follow-up do agendador na | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
 | * Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06). | `src/pages/pedidos/pedidosHelpers.ts` |
 | olhar prazo, status ou data. Aqui o estado vem do dado: a mesma `calcularSLA` | `src/pages/pedidos/pedidosHelpers.ts` |
 | prazo (emissao -> previsao) ja foi consumido. Sem previsao nao ha medida - | `src/pages/pedidos/pedidosHelpers.ts` |

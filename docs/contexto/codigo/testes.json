@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 232,
+ "total": 233,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 215
+  "unit": 216
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 139
+   "arquivos": 140
   },
   {
    "padrao": "outro",
@@ -1455,6 +1455,16 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+   "tipo": "unit",
+   "linhas": 154,
+   "testa": [
+    "src/pages/cotacao/Cotacao.tsx",
+    "src/pages/pedidos/PedidoDetailsDialog.tsx"
+   ],
+   "casos": 12
+  },
+  {
    "arquivo": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
    "tipo": "unit",
    "linhas": 39,
@@ -2220,6 +2230,7 @@
   "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
   "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
   "src/pages/compliance/complianceHelpers.ts": 1,
+  "src/pages/cotacao/Cotacao.tsx": 1,
   "src/pages/cotacao/cotacaoHelpers.ts": 1,
   "src/pages/dashboard/ComprasDashboard.tsx": 1,
   "src/pages/devolucoes/DevolucoesModals.tsx": 1,
@@ -2227,6 +2238,7 @@
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
   "src/pages/historico/HistoricoHelpers.tsx": 2,
+  "src/pages/pedidos/PedidoDetailsDialog.tsx": 1,
   "src/pages/pedidos/pedidosHelpers.ts": 1,
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": 1,
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
@@ -2293,7 +2305,6 @@
    "src/pages/compliance/ComplianceDashboard.tsx",
    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
    "src/pages/contratos/Contratos.tsx",
-   "src/pages/cotacao/Cotacao.tsx",
    "src/pages/dashboard/DashboardExecutivo.tsx",
    "src/pages/dev/XbzNetworkPanelHarness.tsx",
    "src/pages/devolucoes/Devolucoes.tsx",

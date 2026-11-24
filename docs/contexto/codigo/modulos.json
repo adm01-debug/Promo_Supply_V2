@@ -116,6 +116,7 @@
     "licitacao_lances",
     "licitacao_propostas",
     "licitacoes",
+    "notifications",
     "order_contracts",
     "pagamentos",
     "payment_history",
@@ -1823,7 +1824,6 @@
     "pages/admin",
     "pages/auditoria",
     "pages/auth",
-    "pages/cotacao",
     "pages/gerar-ordem",
     "pages/negociacao-ia",
     "pages/portal-fornecedor",
@@ -3077,6 +3077,7 @@
     "licitacao_lances",
     "licitacao_propostas",
     "licitacoes",
+    "notifications",
     "order_contracts",
     "pagamentos",
     "payment_history",
@@ -4813,7 +4814,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 613,
+   "linhas": 624,
    "itens_menu": [
     "Cotações"
    ],
@@ -4896,7 +4897,6 @@
     "components/compras",
     "components/organisms",
     "components/ui",
-    "features/auth",
     "features/cotacoes",
     "features/layout",
     "features/solicitacoes",
@@ -6188,8 +6188,8 @@
   {
    "modulo": "pages/pedidos",
    "arquivos": 4,
-   "testes": 2,
-   "linhas": 955,
+   "testes": 3,
+   "linhas": 1061,
    "itens_menu": [
     "Pedidos"
    ],
@@ -6224,10 +6224,12 @@
    "tabelas": [
     "active_sessions",
     "audit_logs",
+    "cotacoes",
     "creditos_fornecedor",
     "devolucao_itens",
     "devolucoes",
     "fornecedores",
+    "notifications",
     "pedido_itens",
     "pedidos",
     "produto_fornecedores",
@@ -6254,6 +6256,8 @@
    "diretos": {
     "edges": [],
     "tabelas": [
+     "cotacoes",
+     "notifications",
      "pedido_itens"
     ],
     "rpcs": []

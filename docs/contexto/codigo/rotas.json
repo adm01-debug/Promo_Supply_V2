@@ -3788,10 +3788,12 @@
    "tabelas": [
     "active_sessions",
     "audit_logs",
+    "cotacoes",
     "creditos_fornecedor",
     "devolucao_itens",
     "devolucoes",
     "fornecedores",
+    "notifications",
     "pedido_itens",
     "pedidos",
     "produto_fornecedores",

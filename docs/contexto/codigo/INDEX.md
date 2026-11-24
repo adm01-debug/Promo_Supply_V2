@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e2ea7353a89911a9ce421445e03fb24caca98add` (2026-11-24T03:03:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f14e8513d9a4572163219892f5afc001965fd93` (2026-11-24T03:11:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (791), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (792), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1367 |
-| arquivos_codigo | 864 |
-| linhas_codigo | 177303 |
+| arquivos_total | 1368 |
+| arquivos_codigo | 865 |
+| linhas_codigo | 177574 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 232 |
+| testes | 233 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (139), outro (43), co-localizado (*.test) (40)
+- testes: co-localizado (__tests__) (140), outro (43), co-localizado (*.test) (40)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -80,7 +80,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/layout | 0 | 0 | 32 | 80 | 9 | 53 |
 | features/solicitacoes | 0 | 0 | 7 | 11 | 1 | 12 |
 | hooks | 0 | 0 | 62 | 61 | 7 | 59 |
-| lib | 0 | 0 | 27 | 60 | 8 | 48 |
+| lib | 0 | 0 | 27 | 60 | 8 | 49 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 20 |
@@ -109,7 +109,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 8 |
 | pages/orcamentos | 1 | 1 | 1 | 81 | 9 | 54 |
 | pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 10 |
-| pages/pedidos | 1 | 1 | 4 | 17 | 1 | 12 |
+| pages/pedidos | 1 | 1 | 4 | 17 | 1 | 14 |
 | pages/portal-fornecedor | 0 | 1 | 2 | 81 | 9 | 54 |
 | pages/qualificacao | 1 | 1 | 1 | 81 | 9 | 57 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 6 |
@@ -311,7 +311,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
-- papéis no código: user (9), system (7), admin (6), assistant (1)
+- papéis no código: user (9), system (7), admin (5), assistant (1)
 - enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
 - guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 52 · públicas: /__dev/xbz-network-panel, /*, /auth, /auth/nova-senha
 - feature flags: nenhuma
@@ -339,7 +339,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (37)
+- docs/qa/05-PROGRESSO.md (38)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (10)
 - bun.lock (9)
@@ -420,6 +420,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `5f14e85` fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)
 - 2026-11-24 `e2ea735` fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)
 - 2026-11-24 `ea55bfb` fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)
 - 2026-11-24 `77d4e5f` fix: filtro "Meus Itens" recorta por solicitante em vez de status (etapa 108) (#376)
@@ -434,7 +435,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `700e3fd` feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)
 - 2026-11-24 `d541138` fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)
 - 2026-11-24 `b08b364` feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)
-- 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

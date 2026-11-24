@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e2ea7353a89911a9ce421445e03fb24caca98add",
+  "sha": "5f14e8513d9a4572163219892f5afc001965fd93",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 06:04 UTC",
-  "files_total": 1368,
-  "code_files": 1197,
-  "code_lines": 204487,
+  "generated_at": "2026-11-24 06:11 UTC",
+  "files_total": 1369,
+  "code_files": 1198,
+  "code_lines": 204758,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "e41404ab44c00a9c",
+ "facts_hash": "a4f351a967f908ef",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 423,
-   ".tsx": 368,
+   ".tsx": 369,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35684,8 +35684,8 @@
   },
   {
    "module": "src/pages",
-   "files": 136,
-   "lines": 31837,
+   "files": 137,
+   "lines": 32108,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35700,6 +35700,7 @@
     "fornecedores",
     "health_scan_runs",
     "negotiation_analyses",
+    "notifications",
     "pedido_itens",
     "pedidos",
     "penalty_escalation_config",
@@ -36741,6 +36742,7 @@
      "src/hooks/useSidebarBadges.ts",
      "src/pages/cotacao/cotacaoHelpers.ts",
      "src/pages/negociacao-ia/NegociacaoIA.tsx",
+     "src/pages/pedidos/PedidoDetailsDialog.tsx",
      "src/pages/portal-fornecedor/portalFornecedorData.ts",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "supabase/functions/check-cotacao-followup/index.ts",
@@ -37134,6 +37136,7 @@
    "notifications": {
     "select": [
      "src/hooks/useRealPushNotifications.ts",
+     "src/pages/pedidos/PedidoDetailsDialog.tsx",
      "supabase/functions/_shared/notifications.ts",
      "supabase/functions/check-cotacao-followup/index.ts"
     ],
@@ -38322,6 +38325,7 @@
     "user_id"
    ],
    "notifications": [
+    "action_url",
     "created_at",
     "id",
     "message",
@@ -42603,10 +42607,6 @@
     "value": "granted"
    },
    {
-    "file": "src/pages/cotacao/Cotacao.tsx",
-    "value": "coordinator"
-   },
-   {
     "file": "supabase/functions/guided-buying-ai/index.ts",
     "value": "user"
    }
@@ -42963,6 +42963,10 @@
    {
     "file": "src/pages/kanban/KanbanWorkflow.tsx",
     "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
+   },
+   {
+    "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    "text": "* Monta o historico apenas com o que esta gravado: o follow-up do agendador na"
    },
    {
     "file": "src/pages/pedidos/pedidosHelpers.ts",
@@ -54968,6 +54972,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    "field": "type",
+    "value": "cotacao_followup",
+    "kind": "filtra"
+   },
+   {
     "file": "src/pages/pedidos/pedidosHelpers.ts",
     "field": "status",
     "value": "entregue",
@@ -57534,10 +57544,6 @@
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "line": "staleTime: 5 * 60 * 1000,"
-   },
-   {
-    "file": "src/pages/cotacao/Cotacao.tsx",
-    "line": "await new Promise(resolve => setTimeout(resolve, 1500));"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -67126,6 +67132,66 @@
    {
     "file": "src/pages/historico/__tests__/historicoHelpers.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "montarInteracoesPedido"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "sem cotacao e sem notificacao devolve lista vazia, sem dialogo fabricado"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "cotacao sem last_follow_up_at nao gera registro de follow-up"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "usa a data e o status reais do follow-up gravado na cotacao"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "traz a mensagem real da notificacao e marca leitura"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "ordena do mais recente para o mais antigo"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "resumoFollowUpDaCotacao"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "sem cotacao devolve tudo nulo"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "nao inventa follow-up quando a coluna esta vazia"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "propaga o follow-up registrado e o status"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "data de criacao invalida nao gera atraso inventado"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "Cotacao e dossie do pedido nao encenam follow-up"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "Cotacao nao tem botao nem handler de follow-up simulado"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "Cotacao alimenta o monitor com o registro real da cotacao"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    "name": "PedidoDetailsDialog passa as interacoes reais para o log"
    },
    {
     "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
@@ -78053,6 +78119,10 @@
     "limit": "50"
    },
    {
+    "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    "limit": "1"
+   },
+   {
     "file": "src/pages/portal-fornecedor/portalFornecedorData.ts",
     "limit": "50"
    },
@@ -78955,6 +79025,12 @@
      "month": [
       "escreve:src/pages/historico/HistoricoCompras.tsx"
      ],
+     "cotacao_followup": [
+      "escreve:supabase/functions/check-cotacao-followup/index.ts",
+      "escreve:supabase/functions/check-expiry-alerts/index.ts",
+      "filtra:src/pages/pedidos/PedidoDetailsDialog.tsx",
+      "filtra:supabase/functions/check-cotacao-followup/index.ts"
+     ],
      "RFQ": [
       "escreve:src/pages/sourcing/RFxCreate.tsx"
      ],
@@ -79014,11 +79090,6 @@
      ],
      "reminder": [
       "escreve:supabase/functions/check-approval-escalations/index.ts"
-     ],
-     "cotacao_followup": [
-      "escreve:supabase/functions/check-cotacao-followup/index.ts",
-      "escreve:supabase/functions/check-expiry-alerts/index.ts",
-      "filtra:supabase/functions/check-cotacao-followup/index.ts"
      ],
      "cotacao_expiring": [
       "escreve:supabase/functions/check-expiry-alerts/index.ts"
@@ -107461,18 +107532,13 @@
   },
   "src/pages/cotacao/Cotacao.tsx": {
    "path": "src/pages/cotacao/Cotacao.tsx",
-   "lines": 389,
+   "lines": 400,
    "exports": [
-    "default Cotacao"
+    "interface ResumoFollowUpCotacao",
+    "function resumoFollowUpDaCotacao"
    ],
    "errors": [
     "Abra a solicitacao para buscar as cotacoes registradas"
-   ],
-   "role_checks": [
-    "coordinator"
-   ],
-   "temporal": [
-    "await new Promise(resolve => setTimeout(resolve, 1500));"
    ]
   },
   "src/pages/cotacao/cotacaoHelpers.ts": {
@@ -108659,8 +108725,11 @@
   },
   "src/pages/pedidos/PedidoDetailsDialog.tsx": {
    "path": "src/pages/pedidos/PedidoDetailsDialog.tsx",
-   "lines": 462,
+   "lines": 568,
    "exports": [
+    "interface NotificacaoFollowUp",
+    "interface CotacaoFollowUpPedido",
+    "function montarInteracoesPedido",
     "const PedidoDetailsDialog"
    ],
    "tables": [
@@ -108671,12 +108740,40 @@
     {
      "table": "pedido_itens",
      "op": "select"
+    },
+    {
+     "table": "cotacoes",
+     "op": "select"
+    },
+    {
+     "table": "cotacoes",
+     "op": "select"
+    },
+    {
+     "table": "notifications",
+     "op": "select"
     }
    ],
    "table_cols": {
     "pedido_itens": [
      "id",
      "pedido_id"
+    ],
+    "cotacoes": [
+     "follow_up_status",
+     "fornecedor_id",
+     "id",
+     "last_follow_up_at",
+     "solicitacao_id"
+    ],
+    "notifications": [
+     "action_url",
+     "created_at",
+     "id",
+     "message",
+     "read",
+     "title",
+     "type"
     ]
    },
    "errors": [
@@ -108688,7 +108785,18 @@
      "field": "status",
      "value": "cancelado",
      "kind": "compara"
+    },
+    {
+     "field": "type",
+     "value": "cotacao_followup",
+     "kind": "filtra"
     }
+   ],
+   "rule_comments": [
+    "* Monta o historico apenas com o que esta gravado: o follow-up do agendador na"
+   ],
+   "pagination": [
+    "1"
    ]
   },
   "src/pages/pedidos/Pedidos.tsx": {
@@ -108746,6 +108854,28 @@
    ],
    "percents": [
     "* cada terceiro pedido a barra virava 40% ambar com o rotulo ATENCAO, sem"
+   ]
+  },
+  "src/pages/pedidos/__tests__/followUpPedido.test.tsx": {
+   "path": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+   "lines": 154,
+   "is_test": true,
+   "tests": [
+    "montarInteracoesPedido",
+    "sem cotacao e sem notificacao devolve lista vazia, sem dialogo fabricado",
+    "cotacao sem last_follow_up_at nao gera registro de follow-up",
+    "usa a data e o status reais do follow-up gravado na cotacao",
+    "traz a mensagem real da notificacao e marca leitura",
+    "ordena do mais recente para o mais antigo",
+    "resumoFollowUpDaCotacao",
+    "sem cotacao devolve tudo nulo",
+    "nao inventa follow-up quando a coluna esta vazia",
+    "propaga o follow-up registrado e o status",
+    "data de criacao invalida nao gera atraso inventado",
+    "Cotacao e dossie do pedido nao encenam follow-up",
+    "Cotacao nao tem botao nem handler de follow-up simulado",
+    "Cotacao alimenta o monitor com o registro real da cotacao",
+    "PedidoDetailsDialog passa as interacoes reais para o log"
    ]
   },
   "src/pages/pedidos/__tests__/pedidosExportacao.test.ts": {
@@ -118318,10 +118448,22 @@
   }
  },
  "git": {
-  "sha": "e2ea7353a89911a9ce421445e03fb24caca98add",
+  "sha": "5f14e8513d9a4572163219892f5afc001965fd93",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5f14e85",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/cotacao/Cotacao.tsx",
+     "src/pages/pedidos/PedidoDetailsDialog.tsx",
+     "src/pages/pedidos/__tests__/followUpPedido.test.tsx"
+    ]
+   },
    {
     "sha": "e2ea735",
     "date": "2026-11-24",
@@ -118680,17 +118822,6 @@
      "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
      "src/hooks/useRealtimeSubscription.ts"
     ]
-   },
-   {
-    "sha": "cd9ae3f",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
-     "src/hooks/useFornecedores.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -118735,6 +118866,18 @@
     2
    ],
    [
+    "src/pages/cotacao/Cotacao.tsx",
+    1
+   ],
+   [
+    "src/pages/pedidos/PedidoDetailsDialog.tsx",
+    1
+   ],
+   [
+    "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
+    1
+   ],
+   [
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     1
    ],
@@ -118760,18 +118903,6 @@
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    1
-   ],
-   [
-    "src/components/compras/SolicitacaoCard.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/fluxoAprovacao.ts",
     1
    ]
   ]
