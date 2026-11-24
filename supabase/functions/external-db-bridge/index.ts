@@ -145,7 +145,7 @@ Deno.serve(async (req) => {
     const limit = Math.min(Math.max(1, Number(rawLimit) || 100), MAX_SELECT_LIMIT);
 
     // A-01 · Allowlist estrita (rejeita antes de tocar no DB externo).
-    const authz = assertBridgeRequest({ operation, table, rpcName, countMode, filters, limit });
+    const authz = assertBridgeRequest({ operation, table, rpcName, countMode, selectColumns, filters, limit });
     if (!authz.ok) {
       logger.warn("bridge request rejected", { userId: user.id, operation, table, rpcName, reason: authz.reason });
       return new Response(
