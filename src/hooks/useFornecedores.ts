@@ -216,6 +216,39 @@ export function useFornecedores(filters?: FornecedorFilters) {
   const deleteFornecedor = useCallback(async (id: string) => {
     try {
       logger.info('Excluindo fornecedor', { id });
+
+      // Credito, pagamento e pedido sao historico e dinheiro: a FK de
+      // creditos_fornecedor esta em CASCADE e apagaria o saldo junto com o
+      // fornecedor, entao a exclusao e recusada enquanto houver dependente.
+      const [creditos, pagamentos, pedidos] = await Promise.all([
+        supabase.from('creditos_fornecedor').select('id', { count: 'exact', head: true }).eq('fornecedor_id', id),
+        supabase.from('pagamentos').select('id', { count: 'exact', head: true }).eq('fornecedor_id', id),
+        supabase.from('pedidos').select('id', { count: 'exact', head: true }).eq('fornecedor_id', id),
+      ]);
+
+      const erroContagem = creditos.error ?? pagamentos.error ?? pedidos.error;
+      if (erroContagem) {
+        logger.error('Nao foi possivel conferir dependencias do fornecedor', { error: erroContagem, id });
+        toast.error('Nao foi possivel conferir o historico do fornecedor. Exclusao cancelada.');
+        return false;
+      }
+
+      const dependentes = [
+        { rotulo: 'credito(s) de fornecedor', total: creditos.count ?? 0 },
+        { rotulo: 'pagamento(s)', total: pagamentos.count ?? 0 },
+        { rotulo: 'pedido(s)', total: pedidos.count ?? 0 },
+      ].filter((item) => item.total > 0);
+
+      if (dependentes.length > 0) {
+        logger.warn('Exclusao de fornecedor bloqueada por dependencias', { id, dependentes });
+        toast.error(
+          `Fornecedor com historico nao pode ser excluido: ${dependentes
+            .map((item) => `${item.total} ${item.rotulo}`)
+            .join(', ')}.`
+        );
+        return false;
+      }
+
       const { error } = await supabase
         .from('fornecedores')
         .delete()
