@@ -28,7 +28,7 @@ import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
 import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { exportToCSV } from "@/lib/exportData";
+import { exportToCSV, pedidoColumns } from "@/lib/exportData";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -116,12 +116,19 @@ const Pedidos = () => {
   const handleViewDetails = (pedido: Pedido) => { setSelectedPedido(pedido); setDetailsOpen(true); };
 
   const handleExportPDF = () => {
+    if (filteredPedidos.length === 0) {
+      toast.info("Nenhum pedido para exportar.");
+      return;
+    }
     const exportData = filteredPedidos.map(p => ({
       numero: p.numero, status: statusConfig[p.status]?.label || p.status,
       fornecedor: p.fornecedor?.razao_social || '', valor_total: p.valor_total,
+      data_emissao: p.data_emissao, data_previsao: p.data_previsao, data_entrega: p.data_entrega,
+      condicao_pagamento: p.condicao_pagamento, observacoes: p.observacoes,
     }));
-    exportToCSV(exportData, [], 'pedidos');
-    toast.success(`Data exported successfully`);
+    // Sem a lista de colunas o CSV saia so com linhas em branco e o toast anunciava sucesso (QA 104).
+    exportToCSV(exportData, pedidoColumns, 'pedidos');
+    toast.success(`${exportData.length} pedido(s) exportado(s)`);
   };
 
   if (loading) {
