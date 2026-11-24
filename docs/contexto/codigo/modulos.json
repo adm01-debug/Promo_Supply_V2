@@ -1831,6 +1831,7 @@
     "pages/admin",
     "pages/auditoria",
     "pages/auth",
+    "pages/cotacao",
     "pages/gerar-ordem",
     "pages/negociacao-ia",
     "pages/portal-fornecedor",
@@ -4848,8 +4849,8 @@
   {
    "modulo": "pages/cotacao",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 627,
+   "testes": 2,
+   "linhas": 652,
    "itens_menu": [
     "Cotações"
    ],
@@ -4935,6 +4936,7 @@
     "components/compras",
     "components/organisms",
     "components/ui",
+    "features/auth",
     "features/cotacoes",
     "features/layout",
     "features/solicitacoes",

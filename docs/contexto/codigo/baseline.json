@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0f24e154ffac95e6e9df4097474cf6eb033d26fc",
+  "commit": "c3726dd3f80c902fbe9d5b6703eef961a9362ab8",
   "branch": "main",
-  "data_commit": "2026-11-24T11:55:29-03:00",
+  "data_commit": "2026-11-24T11:57:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "c3726dd",
+    "data": "2026-11-24",
+    "assunto": "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)"
+   },
    {
     "sha": "0f24e15",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "090a030",
     "data": "2026-11-24",
     "assunto": "fix(integridade): guarda exclusao de pagamento com historico (#405)"
-   },
-   {
-    "sha": "e14e3a5",
-    "data": "2026-11-24",
-    "assunto": "chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)"
    }
   ],
-  "arquivos_mudados_7d": 457,
+  "arquivos_mudados_7d": 458,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,11 +141,11 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 73
+    "mudancas": 72
    },
    {
     "pasta": "src/components/ui",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 75
+    "mudancas": 76
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -235,6 +235,10 @@
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/pages/cotacao/Cotacao.tsx",
     "mudancas": 7
    },
    {
@@ -274,10 +278,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/cotacao/Cotacao.tsx",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "mudancas": 6
    },
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1414,
-  "arquivos_codigo": 908,
-  "linhas_codigo": 183168,
+  "arquivos_total": 1415,
+  "arquivos_codigo": 909,
+  "linhas_codigo": 183325,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 330,
   "cron_jobs": 74,
-  "testes": 271,
+  "testes": 272,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 146,
-   "linhas": 33509
+   "arquivos": 147,
+   "linhas": 33666
   },
   "src/routes": {
    "arquivos": 1,

@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 637,
- "arestas": 2828,
+ "arestas": 2829,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -30,7 +30,7 @@
   },
   {
    "arquivo": "src/features/auth/index.ts",
-   "importado_por": 75
+   "importado_por": 76
   },
   {
    "arquivo": "src/components/ui/input.tsx",
@@ -248,7 +248,7 @@
   {
    "modulo": "features/auth",
    "depende_de": 3,
-   "importado_por": 21
+   "importado_por": 22
   },
   {
    "modulo": "pages/pedidos",
@@ -266,6 +266,11 @@
    "importado_por": 11
   },
   {
+   "modulo": "pages/cotacao",
+   "depende_de": 11,
+   "importado_por": 2
+  },
+  {
    "modulo": "pages/solicitacoes",
    "depende_de": 11,
    "importado_por": 2
@@ -274,11 +279,6 @@
    "modulo": "pages/acompanhamento",
    "depende_de": 9,
    "importado_por": 3
-  },
-  {
-   "modulo": "pages/cotacao",
-   "depende_de": 10,
-   "importado_por": 2
   },
   {
    "modulo": "pages/dashboard",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0f24e154ffac95e6e9df4097474cf6eb033d26fc",
+  "sha": "c3726dd3f80c902fbe9d5b6703eef961a9362ab8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 14:55 UTC",
-  "files_total": 1415,
-  "code_files": 1242,
-  "code_lines": 210394,
+  "generated_at": "2026-11-24 14:57 UTC",
+  "files_total": 1416,
+  "code_files": 1243,
+  "code_lines": 210551,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "839e942bafd98408",
+ "facts_hash": "603ab7f955544107",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 435,
+   ".ts": 436,
    ".tsx": 400,
    ".sql": 332,
    ".mjs": 67,
@@ -35752,8 +35752,8 @@
   },
   {
    "module": "src/pages",
-   "files": 146,
-   "lines": 33509,
+   "files": 147,
+   "lines": 33666,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35958,14 +35958,14 @@
     "src/pages/contratos/Contratos.tsx",
     "src/pages/cotacao/Cotacao.tsx",
     "src/pages/cotacao/cotacaoHelpers.ts",
+    "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
     "src/pages/dashboard/ComprasDashboard.tsx",
     "src/pages/dashboard/DashboardExecutivo.tsx",
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     "src/pages/dev/XbzNetworkPanelHarness.tsx",
     "src/pages/devolucoes/Devolucoes.tsx",
-    "src/pages/devolucoes/DevolucoesModals.tsx",
-    "src/pages/devolucoes/devolucoesData.ts"
+    "src/pages/devolucoes/DevolucoesModals.tsx"
    ]
   },
   {
@@ -67472,6 +67472,42 @@
    {
     "file": "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
     "name": "cria o centro de custo quando o codigo esta livre"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "fetchRegisteredQuotes"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "usa o mesmo recorte do hook: solicitacao + organizacao do usuario"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "sem organizacao nao consulta o banco, como o hook desabilitado"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "unirCotacoesPorId"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "nao repete a cotacao presente nos dois conjuntos e mantem a ordem"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "sem resultado na busca devolve exatamente o conjunto do hook"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "Cotacao.tsx"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "entrega o conjunto completo (hook + busca) aos dois comparadores"
+   },
+   {
+    "file": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    "name": "busca as cotacoes registradas com a organizacao da sessao"
    },
    {
     "file": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
@@ -109590,7 +109626,7 @@
   },
   "src/pages/cotacao/Cotacao.tsx": {
    "path": "src/pages/cotacao/Cotacao.tsx",
-   "lines": 403,
+   "lines": 405,
    "exports": [
     "interface ResumoFollowUpCotacao",
     "function resumoFollowUpDaCotacao"
@@ -109601,7 +109637,7 @@
   },
   "src/pages/cotacao/cotacaoHelpers.ts": {
    "path": "src/pages/cotacao/cotacaoHelpers.ts",
-   "lines": 224,
+   "lines": 247,
    "exports": [
     "interface QuoteAnalysis",
     "function buildQuoteAnalysis",
@@ -109609,6 +109645,7 @@
     "interface LegacyFornecedor",
     "function adaptFornecedoresToLegacy",
     "function adaptCotacoesFromDB",
+    "function unirCotacoesPorId",
     "function fetchRegisteredQuotes"
    ],
    "tables": [
@@ -109622,6 +109659,7 @@
      "condicao_pagamento",
      "fornecedor_id",
      "id",
+     "organization_id",
      "prazo_entrega",
      "quantidade",
      "score_prazo",
@@ -109669,6 +109707,25 @@
    ],
    "rule_comments": [
     "risco/prazo: so calcula o que os dados das cotacoes permitem afirmar."
+   ]
+  },
+  "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts": {
+   "path": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+   "lines": 132,
+   "is_test": true,
+   "rule_comments": [
+    "* Etapa 249 (UI-14) - os comparadores recebiam apenas `cotacoesAPI`, que so a"
+   ],
+   "tests": [
+    "fetchRegisteredQuotes",
+    "usa o mesmo recorte do hook: solicitacao + organizacao do usuario",
+    "sem organizacao nao consulta o banco, como o hook desabilitado",
+    "unirCotacoesPorId",
+    "nao repete a cotacao presente nos dois conjuntos e mantem a ordem",
+    "sem resultado na busca devolve exatamente o conjunto do hook",
+    "Cotacao.tsx",
+    "entrega o conjunto completo (hook + busca) aos dois comparadores",
+    "busca as cotacoes registradas com a organizacao da sessao"
    ]
   },
   "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts": {
@@ -120753,10 +120810,22 @@
   }
  },
  "git": {
-  "sha": "0f24e154ffac95e6e9df4097474cf6eb033d26fc",
+  "sha": "c3726dd3f80c902fbe9d5b6703eef961a9362ab8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c3726dd",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/cotacao/Cotacao.tsx",
+     "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+     "src/pages/cotacao/cotacaoHelpers.ts"
+    ]
+   },
    {
     "sha": "0f24e15",
     "date": "2026-11-24",
@@ -121091,17 +121160,6 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "005038d",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
-     "src/hooks/useDevolucoes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -121154,8 +121212,16 @@
     2
    ],
    [
-    "src/hooks/useDevolucoes.ts",
-    2
+    "src/pages/cotacao/Cotacao.tsx",
+    1
+   ],
+   [
+    "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+    1
+   ],
+   [
+    "src/pages/cotacao/cotacaoHelpers.ts",
+    1
    ],
    [
     "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
@@ -121175,14 +121241,6 @@
    ],
    [
     "src/features/layout/components/GuidedBuyingAssistant.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/QuickActionsFAB.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ComparadorCotacoes.tsx",
     1
    ]
   ]

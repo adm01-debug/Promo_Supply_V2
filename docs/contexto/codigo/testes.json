@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 271,
+ "total": 272,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 253
+  "unit": 254
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 176
+   "arquivos": 177
   },
   {
    "padrao": "outro",
@@ -1674,6 +1674,15 @@
    "casos": 3
   },
   {
+   "arquivo": "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "src/pages/cotacao/cotacaoHelpers.ts"
+   ],
+   "casos": 6
+  },
+  {
    "arquivo": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
    "tipo": "unit",
    "linhas": 324,
@@ -2608,7 +2617,7 @@
   "src/pages/compliance/complianceHelpers.ts": 1,
   "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx": 1,
   "src/pages/cotacao/Cotacao.tsx": 1,
-  "src/pages/cotacao/cotacaoHelpers.ts": 1,
+  "src/pages/cotacao/cotacaoHelpers.ts": 2,
   "src/pages/dashboard/ComprasDashboard.tsx": 1,
   "src/pages/devolucoes/DevolucoesModals.tsx": 1,
   "src/pages/devolucoes/devolucoesData.ts": 1,
