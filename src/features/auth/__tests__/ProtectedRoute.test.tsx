@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import type { AppRole } from '@/features/auth';
 
@@ -66,6 +66,27 @@ describe('ProtectedRoute', () => {
     authState.user = null;
     renderAt('admin');
     expect(screen.getByText('login')).toBeInTheDocument();
+  });
+
+  // QA-043 (AUT-08): sem o state.from o login sempre voltava para /compras e o
+  // usuario perdia a tela onde estava, inclusive a query string.
+  it('entrega a rota de origem (path + busca) para o login devolver o usuario la', () => {
+    authState.user = null;
+    const AuthProbe = () => {
+      const location = useLocation();
+      const from = (location.state as { from?: string } | null)?.from;
+      return <div>{`origem=${from ?? 'sem-origem'}`}</div>;
+    };
+    render(
+      <MemoryRouter initialEntries={['/auditoria?tab=2']}>
+        <Routes>
+          <Route path="/auditoria" element={<ProtectedRoute>conteudo</ProtectedRoute>} />
+          <Route path="/auth" element={<AuthProbe />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('origem=/auditoria?tab=2')).toBeInTheDocument();
+    expect(screen.queryByText('conteudo')).not.toBeInTheDocument();
   });
 
   it('bloqueia quando o papel nao foi carregado', () => {
