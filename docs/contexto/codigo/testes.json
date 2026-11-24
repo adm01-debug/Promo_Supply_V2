@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 229,
+ "total": 230,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 212
+  "unit": 213
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 136
+   "arquivos": 137
   },
   {
    "padrao": "outro",
@@ -679,6 +679,15 @@
     "src/features/layout/transitions/presets.ts"
    ],
    "casos": 29
+  },
+  {
+   "arquivo": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+   "tipo": "unit",
+   "linhas": 135,
+   "testa": [
+    "src/features/solicitacoes/fluxoAprovacao.ts"
+   ],
+   "casos": 13
   },
   {
    "arquivo": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
@@ -2118,6 +2127,7 @@
   "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx": 1,
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
+  "src/features/solicitacoes/fluxoAprovacao.ts": 1,
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": 2,
   "src/features/solicitacoes/index.ts": 1,
   "src/features/solicitacoes/pessoasDaEmpresa.ts": 1,
@@ -2305,6 +2315,7 @@
    "src/features/layout/transitions/index.ts",
    "src/features/layout/transitions/usePageTransition.ts",
    "src/features/pedidos/hooks/usePedidos.ts",
+   "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
    "src/hooks/use-mobile.tsx",
    "src/hooks/useAccountFilters.ts",

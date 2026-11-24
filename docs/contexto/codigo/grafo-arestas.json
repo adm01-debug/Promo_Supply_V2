@@ -688,9 +688,8 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/checkbox.tsx",
-   "src/components/ui/input.tsx",
    "src/components/ui/popover.tsx",
-   "src/components/ui/tooltip.tsx",
+   "src/features/solicitacoes/fluxoAprovacao.ts",
    "src/hooks/useMobileGestures.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
@@ -1919,6 +1918,10 @@
   ],
   "src/features/pedidos/index.ts": [
    "src/features/pedidos/hooks/usePedidos.ts"
+  ],
+  "src/features/solicitacoes/hooks/useFluxosAprovacao.ts": [
+   "src/features/solicitacoes/fluxoAprovacao.ts",
+   "src/integrations/supabase/client.ts"
   ],
   "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": [
    "src/features/solicitacoes/pessoasDaEmpresa.ts",
@@ -3340,6 +3343,7 @@
    "src/components/ui/sheet.tsx",
    "src/features/empresas/hooks/useEmpresaFilter.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
+   "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
    "src/features/solicitacoes/index.ts",
    "src/hooks/useAccountFilters.ts",
    "src/hooks/useClearFiltersFlow.tsx",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "51bc109253ef20698fba73d72168a8ca4917b9d6",
+  "sha": "94d908ce16dffcf3fb77e39b2f27d721d8301e34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:56 UTC",
-  "files_total": 1363,
-  "code_files": 1192,
-  "code_lines": 203820,
+  "generated_at": "2026-11-24 05:10 UTC",
+  "files_total": 1366,
+  "code_files": 1195,
+  "code_lines": 204219,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "955623016710a9ef",
+ "facts_hash": "20a72942d81ed87c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 419,
+   ".ts": 422,
    ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
@@ -33806,6 +33806,10 @@
     "file": "src/features/pedidos/hooks/usePedidos.ts"
    },
    {
+    "name": "useFluxosAprovacao",
+    "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts"
+   },
+   {
     "name": "usePessoasDaEmpresa",
     "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts"
    },
@@ -34758,7 +34762,7 @@
   {
    "module": "src/components",
    "files": 264,
-   "lines": 49353,
+   "lines": 49367,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35234,15 +35238,20 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 9,
-   "lines": 952,
+   "files": 12,
+   "lines": 1326,
    "tables": [
+    "approval_history",
+    "approval_steps",
+    "approval_workflows",
     "cost_centers",
     "profiles",
     "solicitacoes"
    ],
    "exports": [
+    "fluxoAprovacao.ts: StatusEtapaAprovacao, PessoaDoQuadro, WorkflowAprovacaoRow, EtapaAprovacaoRow, HistoricoAprovacaoRow, EtapaAprovacao",
     "pessoasDaEmpresa.ts: PessoaDaEmpresa, ProfileRow, EmpresaOpcao, EmpresaRow, nomeDaPessoa, montarPessoas",
+    "useFluxosAprovacao.ts: useFluxosAprovacao",
     "usePessoasDaEmpresa.ts: usePessoasDaEmpresa",
     "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, solicitacoesQueryKey, fetchSolicitacoesData, useSolicitacoes",
     "solicitacao.schemas.ts: SolicitacaoStatusSchema, SolicitacaoPrioridadeSchema, CreateSolicitacaoSchema, CreateSolicitacaoInput"
@@ -35268,9 +35277,12 @@
     "src/services"
    ],
    "file_list": [
+    "src/features/solicitacoes/fluxoAprovacao.ts",
     "src/features/solicitacoes/index.ts",
     "src/features/solicitacoes/pessoasDaEmpresa.ts",
+    "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
     "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -35672,7 +35684,7 @@
   {
    "module": "src/pages",
    "files": 136,
-   "lines": 31813,
+   "lines": 31824,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36489,6 +36501,7 @@
    },
    "approval_history": {
     "select": [
+     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
      "src/hooks/useApprovalHistory.ts",
      "src/tests/integration/supabase-db.test.ts"
     ],
@@ -36515,6 +36528,7 @@
    },
    "approval_steps": {
     "select": [
+     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
      "src/hooks/useApprovalWorkflow.ts",
      "src/tests/integration/supabase-db.test.ts",
      "supabase/functions/check-approval-escalations/index.ts"
@@ -36534,6 +36548,7 @@
    "approval_workflows": {
     "select": [
      "src/components/compras/CriticalAlertsBar.tsx",
+     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
      "src/hooks/useApprovalWorkflow.ts",
      "src/hooks/useSidebarBadges.ts",
      "src/tests/integration/supabase-db.test.ts"
@@ -37318,6 +37333,7 @@
     ],
     "select": [
      "src/features/auth/hooks/useAuth.tsx",
+     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
      "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/lib/storageFiles.ts",
@@ -37992,7 +38008,11 @@
     "organization_id"
    ],
    "approval_history": [
+    "acao",
+    "created_at",
     "id",
+    "solicitacao_id",
+    "usuario_nome",
     "workflow_id"
    ],
    "approval_rules": [
@@ -38003,6 +38023,8 @@
    "approval_steps": [
     "aprovador_efetivo_id",
     "aprovador_id",
+    "comentario",
+    "decidido_em",
     "etapa",
     "id",
     "lembrete_enviado",
@@ -40215,6 +40237,11 @@
     "file": "src/features/layout/transitions/presets.ts",
     "name": "TransitionName",
     "values": "fade | slide-left | slide-right | slide-up | slide-down | zoom-in | zoom-out | flip-x | flip-y | parallax | blur-scale | none"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "name": "StatusEtapaAprovacao",
+    "values": "concluida | atual | pendente | rejeitada | pulada"
    },
    {
     "file": "src/hooks/useFeedback.ts",
@@ -50817,6 +50844,11 @@
     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
    },
    {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "name": "fluxos",
+    "body": ""
+   },
+   {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "name": "VALID_SOLICITACAO_TRANSITIONS",
     "body": "pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'], em_cotacao: ['aprovada', 'rejeitada', 'cancelada'], aprovada: ['em_andamento', 'cancelada'], em_andamento: ['concluida', 'cancelada'], rejeitada: ['pendente'], concluida: [], cancelada: [],"
@@ -51698,43 +51730,13 @@
    {
     "file": "src/components/compras/SolicitacaoCard.tsx",
     "field": "status",
-    "value": "completed",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "field": "status",
-    "value": "current",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "field": "status",
-    "value": "pending",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "field": "status",
     "value": "ENTREGUE",
     "kind": "compara"
    },
    {
     "file": "src/components/compras/SolicitacaoCard.tsx",
     "field": "status",
-    "value": "completed",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "field": "status",
-    "value": "current",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "field": "status",
-    "value": "completed",
+    "value": "concluida",
     "kind": "compara"
    },
    {
@@ -53307,6 +53309,60 @@
     "file": "src/features/pedidos/hooks/usePedidos.ts",
     "field": "status",
     "value": "todos",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "rejected",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "rejeitado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "rejeitada",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "skipped",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "pulado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "pulada",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "approved",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "aprovado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/features/solicitacoes/fluxoAprovacao.ts",
+    "field": "status",
+    "value": "aprovada",
     "kind": "compara"
    },
    {
@@ -57432,10 +57488,6 @@
     "line": "const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));"
    },
    {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "line": "<Zap className=\"w-2.5 h-2.5 mr-1\" /> Predicted: {new Date(new Date(solicitacao.prazoEntrega).getTime() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}"
-   },
-   {
     "file": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
     "line": "const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));"
    },
@@ -58272,10 +58324,6 @@
    {
     "file": "src/components/compras/RiskHeatMap.tsx",
     "line": "const overallRisk = Math.round(financialRisk * 0.15 + operationalRisk * 0.25 + qualityRisk * 0.2 + deliveryRisk * 0.2 + concentrationRisk * 0.1 + geopoliticalRi …"
-   },
-   {
-    "file": "src/components/compras/SolicitacaoCard.tsx",
-    "line": "Predição Neural: 94% Confiança baseada em logística histórica."
    },
    {
     "file": "src/components/compras/SourcingHistoryConsole.tsx",
@@ -61726,6 +61774,74 @@
    {
     "file": "src/features/layout/transitions/__tests__/presets.test.ts",
     "name": "does not add delay key when delay not in overrides"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "statusDaEtapa"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "traduz os status que o banco grava"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "a etapa pendente na etapa_atual do workflow e a atual"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "etapa com decidido_em conta como concluida mesmo sem status explicito"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "rotuloDaAcao e nomeDaPessoaDoQuadro"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "traduz as acoes conhecidas e mantem as desconhecidas"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "usa nome completo, depois display_name, depois email e por fim o padrao"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "montarPainelAprovacao"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "monta as etapas na ordem do banco, com o aprovador efetivo e o status real"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "sem nome conhecido nao inventa pessoa: usa Aprovador"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "workflow sem etapas nao ganha etapas ficticias"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "solicitacao sem workflow nao aparece no mapa"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "historico real fica por solicitacao e em ordem decrescente"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "o card nao volta para o prototipo"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "nao tem nomes ficticios nem predicao neural inventada"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "desenha as etapas reais e tem estado vazio explicito"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    "name": "a lista alimenta o card com o dado do banco"
    },
    {
     "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
@@ -77865,6 +77981,18 @@
     "limit": "20"
    },
    {
+    "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+    "limit": "1000"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+    "limit": "300"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+    "limit": "500"
+   },
+   {
     "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "limit": "200"
    },
@@ -79081,7 +79209,6 @@
       "compara:src/pages/qualificacao/QualificacaoFornecedores.tsx",
       "escreve:src/components/compras/DigitalSignature.tsx",
       "escreve:src/components/compras/ProductionRoutingEngine.tsx",
-      "escreve:src/components/compras/SolicitacaoCard.tsx",
       "escreve:src/components/compras/digital-signature/signatureHelpers.ts",
       "escreve:src/components/ui/indicators/StepAndHealth.tsx",
       "escreve:src/hooks/approvalWorkflowTypes.ts",
@@ -79157,6 +79284,7 @@
      "aprovado": [
       "compara:src/components/compras/OrderPreviewModal.tsx",
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/pages/pagamentos/Pagamentos.tsx",
       "escreve:src/hooks/usePagamentos.ts",
       "filtra:src/pages/documentos/DocumentosFiscais.tsx",
@@ -79190,13 +79318,11 @@
      ],
      "completed": [
       "compara:src/components/compras/ProductionRoutingEngine.tsx",
-      "compara:src/components/compras/SolicitacaoCard.tsx",
       "compara:src/components/compras/StatusTimeline.tsx",
       "compara:src/components/settings/TourSettingsPanel.tsx",
       "compara:src/components/ui/indicators/StepAndHealth.tsx",
       "compara:src/pages/admin/SourcingPipeline.tsx",
       "escreve:src/components/compras/ProductionRoutingEngine.tsx",
-      "escreve:src/components/compras/SolicitacaoCard.tsx",
       "escreve:src/components/compras/StatusTimeline.tsx",
       "escreve:src/hooks/usePasswordResetRequests.ts",
       "escreve:supabase/functions/punchout-receive/index.ts"
@@ -79208,6 +79334,7 @@
      ],
      "concluida": [
       "compara:src/components/compras/PurchaseClimateWidget.tsx",
+      "compara:src/components/compras/SolicitacaoCard.tsx",
       "compara:src/hooks/useDevolucoes.ts",
       "compara:src/pages/kanban/KanbanWorkflow.tsx",
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
@@ -79252,12 +79379,6 @@
       "escreve:supabase/functions/dependency-health/index.ts",
       "escreve:supabase/functions/external-db-bridge/index.ts"
      ],
-     "current": [
-      "compara:src/components/compras/SolicitacaoCard.tsx",
-      "compara:src/components/compras/StatusTimeline.tsx",
-      "compara:src/components/ui/indicators/StepAndHealth.tsx",
-      "escreve:src/components/compras/SolicitacaoCard.tsx"
-     ],
      "ENTREGUE": [
       "compara:src/components/compras/SolicitacaoCard.tsx",
       "compara:src/components/compras/SolicitacaoKanban.tsx"
@@ -79290,6 +79411,10 @@
      "Critico": [
       "compara:src/components/compras/SourcingHistoryConsole.tsx"
      ],
+     "current": [
+      "compara:src/components/compras/StatusTimeline.tsx",
+      "compara:src/components/ui/indicators/StepAndHealth.tsx"
+     ],
      "read": [
       "compara:src/components/compras/SupplierInteractionLog.tsx",
       "compara:src/features/layout/components/chat/MessageBubble.tsx",
@@ -79319,6 +79444,7 @@
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
      "rejected": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "compara:supabase/functions/spot-proxy/index.ts",
       "escreve:src/components/compras/digital-signature/signatureHelpers.ts",
@@ -79361,6 +79487,7 @@
      ],
      "approved": [
       "compara:src/components/security/PasswordResetRequestsPanel.tsx",
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/hooks/useApprovalWorkflow.ts",
       "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "escreve:src/hooks/useApprovalWorkflow.ts",
@@ -79369,6 +79496,7 @@
      ],
      "skipped": [
       "compara:src/components/settings/TourSettingsPanel.tsx",
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/hooks/useApprovalWorkflow.ts",
       "compara:src/pages/admin/DependencyHealth.tsx",
       "escreve:src/hooks/useApprovalWorkflow.ts",
@@ -79406,6 +79534,7 @@
       "compara:src/components/ui/indicators/StepAndHealth.tsx"
      ],
      "aprovada": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
@@ -79416,12 +79545,22 @@
      "SUBSCRIBED": [
       "compara:src/features/layout/components/SupplierChat.tsx"
      ],
-     "todas": [
-      "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts"
+     "rejeitado": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts"
      ],
      "rejeitada": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "escreve:src/hooks/useApprovalWorkflow.ts",
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
+     ],
+     "pulado": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts"
+     ],
+     "pulada": [
+      "compara:src/features/solicitacoes/fluxoAprovacao.ts"
+     ],
+     "todas": [
+      "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts"
      ],
      "escalated": [
       "escreve:src/hooks/useApprovalWorkflow.ts"
@@ -88255,14 +88394,6 @@
    },
    {
     "kind": "status",
-    "msg": "valor `atual` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/EnhancedPedidoTimeline.tsx",
-     "compara:src/components/compras/PedidoTimeline.tsx"
-    ]
-   },
-   {
-    "kind": "status",
     "msg": "valor `erro` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/EnhancedPedidoTimeline.tsx"
@@ -88329,16 +88460,6 @@
    },
    {
     "kind": "status",
-    "msg": "valor `current` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/SolicitacaoCard.tsx",
-     "compara:src/components/compras/StatusTimeline.tsx",
-     "compara:src/components/ui/indicators/StepAndHealth.tsx",
-     "escreve:src/components/compras/SolicitacaoCard.tsx"
-    ]
-   },
-   {
-    "kind": "status",
     "msg": "valor `ENTREGUE` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/SolicitacaoCard.tsx",
@@ -88380,6 +88501,14 @@
     "msg": "valor `Critico` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/SourcingHistoryConsole.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `current` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/components/compras/StatusTimeline.tsx",
+     "compara:src/components/ui/indicators/StepAndHealth.tsx"
     ]
    },
    {
@@ -88459,6 +88588,20 @@
     "msg": "valor `SUBSCRIBED` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/features/layout/components/SupplierChat.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `rejeitado` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/features/solicitacoes/fluxoAprovacao.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `pulado` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/features/solicitacoes/fluxoAprovacao.ts"
     ]
    },
    {
@@ -94335,7 +94478,7 @@
   },
   "src/components/compras/SolicitacaoCard.tsx": {
    "path": "src/components/compras/SolicitacaoCard.tsx",
-   "lines": 366,
+   "lines": 380,
    "exports": [
     "const SolicitacaoCard"
    ],
@@ -94345,37 +94488,12 @@
    "status_values": [
     {
      "field": "status",
-     "value": "completed",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "current",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "pending",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
      "value": "ENTREGUE",
      "kind": "compara"
     },
     {
      "field": "status",
-     "value": "completed",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "current",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "completed",
+     "value": "concluida",
      "kind": "compara"
     },
     {
@@ -94393,12 +94511,6 @@
      "value": "AGUARDANDO_COTACAO",
      "kind": "compara"
     }
-   ],
-   "temporal": [
-    "<Zap className=\"w-2.5 h-2.5 mr-1\" /> Predicted: {new Date(new Date(solicitacao.prazoEntrega).getTime() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}"
-   ],
-   "percents": [
-    "Predição Neural: 94% Confiança baseada em logística histórica."
    ]
   },
   "src/components/compras/SolicitacaoKanban.tsx": {
@@ -99674,6 +99786,84 @@
     "usePedidosKPIs"
    ]
   },
+  "src/features/solicitacoes/fluxoAprovacao.ts": {
+   "path": "src/features/solicitacoes/fluxoAprovacao.ts",
+   "lines": 153,
+   "exports": [
+    "type StatusEtapaAprovacao",
+    "interface PessoaDoQuadro",
+    "interface WorkflowAprovacaoRow",
+    "interface EtapaAprovacaoRow",
+    "interface HistoricoAprovacaoRow",
+    "interface EtapaAprovacao",
+    "interface EventoAprovacao",
+    "interface FluxoAprovacao",
+    "interface PainelAprovacao",
+    "const rotuloDaAcao",
+    "const nomeDaPessoaDoQuadro",
+    "const statusDaEtapa",
+    "function montarPainelAprovacao"
+   ],
+   "enums": [
+    {
+     "name": "StatusEtapaAprovacao",
+     "values": "concluida | atual | pendente | rejeitada | pulada"
+    }
+   ],
+   "transition_maps": [
+    {
+     "name": "fluxos",
+     "body": ""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejeitado",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejeitada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "skipped",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pulado",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pulada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "approved",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovado",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
+     "kind": "compara"
+    }
+   ]
+  },
   "src/features/solicitacoes/index.ts": {
    "path": "src/features/solicitacoes/index.ts",
    "lines": 3
@@ -99691,6 +99881,30 @@
     "const montarEmpresas"
    ],
    "doc": "Opcoes de \"Entidade Solicitante\" e \"Gestor Responsavel\" do formulario de solicitacao, montadas a partir do que existe no banco. Antes destas funcoes o formulario oferecia listas fixas (\"Promo Supply\", \"Joao Silva\", ...) e gravava o nome escolhido no lugar do vinculo real."
+  },
+  "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts": {
+   "path": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+   "lines": 135,
+   "is_test": true,
+   "tests": [
+    "statusDaEtapa",
+    "traduz os status que o banco grava",
+    "a etapa pendente na etapa_atual do workflow e a atual",
+    "etapa com decidido_em conta como concluida mesmo sem status explicito",
+    "rotuloDaAcao e nomeDaPessoaDoQuadro",
+    "traduz as acoes conhecidas e mantem as desconhecidas",
+    "usa nome completo, depois display_name, depois email e por fim o padrao",
+    "montarPainelAprovacao",
+    "monta as etapas na ordem do banco, com o aprovador efetivo e o status real",
+    "sem nome conhecido nao inventa pessoa: usa Aprovador",
+    "workflow sem etapas nao ganha etapas ficticias",
+    "solicitacao sem workflow nao aparece no mapa",
+    "historico real fica por solicitacao e em ordem decrescente",
+    "o card nao volta para o prototipo",
+    "nao tem nomes ficticios nem predicao neural inventada",
+    "desenha as etapas reais e tem estado vazio explicito",
+    "a lista alimenta o card com o dado do banco"
+   ]
   },
   "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts": {
    "path": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
@@ -99711,6 +99925,69 @@
     "o formulario de solicitacao nao tem nomes de empresa nem de pessoa inventados",
     "o modal grava o aprovador real e nao inventa descricao",
     "o filtro avancado lista as empresas do usuario"
+   ]
+  },
+  "src/features/solicitacoes/hooks/useFluxosAprovacao.ts": {
+   "path": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+   "lines": 86,
+   "exports": [
+    "function useFluxosAprovacao"
+   ],
+   "tables": [
+    {
+     "table": "approval_workflows",
+     "op": "select"
+    },
+    {
+     "table": "approval_steps",
+     "op": "select"
+    },
+    {
+     "table": "approval_history",
+     "op": "select"
+    },
+    {
+     "table": "profiles",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "approval_workflows": [
+     "etapa_atual",
+     "id",
+     "solicitacao_id",
+     "status",
+     "total_etapas"
+    ],
+    "approval_steps": [
+     "aprovador_efetivo_id",
+     "aprovador_id",
+     "comentario",
+     "decidido_em",
+     "etapa",
+     "status",
+     "workflow_id"
+    ],
+    "approval_history": [
+     "acao",
+     "created_at",
+     "solicitacao_id",
+     "usuario_nome"
+    ],
+    "profiles": [
+     "display_name",
+     "email",
+     "full_name",
+     "user_id"
+    ]
+   },
+   "hooks": [
+    "useFluxosAprovacao"
+   ],
+   "pagination": [
+    "1000",
+    "300",
+    "500"
    ]
   },
   "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": {
@@ -109427,7 +109704,7 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 446,
+   "lines": 457,
    "exports": [
     "default Solicitacoes"
    ]
@@ -118189,10 +118466,24 @@
   }
  },
  "git": {
-  "sha": "51bc109253ef20698fba73d72168a8ca4917b9d6",
+  "sha": "94d908ce16dffcf3fb77e39b2f27d721d8301e34",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "94d908c",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: fluxo de aprovacao e historico reais no card de solicitacao (etapa 107) (#375)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/SolicitacaoCard.tsx",
+     "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+     "src/features/solicitacoes/fluxoAprovacao.ts",
+     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+     "src/pages/solicitacoes/Solicitacoes.tsx"
+    ]
+   },
    {
     "sha": "51bc109",
     "date": "2026-11-24",
@@ -118546,24 +118837,16 @@
     "files": [
      "supabase/config.toml"
     ]
-   },
-   {
-    "sha": "4ea4805",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-     "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     28
+   ],
+   [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    2
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -118602,6 +118885,22 @@
     2
    ],
    [
+    "src/components/compras/SolicitacaoCard.tsx",
+    1
+   ],
+   [
+    "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/fluxoAprovacao.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+    1
+   ],
+   [
     "src/components/compras/FiltrosAvancados.tsx",
     1
    ],
@@ -118619,26 +118918,6 @@
    ],
    [
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/pessoasDaEmpresa.ts",
-    1
-   ],
-   [
-    "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/pedidos/pedidosHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/Solicitacoes.tsx",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
     1
    ]
   ]

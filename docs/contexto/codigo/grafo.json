@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 630,
- "arestas": 2804,
+ "nos": 632,
+ "arestas": 2806,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 136
+   "importado_por": 137
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
@@ -34,7 +34,7 @@
   },
   {
    "arquivo": "src/components/ui/input.tsx",
-   "importado_por": 74
+   "importado_por": 73
   },
   {
    "arquivo": "src/lib/logger.ts",
@@ -78,7 +78,7 @@
   },
   {
    "arquivo": "src/components/ui/tooltip.tsx",
-   "importado_por": 30
+   "importado_por": 29
   },
   {
    "arquivo": "supabase/functions/_shared/logger.ts",

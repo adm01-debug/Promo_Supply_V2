@@ -1490,7 +1490,7 @@
     "SolicitacaoCard"
    ],
    "export_default": null,
-   "linhas": 366,
+   "linhas": 380,
    "dominio": "components/compras",
    "hooks_locais": [
     "useHapticFeedback"
@@ -3121,7 +3121,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 74,
+   "usado_por": 73,
    "orfao": false
   },
   {
@@ -3584,7 +3584,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 29,
+   "usado_por": 28,
    "orfao": false
   },
   {
@@ -5418,11 +5418,12 @@
     "Solicitacoes"
    ],
    "export_default": "Solicitacoes",
-   "linhas": 446,
+   "linhas": 457,
    "dominio": "pages/solicitacoes",
    "hooks_locais": [
     "useAccountFilters",
     "useEmpresaFilter",
+    "useFluxosAprovacao",
     "useRealtimeSubscription",
     "useSolicitacoes"
    ],
