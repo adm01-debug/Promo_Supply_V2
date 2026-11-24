@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `57ebeb09330d0837cb70e0fc2866d7ff796f6307` (2026-11-24T08:13:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c42cabb8e493d06c526a244727a11ea5eac25acd` (2026-11-24T08:33:04-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (822), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (16), Shell (7), CSS (6)
+- linguagens: TypeScript (822), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1399 |
+| arquivos_total | 1400 |
 | arquivos_codigo | 895 |
 | linhas_codigo | 181806 |
 | rotas | 56 |
@@ -49,7 +49,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | migrations | 329 |
 | cron_jobs | 74 |
 | testes | 259 |
-| workflows | 14 |
+| workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
 
@@ -341,7 +341,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/qa/05-PROGRESSO.md (60)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/ci/README.md (11)
+- docs/ci/README.md (12)
 - docs/pendencias/_ordem.md (8)
 - docs/prod-readiness.md (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
@@ -366,6 +366,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `main.yml` — Freight Quest CI/CD (pull_request, push)
 - `notifica-falha-main.yml` — Notifica falha na main (workflow_run)
 - `paridade-banco.yml` — Paridade migrations x banco (semanal) (push, schedule, workflow_dispatch; cron 0 9 * * 1)
+- `provisionar-secret-champions-webhook.yml` — Provisionar secret do webhook Promo Champions (workflow_dispatch)
 - `provisionar-secret-design-sync.yml` — Provisionar secret do webhook Promo Design (workflow_dispatch)
 - `provisionar-vapid.yml` — Provisionar VAPID na edge de push (workflow_dispatch)
 - `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7 * * * *)
@@ -421,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
 - 2026-11-24 `57ebeb0` feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)
 - 2026-11-24 `eb55789` fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)
 - 2026-11-24 `d08b3c4` fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)
@@ -435,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `ae31825` fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)
 - 2026-11-24 `4accdce` chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)
 - 2026-11-24 `18ef743` chore(db): sincronizar types.ts com o banco [auto] (#340)
-- 2026-11-24 `a865fce` fix: pedido complementar herda organization_id do pedido original (#397)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

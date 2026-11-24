@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "57ebeb09330d0837cb70e0fc2866d7ff796f6307",
+  "sha": "c42cabb8e493d06c526a244727a11ea5eac25acd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 11:14 UTC",
-  "files_total": 1400,
+  "generated_at": "2026-11-24 11:33 UTC",
+  "files_total": 1401,
   "code_files": 1228,
   "code_lines": 208990,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "574d768fc0f22b87",
+ "facts_hash": "0b316c766895cc73",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -241,6 +241,13 @@
     "triggers": [
      "push",
      "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/provisionar-secret-champions-webhook.yml",
+    "name": "Provisionar secret do webhook Promo Champions",
+    "triggers": [
      "workflow_dispatch"
     ]
    },
@@ -120159,10 +120166,20 @@
   }
  },
  "git": {
-  "sha": "57ebeb09330d0837cb70e0fc2866d7ff796f6307",
+  "sha": "c42cabb8e493d06c526a244727a11ea5eac25acd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c42cabb",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "ci: provisiona o segredo do webhook Promo Champions (#411)",
+    "files": [
+     ".github/workflows/provisionar-secret-champions-webhook.yml",
+     "docs/ci/README.md"
+    ]
+   },
    {
     "sha": "57ebeb0",
     "date": "2026-11-24",
@@ -120506,26 +120523,12 @@
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/pages/solicitacoes/Solicitacoes.tsx"
     ]
-   },
-   {
-    "sha": "94d908c",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: fluxo de aprovacao e historico reais no card de solicitacao (etapa 107) (#375)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/SolicitacaoCard.tsx",
-     "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
-     "src/features/solicitacoes/fluxoAprovacao.ts",
-     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
-     "src/pages/solicitacoes/Solicitacoes.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -120534,6 +120537,10 @@
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     3
+   ],
+   [
+    "docs/ci/README.md",
+    2
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -120564,8 +120571,8 @@
     2
    ],
    [
-    "src/pages/solicitacoes/Solicitacoes.tsx",
-    2
+    ".github/workflows/provisionar-secret-champions-webhook.yml",
+    1
    ],
    [
     "supabase/functions/receive-os-sync/index.ts",
@@ -120597,10 +120604,6 @@
    ],
    [
     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
     1
    ]
   ]
