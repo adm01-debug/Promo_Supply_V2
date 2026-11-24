@@ -12,12 +12,13 @@ BEGIN
 
   CASE OLD.status
     WHEN 'pendente' THEN valid_targets := ARRAY['aprovado', 'cancelado', 'atrasado'];
-    WHEN 'aprovado' THEN valid_targets := ARRAY['agendado', 'pago', 'cancelado', 'atrasado'];
-    WHEN 'agendado' THEN valid_targets := ARRAY['pago', 'cancelado', 'atrasado'];
+    -- pagamento parcial nasce de um pagamento ainda nao quitado
+    WHEN 'aprovado' THEN valid_targets := ARRAY['agendado', 'pago', 'parcial', 'cancelado', 'atrasado'];
+    WHEN 'agendado' THEN valid_targets := ARRAY['pago', 'parcial', 'cancelado', 'atrasado'];
     WHEN 'pago' THEN valid_targets := ARRAY['parcial'];
-    WHEN 'parcial' THEN valid_targets := ARRAY['pago'];
+    WHEN 'parcial' THEN valid_targets := ARRAY['pago', 'cancelado'];
     WHEN 'cancelado' THEN valid_targets := ARRAY[]::text[];
-    WHEN 'atrasado' THEN valid_targets := ARRAY['pago', 'cancelado', 'aprovado'];
+    WHEN 'atrasado' THEN valid_targets := ARRAY['pago', 'parcial', 'cancelado', 'aprovado'];
     ELSE valid_targets := ARRAY[]::text[];
   END CASE;
 

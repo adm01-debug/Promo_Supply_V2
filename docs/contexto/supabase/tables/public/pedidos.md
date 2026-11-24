@@ -144,7 +144,6 @@
 | trg_pedido_entregue_status | AFTER | UPDATE | ROW | enabled | public.trg_pedido_entregue_transition |
 | trg_update_pedidos_updated_at | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
 | trg_update_saldo_on_pedido | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.trigger_update_saldo_on_pedido |
-| trg_validate_pedido_status | BEFORE | UPDATE | ROW | enabled | public.validate_pedido_status_transition |
 | validate_pedido_status | BEFORE | UPDATE | ROW | enabled | public.validate_pedido_status_transition |
 
 

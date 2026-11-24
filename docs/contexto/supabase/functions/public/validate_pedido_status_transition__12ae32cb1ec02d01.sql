@@ -16,7 +16,8 @@ BEGIN
     WHEN 'enviado' THEN valid_targets := ARRAY['em_transito', 'entregue', 'cancelado'];
     WHEN 'em_transito' THEN valid_targets := ARRAY['entregue', 'parcial', 'cancelado'];
     WHEN 'entregue' THEN valid_targets := ARRAY['parcial'];
-    WHEN 'parcial' THEN valid_targets := ARRAY['entregue'];
+    -- entrega parcial pode ser cancelada (o front ja oferecia essa acao)
+    WHEN 'parcial' THEN valid_targets := ARRAY['entregue', 'cancelado'];
     WHEN 'cancelado' THEN valid_targets := ARRAY[]::text[];
     WHEN 'concluido' THEN valid_targets := ARRAY[]::text[];
     ELSE valid_targets := ARRAY[]::text[];

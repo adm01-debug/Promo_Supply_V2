@@ -11,11 +11,11 @@ BEGIN
   END IF;
 
   CASE OLD.status
-    WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'cancelada', 'expirada'];
-    WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'cancelada', 'expirada'];
-    WHEN 'aprovada' THEN valid_targets := ARRAY['cancelada'];
+    WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'expirada'];
+    WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'expirada'];
+    -- 'aprovada' e terminal: o CHECK de cotacoes nao tem 'cancelada'
+    WHEN 'aprovada' THEN valid_targets := ARRAY[]::text[];
     WHEN 'rejeitada' THEN valid_targets := ARRAY['pendente'];
-    WHEN 'cancelada' THEN valid_targets := ARRAY[]::text[];
     WHEN 'expirada' THEN valid_targets := ARRAY[]::text[];
     ELSE valid_targets := ARRAY[]::text[];
   END CASE;

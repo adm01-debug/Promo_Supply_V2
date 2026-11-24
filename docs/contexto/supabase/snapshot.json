@@ -43420,9 +43420,13 @@
             {
               "file": "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
               "hits": 12
+            },
+            {
+              "file": "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 10,
+          "code_total_files": 11,
           "cron": [],
           "db": [
             "public.current_tenant_id",
@@ -44459,7 +44463,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "91260ddd98b776de",
+        "definition_sha": "e5c3798b09205826",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": true,
@@ -44479,10 +44483,6 @@
         "callers": {
           "code": [
             {
-              "file": "src/lib/creditoFornecedor.ts",
-              "hits": 1
-            },
-            {
               "file": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql",
               "hits": 1
             },
@@ -44491,7 +44491,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [
@@ -44504,7 +44504,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "949c14440f14b054",
+        "definition_sha": "bcc6aaac61bcbf03",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": true,
@@ -44530,13 +44530,16 @@
             {
               "file": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
-            "public.pedidos.trg_validate_pedido_status",
             "public.pedidos.validate_pedido_status"
           ],
           "views": []
@@ -44546,7 +44549,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "2391e54967b36b8b",
+        "definition_sha": "ee532cb8a8dff69b",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": true,
@@ -67975,17 +67978,6 @@
         "status": "enabled",
         "table": "pedidos",
         "timing": "AFTER"
-      },
-      {
-        "definition": "CREATE TRIGGER trg_validate_pedido_status BEFORE UPDATE ON pedidos FOR EACH ROW EXECUTE FUNCTION validate_pedido_status_transition()",
-        "events": "UPDATE",
-        "function": "public.validate_pedido_status_transition",
-        "level": "ROW",
-        "name": "trg_validate_pedido_status",
-        "schema": "public",
-        "status": "enabled",
-        "table": "pedidos",
-        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER validate_pedido_status BEFORE UPDATE OF status ON pedidos FOR EACH ROW EXECUTE FUNCTION validate_pedido_status_transition()",
