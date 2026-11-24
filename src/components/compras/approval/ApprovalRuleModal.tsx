@@ -1,4 +1,5 @@
 import { type Dispatch, type SetStateAction } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Plus, Trash2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,22 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { type ApprovalRule } from "@/hooks/useApprovalWorkflow";
 import { useSolicitacoes } from "@/features/solicitacoes";
-
-const mockUsers = [
-  { id: "user-1", nome: "João Silva", cargo: "Gestor" },
-  { id: "user-2", nome: "Maria Santos", cargo: "Coordenadora" },
-  { id: "user-3", nome: "Carlos Lima", cargo: "Diretor Financeiro" },
-  { id: "user-4", nome: "Ana Oliveira", cargo: "Gerente de Compras" },
-  { id: "user-5", nome: "Roberto Costa", cargo: "CEO" },
-];
-
-const mockCategories = [
-  { id: "cat-1", nome: "Material de Escritório" },
-  { id: "cat-2", nome: "Equipamentos" },
-  { id: "cat-3", nome: "Serviços" },
-  { id: "cat-4", nome: "Marketing" },
-  { id: "cat-5", nome: "Brindes Promocionais" },
-];
+import { montarPessoas } from "@/features/solicitacoes/pessoasDaEmpresa";
+import { useProdutos } from "@/hooks/useProdutos";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -40,6 +28,24 @@ interface Props {
 
 export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingRule, onSave, loading, requerUnanimidade, onToggleUnanimidade }: Props) => {
   const { costCenters } = useSolicitacoes();
+  const { categorias } = useProdutos();
+  // O valor gravado e `profiles.user_id`: a RLS de `approval_steps` compara
+  // `auth.uid() = aprovador_id` e a de `approval_delegations` compara
+  // `auth.uid() = delegante_id`, e `useApprovalWorkflow` monta
+  // `aprovador_id: aprovador.user_id` a partir deste JSON.
+  const { data: pessoas = [] } = useQuery({
+    queryKey: ["aprovadores-disponiveis"],
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, display_name, email")
+        .order("full_name", { ascending: true })
+        .limit(200);
+      if (error) throw error;
+      return montarPessoas(data ?? []);
+    },
+  });
   const addApprover = () => {
     if (!editingRule) return;
     const current = editingRule.aprovadores || [];
@@ -94,7 +100,7 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                   <SelectTrigger><SelectValue placeholder="Todas as categorias" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas as categorias</SelectItem>
-                    {mockCategories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>)}
+                    {categorias.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -120,13 +126,16 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                 <Button type="button" size="sm" variant="outline" onClick={addApprover}><Plus className="w-3 h-3 mr-1" />Adicionar</Button>
               </div>
               <div className="space-y-2">
+                {pessoas.length === 0 && (
+                  <p className="text-xs text-muted-foreground">Nenhum usuário visível para o seu perfil.</p>
+                )}
                 {editingRule.aprovadores?.map((aprovador, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <Badge variant="secondary" className="w-6 h-6 flex items-center justify-center p-0">{index + 1}</Badge>
                     <Select value={aprovador.user_id} onValueChange={(v) => updateApprover(index, v)}>
                       <SelectTrigger className="flex-1"><SelectValue placeholder="Selecione o aprovador" /></SelectTrigger>
                       <SelectContent>
-                        {mockUsers.map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                        {pessoas.map(user => <SelectItem key={user.id} value={user.id}>{user.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeApprover(index)}>
@@ -151,7 +160,7 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                   <Select value={editingRule.escalacao_para || ''} onValueChange={(v) => setEditingRule({ ...editingRule, escalacao_para: v })}>
                     <SelectTrigger><SelectValue placeholder="Selecione o aprovador de escalação" /></SelectTrigger>
                     <SelectContent>
-                      {mockUsers.map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                      {pessoas.map(user => <SelectItem key={user.id} value={user.id}>{user.nome}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
