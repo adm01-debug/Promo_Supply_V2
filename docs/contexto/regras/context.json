@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "da3107b5df6eb95d8c8bed06e514bc364db93705",
+  "sha": "66b65cc18f1e14fce47bb00689c8a4feb3e5e780",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:06 UTC",
-  "files_total": 1416,
-  "code_files": 1243,
-  "code_lines": 210586,
+  "generated_at": "2026-11-24 15:08 UTC",
+  "files_total": 1418,
+  "code_files": 1245,
+  "code_lines": 210997,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9519da3a781aa4a9",
+ "facts_hash": "5d6083b13f178294",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 436,
-   ".tsx": 400,
+   ".tsx": 402,
    ".sql": 332,
    ".mjs": 67,
    ".py": 5,
@@ -35752,8 +35752,8 @@
   },
   {
    "module": "src/pages",
-   "files": 147,
-   "lines": 33666,
+   "files": 149,
+   "lines": 34077,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -50819,6 +50819,16 @@
     "file": "src/pages/documentos/conciliacaoFiscal.ts",
     "name": "TOLERANCIA_VALOR_CONCILIACAO",
     "value": "0.01"
+   },
+   {
+    "file": "src/pages/pedidos/Pedidos.tsx",
+    "name": "PEDIDOS_PAGE_SIZE",
+    "value": "50"
+   },
+   {
+    "file": "src/pages/solicitacoes/Solicitacoes.tsx",
+    "name": "SOLICITACOES_PAGE_SIZE",
+    "value": "100"
    },
    {
     "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
@@ -68422,6 +68432,42 @@
     "name": "preserva o clique na linha inteira para quem usa mouse"
    },
    {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "Pedidos - falha de carga nao vira lista vazia (QA 250)"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "mostra o erro da consulta e o botao de nova tentativa no lugar da lista"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "o botao de nova tentativa chama o refetch do hook"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "sem erro a lista renderiza normalmente"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "Pedidos - contagem e pagina refletem o total do banco (QA 250)"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "o badge para de anunciar so a fatia carregada quando ha mais paginas"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "a primeira pagina desabilita o botao Anterior"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "avancar de pagina pede a pagina 1 ao hook"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    "name": "quando tudo cabe numa pagina nao aparece paginador"
+   },
+   {
     "file": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
     "name": "exportacao de pedidos"
    },
@@ -69020,6 +69066,30 @@
    {
     "file": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
     "name": "usa email quando full_name e nulo e Usuario quando perfil nao existe"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "Solicitacoes - falha de carga nao vira lista vazia (QA 250)"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "mostra o erro da consulta no lugar do "
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "o botao de nova tentativa chama o refetch do hook"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "pede a pagina ao hook, em vez de aceitar a fatia padrao"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "Solicitacoes - paginador ligado ao total (QA 250)"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    "name": "o fonte usa totalCount no badge e no rodape, e desabilita Anterior na primeira pagina"
    },
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
@@ -111073,9 +111143,15 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 378,
+   "lines": 443,
    "exports": [
     "default Pedidos"
+   ],
+   "params": [
+    {
+     "name": "PEDIDOS_PAGE_SIZE",
+     "value": "50"
+    }
    ]
   },
   "src/pages/pedidos/PedidosKPIs.tsx": {
@@ -111170,6 +111246,22 @@
     "nomeia o bot\\u00e3o s\\u00f3-\\u00edcone da linha com o pedido que ele abre",
     "abre o detalhe do pedido ao clicar no bot\\u00e3o da linha",
     "preserva o clique na linha inteira para quem usa mouse"
+   ]
+  },
+  "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx": {
+   "path": "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+   "lines": 144,
+   "is_test": true,
+   "tests": [
+    "Pedidos - falha de carga nao vira lista vazia (QA 250)",
+    "mostra o erro da consulta e o botao de nova tentativa no lugar da lista",
+    "o botao de nova tentativa chama o refetch do hook",
+    "sem erro a lista renderiza normalmente",
+    "Pedidos - contagem e pagina refletem o total do banco (QA 250)",
+    "o badge para de anunciar so a fatia carregada quando ha mais paginas",
+    "a primeira pagina desabilita o botao Anterior",
+    "avancar de pagina pede a pagina 1 ao hook",
+    "quando tudo cabe numa pagina nao aparece paginador"
    ]
   },
   "src/pages/pedidos/__tests__/pedidosExportacao.test.ts": {
@@ -111996,9 +112088,15 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 470,
+   "lines": 535,
    "exports": [
     "default Solicitacoes"
+   ],
+   "params": [
+    {
+     "name": "SOLICITACOES_PAGE_SIZE",
+     "value": "100"
+    }
    ]
   },
   "src/pages/solicitacoes/solicitacoesHelpers.ts": {
@@ -112040,6 +112138,19 @@
    ],
    "percents": [
     "/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */"
+   ]
+  },
+  "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx": {
+   "path": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+   "lines": 137,
+   "is_test": true,
+   "tests": [
+    "Solicitacoes - falha de carga nao vira lista vazia (QA 250)",
+    "mostra o erro da consulta no lugar do ",
+    "o botao de nova tentativa chama o refetch do hook",
+    "pede a pagina ao hook, em vez de aceitar a fatia padrao",
+    "Solicitacoes - paginador ligado ao total (QA 250)",
+    "o fonte usa totalCount no badge e no rodape, e desabilita Anterior na primeira pagina"
    ]
   },
   "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts": {
@@ -120815,10 +120926,23 @@
   }
  },
  "git": {
-  "sha": "da3107b5df6eb95d8c8bed06e514bc364db93705",
+  "sha": "66b65cc18f1e14fce47bb00689c8a4feb3e5e780",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "66b65cc",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(pedidos): nao deixar falha de carga virar lista vazia (#430)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+     "src/pages/solicitacoes/Solicitacoes.tsx",
+     "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx"
+    ]
+   },
    {
     "sha": "da3107b",
     "date": "2026-11-24",
@@ -121153,25 +121277,16 @@
      "src/hooks/useDevolucoes.ts",
      "src/hooks/useFornecedores.ts"
     ]
-   },
-   {
-    "sha": "d8d2b56",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
-     "src/pages/documentos/conciliacaoFiscal.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     23
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    3
    ],
    [
     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -121206,16 +121321,24 @@
     2
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
-    2
-   ],
-   [
     "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
     2
    ],
    [
     "docs/ci/README.md",
     2
+   ],
+   [
+    "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    1
    ],
    [
     "src/pages/cotacao/Cotacao.tsx",
@@ -121235,18 +121358,6 @@
    ],
    [
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
-    1
-   ],
-   [
-    "index.html",
-    1
-   ],
-   [
-    "src/features/layout/components/GuidedBuyingAssistant.tsx",
     1
    ]
   ]

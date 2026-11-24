@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `da3107b5df6eb95d8c8bed06e514bc364db93705` (2026-11-24T12:06:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `66b65cc18f1e14fce47bb00689c8a4feb3e5e780` (2026-11-24T12:07:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (836), SQL (332), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (838), SQL (332), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1415 |
-| arquivos_codigo | 909 |
-| linhas_codigo | 183360 |
+| arquivos_total | 1417 |
+| arquivos_codigo | 911 |
+| linhas_codigo | 183771 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 330 |
 | cron_jobs | 74 |
-| testes | 272 |
+| testes | 274 |
 | workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (28), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (177), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (179), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (76)
+- docs/qa/05-PROGRESSO.md (77)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
@@ -347,9 +347,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
 - src/pages/acompanhamento/Acompanhamento.tsx (8)
+- src/pages/pedidos/Pedidos.tsx (8)
 - src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
-- src/pages/pedidos/Pedidos.tsx (7)
 - src/pages/recebimento/RecebimentoOffline.tsx (7)
 - supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/workflow-engine/index.ts (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `66b65cc` fix(pedidos): nao deixar falha de carga virar lista vazia (#430)
 - 2026-11-24 `da3107b` feat: registra no log quando o numero da solicitacao colide (#431)
 - 2026-11-24 `c3726dd` fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)
 - 2026-11-24 `0f24e15` fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `004f06d` fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)
 - 2026-11-24 `2d1e512` fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)
 - 2026-11-24 `db1bf92` chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)
-- 2026-11-24 `b996391` fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

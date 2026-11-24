@@ -6240,8 +6240,8 @@
   {
    "modulo": "pages/pedidos",
    "arquivos": 4,
-   "testes": 5,
-   "linhas": 1077,
+   "testes": 6,
+   "linhas": 1142,
    "itens_menu": [
     "Pedidos"
    ],
@@ -7329,8 +7329,8 @@
   {
    "modulo": "pages/solicitacoes",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 585,
+   "testes": 2,
+   "linhas": 650,
    "itens_menu": [
     "Solicitações"
    ],

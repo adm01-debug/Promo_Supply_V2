@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `da3107b5df` · branch `main` · 2026-11-24 15:06 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66b65cc18f` · branch `main` · 2026-11-24 15:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1790,6 +1790,8 @@ _nenhum item encontrado_
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `NON_PARENT` | `"__none__"` | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
 | `TOLERANCIA_VALOR_CONCILIACAO` | `0.01` | `src/pages/documentos/conciliacaoFiscal.ts` |
+| `PEDIDOS_PAGE_SIZE` | `50` | `src/pages/pedidos/Pedidos.tsx` |
+| `SOLICITACOES_PAGE_SIZE` | `100` | `src/pages/solicitacoes/Solicitacoes.tsx` |
 | `DIAS_DE_FOLGA_TOTAL` | `90` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `URGENCIA_SEM_PRAZO` | `0.35` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
@@ -2459,7 +2461,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3229 testes em 221 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3244 testes em 223 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2570,6 +2572,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `src/pages/cotacao/__tests__/cotacaoComparadores.test.ts` | 9 | fetchRegisteredQuotes · usa o mesmo recorte do hook: solicitacao + organizacao do usuario · sem organizacao nao consulta o banco, como o hook desabilitado · unirCotacoesPorId … |
+| `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
@@ -2604,6 +2607,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
+| `src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx` | 6 | Solicitacoes - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta no lugar do  · o botao de nova tentativa chama o refetch do hook · pede a pagina ao hook, em vez de aceitar a fatia padrao … |
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
 | `supabase/functions/process-invoice-idp/extraction.test.ts` | 6 | normaliza numeros e datas do formato brasileiro · nao inventa campo ausente e reporta no campos_ausentes · chave de acesso incompleta vira null em vez de zero-padded · identifica campos obrigatorios faltantes … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
