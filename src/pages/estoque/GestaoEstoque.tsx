@@ -30,6 +30,9 @@ const GestaoEstoque = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [movimentacaoOpen, setMovimentacaoOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<EstoqueItem | null>(null);
+  const [filtrosOpen, setFiltrosOpen] = useState(false);
+  const [filtroLocalizacao, setFiltroLocalizacao] = useState("all");
+  const [filtroSituacao, setFiltroSituacao] = useState<"todas" | "abaixo" | "ok">("todas");
   
   const [formData, setFormData] = useState({
     produto_id: "",
@@ -44,12 +47,30 @@ const GestaoEstoque = () => {
   });
 
   const filtered = useMemo(() => {
-    return estoque.filter(item => 
-      item.produto_nome?.toLowerCase().includes(search.toLowerCase()) ||
-      item.produto_codigo?.toLowerCase().includes(search.toLowerCase()) ||
-      item.localizacao.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [estoque, search]);
+    const termo = search.toLowerCase();
+    return estoque.filter(item => {
+      const casaBusca =
+        item.produto_nome?.toLowerCase().includes(termo) ||
+        item.produto_codigo?.toLowerCase().includes(termo) ||
+        item.localizacao.toLowerCase().includes(termo);
+      const casaLocalizacao = filtroLocalizacao === "all" || item.localizacao === filtroLocalizacao;
+      const abaixoDoMinimo = Number(item.quantidade_atual) <= Number(item.estoque_minimo || 0);
+      const casaSituacao = filtroSituacao === "todas" || abaixoDoMinimo === (filtroSituacao === "abaixo");
+      return casaBusca && casaLocalizacao && casaSituacao;
+    });
+  }, [estoque, search, filtroLocalizacao, filtroSituacao]);
+
+  const localizacoes = useMemo(
+    () => Array.from(new Set(estoque.map(item => item.localizacao).filter(Boolean))).sort(),
+    [estoque]
+  );
+
+  const filtrosAtivos = (filtroLocalizacao !== "all" ? 1 : 0) + (filtroSituacao !== "todas" ? 1 : 0);
+
+  const limparFiltros = () => {
+    setFiltroLocalizacao("all");
+    setFiltroSituacao("todas");
+  };
 
   const stats = useMemo(() => {
     const totalItems = filtered.length;
@@ -163,9 +184,12 @@ const GestaoEstoque = () => {
               className="pl-9 bg-muted/20 border-border/50 focus:border-primary/50 transition-all"
             />
           </div>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => setFiltrosOpen(true)}>
             <Filter className="h-4 w-4" />
             Filtros Avançados
+            {filtrosAtivos > 0 && (
+              <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">{filtrosAtivos}</Badge>
+            )}
           </Button>
         </div>
       </Card>
@@ -349,6 +373,57 @@ const GestaoEstoque = () => {
               {movimentar.isPending ? "Processando..." : "Registrar Movimentação"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal Filtros Avançados */}
+      <Dialog open={filtrosOpen} onOpenChange={setFiltrosOpen}>
+        <DialogContent className="sm:max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black uppercase tracking-widest">Filtros Avançados</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="filtro-localizacao">Localização</Label>
+              <select
+                id="filtro-localizacao"
+                className="w-full h-10 px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                value={filtroLocalizacao}
+                onChange={(e) => setFiltroLocalizacao(e.target.value)}
+              >
+                <option value="all">Todas as localizações</option>
+                {localizacoes.map(local => (
+                  <option key={local} value={local}>{local}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Situação do Saldo</p>
+              <div className="flex flex-wrap gap-2">
+                {([['todas', 'Todos'], ['abaixo', 'Abaixo do mínimo'], ['ok', 'Saldo normal']] as const).map(([key, label]) => (
+                  <Button
+                    key={key}
+                    variant={filtroSituacao === key ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFiltroSituacao(key)}
+                    className="h-9 text-[10px] font-black uppercase tracking-widest"
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            {filtrosAtivos > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={limparFiltros}
+                className="h-9 text-[10px] font-black uppercase tracking-widest w-full"
+              >
+                LIMPAR FILTROS
+              </Button>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
