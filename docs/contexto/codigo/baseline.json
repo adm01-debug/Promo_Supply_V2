@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "090a0306964304a99549e8e3800257fda854c2cc",
+  "commit": "45c9c55dd6f504d05e43241e5da28b10d30e8ca5",
   "branch": "main",
-  "data_commit": "2026-11-24T07:01:10-03:00",
+  "data_commit": "2026-11-24T07:29:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "45c9c55",
+    "data": "2026-11-24",
+    "assunto": "fix(ordem): envia endereco real da empresa no e-mail da OC (#406)"
+   },
    {
     "sha": "090a030",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "ea55bfb",
     "data": "2026-11-24",
     "assunto": "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)"
-   },
-   {
-    "sha": "77d4e5f",
-    "data": "2026-11-24",
-    "assunto": "fix: filtro \"Meus Itens\" recorta por solicitante em vez de status (etapa 108) (#376)"
    }
   ],
   "arquivos_mudados_7d": 447,
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 57
+    "mudancas": 58
    },
    {
     "pasta": "src/features/layout",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 57
+    "mudancas": 58
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -274,6 +274,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
     "mudancas": 6
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": ".github/workflows/main.yml",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
     "mudancas": 5
    }
   ],
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1397,
   "arquivos_codigo": 893,
-  "linhas_codigo": 181452,
+  "linhas_codigo": 181616,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 142,
-   "linhas": 32848
+   "linhas": 33012
   },
   "src/routes": {
    "arquivos": 1,
@@ -621,16 +621,16 @@
    "linhas": 663
   },
   {
+   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+   "linhas": 663
+  },
+  {
    "arquivo": "supabase/functions/spot-api/index.ts",
    "linhas": 643
   },
   {
    "arquivo": "src/components/ui/sidebar.tsx",
    "linhas": 638
-  },
-  {
-   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "linhas": 635
   },
   {
    "arquivo": "src/components/compras/ComparadorCotacoes.tsx",

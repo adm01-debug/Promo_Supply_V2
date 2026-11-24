@@ -4971,7 +4971,7 @@
     "GerarOrdem"
    ],
    "export_default": "GerarOrdem",
-   "linhas": 635,
+   "linhas": 663,
    "dominio": "pages/gerar-ordem",
    "hooks_locais": [
     "useAuth",
@@ -4981,7 +4981,8 @@
    ],
    "tabelas": [
     "fornecedores",
-    "solicitacoes"
+    "solicitacoes",
+    "tenants"
    ],
    "edges": [],
    "usado_por": 2,

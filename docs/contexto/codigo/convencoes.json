@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ordem): envia endereco real da empresa no e-mail da OC (#406)",
    "fix(integridade): guarda exclusao de pagamento com historico (#405)",
    "chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)",
    "fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)",
-   "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)",
-   "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)"
+   "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)"
   ]
  },
  "pr_template": null,

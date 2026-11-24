@@ -1635,11 +1635,11 @@
   {
    "arquivo": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 197,
+   "linhas": 282,
    "testa": [
     "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
    ],
-   "casos": 28
+   "casos": 38
   },
   {
    "arquivo": "src/pages/historico/__tests__/historicoColors.test.ts",

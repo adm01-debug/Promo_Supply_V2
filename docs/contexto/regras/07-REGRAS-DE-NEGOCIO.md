@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `090a030696` · branch `main` · 2026-11-24 10:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `45c9c55dd6` · branch `main` · 2026-11-24 10:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1560,7 +1560,7 @@ _nenhum item encontrado_
   ```
 - **GerarOrdem()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
-  { const { user } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get("solicitacao"); const cotacaoId = searchParams.get("cotacao"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(""); const [mensagemEmail, setMensagemEmail] = useState(""); const [assuntoEmail, setAssuntoEmail] = useSt
+  { const { user, tenantId, selectedEmpresaId } = useAuth(); const navigate = useNavigate(); const [searchParams] = useSearchParams(); const solicitacaoId = searchParams.get("solicitacao"); const cotacaoId = searchParams.get("cotacao"); const [copiado, setCopiado] = useState<string | null>(null); const [mensagemWhatsApp, setMensagemWhatsApp] = useState(""); const [mensagemEmail, setMensagemEmail] = useState(""); const [assuntoEm
   ```
 - **gerarMensagemWhatsApp()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
@@ -1568,7 +1568,7 @@ _nenhum item encontrado_
   ```
 - **gerarMensagemEmail()** — `src/pages/gerar-ordem/GerarOrdem.tsx`
   ```
-  const { assunto, corpo } = buildEmailMessage( solicitacao, ordemNumero, subtotal, total, frete, desconto, observacoes, ); setAssuntoEmail(assunto); setMensagemEmail(corpo);
+  const { assunto, corpo } = buildEmailMessage( solicitacao, ordemNumero, subtotal, total, frete, desconto, observacoes, { empresa: empresaEntrega?.nome_fantasia || empresaEntrega?.razao_social || empresaEntrega?.name || null, endereco: formatarEnderecoEntrega(empresaEntrega?.endereco_fiscal), }, ); setAssuntoEmail(assunto); setMensagemEmail(corpo);
   ```
 - **applyPeriodPreset(preset: string)** — `src/pages/historico/HistoricoCompras.tsx`
   ```
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3128 testes em 206 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3141 testes em 206 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2465,6 +2465,7 @@ _nenhum item encontrado_
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
+| `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 45 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
@@ -2479,7 +2480,6 @@ _nenhum item encontrado_
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |
 | `src/lib/__tests__/filterClearReporter.test.ts` | 32 | buildClearReport · returns empty report when no fields provided · excludes field with null value · excludes field with undefined value … |
-| `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 32 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/stores/__tests__/slaSettingsStore.test.ts` | 32 | initial state · has default warningThresholdDays of 3 · has default criticalThresholdDays of 1 · has default checkIntervalMinutes of 1 … |
 | `src/schemas/__tests__/solicitacao.schema.test.ts` | 31 | solicitacaoSchema · accepts fully valid input · applies default observacoes as empty string · applies default centroCusto as empty string … |
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |

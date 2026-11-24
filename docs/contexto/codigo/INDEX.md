@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `090a0306964304a99549e8e3800257fda854c2cc` (2026-11-24T07:01:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `45c9c55dd6f504d05e43241e5da28b10d30e8ca5` (2026-11-24T07:29:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1397 |
 | arquivos_codigo | 893 |
-| linhas_codigo | 181452 |
+| linhas_codigo | 181616 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -71,16 +71,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|---|---|---|---|---|
 | components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
 | components/admin | 0 | 0 | 9 | 4 | 1 | 6 |
-| components/compras | 0 | 0 | 105 | 83 | 9 | 58 |
+| components/compras | 0 | 0 | 105 | 83 | 9 | 59 |
 | components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
 | components/pagamentos | 0 | 0 | 9 | 12 | 1 | 10 |
 | components/security | 0 | 0 | 15 | 9 | 3 | 18 |
 | components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
 | features/auth | 0 | 0 | 7 | 3 | 1 | 4 |
-| features/layout | 0 | 0 | 32 | 80 | 9 | 54 |
+| features/layout | 0 | 0 | 32 | 80 | 9 | 55 |
 | features/solicitacoes | 0 | 0 | 7 | 11 | 1 | 13 |
 | hooks | 0 | 0 | 62 | 61 | 7 | 60 |
-| lib | 0 | 0 | 28 | 60 | 8 | 50 |
+| lib | 0 | 0 | 28 | 60 | 8 | 51 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
@@ -90,10 +90,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 8 |
-| pages/catalogo-spot | 1 | 1 | 6 | 86 | 11 | 58 |
-| pages/catalogo-xbz | 1 | 1 | 10 | 82 | 10 | 54 |
+| pages/catalogo-spot | 1 | 1 | 6 | 86 | 11 | 59 |
+| pages/catalogo-xbz | 1 | 1 | 10 | 82 | 10 | 55 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
-| pages/configuracoes | 1 | 1 | 1 | 80 | 9 | 54 |
+| pages/configuracoes | 1 | 1 | 1 | 80 | 9 | 55 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 11 |
 | pages/cotacao | 1 | 2 | 2 | 14 | 2 | 18 |
 | pages/dashboard | 3 | 2 | 2 | 29 | 3 | 27 |
@@ -102,21 +102,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/documentos | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 8 |
 | pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 15 |
-| pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 11 |
+| pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 12 |
 | pages/historico | 1 | 1 | 7 | 13 | 1 | 10 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
-| pages/licitacoes | 1 | 1 | 2 | 80 | 9 | 54 |
+| pages/licitacoes | 1 | 1 | 2 | 80 | 9 | 55 |
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 8 |
-| pages/orcamentos | 1 | 1 | 1 | 81 | 9 | 55 |
+| pages/orcamentos | 1 | 1 | 1 | 81 | 9 | 56 |
 | pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 10 |
 | pages/pedidos | 1 | 1 | 4 | 17 | 1 | 17 |
-| pages/portal-fornecedor | 0 | 1 | 2 | 81 | 9 | 55 |
-| pages/qualificacao | 1 | 1 | 1 | 81 | 9 | 58 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 81 | 9 | 56 |
+| pages/qualificacao | 1 | 1 | 1 | 81 | 9 | 59 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 6 |
 | pages/recompra | 1 | 1 | 1 | 4 | 2 | 7 |
 | pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 10 |
 | pages/relatorios | 1 | 1 | 2 | 7 | 2 | 9 |
-| pages/seguranca | 0 | 1 | 1 | 87 | 12 | 68 |
+| pages/seguranca | 0 | 1 | 1 | 87 | 12 | 69 |
 | pages/solicitacoes | 1 | 1 | 2 | 23 | 2 | 16 |
 | pages/sourcing | 1 | 4 | 4 | 8 | 1 | 16 |
 | stores | 0 | 0 | 5 | 0 | 1 | 2 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (57)
+- docs/qa/05-PROGRESSO.md (58)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
@@ -421,6 +421,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `45c9c55` fix(ordem): envia endereco real da empresa no e-mail da OC (#406)
 - 2026-11-24 `090a030` fix(integridade): guarda exclusao de pagamento com historico (#405)
 - 2026-11-24 `e14e3a5` chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)
 - 2026-11-24 `eeaf28f` fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)
@@ -435,7 +436,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `c4f8690` fix: edge de escalonamento passa a usar o status que o banco aceita (#390)
 - 2026-11-24 `66773c6` fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)
 - 2026-11-24 `b58ed9d` fix: cotacao manual grava condicao, validade e observacoes (#388)
-- 2026-11-24 `4e72f55` fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
