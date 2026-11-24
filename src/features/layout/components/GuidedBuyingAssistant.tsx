@@ -34,7 +34,7 @@ export function GuidedBuyingAssistant() {
     return (
       <Button 
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl bg-gradient-to-br from-primary to-indigo-600 hover:scale-110 transition-all z-50 group"
+        className="fixed bottom-20 md:bottom-28 right-36 md:right-6 h-14 w-14 rounded-full shadow-2xl bg-gradient-to-br from-primary to-indigo-600 hover:scale-110 transition-all z-50 group"
       >
         <Bot className="h-6 w-6 text-white group-hover:animate-bounce" />
         <span className="absolute -top-2 -right-2 bg-destructive text-white text-[10px] px-1.5 py-0.5 rounded-full border-2 border-white font-bold">IA</span>
@@ -44,8 +44,8 @@ export function GuidedBuyingAssistant() {
 
   return (
     <div className={cn(
-      "fixed bottom-6 right-6 z-50 transition-all duration-300 ease-in-out",
-      isMinimized ? "h-14 w-64" : "h-[600px] w-[400px] max-w-[90vw]"
+      "fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 transition-all duration-300 ease-in-out",
+      isMinimized ? "h-14 w-64" : "h-[min(600px,calc(100dvh-8rem))] w-[400px] max-w-[90vw]"
     )}>
       <Card className="h-full flex flex-col shadow-2xl border-2 border-primary/20 overflow-hidden">
         <CardHeader className="p-3 bg-gradient-to-r from-primary/10 to-indigo-500/10 border-b flex flex-row items-center justify-between">
