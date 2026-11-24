@@ -3,6 +3,7 @@ import { ContractSLASection } from "./contract/ContractSLASection";
 import { ContractItemsEditor } from "./contract/ContractItemsEditor";
 import { replaceContractItems } from "./contract/replaceContractItems";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -71,6 +72,25 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
   const [items, setItems] = useState<ContractItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const { data: fornecedoresAtivos = [] } = useQuery({
+    queryKey: ["contracts-fornecedores-ativos"],
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("fornecedores")
+        .select("id, razao_social, nome_fantasia")
+        .eq("status", "ativo")
+        .order("nome_fantasia", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const fornecedorAtual = fornecedoresAtivos.find(f => f.id === formData.supplier_id);
+  // Contratos antigos guardam em supplier_id um slug do nome, nao o id do
+  // cadastro. Nesses casos o vinculo e preservado como esta.
+  const fornecedorForaDoCadastro = !!formData.supplier_id && !fornecedorAtual;
 
   useEffect(() => {
     if (contract) {
@@ -178,7 +198,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
   };
 
   const handleSubmit = async () => {
-    if (!formData.title || !formData.supplier_name || !formData.start_date || !formData.end_date) {
+    if (!formData.title || !formData.supplier_id || !formData.supplier_name || !formData.start_date || !formData.end_date) {
       toast.error("Preencha todos os campos obrigatórios");
       return;
     }
@@ -186,23 +206,11 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
     setLoading(true);
 
     try {
-      // Generate a canonical slug from the supplier name. Names made up
-      // entirely of symbols/non-ASCII collapse to ''; fall back to a
-      // timestamped placeholder so the DB never receives an empty id.
-      const slugFromName = (formData.supplier_name || '')
-        .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
-      const supplierId =
-        formData.supplier_id || slugFromName || `supplier-${Date.now()}`;
-
       const contractData = {
         contract_number: formData.contract_number,
         title: formData.title,
         description: formData.description || null,
-        supplier_id: supplierId,
+        supplier_id: formData.supplier_id,
         supplier_name: formData.supplier_name,
         contract_type: formData.contract_type,
         status: formData.status,
@@ -333,13 +341,41 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="supplier_name">Fornecedor *</Label>
-              <Input
-                id="supplier_name"
-                value={formData.supplier_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, supplier_name: e.target.value }))}
-                placeholder="Nome do fornecedor"
-              />
+              <Label htmlFor="supplier_id">Fornecedor *</Label>
+              <Select
+                value={formData.supplier_id}
+                onValueChange={(value) => {
+                  const escolhido = fornecedoresAtivos.find(f => f.id === value);
+                  setFormData(prev => ({
+                    ...prev,
+                    supplier_id: value,
+                    supplier_name: escolhido
+                      ? (escolhido.nome_fantasia?.trim() || escolhido.razao_social?.trim() || escolhido.id)
+                      : prev.supplier_name,
+                  }));
+                }}
+              >
+                <SelectTrigger id="supplier_id">
+                  <SelectValue placeholder="Selecione o fornecedor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fornecedorForaDoCadastro && (
+                    <SelectItem value={formData.supplier_id}>
+                      {formData.supplier_name || "Fornecedor fora do cadastro"}
+                    </SelectItem>
+                  )}
+                  {fornecedoresAtivos.map((f) => (
+                    <SelectItem key={f.id} value={f.id}>
+                      {f.nome_fantasia?.trim() || f.razao_social?.trim() || f.id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fornecedorForaDoCadastro && (
+                <p className="text-xs text-muted-foreground">
+                  Fornecedor fora da lista de ativos; o vínculo atual será mantido.
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Tipo de Contrato</Label>
