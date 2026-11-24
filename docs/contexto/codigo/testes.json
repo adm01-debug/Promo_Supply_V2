@@ -1558,7 +1558,7 @@
   {
    "arquivo": "src/lib/__tests__/supabaseRpc.test.ts",
    "tipo": "unit",
-   "linhas": 170,
+   "linhas": 172,
    "testa": [
     "src/lib/supabaseRpc.ts"
    ],

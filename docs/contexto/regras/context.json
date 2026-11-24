@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b1db1c7edc34abade4be78f5124e4acbb126b9a4",
+  "sha": "2be0c926e61ae4f8180e7ad205e49a827a1788fd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 20:36 UTC",
+  "generated_at": "2026-11-24 21:05 UTC",
   "files_total": 1446,
   "code_files": 1273,
-  "code_lines": 213813,
+  "code_lines": 213823,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6878dfb7549fd0ac",
+ "facts_hash": "63f65f542b5365d4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34879,7 +34879,7 @@
   {
    "module": "src/components",
    "files": 284,
-   "lines": 52076,
+   "lines": 52081,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35707,7 +35707,7 @@
   {
    "module": "src/lib",
    "files": 62,
-   "lines": 7327,
+   "lines": 7332,
    "tables": [
     "profiles"
    ],
@@ -95372,7 +95372,7 @@
   },
   "src/components/compras/CostCenterPerformanceAnalysis.tsx": {
    "path": "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-   "lines": 261,
+   "lines": 266,
    "exports": [
     "const CostCenterPerformanceAnalysis"
    ],
@@ -107213,7 +107213,7 @@
   },
   "src/lib/supabaseRpc.ts": {
    "path": "src/lib/supabaseRpc.ts",
-   "lines": 213,
+   "lines": 216,
    "exports": [
     "interface BudgetAvailability",
     "interface KpiMetrics",
@@ -108196,7 +108196,7 @@
   },
   "src/lib/__tests__/supabaseRpc.test.ts": {
    "path": "src/lib/__tests__/supabaseRpc.test.ts",
-   "lines": 170,
+   "lines": 172,
    "is_test": true,
    "errors": [
     ", params);\n  });\n\n  it("
@@ -121966,10 +121966,22 @@
   }
  },
  "git": {
-  "sha": "b1db1c7edc34abade4be78f5124e4acbb126b9a4",
+  "sha": "2be0c926e61ae4f8180e7ad205e49a827a1788fd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2be0c92",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
+     "src/lib/__tests__/supabaseRpc.test.ts",
+     "src/lib/supabaseRpc.ts"
+    ]
+   },
    {
     "sha": "b1db1c7",
     "date": "2026-11-24",
@@ -122314,18 +122326,6 @@
      "src/components/compras/ComparadorCotacoes.tsx",
      "src/features/layout/components/SupplierChat.tsx"
     ]
-   },
-   {
-    "sha": "9398283",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "eslint.config.js",
-     "src/components/compras/ContractModal.tsx",
-     "src/components/compras/__tests__/contratoCamposRotulos.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122382,6 +122382,18 @@
     2
    ],
    [
+    "src/components/compras/CostCenterPerformanceAnalysis.tsx",
+    1
+   ],
+   [
+    "src/lib/__tests__/supabaseRpc.test.ts",
+    1
+   ],
+   [
+    "src/lib/supabaseRpc.ts",
+    1
+   ],
+   [
     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
     1
    ],
@@ -122395,18 +122407,6 @@
    ],
    [
     "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
-    1
-   ],
-   [
-    "src/components/accessibility/SkipLinks.tsx",
-    1
-   ],
-   [
-    "src/components/accessibility/__tests__/skipLinks.test.tsx",
-    1
-   ],
-   [
-    "src/components/mobile/BottomNavigation.tsx",
     1
    ]
   ]

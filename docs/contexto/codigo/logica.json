@@ -1183,7 +1183,7 @@
     "rpcResolveAlert"
    ],
    "export_default": null,
-   "linhas": 213,
+   "linhas": 216,
    "tabelas": [],
    "rpcs": [
     "admin_scan_runs_sla_status",

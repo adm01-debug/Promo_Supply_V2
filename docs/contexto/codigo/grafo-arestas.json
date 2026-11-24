@@ -286,6 +286,7 @@
    "src/components/ui/input.tsx",
    "src/components/ui/progress.tsx",
    "src/components/ui/table.tsx",
+   "src/features/auth/index.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/exportData.ts",
    "src/lib/utils.ts"
