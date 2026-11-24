@@ -16,6 +16,8 @@ import {
   type LegacySolicitacao,
 } from "@/types/legacyTypes";
 import { formatCurrency } from "@/lib/utils";
+import { toast } from "@/lib/feedbackToast";
+import { KANBAN_STATUS_SEM_ESCRITA } from "@/features/pedidos/statusTransitions";
 
 // ── Domain types ────────────────────────────────────────────────────────────
 export type KanbanStatus = LegacySolicitacao["status"];
@@ -80,6 +82,11 @@ interface KanbanBoardProps {
   pedidos: KanbanPedido[];
   onViewDetails: (pedido: KanbanPedido) => void;
   onStatusChange?: (pedidoId: string, novoStatus: KanbanStatus) => void;
+  /**
+   * Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada.
+   * Por padrão, a coluna de entrega — quem entrega é a tela de Recebimento.
+   */
+  statusesSomenteLeitura?: readonly string[];
 }
 
 const colunas: readonly KanbanColumn[] = [
@@ -109,7 +116,12 @@ const colunas: readonly KanbanColumn[] = [
   },
 ] as const;
 
-export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBoardProps) => {
+export const KanbanBoard = ({
+  pedidos,
+  onViewDetails,
+  onStatusChange,
+  statusesSomenteLeitura = KANBAN_STATUS_SEM_ESCRITA,
+}: KanbanBoardProps) => {
   const [draggedPedido, setDraggedPedido] = useState<KanbanPedido | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -136,8 +148,17 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
     setDragOverColumn(null);
   };
 
+  const colunaSomenteLeitura = (coluna: KanbanColumn) =>
+    (statusesSomenteLeitura ?? []).some((status) => (coluna.statuses as readonly string[]).includes(status));
+
   const handleDrop = (e: React.DragEvent, coluna: KanbanColumn) => {
     e.preventDefault();
+    if (draggedPedido && colunaSomenteLeitura(coluna)) {
+      toast.error('A entrega é registrada na tela de Recebimento, com a conferência da mercadoria.');
+      setDraggedPedido(null);
+      setDragOverColumn(null);
+      return;
+    }
     if (draggedPedido && onStatusChange) {
       const novoStatus = coluna.statuses[0];
       const currentStatus = draggedPedido.status;
@@ -167,11 +188,13 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {colunas.map((coluna) => {
         const pedidosColuna = getPedidosByColumn(coluna);
-        const isDragOver = dragOverColumn === coluna.id;
+        const somenteLeitura = colunaSomenteLeitura(coluna);
+        const isDragOver = dragOverColumn === coluna.id && !somenteLeitura;
         
         return (
           <div
             key={coluna.id}
+            data-testid={`coluna-${coluna.id}`}
             className={`flex flex-col rounded-lg border transition-all ${
               isDragOver 
                 ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
@@ -186,6 +209,9 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
               <div className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${coluna.color}`} />
                 <span className="font-medium text-foreground text-sm">{coluna.title}</span>
+                {somenteLeitura && (
+                  <span className="text-[10px] uppercase tracking-wide text-muted-foreground">via Recebimento</span>
+                )}
                 <Badge variant="secondary" className="ml-auto text-xs">
                   {pedidosColuna.length}
                 </Badge>

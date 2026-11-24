@@ -8,6 +8,9 @@ import { parseISO } from "date-fns/parseISO";
 import { AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
 import { EtapaPipeline } from "@/components/compras/PedidoTimeline";
 import { TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";
+import {
+  transicaoDeStatusPermitida, KANBAN_TO_DB_STATUS, KANBAN_STATUS_SEM_ESCRITA,
+} from "@/features/pedidos/statusTransitions";
 
 export type SLAStatus = 'atrasado' | 'critico' | 'atencao' | 'no_prazo' | 'entregue';
 
@@ -101,6 +104,45 @@ export const mapPedidoStatus = (status: string): string => {
     'em_transito': 'EM_TRANSITO', 'entregue': 'ENTREGUE', 'cancelado': 'CANCELADO',
   };
   return map[status] || status.toUpperCase();
+};
+
+export type AvaliacaoStatusKanban =
+  | { permitido: true; dbStatus: string }
+  | { permitido: false; motivo: 'coluna-somente-leitura' | 'status-desconhecido' | 'transicao-invalida'; mensagem: string };
+
+/** Decide se o arraste de um card no Kanban pode ser gravado em `pedidos.status`. */
+export const avaliarAlteracaoStatusKanban = (
+  statusAtualDB: string | null | undefined,
+  novoStatusKanban: string,
+): AvaliacaoStatusKanban => {
+  if (KANBAN_STATUS_SEM_ESCRITA.includes(novoStatusKanban)) {
+    return {
+      permitido: false,
+      motivo: 'coluna-somente-leitura',
+      mensagem: 'A entrega é registrada na tela de Recebimento, com a conferência da mercadoria.',
+    };
+  }
+
+  const dbStatus = KANBAN_TO_DB_STATUS[novoStatusKanban];
+  if (!dbStatus) {
+    return {
+      permitido: false,
+      motivo: 'status-desconhecido',
+      mensagem: `Status inválido para o Kanban: ${novoStatusKanban}`,
+    };
+  }
+
+  if (!transicaoDeStatusPermitida(statusAtualDB, dbStatus)) {
+    return {
+      permitido: false,
+      motivo: 'transicao-invalida',
+      mensagem:
+        `Pedido em "${getStatusLabel(mapPedidoStatus(statusAtualDB ?? ''))}" não pode ir direto para ` +
+        `"${getStatusLabel(novoStatusKanban)}".`,
+    };
+  }
+
+  return { permitido: true, dbStatus };
 };
 
 export const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
