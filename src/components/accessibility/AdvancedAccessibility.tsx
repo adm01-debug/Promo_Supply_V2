@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { MotionConfig } from 'framer-motion';
 import { 
   Eye, 
   EyeOff, 
@@ -30,6 +30,7 @@ import {
   getInitialAccessibilitySettings,
 } from './accessibilityHelpers';
 import { AccessibilityStyles } from './AccessibilityStyles';
+import { LiveRegion } from './VisuallyHidden';
 
 interface AccessibilityContextValue {
   settings: AccessibilitySettings;
@@ -54,6 +55,8 @@ interface AccessibilityProviderProps {
 
 export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
+  const [announcement, setAnnouncement] = useState('');
+  const [announcementSeq, setAnnouncementSeq] = useState(0);
 
   useEffect(() => {
     localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
@@ -82,22 +85,17 @@ export const AccessibilityProvider = React.forwardRef<HTMLDivElement, Accessibil
   }, []);
 
   const announceToScreenReader = useCallback((message: string) => {
-    const announcement = document.createElement('div');
-    announcement.setAttribute('role', 'status');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
+    setAnnouncement(message);
+    // remontar a region a cada anuncio faz a mesma mensagem repetida ser lida de novo
+    setAnnouncementSeq((seq) => seq + 1);
   }, []);
 
   return (
     <AccessibilityContext.Provider value={{ settings, updateSettings, resetSettings, announceToScreenReader }}>
-      {children}
+      <MotionConfig reducedMotion={settings.reducedMotion ? 'always' : 'user'}>
+        {children}
+      </MotionConfig>
+      <LiveRegion key={announcementSeq}>{announcement}</LiveRegion>
       <AccessibilityStyles settings={settings} />
     </AccessibilityContext.Provider>
   );
@@ -335,84 +333,5 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
     <Switch checked={checked} onCheckedChange={onChange} />
   </div>
 );
-
-// ============================================
-// Skip to Content Link
-// ============================================
-
-export const SkipToContent: React.FC<{ targetId?: string }> = ({ 
-  targetId = 'main-content' 
-}) => (
-  <a
-    href={`#${targetId}`}
-    className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:shadow-lg"
-  >
-    Pular para o conteúdo principal
-  </a>
-);
-
-// ============================================
-// Live Region for announcements
-// ============================================
-
-interface LiveRegionProps {
-  message: string;
-  politeness?: 'polite' | 'assertive';
-}
-
-export const LiveRegion: React.FC<LiveRegionProps> = ({ 
-  message, 
-  politeness = 'polite' 
-}) => (
-  <div
-    role="status"
-    aria-live={politeness}
-    aria-atomic="true"
-    className="sr-only"
-  >
-    {message}
-  </div>
-);
-
-// ============================================
-// Focus Trap for modals
-// ============================================
-
-export const useFocusTrap = (active: boolean, containerRef: React.RefObject<HTMLElement>) => {
-  useEffect(() => {
-    if (!active || !containerRef.current) return;
-
-    const container = containerRef.current;
-    const focusableElements = container.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement?.focus();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    };
-
-    container.addEventListener('keydown', handleKeyDown);
-    firstElement?.focus();
-
-    return () => {
-      container.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [active, containerRef]);
-};
 
 export default AccessibilityProvider;
