@@ -1483,11 +1483,11 @@
   {
    "arquivo": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 237,
+   "linhas": 280,
    "testa": [
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts"
    ],
-   "casos": 28
+   "casos": 33
   },
   {
    "arquivo": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",

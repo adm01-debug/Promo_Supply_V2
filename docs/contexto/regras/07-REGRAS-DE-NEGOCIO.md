@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5c29b8cdaa` · branch `main` · 2026-11-24 14:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fa27d6fb9d` · branch `main` · 2026-11-24 14:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1519,7 +1519,7 @@ _nenhum item encontrado_
   ```
   if (statusPedido === 'ENTREGUE') { return { status: 'entregue', diasRestantes: 0, label: 'Entregue', color: 'text-success', bgColor: 'bg-success/10', icon: CheckCircle2 }; } const prazo = parseISO(prazoEntrega); const hoje = new Date(); const diasRestantes = differenceInDays(prazo, hoje); const horasRestantes = differenceInHours(prazo, hoje); if (isPast(prazo) && !isToday(prazo)) { return { status: 'atrasado', diasRestantes, label: `${Math.abs(diasRestantes)} dia${Math.abs(diasRestantes) !== 1 ? …
   ```
-- **gerarEtapasPipeline(status: string)** — `src/pages/acompanhamento/AcompanhamentoHelpers.ts`
+- **gerarEtapasPipeline(status: string, marcos: MarcosDoPipeline = {})** — `src/pages/acompanhamento/AcompanhamentoHelpers.ts`
   ```
   const todasEtapas = [ { id: 'solicitacao', nome: 'Solicitação' }, { id: 'cotacao', nome: 'Cotação' }, { id: 'pedido', nome: 'Pedido' }, { id: 'pagamento', nome: 'Pagamento' }, { id: 'transito', nome: 'Em Trânsito' }, { id: 'entregue', nome: 'Entregue' }, ]; const statusOrdem: Record<string, number> = { AGUARDANDO_COTACAO: 0, EM_COTACAO: 1, FORNECEDOR_SELECIONADO: 2, PEDIDO_GERADO: 2, AGUARDANDO_PAGAMENTO: 3, PAGO: 4, EM_TRANSITO: 4, ENTREGUE: 5, }; const etapaAtual = statusOrdem[status] ?? 0; re …
   ```
@@ -2458,7 +2458,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3208 testes em 219 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3213 testes em 219 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2475,13 +2475,13 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
+| `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 39 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
 | `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 38 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 37 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
 | `src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts` | 36 | applyAdvancedFilters — no filters · returns all items when all filters are default · returns empty array when input is empty · applyAdvancedFilters — search filter … |
 | `src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts` | 36 | fornecedorHelpers · adaptToLegacy · maps id correctly · uses nome_fantasia when present … |
-| `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 34 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
 | `src/pages/compliance/__tests__/complianceHelpers.test.ts` | 33 | actionTypeLabels · has entries for warning, standard_fine, double_fine, temp_block, permanent_block · each entry has label, color, and icon · warning label is  … |
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5c29b8cdaa0eb04167403735affca9faf7655301` (2026-11-24T11:14:25-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa27d6fb9d4f5348b4e6115de7ce4bf0cee7834d` (2026-11-24T11:26:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1411 |
 | arquivos_codigo | 906 |
-| linhas_codigo | 182908 |
+| linhas_codigo | 182987 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,15 +338,15 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (73)
+- docs/qa/05-PROGRESSO.md (75)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
+- src/pages/acompanhamento/Acompanhamento.tsx (9)
 - bun.lock (8)
 - docs/pendencias/_ordem.md (8)
 - package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
-- src/pages/acompanhamento/Acompanhamento.tsx (8)
 - src/integrations/supabase/types.ts (7)
 - src/pages/pedidos/Pedidos.tsx (7)
 - src/pages/recebimento/RecebimentoOffline.tsx (7)
@@ -422,6 +422,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `fa27d6f` fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)
+- 2026-11-24 `00e99d9` fix(mobile): liga a area segura do iOS com viewport-fit=cover (#425)
 - 2026-11-24 `5c29b8c` fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)
 - 2026-11-24 `3edfbd2` fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)
 - 2026-11-24 `d2d869a` fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)
@@ -435,8 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `69fe938` fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)
 - 2026-11-24 `66c9eb7` chore(lint): liga o gate de acessibilidade no eslint (#413)
 - 2026-11-24 `ea97162` fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)
-- 2026-11-24 `cd7093a` fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)
-- 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

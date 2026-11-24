@@ -4151,7 +4151,7 @@
     "Acompanhamento"
    ],
    "export_default": "Acompanhamento",
-   "linhas": 676,
+   "linhas": 679,
    "dominio": "pages/acompanhamento",
    "hooks_locais": [
     "useAccountFilters",
