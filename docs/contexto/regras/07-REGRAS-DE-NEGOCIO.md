@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d93a2dfb51` · branch `main` · 2026-11-24 17:07 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4186556949` · branch `main` · 2026-11-24 17:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1850,7 +1850,6 @@ _nenhum item encontrado_
 |---|---|
 | `timeout: 120_000,` | `playwright.config.ts` |
 | `maxAge: 1000 * 60 * 60 * 24, // 24 hours` | `src/App.tsx` |
-| `setTimeout(() => { document.body.removeChild(announcement); }, 1000);` | `src/components/accessibility/AdvancedAccessibility.tsx` |
 | `const STALE_MS = 7 * 24 * 60 * 60 * 1000;` | `src/components/admin/DependencyHealthBadge.tsx` |
 | `6 * 60 * 60 * 1000; // 6 hours (7d)` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
 | `timeFilter === "1h" ? 5 * 60 * 1000 : // 5 min` | `src/components/admin/telemetry/TelemetryCharts.tsx` |
@@ -2456,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3348 testes em 236 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3359 testes em 237 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2558,6 +2557,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
+| `src/components/accessibility/__tests__/reducaoMovimento.test.tsx` | 11 | o interruptor Reduzir movimento chega no framer-motion · com o app recem-aberto o framer-motion usa o padrao (sem forcar reducao) · ligar o switch no painel muda o app inteiro na hora, sem recarregar · desligar o switch devolve a animacao do sistema … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/components/accessibility/__tests__/painelAcessibilidade.test.tsx` | 10 | o corpo do painel de acessibilidade funciona fora do Sheet · mostra os controles e o botao de restaurar padroes · o switch de fonte para dislexia muda o documento pelo provider · restaurar padroes desliga o que foi ligado no documento … |
 | `src/components/compras/approval/__tests__/alcadaListasReais.test.tsx` | 10 | ApprovalRuleModal usa pessoas e categorias reais · oferece profiles.user_id e nomes do banco, sem id ficticio · grava o user_id escolhido no aprovador da regra · sem pessoas visiveis avisa em vez de mostrar lista ficticia … |

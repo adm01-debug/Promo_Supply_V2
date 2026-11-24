@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d93a2dfb51a157694e8f8d01e2096478efd47982",
+  "commit": "418655694950963ccec582d1cae827efeeaf5ec7",
   "branch": "main",
-  "data_commit": "2026-11-24T14:06:16-03:00",
+  "data_commit": "2026-11-24T14:14:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "4186556",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)"
+   },
    {
     "sha": "d93a2df",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "3edfbd2",
     "data": "2026-11-24",
     "assunto": "fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)"
-   },
-   {
-    "sha": "d2d869a",
-    "data": "2026-11-24",
-    "assunto": "fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)"
    }
   ],
-  "arquivos_mudados_7d": 487,
+  "arquivos_mudados_7d": 488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 92
+    "mudancas": 93
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 92
+    "mudancas": 93
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -258,10 +258,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "supabase/functions/workflow-engine/index.ts",
-    "mudancas": 7
-   },
-   {
     "arquivo": "supabase/functions/xbz-proxy/index.ts",
     "mudancas": 7
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": "supabase/functions/check-sla-alerts/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/workflow-engine/index.ts",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1441,
-  "arquivos_codigo": 926,
-  "linhas_codigo": 185701,
+  "arquivos_total": 1442,
+  "arquivos_codigo": 927,
+  "linhas_codigo": 185789,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 335,
   "cron_jobs": 74,
-  "testes": 287,
+  "testes": 288,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 90
   },
   "src/components": {
-   "arquivos": 283,
-   "linhas": 51988
+   "arquivos": 284,
+   "linhas": 52076
   },
   "src/features": {
    "arquivos": 88,
@@ -780,7 +780,6 @@
    "COLORS",
    "Confetti",
    "DashboardSkeleton",
-   "LiveRegion",
    "PageHeaderQuickActions",
    "PageHeaderStats",
    "PageHero",

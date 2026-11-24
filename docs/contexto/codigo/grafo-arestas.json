@@ -55,6 +55,7 @@
   ],
   "src/components/accessibility/AdvancedAccessibility.tsx": [
    "src/components/accessibility/AccessibilityStyles.tsx",
+   "src/components/accessibility/VisuallyHidden.tsx",
    "src/components/accessibility/accessibilityHelpers.ts",
    "src/components/ui/button.tsx",
    "src/components/ui/sheet.tsx",

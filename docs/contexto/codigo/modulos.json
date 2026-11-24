@@ -187,8 +187,8 @@
   {
    "modulo": "components/accessibility",
    "arquivos": 5,
-   "testes": 3,
-   "linhas": 798,
+   "testes": 4,
+   "linhas": 717,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -197,8 +197,7 @@
     "useAccessibility"
    ],
    "hooks_definidos": [
-    "useAccessibility",
-    "useFocusTrap"
+    "useAccessibility"
    ],
    "edges": [],
    "tabelas": [],

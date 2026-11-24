@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d93a2dfb51a157694e8f8d01e2096478efd47982",
+  "sha": "418655694950963ccec582d1cae827efeeaf5ec7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 17:07 UTC",
-  "files_total": 1442,
-  "code_files": 1269,
-  "code_lines": 213447,
+  "generated_at": "2026-11-24 17:14 UTC",
+  "files_total": 1443,
+  "code_files": 1270,
+  "code_lines": 213535,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d3d9aac9d1adc7a1",
+ "facts_hash": "c613b562b9f1cf6b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 442,
-   ".tsx": 411,
+   ".tsx": 412,
    ".sql": 341,
    ".mjs": 67,
    ".py": 5,
@@ -33792,7 +33792,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 319,
+  "components_count": 320,
   "hooks": [
    {
     "name": "useContacts",
@@ -33800,10 +33800,6 @@
    },
    {
     "name": "useAccessibility",
-    "file": "src/components/accessibility/AdvancedAccessibility.tsx"
-   },
-   {
-    "name": "useFocusTrap",
     "file": "src/components/accessibility/AdvancedAccessibility.tsx"
    },
    {
@@ -34850,8 +34846,8 @@
   },
   {
    "module": "src/components",
-   "files": 283,
-   "lines": 51988,
+   "files": 284,
+   "lines": 52076,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34887,7 +34883,7 @@
    "exports": [
     "PrefetchLink.tsx: PrefetchLink",
     "AccessibilityStyles.tsx: AccessibilityStyles",
-    "AdvancedAccessibility.tsx: useAccessibility, AccessibilityProvider, AccessibilityPanelContent, AccessibilityPanel, SkipToContent, LiveRegion",
+    "AdvancedAccessibility.tsx: useAccessibility, AccessibilityProvider, AccessibilityPanelContent, AccessibilityPanel",
     "SkipLinks.tsx: SkipLinks",
     "VisuallyHidden.tsx: VisuallyHidden, LiveRegion",
     "accessibilityHelpers.ts: AccessibilitySettings, defaultSettings, ACCESSIBILITY_STORAGE_KEY, sanitizeAccessibilitySettings, getInitialAccessibilitySettings",
@@ -34984,6 +34980,7 @@
     "src/components/accessibility/accessibilityHelpers.ts",
     "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
     "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
     "src/components/accessibility/__tests__/skipLinks.test.tsx",
     "src/components/admin/DateFnsUsagePanel.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -35054,8 +35051,7 @@
     "src/components/compras/SLADistributionChart.tsx",
     "src/components/compras/SavingsGoalPanel.tsx",
     "src/components/compras/SolicitacaoCard.tsx",
-    "src/components/compras/SolicitacaoKanban.tsx",
-    "src/components/compras/SourcingHistoryConsole.tsx"
+    "src/components/compras/SolicitacaoKanban.tsx"
    ]
   },
   {
@@ -57760,10 +57756,6 @@
     "line": "maxAge: 1000 * 60 * 60 * 24, // 24 hours"
    },
    {
-    "file": "src/components/accessibility/AdvancedAccessibility.tsx",
-    "line": "setTimeout(() => { document.body.removeChild(announcement); }, 1000);"
-   },
-   {
     "file": "src/components/admin/DependencyHealthBadge.tsx",
     "line": "const STALE_MS = 7 * 24 * 60 * 60 * 1000;"
    },
@@ -59214,6 +59206,50 @@
    {
     "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
     "name": "a rota de login tem landmark principal alcancavel pelo teclado"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "o interruptor Reduzir movimento chega no framer-motion"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "com o app recem-aberto o framer-motion usa o padrao (sem forcar reducao)"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "ligar o switch no painel muda o app inteiro na hora, sem recarregar"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "desligar o switch devolve a animacao do sistema"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "o anuncio para leitor de tela usa uma unica region viva"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "a mensagem chega na region status montada pelo provider"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "dois anuncios seguidos nao empilham regions no body"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "o arquivo de acessibilidade nao guarda mais codigo morto"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "o provider entrega o MotionConfig com a preferencia do usuario"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "SkipToContent e useFocusTrap sairam do src inteiro"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    "name": "LiveRegion vem de um unico lugar em vez de duas implementacoes iguais"
    },
    {
     "file": "src/components/accessibility/__tests__/skipLinks.test.tsx",
@@ -94377,25 +94413,18 @@
   },
   "src/components/accessibility/AdvancedAccessibility.tsx": {
    "path": "src/components/accessibility/AdvancedAccessibility.tsx",
-   "lines": 419,
+   "lines": 338,
    "exports": [
     "const useAccessibility",
     "const AccessibilityProvider",
     "const AccessibilityPanelContent",
-    "const AccessibilityPanel",
-    "const SkipToContent",
-    "const LiveRegion",
-    "const useFocusTrap"
+    "const AccessibilityPanel"
    ],
    "errors": [
     "useAccessibility must be used within AccessibilityProvider"
    ],
    "hooks": [
-    "useAccessibility",
-    "useFocusTrap"
-   ],
-   "temporal": [
-    "setTimeout(() => { document.body.removeChild(announcement); }, 1000);"
+    "useAccessibility"
    ]
   },
   "src/components/accessibility/SkipLinks.tsx": {
@@ -94519,6 +94548,27 @@
     "App.tsx nao embrulha as rotas em main nem duplica o id main-content",
     "o id main-content existe so nos landmarks de rota, MainLayout e Auth",
     "a rota de login tem landmark principal alcancavel pelo teclado"
+   ]
+  },
+  "src/components/accessibility/__tests__/reducaoMovimento.test.tsx": {
+   "path": "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+   "lines": 169,
+   "is_test": true,
+   "errors": [
+    "switch nao encontrado para ${rotulo}"
+   ],
+   "tests": [
+    "o interruptor Reduzir movimento chega no framer-motion",
+    "com o app recem-aberto o framer-motion usa o padrao (sem forcar reducao)",
+    "ligar o switch no painel muda o app inteiro na hora, sem recarregar",
+    "desligar o switch devolve a animacao do sistema",
+    "o anuncio para leitor de tela usa uma unica region viva",
+    "a mensagem chega na region status montada pelo provider",
+    "dois anuncios seguidos nao empilham regions no body",
+    "o arquivo de acessibilidade nao guarda mais codigo morto",
+    "o provider entrega o MotionConfig com a preferencia do usuario",
+    "SkipToContent e useFocusTrap sairam do src inteiro",
+    "LiveRegion vem de um unico lugar em vez de duas implementacoes iguais"
    ]
   },
   "src/components/accessibility/__tests__/skipLinks.test.tsx": {
@@ -121787,10 +121837,21 @@
   }
  },
  "git": {
-  "sha": "d93a2dfb51a157694e8f8d01e2096478efd47982",
+  "sha": "418655694950963ccec582d1cae827efeeaf5ec7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4186556",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/accessibility/AdvancedAccessibility.tsx",
+     "src/components/accessibility/__tests__/reducaoMovimento.test.tsx"
+    ]
+   },
    {
     "sha": "d93a2df",
     "date": "2026-11-24",
@@ -122138,16 +122199,6 @@
      "src/components/compras/__tests__/formulariosRotulos.test.tsx",
      "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx"
     ]
-   },
-   {
-    "sha": "db1bf92",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "eslint.config.js"
-    ]
    }
   ],
   "hot_files": [
@@ -122162,6 +122213,10 @@
    [
     "supabase/functions/receive-os-sync/create-solicitacao.ts",
     3
+   ],
+   [
+    "src/components/accessibility/AdvancedAccessibility.tsx",
+    2
    ],
    [
     "src/App.tsx",
@@ -122196,8 +122251,8 @@
     2
    ],
    [
-    "eslint.config.js",
-    2
+    "src/components/accessibility/__tests__/reducaoMovimento.test.tsx",
+    1
    ],
    [
     "src/components/accessibility/SkipLinks.tsx",
@@ -122213,10 +122268,6 @@
    ],
    [
     "src/features/layout/components/MainLayout.tsx",
-    1
-   ],
-   [
-    "src/components/accessibility/AdvancedAccessibility.tsx",
     1
    ],
    [

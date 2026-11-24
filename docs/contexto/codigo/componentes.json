@@ -21,10 +21,6 @@
    "src/components/ui/skeletons/LayoutSkeletons.tsx",
    "src/pages/buyer/buyerDashboardHelpers.tsx"
   ],
-  "LiveRegion": [
-   "src/components/accessibility/AdvancedAccessibility.tsx",
-   "src/components/accessibility/VisuallyHidden.tsx"
-  ],
   "PageHeaderQuickActions": [
    "src/components/ui/page-header-extras.tsx",
    "src/components/ui/page-header.tsx"
@@ -84,12 +80,10 @@
    "exports": [
     "AccessibilityPanel",
     "AccessibilityPanelContent",
-    "AccessibilityProvider",
-    "LiveRegion",
-    "SkipToContent"
+    "AccessibilityProvider"
    ],
    "export_default": "AccessibilityProvider",
-   "linhas": 419,
+   "linhas": 338,
    "dominio": "components/accessibility",
    "hooks_locais": [
     "useAccessibility"
@@ -125,7 +119,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 2,
    "orfao": false
   },
   {

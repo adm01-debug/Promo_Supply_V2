@@ -6,10 +6,9 @@
   {
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
    "hooks_exportados": [
-    "useAccessibility",
-    "useFocusTrap"
+    "useAccessibility"
    ],
-   "linhas": 419,
+   "linhas": 338,
    "dominio": "components/accessibility",
    "tabelas": [],
    "rpcs": [],
@@ -26,7 +25,7 @@
     "src/App.tsx",
     "src/features/layout/components/HeaderActions.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
