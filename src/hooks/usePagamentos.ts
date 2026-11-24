@@ -91,6 +91,27 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   return { data: (data as Pagamento[]) || [], totalCount: count || 0 };
 }
 
+const MOTIVO_HISTORICO_PAGAMENTO =
+  'Pagamento com histórico de alteração não pode ser excluído: a trilha de auditoria do pagamento seria apagada junto.';
+
+/**
+ * payment_history.pagamento_id esta em ON DELETE CASCADE: o DELETE do pagamento
+ * apagava quem alterou, de qual status para qual e com que valor. A exclusao so
+ * passa quando o pagamento nao tem nenhuma linha de historico.
+ */
+async function pagamentosComHistorico(ids: string[]): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('payment_history')
+    .select('pagamento_id')
+    .in('pagamento_id', ids);
+  if (error) throw error;
+  return new Set(
+    ((data ?? []) as Array<{ pagamento_id: string | null }>)
+      .map((linha) => linha.pagamento_id)
+      .filter((id): id is string => Boolean(id)),
+  );
+}
+
 export function usePagamentos(filters?: PagamentoFilters) {
   const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
@@ -246,6 +267,18 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }, [user, invalidate, pagamentos]);
 
   const deletePagamento = useCallback(async (id: string) => {
+    let comHistorico: Set<string>;
+    try {
+      comHistorico = await pagamentosComHistorico([id]);
+    } catch {
+      toast.error('Não foi possível conferir o histórico do pagamento. Exclusão cancelada.');
+      return false;
+    }
+    if (comHistorico.has(id)) {
+      logger.warn('Exclusao de pagamento bloqueada por historico', { id });
+      toast.error(MOTIVO_HISTORICO_PAGAMENTO);
+      return false;
+    }
     try {
       logger.info('Excluindo registro de pagamento', { id });
       const { error } = await supabase.from('pagamentos').delete().eq('id', id);
@@ -266,11 +299,27 @@ export function usePagamentos(filters?: PagamentoFilters) {
   }, [invalidate]);
 
   const bulkDelete = useCallback(async (ids: string[]) => {
+    let comHistorico: Set<string>;
     try {
-      const { error } = await supabase.from('pagamentos').delete().in('id', ids);
+      comHistorico = await pagamentosComHistorico(ids);
+    } catch {
+      toast.error('Não foi possível conferir o histórico dos pagamentos. Exclusão cancelada.');
+      return false;
+    }
+    const liberados = ids.filter((id) => !comHistorico.has(id));
+    if (liberados.length === 0) {
+      toast.error(MOTIVO_HISTORICO_PAGAMENTO);
+      return false;
+    }
+    try {
+      const { error } = await supabase.from('pagamentos').delete().in('id', liberados);
       if (error) throw error;
-      toast.success(`${ids.length} pagamento(s) excluído(s)!`);
       invalidate();
+      if (liberados.length < ids.length) {
+        toast.warning(`${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO}`);
+        return false;
+      }
+      toast.success(`${liberados.length} pagamento(s) excluído(s)!`);
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
