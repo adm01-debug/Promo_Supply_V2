@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d32b847eee` · branch `main` · 2026-11-24 01:43 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fb36e1017a` · branch `main` · 2026-11-24 02:00 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2396,7 +2396,7 @@ _nenhum item encontrado_
 | Sem dados | `src/pages/admin/AlertDetail.tsx` |
 | Email inválido | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
 | Falha: ${(e as Error).message} | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +241 linhas — lista completa em `context.json` | |
+| … +239 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2415,7 +2415,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2842 testes em 164 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2844 testes em 165 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2582,6 +2582,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/_shared/validation.log_body.test.ts` | 2 | validateBody: corpo invalido nao vaza os valores para o log · validateBody: JSON malformado loga a causa e mantem a mensagem |
+| `supabase/functions/punchout-setup/seguranca.test.ts` | 2 | punchout-setup autentica antes de consultar o cache de idempotencia · punchout-setup escopa a chave de idempotencia por usuario |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)

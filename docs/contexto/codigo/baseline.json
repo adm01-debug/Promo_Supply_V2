@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
+  "commit": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
   "branch": "main",
-  "data_commit": "2026-11-23T22:40:10-03:00",
+  "data_commit": "2026-11-23T23:00:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "fb36e10",
+    "data": "2026-11-23",
+    "assunto": "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)"
+   },
    {
     "sha": "d32b847",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "a8582d4",
     "data": "2026-11-23",
     "assunto": "fix(auth): preserva a rota e avisa quando a sessao expira (#329)"
-   },
-   {
-    "sha": "4358c8c",
-    "data": "2026-11-23",
-    "assunto": "chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)"
    }
   ],
-  "arquivos_mudados_7d": 367,
+  "arquivos_mudados_7d": 368,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -184,12 +184,12 @@
     "mudancas": 17
    },
    {
-    "pasta": "src/components/security",
+    "pasta": "docs/qa/05-PROGRESSO.md",
     "mudancas": 17
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 16
+    "pasta": "src/components/security",
+    "mudancas": 17
    },
    {
     "pasta": "src/components/pagamentos",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 16
+    "mudancas": 17
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1345,
-  "arquivos_codigo": 842,
-  "linhas_codigo": 174209,
+  "arquivos_total": 1346,
+  "arquivos_codigo": 843,
+  "linhas_codigo": 174283,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 215,
+  "testes": 216,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -487,8 +487,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 112,
-   "linhas": 18679
+   "arquivos": 113,
+   "linhas": 18753
   },
   "tailwind.config.ts": {
    "arquivos": 1,

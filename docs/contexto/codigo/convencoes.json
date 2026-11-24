@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (125)",
    "outro (43)",
-   "co-localizado (*.test) (37)"
+   "co-localizado (*.test) (38)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)",
    "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)",
    "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)",
    "test(palette): trava atalhos e badges do Command Palette no registry real (#353)",
-   "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)",
-   "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)"
+   "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)"
   ]
  },
  "pr_template": null,

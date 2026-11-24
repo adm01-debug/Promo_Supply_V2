@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
+  "sha": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 01:43 UTC",
-  "files_total": 1346,
-  "code_files": 1175,
-  "code_lines": 201393,
+  "generated_at": "2026-11-24 02:00 UTC",
+  "files_total": 1347,
+  "code_files": 1176,
+  "code_lines": 201467,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c19cc67771d01ce0",
+ "facts_hash": "6e7c9d632084cd69",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 408,
+   ".ts": 409,
    ".tsx": 361,
    ".sql": 331,
    ".mjs": 67,
@@ -32306,10 +32306,7 @@
     "external": [],
     "invokes": [],
     "doc": "",
-    "errors": [
-     "Catalog not found",
-     "Unauthorized"
-    ],
+    "errors": [],
     "side_effects": [],
     "webhook_events": [],
     "idempotency": true
@@ -36026,8 +36023,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 112,
-   "lines": 18679,
+   "files": 113,
+   "lines": 18753,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37741,6 +37738,9 @@
     ],
     "update": [
      "src/features/auth/hooks/useAuth.tsx"
+    ],
+    "ref": [
+     "supabase/functions/punchout-setup/seguranca.test.ts"
     ]
    },
    "user_tour_preferences": {
@@ -42083,14 +42083,6 @@
    {
     "file": "supabase/functions/punchout-receive/solicitation.ts",
     "msg": "PunchOut cart has no items"
-   },
-   {
-    "file": "supabase/functions/punchout-setup/index.ts",
-    "msg": "Catalog not found"
-   },
-   {
-    "file": "supabase/functions/punchout-setup/index.ts",
-    "msg": "Unauthorized"
    },
    {
     "file": "supabase/functions/receive-os-sync/index.ts",
@@ -69238,6 +69230,14 @@
    {
     "file": "supabase/functions/punchout-receive/solicitation.test.ts",
     "name": "título longo é truncado para caber na coluna"
+   },
+   {
+    "file": "supabase/functions/punchout-setup/seguranca.test.ts",
+    "name": "punchout-setup autentica antes de consultar o cache de idempotencia"
+   },
+   {
+    "file": "supabase/functions/punchout-setup/seguranca.test.ts",
+    "name": "punchout-setup escopa a chave de idempotencia por usuario"
    },
    {
     "file": "supabase/functions/receive-os-sync/mapping.test.ts",
@@ -113767,7 +113767,7 @@
   },
   "supabase/functions/punchout-setup/index.ts": {
    "path": "supabase/functions/punchout-setup/index.ts",
-   "lines": 109,
+   "lines": 144,
    "tables": [
     {
      "table": "punchout_catalogs",
@@ -113800,10 +113800,6 @@
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
-   "errors": [
-    "Catalog not found",
-    "Unauthorized"
-   ],
    "status_values": [
     {
      "field": "status",
@@ -113815,6 +113811,21 @@
     "The PunchOut shared secret must never be returned to the browser."
    ],
    "uses_service_role": true
+  },
+  "supabase/functions/punchout-setup/seguranca.test.ts": {
+   "path": "supabase/functions/punchout-setup/seguranca.test.ts",
+   "lines": 39,
+   "is_test": true,
+   "tables": [
+    {
+     "table": "user_tenants",
+     "op": "ref"
+    }
+   ],
+   "tests": [
+    "punchout-setup autentica antes de consultar o cache de idempotencia",
+    "punchout-setup escopa a chave de idempotencia por usuario"
+   ]
   },
   "supabase/functions/receive-os-sync/index.ts": {
    "path": "supabase/functions/receive-os-sync/index.ts",
@@ -117113,10 +117124,21 @@
   }
  },
  "git": {
-  "sha": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
+  "sha": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "fb36e10",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/punchout-setup/index.ts",
+     "supabase/functions/punchout-setup/seguranca.test.ts"
+    ]
+   },
    {
     "sha": "d32b847",
     "date": "2026-11-23",
@@ -117471,21 +117493,16 @@
      "supabase/functions/_shared/xbz_client.ts",
      "supabase/functions/_shared/xbz_date_tz.test.ts"
     ]
-   },
-   {
-    "sha": "d16d88c",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(contrato): escapeHtml tambem escapa apostrofo (#328)",
-    "files": [
-     "supabase/functions/generate-contract-pdf/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    14
+    15
+   ],
+   [
+    "supabase/functions/punchout-setup/index.ts",
+    2
    ],
    [
     "src/features/auth/__tests__/ProtectedRoute.test.tsx",
@@ -117536,16 +117553,16 @@
     2
    ],
    [
-    "supabase/functions/generate-contract-pdf/index.ts",
-    2
-   ],
-   [
     "supabase/functions/scim-v2/index.ts",
     2
    ],
    [
     "src/features/auth/components/ProtectedRoute.tsx",
     2
+   ],
+   [
+    "supabase/functions/punchout-setup/seguranca.test.ts",
+    1
    ],
    [
     "src/features/auth/__tests__/useAuth.test.tsx",
@@ -117557,10 +117574,6 @@
    ],
    [
     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
-    1
-   ],
-   [
-    "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
     1
    ]
   ]

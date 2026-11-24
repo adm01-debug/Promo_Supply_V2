@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 215,
+ "total": 216,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 198
+  "unit": 199
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 37
+   "arquivos": 38
   },
   {
    "padrao": "tests-e2e/",
@@ -1772,6 +1772,13 @@
    "casos": 11
   },
   {
+   "arquivo": "supabase/functions/punchout-setup/seguranca.test.ts",
+   "tipo": "unit",
+   "linhas": 39,
+   "testa": [],
+   "casos": 2
+  },
+  {
    "arquivo": "supabase/functions/receive-os-sync/mapping.test.ts",
    "tipo": "unit",
    "linhas": 141,
@@ -2232,7 +2239,6 @@
    "process-outbox",
    "process-solicitacao-neural",
    "punchout-encrypt",
-   "punchout-setup",
    "spot-api",
    "system-simulation",
    "webauthn-authenticate",

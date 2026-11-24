@@ -988,7 +988,7 @@
    "nome": "punchout-setup",
    "entrada": "supabase/functions/punchout-setup/index.ts",
    "arquivos": 1,
-   "linhas": 109,
+   "linhas": 144,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1023,7 +1023,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "receive-os-sync",
