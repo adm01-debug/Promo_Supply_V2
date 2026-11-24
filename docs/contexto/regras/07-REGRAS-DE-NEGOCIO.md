@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ae31825fdc` · branch `main` · 2026-11-24 09:31 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `005038d187` · branch `main` · 2026-11-24 09:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2443,7 +2443,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3090 testes em 199 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3093 testes em 200 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2622,6 +2622,7 @@ _nenhum item encontrado_
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx` | 3 | createSolicitacao com auto aprovacao do banco · nao cria workflow quando o banco devolve a solicitacao ja aprovada · cria o workflow quando o banco devolve a solicitacao pendente |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx` | 3 | useApprovalWorkflow · checkEscalations (HK-04) · grava organization_id na etapa do aprovador escalado · nao cria etapa quando outro navegador ja escalou o mesmo workflow |
+| `src/hooks/__tests__/useDevolucoes.credito.test.tsx` | 3 | useDevolucoes · credito do fornecedor (NEG-12) · nao deixa a devolucao em credito_emitido quando o credito nao grava · grava o credito com o valor da devolucao e so entao avisa sucesso |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 3 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados |

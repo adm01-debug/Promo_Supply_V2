@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (156)",
+   "co-localizado (__tests__) (157)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)",
    "fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)",
    "chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)",
    "chore(db): sincronizar types.ts com o banco [auto] (#340)",
-   "fix: pedido complementar herda organization_id do pedido original (#397)",
-   "fix: edge de escalonamento passa a usar o status que o banco aceita (#390)"
+   "fix: pedido complementar herda organization_id do pedido original (#397)"
   ]
  },
  "pr_template": null,

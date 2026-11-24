@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ae31825fdc294a5f5501b3abc7c3c179b37ce299",
+  "sha": "005038d1876080a748d41e64a63ff84c091cf806",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:31 UTC",
-  "files_total": 1389,
-  "code_files": 1218,
-  "code_lines": 207327,
+  "generated_at": "2026-11-24 09:35 UTC",
+  "files_total": 1390,
+  "code_files": 1219,
+  "code_lines": 207458,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4dae18a5524d2b8d",
+ "facts_hash": "30eafec3d6d35c99",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 431,
-   ".tsx": 381,
+   ".tsx": 382,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35310,8 +35310,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 85,
-   "lines": 14513,
+   "files": 86,
+   "lines": 14644,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35514,6 +35514,7 @@
     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
+    "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -35523,8 +35524,7 @@
     "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
     "src/hooks/__tests__/usePermissions.test.tsx",
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
-    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx"
+    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx"
    ]
   },
   {
@@ -62905,6 +62905,18 @@
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "name": "volume zero → 0 (sem divisão por zero)"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    "name": "useDevolucoes · credito do fornecedor (NEG-12)"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    "name": "nao deixa a devolucao em credito_emitido quando o credito nao grava"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    "name": "grava o credito com o valor da devolucao e so entao avisa sucesso"
    },
    {
     "file": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
@@ -101946,7 +101958,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 321,
+   "lines": 333,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -101984,6 +101996,10 @@
     {
      "table": "creditos_fornecedor",
      "op": "insert"
+    },
+    {
+     "table": "devolucoes",
+     "op": "update"
     },
     {
      "table": "devolucoes",
@@ -104300,6 +104316,16 @@
     "useDashboardKPIs — economia percentual sem arredondar",
     "R$ 873,60 sobre volume %d → %s%%",
     "volume zero → 0 (sem divisão por zero)"
+   ]
+  },
+  "src/hooks/__tests__/useDevolucoes.credito.test.tsx": {
+   "path": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+   "lines": 119,
+   "is_test": true,
+   "tests": [
+    "useDevolucoes · credito do fornecedor (NEG-12)",
+    "nao deixa a devolucao em credito_emitido quando o credito nao grava",
+    "grava o credito com o valor da devolucao e so entao avisa sucesso"
    ]
   },
   "src/hooks/__tests__/useFornecedores.organization.test.tsx": {
@@ -119413,10 +119439,21 @@
   }
  },
  "git": {
-  "sha": "ae31825fdc294a5f5501b3abc7c3c179b37ce299",
+  "sha": "005038d1876080a748d41e64a63ff84c091cf806",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "005038d",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+     "src/hooks/useDevolucoes.ts"
+    ]
+   },
    {
     "sha": "ae31825",
     "date": "2026-11-24",
@@ -119770,18 +119807,6 @@
      "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
      "src/routes/AppRoutes.tsx"
     ]
-   },
-   {
-    "sha": "1be13b9",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/security.timing.test.ts",
-     "supabase/functions/punchout-receive/index.ts",
-     "supabase/functions/scim-v2/auth.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -119812,6 +119837,14 @@
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
+   ],
+   [
+    "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useDevolucoes.ts",
+    1
    ],
    [
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
@@ -119855,14 +119888,6 @@
    ],
    [
     "src/lib/unicidadeCadastro.ts",
-    1
-   ],
-   [
-    "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
-    1
-   ],
-   [
-    "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
     1
    ]
   ]

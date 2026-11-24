@@ -1118,7 +1118,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs"
    ],
-   "linhas": 321,
+   "linhas": 333,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1145,7 +1145,7 @@
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useEstoque.ts",
