@@ -32,12 +32,44 @@ export const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status']
   return mapping[legacyStatus] || 'pendente';
 };
 
+/** Rotulo do card quando a solicitacao nao tem gestor gravado (dado legado). */
+export const SEM_GESTOR = 'Sem gestor';
+
+/** Rotulo do card quando ha gestor gravado mas o nome do perfil nao carregou. */
+export const GESTOR_SEM_NOME = 'Gestor nao identificado';
+
+/**
+ * Nome do gestor responsavel da solicitacao.
+ *
+ * `aprovador_id` guarda `profiles.user_id` - e o que `NovaSolicitacaoModal`
+ * grava ao criar a solicitacao. Nao existe FK de `solicitacoes.aprovador_id`
+ * para `profiles`, entao o join do PostgREST nao resolve o nome: a lista
+ * entrega o mapa `id -> nome`. Antes daqui o card lia `observacoes` (coluna que
+ * esta tela nunca escreve) e mostrava o literal "BY: Vendedor".
+ *
+ * Os dois rotulos sao distintos de proposito: `Sem gestor` quando a coluna esta
+ * vazia, `Gestor nao identificado` quando o id existe mas o perfil nao veio -
+ * assim a tela nao inventa que a solicitacao nao tem gestor.
+ */
+export const nomeDoGestor = (
+  sol: Pick<Solicitacao, 'aprovador_id'>,
+  nomesDeGestor?: ReadonlyMap<string, string> | null,
+): string => {
+  const id = (sol.aprovador_id ?? '').trim();
+  if (!id) return SEM_GESTOR;
+  const nome = (nomesDeGestor?.get(id) ?? '').trim();
+  return nome || GESTOR_SEM_NOME;
+};
+
 // Adapt DB solicitacao to legacy format for components.
-// Nullable DB columns (`departamento`, `observacoes`, `data_necessidade`,
-// `valor_estimado`) are funnelled through `nullishStr` / `nullishNum` so
-// `null` cleanly becomes the legacy default without collapsing legitimate
-// `0` / `''` values the way `||` would.
-export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao & { organizationName?: string } => ({
+// Nullable DB columns (`departamento`, `data_necessidade`, `valor_estimado`)
+// are funnelled through `nullishStr` / `nullishNum` so `null` cleanly becomes
+// the legacy default without collapsing legitimate `0` / `''` values the way
+// `||` would.
+export const adaptToLegacyFormat = (
+  sol: Solicitacao,
+  nomesDeGestor?: ReadonlyMap<string, string> | null,
+): MockSolicitacao & { organizationName?: string } => ({
   id: sol.id,
   itemNumber: sol.numero || sol.id.slice(0, 8),
   empresa: nullishStr(sol.departamento, 'Empresa'),
@@ -46,7 +78,7 @@ export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao & { organ
   quantidadeReal: Math.ceil(sol.quantidade * 1.02),
   tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
   status: mapDbStatusToLegacy(sol.status),
-  vendedor: nullishStr(sol.observacoes, 'Vendedor'),
+  vendedor: nomeDoGestor(sol, nomesDeGestor),
   prazoEntrega: nullishStr(sol.data_necessidade, sol.created_at),
   valorTotal: nullishNum(sol.valor_estimado),
   createdAt: sol.created_at,

@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/select";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { mapLegacyStatusToDb, adaptToLegacyFormat, posicoesDaMatriz } from "./solicitacoesHelpers";
+import { useNomesDeGestor } from "@/features/solicitacoes/hooks/useNomesDeGestor";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
@@ -131,7 +132,13 @@ const Solicitacoes = () => {
     debounceMs: 1500,
   });
 
-  const adaptedSolicitacoes = useMemo(() => solicitacoes.map(adaptToLegacyFormat), [solicitacoes]);
+  // `aprovador_id` guarda `profiles.user_id`: o nome do gestor vem por id, nao
+  // por join (nao ha FK) e nao de `observacoes`.
+  const nomesDeGestor = useNomesDeGestor(solicitacoes.map((s) => s.aprovador_id));
+  const adaptedSolicitacoes = useMemo(
+    () => solicitacoes.map((s) => adaptToLegacyFormat(s, nomesDeGestor)),
+    [solicitacoes, nomesDeGestor],
+  );
 
   const filteredSolicitacoes = useMemo(() => {
     return adaptedSolicitacoes.filter(s => {
