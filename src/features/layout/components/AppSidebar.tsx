@@ -201,6 +201,7 @@ const SidebarItem = ({
     <PrefetchLink
       to={item.href}
       aria-current={active ? "page" : undefined}
+          aria-label={collapsed ? item.title : undefined}
       className={cn(
         "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-300",
         collapsed && "justify-center px-0",
@@ -445,6 +446,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               <TooltipTrigger asChild>
                 <PrefetchLink
                   to="/seguranca"
+                                  aria-label="Segurança"
                   className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
                 >
                   <Settings className="h-[18px] w-[18px]" />
@@ -456,6 +458,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => signOut()}
+                                  aria-label="Sair"
                   className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
                 >
                   <LogOut className="h-[18px] w-[18px]" />

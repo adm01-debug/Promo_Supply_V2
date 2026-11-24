@@ -424,7 +424,7 @@ export const PendingApprovalsList = () => {
                     </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button size="sm" variant="ghost" className="flex-1 lg:flex-none"><ChevronDown className="w-4 h-4" /></Button>
+                        <Button size="sm" variant="ghost" aria-label="Mais ações da aprovação" className="flex-1 lg:flex-none"><ChevronDown className="w-4 h-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => { setSelectedApproval(approval); setDetailsModalOpen(true); }}>
