@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "9398283782cea4881014f460cb4c1b90cc77e5bc",
+  "sha": "cd9b099e5d8d1f57f74f3f9e77e4c762d3407ddc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:41 UTC",
+  "generated_at": "2026-11-24 13:50 UTC",
   "files_total": 1412,
   "code_files": 1239,
   "code_lines": 210076,
@@ -120596,10 +120596,21 @@
   }
  },
  "git": {
-  "sha": "9398283782cea4881014f460cb4c1b90cc77e5bc",
+  "sha": "cd9b099e5d8d1f57f74f3f9e77e4c762d3407ddc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cd9b099",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/ComparadorCotacoes.tsx",
+     "src/features/layout/components/SupplierChat.tsx"
+    ]
+   },
    {
     "sha": "9398283",
     "date": "2026-11-24",
@@ -120937,18 +120948,6 @@
      "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
      "src/pages/cotacao/Cotacao.tsx"
     ]
-   },
-   {
-    "sha": "4e72f55",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
-     "src/hooks/useApprovalRules.ts",
-     "src/hooks/useApprovalWorkflow.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120997,6 +120996,14 @@
     2
    ],
    [
+    "src/components/compras/ComparadorCotacoes.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/SupplierChat.tsx",
+    1
+   ],
+   [
     "src/components/compras/ContractModal.tsx",
     1
    ],
@@ -121022,14 +121029,6 @@
    ],
    [
     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-    1
-   ],
-   [
-    "src/components/pedidos/PedidoMobileCard.tsx",
-    1
-   ],
-   [
-    "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
     1
    ]
   ]
