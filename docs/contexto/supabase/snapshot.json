@@ -36618,6 +36618,10 @@
         "callers": {
           "code": [
             {
+              "file": "scripts/ci/sonda-edges-negocio.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql",
               "hits": 2
             },
@@ -36634,7 +36638,7 @@
               "hits": 3
             }
           ],
-          "code_total_files": 4,
+          "code_total_files": 5,
           "cron": [
             "18:outbox-worker-1min",
             "113:alert-dispatcher-1min",

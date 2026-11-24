@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8477e9ad4628535ef792ef499ef7b43cb9020898` (2026-11-24T18:18:51-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7c837da5adfbac32ab5d25f597bf790f726d02ed` (2026-11-24T19:02:21-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (855), SQL (343), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (855), SQL (344), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1445 |
+| arquivos_total | 1446 |
 | arquivos_codigo | 928 |
 | linhas_codigo | 185889 |
 | rotas | 56 |
@@ -50,7 +50,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | cron_jobs | 74 |
 | testes | 289 |
 | workflows | 15 |
-| scripts | 50 |
+| scripts | 51 |
 | docs_md | 100 |
 
 ## Onde ficam as coisas
@@ -61,7 +61,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - testes: co-localizado (__tests__) (194), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
-- scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
+- scripts: scripts/ci (18), scripts/types-sync (7), scripts/inventario (5)
 - docs: (raiz) (4), docs (3)
 - nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (95%)","edge_functions":"kebab-case (98%)","tabelas":"snake_case (89%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
@@ -328,7 +328,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 13 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 9 — ex.: AnimatedCounter, COLORS, Confetti
-- scripts_orfaos: 0
+- scripts_orfaos: 1 — ex.: scripts/ci/sonda-edges-negocio.sql
 - arquivos_nao_lidos_por_tamanho: 0
 - env_usadas_nao_declaradas: 1 — ex.: VITE_VAPID_PUBLIC_KEY
 - ciclos_de_import: 2
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `7c837da` chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)
 - 2026-11-24 `8477e9a` fix(ci): fallback do aplicar-migration-prod cobre "must be owner of function" (#446)
 - 2026-11-24 `a2f2741` chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)
 - 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `4209cc0` fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)
 - 2026-11-24 `0d51bc4` fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)
 - 2026-11-24 `728759e` fix: matriz de transicoes de status alinhada ao banco (#394)
-- 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

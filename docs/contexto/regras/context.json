@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "8477e9ad4628535ef792ef499ef7b43cb9020898",
+  "sha": "7c837da5adfbac32ab5d25f597bf790f726d02ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 21:20 UTC",
-  "files_total": 1446,
-  "code_files": 1273,
-  "code_lines": 213823,
+  "generated_at": "2026-11-24 22:11 UTC",
+  "files_total": 1447,
+  "code_files": 1274,
+  "code_lines": 213875,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "63f65f542b5365d4",
+ "facts_hash": "34c45af7ccfc2416",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 442,
    ".tsx": 413,
-   ".sql": 343,
+   ".sql": 344,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -34616,8 +34616,8 @@
   },
   {
    "module": "scripts",
-   "files": 79,
-   "lines": 29290,
+   "files": 80,
+   "lines": 29342,
    "tables": [
     "a",
     "a_tabela",
@@ -34802,6 +34802,7 @@
     "scripts/ci/scripts-operacionais.unit.mjs",
     "scripts/ci/sla-code-scanning.mjs",
     "scripts/ci/sla-code-scanning.unit.mjs",
+    "scripts/ci/sonda-edges-negocio.sql",
     "scripts/ci/supabase-snapshot.unit.mjs",
     "scripts/ci/toolchain-schedule.unit.mjs",
     "scripts/ci/workflow-test-support.mjs",
@@ -93057,6 +93058,10 @@
    "path": "scripts/ci/sla-code-scanning.unit.mjs",
    "lines": 144
   },
+  "scripts/ci/sonda-edges-negocio.sql": {
+   "path": "scripts/ci/sonda-edges-negocio.sql",
+   "lines": 52
+  },
   "scripts/ci/supabase-snapshot.unit.mjs": {
    "path": "scripts/ci/supabase-snapshot.unit.mjs",
    "lines": 19,
@@ -121966,10 +121971,19 @@
   }
  },
  "git": {
-  "sha": "8477e9ad4628535ef792ef499ef7b43cb9020898",
+  "sha": "7c837da5adfbac32ab5d25f597bf790f726d02ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "7c837da",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)",
+    "files": [
+     "scripts/ci/sonda-edges-negocio.sql"
+    ]
+   },
    {
     "sha": "8477e9a",
     "date": "2026-11-24",
@@ -122312,15 +122326,6 @@
      "docs/qa/05-PROGRESSO.md",
      "index.html"
     ]
-   },
-   {
-    "sha": "5c29b8c",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)",
-    "files": [
-     "supabase/functions/receive-os-sync/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -122369,8 +122374,8 @@
     2
    ],
    [
-    "supabase/functions/receive-os-sync/index.ts",
-    2
+    "scripts/ci/sonda-edges-negocio.sql",
+    1
    ],
    [
     ".github/workflows/aplicar-migration-prod.yml",

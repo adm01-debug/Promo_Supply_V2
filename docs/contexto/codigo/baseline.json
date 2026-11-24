@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8477e9ad4628535ef792ef499ef7b43cb9020898",
+  "commit": "7c837da5adfbac32ab5d25f597bf790f726d02ed",
   "branch": "main",
-  "data_commit": "2026-11-24T18:18:51-03:00",
+  "data_commit": "2026-11-24T19:02:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7c837da",
+    "data": "2026-11-24",
+    "assunto": "chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)"
+   },
    {
     "sha": "8477e9a",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "da3107b",
     "data": "2026-11-24",
     "assunto": "feat: registra no log quando o numero da solicitacao colide (#431)"
-   },
-   {
-    "sha": "c3726dd",
-    "data": "2026-11-24",
-    "assunto": "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)"
    }
   ],
-  "arquivos_mudados_7d": 481,
+  "arquivos_mudados_7d": 482,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -258,10 +258,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 6
-   },
-   {
     "arquivo": ".github/workflows/main.yml",
     "mudancas": 6
    },
@@ -296,6 +292,10 @@
    {
     "arquivo": "supabase/functions/check-sla-alerts/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/workflow-engine/index.ts",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1445,
+  "arquivos_total": 1446,
   "arquivos_codigo": 928,
   "linhas_codigo": 185889,
   "rotas": 56,
@@ -330,7 +330,7 @@
   "cron_jobs": 74,
   "testes": 289,
   "workflows": 15,
-  "scripts": 50,
+  "scripts": 51,
   "docs_md": 100
  },
  "por_pasta": {
@@ -786,7 +786,9 @@
    "PageTransition",
    "Toaster"
   ],
-  "scripts_orfaos": [],
+  "scripts_orfaos": [
+   "scripts/ci/sonda-edges-negocio.sql"
+  ],
   "arquivos_nao_lidos_por_tamanho": [],
   "env_usadas_nao_declaradas": [
    "VITE_VAPID_PUBLIC_KEY"
