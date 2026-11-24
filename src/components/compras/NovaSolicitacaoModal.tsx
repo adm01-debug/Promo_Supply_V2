@@ -67,6 +67,38 @@ const STEPS = [
   { num: 4, label: 'Revisão', icon: ShieldCheck },
 ];
 
+export interface AvisoAnexosNaoEnviados {
+  titulo: string;
+  descricao: string;
+}
+
+/**
+ * Texto do aviso quando nem todos os anexos chegam ao storage.
+ *
+ * A solicitacao ja foi gravada e isso continua verdade: o aviso fala apenas dos
+ * arquivos que ficaram para tras, com nome e quantidade, para a tela nao
+ * anunciar como salvo o que nao esta no servidor.
+ */
+export const resumoAnexosNaoEnviados = (
+  falhas: string[],
+  total: number,
+  semTenantDeUpload: boolean,
+): AvisoAnexosNaoEnviados => {
+  const quantidade = falhas.length;
+  const pluralFalhas = quantidade > 1;
+  const titulo = pluralFalhas
+    ? `${quantidade} de ${total} anexos não foram enviados`
+    : `${quantidade} de ${total} anexo não foi enviado`;
+  const consequencia = pluralFalhas ? 'esses arquivos não estão no servidor' : 'esse arquivo não está no servidor';
+  const motivo = semTenantDeUpload
+    ? 'Organização não identificada para o upload: faça login novamente.'
+    : 'O envio para o storage falhou.';
+  return {
+    titulo,
+    descricao: `${falhas.join(', ')} — a solicitação foi criada, mas ${consequencia}. ${motivo}`,
+  };
+};
+
 export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) {
   const { user, organizationId, tenantId, availableEmpresas, selectedEmpresaId } = useAuth();
   const empresas = useMemo(() => montarEmpresas(availableEmpresas), [availableEmpresas]);
@@ -261,12 +293,18 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
 
       if (error) throw error;
 
-      if (formData.anexos && formData.anexos.length > 0 && data?.id) {
+      // Anexo que nao sobe nao pode passar em silencio: antes o erro ia so para o
+      // log e o toast de sucesso falava como se os arquivos tivessem sido salvos.
+      const anexosDaSolicitacao = formData.anexos ?? [];
+      const falhasDeAnexo: string[] = [];
+      let semTenantDeUpload = false;
+      if (anexosDaSolicitacao.length > 0 && data?.id) {
         const storageTenantId = (await getStorageTenantId(user.id, tenantId).catch(() => null)) ?? '';
-        if (!storageTenantId) {
-          toast.error('Anexos não enviados: organização não identificada. Faça login novamente.');
+        semTenantDeUpload = !storageTenantId;
+        if (semTenantDeUpload) {
+          falhasDeAnexo.push(...anexosDaSolicitacao.map((file) => file.name));
         }
-        for (const file of storageTenantId ? formData.anexos : []) {
+        for (const file of semTenantDeUpload ? [] : anexosDaSolicitacao) {
           // Path convention enforced by storage RLS: {tenantId}/{userId}/...
           const filePath = privateStoragePath(storageTenantId, user.id, 'solicitacoes', data.id, `${Date.now()}-${file.name}`);
           const { error: uploadError } = await supabase.storage
@@ -274,13 +312,22 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
             .upload(filePath, file);
           if (uploadError) {
             logger.error('File upload error', { error: uploadError });
+            falhasDeAnexo.push(file.name);
           }
         }
+      } else if (anexosDaSolicitacao.length > 0) {
+        // Sem id da solicitacao nao existe caminho no storage: todos ficam para tras.
+        falhasDeAnexo.push(...anexosDaSolicitacao.map((file) => file.name));
       }
-      
+
       toast.success(`Solicitação ${data.numero} criada com sucesso!`, {
         description: `${sanitizedTitulo} - ${formData.quantidade} un. | ${formatCurrency(formData.valorEstimado)}`,
       });
+
+      if (falhasDeAnexo.length > 0) {
+        const aviso = resumoAnexosNaoEnviados(falhasDeAnexo, anexosDaSolicitacao.length, semTenantDeUpload);
+        toast.warning(aviso.titulo, { description: aviso.descricao, duration: 12000 });
+      }
       
       localStorage.removeItem('nova_solicitacao_draft');
       setFormData(initialFormData);
