@@ -2,7 +2,17 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- viewport-fit=cover expoe a area do notch e da barra de gestos ao layout: sem ele
+         env(safe-area-inset-*) resolve 0 no iOS e as classes .safe-area-inset/.pb-safe de
+         src/styles/utilities.css (usadas pela BottomNavigation) nao protegem nada. O
+         padding-top abaixo evita que o cabecalho sticky de MainLayout fique atras da barra
+         de status nesse modo; em telas sem recorte o valor e 0 e nada muda. -->
+    <style>
+      @supports (padding: env(safe-area-inset-top)) {
+        html { padding-top: env(safe-area-inset-top); }
+      }
+    </style>
     <title>PROMO SUPPLY - Gestão de Compras</title>
     <meta name="description" content="PROMO SUPPLY - Sistema completo de gestão de compras, fornecedores e contratos empresariais">
     <meta name="author" content="PROMO SUPPLY" />
