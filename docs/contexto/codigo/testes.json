@@ -1228,11 +1228,12 @@
   {
    "arquivo": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
    "tipo": "unit",
-   "linhas": 211,
+   "linhas": 197,
    "testa": [
+    "src/hooks/useApprovalWorkflow.ts",
     "src/pages/aprovacoes/aprovacoesData.ts"
    ],
-   "casos": 30
+   "casos": 17
   },
   {
    "arquivo": "src/pages/auth/__tests__/Auth.destino.test.tsx",
@@ -2104,7 +2105,7 @@
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
   "src/hooks/use-toast.ts": 1,
   "src/hooks/useApprovalHistory.ts": 1,
-  "src/hooks/useApprovalWorkflow.ts": 1,
+  "src/hooks/useApprovalWorkflow.ts": 2,
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useFeedback.ts": 1,

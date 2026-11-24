@@ -2470,6 +2470,10 @@
    "src/hooks/useApprovalWorkflow.ts",
    "src/pages/aprovacoes/aprovacoesData.ts"
   ],
+  "src/pages/aprovacoes/aprovacoesData.ts": [
+   "src/features/aprovacoes/index.ts",
+   "src/hooks/useApprovalWorkflow.ts"
+  ],
   "src/pages/auditoria/Auditoria.tsx": [
    "src/components/auditoria/RlsCompliancePanel.tsx",
    "src/components/ui/badge.tsx",

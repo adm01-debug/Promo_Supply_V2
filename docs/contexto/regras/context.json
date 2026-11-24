@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ae23749eca308f8fb6e4ff1c4e6b27618bd93232",
+  "sha": "92ec30477c8fb61952f737ff20d51af08632c3c4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:33 UTC",
+  "generated_at": "2026-11-24 04:44 UTC",
   "files_total": 1358,
   "code_files": 1187,
-  "code_lines": 203147,
+  "code_lines": 203300,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "164165ae9fab24ee",
+ "facts_hash": "6f43eec6fdab1458",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35269,7 +35269,7 @@
   {
    "module": "src/hooks",
    "files": 83,
-   "lines": 14148,
+   "lines": 14185,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35659,7 +35659,7 @@
   {
    "module": "src/pages",
    "files": 134,
-   "lines": 31432,
+   "lines": 31548,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35721,7 +35721,7 @@
     "AdminTelemetria.tsx: AdminTelemetriaPage",
     "telemetriaHelpers.ts: TelemetryRow, SeverityFilter, TimeFilter, formatDuration, formatTime, getTimeThreshold",
     "Aprovacoes.tsx: Aprovacoes",
-    "aprovacoesData.ts: ApprovalHistoryItem, ApprovalTrendItem, ApprovalByValueRangeItem, ApprovalByApproverItem, BottleneckItem, StatusDistributionItem",
+    "aprovacoesData.ts: JANELA_MESES, ResumoAprovacoes, inicioDaJanela, dentroDaJanela, tempoMedioDecisaoHoras, resumirAprovacoes",
     "Auditoria.tsx: Auditoria",
     "Auth.tsx: NovaSenhaPage, Auth",
     "AuthBranding.tsx: AuthBackground, AuthBrandingPanel",
@@ -35746,7 +35746,7 @@
     "AlertDetail.tsx: Onda 40 — Detalhe de um alerta específico com timeline e runbook sugerido.",
     "AlertSubscriptionsPanel.tsx: Onda 41 — Painel de assinaturas + snooze de alertas.",
     "alertRunbooks.ts: Runbooks operacionais por alert_type. Cada entrada descreve: sintoma, impacto e passos sugeridos de remediação. Mantido como código para versionamento e revisão em PRs.",
-    "aprovacoesData.ts: Mock data and constants for the Aprovacoes page. Extracted to reduce the main component size.",
+    "aprovacoesData.ts: Agregacoes reais da tela de Aprovacoes (QA 099/100). Este modulo era \"Mock data and constants\": os 5 KPIs (3/28/2/4.2h/1), a serie Jul-Dez, a distribuicao 149/15/3/5, os gargalos e o historico SOL-2024-150 eram literais exibidos como se fossem medicao. Agora tudo deriva de approval_history / approva …",
     "xbzHelpers.ts: Helpers puros da integração XBZ (frontend). Espelham as regras do documento de análise da API XBZ v5.",
     "xbzNetworkTrend.ts: Onda 146 — detecção de tendência da eficiência de rede XBZ. O nível instantâneo (`xbzNetworkHealth`) só dispara alerta depois que a razão de economia já caiu. Aqui olhamos a série temporal das amostras para detectar degradação **antes** do rompimento do limiar, comparando a média da primeira metade …"
    ],
@@ -50407,6 +50407,26 @@
     "value": "30_000"
    },
    {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "name": "VERDE",
+    "value": "\"#10b981\""
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "name": "VERMELHO",
+    "value": "\"#ef4444\""
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "name": "AMBAR",
+    "value": "\"#f59e0b\""
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "name": "ROXO",
+    "value": "\"#8b5cf6\""
+   },
+   {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
     "name": "SPOT_CATALOG_PAGE_SIZE",
     "value": "60"
@@ -54312,6 +54332,36 @@
     "kind": "compara"
    },
    {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "field": "status",
+    "value": "approved",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "field": "status",
+    "value": "rejected",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "field": "status",
+    "value": "approved",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "field": "status",
+    "value": "rejected",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "field": "status",
+    "value": "pending",
+    "kind": "compara"
+   },
+   {
     "file": "src/pages/buyer/BuyerPerformanceDashboard.tsx",
     "field": "status",
     "value": "success",
@@ -57030,6 +57080,12 @@
     "name": "computeStats",
     "params": "rows: TelemetryRow[]",
     "body": "const verySlow = rows.filter(r => r.severity === \"very_slow\").length; const slow = rows.filter(r => r.severity === \"slow\").length; const errors = rows.filter(r => r.severity === \"error\").length; const avgDuration = rows.length > 0 ? Math.round(rows.reduce((s, r) => s + r.duration_ms, 0) / rows.length) : 0; const tableStats = new Map<string, { count: number; totalMs: number; maxMs: number }>(); for (const r of rows) { const key = r.rpc_name || r.table_name || \"unknown\"; const prev = tableStats.ge …"
+   },
+   {
+    "file": "src/pages/aprovacoes/aprovacoesData.ts",
+    "name": "valorDoDetalhe",
+    "params": "detalhes: Record<string, unknown> | null | undefined",
+    "body": "const valor = detalhes?.valor; return typeof valor === \"number\" && Number.isFinite(valor) ? valor : 0;"
    },
    {
     "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
@@ -65521,159 +65577,95 @@
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "approvalHistory"
+    "name": "inicioDaJanela"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 4 items"
+    "name": "recua o numero de meses do periodo escolhido"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has required fields"
+    "name": "cai em 6 meses quando o periodo nao e conhecido"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all ids are unique"
+    "name": "dentroDaJanela recusa data vazia, invalida e anterior ao corte"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all solicitacao references follow SOL-YYYY-NNN pattern"
+    "name": "tempoMedioDecisaoHoras"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all valores are positive numbers"
+    "name": "mede created_at -> decidido_em das etapas decididas na janela"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "approvalStats"
+    "name": "devolve null quando nao ha decisao"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has all required stat keys"
+    "name": "resumirAprovacoes"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "pendentes is a non-negative integer"
+    "name": "conta so o que caiu na janela e usa aprovadas+rejeitadas como denominador"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "tempoMedioAprovacao ends with "
+    "name": "nao inventa taxa nem tempo medio quando nao houve decisao"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "approvalTrendData"
+    "name": "serieMensal"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 6 months of data"
+    "name": "monta um balde por mes do periodo e joga cada movimentacao no mes certo"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has mes, aprovadas, rejeitadas, pendentes, tempoMedio"
+    "name": "calcula o tempo medio de cada mes com as etapas decididas nele"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all tempoMedio values are positive"
+    "name": "distribuicaoPorStatus"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "last month is Dez"
+    "name": "conta os status reais e ignora valores desconhecidos"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "approvalByValueRange"
+    "name": "gargalos"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 5 value ranges"
+    "name": "agrupa etapas em aberto por etapa e pesa cada uma no total"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has faixa, quantidade, tempoMedio"
+    "name": "devolve lista vazia quando nao ha etapa pendente"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "higher value ranges have higher average processing times"
+    "name": "historicoDaLista"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "approvalByApprover"
+    "name": "formata o historico do banco e nao cai em mock quando vazio"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 4 approvers"
+    "name": "Aprovacoes.tsx nao volta para os mocks"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has nome, aprovadas, rejeitadas, tempoMedio"
+    "name": "nao importa nem usa as constantes mock"
    },
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all approver names are non-empty"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "bottleneckData"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 4 bottleneck stages"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "percentuals sum to 100"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has etapa, tempo, percentual"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "statusDistribution"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 4 status entries"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has name, value, color"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all color values are hex colors"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all values are positive"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "weeklyTrend"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 5 days (work week)"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "every item has dia, quantidade, tempoMedio"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "days are Mon-Fri in Portuguese abbreviations"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "COLORS"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "has 4 colors"
-   },
-   {
-    "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    "name": "all colors are hex strings"
+    "name": "consome as agregacoes reais nos cards e graficos"
    },
    {
     "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
@@ -77649,6 +77641,10 @@
     "limit": "100"
    },
    {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "limit": "500"
+   },
+   {
     "file": "src/hooks/useGeoRestriction.ts",
     "limit": "1"
    },
@@ -78849,6 +78845,7 @@
       "compara:src/hooks/useApprovalWorkflow.ts",
       "compara:src/hooks/useExecutiveDashboardData.ts",
       "compara:src/pages/admin/FiscalDashboard.tsx",
+      "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "compara:src/pages/qualificacao/QualificacaoFornecedores.tsx",
       "escreve:src/components/compras/DigitalSignature.tsx",
       "escreve:src/components/compras/ProductionRoutingEngine.tsx",
@@ -79089,6 +79086,7 @@
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
      "rejected": [
+      "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "compara:supabase/functions/spot-proxy/index.ts",
       "escreve:src/components/compras/digital-signature/signatureHelpers.ts",
       "escreve:src/hooks/useApprovalWorkflow.ts",
@@ -79131,6 +79129,7 @@
      "approved": [
       "compara:src/components/security/PasswordResetRequestsPanel.tsx",
       "compara:src/hooks/useApprovalWorkflow.ts",
+      "compara:src/pages/aprovacoes/aprovacoesData.ts",
       "escreve:src/hooks/useApprovalWorkflow.ts",
       "escreve:src/hooks/usePasswordResetRequests.ts",
       "escreve:src/pages/qualificacao/QualificacaoFornecedores.tsx"
@@ -99993,11 +99992,19 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 424,
+   "lines": 461,
    "exports": [
     "const useApprovalWorkflow"
    ],
    "tables": [
+    {
+     "table": "approval_workflows",
+     "op": "select"
+    },
+    {
+     "table": "approval_steps",
+     "op": "select"
+    },
     {
      "table": "approval_workflows",
      "op": "select"
@@ -100247,6 +100254,9 @@
    ],
    "hooks": [
     "useApprovalWorkflow"
+   ],
+   "pagination": [
+    "500"
    ]
   },
   "src/hooks/useBudgetManagement.ts": {
@@ -105923,78 +105933,108 @@
   },
   "src/pages/aprovacoes/Aprovacoes.tsx": {
    "path": "src/pages/aprovacoes/Aprovacoes.tsx",
-   "lines": 216,
+   "lines": 256,
    "exports": [
     "default Aprovacoes"
    ]
   },
   "src/pages/aprovacoes/aprovacoesData.ts": {
    "path": "src/pages/aprovacoes/aprovacoesData.ts",
-   "lines": 116,
+   "lines": 206,
    "exports": [
-    "interface ApprovalHistoryItem",
-    "interface ApprovalTrendItem",
-    "interface ApprovalByValueRangeItem",
-    "interface ApprovalByApproverItem",
-    "interface BottleneckItem",
-    "interface StatusDistributionItem",
-    "interface WeeklyTrendItem",
-    "const approvalHistory",
-    "const approvalStats",
-    "const approvalTrendData",
-    "const approvalByValueRange",
-    "const approvalByApprover",
-    "const bottleneckData",
-    "const statusDistribution",
-    "const weeklyTrend",
-    "const COLORS"
+    "const JANELA_MESES",
+    "interface ResumoAprovacoes",
+    "function inicioDaJanela",
+    "function dentroDaJanela",
+    "function tempoMedioDecisaoHoras",
+    "function resumirAprovacoes",
+    "function serieMensal",
+    "function distribuicaoPorStatus",
+    "function gargalos",
+    "function historicoDaLista"
    ],
-   "doc": "Mock data and constants for the Aprovacoes page. Extracted to reduce the main component size."
+   "params": [
+    {
+     "name": "VERDE",
+     "value": "\"#10b981\""
+    },
+    {
+     "name": "VERMELHO",
+     "value": "\"#ef4444\""
+    },
+    {
+     "name": "AMBAR",
+     "value": "\"#f59e0b\""
+    },
+    {
+     "name": "ROXO",
+     "value": "\"#8b5cf6\""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "approved",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "approved",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejected",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "pending",
+     "kind": "compara"
+    }
+   ],
+   "doc": "Agregacoes reais da tela de Aprovacoes (QA 099/100). Este modulo era \"Mock data and constants\": os 5 KPIs (3/28/2/4.2h/1), a serie Jul-Dez, a distribuicao 149/15/3/5, os gargalos e o historico SOL-2024-150 eram literais exibidos como se fossem medicao. Agora tudo deriva de approval_history / approva …",
+   "calc_fns": [
+    {
+     "name": "valorDoDetalhe",
+     "params": "detalhes: Record<string, unknown> | null | undefined",
+     "body": "const valor = detalhes?.valor; return typeof valor === \"number\" && Number.isFinite(valor) ? valor : 0;"
+    }
+   ]
   },
   "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts": {
    "path": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-   "lines": 211,
+   "lines": 197,
    "is_test": true,
    "tests": [
-    "approvalHistory",
-    "has 4 items",
-    "every item has required fields",
-    "all ids are unique",
-    "all solicitacao references follow SOL-YYYY-NNN pattern",
-    "all valores are positive numbers",
-    "approvalStats",
-    "has all required stat keys",
-    "pendentes is a non-negative integer",
-    "tempoMedioAprovacao ends with ",
-    "approvalTrendData",
-    "has 6 months of data",
-    "every item has mes, aprovadas, rejeitadas, pendentes, tempoMedio",
-    "all tempoMedio values are positive",
-    "last month is Dez",
-    "approvalByValueRange",
-    "has 5 value ranges",
-    "every item has faixa, quantidade, tempoMedio",
-    "higher value ranges have higher average processing times",
-    "approvalByApprover",
-    "has 4 approvers",
-    "every item has nome, aprovadas, rejeitadas, tempoMedio",
-    "all approver names are non-empty",
-    "bottleneckData",
-    "has 4 bottleneck stages",
-    "percentuals sum to 100",
-    "every item has etapa, tempo, percentual",
-    "statusDistribution",
-    "has 4 status entries",
-    "every item has name, value, color",
-    "all color values are hex colors",
-    "all values are positive",
-    "weeklyTrend",
-    "has 5 days (work week)",
-    "every item has dia, quantidade, tempoMedio",
-    "days are Mon-Fri in Portuguese abbreviations",
-    "COLORS",
-    "has 4 colors",
-    "all colors are hex strings"
+    "inicioDaJanela",
+    "recua o numero de meses do periodo escolhido",
+    "cai em 6 meses quando o periodo nao e conhecido",
+    "dentroDaJanela recusa data vazia, invalida e anterior ao corte",
+    "tempoMedioDecisaoHoras",
+    "mede created_at -> decidido_em das etapas decididas na janela",
+    "devolve null quando nao ha decisao",
+    "resumirAprovacoes",
+    "conta so o que caiu na janela e usa aprovadas+rejeitadas como denominador",
+    "nao inventa taxa nem tempo medio quando nao houve decisao",
+    "serieMensal",
+    "monta um balde por mes do periodo e joga cada movimentacao no mes certo",
+    "calcula o tempo medio de cada mes com as etapas decididas nele",
+    "distribuicaoPorStatus",
+    "conta os status reais e ignora valores desconhecidos",
+    "gargalos",
+    "agrupa etapas em aberto por etapa e pesa cada uma no total",
+    "devolve lista vazia quando nao ha etapa pendente",
+    "historicoDaLista",
+    "formata o historico do banco e nao cai em mock quando vazio",
+    "Aprovacoes.tsx nao volta para os mocks",
+    "nao importa nem usa as constantes mock",
+    "consome as agregacoes reais nos cards e graficos"
    ]
   },
   "src/pages/auditoria/Auditoria.tsx": {
@@ -117759,10 +117799,23 @@
   }
  },
  "git": {
-  "sha": "ae23749eca308f8fb6e4ff1c4e6b27618bd93232",
+  "sha": "92ec30477c8fb61952f737ff20d51af08632c3c4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "92ec304",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/useApprovalWorkflow.ts",
+     "src/pages/aprovacoes/Aprovacoes.tsx",
+     "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
+     "src/pages/aprovacoes/aprovacoesData.ts"
+    ]
+   },
    {
     "sha": "ae23749",
     "date": "2026-11-24",
@@ -118108,21 +118161,16 @@
      "supabase/functions/_shared/validation.log_body.test.ts",
      "supabase/functions/_shared/validation.ts"
     ]
-   },
-   {
-    "sha": "9fd5491",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "chore(qa): marca a etapa 042 como concluida (#337)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     27
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    2
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -118151,6 +118199,18 @@
    [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
     2
+   ],
+   [
+    "src/pages/aprovacoes/Aprovacoes.tsx",
+    1
+   ],
+   [
+    "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
+    1
+   ],
+   [
+    "src/pages/aprovacoes/aprovacoesData.ts",
+    1
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -118182,22 +118242,6 @@
    ],
    [
     "src/features/auth/__tests__/activeSession.test.ts",
-    1
-   ],
-   [
-    "src/features/auth/hooks/useAuth.tsx",
-    1
-   ],
-   [
-    "src/components/security/PasswordResetRequestsPanel.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/usePasswordResetRequests.ts",
     1
    ]
   ]

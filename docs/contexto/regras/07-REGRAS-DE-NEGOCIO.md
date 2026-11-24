@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ae23749eca` · branch `main` · 2026-11-24 04:33 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `92ec30477c` · branch `main` · 2026-11-24 04:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1016,7 +1016,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +2 |
 | `status` | `analyzing` | compara | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `applied` | compara | `src/components/compras/contract/ContractDetailsTabs.tsx`<br>`supabase/functions/generate-contract-pdf/index.ts` |
-| `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx` |
+| `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/aprovacoes/aprovacoesData.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts`<br>`supabase/functions/weekly-report/index.ts`<br>`supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql`<br>… +1 |
 | `status` | `aprovado` | compara, escreve, filtra | `src/components/compras/OrderPreviewModal.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/usePagamentos.ts`<br>`src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/pagamentos/Pagamentos.tsx`<br>… +1 |
 | `status` | `atencao` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
@@ -1080,7 +1080,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +13 |
-| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +13 |
+| `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>… +14 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `processed` | compara, escreve | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
 | `status` | `processing` | compara | `src/components/ui/indicators/StatusIndicator.tsx` |
@@ -1092,7 +1092,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `read` | compara, escreve | `src/components/compras/SupplierInteractionLog.tsx`<br>`src/features/layout/components/SupplierChat.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
 | `status` | `recebida_fornecedor` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `recebido` | compara | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
-| `status` | `rejected` | compara, escreve | `src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx`<br>`supabase/functions/spot-proxy/index.ts` |
+| `status` | `rejected` | compara, escreve | `src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/aprovacoes/aprovacoesData.ts`<br>`src/pages/qualificacao/QualificacaoFornecedores.tsx`<br>… +1 |
 | `status` | `rejeitada` | escreve | `src/hooks/useApprovalWorkflow.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `replied` | escreve | `src/components/compras/SupplierInteractionLog.tsx` |
 | `status` | `reposicao_enviada` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
@@ -1524,6 +1524,10 @@ _nenhum item encontrado_
   ```
   const verySlow = rows.filter(r => r.severity === "very_slow").length; const slow = rows.filter(r => r.severity === "slow").length; const errors = rows.filter(r => r.severity === "error").length; const avgDuration = rows.length > 0 ? Math.round(rows.reduce((s, r) => s + r.duration_ms, 0) / rows.length) : 0; const tableStats = new Map<string, { count: number; totalMs: number; maxMs: number }>(); for (const r of rows) { const key = r.rpc_name || r.table_name || "unknown"; const prev = tableStats.ge …
   ```
+- **valorDoDetalhe(detalhes: Record<string, unknown> | null | undefined)** — `src/pages/aprovacoes/aprovacoesData.ts`
+  ```
+  const valor = detalhes?.valor; return typeof valor === "number" && Number.isFinite(valor) ? valor : 0;
+  ```
 - **formatCurrency(v: number | null)** — `src/pages/catalogo-produtos/CatalogoProdutos.tsx`
   ```
   
@@ -1754,6 +1758,10 @@ _nenhum item encontrado_
 | `DEFAULT_GC_TIME` | `10 * 60_000` | `src/lib/query-client.ts` |
 | `DAY_MS` | `86_400_000` | `src/lib/sourcingAnalytics.ts` |
 | `CI_COOLDOWN_MS` | `30_000` | `src/pages/admin/DependencyHealth.tsx` |
+| `VERDE` | `"#10b981"` | `src/pages/aprovacoes/aprovacoesData.ts` |
+| `VERMELHO` | `"#ef4444"` | `src/pages/aprovacoes/aprovacoesData.ts` |
+| `AMBAR` | `"#f59e0b"` | `src/pages/aprovacoes/aprovacoesData.ts` |
+| `ROXO` | `"#8b5cf6"` | `src/pages/aprovacoes/aprovacoesData.ts` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
 | `XBZ_BUSCA_MIN` | `3` | `src/pages/catalogo-xbz/xbzHelpers.ts` |
@@ -2054,6 +2062,7 @@ _nenhum item encontrado_
 | 200 | `src/components/security/GeoAccessLogsPanel.tsx` |
 | 20 | `src/features/layout/components/AdvancedSearch.tsx` |
 | 100 | `src/hooks/useApprovalHistory.ts` |
+| 500 | `src/hooks/useApprovalWorkflow.ts` |
 | 1 | `src/hooks/useGeoRestriction.ts` |
 | 100 | `src/hooks/usePasswordResetRequests.ts` |
 | 100 | `src/hooks/usePrefetch.ts` |
@@ -2422,7 +2431,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2915 testes em 176 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2899 testes em 176 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2438,7 +2447,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
-| `src/pages/aprovacoes/__tests__/aprovacoesData.test.ts` | 39 | approvalHistory · has 4 items · every item has required fields · all ids are unique … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 37 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
@@ -2480,6 +2488,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/permissionsConstants.test.ts` | 23 | moduleLabels · has 11 module entries · covers all expected module keys · every label is a non-empty string … |
 | `src/lib/__tests__/queryClientConstants.test.ts` | 23 | DEFAULT_STALE_TIME · is 30 seconds in milliseconds · is a positive number · REFERENCE_STALE_TIME … |
 | `src/lib/__tests__/supabaseRpc.test.ts` | 23 | supabaseRpc typed wrappers · rpcCurrentTenantId → rpc( · rpcGenerateSequentialNumber → correct name and params · rpcCheckBudgetAvailability → correct name and params … |
+| `src/pages/aprovacoes/__tests__/aprovacoesData.test.ts` | 23 | inicioDaJanela · recua o numero de meses do periodo escolhido · cai em 6 meses quando o periodo nao e conhecido · dentroDaJanela recusa data vazia, invalida e anterior ao corte … |
 | `src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts` | 22 | generateQuotesFromSuppliers · passes product name and quantity through · returns one quote per supplier · quotes are sorted by totalPrice ascending when prices exist … |
 | `src/lib/__tests__/imageCompression.test.ts` | 22 | formatBytes · returns  · formats bytes under 1 KB as  · formats exactly 1 KB … |
 | `src/lib/__tests__/queryClient.test.ts` | 22 | stale-time constants · DEFAULT_STALE_TIME is 30 seconds (30_000 ms) · REFERENCE_STALE_TIME is 5 minutes (300_000 ms) · STATIC_STALE_TIME is 30 minutes (1_800_000 ms) … |

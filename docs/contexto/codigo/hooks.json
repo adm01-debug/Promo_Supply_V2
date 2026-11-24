@@ -769,7 +769,7 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 424,
+   "linhas": 461,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",
@@ -791,7 +791,7 @@
     "useWorkflowDLQ"
    ],
    "canais_realtime": [],
-   "usado_por": 7,
+   "usado_por": 8,
    "usado_por_arquivos": [
     "src/components/compras/DynamicApprovalMatrix.tsx",
     "src/components/compras/PendingApprovalsList.tsx",
@@ -799,9 +799,10 @@
     "src/components/compras/approval/ApprovalRuleModal.tsx",
     "src/components/compras/approval/WorkflowDLQPanel.tsx",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "src/pages/aprovacoes/Aprovacoes.tsx"
+    "src/pages/aprovacoes/Aprovacoes.tsx",
+    "src/pages/aprovacoes/aprovacoesData.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/useBudgetManagement.ts",

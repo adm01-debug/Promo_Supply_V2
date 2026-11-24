@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ae23749eca308f8fb6e4ff1c4e6b27618bd93232",
+  "commit": "92ec30477c8fb61952f737ff20d51af08632c3c4",
   "branch": "main",
-  "data_commit": "2026-11-24T01:33:07-03:00",
+  "data_commit": "2026-11-24T01:43:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "92ec304",
+    "data": "2026-11-24",
+    "assunto": "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)"
+   },
    {
     "sha": "ae23749",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "a1f9fe0",
     "data": "2026-11-23",
     "assunto": "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)"
-   },
-   {
-    "sha": "368fe97",
-    "data": "2026-11-23",
-    "assunto": "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)"
    }
   ],
-  "arquivos_mudados_7d": 389,
+  "arquivos_mudados_7d": 391,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 165
+    "mudancas": 163
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "pasta": "src/pages/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 30
+    "mudancas": 31
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1357,
   "arquivos_codigo": 854,
-  "linhas_codigo": 175963,
+  "linhas_codigo": 176116,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 83,
-   "linhas": 14148
+   "linhas": 14185
   },
   "src/i18n": {
    "arquivos": 1,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 134,
-   "linhas": 31432
+   "linhas": 31548
   },
   "src/routes": {
    "arquivos": 1,

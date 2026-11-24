@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ae23749eca308f8fb6e4ff1c4e6b27618bd93232` (2026-11-24T01:33:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `92ec30477c8fb61952f737ff20d51af08632c3c4` (2026-11-24T01:43:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1357 |
 | arquivos_codigo | 854 |
-| linhas_codigo | 175963 |
+| linhas_codigo | 176116 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (30)
+- docs/qa/05-PROGRESSO.md (31)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
 - bun.lock (9)
@@ -419,6 +419,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `92ec304` fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)
 - 2026-11-24 `ae23749` fix(exportacao): CSV de pedidos sai com as colunas reais e toast honesto (QA 104) (#371)
 - 2026-11-24 `28478d2` fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)
 - 2026-11-24 `75fbc3e` fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)
@@ -433,7 +434,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `aac5577` fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)
 - 2026-11-23 `73a583d` fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)
 - 2026-11-23 `d6a5f18` fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)
-- 2026-11-23 `fb36e10` fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
