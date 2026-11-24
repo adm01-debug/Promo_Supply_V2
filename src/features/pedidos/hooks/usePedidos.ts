@@ -13,6 +13,7 @@ import {
   MOTIVO_EXCLUSAO_BLOQUEADA,
   mensagemExclusaoParcial,
 } from '@/features/pedidos/exclusaoPedido';
+import { transicaoDeStatusPermitida } from '../statusTransitions';
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   fornecedor?: {
@@ -64,17 +65,6 @@ export interface PedidoFilters {
   pageSize?: number;
   empresaIds?: string[] | null;
 }
-
-const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
-  pendente: ['aprovado', 'cancelado'],
-  aprovado: ['enviado', 'em_transito', 'cancelado'],
-  enviado: ['em_transito', 'entregue', 'cancelado'],
-  em_transito: ['entregue', 'parcial', 'cancelado'],
-  entregue: ['parcial'],
-  parcial: ['entregue', 'cancelado'],
-  cancelado: ['pendente'], // Allow reset for corrections
-  concluido: [],
-};
 
 async function fetchPedidosData(userId: string | undefined, tenantId: string | null | undefined, filters?: PedidoFilters) {
   if (!userId || !tenantId) return { data: [], totalCount: 0 };
@@ -236,8 +226,7 @@ export function usePedidos(filters?: PedidoFilters) {
     logger.info('Alterando status do pedido', { id, oldStatus: pedido?.status, newStatus });
     if (!pedido) { toast.error('Pedido não encontrado'); return false; }
 
-    const allowed = VALID_PEDIDO_TRANSITIONS[pedido.status];
-    if (allowed && !allowed.includes(newStatus)) {
+    if (!transicaoDeStatusPermitida(pedido.status, newStatus)) {
       toast.error(`Transição inválida: ${pedido.status} → ${newStatus}`);
       return false;
     }

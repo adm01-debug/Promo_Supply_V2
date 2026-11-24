@@ -40,23 +40,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import {
   type AcompanhamentoPedido, calcularSLA, getStatusLabel, getTipoLabel,
-  getStatusBadgeColor, mapPedidoStatus, gerarEtapasPipeline,
+  getStatusBadgeColor, mapPedidoStatus, gerarEtapasPipeline, avaliarAlteracaoStatusKanban,
 } from "./AcompanhamentoHelpers";
+import { KANBAN_STATUS_SEM_ESCRITA } from "@/features/pedidos/statusTransitions";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-
-// Kanban uses legacy (UI) status names; this maps them to the DB pedidos status.
-const KANBAN_TO_DB_STATUS: Record<string, string> = {
-  FORNECEDOR_SELECIONADO: 'pendente',
-  PEDIDO_GERADO: 'pendente',
-  AGUARDANDO_PAGAMENTO: 'aprovado',
-  PAGO: 'enviado',
-  EM_TRANSITO: 'em_transito',
-  ENTREGUE: 'entregue',
-};
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -198,11 +189,6 @@ const Acompanhamento = () => {
   const queryClient = useQueryClient();
 
   const handleStatusChange = async (pedidoId: string, novoStatus: string) => {
-    const dbStatus = KANBAN_TO_DB_STATUS[novoStatus];
-    if (!dbStatus) {
-      toast.error(`Status inválido para o Kanban: ${novoStatus}`);
-      return;
-    }
     // pedidoId can be numero or a truncated uuid; find the real row to persist by PK.
     const pedido = pedidosDB.find(
       p => p.id === pedidoId || p.numero === pedidoId,
@@ -211,7 +197,12 @@ const Acompanhamento = () => {
       toast.error(`Pedido #${pedidoId} não encontrado`);
       return;
     }
-    const { error } = await supabase.from('pedidos').update({ status: dbStatus }).eq('id', pedido.id);
+    const avaliacao = avaliarAlteracaoStatusKanban(pedido.status, novoStatus);
+    if (!avaliacao.permitido) {
+      toast.error(avaliacao.mensagem);
+      return;
+    }
+    const { error } = await supabase.from('pedidos').update({ status: avaliacao.dbStatus }).eq('id', pedido.id);
     if (error) {
       toast.error(`Erro ao atualizar pedido: ${error.message}`);
       return;
@@ -391,7 +382,7 @@ const Acompanhamento = () => {
                 exit={{ opacity: 0, scale: 0.98 }}
                 className="w-full h-full"
               >
-                <KanbanBoard pedidos={pedidosFiltrados} onViewDetails={setPedidoDetalhes as unknown as (pedido: { id: string; status: string; produto: string; empresa: string; quantidade: number; tipo: string }) => void} onStatusChange={handleStatusChange} />
+                <KanbanBoard pedidos={pedidosFiltrados} onViewDetails={setPedidoDetalhes as unknown as (pedido: { id: string; status: string; produto: string; empresa: string; quantidade: number; tipo: string }) => void} onStatusChange={handleStatusChange} statusesSomenteLeitura={KANBAN_STATUS_SEM_ESCRITA} />
               </motion.div>
             ) : (
               <motion.div
