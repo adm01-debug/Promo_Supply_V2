@@ -378,12 +378,12 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
               )}
             </div>
             <div className="space-y-2">
-              <Label>Tipo de Contrato</Label>
+              <Label htmlFor="contract_type">Tipo de Contrato</Label>
               <Select
                 value={formData.contract_type}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, contract_type: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger id="contract_type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -397,12 +397,12 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label>Status</Label>
+              <Label htmlFor="status">Status</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger id="status">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -416,10 +416,11 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Data Início *</Label>
+              <Label htmlFor="start_date">Data Início *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    id="start_date"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
@@ -447,10 +448,11 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
               </Popover>
             </div>
             <div className="space-y-2">
-              <Label>Data Fim *</Label>
+              <Label htmlFor="end_date">Data Fim *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    id="end_date"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
@@ -490,12 +492,12 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
               />
             </div>
             <div className="space-y-2">
-              <Label>Tipo de Renovação</Label>
+              <Label htmlFor="renewal_type">Tipo de Renovação</Label>
               <Select
                 value={formData.renewal_type}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, renewal_type: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger id="renewal_type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
