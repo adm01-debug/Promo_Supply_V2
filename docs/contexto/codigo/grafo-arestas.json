@@ -491,6 +491,8 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/scroll-area.tsx",
+   "src/features/pedidos/statusTransitions.ts",
+   "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
    "src/types/legacyTypes.ts"
   ],
@@ -1917,6 +1919,7 @@
   "src/features/pedidos/hooks/usePedidos.ts": [
    "src/features/auth/index.ts",
    "src/features/pedidos/exclusaoPedido.ts",
+   "src/features/pedidos/statusTransitions.ts",
    "src/hooks/useRealtimeSubscription.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
@@ -2297,6 +2300,7 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/skeleton.tsx",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
+   "src/features/pedidos/statusTransitions.ts",
    "src/hooks/useAccountFilters.ts",
    "src/hooks/useClearFiltersFlow.tsx",
    "src/hooks/useRealtimeSubscription.ts",
@@ -2308,6 +2312,7 @@
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": [
    "src/components/compras/EnhancedPedidoTimeline.tsx",
    "src/components/compras/PedidoTimeline.tsx",
+   "src/features/pedidos/statusTransitions.ts",
    "src/lib/utils.ts"
   ],
   "src/pages/admin-telemetria/AdminTelemetria.tsx": [

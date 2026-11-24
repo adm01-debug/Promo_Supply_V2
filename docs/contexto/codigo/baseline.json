@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d0c644dc99ce73b4473a33f504cbe2f6eb7afbb4",
+  "commit": "72256cb95dafa7282abbdbba507c06da2df4c8c2",
   "branch": "main",
-  "data_commit": "2026-11-24T04:15:01-03:00",
+  "data_commit": "2026-11-24T04:32:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "72256cb",
+    "data": "2026-11-24",
+    "assunto": "fix(pedidos): Kanban so entrega via Recebimento (#383)"
+   },
    {
     "sha": "d0c644d",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "33cb8a0",
     "data": "2026-11-23",
     "assunto": "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)"
-   },
-   {
-    "sha": "aac5577",
-    "data": "2026-11-23",
-    "assunto": "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)"
    }
   ],
-  "arquivos_mudados_7d": 422,
+  "arquivos_mudados_7d": 427,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 176
+    "mudancas": 178
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 43
+    "mudancas": 44
    },
    {
     "pasta": "src/lib/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 43
+    "mudancas": 44
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -234,6 +234,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 7
    },
@@ -254,19 +258,15 @@
     "mudancas": 6
    },
    {
-    "arquivo": "scripts/automation.config.json",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
    {
-    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 6
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1376,
-  "arquivos_codigo": 873,
-  "linhas_codigo": 178721,
+  "arquivos_total": 1380,
+  "arquivos_codigo": 877,
+  "linhas_codigo": 179004,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 240,
+  "testes": 243,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -427,12 +427,12 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 268,
-   "linhas": 50216
+   "arquivos": 269,
+   "linhas": 50358
   },
   "src/features": {
-   "arquivos": 79,
-   "linhas": 10157
+   "arquivos": 81,
+   "linhas": 10219
   },
   "src/hooks": {
    "arquivos": 83,
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 138,
-   "linhas": 32243
+   "arquivos": 139,
+   "linhas": 32322
   },
   "src/routes": {
    "arquivos": 1,
@@ -605,10 +605,6 @@
    "linhas": 691
   },
   {
-   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "linhas": 672
-  },
-  {
    "arquivo": "src/hooks/useExecutiveDashboardData.ts",
    "linhas": 667
   },
@@ -618,6 +614,10 @@
   },
   {
    "arquivo": "src/hooks/useXbzIntegration.ts",
+   "linhas": 663
+  },
+  {
+   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
    "linhas": 663
   },
   {

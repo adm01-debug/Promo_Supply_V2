@@ -1120,7 +1120,7 @@
     "KanbanTipo"
    ],
    "export_default": null,
-   "linhas": 275,
+   "linhas": 301,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -4150,7 +4150,7 @@
     "Acompanhamento"
    ],
    "export_default": "Acompanhamento",
-   "linhas": 672,
+   "linhas": 663,
    "dominio": "pages/acompanhamento",
    "hooks_locais": [
     "useAccountFilters",

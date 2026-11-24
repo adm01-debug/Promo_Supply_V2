@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d0c644dc99ce73b4473a33f504cbe2f6eb7afbb4",
+  "sha": "72256cb95dafa7282abbdbba507c06da2df4c8c2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 07:15 UTC",
-  "files_total": 1377,
-  "code_files": 1206,
-  "code_lines": 205905,
+  "generated_at": "2026-11-24 07:33 UTC",
+  "files_total": 1381,
+  "code_files": 1210,
+  "code_lines": 206188,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "af2da7faec630ca9",
+ "facts_hash": "34dc4e59fd7baac8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,8 +263,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 425,
-   ".tsx": 375,
+   ".ts": 428,
+   ".tsx": 376,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33723,7 +33723,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 303,
+  "components_count": 304,
   "hooks": [
    {
     "name": "useContacts",
@@ -34761,8 +34761,8 @@
   },
   {
    "module": "src/components",
-   "files": 268,
-   "lines": 50216,
+   "files": 269,
+   "lines": 50358,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35211,18 +35211,20 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 5,
-   "lines": 557,
+   "files": 7,
+   "lines": 619,
    "tables": [
     "pedido_itens",
     "pedidos"
    ],
    "exports": [
     "exclusaoPedido.ts: STATUS_PEDIDO_EXCLUIVEL, MOTIVO_EXCLUSAO_BLOQUEADA, statusPermiteExcluirPedido, selecaoTemExclusaoBloqueada, mensagemExclusaoParcial",
+    "statusTransitions.ts: VALID_PEDIDO_TRANSITIONS, KANBAN_TO_DB_STATUS, KANBAN_STATUS_SEM_ESCRITA, transicaoDeStatusPermitida",
     "usePedidos.ts: Pedido, PedidoItem, CreatePedidoInput, PedidoFilters, usePedidos, usePedidosKPIs"
    ],
    "docs": [
-    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …"
+    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …",
+    "statusTransitions.ts: Regra única de transição de status de pedido. Vive fora do hook para poder ser reusada por qualquer tela que grave `pedidos.status` (ex.: o Kanban de Acompanhamento) sem arrastar o hook inteiro."
    ],
    "deps": [
     "@tanstack/react-query",
@@ -35240,8 +35242,10 @@
    "file_list": [
     "src/features/pedidos/exclusaoPedido.ts",
     "src/features/pedidos/index.ts",
+    "src/features/pedidos/statusTransitions.ts",
     "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
     "src/features/pedidos/hooks/usePedidos.ts",
+    "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx"
    ]
   },
@@ -35694,8 +35698,8 @@
   },
   {
    "module": "src/pages",
-   "files": 138,
-   "lines": 32243,
+   "files": 139,
+   "lines": 32322,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35831,6 +35835,7 @@
     "src/pages/acompanhamento/Acompanhamento.tsx",
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
+    "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
     "src/pages/admin/AlertDetail.tsx",
     "src/pages/admin/AlertSubscriptionsPanel.tsx",
     "src/pages/admin/DependencyHealth.tsx",
@@ -35905,8 +35910,7 @@
     "src/pages/devolucoes/DevolucoesModals.tsx",
     "src/pages/devolucoes/devolucoesData.ts",
     "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
-    "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
-    "src/pages/documentos/DocumentosFiscais.tsx"
+    "src/pages/devolucoes/__tests__/devolucoesModals.test.ts"
    ]
   },
   {
@@ -40875,6 +40879,10 @@
     "msg": "Não foi possível salvar o fornecedor. Tente novamente."
    },
    {
+    "file": "src/components/compras/KanbanBoard.tsx",
+    "msg": "A entrega é registrada na tela de Recebimento, com a conferência da mercadoria."
+   },
+   {
     "file": "src/components/compras/NovaSolicitacaoModal.tsx",
     "msg": "Anexos não enviados: organização não identificada. Faça login novamente."
    },
@@ -41597,10 +41605,6 @@
    {
     "file": "src/pages/acompanhamento/Acompanhamento.tsx",
     "msg": "Pedido #${pedidoId} não encontrado"
-   },
-   {
-    "file": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "msg": "Status inválido para o Kanban: ${novoStatus}"
    },
    {
     "file": "src/pages/admin/AlertDetail.tsx",
@@ -42659,6 +42663,10 @@
     "text": "checagem a regra nascia com aprovador em branco e o insert em"
    },
    {
+    "file": "src/components/compras/KanbanBoard.tsx",
+    "text": "* Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada."
+   },
+   {
     "file": "src/components/compras/SupplierInteractionLog.tsx",
     "text": "* Mostra apenas interacoes registradas de verdade (follow-up do agendador em"
    },
@@ -42761,6 +42769,10 @@
    {
     "file": "src/features/pedidos/exclusaoPedido.ts",
     "text": "* Regra de ciclo de vida da exclusao de pedido."
+   },
+   {
+    "file": "src/features/pedidos/statusTransitions.ts",
+    "text": "* Regra única de transição de status de pedido."
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
@@ -50883,7 +50895,7 @@
   ],
   "transition_maps": [
    {
-    "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "file": "src/features/pedidos/statusTransitions.ts",
     "name": "VALID_PEDIDO_TRANSITIONS",
     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
    },
@@ -59040,6 +59052,30 @@
     "name": "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
    },
    {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "KanbanBoard — entrega só pelo Recebimento"
+   },
+   {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "não grava nada quando o card é arrastado para a coluna de entrega"
+   },
+   {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "marca a coluna como somente leitura na interface"
+   },
+   {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "continua gravando nas outras colunas"
+   },
+   {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "bloqueia a entrega mesmo sem a lista explícita de colunas somente leitura"
+   },
+   {
+    "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    "name": "continua gravando as outras colunas quando a lista não é informada"
+   },
+   {
     "file": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
     "name": "isKanbanStatus"
    },
@@ -61882,6 +61918,30 @@
    {
     "file": "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
     "name": "a mensagem de exclusao parcial diz quantos sobraram e por que"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "transicaoDeStatusPermitida"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "recusa pular etapas do fluxo de compra"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "aceita o caminho normal do pedido"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "não devolve pedido concluído para uma etapa anterior"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "permite corrigir o status de um pedido cancelado"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "não bloqueia quando o status atual é nulo ou desconhecido"
    },
    {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
@@ -65786,6 +65846,26 @@
    {
     "file": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
     "name": "handles unknown status gracefully (defaults to 0)"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    "name": "avaliarAlteracaoStatusKanban"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    "name": "bloqueia a entrega feita pelo Kanban"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    "name": "traduz as colunas válidas para o status do banco"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    "name": "recusa transição que o banco rejeitaria, com mensagem de negócio"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    "name": "recusa status que o Kanban não conhece"
    },
    {
     "file": "src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx",
@@ -93998,7 +94078,7 @@
   },
   "src/components/compras/KanbanBoard.tsx": {
    "path": "src/components/compras/KanbanBoard.tsx",
-   "lines": 275,
+   "lines": 301,
    "exports": [
     "type KanbanStatus",
     "type KanbanTipo",
@@ -94006,6 +94086,12 @@
     "const isKanbanTipo",
     "interface KanbanPedido",
     "const KanbanBoard"
+   ],
+   "errors": [
+    "A entrega é registrada na tela de Recebimento, com a conferência da mercadoria."
+   ],
+   "rule_comments": [
+    "* Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada."
    ]
   },
   "src/components/compras/MainLayout.tsx": {
@@ -95357,6 +95443,22 @@
     "SupplierInteractionLog perdeu a conversa e o botao sem handler",
     "a consulta de cotacoes traz as colunas de follow-up",
     "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
+   ]
+  },
+  "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx": {
+   "path": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+   "lines": 116,
+   "is_test": true,
+   "errors": [
+    "card do pedido #${pedidoId} não encontrado"
+   ],
+   "tests": [
+    "KanbanBoard — entrega só pelo Recebimento",
+    "não grava nada quando o card é arrastado para a coluna de entrega",
+    "marca a coluna como somente leitura na interface",
+    "continua gravando nas outras colunas",
+    "bloqueia a entrega mesmo sem a lista explícita de colunas somente leitura",
+    "continua gravando as outras colunas quando a lista não é informada"
    ]
   },
   "src/components/compras/__tests__/kanbanTypeGuards.test.ts": {
@@ -99988,6 +100090,26 @@
    "path": "src/features/pedidos/index.ts",
    "lines": 2
   },
+  "src/features/pedidos/statusTransitions.ts": {
+   "path": "src/features/pedidos/statusTransitions.ts",
+   "lines": 40,
+   "exports": [
+    "const VALID_PEDIDO_TRANSITIONS",
+    "const KANBAN_TO_DB_STATUS",
+    "const KANBAN_STATUS_SEM_ESCRITA",
+    "const transicaoDeStatusPermitida"
+   ],
+   "transition_maps": [
+    {
+     "name": "VALID_PEDIDO_TRANSITIONS",
+     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
+    }
+   ],
+   "rule_comments": [
+    "* Regra única de transição de status de pedido."
+   ],
+   "doc": "Regra única de transição de status de pedido. Vive fora do hook para poder ser reusada por qualquer tela que grave `pedidos.status` (ex.: o Kanban de Acompanhamento) sem arrastar o hook inteiro."
+  },
   "src/features/pedidos/__tests__/exclusaoPedido.test.ts": {
    "path": "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
    "lines": 32,
@@ -100001,7 +100123,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 382,
+   "lines": 371,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -100078,12 +100200,6 @@
     "Transição inválida: ${pedido.status} → ${newStatus}",
     "Você precisa estar logado em uma organização"
    ],
-   "transition_maps": [
-    {
-     "name": "VALID_PEDIDO_TRANSITIONS",
-     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
-    }
-   ],
    "status_values": [
     {
      "field": "status",
@@ -100097,6 +100213,19 @@
    "hooks": [
     "usePedidos",
     "usePedidosKPIs"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts": {
+   "path": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+   "lines": 33,
+   "is_test": true,
+   "tests": [
+    "transicaoDeStatusPermitida",
+    "recusa pular etapas do fluxo de compra",
+    "aceita o caminho normal do pedido",
+    "não devolve pedido concluído para uma etapa anterior",
+    "permite corrigir o status de um pedido cancelado",
+    "não bloqueia quando o status atual é nulo ou desconhecido"
    ]
   },
   "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx": {
@@ -105670,7 +105799,7 @@
   },
   "src/pages/acompanhamento/Acompanhamento.tsx": {
    "path": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "lines": 672,
+   "lines": 663,
    "exports": [
     "default Acompanhamento"
    ],
@@ -105749,8 +105878,7 @@
    },
    "errors": [
     "Erro ao atualizar pedido: ${error.message}",
-    "Pedido #${pedidoId} não encontrado",
-    "Status inválido para o Kanban: ${novoStatus}"
+    "Pedido #${pedidoId} não encontrado"
    ],
    "status_values": [
     {
@@ -105850,7 +105978,7 @@
   },
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": {
    "path": "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
-   "lines": 147,
+   "lines": 189,
    "exports": [
     "type SLAStatus",
     "interface AcompanhamentoPedido",
@@ -105860,6 +105988,8 @@
     "const calcularSLA",
     "const getStatusBadgeColor",
     "const mapPedidoStatus",
+    "type AvaliacaoStatusKanban",
+    "const avaliarAlteracaoStatusKanban",
     "const gerarEtapasPipeline",
     "const gerarEtapasEnhanced"
    ],
@@ -105993,6 +106123,18 @@
     "returns all stages concluido except last for ENTREGUE (etapaAtual=5)",
     "each stage has id, nome, and status",
     "handles unknown status gracefully (defaults to 0)"
+   ]
+  },
+  "src/pages/acompanhamento/__tests__/statusKanban.test.ts": {
+   "path": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+   "lines": 46,
+   "is_test": true,
+   "tests": [
+    "avaliarAlteracaoStatusKanban",
+    "bloqueia a entrega feita pelo Kanban",
+    "traduz as colunas válidas para o status do banco",
+    "recusa transição que o banco rejeitaria, com mensagem de negócio",
+    "recusa status que o Kanban não conhece"
    ]
   },
   "src/pages/admin/AlertDetail.tsx": {
@@ -118893,10 +119035,27 @@
   }
  },
  "git": {
-  "sha": "d0c644dc99ce73b4473a33f504cbe2f6eb7afbb4",
+  "sha": "72256cb95dafa7282abbdbba507c06da2df4c8c2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "72256cb",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(pedidos): Kanban so entrega via Recebimento (#383)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/KanbanBoard.tsx",
+     "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/features/pedidos/statusTransitions.ts",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
+     "src/pages/acompanhamento/__tests__/statusKanban.test.ts"
+    ]
+   },
    {
     "sha": "d0c644d",
     "date": "2026-11-24",
@@ -119260,17 +119419,6 @@
      "src/features/auth/__tests__/useAuth.test.tsx",
      "src/pages/auth/__tests__/Auth.destino.test.tsx"
     ]
-   },
-   {
-    "sha": "7ea54f2",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
-     "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -119287,6 +119435,10 @@
     3
    ],
    [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    2
+   ],
+   [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
    ],
@@ -119301,6 +119453,34 @@
    [
     "supabase/functions/webauthn-authenticate/index.ts",
     2
+   ],
+   [
+    "src/components/compras/KanbanBoard.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
+    1
+   ],
+   [
+    "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    1
+   ],
+   [
+    "src/features/pedidos/statusTransitions.ts",
+    1
+   ],
+   [
+    "src/pages/acompanhamento/Acompanhamento.tsx",
+    1
+   ],
+   [
+    "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
+    1
+   ],
+   [
+    "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
+    1
    ],
    [
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
@@ -119320,38 +119500,6 @@
    ],
    [
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/ContractModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/contractFornecedorId.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/DynamicApprovalMatrix.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/approval/ApprovalDelegationModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/approval/ApprovalRuleModal.tsx",
     1
    ]
   ]

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d0c644dc99` · branch `main` · 2026-11-24 07:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `72256cb95d` · branch `main` · 2026-11-24 07:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -875,7 +875,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 ### E.2 Mapas de transição declarados no código
 
-- **VALID_PEDIDO_TRANSITIONS** (`src/features/pedidos/hooks/usePedidos.ts`):
+- **VALID_PEDIDO_TRANSITIONS** (`src/features/pedidos/statusTransitions.ts`):
   ```ts
   pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],
   ```
@@ -2248,6 +2248,7 @@ _nenhum item encontrado_
 | Dê um nome à regra e escolha o aprovador de cada etapa | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Preencha todos os campos obrigatórios | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Não foi possível salvar o fornecedor. Tente novamente. | `src/components/compras/FornecedorModal.tsx` |
+| A entrega é registrada na tela de Recebimento, com a conferência da mercadoria. | `src/components/compras/KanbanBoard.tsx` |
 | Anexos não enviados: organização não identificada. Faça login novamente. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar solicitação:  | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao processar solicitação via IA. | `src/components/compras/NovaSolicitacaoModal.tsx` |
@@ -2426,7 +2427,6 @@ _nenhum item encontrado_
 | XBZ: ${message} | `src/hooks/useXbzIntegration.ts` |
 | Could not get canvas context | `src/lib/imageCompression.ts` |
 | File is not an image | `src/lib/imageCompression.ts` |
-| , params) as unknown as RpcResult<void>; }  export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {   return supabase.rpc( | `src/lib/supabaseRpc.ts` |
 | … +249 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
@@ -2445,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3031 testes em 189 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3048 testes em 192 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2568,7 +2568,9 @@ _nenhum item encontrado_
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 7 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `src/components/compras/__tests__/contractFornecedorId.test.tsx` | 6 | ContractModal grava o fornecedor do cadastro · oferece so os fornecedores ativos, com id real e sem sufixo de status · sem fornecedor escolhido nao salva e avisa · salva supplier_id com o id do cadastro e supplier_name como copia congelada … |
+| `src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx` | 6 | KanbanBoard — entrega só pelo Recebimento · não grava nada quando o card é arrastado para a coluna de entrega · marca a coluna como somente leitura na interface · continua gravando nas outras colunas … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
+| `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 6 | transicaoDeStatusPermitida · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido · não devolve pedido concluído para uma etapa anterior … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
@@ -2585,6 +2587,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
+| `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
 | `supabase/functions/_shared/xbz_date_tz.test.ts` | 5 | parseXbzDate: sem offset -> UTC, em qualquer fuso do runtime · parseXbzDate: valor COM offset e respeitado como veio · parseXbzDate: sentinela, vazio e lixo continuam null · parsePagamentoLabel: determinístico e por ano … |
@@ -2683,6 +2686,7 @@ _nenhum item encontrado_
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
 | checagem a regra nascia com aprovador em branco e o insert em | `src/components/compras/DynamicApprovalMatrix.tsx` |
+| * Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada. | `src/components/compras/KanbanBoard.tsx` |
 | * Mostra apenas interacoes registradas de verdade (follow-up do agendador em | `src/components/compras/SupplierInteractionLog.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
@@ -2709,6 +2713,7 @@ _nenhum item encontrado_
 | Remove permission | `src/components/security/PermissionMatrix.tsx` |
 | Subscribe to realtime rate limit alerts | `src/components/security/RateLimitDashboard.tsx` |
 | * Regra de ciclo de vida da exclusao de pedido. | `src/features/pedidos/exclusaoPedido.ts` |
+| * Regra única de transição de status de pedido. | `src/features/pedidos/statusTransitions.ts` |
 | Update status with transition validation | `src/features/pedidos/hooks/usePedidos.ts` |
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | 'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |

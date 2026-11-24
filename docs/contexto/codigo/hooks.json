@@ -513,7 +513,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 382,
+   "linhas": 371,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",

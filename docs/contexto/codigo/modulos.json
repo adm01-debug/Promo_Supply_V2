@@ -417,8 +417,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 21,
-   "linhas": 25804,
+   "testes": 22,
+   "linhas": 25830,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2215,9 +2215,9 @@
   },
   {
    "modulo": "features/pedidos",
-   "arquivos": 3,
-   "testes": 2,
-   "linhas": 409,
+   "arquivos": 4,
+   "testes": 3,
+   "linhas": 438,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2275,6 +2275,7 @@
    "importado_por_outros_modulos": [
     "components/compras",
     "components/pedidos",
+    "pages/acompanhamento",
     "pages/gerar-ordem",
     "pages/pedidos"
    ],
@@ -3339,8 +3340,8 @@
   {
    "modulo": "pages/acompanhamento",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 819,
+   "testes": 2,
+   "linhas": 852,
    "itens_menu": [
     "Acompanhamento"
    ],
@@ -3400,6 +3401,7 @@
     "components/organisms",
     "components/ui",
     "features/layout",
+    "features/pedidos",
     "hooks",
     "integrations/supabase",
     "lib"
