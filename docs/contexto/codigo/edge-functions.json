@@ -35,6 +35,7 @@
   "supabase/functions/_shared/punchout_crypto.ts",
   "supabase/functions/_shared/rate_limit.ts",
   "supabase/functions/_shared/retry.ts",
+  "supabase/functions/_shared/security.timing.test.ts",
   "supabase/functions/_shared/security.ts",
   "supabase/functions/_shared/simulation-engine.ts",
   "supabase/functions/_shared/spot_api.ts",
@@ -1175,7 +1176,7 @@
    "nome": "spot-api",
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
-   "linhas": 650,
+   "linhas": 643,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

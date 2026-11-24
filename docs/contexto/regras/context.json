@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6e74b0d8095d2f2714afce38389f5d16149cdc06",
+  "sha": "fc4c451ab2a81daa955db62650444987b85e7de6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:58 UTC",
-  "files_total": 1352,
-  "code_files": 1181,
-  "code_lines": 201903,
+  "generated_at": "2026-11-24 03:12 UTC",
+  "files_total": 1353,
+  "code_files": 1182,
+  "code_lines": 201995,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "22993a80150fe155",
+ "facts_hash": "af803a671d8c814c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 411,
+   ".ts": 412,
    ".tsx": 364,
    ".sql": 331,
    ".mjs": 67,
@@ -36026,8 +36026,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 114,
-   "lines": 18889,
+   "files": 115,
+   "lines": 18981,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36159,6 +36159,7 @@
     "supabase/functions/_shared/punchout_crypto.ts",
     "supabase/functions/_shared/rate_limit.ts",
     "supabase/functions/_shared/retry.ts",
+    "supabase/functions/_shared/security.timing.test.ts",
     "supabase/functions/_shared/security.ts",
     "supabase/functions/_shared/simulation-engine.ts",
     "supabase/functions/_shared/spot_api.ts",
@@ -36213,8 +36214,7 @@
     "supabase/functions/process-outbox/index.ts",
     "supabase/functions/process-solicitacao-neural/index.ts",
     "supabase/functions/punchout-encrypt/index.ts",
-    "supabase/functions/punchout-receive/index.ts",
-    "supabase/functions/punchout-receive/session.test.ts"
+    "supabase/functions/punchout-receive/index.ts"
    ]
   },
   {
@@ -38682,6 +38682,7 @@
     "scripts/supabase_snapshot/snapshot.py"
    ],
    "CRON_SECRET": [
+    "supabase/functions/_shared/security.timing.test.ts",
     "supabase/functions/_shared/security.ts"
    ],
    "DB_URL": [
@@ -38974,6 +38975,7 @@
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/logger.ts",
     "supabase/functions/_shared/rate_limit.ts",
+    "supabase/functions/_shared/security.timing.test.ts",
     "supabase/functions/_shared/security.ts",
     "supabase/functions/_shared/telemetry.ts",
     "supabase/functions/_shared/xbz_auth.ts",
@@ -69076,6 +69078,26 @@
     "name": "insertNotificationsBatch resolve tenants por user_id"
    },
    {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "timingSafeEqualStr: iguais, diferentes e comprimentos distintos"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "verifyCronSecret aceita so o CRON_SECRET exato"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "verifyCronSecret sem CRON_SECRET aceita a service role key exata"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "verifyCronSecret sem nenhum segredo configurado e fail-closed"
+   },
+   {
+    "file": "supabase/functions/_shared/security.timing.test.ts",
+    "name": "spot-api nao usa mais comparacao direta de segredo"
+   },
+   {
     "file": "supabase/functions/_shared/validation.error_response.test.ts",
     "name": "errorResponse: "
    },
@@ -81783,6 +81805,7 @@
    "supabase/functions/_shared/logger.fuzz.test.ts",
    "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/rate_limit.ts",
+   "supabase/functions/_shared/security.timing.test.ts",
    "supabase/functions/_shared/security.ts",
    "supabase/functions/_shared/telemetry.ts",
    "supabase/functions/_shared/xbz_auth.ts",
@@ -111147,9 +111170,30 @@
     "const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);"
    ]
   },
+  "supabase/functions/_shared/security.timing.test.ts": {
+   "path": "supabase/functions/_shared/security.timing.test.ts",
+   "lines": 81,
+   "is_test": true,
+   "env": [
+    "CRON_SECRET",
+    "SUPABASE_SERVICE_ROLE_KEY"
+   ],
+   "rule_comments": [
+    "dele), nao apenas a funcao pura."
+   ],
+   "doc": "QA 064 (EDGA-11): `verifyCronSecret` compara o segredo com `!==` em vez de comparacao de tempo constante, e `spot-api` comparava a service role key do mesmo jeito - quem pode medir o tempo de resposta podia descobrir o segredo byte a byte. O teste cobre a helper e o gate real de cron (10 edges depen …",
+   "tests": [
+    "timingSafeEqualStr: iguais, diferentes e comprimentos distintos",
+    "verifyCronSecret aceita so o CRON_SECRET exato",
+    "verifyCronSecret sem CRON_SECRET aceita a service role key exata",
+    "verifyCronSecret sem nenhum segredo configurado e fail-closed",
+    "spot-api nao usa mais comparacao direta de segredo"
+   ],
+   "uses_service_role": true
+  },
   "supabase/functions/_shared/security.ts": {
    "path": "supabase/functions/_shared/security.ts",
-   "lines": 418,
+   "lines": 436,
    "exports": [
     "type SupabaseClientLike",
     "const buildCorsHeaders",
@@ -111161,6 +111205,7 @@
     "const validateTenant",
     "const getAuthUser",
     "const getTenantId",
+    "function timingSafeEqualStr",
     "function verifyCronSecret",
     "const requireAdmin"
    ],
@@ -114420,7 +114465,7 @@
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
-   "lines": 650,
+   "lines": 643,
    "tables": [
     {
      "table": "user_roles",
@@ -117304,10 +117349,22 @@
   }
  },
  "git": {
-  "sha": "6e74b0d8095d2f2714afce38389f5d16149cdc06",
+  "sha": "fc4c451ab2a81daa955db62650444987b85e7de6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "fc4c451",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/security.timing.test.ts",
+     "supabase/functions/_shared/security.ts",
+     "supabase/functions/spot-api/index.ts"
+    ]
+   },
    {
     "sha": "6e74b0d",
     "date": "2026-11-23",
@@ -117685,23 +117742,12 @@
      "src/pages/auditoria/Auditoria.tsx",
      "src/routes/AppRoutes.tsx"
     ]
-   },
-   {
-    "sha": "a8582d4",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(auth): preserva a rota e avisa quando a sessao expira (#329)",
-    "files": [
-     "src/features/auth/components/ProtectedRoute.tsx",
-     "src/features/auth/hooks/useAuth.tsx",
-     "src/pages/auth/Auth.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    19
+    20
    ],
    [
     "supabase/functions/webauthn-authenticate/index.ts",

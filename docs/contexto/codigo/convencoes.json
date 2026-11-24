@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (129)",
    "outro (43)",
-   "co-localizado (*.test) (39)"
+   "co-localizado (*.test) (40)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)",
    "fix(menu): marca o Dashboard como ativo na tela inicial (#362)",
    "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)",
    "fix(catalogo-spot): escapa o termo de busca antes do filtro or do PostgREST (#360)",
-   "fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)",
-   "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)"
+   "fix(edge): zera as falhas de tipo das 41 edge functions no deno check (#358)"
   ]
  },
  "pr_template": null,
