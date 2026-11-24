@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `19d6ce82f1cb4963f648cd8bb076f9aaad189ab8` (2026-11-24T17:26:56-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b1db1c7edc34abade4be78f5124e4acbb126b9a4` (2026-11-24T17:35:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (855), SQL (341), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (855), SQL (343), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1443 |
+| arquivos_total | 1445 |
 | arquivos_codigo | 928 |
 | linhas_codigo | 185879 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 335 |
+| migrations | 336 |
 | cron_jobs | 74 |
 | testes | 289 |
 | workflows | 15 |
@@ -338,10 +338,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (94)
+- docs/qa/05-PROGRESSO.md (95)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
-- docs/ci/README.md (11)
+- docs/ci/README.md (10)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
 - bun.lock (8)
 - docs/pendencias/_ordem.md (8)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `b1db1c7` fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)
 - 2026-11-24 `19d6ce8` fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)
 - 2026-11-24 `4186556` fix(a11y): "Reduzir movimento" passa a valer no framer-motion e limpa o codigo morto (#444)
 - 2026-11-24 `d93a2df` fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `3beb6da` fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)
 - 2026-11-24 `338a212` fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)
 - 2026-11-24 `9e585d8` fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)
-- 2026-11-24 `773117b` fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

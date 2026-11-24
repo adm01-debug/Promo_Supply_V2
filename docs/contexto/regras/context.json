@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "19d6ce82f1cb4963f648cd8bb076f9aaad189ab8",
+  "sha": "b1db1c7edc34abade4be78f5124e4acbb126b9a4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 20:27 UTC",
-  "files_total": 1444,
-  "code_files": 1271,
-  "code_lines": 213625,
+  "generated_at": "2026-11-24 20:36 UTC",
+  "files_total": 1446,
+  "code_files": 1273,
+  "code_lines": 213813,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "870218b71f9869e6",
+ "facts_hash": "6878dfb7549fd0ac",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 442,
    ".tsx": 413,
-   ".sql": 341,
+   ".sql": 343,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -20432,21 +20432,6 @@
      "budget_audit_logs"
     ]
    },
-   "get_cost_center_performance_report": {
-    "args": "p_organization_id UUID",
-    "returns": "TABLE (\n  cost_center_id UUID,\n  cost_center_name TEXT,\n  cost_center_code TEXT,\n  total_budget NUMERIC,\n  total_committed NUMERIC,\n  total_used NUMERIC,\n  available_balance NUMERIC,\n  usage_percentage NUMERIC,\n  alerts_count INTEGER\n)",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260512213701_ac0cbaa5-8764-4dbb-b95f-e6d7226345b1.sql",
-    "security_definer": false,
-    "search_path": false,
-    "body": "BEGIN RETURN QUERY SELECT cc.id as cost_center_id, cc.name as cost_center_name, cc.code as cost_center_code, COALESCE(SUM(db.valor_total), 0) as total_budget, COALESCE(SUM(db.valor_comprometido), 0) as total_committed, COALESCE(SUM(db.valor_utilizado), 0) as total_used, COALESCE(SUM(db.valor_total - db.valor_comprometido - db.valor_utilizado), 0) as available_balance, CASE WHEN SUM(db.valor_total) > 0 THEN ROUND((SUM(db.valor_comprometido + db.valor_utilizado) / SUM(db.valor_total)) * 100, 2) ELSE 0 END as usage_percentage, (SELECT COUNT(*)::INTEGER FROM public.audit_logs al WHERE al.entity_id::uuid = cc.id AND al.action_type = 'update' AND al.organization_id = p_organization_id) as alerts_c …",
-    "raises": [],
-    "tables": [
-     "audit_logs",
-     "cost_centers",
-     "department_budgets"
-    ]
-   },
    "update_budget_on_solicitacao_change": {
     "args": "",
     "returns": "trigger",
@@ -22589,6 +22574,19 @@
     "body": "BEGIN IF NEW.numero IS NULL OR btrim(NEW.numero) = '' THEN NEW.numero := public.generate_sequential_number('SOL', 'solicitacoes'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": []
+   },
+   "get_cost_center_performance_report": {
+    "args": "",
+    "returns": "TABLE(cost_center_id uuid, cost_center_name text, cost_center_code text, total_budget numeric, total_committed numeric, total_used numeric, available_balance numeric, usage_percentage numeric, alerts_count bigint)",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN RETURN QUERY SELECT p.cost_center_id, p.cost_center_name, p.cost_center_code, p.total_budget, p.total_committed, p.total_used, p.available_balance, p.usage_percentage, p.alerts_count FROM public.get_cost_center_performance_report(public.get_user_grupo_id()) AS p; END;",
+    "raises": [],
+    "tables": [
+     "get_cost_center_performance_report"
+    ]
    },
    "Returns": {
     "args": "",
@@ -27203,6 +27201,7 @@
    "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql",
    "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
+   "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
@@ -31185,6 +31184,38 @@
     "objkind": "function",
     "roles": "PUBLIC",
     "src": "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
    }
   ],
   "raises": [
@@ -34554,8 +34585,8 @@
   },
   {
    "module": "docs",
-   "files": 3,
-   "lines": 147,
+   "files": 4,
+   "lines": 226,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -34564,6 +34595,7 @@
    "file_list": [
     "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql",
     "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
+    "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
     "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql"
    ]
   },
@@ -36406,8 +36438,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 335,
-   "lines": 27309,
+   "files": 336,
+   "lines": 27418,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -77412,21 +77444,6 @@
      "budget_audit_logs"
     ]
    },
-   "get_cost_center_performance_report": {
-    "args": "p_organization_id UUID",
-    "returns": "TABLE (\n  cost_center_id UUID,\n  cost_center_name TEXT,\n  cost_center_code TEXT,\n  total_budget NUMERIC,\n  total_committed NUMERIC,\n  total_used NUMERIC,\n  available_balance NUMERIC,\n  usage_percentage NUMERIC,\n  alerts_count INTEGER\n)",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260512213701_ac0cbaa5-8764-4dbb-b95f-e6d7226345b1.sql",
-    "security_definer": false,
-    "search_path": false,
-    "body": "BEGIN RETURN QUERY SELECT cc.id as cost_center_id, cc.name as cost_center_name, cc.code as cost_center_code, COALESCE(SUM(db.valor_total), 0) as total_budget, COALESCE(SUM(db.valor_comprometido), 0) as total_committed, COALESCE(SUM(db.valor_utilizado), 0) as total_used, COALESCE(SUM(db.valor_total - db.valor_comprometido - db.valor_utilizado), 0) as available_balance, CASE WHEN SUM(db.valor_total) > 0 THEN ROUND((SUM(db.valor_comprometido + db.valor_utilizado) / SUM(db.valor_total)) * 100, 2) ELSE 0 END as usage_percentage, (SELECT COUNT(*)::INTEGER FROM public.audit_logs al WHERE al.entity_id::uuid = cc.id AND al.action_type = 'update' AND al.organization_id = p_organization_id) as alerts_c …",
-    "raises": [],
-    "tables": [
-     "audit_logs",
-     "cost_centers",
-     "department_budgets"
-    ]
-   },
    "update_budget_on_solicitacao_change": {
     "args": "",
     "returns": "trigger",
@@ -79569,6 +79586,19 @@
     "body": "BEGIN IF NEW.numero IS NULL OR btrim(NEW.numero) = '' THEN NEW.numero := public.generate_sequential_number('SOL', 'solicitacoes'); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": []
+   },
+   "get_cost_center_performance_report": {
+    "args": "",
+    "returns": "TABLE(cost_center_id uuid, cost_center_name text, cost_center_code text, total_budget numeric, total_committed numeric, total_used numeric, available_balance numeric, usage_percentage numeric, alerts_count bigint)",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN RETURN QUERY SELECT p.cost_center_id, p.cost_center_name, p.cost_center_code, p.total_budget, p.total_committed, p.total_used, p.available_balance, p.usage_percentage, p.alerts_count FROM public.get_cost_center_performance_report(public.get_user_grupo_id()) AS p; END;",
+    "raises": [],
+    "tables": [
+     "get_cost_center_performance_report"
+    ]
    },
    "Returns": {
     "args": "",
@@ -84564,6 +84594,7 @@
    "generate_sequential_number",
    "get_compras_dashboard_metrics",
    "get_compras_sla_metrics",
+   "get_cost_center_performance_report",
    "get_cron_job_staleness",
    "get_dashboard_kpis",
    "get_db_health_snapshot",
@@ -88491,6 +88522,38 @@
     "objkind": "function",
     "roles": "PUBLIC",
     "src": "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "get_cost_center_performance_report",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
    }
   ],
   "guards": [
@@ -91592,6 +91655,10 @@
   "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql": {
    "path": "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
    "lines": 15
+  },
+  "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql": {
+   "path": "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
+   "lines": 79
   },
   "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql": {
    "path": "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
@@ -121656,6 +121723,10 @@
    "path": "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
    "lines": 24
   },
+  "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql": {
+   "path": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+   "lines": 109
+  },
   "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql": {
    "path": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "lines": 124
@@ -121895,10 +121966,21 @@
   }
  },
  "git": {
-  "sha": "19d6ce82f1cb4963f648cd8bb076f9aaad189ab8",
+  "sha": "b1db1c7edc34abade4be78f5124e4acbb126b9a4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b1db1c7",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
+     "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
+    ]
+   },
    {
     "sha": "19d6ce8",
     "date": "2026-11-24",
@@ -122244,18 +122326,6 @@
      "src/components/compras/ContractModal.tsx",
      "src/components/compras/__tests__/contratoCamposRotulos.test.tsx"
     ]
-   },
-   {
-    "sha": "004f06d",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/FornecedorModal.tsx",
-     "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
-     "src/components/compras/pending-approvals/ApprovalModals.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122312,6 +122382,14 @@
     2
    ],
    [
+    "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+    1
+   ],
+   [
     "src/features/layout/__tests__/menuMobile.test.tsx",
     1
    ],
@@ -122329,14 +122407,6 @@
    ],
    [
     "src/components/mobile/BottomNavigation.tsx",
-    1
-   ],
-   [
-    "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/HeaderActions.tsx",
     1
    ]
   ]
