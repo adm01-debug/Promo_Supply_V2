@@ -6,7 +6,6 @@ import {
   Plus, 
   Trophy, 
   Loader2, 
-  Bell, 
   Sparkles, 
   TrendingDown,
   Brain,
@@ -16,7 +15,6 @@ import {
   TrendingUp,
   Filter
 } from "lucide-react";
-import { useAuth } from "@/features/auth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
@@ -45,10 +43,40 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, formatCurrency } from "@/lib/utils";
 
+export interface ResumoFollowUpCotacao {
+  ultimoFollowUpEm: string | null;
+  followUpStatus: string | null;
+  horasDeAtraso: number | null;
+}
+
+/**
+ * Traduz o que o agendador gravou em `cotacoes` (`last_follow_up_at` e
+ * `follow_up_status`) para o painel de follow-up. Nao existe disparo manual:
+ * o cron `check-cotacao-followup` e o unico caminho de envio.
+ */
+export function resumoFollowUpDaCotacao(
+  cotacao?: {
+    created_at?: string | null;
+    last_follow_up_at?: string | null;
+    follow_up_status?: string | null;
+  } | null,
+  agora: number = Date.now(),
+): ResumoFollowUpCotacao {
+  if (!cotacao) {
+    return { ultimoFollowUpEm: null, followUpStatus: null, horasDeAtraso: null };
+  }
+  const criadaEm = cotacao.created_at ? new Date(cotacao.created_at).getTime() : Number.NaN;
+  const horasDeAtraso = Number.isNaN(criadaEm) ? null : Math.floor((agora - criadaEm) / 36e5);
+  return {
+    ultimoFollowUpEm: cotacao.last_follow_up_at ?? null,
+    followUpStatus: cotacao.follow_up_status ?? null,
+    horasDeAtraso,
+  };
+}
+
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("id");
-  const { hasRole } = useAuth();
   
   const { solicitacoes, loading: loadingSolicitacoes } = useSolicitacoes();
   const { fornecedores } = useFornecedores();
@@ -56,7 +84,6 @@ const Cotacao = () => {
     solicitacao_id: solicitacaoId || undefined,
   });
   
-  const [isRunningFollowUp, setIsRunningFollowUp] = useState(false);
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
@@ -72,6 +99,7 @@ const Cotacao = () => {
 
   const adaptedCotacoes = useMemo(() => adaptCotacoesFromDB(cotacoes), [cotacoes]);
   const allCotacoes = useMemo(() => [...adaptedCotacoes, ...cotacoesAPI], [adaptedCotacoes, cotacoesAPI]);
+  const followUp = useMemo(() => resumoFollowUpDaCotacao(cotacoes[0]), [cotacoes]);
 
   const handleSelecionar = useCallback(async (id: string, justificativa?: string) => {
     setFornecedorSelecionado(id);
@@ -122,21 +150,6 @@ const Cotacao = () => {
     }
   };
 
-  const handleRunFollowUp = async () => {
-    setIsRunningFollowUp(true);
-    try {
-      // Simulation of Neural Follow-up based on user prompt
-      const supplierName = allCotacoes[0]?.fornecedor || "Fornecedor";
-      toast.info(`Neural Follow-up: "Olá ${supplierName}, tudo bem? Notei que ainda não recebemos sua atualização sobre a caneca de alumínio. Consegue nos enviar hoje?"`, {
-        duration: 5000,
-      });
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('Smart follow-up executed via Promo AI Connect');
-    } finally {
-      setIsRunningFollowUp(false);
-    }
-  };
-
   if (loadingSolicitacoes) {
     return (
       <div className="space-y-6">
@@ -178,11 +191,6 @@ const Cotacao = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              {hasRole(['admin', 'coordinator']) && (
-                <EliteButton variant="outline" onClick={handleRunFollowUp} loading={isRunningFollowUp} className="h-11 px-5 rounded-xl border-white/10 hover:bg-white/5 font-black text-[10px] tracking-widest uppercase text-zinc-400">
-                  <Bell className="w-4 h-4 mr-2" /> FOLLOW-UP
-                </EliteButton>
-              )}
               <EliteButton onClick={() => setShowManualModal(true)} className="h-11 px-8 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 font-black text-[10px] tracking-widest uppercase">
                 <Plus className="w-4 h-4 mr-2" /> ADD QUOTE
               </EliteButton>
@@ -325,7 +333,10 @@ const Cotacao = () => {
 
               <NeuralFollowUpMonitor 
                 supplierName={allCotacoes[0]?.fornecedor || "Strategic Partner"} 
-                itemName={solicitacao.titulo} 
+                itemName={solicitacao.titulo}
+                ultimoFollowUpEm={followUp.ultimoFollowUpEm}
+                followUpStatus={followUp.followUpStatus}
+                horasDeAtraso={followUp.horasDeAtraso}
               />
             </div>
 
