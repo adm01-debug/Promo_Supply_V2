@@ -77,7 +77,7 @@ const sections: NavSection[] = [
     id: "overview",
     label: "Visão Geral",
     items: [
-      { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+      { title: "Dashboard", icon: LayoutDashboard, href: "/compras" },
       { title: "Executivo", icon: TrendingUp, href: "/dashboard-executivo" },
     ],
   },
@@ -155,8 +155,9 @@ const sections: NavSection[] = [
   },
 ];
 
-function isItemActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
+export function isItemActive(pathname: string, href: string) {
+  // "/" redireciona para "/compras" (AppRoutes.tsx:84): a raiz e a rota de destino sao a mesma tela
+  if (href === "/" || href === "/compras") return pathname === "/" || pathname === "/compras";
   return pathname === href || pathname.startsWith(href + "/");
 }
 
