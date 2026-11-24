@@ -35,9 +35,10 @@ import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBou
 import { useSolicitacoes } from "@/features/solicitacoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
+import { useAuth } from "@/features/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, buildQuoteAnalysis, fetchRegisteredQuotes, type CotacaoAPI } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, buildQuoteAnalysis, fetchRegisteredQuotes, unirCotacoesPorId, type CotacaoAPI } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,6 +84,7 @@ const Cotacao = () => {
   const { cotacoes, createCotacao, selectCotacao } = useCotacoes({
     solicitacao_id: solicitacaoId || undefined,
   });
+  const { organizationId } = useAuth();
   
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
@@ -98,7 +100,7 @@ const Cotacao = () => {
   }, [solicitacoes, solicitacaoId]);
 
   const adaptedCotacoes = useMemo(() => adaptCotacoesFromDB(cotacoes), [cotacoes]);
-  const allCotacoes = useMemo(() => [...adaptedCotacoes, ...cotacoesAPI], [adaptedCotacoes, cotacoesAPI]);
+  const allCotacoes = useMemo(() => unirCotacoesPorId(adaptedCotacoes, cotacoesAPI), [adaptedCotacoes, cotacoesAPI]);
   const followUp = useMemo(() => resumoFollowUpDaCotacao(cotacoes[0]), [cotacoes]);
 
   const handleSelecionar = useCallback(async (id: string, justificativa?: string) => {
@@ -137,7 +139,7 @@ const Cotacao = () => {
     }
     setBuscaStatus('searching');
     try {
-      const results = await fetchRegisteredQuotes(solicitacaoId, solicitacao?.quantidade || 100);
+      const results = await fetchRegisteredQuotes(solicitacaoId, solicitacao?.quantidade || 100, organizationId);
       setCotacoesAPI(results);
       setBuscaStatus('done');
       if (results.length > 0) {
@@ -288,8 +290,8 @@ const Cotacao = () => {
                     <h3 className="font-black uppercase tracking-tight text-white text-lg">Quotation Benchmarking ({allCotacoes.length})</h3>
                   </div>
                   <div className="flex gap-3">
-                    <ComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
-                    <VisualComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
+                    <ComparadorCotacoes cotacoes={allCotacoes} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
+                    <VisualComparadorCotacoes cotacoes={allCotacoes} quantidade={solicitacao.quantidade} onSelecionar={handleSelecionar} />
                   </div>
                 </div>
                 <div className="p-8">

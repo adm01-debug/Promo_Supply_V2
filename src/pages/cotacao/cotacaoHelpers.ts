@@ -177,17 +177,40 @@ export function adaptCotacoesFromDB(cotacoes: CotacaoRow[]): CotacaoAPI[] {
 }
 
 /**
+ * Une as cotacoes carregadas pelo hook com as da busca manual sem repetir id.
+ * Os dois conjuntos passaram a usar o mesmo recorte (solicitacao + organizacao),
+ * entao a busca devolve linhas que o hook ja carrega; sem deduplicar, a mesma
+ * cotacao aparecia duas vezes no ranking e nos comparadores.
+ */
+export function unirCotacoesPorId(doHook: CotacaoAPI[], daBusca: CotacaoAPI[]): CotacaoAPI[] {
+  const vistos = new Set<string>();
+  const uniao: CotacaoAPI[] = [];
+  for (const cotacao of [...doHook, ...daBusca]) {
+    if (vistos.has(cotacao.id)) continue;
+    vistos.add(cotacao.id);
+    uniao.push(cotacao);
+  }
+  return uniao;
+}
+
+/**
  * Busca cotacoes ja registradas dos fornecedores ativos numa solicitacao.
  * Nao inventa preco: fornecedor sem cotacao registrada nao apareceu na busca.
+ * O recorte de organizacao e o mesmo de `useCotacoes`: sem ele a busca devolvia
+ * linhas que o hook nunca carrega, e a selecao do fornecedor nao encontrava o
+ * registro real para gravar.
  */
 export async function fetchRegisteredQuotes(
   solicitacaoId: string,
-  quantidade: number
+  quantidade: number,
+  organizationId: string | null | undefined,
 ): Promise<CotacaoAPI[]> {
+  if (!organizationId) return [];
   const { data, error } = await supabase
     .from('cotacoes')
     .select('id, fornecedor_id, valor_unitario, quantidade, valor_frete, prazo_entrega, condicao_pagamento, valor_total, selecionada, score_preco, score_prazo, score_qualidade, score_total, fornecedor:fornecedores(nome_fantasia, razao_social)')
     .eq('solicitacao_id', solicitacaoId)
+    .eq('organization_id', organizationId)
     .not('valor_unitario', 'is', null);
 
   if (error) return [];
