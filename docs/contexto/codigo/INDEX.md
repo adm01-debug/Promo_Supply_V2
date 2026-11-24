@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3edfbd252e7a0cabdca5cc61ed632cca53c0bb3f` (2026-11-24T11:09:57-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5c29b8cdaa0eb04167403735affca9faf7655301` (2026-11-24T11:14:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1411 |
 | arquivos_codigo | 906 |
-| linhas_codigo | 182892 |
+| linhas_codigo | 182908 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `5c29b8c` fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)
 - 2026-11-24 `3edfbd2` fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)
 - 2026-11-24 `d2d869a` fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)
 - 2026-11-24 `cd9b099` fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `ea97162` fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)
 - 2026-11-24 `cd7093a` fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)
 - 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
-- 2026-11-24 `57ebeb0` feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

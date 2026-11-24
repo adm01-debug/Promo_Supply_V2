@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3edfbd252e7a0cabdca5cc61ed632cca53c0bb3f",
+  "commit": "5c29b8cdaa0eb04167403735affca9faf7655301",
   "branch": "main",
-  "data_commit": "2026-11-24T11:09:57-03:00",
+  "data_commit": "2026-11-24T11:14:25-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5c29b8c",
+    "data": "2026-11-24",
+    "assunto": "fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)"
+   },
    {
     "sha": "3edfbd2",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "8c81633",
     "data": "2026-11-24",
     "assunto": "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)"
-   },
-   {
-    "sha": "005038d",
-    "data": "2026-11-24",
-    "assunto": "fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)"
    }
   ],
   "arquivos_mudados_7d": 457,
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1411,
   "arquivos_codigo": 906,
-  "linhas_codigo": 182892,
+  "linhas_codigo": 182908,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 116,
-   "linhas": 19222
+   "linhas": 19238
   },
   "tailwind.config.ts": {
    "arquivos": 1,

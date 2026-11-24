@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3edfbd252e7a0cabdca5cc61ed632cca53c0bb3f",
+  "sha": "5c29b8cdaa0eb04167403735affca9faf7655301",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 14:11 UTC",
+  "generated_at": "2026-11-24 14:15 UTC",
   "files_total": 1412,
   "code_files": 1239,
-  "code_lines": 210076,
+  "code_lines": 210092,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "8c1a2dae3a412bf6",
+ "facts_hash": "ef08dbb1248da412",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -32350,6 +32350,7 @@
     "doc": "",
     "errors": [
      "insert solicitacoes: ${error.message}",
+     "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
      "numero: ${numeroError.message}"
     ],
     "side_effects": [],
@@ -36133,7 +36134,7 @@
   {
    "module": "supabase/functions",
    "files": 116,
-   "lines": 19222,
+   "lines": 19238,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -42422,6 +42423,10 @@
    {
     "file": "supabase/functions/receive-os-sync/index.ts",
     "msg": "insert solicitacoes: ${error.message}"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "msg": "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)"
    },
    {
     "file": "supabase/functions/receive-os-sync/index.ts",
@@ -51013,6 +51018,11 @@
     "file": "supabase/functions/receive-os-sync/index.ts",
     "name": "SOURCE",
     "value": "\"receive-os-sync\""
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/index.ts",
+    "name": "MAX_TENTATIVAS_NUMERO",
+    "value": "5"
    },
    {
     "file": "supabase/functions/spot-api/index.ts",
@@ -117309,7 +117319,7 @@
   },
   "supabase/functions/receive-os-sync/index.ts": {
    "path": "supabase/functions/receive-os-sync/index.ts",
-   "lines": 250,
+   "lines": 266,
    "tables": [
     {
      "table": "profiles",
@@ -117362,12 +117372,17 @@
    ],
    "errors": [
     "insert solicitacoes: ${error.message}",
+    "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
     "numero: ${numeroError.message}"
    ],
    "params": [
     {
      "name": "SOURCE",
      "value": "\"receive-os-sync\""
+    },
+    {
+     "name": "MAX_TENTATIVAS_NUMERO",
+     "value": "5"
     }
    ],
    "status_values": [
@@ -120596,10 +120611,19 @@
   }
  },
  "git": {
-  "sha": "3edfbd252e7a0cabdca5cc61ed632cca53c0bb3f",
+  "sha": "5c29b8cdaa0eb04167403735affca9faf7655301",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5c29b8c",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: regera numero da solicitacao quando colide no reenvio do Champions (#424)",
+    "files": [
+     "supabase/functions/receive-os-sync/index.ts"
+    ]
+   },
    {
     "sha": "3edfbd2",
     "date": "2026-11-24",
@@ -120932,27 +120956,20 @@
      "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
      "src/pages/recebimento/pedidoComplementar.ts"
     ]
-   },
-   {
-    "sha": "c4f8690",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: edge de escalonamento passa a usar o status que o banco aceita (#390)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/check-approval-escalations/index.test.ts",
-     "supabase/functions/check-approval-escalations/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    25
    ],
    [
     "eslint.config.js",
     3
+   ],
+   [
+    "supabase/functions/receive-os-sync/index.ts",
+    2
    ],
    [
     "src/components/compras/EnhancedBulkActionsBar.tsx",
@@ -121020,10 +121037,6 @@
    ],
    [
     "src/components/compras/pending-approvals/ApprovalModals.tsx",
-    1
-   ],
-   [
-    "src/components/compras/CotacaoManualModal.tsx",
     1
    ]
   ]

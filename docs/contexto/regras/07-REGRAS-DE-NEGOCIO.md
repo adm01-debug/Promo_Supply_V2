@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3edfbd252e` · branch `main` · 2026-11-24 14:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5c29b8cdaa` · branch `main` · 2026-11-24 14:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1834,6 +1834,7 @@ _nenhum item encontrado_
 | `MAX_TITULO` | `200` | `supabase/functions/punchout-receive/solicitation.ts` |
 | `MAX_DESCRICAO` | `2000` | `supabase/functions/punchout-receive/solicitation.ts` |
 | `SOURCE` | `"receive-os-sync"` | `supabase/functions/receive-os-sync/index.ts` |
+| `MAX_TENTATIVAS_NUMERO` | `5` | `supabase/functions/receive-os-sync/index.ts` |
 | `LANG` | `"PT"` | `supabase/functions/spot-api/index.ts` |
 | `REQUEST_TIMEOUT_MS` | `120_000` | `supabase/functions/spot-api/index.ts` |
 | `UPSERT_BATCH` | `500` | `supabase/functions/spot-api/index.ts` |
@@ -2439,7 +2440,7 @@ _nenhum item encontrado_
 | Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
 | Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
-| … +269 linhas — lista completa em `context.json` | |
+| … +270 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
