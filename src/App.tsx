@@ -21,9 +21,9 @@ import { NavigationProvider } from "@/hooks/useNavigation";
 const AppContent = () => {
   useNProgress();
   return (
-    <main id="main-content" className="relative">
+    <div className="relative">
       <AnimatedRoutes />
-    </main>
+    </div>
   );
 };
 

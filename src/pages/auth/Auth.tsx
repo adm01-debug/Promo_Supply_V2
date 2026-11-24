@@ -169,7 +169,7 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <main id="main-content" tabIndex={-1} className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4 animate-fade-in">
           <div className="relative">
             <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg animate-pulse">
@@ -181,14 +181,14 @@ const Auth = () => {
           </div>
           <p className="text-muted-foreground text-sm">Carregando...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   const outfit = { fontFamily: 'Outfit, sans-serif' } as const;
 
   return (
-    <div className="min-h-screen w-full flex relative overflow-hidden bg-[#05020a] text-white">
+    <main id="main-content" tabIndex={-1} className="min-h-screen w-full flex relative overflow-hidden bg-[#05020a] text-white">
       <AuthBackground />
 
       {/* Left Panel - Branding & Features */}
@@ -375,7 +375,7 @@ const Auth = () => {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
