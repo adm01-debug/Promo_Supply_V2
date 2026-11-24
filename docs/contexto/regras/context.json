@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2d1e5120bb7aec1d585dd4cfe5df98a2179d0d06",
+  "sha": "004f06d317a0febd325f7ab6edba4a9d75a6a41d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:24 UTC",
-  "files_total": 1410,
-  "code_files": 1237,
-  "code_lines": 209838,
+  "generated_at": "2026-11-24 13:32 UTC",
+  "files_total": 1411,
+  "code_files": 1238,
+  "code_lines": 209952,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7f8f26a389ff32a1",
+ "facts_hash": "14d46da99b89fcfb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 398,
+   ".tsx": 399,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33738,7 +33738,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 311,
+  "components_count": 312,
   "hooks": [
    {
     "name": "useContacts",
@@ -34777,8 +34777,8 @@
   },
   {
    "module": "src/components",
-   "files": 275,
-   "lines": 50997,
+   "files": 276,
+   "lines": 51111,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -59388,6 +59388,30 @@
    {
     "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
     "name": "os campos de valores recebem rotulo, vinculo de erro e o anexo aponta para o input de arquivo"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "Campos de formulario com nome acessivel (etapa 238)"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "o modal de rejeicao associa o rotulo ao motivo"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "o modal de detalhes associa o rotulo ao comentario"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "o cadastro de fornecedor nomeia os campos, inclusive os dois selects e os ramos"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "nenhum rotulo do cadastro de fornecedor sobra sem destino"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    "name": "o botao so-icone de remover ramo tem nome com o ramo em questao"
    },
    {
     "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
@@ -96391,6 +96415,19 @@
     "os campos de valores recebem rotulo, vinculo de erro e o anexo aponta para o input de arquivo"
    ]
   },
+  "src/components/compras/__tests__/formulariosRotulos2.test.tsx": {
+   "path": "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+   "lines": 112,
+   "is_test": true,
+   "tests": [
+    "Campos de formulario com nome acessivel (etapa 238)",
+    "o modal de rejeicao associa o rotulo ao motivo",
+    "o modal de detalhes associa o rotulo ao comentario",
+    "o cadastro de fornecedor nomeia os campos, inclusive os dois selects e os ramos",
+    "nenhum rotulo do cadastro de fornecedor sobra sem destino",
+    "o botao so-icone de remover ramo tem nome com o ramo em questao"
+   ]
+  },
   "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx": {
    "path": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
    "lines": 116,
@@ -97257,7 +97294,7 @@
   },
   "src/components/compras/pending-approvals/ApprovalModals.tsx": {
    "path": "src/components/compras/pending-approvals/ApprovalModals.tsx",
-   "lines": 193,
+   "lines": 195,
    "exports": [
     "const RejectModal",
     "const DetailsModal"
@@ -120527,10 +120564,22 @@
   }
  },
  "git": {
-  "sha": "2d1e5120bb7aec1d585dd4cfe5df98a2179d0d06",
+  "sha": "004f06d317a0febd325f7ab6edba4a9d75a6a41d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "004f06d",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/FornecedorModal.tsx",
+     "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+     "src/components/compras/pending-approvals/ApprovalModals.tsx"
+    ]
+   },
    {
     "sha": "2d1e512",
     "date": "2026-11-24",
@@ -120873,17 +120922,6 @@
      "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
      "src/pages/acompanhamento/__tests__/statusKanban.test.ts"
     ]
-   },
-   {
-    "sha": "d0c644d",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120924,16 +120962,24 @@
     2
    ],
    [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    2
-   ],
-   [
     "src/hooks/useDevolucoes.ts",
     2
    ],
    [
     "src/hooks/useFornecedores.ts",
     2
+   ],
+   [
+    "src/components/compras/FornecedorModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/formulariosRotulos2.test.tsx",
+    1
+   ],
+   [
+    "src/components/compras/pending-approvals/ApprovalModals.tsx",
+    1
    ],
    [
     "src/components/compras/__tests__/formulariosRotulos.test.tsx",
@@ -120957,14 +121003,6 @@
    ],
    [
     "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/RecebimentoOffline.tsx",
     1
    ]
   ]

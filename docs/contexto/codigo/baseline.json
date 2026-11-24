@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2d1e5120bb7aec1d585dd4cfe5df98a2179d0d06",
+  "commit": "004f06d317a0febd325f7ab6edba4a9d75a6a41d",
   "branch": "main",
-  "data_commit": "2026-11-24T10:23:32-03:00",
+  "data_commit": "2026-11-24T10:31:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "004f06d",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)"
+   },
    {
     "sha": "2d1e512",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "a865fce",
     "data": "2026-11-24",
     "assunto": "fix: pedido complementar herda organization_id do pedido original (#397)"
-   },
-   {
-    "sha": "c4f8690",
-    "data": "2026-11-24",
-    "assunto": "fix: edge de escalonamento passa a usar o status que o banco aceita (#390)"
    }
   ],
-  "arquivos_mudados_7d": 455,
+  "arquivos_mudados_7d": 458,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 183
+    "mudancas": 186
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -145,7 +145,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "pasta": "src/components/ui",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1409,
-  "arquivos_codigo": 904,
-  "linhas_codigo": 182654,
+  "arquivos_total": 1410,
+  "arquivos_codigo": 905,
+  "linhas_codigo": 182768,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 268,
+  "testes": 269,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 275,
-   "linhas": 50997
+   "arquivos": 276,
+   "linhas": 51111
   },
   "src/features": {
    "arquivos": 86,
@@ -650,7 +650,7 @@
   }
  ],
  "qualidade": {
-  "any": 143,
+  "any": 145,
   "console_log": 85,
   "ts_ignore": 0,
   "eslint_disable": 1,

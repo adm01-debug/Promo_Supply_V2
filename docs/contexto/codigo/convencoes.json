@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (174)",
+   "co-localizado (__tests__) (175)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)",
    "fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)",
    "chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)",
    "fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)",
-   "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)",
-   "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)"
+   "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)"
   ]
  },
  "pr_template": null,

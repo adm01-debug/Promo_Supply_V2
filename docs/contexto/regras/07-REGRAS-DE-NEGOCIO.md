@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2d1e5120bb` · branch `main` · 2026-11-24 13:24 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `004f06d317` · branch `main` · 2026-11-24 13:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2457,7 +2457,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3197 testes em 217 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3203 testes em 218 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2585,6 +2585,7 @@ _nenhum item encontrado_
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `src/components/compras/__tests__/contractFornecedorId.test.tsx` | 6 | ContractModal grava o fornecedor do cadastro · oferece so os fornecedores ativos, com id real e sem sufixo de status · sem fornecedor escolhido nao salva e avisa · salva supplier_id com o id do cadastro e supplier_name como copia congelada … |
+| `src/components/compras/__tests__/formulariosRotulos2.test.tsx` | 6 | Campos de formulario com nome acessivel (etapa 238) · o modal de rejeicao associa o rotulo ao motivo · o modal de detalhes associa o rotulo ao comentario · o cadastro de fornecedor nomeia os campos, inclusive os dois selects e os ramos … |
 | `src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx` | 6 | KanbanBoard — entrega só pelo Recebimento · não grava nada quando o card é arrastado para a coluna de entrega · marca a coluna como somente leitura na interface · continua gravando nas outras colunas … |
 | `src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx` | 6 | PedidoMobileCard - cartao acessivel pelo teclado (etapa 235) · o cartao expoe papel de botao, nome e entra na tabulacao · Enter abre os detalhes · espaco abre os detalhes … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
