@@ -52,11 +52,12 @@ export const RejectModal = ({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
+            <label htmlFor="motivo-rejeicao" className="text-sm font-medium flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Motivo da Rejeição *
             </label>
             <Textarea
+              id="motivo-rejeicao"
               value={rejectReason}
               onChange={(e) => onRejectReasonChange(e.target.value)}
               placeholder="Descreva o motivo da rejeição..."
@@ -158,11 +159,12 @@ export const DetailsModal = ({
         </div>
         
         <div className="space-y-2">
-          <label className="text-sm font-medium flex items-center gap-2">
+          <label htmlFor="comentario-aprovacao" className="text-sm font-medium flex items-center gap-2">
             <MessageSquare className="w-4 h-4" />
             Comentários da Aprovação
           </label>
           <Textarea
+            id="comentario-aprovacao"
             value={approveComment}
             onChange={(e) => onApproveCommentChange?.(e.target.value)}
             placeholder="Adicione um comentário ou instrução para o solicitante..."
