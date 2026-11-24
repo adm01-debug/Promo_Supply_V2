@@ -24,7 +24,8 @@ import {
   TrendingUp,
   FileText,
   History,
-  X
+  X,
+  RefreshCw
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,6 +49,14 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+// Erro do PostgREST e objeto simples {message, details, hint}, nao instanceof Error:
+// String(error) renderizaria "[object Object]" na tela.
+const mensagemDeErro = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  const msg = (error as { message?: string } | null)?.message;
+  return typeof msg === "string" && msg ? msg : "Falha ao consultar o acompanhamento.";
+};
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,7 +95,9 @@ const Acompanhamento = () => {
 
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes'] });
 
-  const { data: pedidosDB = [], isLoading: isLoadingPedidos } = useQuery({
+  // Falha de carga nao e lista vazia: sem isError a tela anunciava KPIs em zero e
+  // "Sem Fluxos Correspondentes" mesmo quando a consulta tinha falhado.
+  const { data: pedidosDB = [], isLoading: isLoadingPedidos, isError: erroPedidos, error: erroPedidosDetalhe, refetch: refetchPedidos } = useQuery({
     queryKey: ['acompanhamento-pedidos'],
     queryFn: async () => {
       const { data, error } = await supabase.from('pedidos').select('id, numero, status, valor_total, data_previsao, data_emissao, data_entrega, created_at, fornecedor_id, solicitacao_id').not('status', 'in', '(cancelado)');
@@ -95,7 +106,7 @@ const Acompanhamento = () => {
     },
   });
 
-  const { data: solicitacoesDB = [] } = useQuery({
+  const { data: solicitacoesDB = [], isError: erroSolicitacoes, error: erroSolicitacoesDetalhe, refetch: refetchSolicitacoes } = useQuery({
     queryKey: ['acompanhamento-solicitacoes'],
     queryFn: async () => {
       const { data, error } = await supabase.from('solicitacoes').select('id, descricao, quantidade, data_necessidade, status, created_at');
@@ -104,7 +115,7 @@ const Acompanhamento = () => {
     },
   });
 
-  const { data: fornecedoresDB = [] } = useQuery({
+  const { data: fornecedoresDB = [], isError: erroFornecedores, error: erroFornecedoresDetalhe, refetch: refetchFornecedores } = useQuery({
     queryKey: ['acompanhamento-fornecedores'],
     queryFn: async () => {
       const { data, error } = await supabase.from('fornecedores').select('id, razao_social, nome_fantasia');
@@ -113,7 +124,7 @@ const Acompanhamento = () => {
     },
   });
 
-  const { data: fiscalDocs = [] } = useQuery({
+  const { data: fiscalDocs = [], isError: erroFiscalDocs, error: erroFiscalDocsDetalhe, refetch: refetchFiscalDocs } = useQuery({
     queryKey: ['acompanhamento-fiscal-docs', pedidoDetalhes?.pedidoUuid],
     queryFn: async () => {
       if (!pedidoDetalhes?.pedidoUuid) return [];
@@ -128,7 +139,7 @@ const Acompanhamento = () => {
     enabled: !!pedidoDetalhes?.pedidoUuid && (detalheTipo === 'nfe' || detalheTipo === 'logs'),
   });
 
-  const { data: fiscalLogs = [] } = useQuery({
+  const { data: fiscalLogs = [], isError: erroFiscalLogs, error: erroFiscalLogsDetalhe, refetch: refetchFiscalLogs } = useQuery({
     queryKey: ['acompanhamento-fiscal-logs', pedidoDetalhes?.pedidoUuid],
     queryFn: async () => {
       if (!pedidoDetalhes?.pedidoUuid || fiscalDocs.length === 0) return [];
@@ -144,6 +155,19 @@ const Acompanhamento = () => {
     },
     enabled: !!pedidoDetalhes?.pedidoUuid && detalheTipo === 'logs' && fiscalDocs.length > 0,
   });
+
+  const erroCarga = erroPedidos || erroSolicitacoes || erroFornecedores;
+  const mensagemCarga = erroPedidos
+    ? mensagemDeErro(erroPedidosDetalhe)
+    : erroSolicitacoes
+      ? mensagemDeErro(erroSolicitacoesDetalhe)
+      : mensagemDeErro(erroFornecedoresDetalhe);
+
+  const tentarDeNovo = () => {
+    if (erroPedidos) void refetchPedidos();
+    if (erroSolicitacoes) void refetchSolicitacoes();
+    if (erroFornecedores) void refetchFornecedores();
+  };
 
   const pedidosState = useMemo<AcompanhamentoPedido[]>(() => {
     return pedidosDB.map(p => {
@@ -224,6 +248,32 @@ const Acompanhamento = () => {
         </div>
         <Skeleton className="h-48 w-full rounded-3xl" />
       </div>
+    );
+  }
+
+  if (erroCarga) {
+    return (
+      <ModuleErrorBoundary module="acompanhamento">
+        <ElitePageWrapper>
+          <Card role="alert" className="p-10 border-rose-500/20 bg-rose-500/5 rounded-[2.5rem]">
+            <div className="flex flex-col sm:flex-row items-start gap-5">
+              <div className="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-400 shrink-0">
+                <AlertTriangle className="w-7 h-7" />
+              </div>
+              <div className="space-y-3">
+                <h2 className="text-2xl font-black tracking-tight uppercase">Não foi possível carregar o acompanhamento</h2>
+                <p className="text-sm text-muted-foreground">
+                  A lista vazia não significa que não há pedidos: a consulta falhou, então os contadores e o pipeline estariam zerados. Nenhum registro foi alterado.
+                </p>
+                <p className="text-xs font-mono text-rose-500 bg-rose-500/10 rounded-xl p-3 break-all">{mensagemCarga}</p>
+                <Button variant="outline" className="gap-2" onClick={tentarDeNovo}>
+                  <RefreshCw className="w-4 h-4" /> Tentar de novo
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </ElitePageWrapper>
+      </ModuleErrorBoundary>
     );
   }
 
@@ -548,7 +598,15 @@ const Acompanhamento = () => {
                 {detalheTipo === 'nfe' && (
                   <div className="space-y-4">
                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Documentos Fiscais</h3>
-                    {fiscalDocs.length === 0 && (
+                    {erroFiscalDocs && (
+                      <Card role="alert" className="p-6 rounded-3xl border-destructive/30 bg-destructive/5">
+                        <p className="text-sm text-destructive">Não foi possível carregar os documentos fiscais: {mensagemDeErro(erroFiscalDocsDetalhe)}</p>
+                        <Button variant="outline" size="sm" className="mt-3 gap-2" onClick={() => { void refetchFiscalDocs(); }}>
+                          <RefreshCw className="w-4 h-4" /> Tentar de novo
+                        </Button>
+                      </Card>
+                    )}
+                    {!erroFiscalDocs && fiscalDocs.length === 0 && (
                       <Card className="p-6 rounded-3xl border-border/50 bg-background/40">
                         <p className="text-sm text-muted-foreground">Nenhuma NF-e vinculada a este pedido.</p>
                       </Card>
@@ -588,7 +646,15 @@ const Acompanhamento = () => {
                 {detalheTipo === 'logs' && (
                   <div className="space-y-4">
                     <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Histórico de Logs</h3>
-                    {fiscalLogs.length === 0 && (
+                    {erroFiscalLogs && (
+                      <Card role="alert" className="p-6 rounded-3xl border-destructive/30 bg-destructive/5">
+                        <p className="text-sm text-destructive">Não foi possível carregar o histórico fiscal: {mensagemDeErro(erroFiscalLogsDetalhe)}</p>
+                        <Button variant="outline" size="sm" className="mt-3 gap-2" onClick={() => { void refetchFiscalLogs(); }}>
+                          <RefreshCw className="w-4 h-4" /> Tentar de novo
+                        </Button>
+                      </Card>
+                    )}
+                    {!erroFiscalLogs && fiscalLogs.length === 0 && (
                       <Card className="p-6 rounded-3xl border-border/50 bg-background/40">
                         <p className="text-sm text-muted-foreground">Nenhum evento fiscal registrado para este pedido.</p>
                       </Card>
