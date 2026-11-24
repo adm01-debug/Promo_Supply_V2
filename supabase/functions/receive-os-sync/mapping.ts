@@ -79,7 +79,8 @@ function isoDate(value: unknown): string | null {
 }
 
 export interface SolicitacaoDraft {
-  numero: string;
+  /** null = o trigger trg_assign_numero_solicitacao gera dentro do INSERT. */
+  numero: string | null;
   titulo: string;
   descricao: string;
   tipo: "material";
@@ -124,7 +125,7 @@ export function validateOsPayload(payload: OsPayload): { osId: string; quantidad
 
 export function buildSolicitacaoDraft(
   payload: OsPayload,
-  opts: { numero: string; tenantId: string },
+  opts: { numero?: string | null; tenantId: string },
 ): SolicitacaoDraft {
   const { osId, quantidade: qtd } = validateOsPayload(payload);
   const osNumber = text(payload.os_number, 120)!;
@@ -158,7 +159,7 @@ export function buildSolicitacaoDraft(
   ].filter(Boolean);
 
   return {
-    numero: opts.numero,
+    numero: opts.numero ?? null,
     titulo: `Compra p/ ${documento} ${osNumber} — ${produto}`.slice(0, 200),
     descricao: descricaoPartes.join("\n").slice(0, 4000),
     tipo: "material",

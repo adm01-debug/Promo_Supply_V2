@@ -10,24 +10,16 @@ export async function createSolicitacao(
   payload: OsPayload,
   tenantId: string,
 ): Promise<{ id: string; numero: string }> {
-  // generate_sequential_number trava o advisory lock na propria transacao do
-  // RPC, que termina antes do INSERT daqui. Duas chamadas simultaneas recebem o
-  // mesmo numero e a segunda quebra em solicitacoes_numero_key. Regerar e
-  // tentar de novo resolve: a tentativa seguinte ja enxerga a linha comitada.
+  // O numero NAO e' gerado aqui: quem preenche e' o trigger BEFORE INSERT
+  // trg_assign_numero_solicitacao, dentro da transacao do INSERT. Antes, o
+  // generate_sequential_number por RPC soltava o advisory lock no fim da
+  // transacao do RPC e duas entregas simultaneas pegavam o mesmo numero.
+  // O retry abaixo e' rede de seguranca para colisao residual (tela gravando
+  // numero por fora enquanto a entrega acontece).
   const MAX_TENTATIVAS_NUMERO = 5;
+  const draft = buildSolicitacaoDraft(payload, { tenantId });
 
   for (let tentativa = 1; ; tentativa += 1) {
-    const { data: numeroData, error: numeroError } = await admin.rpc(
-      "generate_sequential_number",
-      { prefix: "SOL", table_name: "solicitacoes" },
-    );
-    if (numeroError) throw new Error(`numero: ${numeroError.message}`);
-
-    const draft = buildSolicitacaoDraft(payload, {
-      numero: String(numeroData),
-      tenantId,
-    });
-
     const { data, error } = await admin
       .from("solicitacoes")
       .insert(toInsertRow(draft))
@@ -54,7 +46,7 @@ export async function createSolicitacao(
         continue;
       }
       throw new Error(
-        `insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)`,
+        `insert solicitacoes: ${error.message} (apos ${tentativa} tentativas)`,
       );
     }
 

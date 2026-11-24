@@ -24,26 +24,23 @@ interface InsertResult {
 }
 
 /**
- * Admin falso: entrega os numeros e as respostas de INSERT na ordem em que foram
- * programados e conta as chamadas, para o teste provar quantas tentativas houve.
+ * Admin falso: entrega as respostas de INSERT na ordem em que foram programadas,
+ * guarda as linhas enviadas e conta as chamadas, para o teste provar quantas
+ * tentativas houve e o que foi mandado ao banco.
  */
 function fakeAdmin(roteiro: {
-  numeros: string[];
   inserts: InsertResult[];
   existente?: Record<string, unknown> | null;
 }) {
-  const chamadas = { rpc: 0, insert: 0, existente: 0 };
+  const chamadas = { insert: 0, existente: 0 };
+  const linhas: Record<string, unknown>[] = [];
 
   const client = {
-    rpc: (_nome: string, _args: unknown) => {
-      const numero = roteiro.numeros[chamadas.rpc];
-      chamadas.rpc += 1;
-      return Promise.resolve({ data: numero, error: null });
-    },
     from: (_tabela: string) => ({
-      insert: (_row: Record<string, unknown>) => ({
+      insert: (row: Record<string, unknown>) => ({
         select: (_cols: string) => ({
           single: () => {
+            linhas.push(row);
             const r = roteiro.inserts[chamadas.insert] ??
               roteiro.inserts[roteiro.inserts.length - 1];
             chamadas.insert += 1;
@@ -62,7 +59,7 @@ function fakeAdmin(roteiro: {
     }),
   };
 
-  return { client: client as unknown as SupabaseClient, chamadas };
+  return { client: client as unknown as SupabaseClient, chamadas, linhas };
 }
 
 const COLISAO_DE_NUMERO: InsertResult = {
@@ -72,23 +69,33 @@ const COLISAO_DE_NUMERO: InsertResult = {
   },
 };
 
-Deno.test("numero em colisao e regerado: a entrega nao morre em 500", async () => {
-  const { client, chamadas } = fakeAdmin({
-    numeros: ["SOL-000123", "SOL-000124"],
-    inserts: [COLISAO_DE_NUMERO, { data: { id: "sol-nova", numero: "SOL-000124" } }],
-    existente: null,
+Deno.test("a entrega nao manda numero: quem gera e o trigger do banco", async () => {
+  const { client, chamadas, linhas } = fakeAdmin({
+    inserts: [{ data: { id: "sol-nova", numero: "SOL-000124" } }],
   });
 
   const r = await createSolicitacao(client, payload(), TENANT);
 
   assertEquals(r, { id: "sol-nova", numero: "SOL-000124" });
-  assertEquals(chamadas.rpc, 2);
+  assertEquals(chamadas.insert, 1);
+  assertEquals(linhas[0].numero, null);
+  assertEquals(linhas[0].external_ref, OS_ID);
+});
+
+Deno.test("numero em colisao e retentado: a entrega nao morre em 500", async () => {
+  const { client, chamadas } = fakeAdmin({
+    inserts: [COLISAO_DE_NUMERO, { data: { id: "sol-nova", numero: "SOL-000125" } }],
+    existente: null,
+  });
+
+  const r = await createSolicitacao(client, payload(), TENANT);
+
+  assertEquals(r, { id: "sol-nova", numero: "SOL-000125" });
   assertEquals(chamadas.insert, 2);
 });
 
-Deno.test("reenvio idempotente devolve a solicitacao existente sem regerar numero", async () => {
+Deno.test("reenvio idempotente devolve a solicitacao existente sem inserir de novo", async () => {
   const { client, chamadas } = fakeAdmin({
-    numeros: ["SOL-000123"],
     inserts: [COLISAO_DE_NUMERO],
     existente: { id: "sol-existente", numero: "SOL-000123" },
   });
@@ -96,13 +103,12 @@ Deno.test("reenvio idempotente devolve a solicitacao existente sem regerar numer
   const r = await createSolicitacao(client, payload(), TENANT);
 
   assertEquals(r, { id: "sol-existente", numero: "SOL-000123" });
-  assertEquals(chamadas.rpc, 1);
   assertEquals(chamadas.insert, 1);
+  assertEquals(chamadas.existente, 1);
 });
 
 Deno.test("erro que nao e colisao sobe na primeira tentativa", async () => {
   const { client, chamadas } = fakeAdmin({
-    numeros: ["SOL-000123"],
     inserts: [{ error: { code: "23514", message: "new row violates check constraint" } }],
   });
 
@@ -111,13 +117,11 @@ Deno.test("erro que nao e colisao sobe na primeira tentativa", async () => {
     Error,
     "insert solicitacoes: new row violates check constraint",
   );
-  assertEquals(chamadas.rpc, 1);
   assertEquals(chamadas.insert, 1);
 });
 
 Deno.test("colisao que nao cede desiste depois de 5 tentativas", async () => {
   const { client, chamadas } = fakeAdmin({
-    numeros: ["SOL-1", "SOL-2", "SOL-3", "SOL-4", "SOL-5"],
     inserts: [COLISAO_DE_NUMERO],
     existente: null,
   });
@@ -125,8 +129,7 @@ Deno.test("colisao que nao cede desiste depois de 5 tentativas", async () => {
   await assertRejects(
     () => createSolicitacao(client, payload(), TENANT),
     Error,
-    "apos 5 tentativas de numero",
+    "apos 5 tentativas",
   );
-  assertEquals(chamadas.rpc, 5);
   assertEquals(chamadas.insert, 5);
 });
