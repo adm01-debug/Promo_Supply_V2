@@ -17,55 +17,90 @@ serve(async (req) => {
     });
   }
 
+  // EDGA-08 (etapa 048): autenticacao e membership rodam ANTES do cache de
+  // idempotencia. Antes, um replay devolvia a resposta cacheada — buyerCookie e
+  // setup_xml com a credencial NetworkID do catalogo — sem nenhuma dessas checagens.
+  const authClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: buildResponseHeaders(cors),
+    });
+  }
+  const { data: { user }, error: authError } = await authClient.auth.getUser(authHeader.slice("Bearer ".length));
+  if (authError || !user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: buildResponseHeaders(cors),
+    });
+  }
+
+  // O wrapper consome o corpo do request; guardamos um clone para a leitura local.
+  const idempotencyReq = req.clone();
+  const bodyText = await req.text();
+  const parsed = JSON.parse(bodyText || "{}") as { catalog_id?: unknown; return_url?: unknown };
+  const catalogId = typeof parsed.catalog_id === "string" ? parsed.catalog_id.trim() : "";
+  const returnUrl = typeof parsed.return_url === "string" ? parsed.return_url : null;
+
+  if (!catalogId) {
+    return new Response(JSON.stringify({ error: "catalog_id is required" }), {
+      status: 400,
+      headers: buildResponseHeaders(cors),
+    });
+  }
+
+  // Get catalog details
+  const { data: catalog, error: catError } = await supabaseAdmin
+    .from("punchout_catalogs")
+    .select("id, tenant_id, setup_url, identity, is_active, tenants(slug)")
+    .eq("id", catalogId)
+    .eq("is_active", true)
+    .single();
+
+  if (catError || !catalog) {
+    return new Response(JSON.stringify({ error: "Catalog not found" }), {
+      status: 404,
+      headers: buildResponseHeaders(cors),
+    });
+  }
+
+  const { data: membership, error: membershipError } = await supabaseAdmin
+    .from("user_tenants")
+    .select("tenant_id")
+    .eq("user_id", user.id)
+    .eq("tenant_id", catalog.tenant_id)
+    .maybeSingle();
+
+  if (membershipError || !membership) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 403,
+      headers: buildResponseHeaders(cors),
+    });
+  }
+
   // A-10 (Onda 49): idempotência universal.
   // Reprocessos com o mesmo X-Idempotency-Key (ou mesmo body) devolvem a resposta
-  // cacheada em vez de criar novas sessões punchout duplicadas.
-  return await withIdempotency("punchout-setup", req, cors, async (bodyText) => {
-    const authClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    const { catalog_id, return_url } = JSON.parse(bodyText || "{}");
-
-    // Auth check
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
-    const { data: { user }, error: authError } = await authClient.auth.getUser(authHeader.slice("Bearer ".length));
-    if (authError || !user) throw new Error("Unauthorized");
-
-    // Get catalog details
-    const { data: catalog, error: catError } = await supabaseAdmin
-      .from("punchout_catalogs")
-      .select("id, tenant_id, setup_url, identity, is_active, tenants(slug)")
-      .eq("id", catalog_id)
-      .eq("is_active", true)
-      .single();
-
-    if (catError || !catalog) throw new Error("Catalog not found");
-
-    const { data: membership, error: membershipError } = await supabaseAdmin
-      .from("user_tenants")
-      .select("tenant_id")
-      .eq("user_id", user.id)
-      .eq("tenant_id", catalog.tenant_id)
-      .maybeSingle();
-
-    if (membershipError || !membership) throw new Error("Unauthorized");
-
+  // cacheada em vez de criar novas sessões punchout duplicadas. O `source` leva o
+  // id do usuario para que uma chave do cliente nunca atravesse chamadores diferentes.
+  return await withIdempotency(`punchout-setup:${user.id}`, idempotencyReq, cors, async () => {
     const buyerCookie = crypto.randomUUID();
 
     // Create session
     await supabaseAdmin.from("punchout_sessions").insert({
       tenant_id: catalog.tenant_id,
-      catalog_id,
+      catalog_id: catalogId,
       user_id: user.id,
       buyer_cookie: buyerCookie,
-      return_url,
+      return_url: returnUrl,
       status: "opened"
     });
 
