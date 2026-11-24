@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f14e8513d` · branch `main` · 2026-11-24 06:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6c76f6a307` · branch `main` · 2026-11-24 06:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1857,6 +1857,8 @@ _nenhum item encontrado_
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/components/compras/DigitalSignature.tsx` |
 | `expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),` | `src/components/compras/DigitalSignature.tsx` |
 | `const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/compras/SLADistributionChart.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/components/compras/approval/ApprovalDelegationModal.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/components/compras/approval/ApprovalRuleModal.tsx` |
 | `const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));` | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | `return new Date(anchor + 24 * 60 * 60 * 1000).toISOString();` | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | `const diffHours = diffMs / (1000 * 60 * 60);` | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
@@ -2063,6 +2065,8 @@ _nenhum item encontrado_
 | 3 | `src/components/compras/SourcingIntelligenceWidget.tsx` |
 | 100 | `src/components/compras/SupplierBonificationsPanel.tsx` |
 | 10 | `src/components/compras/SupplierRiskAnalysis.tsx` |
+| 200 | `src/components/compras/approval/ApprovalDelegationModal.tsx` |
+| 200 | `src/components/compras/approval/ApprovalRuleModal.tsx` |
 | 200 | `src/components/security/GeoAccessLogsPanel.tsx` |
 | 20 | `src/features/layout/components/AdvancedSearch.tsx` |
 | 1000 | `src/features/solicitacoes/hooks/useFluxosAprovacao.ts` |
@@ -2439,7 +2443,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2990 testes em 182 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3000 testes em 183 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2540,6 +2544,7 @@ _nenhum item encontrado_
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
+| `src/components/compras/approval/__tests__/alcadaListasReais.test.tsx` | 10 | ApprovalRuleModal usa pessoas e categorias reais · oferece profiles.user_id e nomes do banco, sem id ficticio · grava o user_id escolhido no aprovador da regra · sem pessoas visiveis avisa em vez de mostrar lista ficticia … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |

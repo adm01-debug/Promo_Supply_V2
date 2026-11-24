@@ -422,10 +422,12 @@
     "ApprovalDelegationModal"
    ],
    "export_default": null,
-   "linhas": 96,
+   "linhas": 120,
    "dominio": "components/compras",
    "hooks_locais": [],
-   "tabelas": [],
+   "tabelas": [
+    "profiles"
+   ],
    "edges": [],
    "usado_por": 1,
    "orfao": false
@@ -436,12 +438,15 @@
     "ApprovalRuleModal"
    ],
    "export_default": null,
-   "linhas": 189,
+   "linhas": 198,
    "dominio": "components/compras",
    "hooks_locais": [
+    "useProdutos",
     "useSolicitacoes"
    ],
-   "tabelas": [],
+   "tabelas": [
+    "profiles"
+   ],
    "edges": [],
    "usado_por": 1,
    "orfao": false

@@ -850,7 +850,9 @@
    "src/components/ui/select.tsx",
    "src/components/ui/switch.tsx",
    "src/components/ui/textarea.tsx",
-   "src/hooks/useApprovalWorkflow.ts"
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
+   "src/hooks/useApprovalWorkflow.ts",
+   "src/integrations/supabase/client.ts"
   ],
   "src/components/compras/approval/ApprovalRuleModal.tsx": [
    "src/components/ui/badge.tsx",
@@ -862,7 +864,10 @@
    "src/components/ui/switch.tsx",
    "src/components/ui/textarea.tsx",
    "src/features/solicitacoes/index.ts",
-   "src/hooks/useApprovalWorkflow.ts"
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
+   "src/hooks/useApprovalWorkflow.ts",
+   "src/hooks/useProdutos.ts",
+   "src/integrations/supabase/client.ts"
   ],
   "src/components/compras/approval/WorkflowDLQPanel.tsx": [
    "src/components/ui/badge.tsx",

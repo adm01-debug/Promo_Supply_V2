@@ -1828,8 +1828,9 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 3,
+   "usado_por": 4,
    "usado_por_arquivos": [
+    "src/components/compras/approval/ApprovalRuleModal.tsx",
     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
     "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
     "src/pages/estoque/GestaoEstoque.tsx"

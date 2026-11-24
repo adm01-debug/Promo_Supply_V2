@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 233,
+ "total": 234,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 216
+  "unit": 217
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 140
+   "arquivos": 141
   },
   {
    "padrao": "outro",
@@ -395,6 +395,16 @@
     "src/locales/pt/translation.json"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
+   "tipo": "unit",
+   "linhas": 217,
+   "testa": [
+    "src/components/compras/approval/ApprovalDelegationModal.tsx",
+    "src/components/compras/approval/ApprovalRuleModal.tsx"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts",
@@ -2125,6 +2135,8 @@
   "src/components/compras/PipelineChart.tsx": 1,
   "src/components/compras/SupplierInteractionLog.tsx": 1,
   "src/components/compras/TrendAnalysisCharts.tsx": 1,
+  "src/components/compras/approval/ApprovalDelegationModal.tsx": 1,
+  "src/components/compras/approval/ApprovalRuleModal.tsx": 1,
   "src/components/compras/bulk-operations/bulkOperationsTypes.ts": 1,
   "src/components/compras/contract/replaceContractItems.ts": 1,
   "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts": 1,

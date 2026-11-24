@@ -753,7 +753,9 @@
     "useFeedback",
     "useFeedbackPreferences",
     "useMemo",
+    "useMutation",
     "useNavigate",
+    "useProdutos",
     "useQuery",
     "useQueryClient",
     "useRef",
@@ -770,6 +772,7 @@
     "useAuth",
     "useFeedback",
     "useFeedbackPreferences",
+    "useProdutos",
     "useSolicitacoes",
     "useSolicitacoesKPIs",
     "useWorkflowDLQ"
@@ -782,7 +785,9 @@
     "approval_steps",
     "approval_workflows",
     "audit_logs",
+    "categorias",
     "cost_centers",
+    "produtos",
     "profiles",
     "solicitacoes",
     "user_roles",
@@ -804,7 +809,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 60
+   "arquivos_puxados": 62
   },
   {
    "protegida": true,
