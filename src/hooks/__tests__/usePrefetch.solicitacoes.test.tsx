@@ -24,19 +24,21 @@ vi.mock('@/integrations/supabase/client', () => ({
   },
 }));
 
-// Mesma chave que useSolicitacoes monta sem filtro: 14 posicoes, terminando em 'all'.
+// Mesma chave que useSolicitacoes monta sem filtro: 15 posicoes, terminando em
+// 'all'. A ordem espelha solicitacoesQueryKey: status, tipo, prioridade,
+// solicitanteId, search, dateFrom, dateTo, valorMin, valorMax, page, pageSize.
 const chaveDaListagem = [
   'solicitacoes', 'u1', 'org1',
   undefined, undefined, undefined, undefined,
   undefined, undefined, undefined, undefined,
-  undefined, undefined, 'all',
+  undefined, undefined, undefined, 'all',
 ];
 
-// Chave antiga do prefetch: 13 posicoes, sem o 'all' final.
+// Chave antiga do prefetch: 14 posicoes, sem o 'all' final.
 const chaveAntiga = [
   'solicitacoes', 'u1', 'org1',
   undefined, undefined, undefined, undefined, undefined,
-  undefined, undefined, undefined, undefined, undefined,
+  undefined, undefined, undefined, undefined, undefined, undefined,
 ];
 
 describe('usePrefetch · solicitacoes (HK-01)', () => {
