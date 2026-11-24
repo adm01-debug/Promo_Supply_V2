@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `73aaa9d100` · branch `main` · 2026-11-24 16:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `85d63f7706` · branch `main` · 2026-11-24 16:21 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -783,8 +783,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | Função | Mensagem | Origem |
 |---|---|---|
 | `validate_solicitacao_status_transition` | Transição de status inválida: % → % | `supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql` |
-| `validate_pedido_status_transition` | Transição de status inválida: % → % | `supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql` |
-| `validate_pagamento_status_transition` | Transição de status inválida: % → % | `supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql` |
 | `validate_cotacao_status_transition` | Transição de status de cotação inválida: % → % | `supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql` |
 | `count_legacy_storage_urls` | Forbidden: admin only | `supabase/migrations/20260619192533_d21a4e4f-4249-4d39-9182-edb3f6ed11ce.sql` |
 | `generate_sequential_number` | invalid table_name: % | `supabase/migrations/20260711192326_2436defe-a226-44fc-8966-5ba2ecdce7dc.sql` |
@@ -813,6 +811,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `verificar_integridade_audit_logs` | Apenas administradores podem verificar a integridade da auditoria | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `get_compras_sla_metrics` | not authenticated | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
 | `get_compras_sla_metrics` | forbidden | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
+| `validate_pagamento_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
+| `validate_pedido_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
