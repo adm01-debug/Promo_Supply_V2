@@ -15,6 +15,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -72,6 +73,7 @@ const moreNavItems: NavItem[] = [
 export function BottomNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [moreSheetOpen, setMoreSheetOpen] = React.useState(false);
   const { data: badges = { solicitacoes: 0, pedidos: 0, pagamentos: 0, aprovacoes: 0 } } = useNavBadges();
 
@@ -106,6 +108,8 @@ export function BottomNavigation() {
     <>
       {/* Bottom Navigation Bar */}
       <motion.nav
+        id={isMobile ? "main-navigation" : undefined}
+        tabIndex={-1}
         className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-card/95 backdrop-blur-lg border-t border-border safe-area-inset"
         initial={{ y: 100 }}
         animate={{ y: 0 }}

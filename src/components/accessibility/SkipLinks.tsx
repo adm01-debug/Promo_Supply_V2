@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback } from "react";
-import { Keyboard, Navigation, FileText, Search } from "lucide-react";
+import { Keyboard, Navigation, FileText } from "lucide-react";
 
 interface SkipLink {
   href: string;
@@ -26,12 +26,6 @@ const defaultLinks: SkipLink[] = [
     label: "Pular para a navegação",
     icon: <Navigation className="w-4 h-4" />,
     shortcut: "Alt+2"
-  },
-  { 
-    href: "#search", 
-    label: "Pular para a busca",
-    icon: <Search className="w-4 h-4" />,
-    shortcut: "Alt+3"
   },
 ];
 
