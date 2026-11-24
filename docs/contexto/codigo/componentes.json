@@ -853,7 +853,7 @@
     "EnhancedBulkActionsBar"
    ],
    "export_default": null,
-   "linhas": 258,
+   "linhas": 260,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -3769,7 +3769,7 @@
     "ChatArea"
    ],
    "export_default": null,
-   "linhas": 273,
+   "linhas": 274,
    "dominio": "features/layout",
    "hooks_locais": [],
    "tabelas": [],

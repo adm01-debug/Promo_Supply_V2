@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cd7093a149` · branch `main` · 2026-11-24 11:34 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ea97162f76` · branch `main` · 2026-11-24 12:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3157 testes em 210 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3165 testes em 212 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2612,8 +2612,10 @@ _nenhum item encontrado_
 | `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
+| `src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx` | 4 | EnhancedBulkActionsBar - nome acess\u00edvel das a\u00e7\u00f5es · nomeia o gatilho s\u00f3-\u00edcone do menu de a\u00e7\u00f5es da sele\u00e7\u00e3o · nomeia o gatilho s\u00f3-\u00edcone que expande e recolhe a pr\u00e9via · n\u00e3o deixa nenhum bot\u00e3o da barra sem nome acess\u00edvel |
 | `src/components/compras/__tests__/solicitacaoCardA11y.test.tsx` | 4 | SolicitacaoCard - nome acess\u00edvel dos controles · nomeia o gatilho s\u00f3-\u00edcone do fluxo de aprova\u00e7\u00e3o · mant\u00e9m o r\u00f3tulo textual do gatilho de contexto · n\u00e3o deixa nenhum bot\u00e3o do cart\u00e3o sem nome acess\u00edvel |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
+| `src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx` | 4 | ChatArea - nome acess\u00edvel dos controles s\u00f3-\u00edcone · nomeia as a\u00e7\u00f5es do cabe\u00e7alho do contato · nomeia as a\u00e7\u00f5es do compositor de mensagem · n\u00e3o deixa nenhum bot\u00e3o do chat sem nome acess\u00edvel |
 | `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx` | 4 | useApprovalWorkflow · escolha de alcada (NEG-15) · usa a regra devolvida pela RPC quando ela e da empresa do usuario · ignora id devolvido pela RPC que nao esta na lista da empresa do usuario · nao escolhe regra por conta propria quando a RPC nao devolve nada |
