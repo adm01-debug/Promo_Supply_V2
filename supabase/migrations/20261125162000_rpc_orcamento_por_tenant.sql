@@ -101,3 +101,8 @@ $function$;
 
 REVOKE EXECUTE ON FUNCTION public.get_cost_center_performance_report(uuid) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.get_cost_center_performance_report(uuid) TO authenticated, service_role;
+
+-- repete o estado de grants que a sobrecarga de zero argumento ja tem em producao:
+-- CREATE OR REPLACE preserva a ACL, mas assim a migration tambem protege um ambiente novo
+REVOKE EXECUTE ON FUNCTION public.get_cost_center_performance_report() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.get_cost_center_performance_report() TO authenticated, service_role;
