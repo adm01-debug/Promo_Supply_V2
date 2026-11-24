@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `77d4e5f04b` · branch `main` · 2026-11-24 05:24 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ea55bfb6b0` · branch `main` · 2026-11-24 05:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -918,7 +918,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `UPDATE_TOAST` | compara, escreve | `src/hooks/use-toast.ts` |
 | `type` | `achievement` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `active` | escreve | `src/features/layout/components/MainLayout.tsx` |
-| `type` | `ai` | compara, escreve | `src/components/compras/SupplierInteractionLog.tsx`<br>`src/stores/dashboardLayoutStore.ts` |
+| `type` | `ai` | escreve | `src/stores/dashboardLayoutStore.ts` |
 | `type` | `approve_step` | compara | `src/components/compras/approval/WorkflowDLQPanel.tsx`<br>`src/hooks/useApprovalWorkflow.ts` |
 | `type` | `array` | escreve | `supabase/functions/ai-negotiation/index.ts` |
 | `type` | `auction` | compara | `src/pages/sourcing/RFxDetails.tsx` |
@@ -948,7 +948,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `type` | `first-time` | escreve | `src/components/ui/celebration.tsx` |
 | `type` | `fornecedores` | compara, escreve | `src/features/layout/components/AdvancedSearch.tsx`<br>`src/features/layout/components/search/SearchResultsList.tsx` |
 | `type` | `function` | escreve | `supabase/functions/ai-negotiation/index.ts` |
-| `type` | `human` | escreve | `src/components/compras/SupplierInteractionLog.tsx` |
 | `type` | `image_url` | escreve | `supabase/functions/process-invoice-idp/index.ts` |
 | `type` | `info` | compara, escreve | `src/components/compras/DashboardInsights.tsx`<br>`src/components/compras/executive/ExecutiveAIInsights.tsx`<br>`src/components/ui/undo-toast.tsx` |
 | `type` | `integration_failure` | escreve | `supabase/functions/check-sla-alerts/index.ts` |
@@ -1018,7 +1017,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `SUBSCRIBED` | compara | `src/features/layout/components/SupplierChat.tsx` |
 | `status` | `aceito` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +2 |
-| `status` | `analyzing` | compara | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `applied` | compara | `src/components/compras/contract/ContractDetailsTabs.tsx`<br>`supabase/functions/generate-contract-pdf/index.ts` |
 | `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/aprovacoes/aprovacoesData.ts`<br>… +1 |
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts`<br>`supabase/functions/weekly-report/index.ts`<br>… +2 |
@@ -1048,7 +1046,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `descartado` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `down` | compara | `src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `draft` | compara, escreve | `src/components/compras/ContractModal.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
-| `status` | `drafting` | compara | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `status` | `em_andamento` | compara, escreve | `src/pages/gerar-ordem/GerarOrdem.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `em_cotacao` | filtra | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | `status` | `em_transito` | compara, escreve | `src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
@@ -1070,7 +1067,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `status` | `healthy` | compara, escreve | `src/components/compras/SupplierRiskAnalysis.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `homologada` | compara, escreve | `src/hooks/useLicitacoes.ts`<br>`src/pages/licitacoes/Licitacoes.tsx` |
-| `status` | `idle` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/components/compras/NeuralFollowUpMonitor.tsx` |
+| `status` | `idle` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx` |
 | `status` | `in_progress` | compara | `src/components/compras/ActiveSourcingWidget.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `in_transit` | compara | `src/components/compras/DeliveryCalendar.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | `status` | `negotiation` | compara | `src/pages/admin/SourcingPipeline.tsx` |
@@ -1095,19 +1092,18 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `queued` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `quota_blocked` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `rascunho` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/functions/punchout-receive/solicitation.ts` |
-| `status` | `read` | compara, escreve | `src/components/compras/SupplierInteractionLog.tsx`<br>`src/features/layout/components/SupplierChat.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
+| `status` | `read` | compara, escreve | `src/features/layout/components/SupplierChat.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
 | `status` | `recebida_fornecedor` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `recebido` | compara | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | `status` | `rejected` | compara, escreve | `src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/aprovacoes/aprovacoesData.ts`<br>… +2 |
 | `status` | `rejeitada` | compara, escreve | `src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `rejeitado` | compara | `src/features/solicitacoes/fluxoAprovacao.ts` |
-| `status` | `replied` | escreve | `src/components/compras/SupplierInteractionLog.tsx` |
 | `status` | `reposicao_enviada` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `returned` | compara | `src/hooks/usePurchaseHistory.ts` |
 | `status` | `running` | escreve | `supabase/functions/workflow-engine/index.ts` |
 | `status` | `scheduled` | compara, escreve | `src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | `status` | `searching` | compara | `src/components/compras/BuscaAutomatica.tsx` |
-| `status` | `sent` | compara, escreve | `src/components/compras/NeuralFollowUpMonitor.tsx`<br>`src/components/compras/SupplierInteractionLog.tsx`<br>`src/features/layout/components/chat/ChatArea.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
+| `status` | `sent` | escreve | `src/features/layout/components/chat/ChatArea.tsx`<br>`src/features/layout/components/chat/MessageBubble.tsx` |
 | `status` | `signed` | escreve | `src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts` |
 | `status` | `skipped` | compara, escreve | `src/components/settings/TourSettingsPanel.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `slow` | compara | `supabase/functions/external-db-bridge/index.ts` |
@@ -1860,9 +1856,6 @@ _nenhum item encontrado_
 | `await new Promise(resolve => setTimeout(resolve, 1000));` | `src/components/compras/DigitalSignature.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/components/compras/DigitalSignature.tsx` |
 | `expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),` | `src/components/compras/DigitalSignature.tsx` |
-| `await new Promise(r => setTimeout(r, 1000));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
-| `await new Promise(r => setTimeout(r, 1200));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
-| `await new Promise(r => setTimeout(r, 1500));` | `src/components/compras/NeuralFollowUpMonitor.tsx` |
 | `const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/compras/SLADistributionChart.tsx` |
 | `const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));` | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | `return new Date(anchor + 24 * 60 * 60 * 1000).toISOString();` | `src/components/compras/pending-approvals/deadlineFallback.ts` |
@@ -2447,7 +2440,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2959 testes em 180 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2975 testes em 181 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2528,6 +2521,7 @@ _nenhum item encontrado_
 | `src/components/compras/enhanced-kpi/__tests__/colorClasses.test.ts` | 18 | colorClasses · has 11 color entries · covers all KpiColor values · every entry has bg, text, border, gradient strings … |
 | `src/lib/__tests__/safeTruncate.test.ts` | 18 | safeTruncate (frontend) · retorna a string original quando cabe no limite · respeita o limite em ASCII · nunca deixa lone high surrogate ao cortar entre surrogate pair … |
 | `src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts` | 17 | statusDaEtapa · traduz os status que o banco grava · a etapa pendente na etapa_atual do workflow e a atual · etapa com decidido_em conta como concluida mesmo sem status explicito … |
+| `src/components/compras/__tests__/followUpReal.test.tsx` | 16 | descreverFollowUp · sem registro nao afirma envio · com registro usa o status e o atraso reais · sem atraso nao inventa  … |
 | `src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts` | 16 | KNOWN_SUPPLIERS · is an array · has 6 supplier entries · every entry has id and name strings … |
 | `src/features/layout/transitions/__tests__/presets.test.ts` | 16 | PRESETS · has exactly 12 entries · covers all TransitionName values · every preset has initial, animate, exit, and transition … |
 | `src/lib/__tests__/safeDisplay.test.ts` | 16 | safeDisplay · retorna string original quando cabe no limite · trunca com ellipsis padrão respeitando o limite total · aceita ellipsis customizado … |
@@ -2675,6 +2669,7 @@ _nenhum item encontrado_
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
+| * Mostra apenas interacoes registradas de verdade (follow-up do agendador em | `src/components/compras/SupplierInteractionLog.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
 | 1. `stepPrazoLimite`   — deadline set directly on the step | `src/components/compras/pending-approvals/deadlineFallback.ts` |

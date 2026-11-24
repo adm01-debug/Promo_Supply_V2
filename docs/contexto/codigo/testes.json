@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 231,
+ "total": 232,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 214
+  "unit": 215
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 138
+   "arquivos": 139
   },
   {
    "padrao": "outro",
@@ -354,6 +354,16 @@
     "src/components/animations/motionVariants.ts"
    ],
    "casos": 28
+  },
+  {
+   "arquivo": "src/components/compras/__tests__/followUpReal.test.tsx",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "src/components/compras/NeuralFollowUpMonitor.tsx",
+    "src/components/compras/SupplierInteractionLog.tsx"
+   ],
+   "casos": 12
   },
   {
    "arquivo": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
@@ -2101,7 +2111,9 @@
   "src/components/accessibility/accessibilityHelpers.ts": 1,
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/KanbanBoard.tsx": 1,
+  "src/components/compras/NeuralFollowUpMonitor.tsx": 1,
   "src/components/compras/PipelineChart.tsx": 1,
+  "src/components/compras/SupplierInteractionLog.tsx": 1,
   "src/components/compras/TrendAnalysisCharts.tsx": 1,
   "src/components/compras/bulk-operations/bulkOperationsTypes.ts": 1,
   "src/components/compras/contract/replaceContractItems.ts": 1,

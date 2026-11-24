@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "77d4e5f04b397f7525ae7215202475bf3e9c7b27",
+  "commit": "ea55bfb6b039b09f15086d8e81c01b4383e0634a",
   "branch": "main",
-  "data_commit": "2026-11-24T02:24:25-03:00",
+  "data_commit": "2026-11-24T02:39:22-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ea55bfb",
+    "data": "2026-11-24",
+    "assunto": "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)"
+   },
    {
     "sha": "77d4e5f",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "619c2bb",
     "data": "2026-11-23",
     "assunto": "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)"
-   },
-   {
-    "sha": "5f2b99e",
-    "data": "2026-11-23",
-    "assunto": "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)"
    }
   ],
-  "arquivos_mudados_7d": 405,
+  "arquivos_mudados_7d": 409,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 165
+    "mudancas": 168
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 35
+    "mudancas": 36
    },
    {
     "pasta": "src/lib/__tests__",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 35
+    "mudancas": 36
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/ci/README.md",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "bun.lock",
@@ -294,7 +294,7 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/types-sync.yml",
+    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
     "mudancas": 5
    }
   ],
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1366,
-  "arquivos_codigo": 863,
-  "linhas_codigo": 177145,
+  "arquivos_total": 1367,
+  "arquivos_codigo": 864,
+  "linhas_codigo": 177301,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 231,
+  "testes": 232,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -427,12 +427,12 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 264,
-   "linhas": 49367
+   "arquivos": 265,
+   "linhas": 49522
   },
   "src/features": {
    "arquivos": 75,
-   "linhas": 9838
+   "linhas": 9839
   },
   "src/hooks": {
    "arquivos": 83,

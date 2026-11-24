@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "77d4e5f04b397f7525ae7215202475bf3e9c7b27",
+  "sha": "ea55bfb6b039b09f15086d8e81c01b4383e0634a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 05:24 UTC",
-  "files_total": 1367,
-  "code_files": 1196,
-  "code_lines": 204329,
+  "generated_at": "2026-11-24 05:39 UTC",
+  "files_total": 1368,
+  "code_files": 1197,
+  "code_lines": 204485,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5a899e2f80b62ae8",
+ "facts_hash": "794d128240cd0f68",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 423,
-   ".tsx": 367,
+   ".tsx": 368,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33723,7 +33723,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 299,
+  "components_count": 300,
   "hooks": [
    {
     "name": "useContacts",
@@ -34761,8 +34761,8 @@
   },
   {
    "module": "src/components",
-   "files": 264,
-   "lines": 49367,
+   "files": 265,
+   "lines": 49522,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35047,7 +35047,7 @@
   {
    "module": "src/features/cotacoes",
    "files": 2,
-   "lines": 213,
+   "lines": 214,
    "tables": [
     "cotacoes"
    ],
@@ -38118,6 +38118,7 @@
     "condicao_pagamento",
     "created_at",
     "desconto_percentual",
+    "follow_up_status",
     "fornecedor_id",
     "id",
     "justificativa_selecao",
@@ -42630,6 +42631,10 @@
    {
     "file": "src/components/compras/CriticalAlertsBar.tsx",
     "text": "Check solicitacoes near deadline"
+   },
+   {
+    "file": "src/components/compras/SupplierInteractionLog.tsx",
+    "text": "* Mostra apenas interacoes registradas de verdade (follow-up do agendador em"
    },
    {
     "file": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
@@ -51375,48 +51380,6 @@
     "kind": "escreve"
    },
    {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "idle",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "idle",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "idle",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "analyzing",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "drafting",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "sent",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "field": "status",
-    "value": "sent",
-    "kind": "compara"
-   },
-   {
     "file": "src/components/compras/NovaSolicitacaoModal.tsx",
     "field": "tipo",
     "value": "PE_LISO",
@@ -51985,90 +51948,6 @@
     "field": "status",
     "value": "ativo",
     "kind": "filtra"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "sent",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "read",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "human",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "replied",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "sent",
-    "kind": "escreve"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "type",
-    "value": "ai",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "sent",
-    "kind": "compara"
-   },
-   {
-    "file": "src/components/compras/SupplierInteractionLog.tsx",
-    "field": "status",
-    "value": "read",
-    "kind": "compara"
    },
    {
     "file": "src/components/compras/SupplierRankingPanel.tsx",
@@ -57473,18 +57352,6 @@
     "line": "expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),"
    },
    {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "line": "await new Promise(r => setTimeout(r, 1000));"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "line": "await new Promise(r => setTimeout(r, 1200));"
-   },
-   {
-    "file": "src/components/compras/NeuralFollowUpMonitor.tsx",
-    "line": "await new Promise(r => setTimeout(r, 1500));"
-   },
-   {
     "file": "src/components/compras/SLADistributionChart.tsx",
     "line": "const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));"
    },
@@ -59019,6 +58886,70 @@
    {
     "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     "name": "Card de volume — textos batem com o período"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "descreverFollowUp"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "sem registro nao afirma envio"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "com registro usa o status e o atraso reais"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "sem atraso nao inventa "
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "status desconhecido aparece como veio, sem traducao inventada"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "data e exibida no fuso de Brasilia"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "SupplierInteractionLog so mostra interacao registrada"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "lista vazia mostra estado vazio honesto"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "renderiza a interacao real com data"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "NeuralFollowUpMonitor"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "sem follow-up registrado nao exibe entrega"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "com follow-up registrado mostra status e latencia reais"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "os componentes nao tem mais texto fabricado nem timer"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "SupplierInteractionLog perdeu a conversa e o botao sem handler"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "a consulta de cotacoes traz as colunas de follow-up"
+   },
+   {
+    "file": "src/components/compras/__tests__/followUpReal.test.tsx",
+    "name": "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
    },
    {
     "file": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
@@ -78863,14 +78794,6 @@
       "compara:src/components/compras/SourcingIntelligenceWidget.tsx",
       "escreve:src/components/compras/SourcingIntelligenceWidget.tsx"
      ],
-     "ai": [
-      "compara:src/components/compras/SupplierInteractionLog.tsx",
-      "escreve:src/components/compras/SupplierInteractionLog.tsx",
-      "escreve:src/stores/dashboardLayoutStore.ts"
-     ],
-     "human": [
-      "escreve:src/components/compras/SupplierInteractionLog.tsx"
-     ],
      "approve_step": [
       "compara:src/components/compras/approval/WorkflowDLQPanel.tsx",
       "compara:src/hooks/useApprovalWorkflow.ts"
@@ -79044,6 +78967,9 @@
      "auction": [
       "compara:src/pages/sourcing/RFxDetails.tsx"
      ],
+     "ai": [
+      "escreve:src/stores/dashboardLayoutStore.ts"
+     ],
      "chart": [
       "escreve:src/stores/dashboardLayoutStore.ts"
      ],
@@ -79210,7 +79136,6 @@
      ],
      "idle": [
       "compara:src/components/compras/BuscaAutomatica.tsx",
-      "compara:src/components/compras/NeuralFollowUpMonitor.tsx",
       "escreve:src/components/compras/BuscaAutomatica.tsx"
      ],
      "searching": [
@@ -79300,19 +79225,6 @@
       "filtra:supabase/functions/check-cotacao-followup/index.ts",
       "filtra:supabase/functions/check-expiry-alerts/index.ts",
       "filtra:supabase/functions/check-sla-alerts/index.ts"
-     ],
-     "analyzing": [
-      "compara:src/components/compras/NeuralFollowUpMonitor.tsx"
-     ],
-     "drafting": [
-      "compara:src/components/compras/NeuralFollowUpMonitor.tsx"
-     ],
-     "sent": [
-      "compara:src/components/compras/NeuralFollowUpMonitor.tsx",
-      "compara:src/components/compras/SupplierInteractionLog.tsx",
-      "escreve:src/components/compras/SupplierInteractionLog.tsx",
-      "escreve:src/features/layout/components/chat/ChatArea.tsx",
-      "escreve:src/features/layout/components/chat/MessageBubble.tsx"
      ],
      "aprovado": [
       "compara:src/components/compras/OrderPreviewModal.tsx",
@@ -79448,15 +79360,6 @@
       "compara:src/components/compras/StatusTimeline.tsx",
       "compara:src/components/ui/indicators/StepAndHealth.tsx"
      ],
-     "read": [
-      "compara:src/components/compras/SupplierInteractionLog.tsx",
-      "compara:src/features/layout/components/chat/MessageBubble.tsx",
-      "escreve:src/components/compras/SupplierInteractionLog.tsx",
-      "escreve:src/features/layout/components/SupplierChat.tsx"
-     ],
-     "replied": [
-      "escreve:src/components/compras/SupplierInteractionLog.tsx"
-     ],
      "healthy": [
       "compara:src/components/ui/indicators/StepAndHealth.tsx",
       "escreve:src/components/compras/SupplierRiskAnalysis.tsx",
@@ -79575,8 +79478,16 @@
       "escreve:src/features/cotacoes/hooks/useCotacoes.ts",
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
+     "read": [
+      "compara:src/features/layout/components/chat/MessageBubble.tsx",
+      "escreve:src/features/layout/components/SupplierChat.tsx"
+     ],
      "SUBSCRIBED": [
       "compara:src/features/layout/components/SupplierChat.tsx"
+     ],
+     "sent": [
+      "escreve:src/features/layout/components/chat/ChatArea.tsx",
+      "escreve:src/features/layout/components/chat/MessageBubble.tsx"
      ],
      "rejeitado": [
       "compara:src/features/solicitacoes/fluxoAprovacao.ts"
@@ -88390,7 +88301,6 @@
     "msg": "valor `idle` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/BuscaAutomatica.tsx",
-     "compara:src/components/compras/NeuralFollowUpMonitor.tsx",
      "escreve:src/components/compras/BuscaAutomatica.tsx"
     ]
    },
@@ -88430,30 +88340,6 @@
     "msg": "valor `erro` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/EnhancedPedidoTimeline.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `analyzing` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/NeuralFollowUpMonitor.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `drafting` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/NeuralFollowUpMonitor.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `sent` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/NeuralFollowUpMonitor.tsx",
-     "compara:src/components/compras/SupplierInteractionLog.tsx",
-     "escreve:src/components/compras/SupplierInteractionLog.tsx",
-     "escreve:src/features/layout/components/chat/ChatArea.tsx"
     ]
    },
    {
@@ -88546,23 +88432,6 @@
    },
    {
     "kind": "status",
-    "msg": "valor `read` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "compara:src/components/compras/SupplierInteractionLog.tsx",
-     "compara:src/features/layout/components/chat/MessageBubble.tsx",
-     "escreve:src/components/compras/SupplierInteractionLog.tsx",
-     "escreve:src/features/layout/components/SupplierChat.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `replied` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:src/components/compras/SupplierInteractionLog.tsx"
-    ]
-   },
-   {
-    "kind": "status",
     "msg": "valor `applied` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/components/compras/contract/ContractDetailsTabs.tsx",
@@ -88618,9 +88487,25 @@
    },
    {
     "kind": "status",
+    "msg": "valor `read` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/features/layout/components/chat/MessageBubble.tsx",
+     "escreve:src/features/layout/components/SupplierChat.tsx"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `SUBSCRIBED` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/features/layout/components/SupplierChat.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `sent` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:src/features/layout/components/chat/ChatArea.tsx",
+     "escreve:src/features/layout/components/chat/MessageBubble.tsx"
     ]
    },
    {
@@ -93781,51 +93666,12 @@
   },
   "src/components/compras/NeuralFollowUpMonitor.tsx": {
    "path": "src/components/compras/NeuralFollowUpMonitor.tsx",
-   "lines": 118,
+   "lines": 150,
    "exports": [
+    "interface ResumoFollowUp",
+    "function formatarEnvio",
+    "function descreverFollowUp",
     "const NeuralFollowUpMonitor"
-   ],
-   "status_values": [
-    {
-     "field": "status",
-     "value": "idle",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "idle",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "idle",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "analyzing",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "drafting",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "sent",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "sent",
-     "kind": "compara"
-    }
-   ],
-   "temporal": [
-    "await new Promise(r => setTimeout(r, 1000));",
-    "await new Promise(r => setTimeout(r, 1200));",
-    "await new Promise(r => setTimeout(r, 1500));"
    ]
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
@@ -94940,81 +94786,14 @@
   },
   "src/components/compras/SupplierInteractionLog.tsx": {
    "path": "src/components/compras/SupplierInteractionLog.tsx",
-   "lines": 102,
+   "lines": 104,
    "exports": [
+    "interface InteracaoFornecedor",
+    "function formatarQuando",
     "const SupplierInteractionLog"
    ],
-   "status_values": [
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "sent",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "read",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "human",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "replied",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "escreve"
-    },
-    {
-     "field": "status",
-     "value": "sent",
-     "kind": "escreve"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "compara"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "compara"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "compara"
-    },
-    {
-     "field": "type",
-     "value": "ai",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "sent",
-     "kind": "compara"
-    },
-    {
-     "field": "status",
-     "value": "read",
-     "kind": "compara"
-    }
+   "rule_comments": [
+    "* Mostra apenas interacoes registradas de verdade (follow-up do agendador em"
    ]
   },
   "src/components/compras/SupplierRankingPanel.tsx": {
@@ -95187,6 +94966,29 @@
     "usa o rótulo do período recebido",
     "sem período: ",
     "Card de volume — textos batem com o período"
+   ]
+  },
+  "src/components/compras/__tests__/followUpReal.test.tsx": {
+   "path": "src/components/compras/__tests__/followUpReal.test.tsx",
+   "lines": 121,
+   "is_test": true,
+   "tests": [
+    "descreverFollowUp",
+    "sem registro nao afirma envio",
+    "com registro usa o status e o atraso reais",
+    "sem atraso nao inventa ",
+    "status desconhecido aparece como veio, sem traducao inventada",
+    "data e exibida no fuso de Brasilia",
+    "SupplierInteractionLog so mostra interacao registrada",
+    "lista vazia mostra estado vazio honesto",
+    "renderiza a interacao real com data",
+    "NeuralFollowUpMonitor",
+    "sem follow-up registrado nao exibe entrega",
+    "com follow-up registrado mostra status e latencia reais",
+    "os componentes nao tem mais texto fabricado nem timer",
+    "SupplierInteractionLog perdeu a conversa e o botao sem handler",
+    "a consulta de cotacoes traz as colunas de follow-up",
+    "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
    ]
   },
   "src/components/compras/__tests__/kanbanTypeGuards.test.ts": {
@@ -98867,7 +98669,7 @@
   },
   "src/features/cotacoes/hooks/useCotacoes.ts": {
    "path": "src/features/cotacoes/hooks/useCotacoes.ts",
-   "lines": 211,
+   "lines": 212,
    "exports": [
     "type Cotacao",
     "interface CreateCotacaoInput",
@@ -98905,9 +98707,11 @@
      "condicao_pagamento",
      "created_at",
      "desconto_percentual",
+     "follow_up_status",
      "fornecedor_id",
      "id",
      "justificativa_selecao",
+     "last_follow_up_at",
      "numero",
      "observacoes",
      "organization_id",
@@ -118514,10 +118318,23 @@
   }
  },
  "git": {
-  "sha": "77d4e5f04b397f7525ae7215202475bf3e9c7b27",
+  "sha": "ea55bfb6b039b09f15086d8e81c01b4383e0634a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ea55bfb",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/NeuralFollowUpMonitor.tsx",
+     "src/components/compras/SupplierInteractionLog.tsx",
+     "src/components/compras/__tests__/followUpReal.test.tsx",
+     "src/features/cotacoes/hooks/useCotacoes.ts"
+    ]
+   },
    {
     "sha": "77d4e5f",
     "date": "2026-11-24",
@@ -118877,17 +118694,6 @@
      "src/hooks/usePagamentos.ts",
      "src/pages/pagamentos/Pagamentos.tsx"
     ]
-   },
-   {
-    "sha": "368fe97",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(sourcing): evento RFx passa a gravar numero e owner_id (#342)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
-     "src/hooks/useLicitacoes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -118936,6 +118742,22 @@
     2
    ],
    [
+    "src/components/compras/NeuralFollowUpMonitor.tsx",
+    1
+   ],
+   [
+    "src/components/compras/SupplierInteractionLog.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/followUpReal.test.tsx",
+    1
+   ],
+   [
+    "src/features/cotacoes/hooks/useCotacoes.ts",
+    1
+   ],
+   [
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
     1
    ],
@@ -118953,22 +118775,6 @@
    ],
    [
     "src/features/solicitacoes/fluxoAprovacao.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
-    1
-   ],
-   [
-    "src/components/compras/FiltrosAvancados.tsx",
-    1
-   ],
-   [
-    "src/components/compras/NovaSolicitacaoModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
     1
    ]
   ]

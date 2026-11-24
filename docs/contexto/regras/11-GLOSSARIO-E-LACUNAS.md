@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `77d4e5f04b` · branch `main` · 2026-11-24 05:24 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ea55bfb6b0` · branch `main` · 2026-11-24 05:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -252,15 +252,12 @@
 | status | valor `COMPLIANT` para `overall_status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/services/rlsAuditService.ts` |
 | status | valor `critical` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/AdvancedProcurementKPIs.tsx`<br>`compara:src/components/compras/BuyerPerformanceAlerts.tsx`<br>`compara:src/components/compras/PendingApprovalsList.tsx`<br>`compara:src/components/compras/PurchaseClimateWidget.tsx` |
 | status | valor `encontrado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/pages/cotacao/cotacaoHelpers.ts` |
-| status | valor `idle` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`compara:src/components/compras/NeuralFollowUpMonitor.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx` |
+| status | valor `idle` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx`<br>`escreve:src/components/compras/BuscaAutomatica.tsx` |
 | status | valor `searching` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/BuscaAutomatica.tsx` |
 | status | valor `delayed` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/DeliveryCalendar.tsx`<br>`compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | status | valor `in_transit` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/DeliveryCalendar.tsx`<br>`compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | status | valor `signed` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/compras/DigitalSignature.tsx`<br>`escreve:src/components/compras/digital-signature/signatureHelpers.ts` |
 | status | valor `erro` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/EnhancedPedidoTimeline.tsx` |
-| status | valor `analyzing` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/NeuralFollowUpMonitor.tsx` |
-| status | valor `drafting` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/NeuralFollowUpMonitor.tsx` |
-| status | valor `sent` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/NeuralFollowUpMonitor.tsx`<br>`compara:src/components/compras/SupplierInteractionLog.tsx`<br>`escreve:src/components/compras/SupplierInteractionLog.tsx`<br>`escreve:src/features/layout/components/chat/ChatArea.tsx` |
 | status | valor `overdue` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/PendingApprovalsList.tsx`<br>`escreve:src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | status | valor `upcoming` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/StatusTimeline.tsx`<br>`escreve:src/components/compras/ProductionRoutingEngine.tsx`<br>`escreve:src/components/compras/StatusTimeline.tsx` |
 | status | valor `recebido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/PurchaseClimateWidget.tsx`<br>`compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
@@ -272,8 +269,6 @@
 | status | valor `Otimizado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx`<br>`escreve:src/lib/sourcingAnalytics.ts` |
 | status | valor `Critico` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SourcingHistoryConsole.tsx` |
 | status | valor `current` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/StatusTimeline.tsx`<br>`compara:src/components/ui/indicators/StepAndHealth.tsx` |
-| status | valor `read` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/SupplierInteractionLog.tsx`<br>`compara:src/features/layout/components/chat/MessageBubble.tsx`<br>`escreve:src/components/compras/SupplierInteractionLog.tsx`<br>`escreve:src/features/layout/components/SupplierChat.tsx` |
-| status | valor `replied` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/components/compras/SupplierInteractionLog.tsx` |
 | status | valor `applied` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/contract/ContractDetailsTabs.tsx`<br>`compara:supabase/functions/generate-contract-pdf/index.ts` |
 | status | valor `scheduled` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>`escreve:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
 | status | valor `todos` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`compara:src/features/cotacoes/hooks/useCotacoes.ts`<br>`compara:src/features/pedidos/hooks/usePedidos.ts`<br>`compara:src/hooks/useDevolucoes.ts` |
@@ -281,7 +276,9 @@
 | status | valor `connecting` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/ui/indicators/MiscIndicators.tsx` |
 | status | valor `degraded` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/ui/indicators/StepAndHealth.tsx` |
 | status | valor `down` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/components/ui/indicators/StepAndHealth.tsx` |
+| status | valor `read` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/layout/components/chat/MessageBubble.tsx`<br>`escreve:src/features/layout/components/SupplierChat.tsx` |
 | status | valor `SUBSCRIBED` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/layout/components/SupplierChat.tsx` |
+| status | valor `sent` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/features/layout/components/chat/ChatArea.tsx`<br>`escreve:src/features/layout/components/chat/MessageBubble.tsx` |
 | status | valor `rejeitado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/solicitacoes/fluxoAprovacao.ts` |
 | status | valor `pulado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/solicitacoes/fluxoAprovacao.ts` |
 | status | valor `todas` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/solicitacoes/hooks/useSolicitacoes.ts` |

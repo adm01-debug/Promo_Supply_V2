@@ -370,7 +370,7 @@
    "hooks_exportados": [
     "useCotacoes"
    ],
-   "linhas": 211,
+   "linhas": 212,
    "dominio": "features/cotacoes",
    "tabelas": [
     "cotacoes"

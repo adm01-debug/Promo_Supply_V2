@@ -1139,10 +1139,11 @@
   {
    "arquivo": "src/components/compras/NeuralFollowUpMonitor.tsx",
    "exports": [
-    "NeuralFollowUpMonitor"
+    "NeuralFollowUpMonitor",
+    "ResumoFollowUp"
    ],
    "export_default": null,
-   "linhas": 118,
+   "linhas": 150,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1663,10 +1664,11 @@
   {
    "arquivo": "src/components/compras/SupplierInteractionLog.tsx",
    "exports": [
+    "InteracaoFornecedor",
     "SupplierInteractionLog"
    ],
    "export_default": null,
-   "linhas": 102,
+   "linhas": 104,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
