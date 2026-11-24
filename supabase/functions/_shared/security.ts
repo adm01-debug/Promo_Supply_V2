@@ -280,6 +280,24 @@ export const getTenantId = async (
   return defaultTenant ?? (memberships![0] as { tenant_id: string }).tenant_id;
 };
 
+const SEGREDO_ENCODER = new TextEncoder();
+
+/**
+ * Comparacao em tempo constante para segredos compartilhados (QA 064 / EDGA-11).
+ *
+ * Compara primeiro o comprimento (o tamanho de um segredo nao e segredo) e depois
+ * acumula XOR byte a byte, sem curto-circuito: o tempo de resposta nao revela em qual
+ * posicao o segredo recebido diverge do esperado.
+ */
+export function timingSafeEqualStr(a: string, b: string): boolean {
+  const aBytes = SEGREDO_ENCODER.encode(a);
+  const bBytes = SEGREDO_ENCODER.encode(b);
+  if (aBytes.length !== bBytes.length) return false;
+  let diff = 0;
+  for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
+  return diff === 0;
+}
+
 /**
  * Verifica se uma requisição vem de um cron autorizado.
  *
@@ -300,7 +318,7 @@ export function verifyCronSecret(req: Request): Response | null {
   }
   // CRON_SECRET configurado: exige casamento exato.
   if (secret) {
-    if (provided !== secret) {
+    if (!timingSafeEqualStr(provided, secret)) {
       return new Response(JSON.stringify({ error: "Unauthorized: invalid cron secret" }), {
         status: 401,
         headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
@@ -320,7 +338,7 @@ export function verifyCronSecret(req: Request): Response | null {
       headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
     });
   }
-  if (provided !== svc) {
+  if (!timingSafeEqualStr(provided, svc)) {
     return new Response(JSON.stringify({ error: "Unauthorized: invalid cron secret" }), {
       status: 401,
       headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
