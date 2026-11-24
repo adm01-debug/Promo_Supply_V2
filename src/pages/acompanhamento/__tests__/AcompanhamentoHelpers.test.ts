@@ -233,4 +233,47 @@ describe('gerarEtapasPipeline', () => {
     expect(result[0].status).toBe('atual');
     expect(result.filter(s => s.status === 'concluido')).toHaveLength(0);
   });
+
+  it('mostra a data real do marco e nao inventa nas etapas sem marco', () => {
+    const result = gerarEtapasPipeline('PEDIDO_GERADO', {
+      solicitacao: '2025-12-01',
+      emissao: '2025-12-03',
+    });
+    expect(result[0].data).toBe('01/12/2025');
+    expect(result[1].data).toBeUndefined();
+    expect(result[2].data).toBe('03/12/2025');
+    expect(result[3].data).toBeUndefined();
+    expect(result[4].data).toBeUndefined();
+    expect(result[5].data).toBeUndefined();
+  });
+
+  it('etapa em andamento sem marco diz Agora e as outras ficam sem data', () => {
+    const result = gerarEtapasPipeline('EM_COTACAO');
+    expect(result[0].data).toBeUndefined();
+    expect(result[1].data).toBe('Agora');
+    expect(result[2].data).toBeUndefined();
+  });
+
+  it('nao devolve mais a data fixa 15/12/2025 nas etapas concluidas', () => {
+    const result = gerarEtapasPipeline('ENTREGUE');
+    expect(result.map(e => e.data)).not.toContain('15/12/2025');
+    for (let i = 0; i < 5; i++) {
+      expect(result[i].data).toBeUndefined();
+    }
+  });
+
+  it('etapa entregue usa a data de entrega real quando existe', () => {
+    const comEntrega = gerarEtapasPipeline('ENTREGUE', { entrega: '2025-12-20' });
+    expect(comEntrega[5].data).toBe('20/12/2025');
+    const semEntrega = gerarEtapasPipeline('ENTREGUE');
+    expect(semEntrega[5].data).toBe('Agora');
+  });
+
+  it('marco invalido ou vazio e ignorado em vez de virar data', () => {
+    const invalido = gerarEtapasPipeline('PEDIDO_GERADO', { emissao: 'nao-e-data' });
+    expect(invalido[2].data).toBe('Agora');
+    const vazio = gerarEtapasPipeline('PEDIDO_GERADO', { emissao: null, solicitacao: '' });
+    expect(vazio[0].data).toBeUndefined();
+    expect(vazio[2].data).toBe('Agora');
+  });
 });

@@ -89,7 +89,7 @@ const Acompanhamento = () => {
   const { data: pedidosDB = [], isLoading: isLoadingPedidos } = useQuery({
     queryKey: ['acompanhamento-pedidos'],
     queryFn: async () => {
-      const { data, error } = await supabase.from('pedidos').select('id, numero, status, valor_total, data_previsao, data_emissao, created_at, fornecedor_id, solicitacao_id').not('status', 'in', '(cancelado)');
+      const { data, error } = await supabase.from('pedidos').select('id, numero, status, valor_total, data_previsao, data_emissao, data_entrega, created_at, fornecedor_id, solicitacao_id').not('status', 'in', '(cancelado)');
       if (error) throw error;
       return data || [];
     },
@@ -157,6 +157,9 @@ const Acompanhamento = () => {
         fornecedorSelecionado: forn?.nome_fantasia || forn?.razao_social || null,
         valorTotal: Number(p.valor_total) || null, valorUnitario: null,
         createdAt: p.created_at, tipo: 'produto',
+        solicitacaoCriadaEm: sol?.created_at ?? null,
+        dataEmissao: p.data_emissao ?? null,
+        dataEntrega: p.data_entrega ?? null,
       };
     });
   }, [pedidosDB, solicitacoesDB, fornecedoresDB]);
@@ -460,7 +463,7 @@ const Acompanhamento = () => {
                                    <span className="text-[9px] font-bold text-success uppercase">Live Feed</span>
                                  </div>
                                </div>
-                               <PedidoTimeline etapas={gerarEtapasPipeline(pedido.status)} orientacao="horizontal" />
+                               <PedidoTimeline etapas={gerarEtapasPipeline(pedido.status, { solicitacao: pedido.solicitacaoCriadaEm, emissao: pedido.dataEmissao, entrega: pedido.dataEntrega })} orientacao="horizontal" />
                             </div>
 
                             {pedido.sla.status !== 'entregue' && (
@@ -527,7 +530,7 @@ const Acompanhamento = () => {
                 <div className="space-y-4">
                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Pipeline Detalhado</h3>
                    <Card className="p-8 rounded-[2rem] bg-background/40 border-border/50">
-                      <PedidoTimeline etapas={gerarEtapasPipeline(pedidoDetalhes.status)} orientacao="vertical" />
+                      <PedidoTimeline etapas={gerarEtapasPipeline(pedidoDetalhes.status, { solicitacao: pedidoDetalhes.solicitacaoCriadaEm, emissao: pedidoDetalhes.dataEmissao, entrega: pedidoDetalhes.dataEntrega })} orientacao="vertical" />
                    </Card>
                 </div>
                 
