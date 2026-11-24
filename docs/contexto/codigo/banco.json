@@ -12013,7 +12013,7 @@
      "tenant_id"
     ]
    },
-   "usada_no_front": 1,
+   "usada_no_front": 2,
    "usada_em_edges": [],
    "triggers": [],
    "sem_rls": false,

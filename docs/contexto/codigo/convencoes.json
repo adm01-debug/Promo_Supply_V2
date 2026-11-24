@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (162)",
+   "co-localizado (__tests__) (163)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(integridade): guarda exclusao de pagamento com historico (#405)",
    "chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)",
    "fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)",
    "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)",
-   "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)",
-   "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)"
+   "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)"
   ]
  },
  "pr_template": null,

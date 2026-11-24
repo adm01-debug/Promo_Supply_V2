@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e14e3a529a26b8e4df1aef6eafbf5705b9159199",
+  "sha": "090a0306964304a99549e8e3800257fda854c2cc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:58 UTC",
-  "files_total": 1397,
-  "code_files": 1225,
-  "code_lines": 208440,
+  "generated_at": "2026-11-24 10:01 UTC",
+  "files_total": 1398,
+  "code_files": 1226,
+  "code_lines": 208636,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "af7601ec00c1f4d0",
+ "facts_hash": "9aa5081142f2046c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -271,7 +271,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 386,
+   ".tsx": 387,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35321,8 +35321,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 88,
-   "lines": 14941,
+   "files": 89,
+   "lines": 15137,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35356,6 +35356,7 @@
     "notifications",
     "pagamentos",
     "password_reset_requests",
+    "payment_history",
     "pedido_itens",
     "pedidos",
     "permissions",
@@ -35534,8 +35535,8 @@
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
     "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
-    "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
-    "src/hooks/__tests__/usePermissions.test.tsx"
+    "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx"
    ]
   },
   {
@@ -37239,7 +37240,8 @@
    },
    "payment_history": {
     "select": [
-     "src/components/pagamentos/PagamentoDetailModal.tsx"
+     "src/components/pagamentos/PagamentoDetailModal.tsx",
+     "src/hooks/usePagamentos.ts"
     ],
     "insert": [
      "src/components/pagamentos/PagamentoDetailModal.tsx"
@@ -41550,6 +41552,10 @@
    },
    {
     "file": "src/hooks/usePagamentos.ts",
+    "msg": "${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO}"
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
     "msg": "Erro ao atualizar pagamentos: "
    },
    {
@@ -41571,6 +41577,14 @@
    {
     "file": "src/hooks/usePagamentos.ts",
     "msg": "Nenhum pagamento pode ir para ${newStatus}: ${blocked.join("
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
+    "msg": "Não foi possível conferir o histórico do pagamento. Exclusão cancelada."
+   },
+   {
+    "file": "src/hooks/usePagamentos.ts",
+    "msg": "Não foi possível conferir o histórico dos pagamentos. Exclusão cancelada."
    },
    {
     "file": "src/hooks/usePagamentos.ts",
@@ -63269,6 +63283,30 @@
    {
     "file": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
     "name": "agenda apenas os aprovados e reporta os bloqueados"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "usePagamentos - exclusao guardada pelo historico"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "recusa excluir pagamento que tem historico de alteracao"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "bulkDelete exclui so os pagamentos sem historico e avisa"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "bulkDelete com todo o lote com historico nao apaga nada"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "erro na contagem de historico cancela a exclusao"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    "name": "exclui pagamento sem historico"
    },
    {
     "file": "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
@@ -103314,7 +103352,7 @@
   },
   "src/hooks/usePagamentos.ts": {
    "path": "src/hooks/usePagamentos.ts",
-   "lines": 328,
+   "lines": 377,
    "exports": [
     "type Pagamento",
     "interface CreatePagamentoInput",
@@ -103325,6 +103363,10 @@
    "tables": [
     {
      "table": "pagamentos",
+     "op": "select"
+    },
+    {
+     "table": "payment_history",
      "op": "select"
     },
     {
@@ -103371,6 +103413,9 @@
      "updated_at",
      "valor",
      "valor_pago"
+    ],
+    "payment_history": [
+     "pagamento_id"
     ]
    },
    "rpc": [
@@ -103379,12 +103424,15 @@
    ],
    "errors": [
     "${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join(",
+    "${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO}",
     "Erro ao atualizar pagamentos: ",
     "Erro ao atualizar: ",
     "Erro ao excluir pagamentos: ",
     "Erro ao excluir: ",
     "Erro ao registrar pagamento: ",
     "Nenhum pagamento pode ir para ${newStatus}: ${blocked.join(",
+    "Não foi possível conferir o histórico do pagamento. Exclusão cancelada.",
+    "Não foi possível conferir o histórico dos pagamentos. Exclusão cancelada.",
     "Transição inválida: ${current.status} → ${updates.status}",
     "Você precisa estar logado"
    ],
@@ -104819,6 +104867,19 @@
     "usePagamentos · bulkUpdateStatus (UI-01)",
     "nao agenda pagamento pendente: recusa o lote e nao grava nada",
     "agenda apenas os aprovados e reporta os bloqueados"
+   ]
+  },
+  "src/hooks/__tests__/usePagamentos.exclusao.test.tsx": {
+   "path": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+   "lines": 147,
+   "is_test": true,
+   "tests": [
+    "usePagamentos - exclusao guardada pelo historico",
+    "recusa excluir pagamento que tem historico de alteracao",
+    "bulkDelete exclui so os pagamentos sem historico e avisa",
+    "bulkDelete com todo o lote com historico nao apaga nada",
+    "erro na contagem de historico cancela a exclusao",
+    "exclui pagamento sem historico"
    ]
   },
   "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx": {
@@ -119944,10 +120005,21 @@
   }
  },
  "git": {
-  "sha": "e14e3a529a26b8e4df1aef6eafbf5705b9159199",
+  "sha": "090a0306964304a99549e8e3800257fda854c2cc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "090a030",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(integridade): guarda exclusao de pagamento com historico (#405)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+     "src/hooks/usePagamentos.ts"
+    ]
+   },
    {
     "sha": "e14e3a5",
     "date": "2026-11-24",
@@ -120301,18 +120373,6 @@
      "src/pages/pedidos/Pedidos.tsx",
      "src/pages/pedidos/__tests__/pedidosExportacao.test.ts"
     ]
-   },
-   {
-    "sha": "28478d2",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/recebimento/RecebimentoOffline.tsx",
-     "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-     "src/pages/recebimento/recebimentoHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120357,6 +120417,14 @@
     2
    ],
    [
+    "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/usePagamentos.ts",
+    1
+   ],
+   [
     ".github/workflows/provisionar-secret-design-sync.yml",
     1
    ],
@@ -120386,14 +120454,6 @@
    ],
    [
     "src/pages/documentos/DocumentosFiscais.tsx",
-    1
-   ],
-   [
-    "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
-    1
-   ],
-   [
-    "src/pages/documentos/conciliacaoFiscal.ts",
     1
    ]
   ]

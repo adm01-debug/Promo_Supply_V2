@@ -1655,10 +1655,11 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 328,
+   "linhas": 377,
    "dominio": "hooks",
    "tabelas": [
-    "pagamentos"
+    "pagamentos",
+    "payment_history"
    ],
    "rpcs": [
     "generate_sequential_number",
@@ -1687,7 +1688,7 @@
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
     "src/pages/pagamentos/Pagamentos.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/usePasswordResetRequests.ts",

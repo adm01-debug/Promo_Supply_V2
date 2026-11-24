@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e14e3a529a` · branch `main` · 2026-11-24 09:58 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `090a030696` · branch `main` · 2026-11-24 10:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2413,12 +2413,15 @@ _nenhum item encontrado_
 | No TOTP factor found | `src/hooks/useMFA.ts` |
 | User not authenticated | `src/hooks/useMFA.ts` |
 | ${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join( | `src/hooks/usePagamentos.ts` |
+| ${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO} | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir:  | `src/hooks/usePagamentos.ts` |
 | Erro ao registrar pagamento:  | `src/hooks/usePagamentos.ts` |
 | Nenhum pagamento pode ir para ${newStatus}: ${blocked.join( | `src/hooks/usePagamentos.ts` |
+| Não foi possível conferir o histórico do pagamento. Exclusão cancelada. | `src/hooks/usePagamentos.ts` |
+| Não foi possível conferir o histórico dos pagamentos. Exclusão cancelada. | `src/hooks/usePagamentos.ts` |
 | Transição inválida: ${current.status} → ${updates.status} | `src/hooks/usePagamentos.ts` |
 | Você precisa estar logado | `src/hooks/usePagamentos.ts` |
 | Usuário não autenticado | `src/hooks/usePasswordResetRequests.ts` |
@@ -2431,10 +2434,7 @@ _nenhum item encontrado_
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
 | Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
 | Erro SPOT:  | `src/hooks/useSpotIntegration.ts` |
-| Erro ao atualizar documento | `src/hooks/useSupplierQualification.ts` |
-| Erro de segurança. Verifique se está usando HTTPS. | `src/hooks/useWebAuthn.ts` |
-| Failed to create credential | `src/hooks/useWebAuthn.ts` |
-| … +265 linhas — lista completa em `context.json` | |
+| … +268 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3122 testes em 205 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3128 testes em 206 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2584,6 +2584,7 @@ _nenhum item encontrado_
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 6 | transicaoDeStatusPermitida · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido · não devolve pedido concluído para uma etapa anterior … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
 | `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
+| `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |

@@ -141,15 +141,15 @@
    "importado_por": 12
   },
   {
+   "arquivo": "src/hooks/usePagamentos.ts",
+   "importado_por": 12
+  },
+  {
    "arquivo": "src/lib/exportData.ts",
    "importado_por": 12
   },
   {
    "arquivo": "src/components/organisms/ElitePageWrapper.tsx",
-   "importado_por": 11
-  },
-  {
-   "arquivo": "src/hooks/usePagamentos.ts",
    "importado_por": 11
   },
   {
