@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (122)",
+   "co-localizado (__tests__) (123)",
    "outro (43)",
    "co-localizado (*.test) (37)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "test(palette): trava atalhos e badges do Command Palette no registry real (#353)",
    "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)",
    "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)",
    "fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)",
-   "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)",
-   "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)"
+   "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)"
   ]
  },
  "pr_template": null,

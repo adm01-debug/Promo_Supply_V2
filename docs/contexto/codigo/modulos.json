@@ -1946,7 +1946,7 @@
   {
    "modulo": "features/layout",
    "arquivos": 32,
-   "testes": 4,
+   "testes": 5,
    "linhas": 5103,
    "itens_menu": [],
    "telas": [],

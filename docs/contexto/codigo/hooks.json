@@ -459,7 +459,7 @@
    "usado_por_arquivos": [
     "src/features/layout/components/MainLayout.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/features/layout/transitions/index.ts",
@@ -1412,7 +1412,7 @@
     "src/features/layout/components/KeyboardShortcutsDialog.tsx",
     "src/features/layout/components/MainLayout.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/useLicitacoes.ts",
