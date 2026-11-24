@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2be0c926e61ae4f8180e7ad205e49a827a1788fd",
+  "sha": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 21:05 UTC",
+  "generated_at": "2026-11-24 21:08 UTC",
   "files_total": 1446,
   "code_files": 1273,
   "code_lines": 213823,
@@ -121966,10 +121966,19 @@
   }
  },
  "git": {
-  "sha": "2be0c926e61ae4f8180e7ad205e49a827a1788fd",
+  "sha": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "f1dd010",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "ci: adiciona gate de tipos (deno check) das edge functions (#359)",
+    "files": [
+     ".github/workflows/main.yml"
+    ]
+   },
    {
     "sha": "2be0c92",
     "date": "2026-11-24",
@@ -122315,23 +122324,12 @@
      "src/features/layout/components/GuidedBuyingAssistant.tsx",
      "src/features/layout/components/QuickActionsFAB.tsx"
     ]
-   },
-   {
-    "sha": "cd9b099",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/ComparadorCotacoes.tsx",
-     "src/features/layout/components/SupplierChat.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    25
    ],
    [
     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -122378,8 +122376,8 @@
     2
    ],
    [
-    "src/features/layout/components/SupplierChat.tsx",
-    2
+    ".github/workflows/main.yml",
+    1
    ],
    [
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",

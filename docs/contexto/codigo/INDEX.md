@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2be0c926e61ae4f8180e7ad205e49a827a1788fd` (2026-11-24T18:03:49-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f1dd0101072135b2332ca575fde6e568bfd1d6e3` (2026-11-24T18:07:12-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
 - 2026-11-24 `2be0c92` fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)
 - 2026-11-24 `b1db1c7` fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)
 - 2026-11-24 `19d6ce8` fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
 - 2026-11-24 `73aaa9d` fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)
 - 2026-11-24 `3beb6da` fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)
-- 2026-11-24 `338a212` fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

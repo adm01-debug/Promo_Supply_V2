@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2be0c926e61ae4f8180e7ad205e49a827a1788fd",
+  "commit": "f1dd0101072135b2332ca575fde6e568bfd1d6e3",
   "branch": "main",
-  "data_commit": "2026-11-24T18:03:49-03:00",
+  "data_commit": "2026-11-24T18:07:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "f1dd010",
+    "data": "2026-11-24",
+    "assunto": "ci: adiciona gate de tipos (deno check) das edge functions (#359)"
+   },
    {
     "sha": "2be0c92",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "0165b41",
     "data": "2026-11-24",
     "assunto": "test: prova o retry quando o numero da solicitacao colide (#427)"
-   },
-   {
-    "sha": "fa27d6f",
-    "data": "2026-11-24",
-    "assunto": "fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)"
    }
   ],
   "arquivos_mudados_7d": 481,
@@ -266,6 +266,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "supabase/functions/check-sla-alerts/index.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/functions/workflow-engine/index.ts",
     "mudancas": 6
    }
   ],

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "ci: adiciona gate de tipos (deno check) das edge functions (#359)",
    "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)",
    "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)",
    "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)",
-   "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)",
-   "fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)"
+   "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)"
   ]
  },
  "pr_template": null,
