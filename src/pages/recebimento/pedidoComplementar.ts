@@ -9,13 +9,17 @@ import { buildPendingLines, defaultForecastDate, type PendingOrder } from "./rec
  * A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um
  * componente que nunca chegou a ser importado em lugar nenhum -- a tela oficial
  * de recebimento e `/recebimento` (RecebimentoOffline). A logica foi portada
- * para ca com duas correcoes em relacao ao original:
+ * para ca com tres correcoes em relacao ao original:
  *
  * 1. O original usava `tenant_id: originalPedido.tenant_id || '00000000-...'`.
  *    Esse fallback grava um pedido real sob um tenant sentinela, furando o
  *    isolamento entre empresas. Aqui, pedido sem tenant_id aborta a geracao.
  * 2. O original nao tratava falha do insert dos itens, podendo deixar um pedido
  *    complementar vazio no banco. Aqui o pedido orfao e removido.
+ * 3. O original copiava so `tenant_id`. `pedidos` tem duas colunas de escopo:
+ *    `tenant_id` sustenta a RLS e `organization_id` e o filtro de leitura de
+ *    todas as telas de pedido (`usePedidos`, `get_pedidos_kpis`). Sem a segunda
+ *    o complementar nasce invisivel no banco. Aqui as duas sao copiadas.
  */
 
 export interface ComplementaryResult {
@@ -37,7 +41,7 @@ export async function createComplementaryOrder(
     const { data: original, error: fetchError } = await supabase
       .from("pedidos")
       .select(
-        "fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, tenant_id",
+        "fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, tenant_id, organization_id",
       )
       .eq("id", order.id)
       .single();
@@ -45,7 +49,8 @@ export async function createComplementaryOrder(
     if (fetchError || !original) {
       return { created: false, reason: "error", error: fetchError?.message };
     }
-    if (!original.tenant_id) {
+    // Faltando qualquer uma das duas colunas de escopo o pedido nasce fora de toda tela.
+    if (!original.tenant_id || !original.organization_id) {
       return { created: false, reason: "no-tenant" };
     }
 
@@ -70,6 +75,7 @@ export async function createComplementaryOrder(
         observacoes: `Pedido complementar ref. ${order.numero} - saldo de recebimento parcial`,
         data_previsao: defaultForecastDate(),
         tenant_id: original.tenant_id,
+        organization_id: original.organization_id,
       })
       .select("id")
       .single();
