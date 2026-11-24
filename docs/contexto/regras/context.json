@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe",
+  "sha": "28478d2aa4d3d16c78c69c08d410be36f7e32e02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:20 UTC",
+  "generated_at": "2026-11-24 04:26 UTC",
   "files_total": 1357,
   "code_files": 1186,
-  "code_lines": 202979,
+  "code_lines": 203101,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a6ba5bd6bf6784ff",
+ "facts_hash": "24b2de84813421c3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35659,7 +35659,7 @@
   {
    "module": "src/pages",
    "files": 133,
-   "lines": 31264,
+   "lines": 31386,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35758,6 +35758,8 @@
     "framer-motion",
     "lodash",
     "lucide-react",
+    "node:fs",
+    "node:path",
     "ramda",
     "react",
     "react-day-picker",
@@ -37184,6 +37186,7 @@
      "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
      "src/hooks/usePurchaseHistory.ts",
      "src/pages/pedidos/PedidoDetailsDialog.tsx",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
      "src/pages/recompra/RecompraInteligente.tsx"
     ],
     "insert": [
@@ -41887,6 +41890,10 @@
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
     "msg": "Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}"
+   },
+   {
+    "file": "src/pages/recebimento/RecebimentoOffline.tsx",
+    "msg": "Recebimento nao registrado: ${erroItens}"
    },
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -67183,6 +67190,38 @@
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
     "name": "usa so a observacao geral quando nao ha nota por item"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "acrescenta a nota nova em vez de apagar a observacao que a OC gravou"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "nao duplica a nota quando o sync offline repete a gravacao"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "devolve null sem nota nova, para nao sobrescrever a observacao do pedido"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "gravarItensRecebidos"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "grava todos os itens e devolve null quando todos atualizam"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "acusa a linha que a RLS filtrou em silencio (0 linhas, sem erro)"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "devolve a mensagem do banco e para no primeiro item que falhar"
+   },
+   {
+    "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    "name": "a tela confere as linhas afetadas e repassa a observacao existente"
    },
    {
     "file": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
@@ -108408,7 +108447,7 @@
   },
   "src/pages/recebimento/RecebimentoOffline.tsx": {
    "path": "src/pages/recebimento/RecebimentoOffline.tsx",
-   "lines": 447,
+   "lines": 463,
    "exports": [
     "function RecebimentoOffline"
    ],
@@ -108418,16 +108457,12 @@
      "op": "update"
     },
     {
+     "table": "pedido_itens",
+     "op": "select,update"
+    },
+    {
      "table": "pedidos",
      "op": "select"
-    },
-    {
-     "table": "pedido_itens",
-     "op": "update"
-    },
-    {
-     "table": "pedido_itens",
-     "op": "update"
     }
    ],
    "table_cols": {
@@ -108435,6 +108470,7 @@
      "data_previsao",
      "id",
      "numero",
+     "observacoes",
      "status",
      "valor_total"
     ],
@@ -108446,6 +108482,7 @@
     "Erro ao buscar pedidos",
     "Pedido complementar nao gerado: pedido original sem empresa definida",
     "Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}",
+    "Recebimento nao registrado: ${erroItens}",
     "Sem conexão — modo offline ativo"
    ],
    "status_values": [
@@ -108513,7 +108550,7 @@
   },
   "src/pages/recebimento/recebimentoHelpers.ts": {
    "path": "src/pages/recebimento/recebimentoHelpers.ts",
-   "lines": 221,
+   "lines": 258,
    "exports": [
     "interface PendingOrder",
     "interface OrderItem",
@@ -108532,6 +108569,8 @@
     "interface CamposStatusPedido",
     "type AtualizarPedido",
     "function aplicarStatusRecebimento",
+    "type AtualizarItem",
+    "function gravarItensRecebidos",
     "function buildReceivingObservation",
     "function defaultForecastDate"
    ],
@@ -108569,7 +108608,7 @@
   },
   "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts": {
    "path": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
-   "lines": 355,
+   "lines": 424,
    "is_test": true,
    "tests": [
     "OFFLINE_STORAGE_KEY",
@@ -108606,6 +108645,14 @@
     "devolve null quando nao ha observacao",
     "consolida observacoes de itens e a geral",
     "usa so a observacao geral quando nao ha nota por item",
+    "acrescenta a nota nova em vez de apagar a observacao que a OC gravou",
+    "nao duplica a nota quando o sync offline repete a gravacao",
+    "devolve null sem nota nova, para nao sobrescrever a observacao do pedido",
+    "gravarItensRecebidos",
+    "grava todos os itens e devolve null quando todos atualizam",
+    "acusa a linha que a RLS filtrou em silencio (0 linhas, sem erro)",
+    "devolve a mensagem do banco e para no primeiro item que falhar",
+    "a tela confere as linhas afetadas e repassa a observacao existente",
     "caminhoDeStatus",
     "nao gera transicao quando o pedido ja esta no alvo",
     "aprovado nao pula direto para entregue nem para parcial",
@@ -117685,10 +117732,22 @@
   }
  },
  "git": {
-  "sha": "75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe",
+  "sha": "28478d2aa4d3d16c78c69c08d410be36f7e32e02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "28478d2",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/recebimento/RecebimentoOffline.tsx",
+     "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+     "src/pages/recebimento/recebimentoHelpers.ts"
+    ]
+   },
    {
     "sha": "75fbc3e",
     "date": "2026-11-24",
@@ -118027,23 +118086,24 @@
     "author": "github-actions[bot]",
     "subject": "chore(db): sincronizar types.ts com o banco [auto] (#303)",
     "files": []
-   },
-   {
-    "sha": "25ed3a7",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(permissoes): usePermissions usa RPC SECURITY DEFINER - QA 010 (#317)",
-    "files": [
-     "src/hooks/__tests__/usePermissions.test.tsx",
-     "src/hooks/usePermissions.ts",
-     "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    26
+   ],
+   [
+    "src/pages/recebimento/RecebimentoOffline.tsx",
+    2
+   ],
+   [
+    "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+    2
+   ],
+   [
+    "src/pages/recebimento/recebimentoHelpers.ts",
+    2
    ],
    [
     "supabase/functions/external-db-bridge/index.ts",
@@ -118107,18 +118167,6 @@
    ],
    [
     "src/pages/auth/__tests__/Auth.novaSenha.test.tsx",
-    1
-   ],
-   [
-    "src/routes/AppRoutes.tsx",
-    1
-   ],
-   [
-    "supabase/functions/punchout-receive/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/scim-v2/auth.ts",
     1
    ]
   ]

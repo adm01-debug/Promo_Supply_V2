@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)",
    "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)",
    "fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)",
    "feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)",
-   "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)",
-   "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)"
+   "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)"
   ]
  },
  "pr_template": null,

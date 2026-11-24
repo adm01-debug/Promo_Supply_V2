@@ -6695,7 +6695,7 @@
    "modulo": "pages/recebimento",
    "arquivos": 4,
    "testes": 2,
-   "linhas": 972,
+   "linhas": 1025,
    "itens_menu": [
     "Recebimento"
    ],

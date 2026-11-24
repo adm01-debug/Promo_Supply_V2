@@ -5292,7 +5292,7 @@
     "RecebimentoOffline"
    ],
    "export_default": "RecebimentoOffline",
-   "linhas": 447,
+   "linhas": 463,
    "dominio": "pages/recebimento",
    "hooks_locais": [
     "useAuth"

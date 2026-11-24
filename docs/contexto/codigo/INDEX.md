@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe` (2026-11-24T01:17:23-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28478d2aa4d3d16c78c69c08d410be36f7e32e02` (2026-11-24T01:26:07-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1356 |
 | arquivos_codigo | 853 |
-| linhas_codigo | 175795 |
+| linhas_codigo | 175917 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (28)
+- docs/qa/05-PROGRESSO.md (29)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
 - bun.lock (9)
@@ -419,6 +419,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `28478d2` fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)
 - 2026-11-24 `75fbc3e` fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)
 - 2026-11-24 `e20b078` fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)
 - 2026-11-24 `700e3fd` feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)
@@ -433,7 +434,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `d6a5f18` fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)
 - 2026-11-23 `fb36e10` fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)
 - 2026-11-23 `d32b847` chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)
-- 2026-11-23 `7ea54f2` fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

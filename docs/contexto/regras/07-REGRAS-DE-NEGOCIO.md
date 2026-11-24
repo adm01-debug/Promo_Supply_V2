@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `75fbc3e4bf` · branch `main` · 2026-11-24 04:20 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `28478d2aa4` · branch `main` · 2026-11-24 04:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2403,7 +2403,7 @@ _nenhum item encontrado_
 | , params) as unknown as RpcResult<void>; }  export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {   return supabase.rpc( | `src/lib/supabaseRpc.ts` |
 | Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| … +246 linhas — lista completa em `context.json` | |
+| … +247 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2422,7 +2422,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2903 testes em 175 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2911 testes em 175 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2430,11 +2430,11 @@ _nenhum item encontrado_
 | `src/features/layout/components/search/__tests__/searchConfig.test.ts` | 61 | fuseOptions · isCaseSensitive is false · includeScore and includeMatches are true · threshold is 0.4 … |
 | `src/lib/__tests__/dbMapping.test.ts` | 59 | dbMapping · nullToUndefined · converts null to undefined · passes through undefined … |
 | `src/stores/__tests__/undoStore.test.ts` | 58 | undoStore · initial state · starts with empty stacks · has maxActions = 10 … |
+| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 56 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/lib/__tests__/clearFiltersShortcut.test.ts` | 55 | DEFAULT_CLEAR_FILTERS_SHORTCUT · uses key  · requires ctrl · requires shift … |
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
-| `src/pages/recebimento/__tests__/recebimentoHelpers.test.ts` | 48 | OFFLINE_STORAGE_KEY · is a non-empty string · equals  · uses kebab-case (no spaces, no underscores) … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
