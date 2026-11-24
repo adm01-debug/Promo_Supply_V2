@@ -3,17 +3,17 @@
  *
  * Vive fora do hook para poder ser reusada por qualquer tela que grave
  * `pedidos.status` (ex.: o Kanban de Acompanhamento) sem arrastar o hook inteiro.
+ *
+ * A matriz vem de src/lib/statusTransitionsBanco.ts, que é lida da migration do
+ * trigger: até aqui este arquivo mantinha uma cópia própria que oferecia
+ * `cancelado -> pendente` (comentado como "reset para correção"), destino que o
+ * banco recusa desde sempre - o operador recebia o erro cru do trigger. Reabrir
+ * pedido cancelado seria mudança de regra de negócio e exigiria migration; não é
+ * o que esta matriz representa hoje.
  */
-export const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
-  pendente: ['aprovado', 'cancelado'],
-  aprovado: ['enviado', 'em_transito', 'cancelado'],
-  enviado: ['em_transito', 'entregue', 'cancelado'],
-  em_transito: ['entregue', 'parcial', 'cancelado'],
-  entregue: ['parcial'],
-  parcial: ['entregue', 'cancelado'],
-  cancelado: ['pendente'], // Allow reset for corrections
-  concluido: [],
-};
+import { TRANSICOES_PEDIDO_BANCO } from '@/lib/statusTransitionsBanco';
+
+export const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = TRANSICOES_PEDIDO_BANCO;
 
 // Kanban usa nomes de status da UI; aqui ficam ligados ao status gravado em `pedidos`.
 export const KANBAN_TO_DB_STATUS: Record<string, string> = {
