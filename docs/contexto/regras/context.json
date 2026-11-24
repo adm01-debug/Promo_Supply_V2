@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "85d63f7706dc26cc56bda5b89546e397d55ffe12",
+  "sha": "728759ebce9b6eb3b871ed11c0dff677d0dcf81b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 16:21 UTC",
-  "files_total": 1431,
-  "code_files": 1258,
-  "code_lines": 212590,
+  "generated_at": "2026-11-24 16:22 UTC",
+  "files_total": 1433,
+  "code_files": 1260,
+  "code_lines": 212817,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "59b5fb086b52ba19",
+ "facts_hash": "6b6d16f3c9207d50",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 440,
    ".tsx": 409,
-   ".sql": 334,
+   ".sql": 336,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -20282,10 +20282,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql",
+    "src": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
     "security_definer": false,
     "search_path": true,
-    "body": "DECLARE valid_targets text[]; BEGIN IF OLD.status = NEW.status THEN RETURN NEW; END IF; CASE OLD.status WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'cancelada', 'expirada']; WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'cancelada', 'expirada']; WHEN 'aprovada' THEN valid_targets := ARRAY['cancelada']; WHEN 'rejeitada' THEN valid_targets := ARRAY['pendente']; WHEN 'cancelada' THEN valid_targets := ARRAY[]::text[]; WHEN 'expirada' THEN valid_targets := ARRAY[]::text[]; ELSE valid_targets := ARRAY[]::text[]; END CASE; IF NOT (NEW.status = ANY(valid_targets)) THEN RAISE EXCEPTION 'Transição de status de cotação inválida: % → %', OL …",
+    "body": "DECLARE valid_targets text[]; BEGIN IF OLD.status = NEW.status THEN RETURN NEW; END IF; CASE OLD.status WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'expirada']; WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'expirada']; WHEN 'aprovada' THEN valid_targets := ARRAY[]::text[]; WHEN 'rejeitada' THEN valid_targets := ARRAY['pendente']; WHEN 'expirada' THEN valid_targets := ARRAY[]::text[]; ELSE valid_targets := ARRAY[]::text[]; END CASE; IF NOT (NEW.status = ANY(valid_targets)) THEN RAISE EXCEPTION 'Transição de status de cotação inválida: % → %', OLD.status, NEW.status; END IF; RETURN NEW; END;",
     "raises": [
      "Transição de status de cotação inválida: % → %"
     ],
@@ -27210,6 +27210,7 @@
    "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
    "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
    "supabase/migrations/20261125140000_integracao_promo_design.sql",
+   "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "src/integrations/supabase/types.ts"
@@ -31175,11 +31176,6 @@
     "src": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql"
    },
    {
-    "function": "validate_cotacao_status_transition",
-    "msg": "Transição de status de cotação inválida: % → %",
-    "src": "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql"
-   },
-   {
     "function": "count_legacy_storage_urls",
     "msg": "Forbidden: admin only",
     "src": "supabase/migrations/20260619192533_d21a4e4f-4249-4d39-9182-edb3f6ed11ce.sql"
@@ -31313,6 +31309,11 @@
     "function": "get_compras_sla_metrics",
     "msg": "forbidden",
     "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
+   },
+   {
+    "function": "validate_cotacao_status_transition",
+    "msg": "Transição de status de cotação inválida: % → %",
+    "src": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql"
    },
    {
     "function": "validate_pagamento_status_transition",
@@ -34538,6 +34539,19 @@
    ]
   },
   {
+   "module": "docs",
+   "files": 1,
+   "lines": 103,
+   "tables": [],
+   "exports": [],
+   "docs": [],
+   "deps": [],
+   "imports_modules": [],
+   "file_list": [
+    "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql"
+   ]
+  },
+  {
    "module": "public",
    "files": 1,
    "lines": 71,
@@ -36373,8 +36387,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 331,
-   "lines": 27083,
+   "files": 332,
+   "lines": 27207,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -77003,10 +77017,10 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql",
+    "src": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
     "security_definer": false,
     "search_path": true,
-    "body": "DECLARE valid_targets text[]; BEGIN IF OLD.status = NEW.status THEN RETURN NEW; END IF; CASE OLD.status WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'cancelada', 'expirada']; WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'cancelada', 'expirada']; WHEN 'aprovada' THEN valid_targets := ARRAY['cancelada']; WHEN 'rejeitada' THEN valid_targets := ARRAY['pendente']; WHEN 'cancelada' THEN valid_targets := ARRAY[]::text[]; WHEN 'expirada' THEN valid_targets := ARRAY[]::text[]; ELSE valid_targets := ARRAY[]::text[]; END CASE; IF NOT (NEW.status = ANY(valid_targets)) THEN RAISE EXCEPTION 'Transição de status de cotação inválida: % → %', OL …",
+    "body": "DECLARE valid_targets text[]; BEGIN IF OLD.status = NEW.status THEN RETURN NEW; END IF; CASE OLD.status WHEN 'pendente' THEN valid_targets := ARRAY['analisando', 'aprovada', 'rejeitada', 'expirada']; WHEN 'analisando' THEN valid_targets := ARRAY['aprovada', 'rejeitada', 'expirada']; WHEN 'aprovada' THEN valid_targets := ARRAY[]::text[]; WHEN 'rejeitada' THEN valid_targets := ARRAY['pendente']; WHEN 'expirada' THEN valid_targets := ARRAY[]::text[]; ELSE valid_targets := ARRAY[]::text[]; END CASE; IF NOT (NEW.status = ANY(valid_targets)) THEN RAISE EXCEPTION 'Transição de status de cotação inválida: % → %', OLD.status, NEW.status; END IF; RETURN NEW; END;",
     "raises": [
      "Transição de status de cotação inválida: % → %"
     ],
@@ -79542,11 +79556,6 @@
     "src": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql"
    },
    {
-    "function": "validate_cotacao_status_transition",
-    "msg": "Transição de status de cotação inválida: % → %",
-    "src": "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql"
-   },
-   {
     "function": "count_legacy_storage_urls",
     "msg": "Forbidden: admin only",
     "src": "supabase/migrations/20260619192533_d21a4e4f-4249-4d39-9182-edb3f6ed11ce.sql"
@@ -79680,6 +79689,11 @@
     "function": "get_compras_sla_metrics",
     "msg": "forbidden",
     "src": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql"
+   },
+   {
+    "function": "validate_cotacao_status_transition",
+    "msg": "Transição de status de cotação inválida: % → %",
+    "src": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql"
    },
    {
     "function": "validate_pagamento_status_transition",
@@ -91310,6 +91324,10 @@
     "default defineConfig"
    ],
    "doc": "Configuração dedicada dos testes de RLS — roda em Node (não jsdom) e sem setup de React, porque atinge o Supabase real via HTTP. Rodar: `bunx vitest run --config vitest.rls.config.ts`"
+  },
+  "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql": {
+   "path": "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
+   "lines": 103
   },
   "public/push-handler.js": {
    "path": "public/push-handler.js",
@@ -121269,6 +121287,10 @@
    "path": "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "lines": 24
   },
+  "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql": {
+   "path": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
+   "lines": 124
+  },
   "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "lines": 80
@@ -121500,10 +121522,21 @@
   }
  },
  "git": {
-  "sha": "85d63f7706dc26cc56bda5b89546e397d55ffe12",
+  "sha": "728759ebce9b6eb3b871ed11c0dff677d0dcf81b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "728759e",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: matriz de transicoes de status alinhada ao banco (#394)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
+     "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql"
+    ]
+   },
    {
     "sha": "85d63f7",
     "date": "2026-11-24",
@@ -121846,22 +121879,12 @@
      "src/pages/pedidos/Pedidos.tsx",
      "src/pages/pedidos/__tests__/pedidosA11y.test.tsx"
     ]
-   },
-   {
-    "sha": "c42cabb",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "ci: provisiona o segredo do webhook Promo Champions (#411)",
-    "files": [
-     ".github/workflows/provisionar-secret-champions-webhook.yml",
-     "docs/ci/README.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    26
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -121912,6 +121935,14 @@
     2
    ],
    [
+    "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
     1
    ],
@@ -121929,14 +121960,6 @@
    ],
    [
     "src/locales/pt/translation.json",
-    1
-   ],
-   [
-    "src/i18n/__tests__/config.test.ts",
-    1
-   ],
-   [
-    "src/i18n/config.ts",
     1
    ]
   ]

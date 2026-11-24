@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "85d63f7706dc26cc56bda5b89546e397d55ffe12",
+  "commit": "728759ebce9b6eb3b871ed11c0dff677d0dcf81b",
   "branch": "main",
-  "data_commit": "2026-11-24T13:18:31-03:00",
+  "data_commit": "2026-11-24T13:19:00-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "728759e",
+    "data": "2026-11-24",
+    "assunto": "fix: matriz de transicoes de status alinhada ao banco (#394)"
+   },
    {
     "sha": "85d63f7",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "b996391",
     "data": "2026-11-24",
     "assunto": "fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)"
-   },
-   {
-    "sha": "1b88913",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)"
    }
   ],
-  "arquivos_mudados_7d": 470,
+  "arquivos_mudados_7d": 472,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 85
+    "mudancas": 86
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 85
+    "mudancas": 86
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1430,
+  "arquivos_total": 1432,
   "arquivos_codigo": 922,
   "linhas_codigo": 185217,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 331,
+  "migrations": 332,
   "cron_jobs": 74,
   "testes": 284,
   "workflows": 15,
