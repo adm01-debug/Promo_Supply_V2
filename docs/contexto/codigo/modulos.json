@@ -419,7 +419,7 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 24,
+   "testes": 25,
    "linhas": 25840,
    "itens_menu": [],
    "telas": [],
@@ -6238,7 +6238,7 @@
   {
    "modulo": "pages/pedidos",
    "arquivos": 4,
-   "testes": 4,
+   "testes": 5,
    "linhas": 1068,
    "itens_menu": [
     "Pedidos"

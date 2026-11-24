@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c42cabb8e493d06c526a244727a11ea5eac25acd` (2026-11-24T08:33:04-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cd7093a1493fec68d1326cbfd3d896e39066bc5c` (2026-11-24T08:33:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (822), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (824), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1400 |
-| arquivos_codigo | 895 |
-| linhas_codigo | 181806 |
+| arquivos_total | 1402 |
+| arquivos_codigo | 897 |
+| linhas_codigo | 181914 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 259 |
+| testes | 261 |
 | workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (28), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (165), outro (43), co-localizado (*.test) (41)
+- testes: co-localizado (__tests__) (167), outro (43), co-localizado (*.test) (41)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -338,14 +338,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (60)
+- docs/qa/05-PROGRESSO.md (61)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
 - docs/pendencias/_ordem.md (8)
-- docs/prod-readiness.md (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
 - bun.lock (7)
+- docs/prod-readiness.md (7)
 - package.json (7)
 - src/integrations/supabase/types.ts (7)
 - src/pages/acompanhamento/Acompanhamento.tsx (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `cd7093a` fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)
 - 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
 - 2026-11-24 `57ebeb0` feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)
 - 2026-11-24 `eb55789` fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `005038d` fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)
 - 2026-11-24 `ae31825` fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)
 - 2026-11-24 `4accdce` chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)
-- 2026-11-24 `18ef743` chore(db): sincronizar types.ts com o banco [auto] (#340)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
