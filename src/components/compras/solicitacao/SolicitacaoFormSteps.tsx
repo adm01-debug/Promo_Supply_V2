@@ -31,6 +31,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { formatBytes } from "@/lib/imageCompression";
 
 import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
+import type { EmpresaOpcao, PessoaDaEmpresa } from "@/features/solicitacoes/pessoasDaEmpresa";
 
 
 interface BudgetCheckResult {
@@ -43,9 +44,6 @@ interface BudgetCheckResult {
   requested?: number;
   message: string;
 }
-
-const empresasMock = ['Promo Supply', 'Gift Solutions', 'Marketing Promo', 'Brindes Express', 'Corporate Gifts'];
-const vendedoresMock = ['João Silva', 'Maria Santos', 'Carlos Oliveira', 'Ana Costa', 'Pedro Lima'];
 
 const prioridadeConfig = {
   baixa: { label: 'Baixa', color: 'bg-muted-foreground' },
@@ -66,7 +64,13 @@ interface StepProps {
   updateField: <K extends keyof NovaSolicitacaoData>(field: K, value: NovaSolicitacaoData[K]) => void;
 }
 
-export function Step1Identification({ formData, errors, updateField }: StepProps) {
+interface Step1Props extends StepProps {
+  empresas: EmpresaOpcao[];
+  pessoas: PessoaDaEmpresa[];
+  pessoasLoading?: boolean;
+}
+
+export function Step1Identification({ formData, errors, updateField, empresas, pessoas, pessoasLoading }: Step1Props) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500 px-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -76,16 +80,27 @@ export function Step1Identification({ formData, errors, updateField }: StepProps
             Entidade Solicitante *
           </Label>
           <div className="relative">
-            <Select value={formData.empresa} onValueChange={(v) => updateField('empresa', v)}>
+            <Select
+              value={formData.empresa}
+              onValueChange={(v) => {
+                updateField('empresa', v);
+                // O gestor pertence a empresa: trocar a empresa invalida a escolha.
+                updateField('vendedor', '');
+              }}
+            >
               <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
                 <SelectValue placeholder="Selecione a empresa" />
               </SelectTrigger>
               <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
-                {empresasMock.map(e => (
-                  <SelectItem key={e} value={e} className="text-xs font-bold py-3">
+                {empresas.length === 0 ? (
+                  <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-zinc-500">
+                    Nenhuma empresa vinculada ao seu usuário
+                  </div>
+                ) : empresas.map(e => (
+                  <SelectItem key={e.id} value={e.nome} className="text-xs font-bold py-3">
                     <div className="flex items-center justify-between w-full gap-8">
-                      <span>{e}</span>
-                      <Badge variant="outline" className="text-[8px] border-emerald-500/20 text-emerald-400">Score: 9.8</Badge>
+                      <span>{e.nome}</span>
+                      {e.cnpj && <Badge variant="outline" className="text-[8px] border-white/10 text-zinc-400">{e.cnpj}</Badge>}
                     </div>
                   </SelectItem>
                 ))}
@@ -99,12 +114,20 @@ export function Step1Identification({ formData, errors, updateField }: StepProps
             <User className="w-3.5 h-3.5 text-violet-400" />
             Gestor Responsável *
           </Label>
-          <Select value={formData.vendedor} onValueChange={(v) => updateField('vendedor', v)}>
+          <Select value={formData.vendedor} onValueChange={(v) => updateField('vendedor', v)} disabled={!formData.empresa}>
             <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.vendedor && "border-rose-500/50")}>
-              <SelectValue placeholder="Selecione o vendedor" />
+              <SelectValue placeholder="Selecione o gestor" />
             </SelectTrigger>
             <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
-              {vendedoresMock.map(v => <SelectItem key={v} value={v} className="text-xs font-bold py-3">{v}</SelectItem>)}
+              {pessoas.length === 0 ? (
+                <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-zinc-500">
+                  {!formData.empresa
+                    ? 'Selecione a empresa primeiro'
+                    : pessoasLoading ? 'Carregando pessoas da empresa...' : 'Nenhum gestor cadastrado nesta empresa'}
+                </div>
+              ) : pessoas.map(p => (
+                <SelectItem key={p.id} value={p.id} className="text-xs font-bold py-3">{p.nome}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           {errors.vendedor && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.vendedor}</p>}
