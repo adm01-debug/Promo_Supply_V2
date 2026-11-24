@@ -30,7 +30,7 @@ let latestCheckEscalations: (() => Promise<void>) | null = null;
 /**
  * F-022 refactor: useApprovalWorkflow is now a composition facade.
  * Business logic lives in focused sub-hooks:
- *   - useApprovalRules    → rules/delegations CRUD + findApplicableRule
+ *   - useApprovalRules    → rules/delegations CRUD + findApplicableRuleRPC
  *   - useApprovalHistory  → fetchHistory / fetchAllHistory
  * Workflow state (pending workflows/steps) and step actions remain here.
  */
@@ -131,8 +131,7 @@ export const useApprovalWorkflow = () => {
       if (solError) throw solError;
 
       const ruleId = await rulesApi.findApplicableRuleRPC(valor, categoriaId);
-      let rule = ruleId ? rulesApi.rules.find(r => r.id === ruleId) || null : null;
-      if (!rule) rule = rulesApi.findApplicableRule(valor, categoriaId);
+      const rule = ruleId ? rulesApi.rules.find(r => r.id === ruleId) || null : null;
 
       const ccManagerId = (sol.cost_center as { manager_id: string | null } | null)?.manager_id;
       if (!rule && !ccManagerId) {

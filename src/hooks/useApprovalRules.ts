@@ -132,12 +132,6 @@ export const useApprovalRules = () => {
     finally { setLoading(false); }
   }, [fetchDelegations]);
 
-  const findApplicableRule = useCallback((valor: number, categoriaId?: string): ApprovalRule | null => {
-    let rule = rules.find(r => r.ativo && valor >= r.valor_min && valor <= r.valor_max && r.categoria_id === categoriaId);
-    if (!rule) rule = rules.find(r => r.ativo && valor >= r.valor_min && valor <= r.valor_max && !r.categoria_id);
-    return rule || null;
-  }, [rules]);
-
   const findApplicableRuleRPC = useCallback(async (valor: number, categoriaId?: string): Promise<string | null> => {
     try {
       const { data, error } = await supabase.rpc('find_approval_rule', {
@@ -165,6 +159,6 @@ export const useApprovalRules = () => {
     rules, delegations, loading,
     fetchRules, fetchDelegations,
     saveRule, deleteRule, saveDelegation, deleteDelegation,
-    findApplicableRule, findApplicableRuleRPC, getEffectiveApprover,
+    findApplicableRuleRPC, getEffectiveApprover,
   };
 };
