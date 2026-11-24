@@ -39704,9 +39704,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -39717,7 +39721,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "72dce8e147212790",
+        "definition_sha": "988b6c148fb73911",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -39755,9 +39759,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -39768,18 +39776,18 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "e85b4ccbd7487ef5",
-        "execute_api_roles": "anon, authenticated, service_role",
-        "execute_public": true,
+        "definition_sha": "f400508a4ea03b57",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
         "language": "plpgsql",
         "leakproof": false,
         "name": "get_cost_center_performance_report",
         "owner": "postgres",
-        "returns": "TABLE(cost_center_id uuid, cost_center_name text, cost_center_code text, total_budget numeric, total_committed numeric, total_used numeric, available_balance numeric, usage_percentage numeric, alerts_count integer)",
+        "returns": "TABLE(cost_center_id uuid, cost_center_name text, cost_center_code text, total_budget numeric, total_committed numeric, total_used numeric, available_balance numeric, usage_percentage numeric, alerts_count bigint)",
         "schema": "public",
-        "security_definer": false,
+        "security_definer": true,
         "strict": false,
         "volatility": "volatile"
       },
@@ -40247,13 +40255,18 @@
             {
               "file": "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 7,
+          "code_total_files": 8,
           "cron": [],
           "db": [
             "public.get_compras_dashboard_metrics",
             "public.get_compras_sla_metrics",
+            "public.get_cost_center_performance_report",
             "public.get_fornecedores_kpis",
             "public.get_pagamentos_kpis",
             "public.get_pedidos_kpis",
@@ -43424,13 +43437,18 @@
             {
               "file": "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 11,
+          "code_total_files": 12,
           "cron": [],
           "db": [
             "public.current_tenant_id",
             "public.find_approval_rule",
+            "public.get_cost_center_performance_report",
             "public.get_dashboard_kpis"
           ],
           "triggers": [],

@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 21:12 UTC
+
+- **functions** alterado (4): `public.get_cost_center_performance_report()`, `public.get_cost_center_performance_report(p_organization_id uuid)`, `public.get_user_grupo_id()`, `public.tenant_in_my_group(_tenant_id uuid)`
+
 ## 2026-11-24 17:12 UTC
 
 - **functions** alterado (4): `public.tenant_in_my_group(_tenant_id uuid)`, `public.validate_cotacao_status_transition()`, `public.validate_pagamento_status_transition()`, `public.validate_pedido_status_transition()`
