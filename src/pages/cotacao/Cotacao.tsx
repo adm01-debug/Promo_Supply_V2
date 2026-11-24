@@ -387,6 +387,9 @@ const Cotacao = () => {
             quantidade: solicitacao.quantidade,
             valor_frete: data.frete || 0,
             prazo_entrega: data.prazoEntrega || 7,
+            condicao_pagamento: data.condicaoPagamento,
+            validade_proposta: data.validadeProposta,
+            observacoes: data.observacoes,
           });
           setShowManualModal(false);
         }} 

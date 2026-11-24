@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/lib/feedbackToast";
 import type { Fornecedor } from "@/types/legacyTypes";
+
+// Rotulo por condicao de pagamento: o valor gravado em cotacoes.condicao_pagamento
+// e texto livre e aparece cru no preview do pedido, no PDF e na exportacao, entao
+// cada opcao tem o seu rotulo - antes 45 e 60 dias eram gravados como "30 dias".
+export const CONDICAO_PAGAMENTO_ROTULOS: Record<string, string> = {
+  a_vista: "À vista",
+  "30_dias": "30 dias",
+  "45_dias": "45 dias",
+  "60_dias": "60 dias",
+};
 
 export interface ManualCotacaoData {
   fornecedor: string;
@@ -28,6 +39,7 @@ export interface ManualCotacaoData {
   frete: number;
   freteInfo: string;
   condicaoPagamento: string;
+  validadeProposta?: string;
   observacoes?: string;
 }
 
@@ -46,7 +58,6 @@ export const CotacaoManualModal = ({
 }: CotacaoManualModalProps) => {
   const [formData, setFormData] = useState({
     fornecedor: '',
-    novoFornecedor: '',
     valorUnitario: '',
     quantidadeDisponivel: '',
     prazoEntrega: '',
@@ -65,33 +76,47 @@ export const CotacaoManualModal = ({
     const valorUnitario = Number(formData.valorUnitario);
     const quantidadeDisponivel = Number(formData.quantidadeDisponivel);
     const prazoEntrega = Number(formData.prazoEntrega);
-    if (!Number.isFinite(valorUnitario) || valorUnitario <= 0) return;
-    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0 || !Number.isInteger(quantidadeDisponivel)) return;
-    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0 || !Number.isInteger(prazoEntrega)) return;
+    if (!Number.isFinite(valorUnitario) || valorUnitario <= 0) {
+      toast.error("Informe um valor unitario maior que zero.");
+      return;
+    }
+    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0 || !Number.isInteger(quantidadeDisponivel)) {
+      toast.error("Informe uma quantidade inteira maior que zero.");
+      return;
+    }
+    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0 || !Number.isInteger(prazoEntrega)) {
+      toast.error("Informe o prazo de entrega em dias inteiros maior que zero.");
+      return;
+    }
 
-    // Fornecedor must be selected; if "novo", a name must be provided.
-    if (!formData.fornecedor) return;
+    // So fornecedor do cadastro: a cotacao precisa de fornecedor_id real para
+    // entrar na comparacao e virar pedido; nome digitado a mao nao vira cadastro.
+    if (!formData.fornecedor) {
+      toast.error("Selecione um fornecedor cadastrado. Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao.");
+      return;
+    }
     const selectedFornecedor = fornecedores.find(f => f.id === formData.fornecedor);
-    const fornecedorNome = formData.fornecedor === 'novo'
-      ? formData.novoFornecedor.trim()
-      : selectedFornecedor?.nomeFantasia || '';
-    if (!fornecedorNome) return;
+    if (!selectedFornecedor) {
+      toast.error("O fornecedor selecionado nao esta na lista de ativos.");
+      return;
+    }
 
     onSave({
-      fornecedor: fornecedorNome,
-      fornecedor_id: formData.fornecedor === 'novo' ? undefined : formData.fornecedor,
+      fornecedor: selectedFornecedor.nomeFantasia || '',
+      fornecedor_id: formData.fornecedor,
       valorUnitario,
       quantidadeDisponivel,
       prazoEntrega,
       frete: parseFloat(formData.frete) || 0,
       freteInfo: parseFloat(formData.frete) > 0 ? `+R$ ${formData.frete}` : 'Incluso',
-      condicaoPagamento: formData.condicaoPagamento === 'a_vista' ? 'À vista' : '30 dias',
+      condicaoPagamento: CONDICAO_PAGAMENTO_ROTULOS[formData.condicaoPagamento] ?? formData.condicaoPagamento,
+      validadeProposta: formData.validade || undefined,
+      observacoes: formData.observacoes.trim() || undefined,
     });
 
     // Reset form
     setFormData({
       fornecedor: '',
-      novoFornecedor: '',
       valorUnitario: '',
       quantidadeDisponivel: '',
       prazoEntrega: '',
@@ -121,24 +146,19 @@ export const CotacaoManualModal = ({
               onValueChange={(v) => setFormData(prev => ({ ...prev, fornecedor: v }))}
             >
               <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Selecione ou adicione novo..." />
+                <SelectValue placeholder="Selecione o fornecedor..." />
               </SelectTrigger>
               <SelectContent className="bg-background border border-border z-50">
                 {fornecedores.map(f => (
                   <SelectItem key={f.id} value={f.id}>{f.nomeFantasia}</SelectItem>
                 ))}
-                <SelectItem value="novo">+ Novo fornecedor</SelectItem>
               </SelectContent>
             </Select>
-            
-            {formData.fornecedor === 'novo' && (
-              <Input
-                placeholder="Nome do novo fornecedor"
-                value={formData.novoFornecedor}
-                onChange={(e) => setFormData(prev => ({ ...prev, novoFornecedor: e.target.value }))}
-                className="mt-2"
-              />
-            )}
+            <p className="text-xs text-muted-foreground">
+              {fornecedores.length === 0
+                ? "Nenhum fornecedor ativo cadastrado: cadastre em Fornecedores antes de lancar a cotacao."
+                : "Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao, para entrar na comparacao e no pedido."}
+            </p>
           </div>
 
           {/* Valores */}
@@ -231,16 +251,6 @@ export const CotacaoManualModal = ({
               onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
               rows={3}
             />
-          </div>
-
-          {/* Anexo */}
-          <div className="space-y-2">
-            <Label>Anexar Cotação (PDF/Imagem)</Label>
-            <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors cursor-pointer">
-              <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">Clique para selecionar arquivo</p>
-              <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (máx. 5MB)</p>
-            </div>
           </div>
 
           {/* Ações */}
