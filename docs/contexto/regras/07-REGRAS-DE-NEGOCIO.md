@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4186556949` · branch `main` · 2026-11-24 17:14 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `19d6ce82f1` · branch `main` · 2026-11-24 20:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2455,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3359 testes em 237 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3369 testes em 238 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2561,6 +2561,7 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/components/accessibility/__tests__/painelAcessibilidade.test.tsx` | 10 | o corpo do painel de acessibilidade funciona fora do Sheet · mostra os controles e o botao de restaurar padroes · o switch de fonte para dislexia muda o documento pelo provider · restaurar padroes desliga o que foi ligado no documento … |
 | `src/components/compras/approval/__tests__/alcadaListasReais.test.tsx` | 10 | ApprovalRuleModal usa pessoas e categorias reais · oferece profiles.user_id e nomes do banco, sem id ficticio · grava o user_id escolhido no aprovador da regra · sem pessoas visiveis avisa em vez de mostrar lista ficticia … |
+| `src/features/layout/__tests__/menuMobile.test.tsx` | 10 | o menu do celular fechado nao fica na ordem de tabulacao · o estado fechado esconde e desliga o ponteiro, nao so desloca o drawer · o drawer fechado sai da arvore de acessibilidade · a solucao nao e tabIndex -1 no container, que nao alcanca os filhos focaveis … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 10 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |

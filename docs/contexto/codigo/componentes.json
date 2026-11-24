@@ -3885,7 +3885,7 @@
     "MainLayout"
    ],
    "export_default": null,
-   "linhas": 192,
+   "linhas": 208,
    "dominio": "features/layout",
    "hooks_locais": [
     "useCommandPalette",

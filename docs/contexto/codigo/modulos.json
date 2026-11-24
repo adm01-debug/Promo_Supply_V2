@@ -1972,8 +1972,8 @@
   {
    "modulo": "features/layout",
    "arquivos": 32,
-   "testes": 8,
-   "linhas": 5110,
+   "testes": 9,
+   "linhas": 5126,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

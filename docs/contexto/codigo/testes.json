@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 288,
+ "total": 289,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 270
+  "unit": 271
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 193
+   "arquivos": 194
   },
   {
    "padrao": "outro",
@@ -833,6 +833,13 @@
    "testa": [
     "src/features/layout/components/AppSidebar.tsx"
    ],
+   "casos": 7
+  },
+  {
+   "arquivo": "src/features/layout/__tests__/menuMobile.test.tsx",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [],
    "casos": 7
   },
   {

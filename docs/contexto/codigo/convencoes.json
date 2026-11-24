@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (193)",
+   "co-localizado (__tests__) (194)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)",
    "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)",
    "fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)",
    "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)",
-   "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)",
-   "fix: remove trigger duplicado de validacao de status em pedidos (#391)"
+   "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)"
   ]
  },
  "pr_template": null,

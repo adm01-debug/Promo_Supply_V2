@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `418655694950963ccec582d1cae827efeeaf5ec7` (2026-11-24T14:14:15-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `19d6ce82f1cb4963f648cd8bb076f9aaad189ab8` (2026-11-24T17:26:56-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (854), SQL (341), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (855), SQL (341), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1442 |
-| arquivos_codigo | 927 |
-| linhas_codigo | 185789 |
+| arquivos_total | 1443 |
+| arquivos_codigo | 928 |
+| linhas_codigo | 185879 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 335 |
 | cron_jobs | 74 |
-| testes | 288 |
+| testes | 289 |
 | workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (193), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (194), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (93)
+- docs/qa/05-PROGRESSO.md (94)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - docs/ci/README.md (11)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `19d6ce8` fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)
 - 2026-11-24 `4186556` fix(a11y): "Reduzir movimento" passa a valer no framer-motion e limpa o codigo morto (#444)
 - 2026-11-24 `d93a2df` fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)
 - 2026-11-24 `d1500f1` fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `338a212` fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)
 - 2026-11-24 `9e585d8` fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)
 - 2026-11-24 `773117b` fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)
-- 2026-11-24 `0d83f61` fix(acompanhamento): falha de carga nao vira pipeline vazio nem KPI zerado (#433)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
