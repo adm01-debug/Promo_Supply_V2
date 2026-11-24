@@ -78,3 +78,19 @@ Deno.test('spot-api nao usa mais comparacao direta de segredo', async () => {
   assert(fonte.includes('timingSafeEqualStr(token, serviceKey)'));
   assert(fonte.includes('timingSafeEqualStr(cronKey, expectedCronKey)'));
 });
+
+Deno.test('punchout-receive compara o shared secret do fornecedor com a helper', async () => {
+  const fonte = await Deno.readTextFile(new URL('../punchout-receive/index.ts', import.meta.url));
+  assert(!fonte.includes('sharedSecret !== expected'));
+  assert(fonte.includes('!timingSafeEqualStr(sharedSecret, expected)'));
+  assert(fonte.includes('if (!expected || !sharedSecret || !timingSafeEqualStr('));
+});
+
+Deno.test('scim-v2 nao mantem copia propria da comparacao de tempo constante', async () => {
+  const auth = await Deno.readTextFile(new URL('../scim-v2/auth.ts', import.meta.url));
+  const index = await Deno.readTextFile(new URL('../scim-v2/index.ts', import.meta.url));
+  assert(!auth.includes('let diff = 0'));
+  assert(!index.includes('function timingSafeEqual'));
+  assert(!index.includes('function safeEqual'));
+  assert(auth.includes('export { timingSafeEqualStr as timingSafeEqual }'));
+});

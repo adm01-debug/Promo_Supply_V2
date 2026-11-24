@@ -11,21 +11,16 @@
  * Fail-closed (503) quando nenhuma das duas existe.
  */
 
+import { timingSafeEqualStr } from "../_shared/security.ts";
+
 export type ScimGateDecision =
   | { ok: true; via: "tenant-hash" | "global-token" }
   | { ok: false; status: 401 | 503; error: string };
 
 const encoder = new TextEncoder();
 
-/** Comparacao em tempo constante. Retorna false para tamanhos diferentes. */
-export function timingSafeEqual(a: string, b: string): boolean {
-  const aBytes = encoder.encode(a);
-  const bBytes = encoder.encode(b);
-  if (aBytes.length !== bBytes.length) return false;
-  let diff = 0;
-  for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
-  return diff === 0;
-}
+/** QA 065: a comparacao em tempo constante vive em `_shared/security.ts`. */
+export { timingSafeEqualStr as timingSafeEqual };
 
 /**
  * Decide se a requisicao pode prosseguir.
@@ -42,12 +37,12 @@ export function evaluateScimGate(
   globalToken: string | undefined,
 ): ScimGateDecision {
   const viaTenant = tenantHashes.some(
-    (h) => typeof h === "string" && h.length > 0 && timingSafeEqual(h, tokenHash),
+    (h) => typeof h === "string" && h.length > 0 && timingSafeEqualStr(h, tokenHash),
   );
   if (viaTenant) return { ok: true, via: "tenant-hash" };
 
   const viaGlobal = typeof globalToken === "string" && globalToken.length > 0
-    && timingSafeEqual(token, globalToken);
+    && timingSafeEqualStr(token, globalToken);
   if (viaGlobal) return { ok: true, via: "global-token" };
 
   // Sem nenhuma fonte configurada -> 503 (operador precisa configurar).
