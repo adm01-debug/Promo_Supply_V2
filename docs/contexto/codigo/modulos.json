@@ -2848,7 +2848,7 @@
    "modulo": "i18n",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 37,
+   "linhas": 55,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2879,6 +2879,34 @@
     "i18next-browser-languagedetector",
     "react-i18next"
    ]
+  },
+  {
+   "modulo": "i18n/__tests__",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
   },
   {
    "modulo": "integrations/lovable",

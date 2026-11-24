@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `338a212aed` · branch `main` · 2026-11-24 15:59 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3beb6dab2a` · branch `main` · 2026-11-24 16:06 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2465,7 +2465,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3297 testes em 231 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3302 testes em 232 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2628,6 +2628,7 @@ _nenhum item encontrado_
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
+| `src/i18n/__tests__/config.test.ts` | 5 | i18n mantem o atributo lang do documento igual ao idioma ativo · o atributo nao fica no pt-BR fixo do index.html: ele segue o idioma resolvido · cada idioma suportado vira a tag BCP-47 correspondente no documento · idioma fora da lista ou ausente cai no pt-BR, nunca em tag invalida … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |

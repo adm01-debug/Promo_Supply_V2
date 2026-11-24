@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "338a212aed25075a92fcb0e065dedfcc0f747f46",
+  "sha": "3beb6dab2adc18f34aaff39c01d2661c310de06a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:59 UTC",
-  "files_total": 1427,
-  "code_files": 1254,
-  "code_lines": 212308,
+  "generated_at": "2026-11-24 16:06 UTC",
+  "files_total": 1428,
+  "code_files": 1255,
+  "code_lines": 212380,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0b813cc41b7ee255",
+ "facts_hash": "190ed77129910fd1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 438,
+   ".ts": 439,
    ".tsx": 409,
    ".sql": 332,
    ".mjs": 67,
@@ -35592,23 +35592,25 @@
   },
   {
    "module": "src/i18n",
-   "files": 1,
-   "lines": 37,
+   "files": 2,
+   "lines": 109,
    "tables": [],
    "exports": [
-    "config.ts: i18n"
+    "config.ts: sincronizarIdiomaDoDocumento, i18n"
    ],
    "docs": [],
    "deps": [
     "i18next",
     "i18next-browser-languagedetector",
-    "react-i18next"
+    "react-i18next",
+    "vitest"
    ],
    "imports_modules": [
     "src/locales"
    ],
    "file_list": [
-    "src/i18n/config.ts"
+    "src/i18n/config.ts",
+    "src/i18n/__tests__/config.test.ts"
    ]
   },
   {
@@ -64000,6 +64002,26 @@
    {
     "file": "src/hooks/__tests__/useXbzIntegration.cache.test.tsx",
     "name": "contabiliza rede, cache e coalescing na razão de economia"
+   },
+   {
+    "file": "src/i18n/__tests__/config.test.ts",
+    "name": "i18n mantem o atributo lang do documento igual ao idioma ativo"
+   },
+   {
+    "file": "src/i18n/__tests__/config.test.ts",
+    "name": "o atributo nao fica no pt-BR fixo do index.html: ele segue o idioma resolvido"
+   },
+   {
+    "file": "src/i18n/__tests__/config.test.ts",
+    "name": "cada idioma suportado vira a tag BCP-47 correspondente no documento"
+   },
+   {
+    "file": "src/i18n/__tests__/config.test.ts",
+    "name": "idioma fora da lista ou ausente cai no pt-BR, nunca em tag invalida"
+   },
+   {
+    "file": "src/i18n/__tests__/config.test.ts",
+    "name": "trocar o idioma pelo i18n atualiza o documento na hora (WCAG 3.1.2)"
    },
    {
     "file": "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -106154,9 +106176,22 @@
   },
   "src/i18n/config.ts": {
    "path": "src/i18n/config.ts",
-   "lines": 37,
+   "lines": 55,
    "exports": [
+    "const sincronizarIdiomaDoDocumento",
     "default i18n"
+   ]
+  },
+  "src/i18n/__tests__/config.test.ts": {
+   "path": "src/i18n/__tests__/config.test.ts",
+   "lines": 54,
+   "is_test": true,
+   "tests": [
+    "i18n mantem o atributo lang do documento igual ao idioma ativo",
+    "o atributo nao fica no pt-BR fixo do index.html: ele segue o idioma resolvido",
+    "cada idioma suportado vira a tag BCP-47 correspondente no documento",
+    "idioma fora da lista ou ausente cai no pt-BR, nunca em tag invalida",
+    "trocar o idioma pelo i18n atualiza o documento na hora (WCAG 3.1.2)"
    ]
   },
   "src/integrations/lovable/index.ts": {
@@ -121392,10 +121427,21 @@
   }
  },
  "git": {
-  "sha": "338a212aed25075a92fcb0e065dedfcc0f747f46",
+  "sha": "3beb6dab2adc18f34aaff39c01d2661c310de06a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3beb6da",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/i18n/__tests__/config.test.ts",
+     "src/i18n/config.ts"
+    ]
+   },
    {
     "sha": "338a212",
     "date": "2026-11-24",
@@ -121738,17 +121784,6 @@
      "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
      "src/features/layout/components/AppSidebar.tsx"
     ]
-   },
-   {
-    "sha": "d08b3c4",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/pedidos/PedidoDetailsDialog.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -121757,11 +121792,11 @@
     24
    ],
    [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    4
+    "src/components/compras/PendingApprovalsList.tsx",
+    3
    ],
    [
-    "src/components/compras/PendingApprovalsList.tsx",
+    "src/pages/acompanhamento/Acompanhamento.tsx",
     3
    ],
    [
@@ -121809,6 +121844,14 @@
     2
    ],
    [
+    "src/i18n/__tests__/config.test.ts",
+    1
+   ],
+   [
+    "src/i18n/config.ts",
+    1
+   ],
+   [
     "src/components/compras/NovaSolicitacaoModal.tsx",
     1
    ],
@@ -121822,14 +121865,6 @@
    ],
    [
     "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/solicitacoesHelpers.ts",
     1
    ]
   ]

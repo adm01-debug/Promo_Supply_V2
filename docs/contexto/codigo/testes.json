@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 282,
+ "total": 283,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 264
+  "unit": 265
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 187
+   "arquivos": 188
   },
   {
    "padrao": "outro",
@@ -1239,6 +1239,15 @@
     "src/hooks/useXbzIntegration.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/i18n/__tests__/config.test.ts",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/i18n/config.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -2662,6 +2671,7 @@
   "src/hooks/useWebAuthn.ts": 1,
   "src/hooks/useWorkflowDLQ.ts": 1,
   "src/hooks/useXbzIntegration.ts": 1,
+  "src/i18n/config.ts": 1,
   "src/integrations/supabase/client.ts": 6,
   "src/lib/clearFiltersShortcut.ts": 1,
   "src/lib/creditoFornecedor.ts": 1,

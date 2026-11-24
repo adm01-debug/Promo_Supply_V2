@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "338a212aed25075a92fcb0e065dedfcc0f747f46",
+  "commit": "3beb6dab2adc18f34aaff39c01d2661c310de06a",
   "branch": "main",
-  "data_commit": "2026-11-24T12:54:22-03:00",
+  "data_commit": "2026-11-24T13:04:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3beb6da",
+    "data": "2026-11-24",
+    "assunto": "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)"
+   },
    {
     "sha": "338a212",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "66c9eb7",
     "data": "2026-11-24",
     "assunto": "chore(lint): liga o gate de acessibilidade no eslint (#413)"
-   },
-   {
-    "sha": "ea97162",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)"
    }
   ],
-  "arquivos_mudados_7d": 464,
+  "arquivos_mudados_7d": 466,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 82
+    "mudancas": 83
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 82
+    "mudancas": 83
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,21 +314,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1426,
-  "arquivos_codigo": 920,
-  "linhas_codigo": 185082,
+  "arquivos_total": 1427,
+  "arquivos_codigo": 921,
+  "linhas_codigo": 185154,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 47,
-  "modulos": 87,
+  "modulos": 88,
   "componentes": 330,
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
   "migrations": 330,
   "cron_jobs": 74,
-  "testes": 282,
+  "testes": 283,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -439,8 +439,8 @@
    "linhas": 15175
   },
   "src/i18n": {
-   "arquivos": 1,
-   "linhas": 37
+   "arquivos": 2,
+   "linhas": 109
   },
   "src/integrations": {
    "arquivos": 3,
