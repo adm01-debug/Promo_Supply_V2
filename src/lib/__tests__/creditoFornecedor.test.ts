@@ -63,9 +63,11 @@ describe('statusAbatimentoAlcancavel', () => {
     expect(statusAbatimentoAlcancavel('concluido', 100, 100)).toBeNull();
   });
 
-  it('bloqueia parcial fora de parcial, porque o banco so aceita pago depois de pago', () => {
+  it('permite parcial a partir de aprovado, agendado e atrasado (matriz do banco na etapa 123)', () => {
     expect(statusAbatimentoAlcancavel('pendente', 10, 100)).toBeNull();
-    expect(statusAbatimentoAlcancavel('aprovado', 10, 100)).toBeNull();
+    expect(statusAbatimentoAlcancavel('aprovado', 10, 100)).toBe('parcial');
+    expect(statusAbatimentoAlcancavel('agendado', 10, 100)).toBe('parcial');
+    expect(statusAbatimentoAlcancavel('atrasado', 10, 100)).toBe('parcial');
     expect(statusAbatimentoAlcancavel('parcial', 10, 100)).toBe('parcial');
     expect(statusAbatimentoAlcancavel('cancelado', 10, 100)).toBeNull();
     // o banco aceita pago -> parcial (ARRAY['parcial'] na function de validacao)
