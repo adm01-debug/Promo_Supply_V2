@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "004f06d317a0febd325f7ab6edba4a9d75a6a41d",
+  "sha": "9398283782cea4881014f460cb4c1b90cc77e5bc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:32 UTC",
-  "files_total": 1411,
-  "code_files": 1238,
-  "code_lines": 209952,
+  "generated_at": "2026-11-24 13:41 UTC",
+  "files_total": 1412,
+  "code_files": 1239,
+  "code_lines": 210076,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "14d46da99b89fcfb",
+ "facts_hash": "8c1a2dae3a412bf6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 399,
+   ".tsx": 400,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33738,7 +33738,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 312,
+  "components_count": 313,
   "hooks": [
    {
     "name": "useContacts",
@@ -34457,7 +34457,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 857,
+   "lines": 866,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -34777,8 +34777,8 @@
   },
   {
    "module": "src/components",
-   "files": 276,
-   "lines": 51111,
+   "files": 277,
+   "lines": 51226,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -59240,6 +59240,26 @@
    {
     "file": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
     "name": "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    "name": "ContractModal - nome acessivel dos campos (etapa 239)"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    "name": "associa os 3 rotulos de select ao gatilho certo"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    "name": "associa as duas janelas de data ao botao que as abre"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    "name": "todo label[for] do modal aponta para um elemento existente"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    "name": "nenhum label do modal ficou sem for"
    },
    {
     "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
@@ -90677,7 +90697,7 @@
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
-   "lines": 49,
+   "lines": 58,
    "exports": [
     "default tseslint"
    ]
@@ -94317,7 +94337,7 @@
   },
   "src/components/compras/ContractModal.tsx": {
    "path": "src/components/compras/ContractModal.tsx",
-   "lines": 555,
+   "lines": 557,
    "exports": [
     "function ContractModal"
    ],
@@ -96342,6 +96362,18 @@
     "salva supplier_id com o id do cadastro e supplier_name como copia congelada",
     "mantem contrato legado com supplier_id em slug, sem perder o vinculo",
     "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   ]
+  },
+  "src/components/compras/__tests__/contratoCamposRotulos.test.tsx": {
+   "path": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+   "lines": 113,
+   "is_test": true,
+   "tests": [
+    "ContractModal - nome acessivel dos campos (etapa 239)",
+    "associa os 3 rotulos de select ao gatilho certo",
+    "associa as duas janelas de data ao botao que as abre",
+    "todo label[for] do modal aponta para um elemento existente",
+    "nenhum label do modal ficou sem for"
    ]
   },
   "src/components/compras/__tests__/cotacaoManualCampos.test.tsx": {
@@ -120564,10 +120596,22 @@
   }
  },
  "git": {
-  "sha": "004f06d317a0febd325f7ab6edba4a9d75a6a41d",
+  "sha": "9398283782cea4881014f460cb4c1b90cc77e5bc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9398283",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "eslint.config.js",
+     "src/components/compras/ContractModal.tsx",
+     "src/components/compras/__tests__/contratoCamposRotulos.test.tsx"
+    ]
+   },
    {
     "sha": "004f06d",
     "date": "2026-11-24",
@@ -120905,23 +120949,6 @@
      "src/hooks/useApprovalRules.ts",
      "src/hooks/useApprovalWorkflow.ts"
     ]
-   },
-   {
-    "sha": "72256cb",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(pedidos): Kanban so entrega via Recebimento (#383)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/KanbanBoard.tsx",
-     "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
-     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/features/pedidos/statusTransitions.ts",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
-     "src/pages/acompanhamento/__tests__/statusKanban.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -120930,11 +120957,7 @@
     26
    ],
    [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    3
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
+    "eslint.config.js",
     3
    ],
    [
@@ -120942,7 +120965,7 @@
     2
    ],
    [
-    "eslint.config.js",
+    "src/pages/acompanhamento/Acompanhamento.tsx",
     2
    ],
    [
@@ -120962,12 +120985,24 @@
     2
    ],
    [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    2
+   ],
+   [
     "src/hooks/useDevolucoes.ts",
     2
    ],
    [
     "src/hooks/useFornecedores.ts",
     2
+   ],
+   [
+    "src/components/compras/ContractModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
+    1
    ],
    [
     "src/components/compras/FornecedorModal.tsx",
@@ -120995,14 +121030,6 @@
    ],
    [
     "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
-    1
-   ],
-   [
-    "src/pages/pagamentos/Pagamentos.tsx",
-    1
-   ],
-   [
-    "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
     1
    ]
   ]
