@@ -3,14 +3,26 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { useAuth, AuthProvider } from '@/features/auth';
 import { ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+// QA-043 (AUT-08): useAuth avisa quando a sessao expira, mas nao quando o
+// proprio usuario pediu para sair.
+let authCallback: ((event: string, session: unknown) => void) | null = null;
+
+vi.mock('sonner', () => ({
+  toast: { warning: vi.fn(), error: vi.fn(), success: vi.fn(), info: vi.fn() },
+}));
 
 // Mock Supabase
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     auth: {
-      onAuthStateChange: vi.fn(() => ({
-        data: { subscription: { unsubscribe: vi.fn() } },
-      })),
+      onAuthStateChange: vi.fn((cb: (event: string, session: unknown) => void) => {
+        authCallback = cb;
+        return {
+          data: { subscription: { unsubscribe: vi.fn() } },
+        };
+      }),
       getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
@@ -34,6 +46,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 describe('useAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    authCallback = null;
   });
 
   it('should throw error when used outside AuthProvider', () => {
@@ -79,5 +92,33 @@ describe('useAuth', () => {
     });
 
     expect(supabase.auth.signOut).toHaveBeenCalled();
+  });
+
+  it('avisa que a sessao expirou quando o SIGNED_OUT nao foi pedido pelo usuario', async () => {
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      authCallback?.('SIGNED_OUT', null);
+    });
+
+    expect(toast.warning).toHaveBeenCalledWith(
+      'Sua sessao expirou. Entre novamente para continuar.',
+      { id: 'sessao-expirada' },
+    );
+  });
+
+  it('nao avisa sessao expirada quando o proprio usuario clicou em sair', async () => {
+    vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.signOut();
+      authCallback?.('SIGNED_OUT', null);
+    });
+
+    expect(toast.warning).not.toHaveBeenCalled();
   });
 });
