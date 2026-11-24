@@ -188,7 +188,7 @@ export const SolicitacaoCard = ({
               <div className="flex items-center gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-violet-400">
+                    <Button aria-label="Ver fluxo de aprovação" variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-violet-400">
                       <GitBranch className="w-4 h-4" />
                     </Button>
                   </PopoverTrigger>

@@ -327,7 +327,7 @@ const Pedidos = () => {
                             </TableCell>
                             <TableCell className="pr-6">
                               <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all">
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
+                                <Button aria-label="Ações do pedido" variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
                                   <MoreHorizontal className="w-4 h-4" />
                                 </Button>
                               </div>
