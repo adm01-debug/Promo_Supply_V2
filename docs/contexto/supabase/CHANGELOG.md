@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 16:14 UTC
+
+- **functions** alterado (2): `public.find_approval_rule(p_valor numeric, p_categoria_id uuid)`, `public.tenant_in_my_group(_tenant_id uuid)`
+
 ## 2026-11-24 15:12 UTC
 
 - **functions** adicionado (1): `public.assign_numero_solicitacao()`

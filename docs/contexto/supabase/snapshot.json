@@ -39459,7 +39459,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "e94096110dbfed85",
+        "definition_sha": "cf12c6c3a167d2cb",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -43426,6 +43426,7 @@
           "cron": [],
           "db": [
             "public.current_tenant_id",
+            "public.find_approval_rule",
             "public.get_dashboard_kpis"
           ],
           "triggers": [],
