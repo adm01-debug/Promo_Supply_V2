@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `45c9c55dd6f504d05e43241e5da28b10d30e8ca5` (2026-11-24T07:29:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d08b3c43234fd16d2584d584f2b2ceabf5dd70c5` (2026-11-24T07:57:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (58)
+- docs/qa/05-PROGRESSO.md (59)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
@@ -349,10 +349,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (7)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (7)
 - src/integrations/supabase/types.ts (7)
+- src/pages/acompanhamento/Acompanhamento.tsx (7)
 - supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/workflow-engine/index.ts (7)
 - supabase/functions/xbz-proxy/index.ts (7)
-- .github/workflows/deploy-edge-functions.yml (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -421,6 +421,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `d08b3c4` fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)
 - 2026-11-24 `45c9c55` fix(ordem): envia endereco real da empresa no e-mail da OC (#406)
 - 2026-11-24 `090a030` fix(integridade): guarda exclusao de pagamento com historico (#405)
 - 2026-11-24 `e14e3a5` chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)
@@ -435,7 +436,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `a865fce` fix: pedido complementar herda organization_id do pedido original (#397)
 - 2026-11-24 `c4f8690` fix: edge de escalonamento passa a usar o status que o banco aceita (#390)
 - 2026-11-24 `66773c6` fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)
-- 2026-11-24 `b58ed9d` fix: cotacao manual grava condicao, validade e observacoes (#388)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
