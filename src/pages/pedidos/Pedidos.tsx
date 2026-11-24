@@ -20,10 +20,11 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { PedidoMobileCard } from "@/components/pedidos/PedidoMobileCard";
 import { PedidosKPIs } from "@/pages/pedidos/PedidosKPIs";
 import { PedidoDetailsDialog } from "@/pages/pedidos/PedidoDetailsDialog";
-import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { EnhancedBulkActionsBar, defaultBulkActions } from "@/components/compras/EnhancedBulkActionsBar";
 import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { toast } from "@/lib/feedbackToast";
 import { saudeDoPrazo } from "@/pages/pedidos/pedidosHelpers";
+import { selecaoTemExclusaoBloqueada } from "@/features/pedidos/exclusaoPedido";
 import { format } from "date-fns/format";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
 import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
@@ -71,6 +72,11 @@ const Pedidos = () => {
         value: p.valor_total
       }));
   }, [pedidos, selectedIds]);
+
+  const acoesPedido = useMemo(() => {
+    const acoes = defaultBulkActions.pedidos ?? [];
+    return selecaoTemExclusaoBloqueada(bulkItems) ? acoes.filter(a => a.id !== 'delete') : acoes;
+  }, [bulkItems]);
 
   const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
     if (action.id === 'change-status' || action.targetStatus) {
@@ -345,6 +351,7 @@ const Pedidos = () => {
         onSelectAll={handleSelectAll}
         onDeselectAll={() => setSelectedIds([])}
         onExecute={handleBulkExecute}
+        availableActions={acoesPedido}
         isAllSelected={selectedIds.length === filteredPedidos.length && filteredPedidos.length > 0}
         statusOptions={Object.entries(statusConfig).map(([val, cfg]) => ({
           value: val,

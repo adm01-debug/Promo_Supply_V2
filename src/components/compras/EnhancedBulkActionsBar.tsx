@@ -44,7 +44,7 @@ interface EnhancedBulkActionsBarProps {
   availableActions?: BulkAction[];
 }
 
-const defaultActions: Record<string, BulkAction[]> = {
+export const defaultBulkActions: Record<string, BulkAction[]> = {
   solicitacoes: [
     { id: 'change-status', label: 'Alterar Status', icon: RefreshCw },
     { id: 'duplicate', label: 'Duplicar', icon: Copy },
@@ -81,7 +81,7 @@ export function EnhancedBulkActionsBar({
   const [showPreview, setShowPreview] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const actions = availableActions || defaultActions[entityType] || [];
+  const actions = availableActions || defaultBulkActions[entityType] || [];
   const selectedCount = selectedItems.length;
   const totalValue = selectedItems.reduce((acc, item) => acc + (item.value || 0), 0);
 
