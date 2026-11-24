@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b08b364f62` · branch `main` · 2026-11-24 03:32 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d541138030` · branch `main` · 2026-11-24 03:38 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2422,7 +2422,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2879 testes em 172 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2883 testes em 173 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2561,6 +2561,7 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
+| `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |

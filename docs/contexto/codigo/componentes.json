@@ -2449,7 +2449,7 @@
     "PasswordResetRequestsPanel"
    ],
    "export_default": null,
-   "linhas": 369,
+   "linhas": 381,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth",

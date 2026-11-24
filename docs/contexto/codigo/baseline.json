@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b08b364f6241325841f355c30e0eb0338328e268",
+  "commit": "d541138030eb647ff06c12cee44a2a4c5c299e44",
   "branch": "main",
-  "data_commit": "2026-11-24T00:31:34-03:00",
+  "data_commit": "2026-11-24T00:38:16-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d541138",
+    "data": "2026-11-24",
+    "assunto": "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)"
+   },
    {
     "sha": "b08b364",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "9fd5491",
     "data": "2026-11-23",
     "assunto": "chore(qa): marca a etapa 042 como concluida (#337)"
-   },
-   {
-    "sha": "50aa142",
-    "data": "2026-11-23",
-    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#303)"
    }
   ],
-  "arquivos_mudados_7d": 381,
+  "arquivos_mudados_7d": 384,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -173,7 +173,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "pasta": "src/features/auth",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/components/security",
-    "mudancas": 19
+    "mudancas": 20
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 25
+    "mudancas": 26
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1353,
-  "arquivos_codigo": 850,
-  "linhas_codigo": 175195,
+  "arquivos_total": 1354,
+  "arquivos_codigo": 851,
+  "linhas_codigo": 175313,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 223,
+  "testes": 224,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -428,15 +428,15 @@
   },
   "src/components": {
    "arquivos": 264,
-   "linhas": 49226
+   "linhas": 49238
   },
   "src/features": {
    "arquivos": 67,
    "linhas": 8930
   },
   "src/hooks": {
-   "arquivos": 81,
-   "linhas": 13951
+   "arquivos": 82,
+   "linhas": 14057
   },
   "src/i18n": {
    "arquivos": 1,

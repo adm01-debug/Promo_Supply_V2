@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b08b364f6241325841f355c30e0eb0338328e268` (2026-11-24T00:31:34-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d541138030eb647ff06c12cee44a2a4c5c299e44` (2026-11-24T00:38:16-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (777), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (778), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1353 |
-| arquivos_codigo | 850 |
-| linhas_codigo | 175195 |
+| arquivos_total | 1354 |
+| arquivos_codigo | 851 |
+| linhas_codigo | 175313 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 223 |
+| testes | 224 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (130), outro (43), co-localizado (*.test) (40)
+- testes: co-localizado (__tests__) (131), outro (43), co-localizado (*.test) (40)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (25)
+- docs/qa/05-PROGRESSO.md (26)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (11)
 - bun.lock (9)
@@ -419,6 +419,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `d541138` fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)
 - 2026-11-24 `b08b364` feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)
 - 2026-11-24 `1be13b9` security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)
 - 2026-11-24 `fc4c451` security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)
@@ -433,7 +434,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `2827890` test(palette): trava atalhos e badges do Command Palette no registry real (#353)
 - 2026-11-23 `619c2bb` fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)
 - 2026-11-23 `5f2b99e` fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)
-- 2026-11-23 `2b1df86` fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1635,7 +1635,7 @@
    "hooks_exportados": [
     "usePasswordResetRequests"
    ],
-   "linhas": 171,
+   "linhas": 177,
    "dominio": "hooks",
    "tabelas": [
     "password_reset_requests"
@@ -1653,7 +1653,7 @@
    "usado_por_arquivos": [
     "src/components/security/PasswordResetRequestsPanel.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/usePerformanceMonitor.ts",

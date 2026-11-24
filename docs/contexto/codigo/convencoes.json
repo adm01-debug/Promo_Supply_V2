@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (130)",
+   "co-localizado (__tests__) (131)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)",
    "feat(auth): link 'Esqueci minha senha' e tela de nova senha (QA 035) (#365)",
    "security(segredos): fecha o EDGA-11 no punchout e no scim-v2 (QA 065) (#364)",
    "security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)",
-   "fix(menu): marca o Dashboard como ativo na tela inicial (#362)",
-   "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)"
+   "fix(menu): marca o Dashboard como ativo na tela inicial (#362)"
   ]
  },
  "pr_template": null,
