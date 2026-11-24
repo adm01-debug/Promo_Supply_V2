@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (171)",
+   "co-localizado (__tests__) (173)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)",
    "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)",
    "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)",
    "chore(lint): liga o gate de acessibilidade no eslint (#413)",
-   "fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)",
-   "fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)"
+   "fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)"
   ]
  },
  "pr_template": null,

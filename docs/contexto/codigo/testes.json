@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 265,
+ "total": 267,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 247
+  "unit": 249
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 171
+   "arquivos": 173
   },
   {
    "padrao": "outro",
@@ -619,6 +619,16 @@
     "src/components/pagamentos/PagamentoAdvancedFilters.tsx"
    ],
    "casos": 28
+  },
+  {
+   "arquivo": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 56,
+   "testa": [
+    "src/components/pedidos/PedidoMobileCard.tsx",
+    "src/features/pedidos/index.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
@@ -1717,6 +1727,15 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 87,
+   "testa": [
+    "src/pages/pagamentos/Pagamentos.tsx"
+   ],
+   "casos": 4
+  },
+  {
    "arquivo": "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx",
    "tipo": "unit",
    "linhas": 128,
@@ -2447,6 +2466,7 @@
   "src/components/compras/timeline/timelineConfig.ts": 1,
   "src/components/onboarding/tourStepDefinitions.ts": 1,
   "src/components/pagamentos/PagamentoAdvancedFilters.tsx": 1,
+  "src/components/pedidos/PedidoMobileCard.tsx": 1,
   "src/components/security/PasskeyManager.tsx": 1,
   "src/components/ui/celebration-particles.tsx": 1,
   "src/components/ui/chart.tsx": 1,
@@ -2467,6 +2487,7 @@
   "src/features/layout/transitions/presets.ts": 1,
   "src/features/pedidos/exclusaoPedido.ts": 1,
   "src/features/pedidos/hooks/usePedidos.ts": 3,
+  "src/features/pedidos/index.ts": 1,
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": 5,
@@ -2553,6 +2574,7 @@
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
   "src/pages/historico/HistoricoHelpers.tsx": 2,
+  "src/pages/pagamentos/Pagamentos.tsx": 1,
   "src/pages/pedidos/PedidoDetailsDialog.tsx": 1,
   "src/pages/pedidos/Pedidos.tsx": 2,
   "src/pages/pedidos/pedidosHelpers.ts": 1,
@@ -2634,7 +2656,6 @@
    "src/pages/licitacoes/Licitacoes.tsx",
    "src/pages/negociacao-ia/NegociacaoIA.tsx",
    "src/pages/orcamentos/Orcamentos.tsx",
-   "src/pages/pagamentos/Pagamentos.tsx",
    "src/pages/qualificacao/QualificacaoFornecedores.tsx",
    "src/pages/recompra/RecompraInteligente.tsx",
    "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",

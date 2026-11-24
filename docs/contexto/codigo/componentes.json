@@ -2268,7 +2268,7 @@
     "PedidoMobileCard"
    ],
    "export_default": null,
-   "linhas": 266,
+   "linhas": 271,
    "dominio": "components/pedidos",
    "hooks_locais": [],
    "tabelas": [],

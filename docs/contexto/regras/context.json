@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1b88913d1c84f7946f7c2425e6cfdfe3cad7d696",
+  "sha": "b9963919509f4b3d3e8f4f33b4fe15437be52fa8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:04 UTC",
-  "files_total": 1407,
-  "code_files": 1234,
-  "code_lines": 209494,
+  "generated_at": "2026-11-24 13:10 UTC",
+  "files_total": 1409,
+  "code_files": 1236,
+  "code_lines": 209642,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "36772bc7c3758e08",
+ "facts_hash": "b5bd9f20e8d4cc1c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 395,
+   ".tsx": 397,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33738,7 +33738,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 309,
+  "components_count": 310,
   "hooks": [
    {
     "name": "useContacts",
@@ -34777,8 +34777,8 @@
   },
   {
    "module": "src/components",
-   "files": 273,
-   "lines": 50742,
+   "files": 274,
+   "lines": 50803,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35726,8 +35726,8 @@
   },
   {
    "module": "src/pages",
-   "files": 145,
-   "lines": 33343,
+   "files": 146,
+   "lines": 33430,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -60981,6 +60981,30 @@
     "name": "all strict filters together can return empty"
    },
    {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "PedidoMobileCard - cartao acessivel pelo teclado (etapa 235)"
+   },
+   {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "o cartao expoe papel de botao, nome e entra na tabulacao"
+   },
+   {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "Enter abre os detalhes"
+   },
+   {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "espaco abre os detalhes"
+   },
+   {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "teclas comuns nao abrem"
+   },
+   {
+    "file": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    "name": "o clique com mouse continua funcionando"
+   },
+   {
     "file": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
     "name": "PasskeyManager / anuncio honesto (SEC-11)"
    },
@@ -68087,6 +68111,26 @@
    {
     "file": "src/pages/historico/__tests__/historicoHelpers.test.ts",
     "name": "all colors are unique"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    "name": "Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235)"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    "name": "a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador)"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    "name": "o acionamento do controle abre o detalhe do pagamento"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    "name": "o clique no controle abre o detalhe uma unica vez"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    "name": "o clique na linha continua abrindo o detalhe (mouse preservado)"
    },
    {
     "file": "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx",
@@ -98432,7 +98476,7 @@
   },
   "src/components/pedidos/PedidoMobileCard.tsx": {
    "path": "src/components/pedidos/PedidoMobileCard.tsx",
-   "lines": 266,
+   "lines": 271,
    "exports": [
     "const PedidoMobileCard"
    ],
@@ -98495,6 +98539,19 @@
    ],
    "rule_comments": [
     "Prazo e Valor */}"
+   ]
+  },
+  "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx": {
+   "path": "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+   "lines": 56,
+   "is_test": true,
+   "tests": [
+    "PedidoMobileCard - cartao acessivel pelo teclado (etapa 235)",
+    "o cartao expoe papel de botao, nome e entra na tabulacao",
+    "Enter abre os detalhes",
+    "espaco abre os detalhes",
+    "teclas comuns nao abrem",
+    "o clique com mouse continua funcionando"
    ]
   },
   "src/components/pwa/PWAInstallPrompt.tsx": {
@@ -110570,6 +110627,21 @@
     }
    ]
   },
+  "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx": {
+   "path": "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+   "lines": 87,
+   "is_test": true,
+   "temporal": [
+    "data_vencimento: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),"
+   ],
+   "tests": [
+    "Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235)",
+    "a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador)",
+    "o acionamento do controle abre o detalhe do pagamento",
+    "o clique no controle abre o detalhe uma unica vez",
+    "o clique na linha continua abrindo o detalhe (mouse preservado)"
+   ]
+  },
   "src/pages/pedidos/PedidoDetailsDialog.tsx": {
    "path": "src/pages/pedidos/PedidoDetailsDialog.tsx",
    "lines": 568,
@@ -120348,10 +120420,23 @@
   }
  },
  "git": {
-  "sha": "1b88913d1c84f7946f7c2425e6cfdfe3cad7d696",
+  "sha": "b9963919509f4b3d3e8f4f33b4fe15437be52fa8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b996391",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/pedidos/PedidoMobileCard.tsx",
+     "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+     "src/pages/pagamentos/Pagamentos.tsx",
+     "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx"
+    ]
+   },
    {
     "sha": "1b88913",
     "date": "2026-11-24",
@@ -120697,17 +120782,6 @@
      "src/components/compras/ContractModal.tsx",
      "src/components/compras/__tests__/contractFornecedorId.test.tsx"
     ]
-   },
-   {
-    "sha": "6a89324",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(alcada): matriz usa pessoas reais e recusa aprovador vazio (#381)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/DynamicApprovalMatrix.tsx",
-     "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -120760,6 +120834,22 @@
     2
    ],
    [
+    "src/components/pedidos/PedidoMobileCard.tsx",
+    1
+   ],
+   [
+    "src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx",
+    1
+   ],
+   [
+    "src/pages/pagamentos/Pagamentos.tsx",
+    1
+   ],
+   [
+    "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx",
+    1
+   ],
+   [
     "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
     1
    ],
@@ -120773,22 +120863,6 @@
    ],
    [
     "bun.lock",
-    1
-   ],
-   [
-    "eslint.config.js",
-    1
-   ],
-   [
-    "package.json",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/chat/ChatArea.tsx",
     1
    ]
   ]
