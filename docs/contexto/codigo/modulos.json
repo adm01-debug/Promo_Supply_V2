@@ -3358,8 +3358,8 @@
   {
    "modulo": "pages/acompanhamento",
    "arquivos": 2,
-   "testes": 2,
-   "linhas": 852,
+   "testes": 3,
+   "linhas": 865,
    "itens_menu": [
     "Acompanhamento"
    ],

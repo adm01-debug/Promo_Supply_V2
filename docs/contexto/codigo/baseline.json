@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
+  "commit": "1b88913d1c84f7946f7c2425e6cfdfe3cad7d696",
   "branch": "main",
-  "data_commit": "2026-11-24T09:59:08-03:00",
+  "data_commit": "2026-11-24T10:04:18-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1b88913",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)"
+   },
    {
     "sha": "69fe938",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "4e72f55",
     "data": "2026-11-24",
     "assunto": "fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)"
-   },
-   {
-    "sha": "72256cb",
-    "data": "2026-11-24",
-    "assunto": "fix(pedidos): Kanban so entrega via Recebimento (#383)"
    }
   ],
-  "arquivos_mudados_7d": 458,
+  "arquivos_mudados_7d": 459,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -144,12 +144,12 @@
     "mudancas": 74
    },
    {
-    "pasta": "src/components/ui",
+    "pasta": "docs/qa/05-PROGRESSO.md",
     "mudancas": 65
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 64
+    "pasta": "src/components/ui",
+    "mudancas": 65
    },
    {
     "pasta": "src/features/layout",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 64
+    "mudancas": 65
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -230,11 +230,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 7
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "mudancas": 8
    },
    {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1405,
-  "arquivos_codigo": 900,
-  "linhas_codigo": 182172,
+  "arquivos_total": 1406,
+  "arquivos_codigo": 901,
+  "linhas_codigo": 182310,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 264,
+  "testes": 265,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 144,
-   "linhas": 33205
+   "arquivos": 145,
+   "linhas": 33343
   },
   "src/routes": {
    "arquivos": 1,
@@ -605,6 +605,10 @@
    "linhas": 691
   },
   {
+   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+   "linhas": 676
+  },
+  {
    "arquivo": "src/hooks/useExecutiveDashboardData.ts",
    "linhas": 667
   },
@@ -614,10 +618,6 @@
   },
   {
    "arquivo": "src/hooks/useXbzIntegration.ts",
-   "linhas": 663
-  },
-  {
-   "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
    "linhas": 663
   },
   {

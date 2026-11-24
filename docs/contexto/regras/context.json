@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
+  "sha": "1b88913d1c84f7946f7c2425e6cfdfe3cad7d696",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:01 UTC",
-  "files_total": 1406,
-  "code_files": 1233,
-  "code_lines": 209356,
+  "generated_at": "2026-11-24 13:04 UTC",
+  "files_total": 1407,
+  "code_files": 1234,
+  "code_lines": 209494,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a4182f005d940086",
+ "facts_hash": "36772bc7c3758e08",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 394,
+   ".tsx": 395,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35726,8 +35726,8 @@
   },
   {
    "module": "src/pages",
-   "files": 144,
-   "lines": 33205,
+   "files": 145,
+   "lines": 33343,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35864,6 +35864,7 @@
     "src/pages/acompanhamento/Acompanhamento.tsx",
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
+    "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
     "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
     "src/pages/admin/AlertDetail.tsx",
     "src/pages/admin/AlertSubscriptionsPanel.tsx",
@@ -35938,8 +35939,7 @@
     "src/pages/dev/XbzNetworkPanelHarness.tsx",
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx",
-    "src/pages/devolucoes/devolucoesData.ts",
-    "src/pages/devolucoes/__tests__/devolucoesData.test.ts"
+    "src/pages/devolucoes/devolucoesData.ts"
    ]
   },
   {
@@ -66391,6 +66391,30 @@
    {
     "file": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
     "name": "handles unknown status gracefully (defaults to 0)"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "Acompanhamento - filtros de SLA acessiveis pelo teclado (etapa 234)"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "cartao filtravel expoe papel de botao, nome e estado inicial do filtro"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "Enter aplica o filtro e espaco limpa de volta"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "cartoes que nao filtram continuam sem papel de botao"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "cartao de urgencia abre os detalhes do pedido com Enter"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "name": "cartao de urgencia ignora teclas que nao acionam"
    },
    {
     "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
@@ -106876,7 +106900,7 @@
   },
   "src/pages/acompanhamento/Acompanhamento.tsx": {
    "path": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "lines": 663,
+   "lines": 676,
    "exports": [
     "default Acompanhamento"
    ],
@@ -107200,6 +107224,22 @@
     "returns all stages concluido except last for ENTREGUE (etapaAtual=5)",
     "each stage has id, nome, and status",
     "handles unknown status gracefully (defaults to 0)"
+   ]
+  },
+  "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx": {
+   "path": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+   "lines": 125,
+   "is_test": true,
+   "temporal": [
+    "const cincoDiasAtras = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();"
+   ],
+   "tests": [
+    "Acompanhamento - filtros de SLA acessiveis pelo teclado (etapa 234)",
+    "cartao filtravel expoe papel de botao, nome e estado inicial do filtro",
+    "Enter aplica o filtro e espaco limpa de volta",
+    "cartoes que nao filtram continuam sem papel de botao",
+    "cartao de urgencia abre os detalhes do pedido com Enter",
+    "cartao de urgencia ignora teclas que nao acionam"
    ]
   },
   "src/pages/acompanhamento/__tests__/statusKanban.test.ts": {
@@ -120308,10 +120348,21 @@
   }
  },
  "git": {
-  "sha": "69fe938ba747f6d6812b5cdcb3d1841b294fd1ac",
+  "sha": "1b88913d1c84f7946f7c2425e6cfdfe3cad7d696",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1b88913",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx"
+    ]
+   },
    {
     "sha": "69fe938",
     "date": "2026-11-24",
@@ -120657,18 +120708,6 @@
      "src/components/compras/DynamicApprovalMatrix.tsx",
      "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx"
     ]
-   },
-   {
-    "sha": "6c76f6a",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(alcada): aprovadores e categorias reais nos modais de regra e delegacao (#380)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/approval/ApprovalDelegationModal.tsx",
-     "src/components/compras/approval/ApprovalRuleModal.tsx",
-     "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -120679,6 +120718,10 @@
    [
     "src/features/pedidos/hooks/usePedidos.ts",
     4
+   ],
+   [
+    "src/pages/acompanhamento/Acompanhamento.tsx",
+    3
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -120694,10 +120737,6 @@
    ],
    [
     "docs/ci/README.md",
-    2
-   ],
-   [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
     2
    ],
    [
@@ -120719,6 +120758,10 @@
    [
     "src/hooks/useFornecedores.ts",
     2
+   ],
+   [
+    "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    1
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -120746,10 +120789,6 @@
    ],
    [
     "src/features/layout/components/chat/ChatArea.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx",
     1
    ]
   ]

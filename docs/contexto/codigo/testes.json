@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 264,
+ "total": 265,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 246
+  "unit": 247
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 170
+   "arquivos": 171
   },
   {
    "padrao": "outro",
@@ -1433,6 +1433,15 @@
    "casos": 21
   },
   {
+   "arquivo": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+   "tipo": "unit",
+   "linhas": 125,
+   "testa": [
+    "src/pages/acompanhamento/Acompanhamento.tsx"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
    "tipo": "unit",
    "linhas": 237,
@@ -2518,6 +2527,7 @@
   "src/locales/en/translation.json": 1,
   "src/locales/es/translation.json": 1,
   "src/locales/pt/translation.json": 1,
+  "src/pages/acompanhamento/Acompanhamento.tsx": 1,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 2,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
   "src/pages/admin/FiscalDashboard.tsx": 1,
@@ -2594,7 +2604,6 @@
  "sem_teste": {
   "telas": [
    "src/pages/NotFound.tsx",
-   "src/pages/acompanhamento/Acompanhamento.tsx",
    "src/pages/admin-telemetria/AdminTelemetria.tsx",
    "src/pages/admin/AlertDetail.tsx",
    "src/pages/admin/DependencyHealth.tsx",
