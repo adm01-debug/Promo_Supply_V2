@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
+  "commit": "d1500f17ecdf6569dada3b5cdd2acfbf66286583",
   "branch": "main",
-  "data_commit": "2026-11-24T13:41:06-03:00",
+  "data_commit": "2026-11-24T13:54:56-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d1500f1",
+    "data": "2026-11-24",
+    "assunto": "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)"
+   },
    {
     "sha": "0372d49",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "cd9b099",
     "data": "2026-11-24",
     "assunto": "fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)"
-   },
-   {
-    "sha": "9398283",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)"
    }
   ],
-  "arquivos_mudados_7d": 480,
+  "arquivos_mudados_7d": 483,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 90
+    "mudancas": 91
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 56
+    "mudancas": 57
    },
    {
     "pasta": "docs/pendencias/_indice.md",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 90
+    "mudancas": 91
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -278,6 +278,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/pages/auth/Auth.tsx",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "mudancas": 6
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "supabase/functions/check-sla-alerts/index.ts",
     "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/main.yml",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1439,
-  "arquivos_codigo": 924,
-  "linhas_codigo": 185467,
+  "arquivos_total": 1440,
+  "arquivos_codigo": 925,
+  "linhas_codigo": 185605,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 335,
   "cron_jobs": 74,
-  "testes": 285,
+  "testes": 286,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 281,
-   "linhas": 51755
+   "arquivos": 282,
+   "linhas": 51893
   },
   "src/features": {
    "arquivos": 88,

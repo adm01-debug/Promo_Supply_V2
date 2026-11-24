@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0372d491f6` · branch `main` · 2026-11-24 16:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d1500f17ec` · branch `main` · 2026-11-24 16:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3329 testes em 234 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3339 testes em 235 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2559,6 +2559,7 @@ _nenhum item encontrado_
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
+| `src/components/accessibility/__tests__/painelAcessibilidade.test.tsx` | 10 | o corpo do painel de acessibilidade funciona fora do Sheet · mostra os controles e o botao de restaurar padroes · o switch de fonte para dislexia muda o documento pelo provider · restaurar padroes desliga o que foi ligado no documento … |
 | `src/components/compras/approval/__tests__/alcadaListasReais.test.tsx` | 10 | ApprovalRuleModal usa pessoas e categorias reais · oferece profiles.user_id e nomes do banco, sem id ficticio · grava o user_id escolhido no aprovador da regra · sem pessoas visiveis avisa em vez de mostrar lista ficticia … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |

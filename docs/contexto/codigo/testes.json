@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 285,
+ "total": 286,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 267
+  "unit": 268
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 190
+   "arquivos": 191
   },
   {
    "padrao": "outro",
@@ -345,6 +345,15 @@
     "src/components/accessibility/accessibilityHelpers.ts"
    ],
    "casos": 55
+  },
+  {
+   "arquivo": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "src/components/accessibility/AdvancedAccessibility.tsx"
+   ],
+   "casos": 10
   },
   {
    "arquivo": "src/components/animations/__tests__/motionVariants.test.ts",
@@ -2603,6 +2612,7 @@
   "scripts/rls-audit.ts": 1,
   "scripts/stress-test.ts": 1,
   "scripts/validate-bridge.ts": 1,
+  "src/components/accessibility/AdvancedAccessibility.tsx": 1,
   "src/components/accessibility/accessibilityHelpers.ts": 1,
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/BulkOperationsPreview.tsx": 1,
@@ -2846,7 +2856,6 @@
    "src/pages/sourcing/Sourcing.tsx"
   ],
   "hooks": [
-   "src/components/accessibility/AdvancedAccessibility.tsx",
    "src/components/compras/sla-analysis/useSupplierSlaData.ts",
    "src/components/onboarding/OnboardingTour.tsx",
    "src/components/ui/celebration.tsx",

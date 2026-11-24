@@ -83,12 +83,13 @@
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
    "exports": [
     "AccessibilityPanel",
+    "AccessibilityPanelContent",
     "AccessibilityProvider",
     "LiveRegion",
     "SkipToContent"
    ],
    "export_default": "AccessibilityProvider",
-   "linhas": 413,
+   "linhas": 419,
    "dominio": "components/accessibility",
    "hooks_locais": [
     "useAccessibility"

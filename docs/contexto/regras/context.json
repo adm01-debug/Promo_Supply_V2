@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
+  "sha": "d1500f17ecdf6569dada3b5cdd2acfbf66286583",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 16:41 UTC",
-  "files_total": 1440,
-  "code_files": 1267,
-  "code_lines": 213213,
+  "generated_at": "2026-11-24 16:55 UTC",
+  "files_total": 1441,
+  "code_files": 1268,
+  "code_lines": 213351,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ffccf44822031d48",
+ "facts_hash": "757e327b4af21663",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 442,
-   ".tsx": 409,
+   ".tsx": 410,
    ".sql": 341,
    ".mjs": 67,
    ".py": 5,
@@ -33792,7 +33792,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 317,
+  "components_count": 318,
   "hooks": [
    {
     "name": "useContacts",
@@ -34850,8 +34850,8 @@
   },
   {
    "module": "src/components",
-   "files": 281,
-   "lines": 51755,
+   "files": 282,
+   "lines": 51893,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34887,7 +34887,7 @@
    "exports": [
     "PrefetchLink.tsx: PrefetchLink",
     "AccessibilityStyles.tsx: AccessibilityStyles",
-    "AdvancedAccessibility.tsx: useAccessibility, AccessibilityProvider, AccessibilityPanel, SkipToContent, LiveRegion, useFocusTrap",
+    "AdvancedAccessibility.tsx: useAccessibility, AccessibilityProvider, AccessibilityPanelContent, AccessibilityPanel, SkipToContent, LiveRegion",
     "SkipLinks.tsx: SkipLinks",
     "VisuallyHidden.tsx: VisuallyHidden, LiveRegion",
     "accessibilityHelpers.ts: AccessibilitySettings, defaultSettings, ACCESSIBILITY_STORAGE_KEY, sanitizeAccessibilitySettings, getInitialAccessibilitySettings",
@@ -34983,6 +34983,7 @@
     "src/components/accessibility/VisuallyHidden.tsx",
     "src/components/accessibility/accessibilityHelpers.ts",
     "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
+    "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
     "src/components/admin/DateFnsUsagePanel.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/admin/InstallReportHelp.tsx",
@@ -35054,8 +35055,7 @@
     "src/components/compras/SolicitacaoCard.tsx",
     "src/components/compras/SolicitacaoKanban.tsx",
     "src/components/compras/SourcingHistoryConsole.tsx",
-    "src/components/compras/SourcingIntelligenceWidget.tsx",
-    "src/components/compras/SpendAnalytics.tsx"
+    "src/components/compras/SourcingIntelligenceWidget.tsx"
    ]
   },
   {
@@ -59174,6 +59174,46 @@
    {
     "file": "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
     "name": "does not write to localStorage when no visual settings need recovery"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "o corpo do painel de acessibilidade funciona fora do Sheet"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "mostra os controles e o botao de restaurar padroes"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "o switch de fonte para dislexia muda o documento pelo provider"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "restaurar padroes desliga o que foi ligado no documento"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "um unico painel de acessibilidade e um unico landmark principal por rota"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "o gatilho do cabecalho monta o conteudo, nao um segundo Sheet"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "o painel flutuante continua montado uma unica vez, no App"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "App.tsx nao embrulha as rotas em main nem duplica o id main-content"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "o id main-content existe so nos landmarks de rota, MainLayout e Auth"
+   },
+   {
+    "file": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    "name": "a rota de login tem landmark principal alcancavel pelo teclado"
    },
    {
     "file": "src/components/animations/__tests__/motionVariants.test.ts",
@@ -94301,10 +94341,11 @@
   },
   "src/components/accessibility/AdvancedAccessibility.tsx": {
    "path": "src/components/accessibility/AdvancedAccessibility.tsx",
-   "lines": 413,
+   "lines": 419,
    "exports": [
     "const useAccessibility",
     "const AccessibilityProvider",
+    "const AccessibilityPanelContent",
     "const AccessibilityPanel",
     "const SkipToContent",
     "const LiveRegion",
@@ -94425,6 +94466,23 @@
     "auto-resets colorBlindMode to none on load when set",
     "persists the recovered settings back to localStorage",
     "does not write to localStorage when no visual settings need recovery"
+   ]
+  },
+  "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx": {
+   "path": "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+   "lines": 132,
+   "is_test": true,
+   "tests": [
+    "o corpo do painel de acessibilidade funciona fora do Sheet",
+    "mostra os controles e o botao de restaurar padroes",
+    "o switch de fonte para dislexia muda o documento pelo provider",
+    "restaurar padroes desliga o que foi ligado no documento",
+    "um unico painel de acessibilidade e um unico landmark principal por rota",
+    "o gatilho do cabecalho monta o conteudo, nao um segundo Sheet",
+    "o painel flutuante continua montado uma unica vez, no App",
+    "App.tsx nao embrulha as rotas em main nem duplica o id main-content",
+    "o id main-content existe so nos landmarks de rota, MainLayout e Auth",
+    "a rota de login tem landmark principal alcancavel pelo teclado"
    ]
   },
   "src/components/admin/DateFnsUsagePanel.tsx": {
@@ -121677,10 +121735,24 @@
   }
  },
  "git": {
-  "sha": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
+  "sha": "d1500f17ecdf6569dada3b5cdd2acfbf66286583",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d1500f1",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/App.tsx",
+     "src/components/accessibility/AdvancedAccessibility.tsx",
+     "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+     "src/features/layout/components/HeaderActions.tsx",
+     "src/pages/auth/Auth.tsx"
+    ]
+   },
    {
     "sha": "0372d49",
     "date": "2026-11-24",
@@ -122023,27 +122095,12 @@
      "src/pages/pagamentos/Pagamentos.tsx",
      "src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx"
     ]
-   },
-   {
-    "sha": "1b88913",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     26
-   ],
-   [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
-    3
    ],
    [
     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -122070,6 +122127,10 @@
     2
    ],
    [
+    "src/pages/acompanhamento/Acompanhamento.tsx",
+    2
+   ],
+   [
     "supabase/functions/receive-os-sync/index.ts",
     2
    ],
@@ -122080,6 +122141,26 @@
    [
     "eslint.config.js",
     2
+   ],
+   [
+    "src/App.tsx",
+    1
+   ],
+   [
+    "src/components/accessibility/AdvancedAccessibility.tsx",
+    1
+   ],
+   [
+    "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
+    1
+   ],
+   [
+    "src/features/layout/components/HeaderActions.tsx",
+    1
+   ],
+   [
+    "src/pages/auth/Auth.tsx",
+    1
    ],
    [
     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
@@ -122095,26 +122176,6 @@
    ],
    [
     "src/lib/__tests__/creditoFornecedor.test.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/statusTransitionsBanco.test.ts",
-    1
-   ],
-   [
-    "src/lib/creditoFornecedor.ts",
-    1
-   ],
-   [
-    "src/lib/statusTransitionsBanco.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
-    1
-   ],
-   [
-    "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
     1
    ]
   ]

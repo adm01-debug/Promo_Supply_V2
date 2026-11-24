@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (190)",
+   "co-localizado (__tests__) (191)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)",
    "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)",
    "fix: remove trigger duplicado de validacao de status em pedidos (#391)",
    "fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)",
-   "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)",
-   "fix: matriz de transicoes de status alinhada ao banco (#394)"
+   "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)"
   ]
  },
  "pr_template": null,

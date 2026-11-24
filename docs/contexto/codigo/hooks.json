@@ -9,7 +9,7 @@
     "useAccessibility",
     "useFocusTrap"
    ],
-   "linhas": 413,
+   "linhas": 419,
    "dominio": "components/accessibility",
    "tabelas": [],
    "rpcs": [],
@@ -26,7 +26,7 @@
     "src/App.tsx",
     "src/features/layout/components/HeaderActions.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
