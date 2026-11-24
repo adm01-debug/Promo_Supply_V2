@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { 
   Filter, 
   Calendar,
@@ -31,6 +31,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/features/auth";
+import { montarEmpresas } from "@/features/solicitacoes/pessoasDaEmpresa";
 
 export interface AdvancedFilters {
   dateRange: { from: string; to: string };
@@ -56,9 +58,6 @@ const initialFilters: AdvancedFilters = {
   status: [],
 };
 
-const empresasOptions = ['Promo Supply', 'Gift Solutions', 'Marketing Promo', 'Brindes Express', 'Corporate Gifts'];
-const vendedoresOptions = ['João Silva', 'Maria Santos', 'Carlos Oliveira', 'Ana Costa', 'Pedro Lima'];
-const fornecedoresOptions = ['ABC Ltda', 'Distribuidora XYZ', 'Importadora 123', 'Fábrica Premium', 'Atacado Brasil'];
 const tiposOptions = [
   { value: 'PE_LISO', label: 'P.E. Liso' },
   { value: 'FAB_LISO', label: 'Fab. Liso' },
@@ -90,6 +89,11 @@ interface FiltrosAvancadosProps {
 export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosAvancadosProps) {
   const [open, setOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<AdvancedFilters>(filters);
+  const { availableEmpresas } = useAuth();
+  const empresasOptions = useMemo(
+    () => montarEmpresas(availableEmpresas).map((e) => e.nome),
+    [availableEmpresas],
+  );
 
   const updateFilter = <K extends keyof AdvancedFilters>(key: K, value: AdvancedFilters[K]) => {
     setLocalFilters(prev => ({ ...prev, [key]: value }));

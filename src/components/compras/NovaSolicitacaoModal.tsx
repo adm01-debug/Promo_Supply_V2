@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { logger } from '@/lib/logger';
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
@@ -30,6 +30,8 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Step1Identification, Step2Specifications, Step3Values } from "./solicitacao/SolicitacaoFormSteps";
+import { montarEmpresas } from "@/features/solicitacoes/pessoasDaEmpresa";
+import { usePessoasDaEmpresa } from "@/features/solicitacoes/hooks/usePessoasDaEmpresa";
 
 const initialFormData: NovaSolicitacaoData = {
   empresa: '',
@@ -66,7 +68,8 @@ const STEPS = [
 ];
 
 export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) {
-  const { user, organizationId, tenantId } = useAuth();
+  const { user, organizationId, tenantId, availableEmpresas, selectedEmpresaId } = useAuth();
+  const empresas = useMemo(() => montarEmpresas(availableEmpresas), [availableEmpresas]);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
@@ -77,6 +80,11 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       return initialFormData;
     }
   });
+  const empresaSelecionada = useMemo(
+    () => empresas.find((e) => e.nome === formData.empresa) ?? null,
+    [empresas, formData.empresa],
+  );
+  const { pessoas, loading: pessoasLoading } = usePessoasDaEmpresa(empresaSelecionada?.id ?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingNeural, setIsProcessingNeural] = useState(false);
   const [neuralInput, setNeuralInput] = useState("");
@@ -91,6 +99,13 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
     }
   }, [formData]);
+
+  // Sem escolha salva no rascunho: abre na empresa em foco (ou na unica do usuario).
+  useEffect(() => {
+    if (formData.empresa || empresas.length === 0) return;
+    const alvo = empresas.find((e) => e.id === selectedEmpresaId) ?? (empresas.length === 1 ? empresas[0] : null);
+    if (alvo) setFormData((prev) => (prev.empresa ? prev : { ...prev, empresa: alvo.nome }));
+  }, [empresas, selectedEmpresaId, formData.empresa]);
 
   const pushToHistory = useCallback((data: NovaSolicitacaoData) => {
     setHistory(prev => [...prev.slice(-9), data]); // Keep last 10 versions
@@ -226,7 +241,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
         .insert({
           numero,
           titulo: sanitizedTitulo,
-          descricao: sanitizedDescricao || `${formData.tipo} — Empresa: ${formData.empresa}, Vendedor: ${formData.vendedor}`,
+          descricao: sanitizedDescricao || null,
           tipo: tipoMap[formData.tipo] || 'material',
           prioridade: prioridadeMap[formData.prioridade] || 'media',
           quantidade: formData.quantidade,
@@ -235,6 +250,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
           cost_center_id: formData.costCenterId || null,
           data_necessidade: formData.prazoEntrega || null,
           solicitante_id: user.id,
+          aprovador_id: formData.vendedor || null,
           departamento: formData.empresa,
           categoria_id: formData.categoriaId || null,
           organization_id: organizationId,
@@ -408,7 +424,16 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
 
         <Separator className="mb-8 bg-white/5" />
 
-        {step === 1 && <Step1Identification formData={formData} errors={errors} updateField={updateField} />}
+        {step === 1 && (
+          <Step1Identification
+            formData={formData}
+            errors={errors}
+            updateField={updateField}
+            empresas={empresas}
+            pessoas={pessoas}
+            pessoasLoading={pessoasLoading}
+          />
+        )}
         {step === 2 && <Step2Specifications formData={formData} errors={errors} updateField={updateField} />}
         {step === 3 && <Step3Values formData={formData} errors={errors} updateField={updateField}
           budgetCheck={budgetCheck} isCheckingBudget={isCheckingBudget} checkBudget={checkBudget}
