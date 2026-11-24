@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
@@ -8,6 +10,7 @@ import {
   caminhoDeStatus,
   aplicarStatusRecebimento,
   buildReceivingObservation,
+  gravarItensRecebidos,
 } from '../recebimentoHelpers';
 import type { CamposStatusPedido, ReceivingEntry } from '../recebimentoHelpers';
 
@@ -227,6 +230,72 @@ describe('buildReceivingObservation', () => {
 
   it('usa so a observacao geral quando nao ha nota por item', () => {
     expect(buildReceivingObservation({}, 'faltou 1 unidade')).toBe('faltou 1 unidade');
+  });
+
+  it('acrescenta a nota nova em vez de apagar a observacao que a OC gravou', () => {
+    expect(buildReceivingObservation({}, 'faltou 1 unidade', 'entregar em 2 remessas'))
+      .toBe('entregar em 2 remessas — faltou 1 unidade');
+  });
+
+  it('nao duplica a nota quando o sync offline repete a gravacao', () => {
+    expect(buildReceivingObservation({}, 'faltou 1 unidade', 'faltou 1 unidade'))
+      .toBe('faltou 1 unidade');
+  });
+
+  it('devolve null sem nota nova, para nao sobrescrever a observacao do pedido', () => {
+    expect(buildReceivingObservation({ A: '   ' }, '  ', 'entregar em 2 remessas')).toBeNull();
+  });
+});
+
+describe('gravarItensRecebidos', () => {
+  const itens = [
+    { item_id: 'ITEM-1', quantidade_recebida: 5 },
+    { item_id: 'ITEM-2', quantidade_recebida: 2 },
+  ];
+
+  it('grava todos os itens e devolve null quando todos atualizam', async () => {
+    const chamadas: [string, number][] = [];
+    const erro = await gravarItensRecebidos(itens, async (id, quantidade) => {
+      chamadas.push([id, quantidade]);
+      return { data: [{ id }], error: null };
+    });
+
+    expect(erro).toBeNull();
+    expect(chamadas).toEqual([['ITEM-1', 5], ['ITEM-2', 2]]);
+  });
+
+  it('acusa a linha que a RLS filtrou em silencio (0 linhas, sem erro)', async () => {
+    const erro = await gravarItensRecebidos(
+      [{ item_id: 'ITEM-9', quantidade_recebida: 1 }],
+      async () => ({ data: [], error: null }),
+    );
+
+    expect(erro).toContain('ITEM-9');
+    expect(erro).toContain('nenhuma linha atualizada');
+  });
+
+  it('devolve a mensagem do banco e para no primeiro item que falhar', async () => {
+    const tentados: string[] = [];
+    const erro = await gravarItensRecebidos(itens, async (id) => {
+      tentados.push(id);
+      return id === 'ITEM-1'
+        ? { data: null, error: { message: 'permission denied for table pedido_itens' } }
+        : { data: [{ id }], error: null };
+    });
+
+    expect(erro).toContain('permission denied');
+    expect(tentados).toEqual(['ITEM-1']);
+  });
+
+  it('a tela confere as linhas afetadas e repassa a observacao existente', async () => {
+    const src = await readFile(
+      join(process.cwd(), 'src/pages/recebimento/RecebimentoOffline.tsx'),
+      'utf8',
+    );
+
+    expect(src).toContain('gravarItensRecebidos(entry.items, atualizarItem)');
+    expect(src).toContain('selectedOrder.observacoes ?? null');
+    expect(src).not.toMatch(/\.update\(\{ quantidade_recebida: item\.quantidade_recebida \}\)/);
   });
 });
 
