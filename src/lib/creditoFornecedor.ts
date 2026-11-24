@@ -5,7 +5,13 @@
  * `valor_utilizado` (perdendo o acumulado) e useDevolucoes acumulava. Alem
  * disso o status gravado no pagamento nao era conferido contra a maquina de
  * estados do banco, e o erro do UPDATE era descartado.
+ *
+ * A matriz de status usada aqui vem de src/lib/statusTransitionsBanco.ts: este
+ * arquivo tinha uma copia propria dela, defasada, que recusava
+ * aprovado/agendado/atrasado -> parcial - os caminhos de pagamento parcial.
  */
+
+import { TRANSICOES_PAGAMENTO_BANCO } from './statusTransitionsBanco';
 
 export interface CreditoAtual {
   saldo: number;
@@ -33,23 +39,8 @@ export function calcularAbatimentoCredito(
 }
 
 /**
- * Transicoes aceitas por public.validate_pagamento_status_transition (trigger
- * trg_validate_pagamento_status), lidas em producao. O mapa do front
- * (VALID_PAGAMENTO_TRANSITIONS em src/hooks/usePagamentos.ts) oferece 'parcial'
- * a partir de aprovado/agendado/atrasado, o que o banco rejeita.
+ * Status que o abatimento grava: `pago` quando quita, `parcial` quando nao.
  */
-const TRANSICOES_PAGAMENTO_BANCO: Record<string, string[]> = {
-  pendente: ['aprovado', 'cancelado', 'atrasado'],
-  aprovado: ['agendado', 'pago', 'cancelado', 'atrasado'],
-  agendado: ['pago', 'cancelado', 'atrasado'],
-  pago: ['parcial'],
-  parcial: ['pago'],
-  atrasado: ['pago', 'cancelado', 'aprovado'],
-  cancelado: [],
-  concluido: [],
-};
-
-/** Status que o abatimento grava: `pago` quando quita, `parcial` quando nao. */
 export function statusAlvoAbatimento(valorPago: number, valorTotal: number): 'pago' | 'parcial' {
   return valorPago >= valorTotal ? 'pago' : 'parcial';
 }
@@ -73,7 +64,7 @@ export function statusAbatimentoAlcancavel(
 /** Explicacao para o operador quando `statusAbatimentoAlcancavel` devolve null. */
 export function mensagemAbatimentoBloqueado(alvo: 'pago' | 'parcial'): string {
   if (alvo === 'parcial') {
-    return 'O banco nao aceita status "parcial" a partir do status atual deste pagamento. Quite o valor restante ou registre uma parcela pelo fluxo de pagamento.';
+    return 'O banco nao aceita status "parcial" a partir do status atual deste pagamento. Aprove o pagamento ou registre a parcela pelo fluxo de pagamento.';
   }
   return 'Aprove o pagamento antes de aplicar o credito de devolucao.';
 }
