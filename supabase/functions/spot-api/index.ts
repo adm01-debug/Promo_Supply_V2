@@ -10,7 +10,7 @@
  *  - catálogo/personalização: 22 req/dia → 1 sync/dia
  *  - token válido 24h, reaproveitado via spot_sessions
  */
-import { buildCorsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders, timingSafeEqualStr } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -88,19 +88,11 @@ interface Caller {
   isCron: boolean;
 }
 
-/** Comparação em tempo constante para segredos compartilhados. */
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
 async function authorize(req: Request, db: SupabaseClient, action: string): Promise<Caller> {
   // Agendador interno (pg_cron): chave dedicada, sem service role key exposta no SQL.
   const cronKey = req.headers.get("x-spot-cron-key");
   const expectedCronKey = Deno.env.get("SPOT_CRON_KEY");
-  if (cronKey && expectedCronKey && timingSafeEqual(cronKey, expectedCronKey)) {
+  if (cronKey && expectedCronKey && timingSafeEqualStr(cronKey, expectedCronKey)) {
     if (!CRON_ACTIONS.has(action)) throw new HttpError(403, "Ação não permitida para chamadas agendadas");
     return { userId: null, isCron: true };
   }
@@ -112,7 +104,8 @@ async function authorize(req: Request, db: SupabaseClient, action: string): Prom
 
 
   // Cron/serviço: service role key chamando um sync agendado.
-  if (token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) {
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (serviceKey && timingSafeEqualStr(token, serviceKey)) {
     if (!CRON_ACTIONS.has(action)) throw new HttpError(403, "Ação não permitida para chamadas de serviço");
     return { userId: null, isCron: true };
   }
