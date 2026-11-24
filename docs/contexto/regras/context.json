@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9e585d8de295df26a63a57f2dc76b226562a2e8a",
+  "sha": "338a212aed25075a92fcb0e065dedfcc0f747f46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:47 UTC",
-  "files_total": 1426,
-  "code_files": 1253,
-  "code_lines": 212202,
+  "generated_at": "2026-11-24 15:59 UTC",
+  "files_total": 1427,
+  "code_files": 1254,
+  "code_lines": 212308,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3ab280caaa60d43d",
+ "facts_hash": "0b813cc41b7ee255",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 437,
+   ".ts": 438,
    ".tsx": 409,
    ".sql": 332,
    ".mjs": 67,
@@ -33771,7 +33771,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 316,
+  "components_count": 317,
   "hooks": [
    {
     "name": "useContacts",
@@ -34814,8 +34814,8 @@
   },
   {
    "module": "src/components",
-   "files": 280,
-   "lines": 51649,
+   "files": 281,
+   "lines": 51755,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -41032,10 +41032,6 @@
    },
    {
     "file": "src/components/compras/NovaSolicitacaoModal.tsx",
-    "msg": "Anexos não enviados: organização não identificada. Faça login novamente."
-   },
-   {
-    "file": "src/components/compras/NovaSolicitacaoModal.tsx",
     "msg": "Erro ao criar solicitação: "
    },
    {
@@ -42885,6 +42881,14 @@
    {
     "file": "src/components/compras/KanbanBoard.tsx",
     "text": "* Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada."
+   },
+   {
+    "file": "src/components/compras/NovaSolicitacaoModal.tsx",
+    "text": "* A solicitacao ja foi gravada e isso continua verdade: o aviso fala apenas dos"
+   },
+   {
+    "file": "src/components/compras/NovaSolicitacaoModal.tsx",
+    "text": "Anexo que nao sobe nao pode passar em silencio: antes o erro ia so para o"
    },
    {
     "file": "src/components/compras/SupplierInteractionLog.tsx",
@@ -59308,6 +59312,38 @@
    {
     "file": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
     "name": "Card de volume — textos batem com o período"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "resumoAnexosNaoEnviados"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "um anexo que falhou sai com nome, quantidade e sem plural"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "varios anexos somam a quantidade e listam os nomes"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "sem tenant de upload o motivo e o login, nao o storage"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "sempre confirma que a solicitacao foi criada"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "NovaSolicitacaoModal nao anuncia anexo que ficou para tras"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "acumula a falha de cada arquivo depois de logar"
+   },
+   {
+    "file": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    "name": "avisa na tela quantos anexos nao subiram"
    },
    {
     "file": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
@@ -95501,8 +95537,10 @@
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
    "path": "src/components/compras/NovaSolicitacaoModal.tsx",
-   "lines": 484,
+   "lines": 531,
    "exports": [
+    "interface AvisoAnexosNaoEnviados",
+    "const resumoAnexosNaoEnviados",
     "function NovaSolicitacaoModal"
    ],
    "tables": [
@@ -95528,7 +95566,6 @@
     "documentos"
    ],
    "errors": [
-    "Anexos não enviados: organização não identificada. Faça login novamente.",
     "Erro ao criar solicitação: ",
     "Erro ao processar solicitação via IA.",
     "Resposta IA sem campos preenchíveis",
@@ -95540,6 +95577,10 @@
      "value": "PE_LISO",
      "kind": "escreve"
     }
+   ],
+   "rule_comments": [
+    "* A solicitacao ja foi gravada e isso continua verdade: o aviso fala apenas dos",
+    "Anexo que nao sobe nao pode passar em silencio: antes o erro ia so para o"
    ],
    "calc_fns": [
     {
@@ -96795,6 +96836,24 @@
     "usa o rótulo do período recebido",
     "sem período: ",
     "Card de volume — textos batem com o período"
+   ]
+  },
+  "src/components/compras/__tests__/anexosNaoEnviados.test.ts": {
+   "path": "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+   "lines": 59,
+   "is_test": true,
+   "errors": [
+    "Anexos não enviados: organização não identificada. Faça login novamente."
+   ],
+   "tests": [
+    "resumoAnexosNaoEnviados",
+    "um anexo que falhou sai com nome, quantidade e sem plural",
+    "varios anexos somam a quantidade e listam os nomes",
+    "sem tenant de upload o motivo e o login, nao o storage",
+    "sempre confirma que a solicitacao foi criada",
+    "NovaSolicitacaoModal nao anuncia anexo que ficou para tras",
+    "acumula a falha de cada arquivo depois de logar",
+    "avisa na tela quantos anexos nao subiram"
    ]
   },
   "src/components/compras/__tests__/contractFornecedorId.test.tsx": {
@@ -121333,10 +121392,21 @@
   }
  },
  "git": {
-  "sha": "9e585d8de295df26a63a57f2dc76b226562a2e8a",
+  "sha": "338a212aed25075a92fcb0e065dedfcc0f747f46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "338a212",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/compras/__tests__/anexosNaoEnviados.test.ts"
+    ]
+   },
    {
     "sha": "9e585d8",
     "date": "2026-11-24",
@@ -121679,18 +121749,6 @@
      "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/pedidos/PedidoDetailsDialog.tsx"
     ]
-   },
-   {
-    "sha": "45c9c55",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(ordem): envia endereco real da empresa no e-mail da OC (#406)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-     "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -121751,6 +121809,14 @@
     2
    ],
    [
+    "src/components/compras/NovaSolicitacaoModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
+    1
+   ],
+   [
     "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
     1
    ],
@@ -121764,14 +121830,6 @@
    ],
    [
     "src/pages/solicitacoes/solicitacoesHelpers.ts",
-    1
-   ],
-   [
-    "src/components/compras/ProductionRoutingEngine.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
     1
    ]
   ]

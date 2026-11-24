@@ -1164,10 +1164,11 @@
   {
    "arquivo": "src/components/compras/NovaSolicitacaoModal.tsx",
    "exports": [
+    "AvisoAnexosNaoEnviados",
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 484,
+   "linhas": 531,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",

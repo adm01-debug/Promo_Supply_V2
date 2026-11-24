@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9e585d8de2` · branch `main` · 2026-11-24 15:47 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `338a212aed` · branch `main` · 2026-11-24 15:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2274,7 +2274,6 @@ _nenhum item encontrado_
 | Preencha todos os campos obrigatórios | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Não foi possível salvar o fornecedor. Tente novamente. | `src/components/compras/FornecedorModal.tsx` |
 | A entrega é registrada na tela de Recebimento, com a conferência da mercadoria. | `src/components/compras/KanbanBoard.tsx` |
-| Anexos não enviados: organização não identificada. Faça login novamente. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar solicitação:  | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao processar solicitação via IA. | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Resposta IA sem campos preenchíveis | `src/components/compras/NovaSolicitacaoModal.tsx` |
@@ -2447,7 +2446,8 @@ _nenhum item encontrado_
 | Organization ID missing | `src/hooks/useProdutos.ts` |
 | Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
-| … +273 linhas — lista completa em `context.json` | |
+| Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
+| … +272 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2465,7 +2465,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3289 testes em 230 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3297 testes em 231 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2578,6 +2578,7 @@ _nenhum item encontrado_
 | `src/pages/cotacao/__tests__/cotacaoComparadores.test.ts` | 9 | fetchRegisteredQuotes · usa o mesmo recorte do hook: solicitacao + organizacao do usuario · sem organizacao nao consulta o banco, como o hook desabilitado · unirCotacoesPorId … |
 | `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
+| `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
@@ -2744,6 +2745,8 @@ _nenhum item encontrado_
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
 | checagem a regra nascia com aprovador em branco e o insert em | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | * Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada. | `src/components/compras/KanbanBoard.tsx` |
+| * A solicitacao ja foi gravada e isso continua verdade: o aviso fala apenas dos | `src/components/compras/NovaSolicitacaoModal.tsx` |
+| Anexo que nao sobe nao pode passar em silencio: antes o erro ia so para o | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | * Mostra apenas interacoes registradas de verdade (follow-up do agendador em | `src/components/compras/SupplierInteractionLog.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
