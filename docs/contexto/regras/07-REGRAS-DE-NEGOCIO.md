@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0d51bc43b5` · branch `main` · 2026-11-24 16:23 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1b8434a999` · branch `main` · 2026-11-24 16:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -692,7 +692,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_update_saldo_on_pedido | AFTER INSERT OR UPDATE OR DELETE | `pedidos` | `trigger_update_saldo_on_pedido` |  |
 | trg_update_saldo_on_pagamento | AFTER INSERT OR UPDATE OR DELETE | `pagamentos` | `trigger_update_saldo_on_pagamento` |  |
 | trg_validate_solicitacao_status | BEFORE UPDATE | `solicitacoes` | `validate_solicitacao_status_transition` |  |
-| trg_validate_pedido_status | BEFORE UPDATE | `pedidos` | `validate_pedido_status_transition` |  |
 | trg_validate_pagamento_status | BEFORE UPDATE | `pagamentos` | `validate_pagamento_status_transition` |  |
 | trg_recalculate_qualification_score | AFTER INSERT OR UPDATE | `supplier_documents` | `trigger_recalculate_qualification_score` |  |
 | trg_update_solicitacoes_updated_at | BEFORE UPDATE | `solicitacoes` | `update_updated_at_column` |  |

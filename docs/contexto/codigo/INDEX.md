@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d51bc43b50ad23500baf1aebf86a87f0ac67e1e` (2026-11-24T13:22:55-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1b8434a99919fe5c703b3bd00937b9aac3d8ad5f` (2026-11-24T13:24:12-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (849), SQL (336), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (849), SQL (340), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1432 |
+| arquivos_total | 1436 |
 | arquivos_codigo | 922 |
 | linhas_codigo | 185265 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 332 |
+| migrations | 334 |
 | cron_jobs | 74 |
 | testes | 284 |
 | workflows | 15 |
@@ -338,10 +338,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (87)
+- docs/qa/05-PROGRESSO.md (89)
 - docs/pendencias/_indice.md (44)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/ci/README.md (12)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (16)
+- docs/ci/README.md (11)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
 - bun.lock (8)
 - docs/pendencias/_ordem.md (8)
@@ -422,6 +422,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `1b8434a` fix: remove trigger duplicado de validacao de status em pedidos (#391)
+- 2026-11-24 `4209cc0` fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)
 - 2026-11-24 `0d51bc4` fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)
 - 2026-11-24 `728759e` fix: matriz de transicoes de status alinhada ao banco (#394)
 - 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
@@ -435,8 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `66b65cc` fix(pedidos): nao deixar falha de carga virar lista vazia (#430)
 - 2026-11-24 `da3107b` feat: registra no log quando o numero da solicitacao colide (#431)
 - 2026-11-24 `c3726dd` fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)
-- 2026-11-24 `0f24e15` fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)
-- 2026-11-24 `0165b41` test: prova o retry quando o numero da solicitacao colide (#427)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

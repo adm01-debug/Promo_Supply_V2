@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0d51bc43b50ad23500baf1aebf86a87f0ac67e1e",
+  "commit": "1b8434a99919fe5c703b3bd00937b9aac3d8ad5f",
   "branch": "main",
-  "data_commit": "2026-11-24T13:22:55-03:00",
+  "data_commit": "2026-11-24T13:24:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "1b8434a",
+    "data": "2026-11-24",
+    "assunto": "fix: remove trigger duplicado de validacao de status em pedidos (#391)"
+   },
+   {
+    "sha": "4209cc0",
+    "data": "2026-11-24",
+    "assunto": "fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)"
+   },
    {
     "sha": "0d51bc4",
     "data": "2026-11-24",
@@ -121,19 +131,9 @@
     "sha": "004f06d",
     "data": "2026-11-24",
     "assunto": "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)"
-   },
-   {
-    "sha": "2d1e512",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)"
-   },
-   {
-    "sha": "db1bf92",
-    "data": "2026-11-24",
-    "assunto": "chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)"
    }
   ],
-  "arquivos_mudados_7d": 474,
+  "arquivos_mudados_7d": 478,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 87
+    "mudancas": 89
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 87
+    "mudancas": 89
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 17
+    "mudancas": 16
    },
    {
     "arquivo": "docs/ci/README.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1432,
+  "arquivos_total": 1436,
   "arquivos_codigo": 922,
   "linhas_codigo": 185265,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 332,
+  "migrations": 334,
   "cron_jobs": 74,
   "testes": 284,
   "workflows": 15,

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: remove trigger duplicado de validacao de status em pedidos (#391)",
+   "fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)",
    "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)",
    "fix: matriz de transicoes de status alinhada ao banco (#394)",
-   "chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)",
-   "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)",
-   "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)"
+   "chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)"
   ]
  },
  "pr_template": null,

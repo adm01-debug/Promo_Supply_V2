@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 332,
+ "migrations": 334,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -780,13 +780,6 @@
    "evento": "insert or update or delete",
    "tabela": "pedidos",
    "funcao": "trigger_update_saldo_on_pedido"
-  },
-  {
-   "nome": "trg_validate_pedido_status",
-   "quando": "before",
-   "evento": "update",
-   "tabela": "pedidos",
-   "funcao": "validate_pedido_status_transition"
   },
   {
    "nome": "validate_pedido_status",
@@ -12571,7 +12564,6 @@
     "trg_pedido_entregue_status",
     "trg_update_pedidos_updated_at",
     "trg_update_saldo_on_pedido",
-    "trg_validate_pedido_status",
     "validate_pedido_status"
    ],
    "sem_rls": false,
