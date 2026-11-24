@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 239,
+ "total": 240,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 221
+  "unit": 222
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 146
+   "arquivos": 147
   },
   {
    "padrao": "outro",
@@ -755,6 +755,15 @@
     "src/features/solicitacoes/pessoasDaEmpresa.ts"
    ],
    "casos": 11
+  },
+  {
+   "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+   "tipo": "unit",
+   "linhas": 105,
+   "testa": [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -2222,7 +2231,7 @@
   "src/features/pedidos/exclusaoPedido.ts": 1,
   "src/features/pedidos/hooks/usePedidos.ts": 1,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
-  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 3,
+  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 4,
   "src/features/solicitacoes/index.ts": 1,
   "src/features/solicitacoes/pessoasDaEmpresa.ts": 1,
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,

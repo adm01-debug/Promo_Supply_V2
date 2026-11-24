@@ -592,7 +592,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 391,
+   "linhas": 402,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "cost_centers",
@@ -618,7 +618,7 @@
     "src/features/solicitacoes/index.ts",
     "src/hooks/usePrefetch.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",

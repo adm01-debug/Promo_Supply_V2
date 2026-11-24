@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "410aae24a117c75991aeccaf54c69064035949c5",
+  "sha": "d0c644dc99ce73b4473a33f504cbe2f6eb7afbb4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 06:58 UTC",
-  "files_total": 1376,
-  "code_files": 1205,
-  "code_lines": 205789,
+  "generated_at": "2026-11-24 07:15 UTC",
+  "files_total": 1377,
+  "code_files": 1206,
+  "code_lines": 205905,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0e7b7a0d9ef9e273",
+ "facts_hash": "af2da7faec630ca9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 425,
-   ".tsx": 374,
+   ".tsx": 375,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35247,8 +35247,8 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 13,
-   "lines": 1423,
+   "files": 14,
+   "lines": 1539,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35294,6 +35294,7 @@
     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
@@ -42768,6 +42769,10 @@
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "text": "Validação de orçamento"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "text": "'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma"
    },
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -53297,6 +53302,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "field": "status",
+    "value": "aprovada",
+    "kind": "compara"
+   },
+   {
     "file": "src/hooks/approvalWorkflowTypes.ts",
     "field": "status",
     "value": "pending",
@@ -62019,6 +62030,18 @@
    {
     "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
     "name": "o filtro avancado lista as empresas do usuario"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    "name": "createSolicitacao com auto aprovacao do banco"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    "name": "nao cria workflow quando o banco devolve a solicitacao ja aprovada"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    "name": "cria o workflow quando o banco devolve a solicitacao pendente"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -79754,6 +79777,7 @@
      ],
      "aprovada": [
       "compara:src/features/solicitacoes/fluxoAprovacao.ts",
+      "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts",
       "compara:src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
@@ -100325,7 +100349,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 391,
+   "lines": 402,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -100443,15 +100467,31 @@
      "field": "tipo",
      "value": "todos",
      "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
+     "kind": "compara"
     }
    ],
    "rule_comments": [
     "Validação de orçamento",
+    "'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma",
     "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    ],
    "hooks": [
     "useSolicitacoes",
     "useSolicitacoesKPIs"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+   "lines": 105,
+   "is_test": true,
+   "tests": [
+    "createSolicitacao com auto aprovacao do banco",
+    "nao cria workflow quando o banco devolve a solicitacao ja aprovada",
+    "cria o workflow quando o banco devolve a solicitacao pendente"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx": {
@@ -118853,10 +118893,21 @@
   }
  },
  "git": {
-  "sha": "410aae24a117c75991aeccaf54c69064035949c5",
+  "sha": "d0c644dc99ce73b4473a33f504cbe2f6eb7afbb4",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d0c644d",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+    ]
+   },
    {
     "sha": "410aae2",
     "date": "2026-11-24",
@@ -119220,16 +119271,6 @@
      "src/pages/portal-fornecedor/PortalFornecedor.tsx",
      "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx"
     ]
-   },
-   {
-    "sha": "2827890",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "test(palette): trava atalhos e badges do Command Palette no registry real (#353)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -119246,6 +119287,10 @@
     3
    ],
    [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    2
+   ],
+   [
     "supabase/functions/external-db-bridge/index.ts",
     2
    ],
@@ -119256,6 +119301,10 @@
    [
     "supabase/functions/webauthn-authenticate/index.ts",
     2
+   ],
+   [
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    1
    ],
    [
     "src/components/compras/EnhancedBulkActionsBar.tsx",
@@ -119303,14 +119352,6 @@
    ],
    [
     "src/components/compras/approval/ApprovalRuleModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
-    1
-   ],
-   [
-    "src/pages/cotacao/Cotacao.tsx",
     1
    ]
   ]

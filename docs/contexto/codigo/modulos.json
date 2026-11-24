@@ -2292,8 +2292,8 @@
   {
    "modulo": "features/solicitacoes",
    "arquivos": 7,
-   "testes": 6,
-   "linhas": 763,
+   "testes": 7,
+   "linhas": 774,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
