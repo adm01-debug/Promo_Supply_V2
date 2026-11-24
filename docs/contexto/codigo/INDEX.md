@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d8d2b563dfafe0f0c291db18819f4ca8a13578a8` (2026-11-24T06:44:56-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `67eee5c65f956aec4ed12edf9d0413c5f4e0e542` (2026-11-24T06:49:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (815), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (817), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1391 |
-| arquivos_codigo | 888 |
-| linhas_codigo | 180554 |
+| arquivos_total | 1393 |
+| arquivos_codigo | 890 |
+| linhas_codigo | 180851 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 252 |
+| testes | 254 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (28), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (158), outro (43), co-localizado (*.test) (41)
+- testes: co-localizado (__tests__) (160), outro (43), co-localizado (*.test) (41)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -83,7 +83,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | lib | 0 | 0 | 28 | 60 | 8 | 49 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
-| pages/admin | 10 | 11 | 14 | 7 | 11 | 20 |
+| pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
 | pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/aprovacoes | 1 | 1 | 2 | 11 | 1 | 14 |
 | pages/auditoria | 1 | 1 | 1 | 3 | 2 | 5 |
@@ -95,13 +95,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
 | pages/configuracoes | 1 | 1 | 1 | 80 | 9 | 53 |
 | pages/contratos | 1 | 1 | 1 | 4 | 2 | 11 |
-| pages/cotacao | 1 | 2 | 2 | 14 | 2 | 15 |
+| pages/cotacao | 1 | 2 | 2 | 14 | 2 | 18 |
 | pages/dashboard | 3 | 2 | 2 | 29 | 3 | 27 |
 | pages/dev | 0 | 1 | 1 | 3 | 2 | 0 |
-| pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 10 |
+| pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 11 |
 | pages/documentos | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 8 |
-| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 13 |
+| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 15 |
 | pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 10 |
 | pages/historico | 1 | 1 | 7 | 13 | 1 | 10 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
@@ -109,7 +109,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 8 |
 | pages/orcamentos | 1 | 1 | 1 | 81 | 9 | 54 |
 | pages/pagamentos | 1 | 1 | 1 | 13 | 1 | 10 |
-| pages/pedidos | 1 | 1 | 4 | 17 | 1 | 15 |
+| pages/pedidos | 1 | 1 | 4 | 17 | 1 | 16 |
 | pages/portal-fornecedor | 0 | 1 | 2 | 81 | 9 | 54 |
 | pages/qualificacao | 1 | 1 | 1 | 81 | 9 | 57 |
 | pages/recebimento | 1 | 1 | 4 | 3 | 1 | 6 |
@@ -338,12 +338,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (54)
+- docs/qa/05-PROGRESSO.md (55)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (10)
-- docs/prod-readiness.md (9)
 - docs/pendencias/_ordem.md (8)
+- docs/prod-readiness.md (8)
 - bun.lock (7)
 - package.json (7)
 - src/features/pedidos/hooks/usePedidos.ts (7)
@@ -420,6 +420,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `67eee5c` fix(integridade): barra exclusao que apagava credito de fornecedor (#403)
 - 2026-11-24 `d8d2b56` fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)
 - 2026-11-24 `8c81633` chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)
 - 2026-11-24 `005038d` fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)
@@ -434,7 +435,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `72256cb` fix(pedidos): Kanban so entrega via Recebimento (#383)
 - 2026-11-24 `d0c644d` ﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)
 - 2026-11-24 `410aae2` ﻿fix(pedidos): exclusao de pedido exige status pendente ou cancelado (#384)
-- 2026-11-24 `2f53e10` ﻿fix(contrato): seletor de fornecedor grava o id do cadastro em supplier_id (#382)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

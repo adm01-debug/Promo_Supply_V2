@@ -129,15 +129,15 @@
    "importado_por": 13
   },
   {
+   "arquivo": "src/hooks/useFornecedores.ts",
+   "importado_por": 13
+  },
+  {
    "arquivo": "src/components/ui/checkbox.tsx",
    "importado_por": 12
   },
   {
    "arquivo": "src/hooks/useApprovalWorkflow.ts",
-   "importado_por": 12
-  },
-  {
-   "arquivo": "src/hooks/useFornecedores.ts",
    "importado_por": 12
   },
   {

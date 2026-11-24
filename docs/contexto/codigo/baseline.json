@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
+  "commit": "67eee5c65f956aec4ed12edf9d0413c5f4e0e542",
   "branch": "main",
-  "data_commit": "2026-11-24T06:44:56-03:00",
+  "data_commit": "2026-11-24T06:49:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "67eee5c",
+    "data": "2026-11-24",
+    "assunto": "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)"
+   },
    {
     "sha": "d8d2b56",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "9269c98",
     "data": "2026-11-24",
     "assunto": "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)"
-   },
-   {
-    "sha": "92ec304",
-    "data": "2026-11-24",
-    "assunto": "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)"
    }
   ],
-  "arquivos_mudados_7d": 441,
+  "arquivos_mudados_7d": 443,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 54
+    "mudancas": 55
    },
    {
     "pasta": "src/features/layout",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 29
+    "mudancas": 31
    },
    {
     "pasta": "src/pages/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 54
+    "mudancas": 55
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -214,11 +214,11 @@
     "mudancas": 10
    },
    {
-    "arquivo": "docs/prod-readiness.md",
-    "mudancas": 9
+    "arquivo": "docs/pendencias/_ordem.md",
+    "mudancas": 8
    },
    {
-    "arquivo": "docs/pendencias/_ordem.md",
+    "arquivo": "docs/prod-readiness.md",
     "mudancas": 8
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1391,
-  "arquivos_codigo": 888,
-  "linhas_codigo": 180554,
+  "arquivos_total": 1393,
+  "arquivos_codigo": 890,
+  "linhas_codigo": 180851,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 252,
+  "testes": 254,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -435,8 +435,8 @@
    "linhas": 10345
   },
   "src/hooks": {
-   "arquivos": 86,
-   "linhas": 14644
+   "arquivos": 88,
+   "linhas": 14941
   },
   "src/i18n": {
    "arquivos": 1,
@@ -650,7 +650,7 @@
   }
  ],
  "qualidade": {
-  "any": 138,
+  "any": 139,
   "console_log": 85,
   "ts_ignore": 0,
   "eslint_disable": 1,

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d8d2b563df` · branch `main` · 2026-11-24 09:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `67eee5c65f` · branch `main` · 2026-11-24 09:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -284,6 +284,7 @@
 | status | valor `pulado` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/solicitacoes/fluxoAprovacao.ts` |
 | status | valor `todas` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | status | valor `solicitada` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/useDevolucoes.ts`<br>`escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
+| status | valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/useDevolucoes.ts`<br>`escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `vencedora` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/hooks/useLicitacoes.ts` |
 | status | valor `homologada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/licitacoes/Licitacoes.tsx`<br>`escreve:src/hooks/useLicitacoes.ts` |
 | status | valor `returned` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/usePurchaseHistory.ts` |
@@ -295,7 +296,6 @@
 | status | valor `authorized` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
 | status | valor `denied` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
 | status | valor `recebida_fornecedor` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
-| status | valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `reposicao_enviada` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `validada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `matched` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/conciliacaoFiscal.ts` |

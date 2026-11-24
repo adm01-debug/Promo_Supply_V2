@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 252,
+ "total": 254,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 234
+  "unit": 236
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 158
+   "arquivos": 160
   },
   {
    "padrao": "outro",
@@ -912,6 +912,24 @@
     "src/hooks/useDevolucoes.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/hooks/useDevolucoes.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+   "tipo": "unit",
+   "linhas": 110,
+   "testa": [
+    "src/hooks/useFornecedores.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
@@ -2353,9 +2371,9 @@
   "src/hooks/useApprovalWorkflow.ts": 4,
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
-  "src/hooks/useDevolucoes.ts": 1,
+  "src/hooks/useDevolucoes.ts": 2,
   "src/hooks/useFeedback.ts": 1,
-  "src/hooks/useFornecedores.ts": 3,
+  "src/hooks/useFornecedores.ts": 4,
   "src/hooks/useFuseSearch.ts": 1,
   "src/hooks/useGeoRestriction.ts": 1,
   "src/hooks/useImageCompression.ts": 1,

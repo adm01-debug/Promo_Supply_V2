@@ -1118,7 +1118,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs"
    ],
-   "linhas": 333,
+   "linhas": 354,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1145,7 +1145,7 @@
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/useEstoque.ts",
@@ -1287,10 +1287,13 @@
     "useFornecedores",
     "useFornecedoresKPIs"
    ],
-   "linhas": 289,
+   "linhas": 322,
    "dominio": "hooks",
    "tabelas": [
-    "fornecedores"
+    "creditos_fornecedor",
+    "fornecedores",
+    "pagamentos",
+    "pedidos"
    ],
    "rpcs": [
     "generate_sequential_number",
@@ -1317,7 +1320,7 @@
     "src/pages/licitacoes/Licitacoes.tsx",
     "src/pages/pedidos/Pedidos.tsx"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/useFuseSearch.ts",

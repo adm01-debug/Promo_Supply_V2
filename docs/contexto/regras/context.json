@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
+  "sha": "67eee5c65f956aec4ed12edf9d0413c5f4e0e542",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:45 UTC",
-  "files_total": 1392,
-  "code_files": 1221,
-  "code_lines": 207738,
+  "generated_at": "2026-11-24 09:49 UTC",
+  "files_total": 1394,
+  "code_files": 1223,
+  "code_lines": 208035,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a9b76cb75fa7dfc4",
+ "facts_hash": "83f6c46a58de81a1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 382,
+   ".tsx": 384,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35310,8 +35310,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 86,
-   "lines": 14644,
+   "files": 88,
+   "lines": 14941,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35515,6 +35515,8 @@
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
@@ -35522,9 +35524,7 @@
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
     "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
     "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
-    "src/hooks/__tests__/usePermissions.test.tsx",
-    "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
-    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx"
+    "src/hooks/__tests__/usePermissions.test.tsx"
    ]
   },
   {
@@ -36785,7 +36785,8 @@
    "creditos_fornecedor": {
     "select": [
      "src/components/pagamentos/PagamentoDetailModal.tsx",
-     "src/hooks/useDevolucoes.ts"
+     "src/hooks/useDevolucoes.ts",
+     "src/hooks/useFornecedores.ts"
     ],
     "update": [
      "src/components/pagamentos/PagamentoDetailModal.tsx",
@@ -37187,6 +37188,7 @@
      "scripts/regras_negocio/test_generate.py",
      "src/components/compras/PurchaseClimateWidget.tsx",
      "src/components/mobile/BottomNavigation.tsx",
+     "src/hooks/useFornecedores.ts",
      "src/hooks/usePagamentos.ts",
      "src/hooks/usePrefetch.ts",
      "src/hooks/useSidebarBadges.ts",
@@ -37274,6 +37276,7 @@
      "src/features/pedidos/hooks/usePedidos.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/hooks/useDevolucoes.ts",
+     "src/hooks/useFornecedores.ts",
      "src/hooks/usePrefetch.ts",
      "src/hooks/usePurchaseHistory.ts",
      "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -38172,6 +38175,7 @@
     "valor_unitario"
    ],
    "creditos_fornecedor": [
+    "devolucao_id",
     "fornecedor_id",
     "id",
     "saldo",
@@ -41377,6 +41381,10 @@
    },
    {
     "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Devolucao com credito gerado nao pode ser excluida: o credito do fornecedor ficaria sem origem."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
     "msg": "Devolução não encontrada"
    },
    {
@@ -41386,6 +41394,10 @@
    {
     "file": "src/hooks/useDevolucoes.ts",
     "msg": "Erro: "
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Nao foi possivel conferir o credito da devolucao. Exclusao cancelada."
    },
    {
     "file": "src/hooks/useDevolucoes.ts",
@@ -41426,6 +41438,14 @@
    {
     "file": "src/hooks/useFornecedores.ts",
     "msg": "Erro ao excluir: "
+   },
+   {
+    "file": "src/hooks/useFornecedores.ts",
+    "msg": "Fornecedor com historico nao pode ser excluido: ${dependentes\n            .map((item) => "
+   },
+   {
+    "file": "src/hooks/useFornecedores.ts",
+    "msg": "Nao foi possivel conferir o historico do fornecedor. Exclusao cancelada."
    },
    {
     "file": "src/hooks/useFornecedores.ts",
@@ -42858,6 +42878,10 @@
    {
     "file": "src/hooks/useDashboardKPIs.ts",
     "text": "SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode"
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "text": "Devolucao que ja gerou credito nao pode ser apagada: a FK de"
    },
    {
     "file": "src/hooks/useFornecedores.ts",
@@ -53652,6 +53676,12 @@
    {
     "file": "src/hooks/useDevolucoes.ts",
     "field": "status",
+    "value": "credito_emitido",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "field": "status",
     "value": "ativo",
     "kind": "compara"
    },
@@ -62986,6 +63016,38 @@
    {
     "file": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "name": "grava o credito com o valor da devolucao e so entao avisa sucesso"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "name": "guarda de exclusao de devolucao"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "name": "recusa excluir devolucao que ja gerou credito"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "name": "recusa excluir devolucao marcada como credito_emitido mesmo sem contagem"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "name": "exclui devolucao sem credito"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+    "name": "guarda de exclusao de fornecedor"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+    "name": "recusa excluir fornecedor que tem credito de fornecedor"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+    "name": "recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia"
+   },
+   {
+    "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+    "name": "exclui quando nao ha nenhum dependente"
    },
    {
     "file": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
@@ -80241,6 +80303,10 @@
       "escreve:src/hooks/useDevolucoes.ts",
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
+     "credito_emitido": [
+      "compara:src/hooks/useDevolucoes.ts",
+      "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
+     ],
      "vencedora": [
       "escreve:src/hooks/useLicitacoes.ts"
      ],
@@ -80323,9 +80389,6 @@
       "compara:src/pages/admin/SourcingPipeline.tsx"
      ],
      "recebida_fornecedor": [
-      "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
-     ],
-     "credito_emitido": [
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
      "reposicao_enviada": [
@@ -89267,6 +89330,14 @@
    },
    {
     "kind": "status",
+    "msg": "valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/hooks/useDevolucoes.ts",
+     "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `vencedora` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:src/hooks/useLicitacoes.ts"
@@ -89342,13 +89413,6 @@
    {
     "kind": "status",
     "msg": "valor `recebida_fornecedor` para `status` usado no código não existe em nenhum enum do banco/TS",
-    "where": [
-     "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
-    ]
-   },
-   {
-    "kind": "status",
-    "msg": "valor `credito_emitido` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
     ]
@@ -102086,7 +102150,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 333,
+   "lines": 354,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -102128,6 +102192,10 @@
     {
      "table": "devolucoes",
      "op": "update"
+    },
+    {
+     "table": "creditos_fornecedor",
+     "op": "select"
     },
     {
      "table": "devolucoes",
@@ -102172,6 +102240,7 @@
      "numero"
     ],
     "creditos_fornecedor": [
+     "devolucao_id",
      "id"
     ]
    },
@@ -102179,9 +102248,11 @@
     "generate_sequential_number"
    ],
    "errors": [
+    "Devolucao com credito gerado nao pode ser excluida: o credito do fornecedor ficaria sem origem.",
     "Devolução não encontrada",
     "Erro ao criar devolução: ",
     "Erro: ",
+    "Nao foi possivel conferir o credito da devolucao. Exclusao cancelada.",
     "Saldo insuficiente",
     "Transição inválida: ${dev.status} → ${newStatus}",
     "Você precisa estar logado"
@@ -102210,6 +102281,11 @@
     },
     {
      "field": "status",
+     "value": "credito_emitido",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "ativo",
      "kind": "compara"
     },
@@ -102223,6 +102299,9 @@
      "value": "concluida",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "Devolucao que ja gerou credito nao pode ser apagada: a FK de"
    ],
    "hooks": [
     "useDevolucoes",
@@ -102483,7 +102562,7 @@
   },
   "src/hooks/useFornecedores.ts": {
    "path": "src/hooks/useFornecedores.ts",
-   "lines": 289,
+   "lines": 322,
    "exports": [
     "type Fornecedor",
     "interface CreateFornecedorInput",
@@ -102507,6 +102586,18 @@
     {
      "table": "fornecedores",
      "op": "update"
+    },
+    {
+     "table": "creditos_fornecedor",
+     "op": "select"
+    },
+    {
+     "table": "pagamentos",
+     "op": "select"
+    },
+    {
+     "table": "pedidos",
+     "op": "select"
     },
     {
      "table": "fornecedores",
@@ -102542,6 +102633,18 @@
      "tipo",
      "updated_at",
      "website"
+    ],
+    "creditos_fornecedor": [
+     "fornecedor_id",
+     "id"
+    ],
+    "pagamentos": [
+     "fornecedor_id",
+     "id"
+    ],
+    "pedidos": [
+     "fornecedor_id",
+     "id"
     ]
    },
    "rpc": [
@@ -102553,6 +102656,8 @@
     "Email inválido.",
     "Erro ao atualizar: ",
     "Erro ao excluir: ",
+    "Fornecedor com historico nao pode ser excluido: ${dependentes\n            .map((item) => ",
+    "Nao foi possivel conferir o historico do fornecedor. Exclusao cancelada.",
     "Você precisa estar logado em uma organização"
    ],
    "status_values": [
@@ -104454,6 +104559,28 @@
     "useDevolucoes · credito do fornecedor (NEG-12)",
     "nao deixa a devolucao em credito_emitido quando o credito nao grava",
     "grava o credito com o valor da devolucao e so entao avisa sucesso"
+   ]
+  },
+  "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx": {
+   "path": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "tests": [
+    "guarda de exclusao de devolucao",
+    "recusa excluir devolucao que ja gerou credito",
+    "recusa excluir devolucao marcada como credito_emitido mesmo sem contagem",
+    "exclui devolucao sem credito"
+   ]
+  },
+  "src/hooks/__tests__/useFornecedores.exclusao.test.tsx": {
+   "path": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+   "lines": 110,
+   "is_test": true,
+   "tests": [
+    "guarda de exclusao de fornecedor",
+    "recusa excluir fornecedor que tem credito de fornecedor",
+    "recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia",
+    "exclui quando nao ha nenhum dependente"
    ]
   },
   "src/hooks/__tests__/useFornecedores.organization.test.tsx": {
@@ -119663,10 +119790,23 @@
   }
  },
  "git": {
-  "sha": "d8d2b563dfafe0f0c291db18819f4ca8a13578a8",
+  "sha": "67eee5c65f956aec4ed12edf9d0413c5f4e0e542",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "67eee5c",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+     "src/hooks/useDevolucoes.ts",
+     "src/hooks/useFornecedores.ts"
+    ]
+   },
    {
     "sha": "d8d2b56",
     "date": "2026-11-24",
@@ -120019,22 +120159,12 @@
      "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
      "src/hooks/useSecurityLogs.ts"
     ]
-   },
-   {
-    "sha": "700e3fd",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)",
-    "files": [
-     "src/features/auth/__tests__/activeSession.test.ts",
-     "src/features/auth/hooks/useAuth.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    28
+    29
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -120049,6 +120179,14 @@
     3
    ],
    [
+    "src/hooks/useDevolucoes.ts",
+    2
+   ],
+   [
+    "src/hooks/useFornecedores.ts",
+    2
+   ],
+   [
     "src/pages/cotacao/Cotacao.tsx",
     2
    ],
@@ -120059,6 +120197,14 @@
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
+   ],
+   [
+    "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
+    1
    ],
    [
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
@@ -120081,10 +120227,6 @@
     1
    ],
    [
-    "src/hooks/useDevolucoes.ts",
-    1
-   ],
-   [
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
     1
    ],
@@ -120098,18 +120240,6 @@
    ],
    [
     "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
-    1
-   ],
-   [
-    "src/pages/recebimento/pedidoComplementar.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-approval-escalations/index.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-approval-escalations/index.ts",
     1
    ]
   ]

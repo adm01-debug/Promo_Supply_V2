@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d8d2b563df` · branch `main` · 2026-11-24 09:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `67eee5c65f` · branch `main` · 2026-11-24 09:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1035,7 +1035,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `concluida` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx` |
 | `status` | `concluido` | compara, escreve | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/compras/timeline/timelineConfig.ts` |
 | `status` | `connecting` | compara | `src/components/ui/indicators/MiscIndicators.tsx` |
-| `status` | `credito_emitido` | escreve | `src/pages/devolucoes/DevolucoesModals.tsx` |
+| `status` | `credito_emitido` | compara, escreve | `src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx` |
 | `status` | `critical` | compara, escreve | `src/components/compras/AdvancedProcurementKPIs.tsx`<br>`src/components/compras/BuyerPerformanceAlerts.tsx`<br>`src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts`<br>… +4 |
 | `status` | `critico` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `status` | `current` | compara | `src/components/compras/StatusTimeline.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx` |
@@ -2376,9 +2376,11 @@ _nenhum item encontrado_
 | Erro ao remover filtro | `src/hooks/useDashboardFilters.ts` |
 | Erro ao salvar filtro favorito | `src/hooks/useDashboardFilters.ts` |
 | Você precisa estar logado para salvar filtros | `src/hooks/useDashboardFilters.ts` |
+| Devolucao com credito gerado nao pode ser excluida: o credito do fornecedor ficaria sem origem. | `src/hooks/useDevolucoes.ts` |
 | Devolução não encontrada | `src/hooks/useDevolucoes.ts` |
 | Erro ao criar devolução:  | `src/hooks/useDevolucoes.ts` |
 | Erro:  | `src/hooks/useDevolucoes.ts` |
+| Nao foi possivel conferir o credito da devolucao. Exclusao cancelada. | `src/hooks/useDevolucoes.ts` |
 | Saldo insuficiente | `src/hooks/useDevolucoes.ts` |
 | Transição inválida: ${dev.status} → ${newStatus} | `src/hooks/useDevolucoes.ts` |
 | Você precisa estar logado | `src/hooks/useDevolucoes.ts` |
@@ -2389,6 +2391,8 @@ _nenhum item encontrado_
 | Email inválido. | `src/hooks/useFornecedores.ts` |
 | Erro ao atualizar:  | `src/hooks/useFornecedores.ts` |
 | Erro ao excluir:  | `src/hooks/useFornecedores.ts` |
+| Fornecedor com historico nao pode ser excluido: ${dependentes             .map((item) =>  | `src/hooks/useFornecedores.ts` |
+| Nao foi possivel conferir o historico do fornecedor. Exclusao cancelada. | `src/hooks/useFornecedores.ts` |
 | Você precisa estar logado em uma organização | `src/hooks/useFornecedores.ts` |
 | Configurações de geo-restrição ainda não carregaram. Aguarde e tente novamente. | `src/hooks/useGeoRestriction.ts` |
 | Não foi possível desfazer a ação | `src/hooks/useGlobalUndo.ts` |
@@ -2430,11 +2434,7 @@ _nenhum item encontrado_
 | Nao foi possivel abrir a sessao com a passkey | `src/hooks/useWebAuthn.ts` |
 | Nenhuma passkey registrada para este email | `src/hooks/useWebAuthn.ts` |
 | O login por passkey nao abriu sessao | `src/hooks/useWebAuthn.ts` |
-| O login por passkey nao devolveu o link de sessao | `src/hooks/useWebAuthn.ts` |
-| O login por passkey nao devolveu token de sessao | `src/hooks/useWebAuthn.ts` |
-| Operação cancelada pelo usuário | `src/hooks/useWebAuthn.ts` |
-| WebAuthn não é suportado neste navegador | `src/hooks/useWebAuthn.ts` |
-| … +256 linhas — lista completa em `context.json` | |
+| … +260 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3101 testes em 201 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3109 testes em 203 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2612,6 +2612,8 @@ _nenhum item encontrado_
 | `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx` | 4 | useApprovalWorkflow · escolha de alcada (NEG-15) · usa a regra devolvida pela RPC quando ela e da empresa do usuario · ignora id devolvido pela RPC que nao esta na lista da empresa do usuario · nao escolhe regra por conta propria quando a RPC nao devolve nada |
+| `src/hooks/__tests__/useDevolucoes.exclusao.test.tsx` | 4 | guarda de exclusao de devolucao · recusa excluir devolucao que ja gerou credito · recusa excluir devolucao marcada como credito_emitido mesmo sem contagem · exclui devolucao sem credito |
+| `src/hooks/__tests__/useFornecedores.exclusao.test.tsx` | 4 | guarda de exclusao de fornecedor · recusa excluir fornecedor que tem credito de fornecedor · recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia · exclui quando nao ha nenhum dependente |
 | `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
@@ -2741,6 +2743,7 @@ _nenhum item encontrado_
 | origem da regra, ex: 'spot_customization' */ | `src/hooks/useCatalogoPim.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
 | SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode | `src/hooks/useDashboardKPIs.ts` |
+| Devolucao que ja gerou credito nao pode ser apagada: a FK de | `src/hooks/useDevolucoes.ts` |
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
 | QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de | `src/hooks/useMFA.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |

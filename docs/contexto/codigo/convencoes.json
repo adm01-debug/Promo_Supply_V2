@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (158)",
+   "co-localizado (__tests__) (160)",
    "outro (43)",
    "co-localizado (*.test) (41)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)",
    "fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)",
    "chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)",
    "fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)",
-   "fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)",
-   "chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)"
+   "fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)"
   ]
  },
  "pr_template": null,
