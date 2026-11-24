@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a865fce2e7fa0216e8e4bbc3fdd710e6050631b5",
+  "sha": "18ef743962e4b9840e7e5842a24624a5e70558a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:24 UTC",
+  "generated_at": "2026-11-24 09:28 UTC",
   "files_total": 1388,
   "code_files": 1217,
-  "code_lines": 207169,
+  "code_lines": 207179,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6c223af256362ae4",
+ "facts_hash": "258a3086fcd3efa9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35549,7 +35549,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10452,
+   "lines": 10462,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -104495,7 +104495,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10393,
+   "lines": 10403,
    "exports": [
     "type Json",
     "type Database",
@@ -119324,10 +119324,19 @@
   }
  },
  "git": {
-  "sha": "a865fce2e7fa0216e8e4bbc3fdd710e6050631b5",
+  "sha": "18ef743962e4b9840e7e5842a24624a5e70558a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "18ef743",
+    "date": "2026-11-24",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#340)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "a865fce",
     "date": "2026-11-24",
@@ -119686,26 +119695,12 @@
      "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
      "src/features/layout/components/AppSidebar.tsx"
     ]
-   },
-   {
-    "sha": "33cb8a0",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/security/PasskeyManager.tsx",
-     "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
-     "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
-     "src/hooks/useWebAuthn.ts",
-     "supabase/functions/webauthn-authenticate/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    29
+    28
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -119734,6 +119729,10 @@
    [
     "supabase/functions/_shared/security.timing.test.ts",
     2
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    1
    ],
    [
     "src/pages/recebimento/__tests__/pedidoComplementar.test.ts",
@@ -119777,10 +119776,6 @@
    ],
    [
     "src/components/compras/CotacaoManualModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
     1
    ]
   ]

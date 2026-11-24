@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a865fce2e7fa0216e8e4bbc3fdd710e6050631b5` (2026-11-24T06:23:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `18ef743962e4b9840e7e5842a24624a5e70558a7` (2026-11-24T06:25:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1387 |
 | arquivos_codigo | 884 |
-| linhas_codigo | 179985 |
+| linhas_codigo | 179995 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -348,11 +348,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (7)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (7)
+- src/integrations/supabase/types.ts (7)
 - supabase/functions/punchout-receive/index.ts (7)
 - supabase/functions/workflow-engine/index.ts (7)
 - supabase/functions/xbz-proxy/index.ts (7)
 - .github/workflows/deploy-edge-functions.yml (6)
-- .github/workflows/main.yml (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -420,6 +420,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `18ef743` chore(db): sincronizar types.ts com o banco [auto] (#340)
 - 2026-11-24 `a865fce` fix: pedido complementar herda organization_id do pedido original (#397)
 - 2026-11-24 `c4f8690` fix: edge de escalonamento passa a usar o status que o banco aceita (#390)
 - 2026-11-24 `66773c6` fix: unicidade de CNPJ e codigo de cadastro passa a ter mensagem por empresa (#389)
@@ -434,7 +435,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `5f14e85` fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)
 - 2026-11-24 `e2ea735` fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)
 - 2026-11-24 `ea55bfb` fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)
-- 2026-11-24 `77d4e5f` fix: filtro "Meus Itens" recorta por solicitante em vez de status (etapa 108) (#376)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -15864,6 +15864,7 @@
     "data_necessidade": "string | null",
     "departamento": "string | null",
     "descricao": "string | null",
+    "external_ref": "string | null",
     "fornecedor_id": "string | null",
     "id": "string",
     "justificativa": "string | null",
@@ -15895,8 +15896,7 @@
      "prazo_entrega",
      "fornecedor_selecionado",
      "valor_unitario",
-     "valor_total",
-     "external_ref"
+     "valor_total"
     ],
     "so_no_types": []
    },

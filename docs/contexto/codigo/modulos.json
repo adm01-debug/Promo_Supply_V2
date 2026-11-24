@@ -2899,7 +2899,7 @@
    "modulo": "integrations/supabase",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 10413,
+   "linhas": 10423,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

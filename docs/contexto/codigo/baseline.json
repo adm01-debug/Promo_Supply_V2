@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a865fce2e7fa0216e8e4bbc3fdd710e6050631b5",
+  "commit": "18ef743962e4b9840e7e5842a24624a5e70558a7",
   "branch": "main",
-  "data_commit": "2026-11-24T06:23:35-03:00",
+  "data_commit": "2026-11-24T06:25:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "18ef743",
+    "data": "2026-11-24",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#340)"
+   },
    {
     "sha": "a865fce",
     "data": "2026-11-24",
@@ -126,11 +131,6 @@
     "sha": "700e3fd",
     "data": "2026-11-24",
     "assunto": "feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)"
-   },
-   {
-    "sha": "d541138",
-    "data": "2026-11-24",
-    "assunto": "fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)"
    }
   ],
   "arquivos_mudados_7d": 436,
@@ -238,6 +238,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
     "mudancas": 7
    },
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 293
+    "commits": 292
    },
    {
     "autor": "dependabot[bot]",
@@ -309,14 +309,14 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 2
+    "commits": 3
    }
   ]
  },
  "contagens": {
   "arquivos_total": 1387,
   "arquivos_codigo": 884,
-  "linhas_codigo": 179985,
+  "linhas_codigo": 179995,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10452
+   "linhas": 10462
   },
   "src/lib": {
    "arquivos": 59,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10393
+   "linhas": 10403
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
