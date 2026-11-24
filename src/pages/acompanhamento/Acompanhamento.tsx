@@ -478,7 +478,7 @@ const Acompanhamento = () => {
       </ElitePageWrapper>
 
       <Dialog open={!!pedidoDetalhes} onOpenChange={() => { setDetalheTipo(null); setPedidoDetalhes(null); }}>
-        <DialogContent className="max-w-2xl rounded-[2.5rem] border-none bg-card/95 backdrop-blur-2xl p-0 overflow-hidden shadow-2xl shadow-primary/20">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] border-none bg-card/95 backdrop-blur-2xl p-0 shadow-2xl shadow-primary/20">
           <div className="bg-primary h-2 w-full" />
           <div className="p-8">
             {pedidoDetalhes && (

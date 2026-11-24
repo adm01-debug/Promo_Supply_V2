@@ -229,7 +229,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl p-0 bg-[#0a0a0f] border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-3xl shadow-2xl">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[85vh] overflow-y-auto p-0 bg-[#0a0a0f] border-white/5 rounded-[2.5rem] backdrop-blur-3xl shadow-2xl">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-sky-600" />
         
         <DialogHeader className="p-8 pb-0">
