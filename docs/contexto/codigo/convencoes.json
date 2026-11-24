@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (181)",
+   "co-localizado (__tests__) (182)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(acompanhamento): falha de carga nao vira pipeline vazio nem KPI zerado (#433)",
    "fix(aprovacoes): falha de leitura deixa de virar 'nada pendente' e 'zero' nos documentos (#432)",
    "fix(pedidos): nao deixar falha de carga virar lista vazia (#430)",
    "feat: registra no log quando o numero da solicitacao colide (#431)",
-   "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)",
-   "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)"
+   "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)"
   ]
  },
  "pr_template": null,

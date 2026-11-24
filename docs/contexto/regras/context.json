@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "806c4fc09e9a30335c6b58ff39c8aea336af73b2",
+  "sha": "0d83f6140b9ba572f132b7869a8a48d85368c4dd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:17 UTC",
-  "files_total": 1420,
-  "code_files": 1247,
-  "code_lines": 211282,
+  "generated_at": "2026-11-24 15:33 UTC",
+  "files_total": 1421,
+  "code_files": 1248,
+  "code_lines": 211464,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2c9e286999003843",
+ "facts_hash": "e3f58f42252c473b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 436,
-   ".tsx": 404,
+   ".tsx": 405,
    ".sql": 332,
    ".mjs": 67,
    ".py": 5,
@@ -35752,8 +35752,8 @@
   },
   {
    "module": "src/pages",
-   "files": 150,
-   "lines": 34195,
+   "files": 151,
+   "lines": 34377,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35891,6 +35891,7 @@
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
     "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
+    "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
     "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
     "src/pages/admin/AlertDetail.tsx",
     "src/pages/admin/AlertSubscriptionsPanel.tsx",
@@ -35964,8 +35965,7 @@
     "src/pages/dashboard/DashboardExecutivo.tsx",
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     "src/pages/dev/XbzNetworkPanelHarness.tsx",
-    "src/pages/devolucoes/Devolucoes.tsx",
-    "src/pages/devolucoes/DevolucoesModals.tsx"
+    "src/pages/devolucoes/Devolucoes.tsx"
    ]
   },
   {
@@ -41785,6 +41785,10 @@
    {
     "file": "src/lib/supabaseRpc.ts",
     "msg": ", params) as unknown as RpcResult<void>;\n}\n\nexport function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {\n  return supabase.rpc("
+   },
+   {
+    "file": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "msg": " className="
    },
    {
     "file": "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -66646,6 +66650,30 @@
    {
     "file": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
     "name": "cartao de urgencia ignora teclas que nao acionam"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "Acompanhamento - falha de carga nao vira pipeline vazio nem KPI zerado (QA 252)"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "mostra o erro da consulta de pedidos e um botao de nova tentativa"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "o botao de nova tentativa refaz a busca"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "erro só nas tabelas de apoio (fornecedores) tambem nao passa por lista vazia"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "erro sem message nao imprime [object Object]"
+   },
+   {
+    "file": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    "name": "sem erro e sem pedidos, o estado vazio legitimo continua igual"
    },
    {
     "file": "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
@@ -107427,7 +107455,7 @@
   },
   "src/pages/acompanhamento/Acompanhamento.tsx": {
    "path": "src/pages/acompanhamento/Acompanhamento.tsx",
-   "lines": 679,
+   "lines": 745,
    "exports": [
     "default Acompanhamento"
    ],
@@ -107506,6 +107534,7 @@
     ]
    },
    "errors": [
+    " className=",
     "Erro ao atualizar pedido: ${error.message}",
     "Pedido #${pedidoId} não encontrado"
    ],
@@ -107774,6 +107803,25 @@
     "cartoes que nao filtram continuam sem papel de botao",
     "cartao de urgencia abre os detalhes do pedido com Enter",
     "cartao de urgencia ignora teclas que nao acionam"
+   ]
+  },
+  "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx": {
+   "path": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+   "lines": 116,
+   "is_test": true,
+   "errors": [
+    ");\n    const antes = estado.buscas.filter((t) => t === ",
+    ");\n    expect(alerta).not.toHaveTextContent(",
+    ");\n    expect(alerta).toHaveTextContent(",
+    ");\n    expect(alerta).toHaveTextContent(/Não foi possível carregar o acompanhamento/i);\n    expect(alerta).toHaveTextContent("
+   ],
+   "tests": [
+    "Acompanhamento - falha de carga nao vira pipeline vazio nem KPI zerado (QA 252)",
+    "mostra o erro da consulta de pedidos e um botao de nova tentativa",
+    "o botao de nova tentativa refaz a busca",
+    "erro só nas tabelas de apoio (fornecedores) tambem nao passa por lista vazia",
+    "erro sem message nao imprime [object Object]",
+    "sem erro e sem pedidos, o estado vazio legitimo continua igual"
    ]
   },
   "src/pages/acompanhamento/__tests__/statusKanban.test.ts": {
@@ -121019,10 +121067,21 @@
   }
  },
  "git": {
-  "sha": "806c4fc09e9a30335c6b58ff39c8aea336af73b2",
+  "sha": "0d83f6140b9ba572f132b7869a8a48d85368c4dd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0d83f61",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(acompanhamento): falha de carga nao vira pipeline vazio nem KPI zerado (#433)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx"
+    ]
+   },
    {
     "sha": "806c4fc",
     "date": "2026-11-24",
@@ -121357,26 +121416,16 @@
      ".github/workflows/provisionar-secret-design-sync.yml",
      "docs/ci/README.md"
     ]
-   },
-   {
-    "sha": "eeaf28f",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/pedidos/exclusaoPedido.ts",
-     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     23
+   ],
+   [
+    "src/pages/acompanhamento/Acompanhamento.tsx",
+    4
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -121392,10 +121441,6 @@
    ],
    [
     "supabase/functions/receive-os-sync/index.ts",
-    3
-   ],
-   [
-    "src/pages/acompanhamento/Acompanhamento.tsx",
     3
    ],
    [
@@ -121427,6 +121472,10 @@
     2
    ],
    [
+    "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+    1
+   ],
+   [
     "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
     1
    ],
@@ -121448,10 +121497,6 @@
    ],
    [
     "src/pages/solicitacoes/Solicitacoes.tsx",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
     1
    ]
   ]

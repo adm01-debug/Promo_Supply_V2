@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 276,
+ "total": 277,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 258
+  "unit": 259
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 181
+   "arquivos": 182
   },
   {
    "padrao": "outro",
@@ -1490,6 +1490,15 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [
+    "src/pages/acompanhamento/Acompanhamento.tsx"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
    "tipo": "unit",
    "linhas": 280,
@@ -2635,7 +2644,7 @@
   "src/locales/en/translation.json": 1,
   "src/locales/es/translation.json": 1,
   "src/locales/pt/translation.json": 1,
-  "src/pages/acompanhamento/Acompanhamento.tsx": 1,
+  "src/pages/acompanhamento/Acompanhamento.tsx": 2,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 2,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
   "src/pages/admin/FiscalDashboard.tsx": 1,

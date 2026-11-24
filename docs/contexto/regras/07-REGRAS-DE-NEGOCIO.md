@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `806c4fc09e` · branch `main` · 2026-11-24 15:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0d83f6140b` · branch `main` · 2026-11-24 15:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2443,7 +2443,7 @@ _nenhum item encontrado_
 | Organization ID missing | `src/hooks/useProdutos.ts` |
 | Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
-| … +272 linhas — lista completa em `context.json` | |
+| … +273 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2461,7 +2461,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3255 testes em 225 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3261 testes em 226 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2603,6 +2603,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx` | 6 | Acompanhamento - filtros de SLA acessiveis pelo teclado (etapa 234) · cartao filtravel expoe papel de botao, nome e estado inicial do filtro · Enter aplica o filtro e espaco limpa de volta · cartoes que nao filtram continuam sem papel de botao … |
+| `src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx` | 6 | Acompanhamento - falha de carga nao vira pipeline vazio nem KPI zerado (QA 252) · mostra o erro da consulta de pedidos e um botao de nova tentativa · o botao de nova tentativa refaz a busca · erro só nas tabelas de apoio (fornecedores) tambem nao passa por lista vazia … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |

@@ -3359,8 +3359,8 @@
   {
    "modulo": "pages/acompanhamento",
    "arquivos": 2,
-   "testes": 3,
-   "linhas": 901,
+   "testes": 4,
+   "linhas": 967,
    "itens_menu": [
     "Acompanhamento"
    ],
