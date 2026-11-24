@@ -26,6 +26,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -58,6 +64,18 @@ import {
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
 import { resolveApprovalDeadline } from "./pending-approvals/deadlineFallback";
 
+const ACAO_HISTORICO_LABEL: Record<string, string> = {
+  created: "Workflow criado",
+  approved: "Aprovado",
+  rejected: "Rejeitado",
+  escalated: "Escalado",
+  delegated: "Delegado",
+  reminder_sent: "Lembrete enviado",
+  cancelled: "Cancelado",
+};
+
+const rotuloHistorico = (acao: string) => ACAO_HISTORICO_LABEL[acao] || acao;
+
 export const PendingApprovalsList = () => {
   const {
     pendingSteps,
@@ -73,6 +91,7 @@ export const PendingApprovalsList = () => {
   const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [approveComment, setApproveComment] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,6 +134,14 @@ export const PendingApprovalsList = () => {
   useEffect(() => {
     fetchAllHistory();
   }, [fetchAllHistory]);
+
+  const historicoSelecionado = useMemo(() => {
+    if (!selectedApproval) return [];
+    return allHistory
+      .filter(h => h.workflow_id === selectedApproval.workflow_id)
+      .slice()
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }, [allHistory, selectedApproval]);
 
   const { 
     unreadCount,
@@ -461,7 +488,7 @@ export const PendingApprovalsList = () => {
                         <DropdownMenuItem onClick={() => { setSelectedApproval(approval); setDetailsModalOpen(true); }}>
                           <Eye className="w-4 h-4 mr-2" />Ver Detalhes
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setSelectedApproval(approval); setHistoryModalOpen(true); }}>
                           <History className="w-4 h-4 mr-2" />Ver Histórico
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -493,6 +520,39 @@ export const PendingApprovalsList = () => {
         onConfirm={confirmApprove}
         loading={loading}
       />
+
+      <Dialog open={historyModalOpen} onOpenChange={setHistoryModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Histórico da aprovação {selectedApproval?.solicitacao_numero ?? ""}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+            {historicoSelecionado.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Nenhum evento de histórico registrado para esta aprovação.
+              </p>
+            ) : (
+              historicoSelecionado.map(evento => (
+                <div key={evento.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold">{rotuloHistorico(evento.acao)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(evento.created_at).toLocaleString("pt-BR")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">{evento.usuario_nome || "Sistema"}</p>
+                  {typeof evento.detalhes?.comentario === "string" && (
+                    <p className="text-xs mt-1">Comentário: {String(evento.detalhes.comentario)}</p>
+                  )}
+                  {typeof evento.detalhes?.motivo === "string" && (
+                    <p className="text-xs mt-1">Motivo: {String(evento.detalhes.motivo)}</p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

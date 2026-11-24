@@ -112,12 +112,14 @@ export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ item
 };
 
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 export const SourcingIntelligenceBanner: React.FC<{ items: RoutingItem[] }> = ({ items }) => {
+  const navigate = useNavigate();
   const produtoIds = useMemo(() => items.map(i => i.produto_id), [items]);
   // Fetch real supplier ecosystems for the first few items
-  const { data: backups = [] } = useQuery({
+  const { data: backups = [], isLoading: carregandoBackups } = useQuery({
     queryKey: ['sourcing-alternatives', produtoIds],
     queryFn: async () => {
       const results = [];
@@ -146,7 +148,13 @@ export const SourcingIntelligenceBanner: React.FC<{ items: RoutingItem[] }> = ({
         Sourcing Intelligence (Ecosystem)
       </h4>
       <div className="space-y-3">
-        {backups.map((item, idx) => (
+        {carregandoBackups ? (
+          <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Lendo ecossistema...</p>
+        ) : backups.length === 0 ? (
+          <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
+            Nenhum item deste pedido tem produto vinculado para leitura de ecossistema.
+          </p>
+        ) : backups.map((item, idx) => (
           <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 blur-3xl -mr-16 -mt-16 pointer-events-none" />
             
@@ -171,12 +179,19 @@ export const SourcingIntelligenceBanner: React.FC<{ items: RoutingItem[] }> = ({
               </div>
             </div>
             
-            <button className={cn(
-              "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all relative z-10",
-              item.count > 0 
-                ? "bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-white border border-white/5" 
-                : "bg-violet-600 text-white hover:bg-violet-500 shadow-lg shadow-violet-600/20"
-            )}>
+            <button
+              type="button"
+              onClick={() => navigate('/catalogo-produtos')}
+              aria-label={item.count > 0
+                ? `Listar fornecedores de ${item.descricao || 'item'} no catálogo de produtos`
+                : `Vincular fornecedores de ${item.descricao || 'item'} no catálogo de produtos`}
+              className={cn(
+                "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all relative z-10",
+                item.count > 0
+                  ? "bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-white border border-white/5"
+                  : "bg-violet-600 text-white hover:bg-violet-500 shadow-lg shadow-violet-600/20"
+              )}
+            >
               {item.count > 0 ? 'LISTAR' : 'CONECTAR'}
             </button>
           </div>
