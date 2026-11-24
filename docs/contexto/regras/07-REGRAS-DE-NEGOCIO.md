@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b996391950` · branch `main` · 2026-11-24 13:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2d1e5120bb` · branch `main` · 2026-11-24 13:24 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1329,6 +1329,11 @@ _nenhum item encontrado_
 | Campo | Restrições | Arquivo |
 |---|---|---|
 | `renewal_notice_days` | type=number | `src/components/compras/ContractModal.tsx` |
+| `cotacao-valor-unitario` | type=number, step=0.01, min=0.01 | `src/components/compras/CotacaoManualModal.tsx` |
+| `cotacao-quantidade` | type=number, min=1 | `src/components/compras/CotacaoManualModal.tsx` |
+| `cotacao-prazo` | type=number, min=1 | `src/components/compras/CotacaoManualModal.tsx` |
+| `cotacao-frete` | type=number, step=0.01, min=0 | `src/components/compras/CotacaoManualModal.tsx` |
+| `cotacao-validade` | type=date | `src/components/compras/CotacaoManualModal.tsx` |
 | `signerEmail` | type=email | `src/components/compras/DigitalSignature.tsx` |
 | `email` | type=email | `src/components/compras/FornecedorModal.tsx` |
 | `qty` | type=number | `src/components/compras/PriceComparator.tsx` |
@@ -2285,6 +2290,7 @@ _nenhum item encontrado_
 | Erro ao atualizar status. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | Sem permissão para alterar esta solicitação. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | Solicitação não identificada. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
+|  className= | `src/components/compras/solicitacao/SolicitacaoFormSteps.tsx` |
 | Erro ao enviar notificação de teste. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Erro ao verificar alertas. | `src/components/notifications/NotificationSettingsPanel.tsx` |
 | Permissão para notificações foi negada. | `src/components/notifications/NotificationSettingsPanel.tsx` |
@@ -2433,8 +2439,7 @@ _nenhum item encontrado_
 | Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
 | Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
-| Erro SPOT:  | `src/hooks/useSpotIntegration.ts` |
-| … +268 linhas — lista completa em `context.json` | |
+| … +269 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2452,7 +2457,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3189 testes em 216 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3197 testes em 217 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2563,6 +2568,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
+| `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |

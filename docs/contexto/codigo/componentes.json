@@ -681,7 +681,7 @@
     "ManualCotacaoData"
    ],
    "export_default": null,
-   "linhas": 271,
+   "linhas": 277,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -1470,7 +1470,7 @@
     "Step3Values"
    ],
    "export_default": null,
-   "linhas": 467,
+   "linhas": 486,
    "dominio": "components/compras",
    "hooks_locais": [
     "useProdutos",

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b9963919509f4b3d3e8f4f33b4fe15437be52fa8",
+  "sha": "2d1e5120bb7aec1d585dd4cfe5df98a2179d0d06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 13:10 UTC",
-  "files_total": 1409,
-  "code_files": 1236,
-  "code_lines": 209642,
+  "generated_at": "2026-11-24 13:24 UTC",
+  "files_total": 1410,
+  "code_files": 1237,
+  "code_lines": 209838,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b5bd9f20e8d4cc1c",
+ "facts_hash": "7f8f26a389ff32a1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 433,
-   ".tsx": 397,
+   ".tsx": 398,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33738,7 +33738,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 310,
+  "components_count": 311,
   "hooks": [
    {
     "name": "useContacts",
@@ -34457,7 +34457,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 855,
+   "lines": 857,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -34777,8 +34777,8 @@
   },
   {
    "module": "src/components",
-   "files": 274,
-   "lines": 50803,
+   "files": 275,
+   "lines": 50997,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -40181,6 +40181,31 @@
     "rules": "type=number"
    },
    {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "field": "cotacao-valor-unitario",
+    "rules": "type=number, step=0.01, min=0.01"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "field": "cotacao-quantidade",
+    "rules": "type=number, min=1"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "field": "cotacao-prazo",
+    "rules": "type=number, min=1"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "field": "cotacao-frete",
+    "rules": "type=number, step=0.01, min=0"
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "field": "cotacao-validade",
+    "rules": "type=date"
+   },
+   {
     "file": "src/components/compras/DigitalSignature.tsx",
     "field": "signerEmail",
     "rules": "type=email"
@@ -41057,6 +41082,10 @@
    {
     "file": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
     "msg": "Solicitação não identificada."
+   },
+   {
+    "file": "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
+    "msg": " className="
    },
    {
     "file": "src/components/notifications/NotificationSettingsPanel.tsx",
@@ -59327,6 +59356,38 @@
    {
     "file": "src/components/compras/__tests__/followUpReal.test.tsx",
     "name": "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "Campos de formulario com nome acessivel (etapa 237)"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "o modal de cotacao manual associa cada rotulo ao seu campo"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "nenhum rotulo do modal sobra sem destino"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "o erro de validacao da etapa 1 aponta para o campo e o campo aponta de volta"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "o erro de validacao da etapa 2 aponta para o campo e o campo aponta de volta"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "sem erro nenhum o campo nao anuncia descricao nem invalidez"
+   },
+   {
+    "file": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    "name": "os campos de valores recebem rotulo, vinculo de erro e o anexo aponta para o input de arquivo"
    },
    {
     "file": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
@@ -90592,7 +90653,7 @@
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
-   "lines": 47,
+   "lines": 49,
    "exports": [
     "default tseslint"
    ]
@@ -94319,7 +94380,7 @@
   },
   "src/components/compras/CotacaoManualModal.tsx": {
    "path": "src/components/compras/CotacaoManualModal.tsx",
-   "lines": 271,
+   "lines": 277,
    "exports": [
     "const CONDICAO_PAGAMENTO_ROTULOS",
     "interface ManualCotacaoData",
@@ -94331,6 +94392,28 @@
     "Informe uma quantidade inteira maior que zero.",
     "O fornecedor selecionado nao esta na lista de ativos.",
     "Selecione um fornecedor cadastrado. Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao."
+   ],
+   "html_constraints": [
+    {
+     "field": "cotacao-valor-unitario",
+     "rules": "type=number, step=0.01, min=0.01"
+    },
+    {
+     "field": "cotacao-quantidade",
+     "rules": "type=number, min=1"
+    },
+    {
+     "field": "cotacao-prazo",
+     "rules": "type=number, min=1"
+    },
+    {
+     "field": "cotacao-frete",
+     "rules": "type=number, step=0.01, min=0"
+    },
+    {
+     "field": "cotacao-validade",
+     "rules": "type=date"
+    }
    ],
    "rule_comments": [
     "Numeric validation: reject empty/NaN; reject decimals on integer fields"
@@ -96287,6 +96370,27 @@
     "NeuralFollowUpMonitor perdeu setTimeout, gateway e SLA"
    ]
   },
+  "src/components/compras/__tests__/formulariosRotulos.test.tsx": {
+   "path": "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+   "lines": 169,
+   "is_test": true,
+   "errors": [
+    ").map((a) => a.id)).toEqual(["
+   ],
+   "rule_comments": [
+    "o vinculo existir) e o vinculo do erro de validacao com o campo"
+   ],
+   "tests": [
+    "Campos de formulario com nome acessivel (etapa 237)",
+    "o modal de cotacao manual associa cada rotulo ao seu campo",
+    "nenhum rotulo do modal sobra sem destino",
+    "a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade",
+    "o erro de validacao da etapa 1 aponta para o campo e o campo aponta de volta",
+    "o erro de validacao da etapa 2 aponta para o campo e o campo aponta de volta",
+    "sem erro nenhum o campo nao anuncia descricao nem invalidez",
+    "os campos de valores recebem rotulo, vinculo de erro e o anexo aponta para o input de arquivo"
+   ]
+  },
   "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx": {
    "path": "src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx",
    "lines": 116,
@@ -97708,11 +97812,14 @@
   },
   "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx": {
    "path": "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-   "lines": 467,
+   "lines": 486,
    "exports": [
     "function Step1Identification",
     "function Step2Specifications",
     "function Step3Values"
+   ],
+   "errors": [
+    " className="
    ],
    "html_constraints": [
     {
@@ -120420,10 +120527,32 @@
   }
  },
  "git": {
-  "sha": "b9963919509f4b3d3e8f4f33b4fe15437be52fa8",
+  "sha": "2d1e5120bb7aec1d585dd4cfe5df98a2179d0d06",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2d1e512",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/CotacaoManualModal.tsx",
+     "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx"
+    ]
+   },
+   {
+    "sha": "db1bf92",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "eslint.config.js"
+    ]
+   },
    {
     "sha": "b996391",
     "date": "2026-11-24",
@@ -120755,33 +120884,6 @@
      "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts"
     ]
-   },
-   {
-    "sha": "410aae2",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "﻿fix(pedidos): exclusao de pedido exige status pendente ou cancelado (#384)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/EnhancedBulkActionsBar.tsx",
-     "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
-     "src/features/pedidos/exclusaoPedido.ts",
-     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx"
-    ]
-   },
-   {
-    "sha": "2f53e10",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "﻿fix(contrato): seletor de fornecedor grava o id do cadastro em supplier_id (#382)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/ContractModal.tsx",
-     "src/components/compras/__tests__/contractFornecedorId.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -120790,23 +120892,27 @@
     26
    ],
    [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    4
-   ],
-   [
     "src/pages/acompanhamento/Acompanhamento.tsx",
     3
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
+    "src/features/pedidos/hooks/usePedidos.ts",
     3
    ],
    [
-    "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
+    "src/components/compras/CotacaoManualModal.tsx",
     2
    ],
    [
-    "src/components/compras/EnhancedBulkActionsBar.tsx",
+    "eslint.config.js",
+    2
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    2
+   ],
+   [
+    "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
     2
    ],
    [
@@ -120815,10 +120921,6 @@
    ],
    [
     "src/pages/gerar-ordem/GerarOrdem.tsx",
-    2
-   ],
-   [
-    "src/features/pedidos/exclusaoPedido.ts",
     2
    ],
    [
@@ -120832,6 +120934,14 @@
    [
     "src/hooks/useFornecedores.ts",
     2
+   ],
+   [
+    "src/components/compras/__tests__/formulariosRotulos.test.tsx",
+    1
+   ],
+   [
+    "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
+    1
    ],
    [
     "src/components/pedidos/PedidoMobileCard.tsx",
@@ -120855,14 +120965,6 @@
    ],
    [
     "src/pages/recebimento/RecebimentoOffline.tsx",
-    1
-   ],
-   [
-    "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx",
-    1
-   ],
-   [
-    "bun.lock",
     1
    ]
   ]
