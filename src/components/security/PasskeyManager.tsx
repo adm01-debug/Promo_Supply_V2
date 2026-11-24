@@ -108,13 +108,16 @@ export function PasskeyManager() {
               Passkeys / Login Biométrico
             </CardTitle>
             <CardDescription>
-              Faça login usando biometria ou chave de segurança
+              Gerenciamento de credenciais. O login por passkey está em implantação — a verificação de assinatura no servidor está pendente; use e-mail/senha.
             </CardDescription>
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button disabled={!platformAvailable && credentials.length === 0}>
+              <Button
+                disabled
+                title="Login por passkey desabilitado por segurança (verificação de assinatura pendente no servidor). Use e-mail/senha."
+              >
                 <span className="inline-flex items-center gap-2">
                   <Plus className="h-4 w-4" />
                   Adicionar Passkey

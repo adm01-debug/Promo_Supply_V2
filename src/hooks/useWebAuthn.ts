@@ -236,25 +236,34 @@ export function useWebAuthn() {
         throw new Error(finishData?.error || finishError?.message || 'Failed to finish authentication');
       }
 
-      // Use the action link to sign in
-      if (finishData.actionLink) {
-        // Extract token and sign in
-        const url = new URL(finishData.actionLink);
-        const token = url.searchParams.get('token');
-        const type = url.searchParams.get('type') || 'magiclink';
-        
-        if (token) {
-          const otpType = type as 'magiclink' | 'recovery' | 'signup' | 'invite' | 'email';
-          const { error: verifyError } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: otpType,
-          });
+      // Etapa QA 061 (SEC-11): o `finish` nao cria sessao - so um actionLink
+      // verificado com sucesso cria. Antes, qualquer resposta sem erro caia em
+      // toast.success + navigate('/'), e o usuario terminava numa tela
+      // autenticada sem sessao nenhuma.
+      if (!finishData.actionLink) {
+        throw new Error('O login por passkey nao devolveu o link de sessao');
+      }
 
-          if (verifyError) {
-            logger.error('OTP verification error', { error: verifyError });
-            // Try alternative approach - direct session refresh
-          }
-        }
+      const url = new URL(finishData.actionLink);
+      const token = url.searchParams.get('token');
+      const type = url.searchParams.get('type') || 'magiclink';
+      if (!token) {
+        throw new Error('O login por passkey nao devolveu token de sessao');
+      }
+
+      const otpType = type as 'magiclink' | 'recovery' | 'signup' | 'invite' | 'email';
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: otpType,
+      });
+      if (verifyError) {
+        logger.error('OTP verification error', { error: verifyError });
+        throw new Error('Nao foi possivel abrir a sessao com a passkey');
+      }
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        throw new Error('O login por passkey nao abriu sessao');
       }
 
       toast.success('Login realizado com sucesso!');
