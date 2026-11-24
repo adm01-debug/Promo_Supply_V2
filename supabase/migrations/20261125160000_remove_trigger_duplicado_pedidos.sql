@@ -1,0 +1,24 @@
+-- ---------------------------------------------------------------------------
+-- `public.pedidos` tinha DOIS triggers BEFORE UPDATE chamando a MESMA funcao:
+--   trg_validate_pedido_status  BEFORE UPDATE            -> validate_pedido_status_transition()
+--   validate_pedido_status      BEFORE UPDATE OF status  -> validate_pedido_status_transition()
+-- A mesma funcao rodava duas vezes em todo UPDATE de pedidos (medido em prod
+-- 2026-11-24: os dois triggers existem, ambos apontando para a mesma funcao).
+--
+-- Correcao: remove-se `trg_validate_pedido_status` e mantem-se
+-- `validate_pedido_status`, que e' BEFORE UPDATE OF status. E' a variante mais
+-- precisa: so dispara quando `status` entra no SET do UPDATE. A semantica e'
+-- identica porque a funcao
+--   (a) nao tem efeito colateral (nao escreve em nada, so valida) e
+--   (b) retorna NEW imediatamente quando OLD.status = NEW.status.
+-- Logo um UPDATE que nao mexe em status nunca produzia efeito pela funcao; o
+-- trigger que sobra cobre todos os casos em que ela pode agir.
+--
+-- NAO se toca a funcao validate_pedido_status_transition nem os outros 9
+-- triggers de `pedidos`.
+--
+-- Reversao preparada e NAO aplicada em
+-- docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql
+-- ---------------------------------------------------------------------------
+
+DROP TRIGGER IF EXISTS trg_validate_pedido_status ON public.pedidos;
