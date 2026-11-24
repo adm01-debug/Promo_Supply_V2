@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { cn, formatCurrency } from "@/lib/utils";
 import {
   FileText, Search, Download, Building2, Calendar, Clock,
@@ -45,6 +45,10 @@ const statusConfig: Record<string, { label: string; color: string; icon: LucideI
   cancelado: { label: 'CANCELADO', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: X },
 };
 
+// Tamanho da pagina da listagem: mantem o default do hook (usePedidos),
+// explicito aqui para o paginador saber quando ha uma proxima pagina.
+const PEDIDOS_PAGE_SIZE = 50;
+
 const Pedidos = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -54,10 +58,22 @@ const Pedidos = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  // Pagina atual, 0-indexada como em Auditoria.tsx.
+  const [page, setPage] = useState(0);
 
   const isMobile = useIsMobile();
   const { empresaIds } = useEmpresaFilter();
-  const { pedidos, loading, refetch, bulkUpdateStatus, bulkDelete } = usePedidos({ empresaIds });
+  const { pedidos, totalCount, loading, error, refetch, bulkUpdateStatus, bulkDelete } = usePedidos({
+    empresaIds,
+    page,
+    pageSize: PEDIDOS_PAGE_SIZE,
+  });
+
+  // Trocar de filtro com uma pagina adiante aberta levava a uma tela vazia: a
+  // fatia pedida ao banco nao existe mais depois do recorte.
+  useEffect(() => {
+    setPage(0);
+  }, [search, statusFilter, fornecedorFilter, empresaIds]);
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
 
@@ -147,6 +163,34 @@ const Pedidos = () => {
     );
   }
 
+  // Falha de carga (RLS, rede, RPC) nao e lista vazia: sem isso a tela mostrava
+  // "Nenhum pedido" e o usuario concluia que nao havia nada.
+  if (error) {
+    return (
+      <ModuleErrorBoundary module="pedidos">
+        <ElitePageWrapper>
+          <Card className="p-10 border-rose-500/20 bg-rose-500/5 rounded-[2.5rem]">
+            <div className="flex flex-col sm:flex-row items-start gap-5">
+              <div className="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-400 shrink-0">
+                <AlertTriangle className="w-7 h-7" />
+              </div>
+              <div className="space-y-3">
+                <h2 className="text-2xl font-black text-white tracking-tight uppercase">Não foi possível carregar os pedidos</h2>
+                <p className="text-sm text-zinc-400">
+                  A lista vazia não significa que não há pedidos: a consulta falhou. Nenhum registro foi alterado.
+                </p>
+                <p className="text-xs font-mono text-rose-300 bg-rose-500/10 rounded-xl p-3 break-all">{error}</p>
+                <Button variant="outline" className="gap-2" onClick={() => { void refetch(); }}>
+                  <RefreshCw className="w-4 h-4" /> Tentar de novo
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </ElitePageWrapper>
+      </ModuleErrorBoundary>
+    );
+  }
+
   return (
     <ModuleErrorBoundary module="pedidos">
       <ElitePageWrapper>
@@ -166,7 +210,7 @@ const Pedidos = () => {
               <div>
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Central de Pedidos</h1>
                 <div className="flex items-center gap-3 mt-3">
-                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredPedidos.length} Pedidos Ativos</Badge>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{totalCount > filteredPedidos.length ? `${filteredPedidos.length} de ${totalCount}` : filteredPedidos.length} Pedidos Ativos</Badge>
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-fuchsia-500/30 text-fuchsia-300 px-3 py-1 flex gap-2">
                      <Activity className="w-3 h-3" /> 4 Novas Movimentações
                    </Badge>
@@ -350,6 +394,27 @@ const Pedidos = () => {
               )}
             </CardContent>
           </Card>
+
+          {(page > 0 || totalCount > PEDIDOS_PAGE_SIZE) && (
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">
+                Mostrando {filteredPedidos.length} de {totalCount} pedidos
+              </p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={(page + 1) * PEDIDOS_PAGE_SIZE >= totalCount}
+                  onClick={() => setPage(p => p + 1)}
+                >
+                  Próxima
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </ElitePageWrapper>
 
