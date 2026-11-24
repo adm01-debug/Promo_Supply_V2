@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4e72f55167` · branch `main` · 2026-11-24 07:43 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b58ed9d3f9` · branch `main` · 2026-11-24 07:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2239,6 +2239,11 @@ _nenhum item encontrado_
 | Erro ao gerar PDF do contrato | `src/components/compras/ContractDetailsModal.tsx` |
 | Organização não identificada. Faça login novamente. | `src/components/compras/ContractDetailsModal.tsx` |
 | Preencha todos os campos obrigatórios | `src/components/compras/ContractModal.tsx` |
+| Informe o prazo de entrega em dias inteiros maior que zero. | `src/components/compras/CotacaoManualModal.tsx` |
+| Informe um valor unitario maior que zero. | `src/components/compras/CotacaoManualModal.tsx` |
+| Informe uma quantidade inteira maior que zero. | `src/components/compras/CotacaoManualModal.tsx` |
+| O fornecedor selecionado nao esta na lista de ativos. | `src/components/compras/CotacaoManualModal.tsx` |
+| Selecione um fornecedor cadastrado. Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao. | `src/components/compras/CotacaoManualModal.tsx` |
 | ; import { Button } from  | `src/components/compras/CriticalAlertsBar.tsx` |
 | Erro na previsão | `src/components/compras/DemandPredictionPanel.tsx` |
 | Sem dados suficientes | `src/components/compras/DemandPredictionPanel.tsx` |
@@ -2422,12 +2427,7 @@ _nenhum item encontrado_
 | O login por passkey nao devolveu token de sessao | `src/hooks/useWebAuthn.ts` |
 | Operação cancelada pelo usuário | `src/hooks/useWebAuthn.ts` |
 | WebAuthn não é suportado neste navegador | `src/hooks/useWebAuthn.ts` |
-| handler returned false | `src/hooks/useWorkflowDLQ.ts` |
-| Resposta vazia da integração XBZ | `src/hooks/useXbzIntegration.ts` |
-| XBZ: ${message} | `src/hooks/useXbzIntegration.ts` |
-| Could not get canvas context | `src/lib/imageCompression.ts` |
-| File is not an image | `src/lib/imageCompression.ts` |
-| … +249 linhas — lista completa em `context.json` | |
+| … +254 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2445,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3052 testes em 193 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3061 testes em 194 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2549,6 +2549,7 @@ _nenhum item encontrado_
 | `src/components/compras/approval/__tests__/alcadaListasReais.test.tsx` | 10 | ApprovalRuleModal usa pessoas e categorias reais · oferece profiles.user_id e nomes do banco, sem id ficticio · grava o user_id escolhido no aprovador da regra · sem pessoas visiveis avisa em vez de mostrar lista ficticia … |
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
+| `src/components/compras/__tests__/cotacaoManualCampos.test.tsx` | 9 | CotacaoManualModal entrega os campos que coleta · grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em  · leva validade e observacoes no payload, com o fornecedor do cadastro · nao manda string vazia de validade nem de observacoes … |
 | `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 9 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — SLA vem da RPC, não de literal … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
@@ -2684,7 +2685,6 @@ _nenhum item encontrado_
 | Forms & validation | `vite.config.ts` |
 | ficavam invisíveis: "2024-06-15" exibido como 14/06 e "hoje" recusado no prazo | `vitest.config.ts` |
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
-| Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
 | checagem a regra nascia com aprovador em branco e o insert em | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | * Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada. | `src/components/compras/KanbanBoard.tsx` |

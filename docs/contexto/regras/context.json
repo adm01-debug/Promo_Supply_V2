@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "4e72f55167d33767d5e4592a8b1e1cc5b7d9cc8a",
+  "sha": "b58ed9d3f91baf44c54e6cfb8ca47fa6a0e52f86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 07:43 UTC",
-  "files_total": 1382,
-  "code_files": 1211,
-  "code_lines": 206345,
+  "generated_at": "2026-11-24 07:55 UTC",
+  "files_total": 1383,
+  "code_files": 1212,
+  "code_lines": 206538,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9a49f8def33f7cf4",
+ "facts_hash": "b0f2135d8b082ac1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 428,
-   ".tsx": 377,
+   ".tsx": 378,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33723,7 +33723,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 304,
+  "components_count": 305,
   "hooks": [
    {
     "name": "useContacts",
@@ -34761,8 +34761,8 @@
   },
   {
    "module": "src/components",
-   "files": 269,
-   "lines": 50358,
+   "files": 270,
+   "lines": 50548,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34831,7 +34831,7 @@
     "ContractDetailsModal.tsx: ContractDetailsModal",
     "ContractModal.tsx: ContractModal",
     "CostCenterPerformanceAnalysis.tsx: CostCenterPerformanceAnalysis",
-    "CotacaoManualModal.tsx: ManualCotacaoData, CotacaoManualModal",
+    "CotacaoManualModal.tsx: CONDICAO_PAGAMENTO_ROTULOS, ManualCotacaoData, CotacaoManualModal",
     "CriticalAlertsBar.tsx: CriticalAlertsBar",
     "DashboardInsights.tsx: DashboardInsights",
     "DeliveryCalendar.tsx: DeliveryCalendar",
@@ -35699,7 +35699,7 @@
   {
    "module": "src/pages",
    "files": 139,
-   "lines": 32322,
+   "lines": 32325,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -40843,6 +40843,26 @@
     "msg": "Preencha todos os campos obrigatórios"
    },
    {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "msg": "Informe o prazo de entrega em dias inteiros maior que zero."
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "msg": "Informe um valor unitario maior que zero."
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "msg": "Informe uma quantidade inteira maior que zero."
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "msg": "O fornecedor selecionado nao esta na lista de ativos."
+   },
+   {
+    "file": "src/components/compras/CotacaoManualModal.tsx",
+    "msg": "Selecione um fornecedor cadastrado. Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao."
+   },
+   {
     "file": "src/components/compras/CriticalAlertsBar.tsx",
     "msg": ";\nimport { Button } from "
    },
@@ -42649,10 +42669,6 @@
    {
     "file": "src/components/compras/CotacaoManualModal.tsx",
     "text": "Numeric validation: reject empty/NaN; reject decimals on integer fields"
-   },
-   {
-    "file": "src/components/compras/CotacaoManualModal.tsx",
-    "text": "Fornecedor must be selected; if \"novo\", a name must be provided."
    },
    {
     "file": "src/components/compras/CriticalAlertsBar.tsx",
@@ -58986,6 +59002,42 @@
    {
     "file": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
     "name": "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "CotacaoManualModal entrega os campos que coleta"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em "
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "leva validade e observacoes no payload, com o fornecedor do cadastro"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "nao manda string vazia de validade nem de observacoes"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "nao cria cotacao sem fornecedor do cadastro e avisa na tela"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "avisa em vez de nao fazer nada quando um numero e invalido"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "nao oferece fornecedor digitado a mao nem area de anexo decorativa"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "avisa quando nao ha fornecedor ativo cadastrado"
+   },
+   {
+    "file": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    "name": "o chamador repassa condicao, validade e observacoes para createCotacao"
    },
    {
     "file": "src/components/compras/__tests__/followUpReal.test.tsx",
@@ -93527,14 +93579,21 @@
   },
   "src/components/compras/CotacaoManualModal.tsx": {
    "path": "src/components/compras/CotacaoManualModal.tsx",
-   "lines": 261,
+   "lines": 271,
    "exports": [
+    "const CONDICAO_PAGAMENTO_ROTULOS",
     "interface ManualCotacaoData",
     "const CotacaoManualModal"
    ],
+   "errors": [
+    "Informe o prazo de entrega em dias inteiros maior que zero.",
+    "Informe um valor unitario maior que zero.",
+    "Informe uma quantidade inteira maior que zero.",
+    "O fornecedor selecionado nao esta na lista de ativos.",
+    "Selecione um fornecedor cadastrado. Fornecedor novo precisa ser cadastrado em Fornecedores antes da cotacao."
+   ],
    "rule_comments": [
-    "Numeric validation: reject empty/NaN; reject decimals on integer fields",
-    "Fornecedor must be selected; if \"novo\", a name must be provided."
+    "Numeric validation: reject empty/NaN; reject decimals on integer fields"
    ]
   },
   "src/components/compras/CriticalAlertsBar.tsx": {
@@ -95436,6 +95495,22 @@
     "salva supplier_id com o id do cadastro e supplier_name como copia congelada",
     "mantem contrato legado com supplier_id em slug, sem perder o vinculo",
     "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   ]
+  },
+  "src/components/compras/__tests__/cotacaoManualCampos.test.tsx": {
+   "path": "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+   "lines": 180,
+   "is_test": true,
+   "tests": [
+    "CotacaoManualModal entrega os campos que coleta",
+    "grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em ",
+    "leva validade e observacoes no payload, com o fornecedor do cadastro",
+    "nao manda string vazia de validade nem de observacoes",
+    "nao cria cotacao sem fornecedor do cadastro e avisa na tela",
+    "avisa em vez de nao fazer nada quando um numero e invalido",
+    "nao oferece fornecedor digitado a mao nem area de anexo decorativa",
+    "avisa quando nao ha fornecedor ativo cadastrado",
+    "o chamador repassa condicao, validade e observacoes para createCotacao"
    ]
   },
   "src/components/compras/__tests__/followUpReal.test.tsx": {
@@ -108149,7 +108224,7 @@
   },
   "src/pages/cotacao/Cotacao.tsx": {
    "path": "src/pages/cotacao/Cotacao.tsx",
-   "lines": 400,
+   "lines": 403,
    "exports": [
     "interface ResumoFollowUpCotacao",
     "function resumoFollowUpDaCotacao"
@@ -119076,10 +119151,22 @@
   }
  },
  "git": {
-  "sha": "4e72f55167d33767d5e4592a8b1e1cc5b7d9cc8a",
+  "sha": "b58ed9d3f91baf44c54e6cfb8ca47fa6a0e52f86",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b58ed9d",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: cotacao manual grava condicao, validade e observacoes (#388)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/CotacaoManualModal.tsx",
+     "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+     "src/pages/cotacao/Cotacao.tsx"
+    ]
+   },
    {
     "sha": "4e72f55",
     "date": "2026-11-24",
@@ -119449,17 +119536,6 @@
      "supabase/functions/_shared/logger.fuzz.test.ts",
      "supabase/functions/_shared/logger.ts"
     ]
-   },
-   {
-    "sha": "fb36e10",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/punchout-setup/index.ts",
-     "supabase/functions/punchout-setup/seguranca.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -119474,6 +119550,10 @@
    [
     "src/pages/solicitacoes/Solicitacoes.tsx",
     3
+   ],
+   [
+    "src/pages/cotacao/Cotacao.tsx",
+    2
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
@@ -119498,6 +119578,14 @@
    [
     "supabase/functions/webauthn-authenticate/index.ts",
     2
+   ],
+   [
+    "src/components/compras/CotacaoManualModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/cotacaoManualCampos.test.tsx",
+    1
    ],
    [
     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
@@ -119529,18 +119617,6 @@
    ],
    [
     "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/__tests__/statusKanban.test.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/EnhancedBulkActionsBar.tsx",
     1
    ]
   ]

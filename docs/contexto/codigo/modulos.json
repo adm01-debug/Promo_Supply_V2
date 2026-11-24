@@ -417,8 +417,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 22,
-   "linhas": 25830,
+   "testes": 23,
+   "linhas": 25840,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -4821,7 +4821,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 624,
+   "linhas": 627,
    "itens_menu": [
     "Cotações"
    ],

@@ -676,11 +676,12 @@
   {
    "arquivo": "src/components/compras/CotacaoManualModal.tsx",
    "exports": [
+    "CONDICAO_PAGAMENTO_ROTULOS",
     "CotacaoManualModal",
     "ManualCotacaoData"
    ],
    "export_default": null,
-   "linhas": 261,
+   "linhas": 271,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -4792,7 +4793,7 @@
     "ResumoFollowUpCotacao"
    ],
    "export_default": "Cotacao",
-   "linhas": 400,
+   "linhas": 403,
    "dominio": "pages/cotacao",
    "hooks_locais": [
     "useCotacoes",

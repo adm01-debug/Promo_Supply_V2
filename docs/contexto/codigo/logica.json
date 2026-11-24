@@ -540,7 +540,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 89,
+   "usado_por": 90,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -580,7 +580,7 @@
     "pages/relatorios",
     "pages/sourcing"
    ],
-   "coberto_por_testes": 4,
+   "coberto_por_testes": 5,
    "orfao": false
   },
   {
