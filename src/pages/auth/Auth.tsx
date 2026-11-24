@@ -20,6 +20,15 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Senha é obrigatória'),
 });
 
+// QA 035: troca de senha pelo link de recuperacao do Supabase.
+const novaSenhaSchema = z.object({
+  password: z.string().min(8, 'A senha deve ter ao menos 8 caracteres'),
+  confirm: z.string().min(1, 'Confirme a senha'),
+}).refine((v) => v.password === v.confirm, {
+  message: 'As senhas não coincidem',
+  path: ['confirm'],
+});
+
 
 import { AuthBackground, AuthBrandingPanel } from './AuthBranding';
 
@@ -43,6 +52,9 @@ const Auth = () => {
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  // QA 035: pedido de link de recuperacao de senha.
+  const [isSendingReset, setIsSendingReset] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -60,6 +72,33 @@ const Auth = () => {
       return () => clearTimeout(timeout);
     }
   }, [loginEmail, checkLockout]);
+
+  /**
+   * QA 035: dispara o e-mail de recuperacao do proprio Supabase.
+   * A resposta e sempre a mesma, exista ou nao a conta, para nao revelar
+   * quais e-mails estao cadastrados.
+   */
+  const handleForgotPassword = async () => {
+    const email = loginEmail.trim();
+    if (!z.string().email().safeParse(email).success) {
+      setErrors({ email: 'Informe seu email para receber o link' });
+      return;
+    }
+
+    setIsSendingReset(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/nova-senha`,
+    });
+    setIsSendingReset(false);
+
+    if (error) {
+      logger.error('Falha ao pedir recuperacao de senha', { error });
+      toast.error('Não foi possível enviar o link agora. Tente novamente em instantes.');
+      return;
+    }
+    setResetSent(true);
+    toast.success('Se este e-mail estiver cadastrado, o link de recuperação chegará em instantes.');
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,6 +265,26 @@ const Auth = () => {
                     disabled={isSubmitting}
                   />
 
+                  <div className="flex justify-end -mt-1">
+                    <button
+                      type="button"
+                      onClick={handleForgotPassword}
+                      disabled={isSubmitting || isSendingReset}
+                      className="text-xs font-medium text-violet-300 hover:text-violet-200 disabled:opacity-60 transition-colors"
+                    >
+                      {isSendingReset ? 'Enviando link...' : 'Esqueci minha senha'}
+                    </button>
+                  </div>
+
+                  {resetSent && (
+                    <Alert className="bg-violet-500/10 border-violet-500/30">
+                      <AlertDescription className="text-xs text-violet-200">
+                        Enviamos um link para <span className="font-medium">{loginEmail.trim()}</span>. Abra o link
+                        para definir uma nova senha. Se não chegar em alguns minutos, confira a caixa de spam.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
                   <Button
                     type="submit"
                     className="w-full h-12 text-sm font-semibold rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:opacity-90 text-white border-0 shadow-xl shadow-violet-600/25 active:scale-[0.98] transition-all"
@@ -315,6 +374,162 @@ const Auth = () => {
             © 2026 Promo Brindes. Todos os direitos reservados.
           </p>
         </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * QA 035: tela de definicao de nova senha, aberta pelo link de recuperacao.
+ *
+ * O Supabase entrega a sessao de recuperacao na propria URL do link
+ * (`detectSessionInUrl`). Enquanto ela nao chega, a tela fica em "verificando";
+ * se nao chegar, mostra que o link e invalido/expirado em vez de fingir sucesso.
+ */
+export const NovaSenhaPage = () => {
+  const navigate = useNavigate();
+  const [estadoSessao, setEstadoSessao] = useState<'verificando' | 'ok' | 'invalida'>('verificando');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+
+    const { data: inscricao } = supabase.auth.onAuthStateChange((evento, session) => {
+      if (ativo && session && (evento === 'PASSWORD_RECOVERY' || evento === 'SIGNED_IN')) {
+        setEstadoSessao('ok');
+      }
+    });
+
+    const timer = setTimeout(async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!ativo) return;
+      setEstadoSessao(data.session ? 'ok' : 'invalida');
+    }, 1500);
+
+    return () => {
+      ativo = false;
+      clearTimeout(timer);
+      inscricao.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    const parsed = novaSenhaSchema.safeParse({ password, confirm });
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      parsed.error.issues.forEach((err) => {
+        const campo = err.path[0];
+        if (campo) fieldErrors[campo as string] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+    setIsSubmitting(false);
+
+    if (error) {
+      logger.error('Falha ao definir nova senha', { error });
+      toast.error('Não foi possível alterar a senha. O link pode ter expirado — solicite outro.');
+      return;
+    }
+
+    // Troca a senha e encerra a sessao de recuperacao: o proximo acesso e com a senha nova.
+    await supabase.auth.signOut();
+    toast.success('Senha alterada com sucesso. Entre com a nova senha.');
+    navigate('/auth', { replace: true });
+  };
+
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-violet-950 p-6">
+      <div
+        className="w-full max-w-[420px] bg-white/[0.03] border border-white/10 backdrop-blur-2xl rounded-[28px] p-7 sm:p-8 shadow-2xl"
+        style={{ boxShadow: '0 30px 80px -20px rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(255,255,255,0.04)' }}
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-white font-semibold text-lg leading-tight">Definir nova senha</h1>
+            <p className="text-xs text-zinc-400">Promo Brindes</p>
+          </div>
+        </div>
+
+        {estadoSessao === 'verificando' && (
+          <div className="flex items-center gap-3 text-sm text-zinc-300 py-8">
+            <Loader2 className="h-4 w-4 animate-spin text-violet-300" />
+            Validando o link de recuperação...
+          </div>
+        )}
+
+        {estadoSessao === 'invalida' && (
+          <div className="space-y-5">
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Este link de recuperação é inválido ou expirou. Solicite um novo na tela de login.
+              </AlertDescription>
+            </Alert>
+            <Button
+              type="button"
+              className="w-full h-12 text-sm font-semibold rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:opacity-90 text-white border-0"
+              onClick={() => navigate('/auth', { replace: true })}
+            >
+              Voltar para o login
+            </Button>
+          </div>
+        )}
+
+        {estadoSessao === 'ok' && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <FloatingInput
+              label="Nova senha"
+              type="password"
+              icon={<Lock className="w-5 h-5" />}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={errors["password"]}
+              disabled={isSubmitting}
+            />
+
+            <FloatingInput
+              label="Confirme a nova senha"
+              type="password"
+              icon={<Lock className="w-5 h-5" />}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              error={errors["confirm"]}
+              disabled={isSubmitting}
+            />
+
+            <p className="text-[11px] text-zinc-500">
+              A senha precisa ter ao menos 8 caracteres.
+            </p>
+
+            <Button
+              type="submit"
+              className="w-full h-12 text-sm font-semibold rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:opacity-90 text-white border-0 shadow-xl shadow-violet-600/25 active:scale-[0.98] transition-all"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                'Salvar nova senha'
+              )}
+            </Button>
+          </form>
+        )}
       </div>
     </div>
   );
