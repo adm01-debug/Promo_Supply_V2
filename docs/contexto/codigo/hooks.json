@@ -849,7 +849,7 @@
     "src/pages/aprovacoes/Aprovacoes.tsx",
     "src/pages/aprovacoes/aprovacoesData.ts"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/useBudgetManagement.ts",
@@ -1828,8 +1828,9 @@
     "useQueryClient"
    ],
    "canais_realtime": [],
-   "usado_por": 4,
+   "usado_por": 5,
    "usado_por_arquivos": [
+    "src/components/compras/DynamicApprovalMatrix.tsx",
     "src/components/compras/approval/ApprovalRuleModal.tsx",
     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
     "src/pages/catalogo-produtos/CatalogoProdutos.tsx",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6c76f6a3071cb3e8930257e239a7d34f14a7673e` (2026-11-24T03:18:07-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6a89324929efa1f5ac14435c74036cec9a79a8f5` (2026-11-24T03:28:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (793), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (794), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1369 |
-| arquivos_codigo | 866 |
-| linhas_codigo | 177824 |
+| arquivos_total | 1370 |
+| arquivos_codigo | 867 |
+| linhas_codigo | 178009 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 234 |
+| testes | 235 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (13), src/components (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (141), outro (43), co-localizado (*.test) (40)
+- testes: co-localizado (__tests__) (142), outro (43), co-localizado (*.test) (40)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -339,7 +339,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
-- docs/qa/05-PROGRESSO.md (39)
+- docs/qa/05-PROGRESSO.md (40)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (10)
 - bun.lock (9)
@@ -420,6 +420,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `6a89324` fix(alcada): matriz usa pessoas reais e recusa aprovador vazio (#381)
 - 2026-11-24 `6c76f6a` fix(alcada): aprovadores e categorias reais nos modais de regra e delegacao (#380)
 - 2026-11-24 `5f14e85` fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)
 - 2026-11-24 `e2ea735` fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)
@@ -434,7 +435,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `75fbc3e` fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)
 - 2026-11-24 `e20b078` fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)
 - 2026-11-24 `700e3fd` feat(seguranca): registra a sessao do navegador em active_sessions (QA 038) (#367)
-- 2026-11-24 `d541138` fix(seguranca): pedido de reset envia o link do Supabase em vez de gerar token morto (QA 036) (#366)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

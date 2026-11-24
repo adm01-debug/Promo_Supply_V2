@@ -369,7 +369,10 @@
    "src/components/ui/collapsible.tsx",
    "src/components/ui/dialog.tsx",
    "src/components/ui/table.tsx",
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
    "src/hooks/useApprovalWorkflow.ts",
+   "src/hooks/useProdutos.ts",
+   "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts"
   ],

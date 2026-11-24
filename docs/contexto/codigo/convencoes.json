@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (141)",
+   "co-localizado (__tests__) (142)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(alcada): matriz usa pessoas reais e recusa aprovador vazio (#381)",
    "fix(alcada): aprovadores e categorias reais nos modais de regra e delegacao (#380)",
    "fix: dossie do pedido e cotacao mostram o follow-up real, sem botao simulado (etapa 106) (#378)",
    "fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)",
-   "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)",
-   "fix: filtro \"Meus Itens\" recorta por solicitante em vez de status (etapa 108) (#376)"
+   "fix: follow-up de fornecedor mostra o registro real, sem conversa fabricada (etapa 105) (#377)"
   ]
  },
  "pr_template": null,

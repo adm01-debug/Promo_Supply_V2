@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 632,
- "arestas": 2811,
+ "arestas": 2814,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 139
+   "importado_por": 140
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
@@ -141,6 +141,10 @@
    "importado_por": 11
   },
   {
+   "arquivo": "src/hooks/useApprovalWorkflow.ts",
+   "importado_por": 11
+  },
+  {
    "arquivo": "src/hooks/useFornecedores.ts",
    "importado_por": 11
   },
@@ -159,10 +163,6 @@
   {
    "arquivo": "supabase/functions/_shared/validation.ts",
    "importado_por": 11
-  },
-  {
-   "arquivo": "src/components/ui/popover.tsx",
-   "importado_por": 10
   }
  ],
  "ciclos": {

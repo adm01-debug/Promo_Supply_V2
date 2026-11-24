@@ -815,12 +815,15 @@
     "DynamicApprovalMatrix"
    ],
    "export_default": null,
-   "linhas": 209,
+   "linhas": 231,
    "dominio": "components/compras",
    "hooks_locais": [
-    "useApprovalWorkflow"
+    "useApprovalWorkflow",
+    "useProdutos"
    ],
-   "tabelas": [],
+   "tabelas": [
+    "profiles"
+   ],
    "edges": [],
    "usado_por": 2,
    "orfao": false

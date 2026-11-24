@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "6c76f6a3071cb3e8930257e239a7d34f14a7673e",
+  "sha": "6a89324929efa1f5ac14435c74036cec9a79a8f5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 06:18 UTC",
-  "files_total": 1370,
-  "code_files": 1199,
-  "code_lines": 205008,
+  "generated_at": "2026-11-24 06:28 UTC",
+  "files_total": 1371,
+  "code_files": 1200,
+  "code_lines": 205193,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3d17fbcb011e434f",
+ "facts_hash": "e43a183e909af3fd",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 423,
-   ".tsx": 370,
+   ".tsx": 371,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33723,7 +33723,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 301,
+  "components_count": 302,
   "hooks": [
    {
     "name": "useContacts",
@@ -34761,8 +34761,8 @@
   },
   {
    "module": "src/components",
-   "files": 266,
-   "lines": 49772,
+   "files": 267,
+   "lines": 49957,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -37337,6 +37337,7 @@
      "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
     ],
     "select": [
+     "src/components/compras/DynamicApprovalMatrix.tsx",
      "src/components/compras/approval/ApprovalDelegationModal.tsx",
      "src/components/compras/approval/ApprovalRuleModal.tsx",
      "src/features/auth/hooks/useAuth.tsx",
@@ -40849,6 +40850,14 @@
    },
    {
     "file": "src/components/compras/DynamicApprovalMatrix.tsx",
+    "msg": "A data final precisa ser depois da data inicial"
+   },
+   {
+    "file": "src/components/compras/DynamicApprovalMatrix.tsx",
+    "msg": "Dê um nome à regra e escolha o aprovador de cada etapa"
+   },
+   {
+    "file": "src/components/compras/DynamicApprovalMatrix.tsx",
     "msg": "Preencha todos os campos obrigatórios"
    },
    {
@@ -42634,6 +42643,10 @@
    {
     "file": "src/components/compras/CriticalAlertsBar.tsx",
     "text": "Check solicitacoes near deadline"
+   },
+   {
+    "file": "src/components/compras/DynamicApprovalMatrix.tsx",
+    "text": "checagem a regra nascia com aprovador em branco e o insert em"
    },
    {
     "file": "src/components/compras/SupplierInteractionLog.tsx",
@@ -57365,6 +57378,10 @@
     "line": "expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),"
    },
    {
+    "file": "src/components/compras/DynamicApprovalMatrix.tsx",
+    "line": "staleTime: 5 * 60 * 1000,"
+   },
+   {
     "file": "src/components/compras/SLADistributionChart.tsx",
     "line": "const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));"
    },
@@ -59059,6 +59076,38 @@
    {
     "file": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
     "name": "covers all 3 tipos"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "DynamicApprovalMatrix mostra pessoas e categorias reais"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "resolve aprovador, escalação e categoria pelos dados do banco"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "id sem perfil aparece como nao encontrado, nao como uuid cru"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "categoria ausente e dita removida; regra sem categoria vale para todas"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "delegacao mostra os nomes reais de quem delega e de quem recebe"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "DynamicApprovalMatrix recusa regra com aprovador vazio"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "regra nova nasce com user_id vazio e o salvamento e barrado"
+   },
+   {
+    "file": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    "name": "regra com aprovador real e salva"
    },
    {
     "file": "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
@@ -78034,6 +78083,10 @@
     "limit": "50"
    },
    {
+    "file": "src/components/compras/DynamicApprovalMatrix.tsx",
+    "limit": "200"
+   },
+   {
     "file": "src/components/compras/PriceComparator.tsx",
     "limit": "100"
    },
@@ -93506,11 +93559,27 @@
   },
   "src/components/compras/DynamicApprovalMatrix.tsx": {
    "path": "src/components/compras/DynamicApprovalMatrix.tsx",
-   "lines": 209,
+   "lines": 231,
    "exports": [
     "const DynamicApprovalMatrix"
    ],
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "display_name",
+     "email",
+     "full_name",
+     "user_id"
+    ]
+   },
    "errors": [
+    "A data final precisa ser depois da data inicial",
+    "Dê um nome à regra e escolha o aprovador de cada etapa",
     "Preencha todos os campos obrigatórios"
    ],
    "status_values": [
@@ -93535,12 +93604,21 @@
      "kind": "compara"
     }
    ],
+   "rule_comments": [
+    "checagem a regra nascia com aprovador em branco e o insert em"
+   ],
    "calc_fns": [
     {
      "name": "formatCurrency",
      "params": "value: number",
      "body": "value >= 999999999 ? \"∞\" : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);"
     }
+   ],
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
+   ],
+   "pagination": [
+    "200"
    ]
   },
   "src/components/compras/EnhancedBulkActionsBar.tsx": {
@@ -95149,6 +95227,24 @@
     "PE_LISO is valid",
     "FAB_PERSONALIZADO is valid",
     "covers all 3 tipos"
+   ]
+  },
+  "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx": {
+   "path": "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+   "lines": 163,
+   "is_test": true,
+   "rule_comments": [
+    "\"Material de Escritório\") e a regra podia nascer com `aprovadores:"
+   ],
+   "tests": [
+    "DynamicApprovalMatrix mostra pessoas e categorias reais",
+    "resolve aprovador, escalação e categoria pelos dados do banco",
+    "id sem perfil aparece como nao encontrado, nao como uuid cru",
+    "categoria ausente e dita removida; regra sem categoria vale para todas",
+    "delegacao mostra os nomes reais de quem delega e de quem recebe",
+    "DynamicApprovalMatrix recusa regra com aprovador vazio",
+    "regra nova nasce com user_id vazio e o salvamento e barrado",
+    "regra com aprovador real e salva"
    ]
   },
   "src/components/compras/approval/ApprovalDelegationModal.tsx": {
@@ -118571,10 +118667,21 @@
   }
  },
  "git": {
-  "sha": "6c76f6a3071cb3e8930257e239a7d34f14a7673e",
+  "sha": "6a89324929efa1f5ac14435c74036cec9a79a8f5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6a89324",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(alcada): matriz usa pessoas reais e recusa aprovador vazio (#381)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/DynamicApprovalMatrix.tsx",
+     "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx"
+    ]
+   },
    {
     "sha": "6c76f6a",
     "date": "2026-11-24",
@@ -118935,17 +119042,6 @@
      "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
      "src/pages/recebimento/recebimentoHelpers.ts"
     ]
-   },
-   {
-    "sha": "2b1df86",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
-     "src/hooks/useApprovalWorkflow.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -118959,10 +119055,6 @@
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
-    2
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
     2
    ],
    [
@@ -118988,6 +119080,14 @@
    [
     "supabase/functions/webauthn-authenticate/index.ts",
     2
+   ],
+   [
+    "src/components/compras/DynamicApprovalMatrix.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx",
+    1
    ],
    [
     "src/components/compras/approval/ApprovalDelegationModal.tsx",
@@ -119023,10 +119123,6 @@
    ],
    [
     "src/components/compras/SupplierInteractionLog.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/followUpReal.test.tsx",
     1
    ]
   ]

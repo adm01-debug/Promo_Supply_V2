@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6c76f6a307` · branch `main` · 2026-11-24 06:18 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6a89324929` · branch `main` · 2026-11-24 06:28 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1856,6 +1856,7 @@ _nenhum item encontrado_
 | `await new Promise(resolve => setTimeout(resolve, 1000));` | `src/components/compras/DigitalSignature.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/components/compras/DigitalSignature.tsx` |
 | `expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),` | `src/components/compras/DigitalSignature.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | `const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));` | `src/components/compras/SLADistributionChart.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/compras/approval/ApprovalDelegationModal.tsx` |
 | `staleTime: 5 * 60 * 1000,` | `src/components/compras/approval/ApprovalRuleModal.tsx` |
@@ -2060,6 +2061,7 @@ _nenhum item encontrado_
 |---|---|
 | 100 | `src/components/admin/telemetry/AppLogsView.tsx` |
 | 50 | `src/components/admin/telemetry/SystemAlertsView.tsx` |
+| 200 | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | 100 | `src/components/compras/PriceComparator.tsx` |
 | 50 | `src/components/compras/QualificationHistoryTimeline.tsx` |
 | 3 | `src/components/compras/SourcingIntelligenceWidget.tsx` |
@@ -2242,6 +2244,8 @@ _nenhum item encontrado_
 | Sem dados suficientes | `src/components/compras/DemandPredictionPanel.tsx` |
 | Assinatura necessária | `src/components/compras/DigitalSignature.tsx` |
 | Campos obrigatórios | `src/components/compras/DigitalSignature.tsx` |
+| A data final precisa ser depois da data inicial | `src/components/compras/DynamicApprovalMatrix.tsx` |
+| Dê um nome à regra e escolha o aprovador de cada etapa | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Preencha todos os campos obrigatórios | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | Não foi possível salvar o fornecedor. Tente novamente. | `src/components/compras/FornecedorModal.tsx` |
 | Anexos não enviados: organização não identificada. Faça login novamente. | `src/components/compras/NovaSolicitacaoModal.tsx` |
@@ -2423,9 +2427,7 @@ _nenhum item encontrado_
 | Could not get canvas context | `src/lib/imageCompression.ts` |
 | File is not an image | `src/lib/imageCompression.ts` |
 | , params) as unknown as RpcResult<void>; }  export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {   return supabase.rpc( | `src/lib/supabaseRpc.ts` |
-| Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| … +247 linhas — lista completa em `context.json` | |
+| … +249 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2443,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3000 testes em 183 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3008 testes em 184 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2552,6 +2554,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
 | `src/lib/__tests__/realtime.test.ts` | 9 | padrao antigo (controle) · supabase.channel com nome fixo quebra na segunda montagem · abrirCanalPostgres · nao reaproveita canal ja inscrito ao montar duas vezes … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
+| `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
@@ -2674,6 +2677,7 @@ _nenhum item encontrado_
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
+| checagem a regra nascia com aprovador em branco e o insert em | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | * Mostra apenas interacoes registradas de verdade (follow-up do agendador em | `src/components/compras/SupplierInteractionLog.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/components/compras/dashboard/UrgencyDetailsSheet.tsx` |
 | * Resolves the effective deadline for a pending approval step. | `src/components/compras/pending-approvals/deadlineFallback.ts` |
