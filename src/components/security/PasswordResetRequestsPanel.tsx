@@ -29,7 +29,7 @@ export const PasswordResetRequestsPanel = () => {
     myRequests,
     isLoading, 
     createRequest,
-    approveRequest, 
+    sendRecoveryLink, 
     rejectRequest,
     pendingCount
   } = usePasswordResetRequests();
@@ -57,11 +57,12 @@ export const PasswordResetRequestsPanel = () => {
 
     try {
       if (reviewAction === 'approve') {
-        await approveRequest.mutateAsync({ 
+        await sendRecoveryLink.mutateAsync({ 
           id: selectedRequest.id, 
+          email: selectedRequest.email,
           admin_notes: adminNotes || undefined 
         });
-        toast.success('Solicitação aprovada - o usuário pode agora redefinir sua senha');
+        toast.success(`Link de recuperação enviado para ${selectedRequest.email}`);
       } else {
         await rejectRequest.mutateAsync({ 
           id: selectedRequest.id, 
@@ -147,10 +148,21 @@ export const PasswordResetRequestsPanel = () => {
                         </Button>
                       </div>
                     )}
-                    {request.status === 'approved' && (
-                      <Badge variant="outline" className="text-success">
-                        Token gerado
-                      </Badge>
+                    {request.status === 'approved' && !isExpired && (
+                      <div className="flex items-center justify-end gap-2">
+                        <Badge variant="outline" className="text-success">
+                          Link enviado
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="Reenviar link de recuperação"
+                          onClick={() => openReviewDialog(request, 'approve')}
+                          className="text-success hover:text-success"
+                        >
+                          <Send className="w-4 h-4" />
+                        </Button>
+                      </div>
                     )}
                   </TableCell>
                 )}
@@ -184,7 +196,7 @@ export const PasswordResetRequestsPanel = () => {
                 Solicitar Reset de Senha
               </CardTitle>
               <CardDescription>
-                Envie uma solicitação para um administrador aprovar o reset da sua senha
+                Registre o pedido: um administrador envia o link de recuperação por e-mail e você define a nova senha
               </CardDescription>
             </div>
             <Button onClick={() => setShowRequestDialog(true)}>
@@ -210,7 +222,7 @@ export const PasswordResetRequestsPanel = () => {
                 )}
               </CardTitle>
               <CardDescription>
-                Aprove ou rejeite solicitações de reset de senha dos usuários
+                Envie o link de recuperação por e-mail ou rejeite os pedidos dos usuários
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -248,7 +260,7 @@ export const PasswordResetRequestsPanel = () => {
               Solicitar Reset de Senha
             </DialogTitle>
             <DialogDescription>
-              Sua solicitação será enviada para aprovação de um administrador.
+              Sua solicitação fica registrada para o administrador enviar o link de recuperação.
             </DialogDescription>
           </DialogHeader>
 
@@ -297,7 +309,7 @@ export const PasswordResetRequestsPanel = () => {
               {reviewAction === 'approve' ? (
                 <>
                   <CheckCircle2 className="w-5 h-5 text-success" />
-                  Aprovar Solicitação
+                  Enviar link de recuperação
                 </>
               ) : (
                 <>
@@ -335,7 +347,7 @@ export const PasswordResetRequestsPanel = () => {
               {reviewAction === 'approve' && (
                 <div className="p-3 rounded-lg bg-success/10 border border-success/20">
                   <p className="text-sm text-success">
-                    Ao aprovar, um token de reset será gerado e o usuário poderá redefinir sua senha.
+                    Ao confirmar, o Supabase envia o link para este e-mail e o usuário define a nova senha em /auth/nova-senha.
                   </p>
                 </div>
               )}
@@ -349,16 +361,16 @@ export const PasswordResetRequestsPanel = () => {
             <Button
               variant={reviewAction === 'approve' ? 'default' : 'destructive'}
               onClick={handleReview}
-              disabled={approveRequest.isPending || rejectRequest.isPending}
+              disabled={sendRecoveryLink.isPending || rejectRequest.isPending}
             >
-              {(approveRequest.isPending || rejectRequest.isPending) ? (
+              {(sendRecoveryLink.isPending || rejectRequest.isPending) ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : reviewAction === 'approve' ? (
                 <Check className="w-4 h-4 mr-2" />
               ) : (
                 <X className="w-4 h-4 mr-2" />
               )}
-              {reviewAction === 'approve' ? 'Aprovar' : 'Rejeitar'}
+              {reviewAction === 'approve' ? 'Enviar link' : 'Rejeitar'}
             </Button>
           </DialogFooter>
         </DialogContent>

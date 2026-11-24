@@ -92,11 +92,18 @@ export const usePasswordResetRequests = () => {
     },
   });
 
-  // Approve request (admin only)
-  const approveRequest = useMutation({
-    mutationFn: async ({ id, admin_notes }: { id: string; admin_notes?: string }) => {
-      // Generate a secure token
-      const resetToken = crypto.randomUUID();
+  // QA 036: aprovar nao gera mais credencial propria - o `reset_token` gravado aqui
+  // nunca era lido por ninguem (nem e-mail, nem RPC, nem tela). O admin dispara o
+  // link nativo do GoTrue e a troca acontece em /auth/nova-senha (etapa 035).
+  const sendRecoveryLink = useMutation({
+    mutationFn: async ({ id, email, admin_notes }: { id: string; email: string; admin_notes?: string }) => {
+      const { error: linkError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/nova-senha`,
+      });
+
+      // Se o GoTrue recusa, o pedido nao muda de estado: nada de marcar como
+      // atendido um e-mail que nao saiu.
+      if (linkError) throw linkError;
       
       const { error } = await supabase
         .from('password_reset_requests')
@@ -105,13 +112,12 @@ export const usePasswordResetRequests = () => {
           admin_notes,
           reviewed_at: new Date().toISOString(),
           reviewed_by: user?.id,
-          reset_token: resetToken,
           expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h from now
         })
         .eq('id', id);
       
       if (error) throw error;
-      return { resetToken };
+      return { email };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['password-reset-requests'] });
@@ -162,7 +168,7 @@ export const usePasswordResetRequests = () => {
     myRequests,
     isLoading: pendingLoading || allLoading || myLoading,
     createRequest,
-    approveRequest,
+    sendRecoveryLink,
     rejectRequest,
     completeRequest,
     pendingCount: pendingRequests?.length ?? 0,
