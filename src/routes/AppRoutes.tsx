@@ -28,6 +28,10 @@ const HistoricoCompras = lazy(() => import("@/pages/historico/HistoricoCompras")
 const Contratos = lazy(() => import("@/pages/contratos/Contratos"));
 const ComplianceDashboard = lazy(() => import("@/pages/compliance/ComplianceDashboard"));
 const Auth = lazy(() => import("@/pages/auth/Auth"));
+// QA 035: tela aberta pelo link de recuperacao de senha do Supabase.
+const NovaSenha = lazy(() =>
+  import("@/pages/auth/Auth").then((m) => ({ default: m.NovaSenhaPage })),
+);
 const Seguranca = lazy(() => import("@/pages/seguranca/Seguranca"));
 const CatalogoSpot = lazy(() => import("@/pages/catalogo-spot/CatalogoSpot"));
 const CatalogoXbz = lazy(() => import("@/pages/catalogo-xbz/CatalogoXbz"));
@@ -89,6 +93,12 @@ export const AnimatedRoutes = () => {
           <Route path="/auth" element={
             <Suspense fallback={<PageLoader />}>
               <Auth />
+            </Suspense>
+          } />
+
+          <Route path="/auth/nova-senha" element={
+            <Suspense fallback={<PageLoader />}>
+              <NovaSenha />
             </Suspense>
           } />
 
