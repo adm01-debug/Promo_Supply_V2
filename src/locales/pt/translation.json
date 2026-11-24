@@ -42,7 +42,12 @@
     "contracts": "Contratos",
     "reports": "Relatórios",
     "audit": "Auditoria",
-    "security": "Segurança"
+    "security": "Segurança",
+    "new": "Novo"
+  },
+  "catalog": {
+    "title": "Catálogo de Produtos",
+    "subtitle": "Gerencie produtos, preços e categorias"
   },
   "dashboard": {
     "title": "Painel de Compras",

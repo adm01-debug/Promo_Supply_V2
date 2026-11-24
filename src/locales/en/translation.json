@@ -42,13 +42,18 @@
     "contracts": "Contracts",
     "reports": "Reports",
     "audit": "Audit",
-    "security": "Security"
+    "security": "Security",
+    "new": "New"
+  },
+  "catalog": {
+    "title": "Product Catalog",
+    "subtitle": "Manage products, prices and categories"
   },
   "dashboard": {
     "title": "Procurement Dashboard",
     "kpis": {
       "total_requests": "Total Requests",
-      "pending_approval": "Pending Approval",
+      "pending_approval": "Awaiting Quote",
       "active_quotes": "Active Quotes",
       "completed_orders": "Completed Orders",
       "total_spend": "Volume in Period",
