@@ -140,12 +140,12 @@ export const CotacaoManualModal = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Fornecedor */}
           <div className="space-y-2">
-            <Label>Fornecedor *</Label>
+            <Label htmlFor="cotacao-fornecedor">Fornecedor *</Label>
             <Select 
               value={formData.fornecedor} 
               onValueChange={(v) => setFormData(prev => ({ ...prev, fornecedor: v }))}
             >
-              <SelectTrigger className="bg-background">
+              <SelectTrigger id="cotacao-fornecedor" className="bg-background">
                 <SelectValue placeholder="Selecione o fornecedor..." />
               </SelectTrigger>
               <SelectContent className="bg-background border border-border z-50">
@@ -164,8 +164,9 @@ export const CotacaoManualModal = ({
           {/* Valores */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="space-y-2">
-              <Label>Valor Unitário (R$) *</Label>
+              <Label htmlFor="cotacao-valor-unitario">Valor Unitário (R$) *</Label>
               <Input
+                id="cotacao-valor-unitario"
                 type="number"
                 step="0.01"
                 min="0.01"
@@ -176,8 +177,9 @@ export const CotacaoManualModal = ({
               />
             </div>
             <div className="space-y-2">
-              <Label>Quantidade Disponível *</Label>
+              <Label htmlFor="cotacao-quantidade">Quantidade Disponível *</Label>
               <Input
+                id="cotacao-quantidade"
                 type="number"
                 min="1"
                 placeholder="0"
@@ -190,8 +192,9 @@ export const CotacaoManualModal = ({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="space-y-2">
-              <Label>Prazo Entrega (dias) *</Label>
+              <Label htmlFor="cotacao-prazo">Prazo Entrega (dias) *</Label>
               <Input
+                id="cotacao-prazo"
                 type="number"
                 min="1"
                 placeholder="0"
@@ -201,8 +204,9 @@ export const CotacaoManualModal = ({
               />
             </div>
             <div className="space-y-2">
-              <Label>Valor Frete (R$)</Label>
+              <Label htmlFor="cotacao-frete">Valor Frete (R$)</Label>
               <Input
+                id="cotacao-frete"
                 type="number"
                 step="0.01"
                 min="0"
@@ -215,12 +219,12 @@ export const CotacaoManualModal = ({
 
           {/* Condição de Pagamento */}
           <div className="space-y-2">
-            <Label>Condição de Pagamento *</Label>
+            <Label htmlFor="cotacao-condicao">Condição de Pagamento *</Label>
             <Select 
               value={formData.condicaoPagamento} 
               onValueChange={(v) => setFormData(prev => ({ ...prev, condicaoPagamento: v }))}
             >
-              <SelectTrigger className="bg-background">
+              <SelectTrigger id="cotacao-condicao" className="bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-background border border-border z-50">
@@ -234,8 +238,9 @@ export const CotacaoManualModal = ({
 
           {/* Validade */}
           <div className="space-y-2">
-            <Label>Validade da Cotação</Label>
+            <Label htmlFor="cotacao-validade">Validade da Cotação</Label>
             <Input
+              id="cotacao-validade"
               type="date"
               value={formData.validade}
               onChange={(e) => setFormData(prev => ({ ...prev, validade: e.target.value }))}
@@ -244,8 +249,9 @@ export const CotacaoManualModal = ({
 
           {/* Observações */}
           <div className="space-y-2">
-            <Label>Observações</Label>
+            <Label htmlFor="cotacao-observacoes">Observações</Label>
             <Textarea
+              id="cotacao-observacoes"
               placeholder="Informações adicionais..."
               value={formData.observacoes}
               onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}

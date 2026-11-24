@@ -88,7 +88,11 @@ export function Step1Identification({ formData, errors, updateField, empresas, p
                 updateField('vendedor', '');
               }}
             >
-              <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
+              <SelectTrigger
+                id="empresa"
+                aria-invalid={!!errors.empresa}
+                aria-describedby={errors.empresa ? "empresa-erro" : undefined}
+                className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
                 <SelectValue placeholder="Selecione a empresa" />
               </SelectTrigger>
               <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
@@ -107,7 +111,7 @@ export function Step1Identification({ formData, errors, updateField, empresas, p
               </SelectContent>
             </Select>
           </div>
-          {errors.empresa && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.empresa}</p>}
+          {errors.empresa && <p id="empresa-erro" role="alert" className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.empresa}</p>}
         </div>
         <div className="space-y-3">
           <Label htmlFor="vendedor" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
@@ -115,7 +119,11 @@ export function Step1Identification({ formData, errors, updateField, empresas, p
             Gestor Responsável *
           </Label>
           <Select value={formData.vendedor} onValueChange={(v) => updateField('vendedor', v)} disabled={!formData.empresa}>
-            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.vendedor && "border-rose-500/50")}>
+            <SelectTrigger
+              id="vendedor"
+              aria-invalid={!!errors.vendedor}
+              aria-describedby={errors.vendedor ? "vendedor-erro" : undefined}
+              className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.vendedor && "border-rose-500/50")}>
               <SelectValue placeholder="Selecione o gestor" />
             </SelectTrigger>
             <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
@@ -130,12 +138,12 @@ export function Step1Identification({ formData, errors, updateField, empresas, p
               ))}
             </SelectContent>
           </Select>
-          {errors.vendedor && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.vendedor}</p>}
+          {errors.vendedor && <p id="vendedor-erro" role="alert" className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.vendedor}</p>}
         </div>
       </div>
       <div className="space-y-4">
-        <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Nível de Prioridade Neural</Label>
-        <div className="grid grid-cols-2 gap-3 sm:flex sm:gap-3">
+        <span id="prioridade-label" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Nível de Prioridade Neural</span>
+        <div role="group" aria-labelledby="prioridade-label" className="grid grid-cols-2 gap-3 sm:flex sm:gap-3">
           {Object.entries(prioridadeConfig).map(([key, config]) => (
             <button key={key} type="button"
               className={cn("py-3 px-4 sm:flex-1 rounded-xl border-2 transition-all text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2",
@@ -188,14 +196,18 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             Categoria Inteligente *
           </Label>
           <Select value={formData.categoriaId} onValueChange={(v) => updateField('categoriaId', v)}>
-            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.categoriaId && "border-rose-500/50")}>
+            <SelectTrigger
+              id="categoria"
+              aria-invalid={!!errors.categoriaId}
+              aria-describedby={errors.categoriaId ? "categoriaId-erro" : undefined}
+              className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.categoriaId && "border-rose-500/50")}>
               <SelectValue placeholder="Selecione a categoria" />
             </SelectTrigger>
             <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
               {categorias.map(c => <SelectItem key={c.id} value={c.id} className="text-xs font-bold py-3">{c.nome}</SelectItem>)}
             </SelectContent>
           </Select>
-          {errors.categoriaId && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
+          {errors.categoriaId && <p id="categoriaId-erro" role="alert" className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
         </div>
         <div className="space-y-3">
           <Label htmlFor="produto" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
@@ -207,8 +219,11 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
+                id="produto"
                 role="combobox"
                 aria-expanded={open}
+                aria-invalid={!!errors.produto}
+                aria-describedby={errors.produto ? "produto-erro" : undefined}
                 className={cn("w-full justify-between h-12 rounded-xl bg-white/5 border-white/10 text-white font-bold hover:bg-white/[0.08]", !formData.produto && "text-zinc-500", errors.produto && "border-rose-500/50")}
               >
                 {formData.produto || "Selecionar ou digitar..."}
@@ -274,16 +289,16 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             />
           </div>
 
-          {errors.produto && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.produto}</p>}
+          {errors.produto && <p id="produto-erro" role="alert" className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.produto}</p>}
         </div>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="space-y-3">
           <Label htmlFor="quantidade" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Quantidade Precisa *</Label>
-          <Input id="quantidade" type="number" min="1" value={formData.quantidade || ''}
+          <Input id="quantidade" aria-invalid={!!errors.quantidade} aria-describedby={errors.quantidade ? "quantidade-erro" : undefined} type="number" min="1" value={formData.quantidade || ''}
             onChange={(e) => updateField('quantidade', parseInt(e.target.value, 10) || 0)}
             placeholder="0" className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.quantidade && "border-rose-500/50")} />
-          {errors.quantidade && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.quantidade}</p>}
+          {errors.quantidade && <p id="quantidade-erro" role="alert" className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.quantidade}</p>}
         </div>
         <div className="space-y-3">
           <Label htmlFor="prazoEntrega" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
@@ -291,7 +306,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             Limite de Entrega *
           </Label>
           <div className="space-y-2">
-            <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
+            <Input id="prazoEntrega" aria-invalid={!!errors.prazoEntrega} aria-describedby={errors.prazoEntrega ? "prazoEntrega-erro" : undefined} type="date" value={formData.prazoEntrega}
               onChange={(e) => updateField('prazoEntrega', e.target.value)}
               className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
             
@@ -304,12 +319,12 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
               </div>
             )}
           </div>
-          {errors.prazoEntrega && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
+          {errors.prazoEntrega && <p id="prazoEntrega-erro" role="alert" className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
         </div>
       </div>
       <div className="space-y-4">
-        <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Metodologia de Suprimento *</Label>
-        <div className="grid gap-3">
+        <span id="tipo-label" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Metodologia de Suprimento *</span>
+        <div role="group" aria-labelledby="tipo-label" className="grid gap-3">
           {Object.entries(tipoConfig).map(([key, config]) => (
             <button key={key} type="button"
               className={cn("p-4 rounded-2xl border-2 text-left transition-all duration-300",
@@ -344,10 +359,10 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         <div className="space-y-2">
           <Label htmlFor="valorEstimado" className="flex items-center gap-2"><DollarSign className="w-4 h-4" />Valor Estimado (R$) *</Label>
-          <Input id="valorEstimado" type="number" min="0" step="0.01" value={formData.valorEstimado || ''}
+          <Input id="valorEstimado" aria-invalid={!!errors.valorEstimado} aria-describedby={errors.valorEstimado ? "valorEstimado-erro" : undefined} type="number" min="0" step="0.01" value={formData.valorEstimado || ''}
             onChange={(e) => updateField('valorEstimado', parseFloat(e.target.value) || 0)}
             placeholder="0,00" className={cn(errors.valorEstimado && "border-destructive")} />
-          {errors.valorEstimado && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.valorEstimado}</p>}
+          {errors.valorEstimado && <p id="valorEstimado-erro" role="alert" className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.valorEstimado}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="costCenterId">Centro de Custo *</Label>
@@ -359,7 +374,11 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
               if (cc) updateField('centroCusto', cc.name);
             }}
           >
-            <SelectTrigger className={cn(errors.costCenterId && "border-destructive")}>
+            <SelectTrigger
+              id="costCenterId"
+              aria-invalid={!!errors.costCenterId}
+              aria-describedby={errors.costCenterId ? "costCenterId-erro" : undefined}
+              className={cn(errors.costCenterId && "border-destructive")}>
               <SelectValue placeholder={loadingCostCenters ? "Carregando..." : "Selecione o centro de custo"} />
             </SelectTrigger>
             <SelectContent>
@@ -368,7 +387,7 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
               ))}
             </SelectContent>
           </Select>
-          {errors.costCenterId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.costCenterId}</p>}
+          {errors.costCenterId && <p id="costCenterId-erro" role="alert" className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.costCenterId}</p>}
           
           {formData.costCenterId && formData.valorEstimado > 0 && (
             <div className="space-y-4">
@@ -436,7 +455,7 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
       </div>
 
       <div className="space-y-2">
-        <Label className="flex items-center gap-2">
+        <Label htmlFor="file-upload" className="flex items-center gap-2">
           <Upload className="w-4 h-4" />Anexos
           {isCompressing && <span className="text-xs text-muted-foreground flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" />Comprimindo...</span>}
         </Label>
