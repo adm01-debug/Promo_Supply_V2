@@ -39,6 +39,22 @@ export interface OsEventBody {
   payload?: unknown;
 }
 
+/**
+ * De onde veio a demanda de compra. O Promo Design manda a OS fechada; o
+ * Promo Champions manda o pedido aprovado (orcamento que virou pedido) e, nesse
+ * caso, os_id carrega o id do item do pedido.
+ */
+type Origem = "promo_design" | "promo_champions";
+
+function origemDe(source: unknown): Origem {
+  return text(source, 60) === "promo_champions" ? "promo_champions" : "promo_design";
+}
+
+const ROTULO_ORIGEM: Record<Origem, string> = {
+  promo_design: "Promo Design",
+  promo_champions: "Promo Champions",
+};
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function text(value: unknown, max = 500): string | null {
@@ -120,8 +136,12 @@ export function buildSolicitacaoDraft(
   const empresa = text(payload.empresa, 200);
   const obsOrigem = text(payload.observacoes, 2000);
 
+  const origem = origemDe(payload.source);
+  const rotuloOrigem = ROTULO_ORIGEM[origem];
+  const documento = origem === "promo_champions" ? "pedido" : "OS";
+
   const descricaoPartes = [
-    `Solicitacao gerada pelo fechamento da OS ${osNumber} no Promo Design.`,
+    `Solicitacao gerada pelo ${documento} ${osNumber} no ${rotuloOrigem}.`,
     `Produto: ${produto}.`,
     sku ? `SKU: ${sku}.` : null,
     tecnica ? `Tecnica: ${tecnica}.` : null,
@@ -132,14 +152,14 @@ export function buildSolicitacaoDraft(
   ].filter(Boolean);
 
   const observacoesPartes = [
-    `Origem: Promo Design (OS ${osNumber})`,
+    `Origem: ${rotuloOrigem} (${documento} ${osNumber})`,
     osId ? `os_id: ${osId}` : null,
     empresa ? `Cliente: ${empresa}` : null,
   ].filter(Boolean);
 
   return {
     numero: opts.numero,
-    titulo: `Compra p/ OS ${osNumber} — ${produto}`.slice(0, 200),
+    titulo: `Compra p/ ${documento} ${osNumber} — ${produto}`.slice(0, 200),
     descricao: descricaoPartes.join("\n").slice(0, 4000),
     tipo: "material",
     status: "pendente",

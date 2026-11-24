@@ -1,4 +1,4 @@
-﻿import { assertEquals, assertThrows } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals, assertThrows } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   buildSolicitacaoDraft,
   OsPayloadError,
@@ -137,4 +137,26 @@ Deno.test("campos de texto sao truncados no limite da coluna", () => {
   assertEquals(d.titulo.length <= 200, true);
   assertEquals(d.descricao.length <= 4000, true);
   assertEquals(d.observacoes.length <= 2000, true);
+});
+
+Deno.test("origem Promo Champions: texto fala de pedido, nao de OS do Design", () => {
+  const d = buildSolicitacaoDraft(
+    payload({ source: "promo_champions", os_number: "PED-000007" }),
+    opts,
+  );
+  assertEquals(d.titulo.toLowerCase().includes("pedido"), true);
+  assertEquals(d.titulo.includes("OS"), false);
+  assertEquals(d.descricao.includes("Promo Champions"), true);
+  assertEquals(d.descricao.includes("Promo Design"), false);
+  assertEquals(d.observacoes.includes("Promo Champions"), true);
+  assertEquals(d.external_ref, OS_ID);
+});
+
+Deno.test("origem ausente ou desconhecida cai no Promo Design (comportamento anterior)", () => {
+  const semSource = buildSolicitacaoDraft(payload({ source: undefined }), opts);
+  assertEquals(semSource.descricao.includes("Promo Design"), true);
+  assertEquals(semSource.titulo.includes("OS"), true);
+
+  const desconhecida = buildSolicitacaoDraft(payload({ source: "outro_sistema" }), opts);
+  assertEquals(desconhecida.descricao.includes("Promo Design"), true);
 });
