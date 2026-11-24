@@ -12,6 +12,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { toast } from "@/lib/feedbackToast";
 import { formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
+import { conciliarNotaComPedido, resolverFornecedorPorCnpj } from "./conciliacaoFiscal";
 
 type FiscalDocumentInsert = Database["public"]["Tables"]["fiscal_documents"]["Insert"];
 
@@ -59,6 +60,18 @@ const DocumentosFiscais = () => {
     },
   });
 
+  const { data: fornecedores } = useQuery({
+    queryKey: ["fornecedores-for-reconciliation"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("fornecedores")
+        .select("id, cnpj")
+        .limit(500);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const handleXmlUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -84,6 +97,11 @@ const DocumentosFiscais = () => {
       const vProd = parseFloat(getTag("vProd")) || 0;
       const vFrete = parseFloat(getTag("vFrete")) || 0;
       const vDesc = parseFloat(getTag("vDesc")) || 0;
+      // O emitente e a contraparte da nota: sem ele a conciliacao nao tem como
+      // distinguir dois pedidos de mesmo valor.
+      const cnpjEmitente =
+        xml.querySelector("emit > CNPJ")?.textContent || getTag("CNPJ") || "";
+      const fornecedorId = resolverFornecedorPorCnpj(fornecedores, cnpjEmitente);
 
       const { data: { user } } = await supabase.auth.getUser();
       const payload: FiscalDocumentInsert = {
@@ -96,6 +114,7 @@ const DocumentosFiscais = () => {
         valor_frete: vFrete,
         valor_desconto: vDesc,
         status: "validada",
+        fornecedor_id: fornecedorId,
         uploaded_by: user?.id ?? null,
         tenant_id: LEGACY_TENANT_ID,
       };
@@ -191,25 +210,35 @@ const DocumentosFiscais = () => {
       const doc = documents?.find(d => d.id === docId);
       if (!doc) throw new Error("Documento não encontrado");
 
-      const match = pedidos?.find(p => Math.abs(Number(p.valor_total) - Number(doc.valor_total)) < 0.01);
+      const resultado = conciliarNotaComPedido(doc, pedidos);
 
       const { error } = await supabase
         .from("fiscal_documents")
         .update({
-          pedido_id: match?.id || null,
-          reconciliation_status: match ? "matched" : "unmatched",
-          reconciliation_notes: match
-            ? `Conciliado com pedido ${match.numero}`
-            : "Nenhum pedido correspondente encontrado",
+          pedido_id: resultado.pedido?.id ?? null,
+          reconciliation_status: resultado.status,
+          reconciliation_notes: resultado.motivo,
         })
         .eq("id", docId);
 
       if (error) throw error;
-      return match;
+      return resultado;
     },
-    onSuccess: (match) => {
+    onSuccess: (resultado) => {
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
-      toast.success(match ? "NF conciliada com pedido!" : "Nenhum pedido correspondente encontrado");
+      if (resultado.status === "matched") {
+        toast.success(`NF conciliada com o pedido ${resultado.pedido?.numero}!`);
+        return;
+      }
+      if (resultado.motivoCodigo === "ambiguo") {
+        toast.warning("Mais de um pedido do mesmo fornecedor com este valor: escolha manual necessaria.");
+        return;
+      }
+      if (resultado.motivoCodigo === "fornecedor-desconhecido") {
+        toast.warning("Fornecedor da nota nao identificado: importe o XML ou vincule manualmente.");
+        return;
+      }
+      toast.error(resultado.motivo);
     },
     onError: () => toast.error("Erro na conciliação"),
   });
