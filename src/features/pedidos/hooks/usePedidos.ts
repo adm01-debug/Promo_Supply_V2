@@ -141,6 +141,19 @@ export function usePedidos(filters?: PedidoFilters) {
 
     try {
       logger.info('Iniciando criação de pedido de compra', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id, valorTotal: input.valor_total });
+      if (input.solicitacao_id) {
+        const { data: solicitacao } = await supabase
+          .from('solicitacoes')
+          .select('status')
+          .eq('id', input.solicitacao_id)
+          .single();
+
+        if (solicitacao?.status !== 'aprovada') {
+          toast.error('Só é possível gerar ordem de compra de uma solicitação aprovada');
+          logger.warn('Pedido recusado: solicitacao nao aprovada', { solicitacaoId: input.solicitacao_id, status: solicitacao?.status });
+          return null;
+        }
+      }
       const { data: numData } = await supabase.rpc('generate_sequential_number', {
         prefix: 'PED', table_name: 'pedidos'
       });
