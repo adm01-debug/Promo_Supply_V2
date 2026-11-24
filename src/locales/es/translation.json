@@ -42,13 +42,18 @@
     "contracts": "Contratos",
     "reports": "Informes",
     "audit": "Auditoría",
-    "security": "Seguridad"
+    "security": "Seguridad",
+    "new": "Nuevo"
+  },
+  "catalog": {
+    "title": "Catálogo de Productos",
+    "subtitle": "Gestione productos, precios y categorías"
   },
   "dashboard": {
     "title": "Tablero de Compras",
     "kpis": {
       "total_requests": "Total Solicitudes",
-      "pending_approval": "Pendiente Aprobación",
+      "pending_approval": "Esperando Cotización",
       "active_quotes": "Cotizaciones Activas",
       "completed_orders": "Pedidos Completados",
       "total_spend": "Volumen en el Período",

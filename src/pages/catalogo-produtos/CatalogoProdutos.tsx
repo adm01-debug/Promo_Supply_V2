@@ -146,11 +146,11 @@ const CatalogoProdutos = () => {
     <div className="space-y-4">
       <PageHeader
         icon={Package}
-        title={t("catalog.title", "Catálogo de Produtos")}
-        description={t("catalog.subtitle", "Gerencie produtos, preços e categorias")}
+        title={t("catalog.title")}
+        description={t("catalog.subtitle")}
         actions={[
           {
-            label: t("common.new", "Novo"),
+            label: t("common.new"),
             icon: Plus,
             onClick: openCreate,
           },
