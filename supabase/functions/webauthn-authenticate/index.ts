@@ -183,22 +183,6 @@ Deno.serve(async (req) => {
       // assinatura estiver implementada e testada.
       throw new Error('Login por passkey desabilitado: verificação de assinatura pendente. Use e-mail/senha.');
 
-      // Update counter and last used
-      const newCounter = (storedCred.counter || 0) + 1;
-      await supabase
-        .from('webauthn_credentials')
-        .update({ 
-          counter: newCounter, 
-          last_used_at: new Date().toISOString() 
-        })
-        .eq('id', storedCred.id);
-
-      // Clean up the challenge
-      await supabase
-        .from('webauthn_challenges')
-        .delete()
-        .eq('id', challengeData.id);
-
       // Generate a custom access token for the user
       // Using magic link as a workaround since we've verified the user via passkey
       const { data: signInData, error: signInError } = await supabase.auth.admin.generateLink({
