@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `eb55789ed7cd07e93d6b2f3ebab1a757d832c4ce` (2026-11-24T08:11:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `57ebeb09330d0837cb70e0fc2866d7ff796f6307` (2026-11-24T08:13:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1399 |
 | arquivos_codigo | 895 |
-| linhas_codigo | 181755 |
+| linhas_codigo | 181806 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -308,7 +308,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - SDKs: Supabase, i18next, react-query, zod
 - hosts mais citados: wa.me, api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, api.pwnedpasswords.com, erp.empresa.com, example.okta.com, fornecedor.com.br, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, openrouter.ai, raw.githubusercontent.com, xml.cxml.org
 - webhooks recebidos: dependency-health, punchout-receive, receive-os-sync, scim-v2, webauthn-authenticate
-- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
+- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, OPENROUTER_API_KEY, PROMO_CHAMPIONS_WEBHOOK_SECRET, PROMO_DESIGN_WEBHOOK_SECRET, RESEND_API_KEY, SCIM_BEARER_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
 
 ## Permissões / papéis
 - papéis no código: user (9), system (7), admin (5), assistant (1)
@@ -421,6 +421,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `57ebeb0` feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)
 - 2026-11-24 `eb55789` fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)
 - 2026-11-24 `d08b3c4` fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)
 - 2026-11-24 `45c9c55` fix(ordem): envia endereco real da empresa no e-mail da OC (#406)
@@ -435,7 +436,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `4accdce` chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)
 - 2026-11-24 `18ef743` chore(db): sincronizar types.ts com o banco [auto] (#340)
 - 2026-11-24 `a865fce` fix: pedido complementar herda organization_id do pedido original (#397)
-- 2026-11-24 `c4f8690` fix: edge de escalonamento passa a usar o status que o banco aceita (#390)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

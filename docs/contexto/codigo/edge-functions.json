@@ -1031,7 +1031,7 @@
    "nome": "receive-os-sync",
    "entrada": "supabase/functions/receive-os-sync/index.ts",
    "arquivos": 2,
-   "linhas": 399,
+   "linhas": 428,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -1047,6 +1047,7 @@
     "generate_sequential_number"
    ],
    "env": [
+    "PROMO_CHAMPIONS_WEBHOOK_SECRET",
     "PROMO_DESIGN_WEBHOOK_SECRET",
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"

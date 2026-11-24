@@ -2180,11 +2180,11 @@
   {
    "arquivo": "supabase/functions/receive-os-sync/mapping.test.ts",
    "tipo": "unit",
-   "linhas": 141,
+   "linhas": 163,
    "testa": [
     "supabase/functions/receive-os-sync/mapping.ts"
    ],
-   "casos": 15
+   "casos": 17
   },
   {
    "arquivo": "supabase/functions/run-audit/rls_test.ts",

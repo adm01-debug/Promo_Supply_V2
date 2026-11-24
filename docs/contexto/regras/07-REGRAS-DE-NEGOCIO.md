@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `eb55789ed7` · branch `main` · 2026-11-24 11:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `57ebeb0933` · branch `main` · 2026-11-24 11:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2452,7 +2452,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3149 testes em 208 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3151 testes em 208 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2533,6 +2533,7 @@ _nenhum item encontrado_
 | `src/components/compras/enhanced-kpi/__tests__/colorClasses.test.ts` | 18 | colorClasses · has 11 color entries · covers all KpiColor values · every entry has bg, text, border, gradient strings … |
 | `src/lib/__tests__/safeTruncate.test.ts` | 18 | safeTruncate (frontend) · retorna a string original quando cabe no limite · respeita o limite em ASCII · nunca deixa lone high surrogate ao cortar entre surrogate pair … |
 | `src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts` | 17 | statusDaEtapa · traduz os status que o banco grava · a etapa pendente na etapa_atual do workflow e a atual · etapa com decidido_em conta como concluida mesmo sem status explicito … |
+| `supabase/functions/receive-os-sync/mapping.test.ts` | 17 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/components/compras/__tests__/followUpReal.test.tsx` | 16 | descreverFollowUp · sem registro nao afirma envio · com registro usa o status e o atraso reais · sem atraso nao inventa  … |
 | `src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts` | 16 | KNOWN_SUPPLIERS · is an array · has 6 supplier entries · every entry has id and name strings … |
 | `src/features/layout/transitions/__tests__/presets.test.ts` | 16 | PRESETS · has exactly 12 entries · covers all TransitionName values · every preset has initial, animate, exit, and transition … |
@@ -2542,7 +2543,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
 | `src/lib/__tests__/creditoFornecedor.test.ts` | 15 | calcularAbatimentoCredito · acumula o valor utilizado em vez de substituir · marca o credito como utilizado quando o saldo zera · nunca deixa o saldo negativo … |
 | `src/pages/pedidos/__tests__/followUpPedido.test.tsx` | 15 | montarInteracoesPedido · sem cotacao e sem notificacao devolve lista vazia, sem dialogo fabricado · cotacao sem last_follow_up_at nao gera registro de follow-up · usa a data e o status reais do follow-up gravado na cotacao … |
-| `supabase/functions/receive-os-sync/mapping.test.ts` | 15 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts` | 14 | montarPessoas · usa o user_id como id, que e o valor de aprovador_id · cai para display_name e depois e-mail quando nao ha nome completo · descarta linha sem user_id: sem id nao ha o que gravar … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
