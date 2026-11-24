@@ -258,7 +258,7 @@ export function SupplierChat() {
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent aria-describedby="dialog-desc" className="max-w-4xl h-[600px] p-0 gap-0">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-4xl h-[min(600px,85vh)] p-0 gap-0">
           <div className="flex h-full">
             {/* Contacts Sidebar */}
             <div className="w-80 border-r flex flex-col">
