@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d1500f17ec` · branch `main` · 2026-11-24 16:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d93a2dfb51` · branch `main` · 2026-11-24 17:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3339 testes em 235 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3348 testes em 236 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2564,6 +2564,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useWorkflowDLQ.test.ts` | 10 | useWorkflowDLQ · starts with empty queue · pushToDLQ adds entry and persists to localStorage · hydrates from localStorage on mount … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 10 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
+| `src/components/accessibility/__tests__/skipLinks.test.tsx` | 9 | os links de pular levam a alvos que existem · so oferece conteudo principal e navegacao, sem link morto de busca · todo href de pular aponta para um id que alguma tela declara · cada breakpoint tem exatamente uma navegacao alcancavel … |
 | `src/components/compras/__tests__/cotacaoManualCampos.test.tsx` | 9 | CotacaoManualModal entrega os campos que coleta · grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em  · leva validade e observacoes no payload, com o fornecedor do cadastro · nao manda string vazia de validade nem de observacoes … |
 | `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 9 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — SLA vem da RPC, não de literal … |

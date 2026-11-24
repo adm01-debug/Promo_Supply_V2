@@ -1054,6 +1054,7 @@
   ],
   "src/components/mobile/BottomNavigation.tsx": [
    "src/components/ui/drawer.tsx",
+   "src/hooks/use-mobile.tsx",
    "src/integrations/supabase/client.ts",
    "src/lib/utils.ts"
   ],
@@ -1780,6 +1781,7 @@
    "src/features/layout/components/QuickActionsFAB.tsx",
    "src/features/layout/components/SupplierChat.tsx",
    "src/features/layout/transitions/index.ts",
+   "src/hooks/use-mobile.tsx",
    "src/hooks/useGlobalUndo.ts",
    "src/hooks/useKeyboardShortcuts.ts",
    "src/hooks/usePerformanceMonitor.ts",

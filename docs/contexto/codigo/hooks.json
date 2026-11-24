@@ -661,13 +661,15 @@
     "useEffect"
    ],
    "canais_realtime": [],
-   "usado_por": 8,
+   "usado_por": 10,
    "usado_por_arquivos": [
     "src/components/fornecedores/FornecedorMobileCard.tsx",
+    "src/components/mobile/BottomNavigation.tsx",
     "src/components/mobile/MobileRefreshWrapper.tsx",
     "src/components/mobile/SwipeableListItem.tsx",
     "src/components/onboarding/OnboardingTour.tsx",
     "src/components/ui/sidebar.tsx",
+    "src/features/layout/components/MainLayout.tsx",
     "src/pages/fornecedores/Fornecedores.tsx",
     "src/pages/pagamentos/Pagamentos.tsx",
     "src/pages/pedidos/Pedidos.tsx"

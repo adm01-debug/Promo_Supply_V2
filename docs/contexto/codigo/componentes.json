@@ -53,7 +53,7 @@
     "App"
    ],
    "export_default": "App",
-   "linhas": 91,
+   "linhas": 90,
    "dominio": null,
    "hooks_locais": [
     "useAuth",
@@ -105,7 +105,7 @@
     "SkipLinks"
    ],
    "export_default": null,
-   "linhas": 114,
+   "linhas": 108,
    "dominio": "components/accessibility",
    "hooks_locais": [],
    "tabelas": [],
@@ -1882,9 +1882,11 @@
     "BottomNavigation"
    ],
    "export_default": "BottomNavigation",
-   "linhas": 266,
+   "linhas": 270,
    "dominio": "components/mobile",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useIsMobile"
+   ],
    "tabelas": [
     "pagamentos",
     "pedidos",
@@ -3889,11 +3891,12 @@
     "MainLayout"
    ],
    "export_default": null,
-   "linhas": 190,
+   "linhas": 192,
    "dominio": "features/layout",
    "hooks_locais": [
     "useCommandPalette",
     "useGlobalUndo",
+    "useIsMobile",
     "useKeyboardShortcuts",
     "usePerformanceMonitor",
     "useScrollRestoration",
