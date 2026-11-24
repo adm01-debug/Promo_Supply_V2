@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
+  "sha": "51bc109253ef20698fba73d72168a8ca4917b9d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:45 UTC",
-  "files_total": 1360,
-  "code_files": 1189,
-  "code_lines": 203565,
+  "generated_at": "2026-11-24 04:56 UTC",
+  "files_total": 1363,
+  "code_files": 1192,
+  "code_lines": 203820,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6e105da2d2fe1b5a",
+ "facts_hash": "955623016710a9ef",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 416,
+   ".ts": 419,
    ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
@@ -33806,6 +33806,10 @@
     "file": "src/features/pedidos/hooks/usePedidos.ts"
    },
    {
+    "name": "usePessoasDaEmpresa",
+    "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts"
+   },
+   {
     "name": "useSolicitacoes",
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts"
    },
@@ -34754,7 +34758,7 @@
   {
    "module": "src/components",
    "files": 264,
-   "lines": 49301,
+   "lines": 49353,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35230,22 +35234,28 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 6,
-   "lines": 749,
+   "files": 9,
+   "lines": 952,
    "tables": [
     "cost_centers",
+    "profiles",
     "solicitacoes"
    ],
    "exports": [
+    "pessoasDaEmpresa.ts: PessoaDaEmpresa, ProfileRow, EmpresaOpcao, EmpresaRow, nomeDaPessoa, montarPessoas",
+    "usePessoasDaEmpresa.ts: usePessoasDaEmpresa",
     "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, solicitacoesQueryKey, fetchSolicitacoesData, useSolicitacoes",
     "solicitacao.schemas.ts: SolicitacaoStatusSchema, SolicitacaoPrioridadeSchema, CreateSolicitacaoSchema, CreateSolicitacaoInput"
    ],
    "docs": [
+    "pessoasDaEmpresa.ts: Opcoes de \"Entidade Solicitante\" e \"Gestor Responsavel\" do formulario de solicitacao, montadas a partir do que existe no banco. Antes destas funcoes o formulario oferecia listas fixas (\"Promo Supply\", \"Joao Silva\", ...) e gravava o nome escolhido no lugar do vinculo real.",
     "useSolicitacoes.rls.test.tsx: Regressão (migration 20261113123738): comprador não altera/exclui solicitação de outro. O RLS do Postgres filtra a linha em silêncio — o PostgREST devolve 0 linhas e nenhum erro. Antes o hook mostrava \"Solicitação atualizada!\" mesmo sem gravar nada; agora tem de falhar."
    ],
    "deps": [
     "@tanstack/react-query",
     "@testing-library/react",
+    "node:fs",
+    "node:path",
     "react",
     "vitest",
     "zod"
@@ -35259,6 +35269,9 @@
    ],
    "file_list": [
     "src/features/solicitacoes/index.ts",
+    "src/features/solicitacoes/pessoasDaEmpresa.ts",
+    "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
@@ -37305,6 +37318,7 @@
     ],
     "select": [
      "src/features/auth/hooks/useAuth.tsx",
+     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/lib/storageFiles.ts",
      "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
@@ -38398,6 +38412,7 @@
     "created_at",
     "current_organization_id",
     "department",
+    "display_name",
     "email",
     "full_name",
     "id",
@@ -57509,6 +57524,10 @@
     "line": "typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);"
    },
    {
+    "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+    "line": "staleTime: 5 * 60 * 1000,"
+   },
+   {
     "file": "src/hooks/useBuyerPerformanceData.ts",
     "line": "const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);"
    },
@@ -61707,6 +61726,62 @@
    {
     "file": "src/features/layout/transitions/__tests__/presets.test.ts",
     "name": "does not add delay key when delay not in overrides"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "montarPessoas"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "usa o user_id como id, que e o valor de aprovador_id"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "cai para display_name e depois e-mail quando nao ha nome completo"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "descarta linha sem user_id: sem id nao ha o que gravar"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "nao repete a mesma pessoa e ordena por nome em pt-BR"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "lista vazia devolve vazio"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "montarEmpresas"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "mapeia nome e cnpj e mantem o id real"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "cnpj vazio vira null e empresa sem nome e descartada"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "nao repete a mesma empresa e ordena por nome"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "as telas nao voltam para as listas ficticias"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "o formulario de solicitacao nao tem nomes de empresa nem de pessoa inventados"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "o modal grava o aprovador real e nao inventa descricao"
+   },
+   {
+    "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    "name": "o filtro avancado lista as empresas do usuario"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -77790,6 +77865,10 @@
     "limit": "20"
    },
    {
+    "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+    "limit": "200"
+   },
+   {
     "file": "src/hooks/useApprovalHistory.ts",
     "limit": "100"
    },
@@ -93447,7 +93526,7 @@
   },
   "src/components/compras/FiltrosAvancados.tsx": {
    "path": "src/components/compras/FiltrosAvancados.tsx",
-   "lines": 288,
+   "lines": 292,
    "exports": [
     "interface AdvancedFilters",
     "function FiltrosAvancados"
@@ -93575,7 +93654,7 @@
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
    "path": "src/components/compras/NovaSolicitacaoModal.tsx",
-   "lines": 459,
+   "lines": 484,
    "exports": [
     "function NovaSolicitacaoModal"
    ],
@@ -96267,7 +96346,7 @@
   },
   "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx": {
    "path": "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-   "lines": 444,
+   "lines": 467,
    "exports": [
     "function Step1Identification",
     "function Step2Specifications",
@@ -99598,6 +99677,72 @@
   "src/features/solicitacoes/index.ts": {
    "path": "src/features/solicitacoes/index.ts",
    "lines": 3
+  },
+  "src/features/solicitacoes/pessoasDaEmpresa.ts": {
+   "path": "src/features/solicitacoes/pessoasDaEmpresa.ts",
+   "lines": 66,
+   "exports": [
+    "interface PessoaDaEmpresa",
+    "interface ProfileRow",
+    "interface EmpresaOpcao",
+    "interface EmpresaRow",
+    "const nomeDaPessoa",
+    "const montarPessoas",
+    "const montarEmpresas"
+   ],
+   "doc": "Opcoes de \"Entidade Solicitante\" e \"Gestor Responsavel\" do formulario de solicitacao, montadas a partir do que existe no banco. Antes destas funcoes o formulario oferecia listas fixas (\"Promo Supply\", \"Joao Silva\", ...) e gravava o nome escolhido no lugar do vinculo real."
+  },
+  "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts": {
+   "path": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+   "lines": 99,
+   "is_test": true,
+   "tests": [
+    "montarPessoas",
+    "usa o user_id como id, que e o valor de aprovador_id",
+    "cai para display_name e depois e-mail quando nao ha nome completo",
+    "descarta linha sem user_id: sem id nao ha o que gravar",
+    "nao repete a mesma pessoa e ordena por nome em pt-BR",
+    "lista vazia devolve vazio",
+    "montarEmpresas",
+    "mapeia nome e cnpj e mantem o id real",
+    "cnpj vazio vira null e empresa sem nome e descartada",
+    "nao repete a mesma empresa e ordena por nome",
+    "as telas nao voltam para as listas ficticias",
+    "o formulario de solicitacao nao tem nomes de empresa nem de pessoa inventados",
+    "o modal grava o aprovador real e nao inventa descricao",
+    "o filtro avancado lista as empresas do usuario"
+   ]
+  },
+  "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": {
+   "path": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+   "lines": 38,
+   "exports": [
+    "function usePessoasDaEmpresa"
+   ],
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "display_name",
+     "email",
+     "full_name",
+     "tenant_id",
+     "user_id"
+    ]
+   },
+   "hooks": [
+    "usePessoasDaEmpresa"
+   ],
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
+   ],
+   "pagination": [
+    "200"
+   ]
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -118044,10 +118189,25 @@
   }
  },
  "git": {
-  "sha": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
+  "sha": "51bc109253ef20698fba73d72168a8ca4917b9d6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "51bc109",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: entidade solicitante e gestor responsavel com dado real (etapas 101 e 102) (#374)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/FiltrosAvancados.tsx",
+     "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
+     "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+     "src/features/solicitacoes/pessoasDaEmpresa.ts"
+    ]
+   },
    {
     "sha": "9269c98",
     "date": "2026-11-24",
@@ -118398,18 +118558,6 @@
      "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
      "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
     ]
-   },
-   {
-    "sha": "c318737",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
-     "src/hooks/usePrefetch.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -118454,6 +118602,30 @@
     2
    ],
    [
+    "src/components/compras/FiltrosAvancados.tsx",
+    1
+   ],
+   [
+    "src/components/compras/NovaSolicitacaoModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
+    1
+   ],
+   [
+    "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+    1
+   ],
+   [
+    "src/features/solicitacoes/pessoasDaEmpresa.ts",
+    1
+   ],
+   [
     "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
     1
    ],
@@ -118467,30 +118639,6 @@
    ],
    [
     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-    1
-   ],
-   [
-    "src/pages/solicitacoes/solicitacoesHelpers.ts",
-    1
-   ],
-   [
-    "src/pages/aprovacoes/Aprovacoes.tsx",
-    1
-   ],
-   [
-    "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
-    1
-   ],
-   [
-    "src/pages/aprovacoes/aprovacoesData.ts",
-    1
-   ],
-   [
-    "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     1
    ]
   ]

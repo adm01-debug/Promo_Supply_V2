@@ -1048,9 +1048,11 @@
     "FiltrosAvancados"
    ],
    "export_default": null,
-   "linhas": 288,
+   "linhas": 292,
    "dominio": "components/compras",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -1154,11 +1156,12 @@
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 459,
+   "linhas": 484,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",
-    "useImageCompression"
+    "useImageCompression",
+    "usePessoasDaEmpresa"
    ],
    "tabelas": [
     "solicitacoes"
@@ -1456,7 +1459,7 @@
     "Step3Values"
    ],
    "export_default": null,
-   "linhas": 444,
+   "linhas": 467,
    "dominio": "components/compras",
    "hooks_locais": [
     "useProdutos",

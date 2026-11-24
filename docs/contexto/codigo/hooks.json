@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 91,
+ "total": 92,
  "hooks": [
   {
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
@@ -330,13 +330,14 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 71,
+   "usado_por": 72,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/admin/TenantSwitcher.tsx",
     "src/components/compras/BuyerPerformancePanel.tsx",
     "src/components/compras/ContractDetailsModal.tsx",
+    "src/components/compras/FiltrosAvancados.tsx",
     "src/components/compras/NovaSolicitacaoModal.tsx",
     "src/components/compras/PenaltyEscalationConfigPanel.tsx",
     "src/components/compras/ProductSupplierManager.tsx",
@@ -360,8 +361,7 @@
     "src/features/layout/components/SupplierChat.tsx",
     "src/features/layout/components/UserMenu.tsx",
     "src/features/pedidos/hooks/usePedidos.ts",
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "src/hooks/useApprovalRules.ts"
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
    ],
    "coberto_por_testes": 3
   },
@@ -536,6 +536,28 @@
    "usado_por": 1,
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
+   ],
+   "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+   "hooks_exportados": [
+    "usePessoasDaEmpresa"
+   ],
+   "linhas": 38,
+   "dominio": "features/solicitacoes",
+   "tabelas": [
+    "profiles"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/components/compras/NovaSolicitacaoModal.tsx"
    ],
    "coberto_por_testes": 0
   },

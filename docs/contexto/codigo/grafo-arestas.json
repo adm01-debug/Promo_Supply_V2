@@ -444,6 +444,8 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/sheet.tsx",
    "src/components/ui/slider.tsx",
+   "src/features/auth/index.ts",
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/FornecedorModal.tsx": [
@@ -507,6 +509,8 @@
    "src/components/ui/separator.tsx",
    "src/components/ui/textarea.tsx",
    "src/features/auth/index.ts",
+   "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
    "src/hooks/useImageCompression.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
@@ -993,6 +997,7 @@
    "src/components/ui/select.tsx",
    "src/components/ui/textarea.tsx",
    "src/features/solicitacoes/index.ts",
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
    "src/hooks/useProdutos.ts",
    "src/lib/imageCompression.ts",
    "src/lib/utils.ts",
@@ -1914,6 +1919,10 @@
   ],
   "src/features/pedidos/index.ts": [
    "src/features/pedidos/hooks/usePedidos.ts"
+  ],
+  "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": [
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
+   "src/integrations/supabase/client.ts"
   ],
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": [
    "src/features/auth/index.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9269c9838d` · branch `main` · 2026-11-24 04:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `51bc109253` · branch `main` · 2026-11-24 04:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1880,6 +1880,7 @@ _nenhum item encontrado_
 | `const weekEnd = addWeeks(weekStart, 1);` | `src/components/pagamentos/PagamentoFinancialDashboard.tsx` |
 | `: new Date(Date.now() + parseInt(expiresHours, 10) * 60 * 60 * 1000).toISOString();` | `src/components/security/BlockedIPsPanel.tsx` |
 | `typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);` | `src/features/layout/components/SupplierChat.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useBuyerPerformanceData.ts` |
 | `const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at \|\| Date.now()).getTime()) / (1000 * 60 * 60 * 24)));` | `src/hooks/useExecutiveDashboardData.ts` |
 | `const diff = (new Date().getTime() - new Date(p.data_previsao as string).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useExecutiveDashboardData.ts` |
@@ -2066,6 +2067,7 @@ _nenhum item encontrado_
 | 10 | `src/components/compras/SupplierRiskAnalysis.tsx` |
 | 200 | `src/components/security/GeoAccessLogsPanel.tsx` |
 | 20 | `src/features/layout/components/AdvancedSearch.tsx` |
+| 200 | `src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts` |
 | 100 | `src/hooks/useApprovalHistory.ts` |
 | 500 | `src/hooks/useApprovalWorkflow.ts` |
 | 1 | `src/hooks/useGeoRestriction.ts` |
@@ -2436,7 +2438,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2920 testes em 177 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2934 testes em 178 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2524,6 +2526,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
 | `src/lib/__tests__/creditoFornecedor.test.ts` | 15 | calcularAbatimentoCredito · acumula o valor utilizado em vez de substituir · marca o credito como utilizado quando o saldo zera · nunca deixa o saldo negativo … |
 | `supabase/functions/receive-os-sync/mapping.test.ts` | 15 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
+| `src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts` | 14 | montarPessoas · usa o user_id como id, que e o valor de aprovador_id · cai para display_name e depois e-mail quando nao ha nome completo · descarta linha sem user_id: sem id nao ha o que gravar … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |

@@ -1196,6 +1196,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -1297,6 +1298,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -1425,7 +1427,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 344
+   "arquivos_puxados": 346
   },
   {
    "protegida": true,
@@ -1506,6 +1508,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -1603,6 +1606,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -1721,7 +1725,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 349
+   "arquivos_puxados": 351
   },
   {
    "protegida": true,
@@ -1970,6 +1974,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -2065,6 +2070,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -2181,7 +2187,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 340
+   "arquivos_puxados": 342
   },
   {
    "protegida": true,
@@ -3050,6 +3056,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -3145,6 +3152,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -3261,7 +3269,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 340
+   "arquivos_puxados": 342
   },
   {
    "protegida": true,
@@ -3401,6 +3409,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -3497,6 +3506,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -3614,7 +3624,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 341
+   "arquivos_puxados": 343
   },
   {
    "protegida": true,
@@ -3873,6 +3883,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePortalFornecedorData",
     "usePrefersReducedMotion",
     "usePrefetch",
@@ -3969,6 +3980,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePortalFornecedorData",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -4087,7 +4099,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 339
+   "arquivos_puxados": 341
   },
   {
    "protegida": true,
@@ -4167,6 +4179,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -4263,6 +4276,7 @@
     "usePedidos",
     "usePedidosKPIs",
     "usePerformanceMonitor",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -4384,7 +4398,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 342
+   "arquivos_puxados": 344
   },
   {
    "protegida": true,
@@ -4715,6 +4729,7 @@
     "usePedidosKPIs",
     "usePerformanceMonitor",
     "usePermissions",
+    "usePessoasDaEmpresa",
     "usePrefersReducedMotion",
     "usePrefetch",
     "usePriceHistoryAnalysis",
@@ -4817,6 +4832,7 @@
     "usePedidosKPIs",
     "usePerformanceMonitor",
     "usePermissions",
+    "usePessoasDaEmpresa",
     "usePrefetch",
     "usePriceHistoryAnalysis",
     "useProdutoFornecedores",
@@ -4953,7 +4969,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 361
+   "arquivos_puxados": 363
   },
   {
    "protegida": true,
@@ -4991,6 +5007,7 @@
     "useMotionValue",
     "useMutation",
     "useNavigate",
+    "usePessoasDaEmpresa",
     "useProdutos",
     "usePullToRefresh",
     "useQuery",
@@ -5022,6 +5039,7 @@
     "useImageCompression",
     "useIsMobile",
     "useLongPress",
+    "usePessoasDaEmpresa",
     "useProdutos",
     "usePullToRefresh",
     "useRealtimeSubscription",
@@ -5065,7 +5083,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 102
+   "arquivos_puxados": 104
   },
   {
    "protegida": true,

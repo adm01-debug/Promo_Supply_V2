@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
+  "commit": "51bc109253ef20698fba73d72168a8ca4917b9d6",
   "branch": "main",
-  "data_commit": "2026-11-24T01:43:45-03:00",
+  "data_commit": "2026-11-24T01:56:02-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "51bc109",
+    "data": "2026-11-24",
+    "assunto": "fix: entidade solicitante e gestor responsavel com dado real (etapas 101 e 102) (#374)"
+   },
    {
     "sha": "9269c98",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "d150caf",
     "data": "2026-11-23",
     "assunto": "fix(realtime): nao reinscreve o canal quando a lista de tabelas tem o mesmo conteudo (#347)"
-   },
-   {
-    "sha": "cd9ae3f",
-    "data": "2026-11-23",
-    "assunto": "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)"
    }
   ],
-  "arquivos_mudados_7d": 395,
+  "arquivos_mudados_7d": 400,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 162
+    "mudancas": 164
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "pasta": "src/lib/__tests__",
@@ -192,8 +192,8 @@
     "mudancas": 17
    },
    {
-    "pasta": "src/components/pagamentos",
-    "mudancas": 13
+    "pasta": "src/features/solicitacoes",
+    "mudancas": 14
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,21 +314,21 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1359,
-  "arquivos_codigo": 856,
-  "linhas_codigo": 176381,
+  "arquivos_total": 1362,
+  "arquivos_codigo": 859,
+  "linhas_codigo": 176636,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
   "itens_menu": 47,
   "modulos": 87,
   "componentes": 330,
-  "hooks": 91,
+  "hooks": 92,
   "edge_functions": 41,
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 228,
+  "testes": 229,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -428,11 +428,11 @@
   },
   "src/components": {
    "arquivos": 264,
-   "linhas": 49301
+   "linhas": 49353
   },
   "src/features": {
-   "arquivos": 68,
-   "linhas": 9164
+   "arquivos": 71,
+   "linhas": 9367
   },
   "src/hooks": {
    "arquivos": 83,

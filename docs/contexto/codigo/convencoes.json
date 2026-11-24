@@ -12,8 +12,8 @@
   ],
   "hooks": [
    "src/hooks (61)",
-   "src/components (11)",
-   "src/features (11)"
+   "src/features (12)",
+   "src/components (11)"
   ],
   "servicos_logica": [
    "src/lib (27)",
@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (135)",
+   "co-localizado (__tests__) (136)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: entidade solicitante e gestor responsavel com dado real (etapas 101 e 102) (#374)",
    "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)",
    "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)",
    "fix(exportacao): CSV de pedidos sai com as colunas reais e toast honesto (QA 104) (#371)",
-   "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)",
-   "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)"
+   "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)"
   ]
  },
  "pr_template": null,
