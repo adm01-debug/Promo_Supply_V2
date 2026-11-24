@@ -5921,6 +5921,7 @@ export type Database = {
           data_necessidade: string | null
           departamento: string | null
           descricao: string | null
+          external_ref: string | null
           fornecedor_id: string | null
           id: string
           justificativa: string | null
@@ -5954,6 +5955,7 @@ export type Database = {
           data_necessidade?: string | null
           departamento?: string | null
           descricao?: string | null
+          external_ref?: string | null
           fornecedor_id?: string | null
           id?: string
           justificativa?: string | null
@@ -5987,6 +5989,7 @@ export type Database = {
           data_necessidade?: string | null
           departamento?: string | null
           descricao?: string | null
+          external_ref?: string | null
           fornecedor_id?: string | null
           id?: string
           justificativa?: string | null
@@ -9613,6 +9616,13 @@ export type Database = {
         Returns: Json
       }
       get_my_organization: { Args: never; Returns: string }
+      get_my_permissions: {
+        Args: never
+        Returns: {
+          action: string
+          module: string
+        }[]
+      }
       get_pagamentos_kpis: {
         Args: { p_organization_id: string }
         Returns: Json
