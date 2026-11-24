@@ -1,11 +1,14 @@
 /**
- * receive-os-sync — recebe o fechamento de OS do Promo Design e abre a
- * solicitacao de compra do material correspondente.
+ * receive-os-sync — recebe o fechamento de OS do Promo Design OU o pedido
+  * aprovado do Promo Champions e abre a solicitacao de compra do material
+  * correspondente.
  *
- * Chamador: `integration-dispatcher` do Promo Design (nao o cron).
+  * Chamador: `integration-dispatcher` do Promo Design ou `supply-dispatcher` do
+  * Promo Champions (nao o cron).
  * Auth: HMAC-SHA256 hex do body cru em `x-webhook-signature: sha256=<hex>`,
- *       segredo em PROMO_DESIGN_WEBHOOK_SECRET. Fail-closed: sem segredo
- *       configurado a funcao responde 503 em vez de aceitar qualquer coisa.
+  *       segredo em PROMO_DESIGN_WEBHOOK_SECRET ou PROMO_CHAMPIONS_WEBHOOK_SECRET
+  *       (um por origem). Fail-closed: sem nenhum segredo configurado a funcao
+  *       responde 503 em vez de aceitar qualquer coisa.
  *
  * Idempotencia: chave deterministica derivada do os_id. Reenvio do dispatcher
  * devolve 200 com `idempotent_replay: true` e o mesmo `solicitation_id`, sem
@@ -160,9 +163,15 @@ serve(async (req) => {
     return json({ error: "Method not allowed" }, 405, cors);
   }
 
-  const secret = Deno.env.get("PROMO_DESIGN_WEBHOOK_SECRET") ?? "";
-  if (!secret) {
-    console.error("PROMO_DESIGN_WEBHOOK_SECRET ausente: recusando o evento (fail-closed)");
+  // Duas origens assinam este receptor: o Promo Design (OS fechada) e o Promo
+    // Champions (orcamento que virou pedido). Segredo por origem para que a
+    // rotacao de um nao derrube o outro; sem nenhum deles, fail-closed.
+    const secrets = [
+      Deno.env.get("PROMO_DESIGN_WEBHOOK_SECRET") ?? "",
+      Deno.env.get("PROMO_CHAMPIONS_WEBHOOK_SECRET") ?? "",
+    ].filter((value) => value.length > 0);
+    if (secrets.length === 0) {
+      console.error("nenhum webhook secret configurado: recusando o evento (fail-closed)");
     return json({ error: "webhook not configured" }, 503, cors);
   }
 
@@ -174,8 +183,8 @@ serve(async (req) => {
   if (!received) {
     return json({ error: "Missing x-webhook-signature" }, 401, cors);
   }
-  const expected = await hmacHex(secret, bodyText);
-  if (!timingSafeEqual(received.toLowerCase(), expected)) {
+  const expecteds = await Promise.all(secrets.map((value) => hmacHex(value, bodyText)));
+    if (!expecteds.some((expected) => timingSafeEqual(received.toLowerCase(), expected))) {
     return json({ error: "Invalid signature" }, 401, cors);
   }
 
