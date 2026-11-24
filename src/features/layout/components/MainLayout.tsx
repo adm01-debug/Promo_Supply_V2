@@ -31,6 +31,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { EliteBackground } from "@/components/layout/EliteBackground";
 import { PageTransition } from "@/features/layout/transitions";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -41,6 +42,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   useKeyboardShortcuts();
   useGlobalUndo();
@@ -70,7 +72,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       <KeyboardShortcutsDialog />
 
-      <div className="hidden md:block" id="main-navigation">
+      <div className="hidden md:block" id={isMobile ? undefined : "main-navigation"} tabIndex={-1}>
         <AppSidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       </div>
 
