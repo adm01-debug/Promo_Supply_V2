@@ -1,4 +1,4 @@
-import { buildCorsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders, timingSafeEqualStr } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
@@ -165,7 +165,7 @@ serve(async (req) => {
 
     if (catalog?.shared_secret_encrypted) {
       const expected = await decryptPunchOutSecret(catalog.shared_secret_encrypted);
-      if (!expected || !sharedSecret || sharedSecret !== expected) {
+      if (!expected || !sharedSecret || !timingSafeEqualStr(sharedSecret, expected)) {
         throw new Error("SharedSecret mismatch");
       }
     }
