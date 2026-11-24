@@ -130,6 +130,64 @@ Deno.test({
 });
 
 Deno.test({
+  name: "EdgeLogger: QA 049 redige chaves sensiveis em objetos e arrays aninhados",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("nested-redact-fn");
+    let captured = "";
+    const orig = console.error;
+    console.error = (out: string) => {
+      captured = String(out);
+    };
+    try {
+      log.error("nested", {
+        body: { password: "hunter2", cartao: "4111", nivel2: { api_token: "abc", ok: "keep" } },
+        lista: [{ secret: "s" }, { seguro: "mantido" }],
+        quando: new Date("2026-01-02T03:04:05.000Z"),
+      });
+    } finally {
+      console.error = orig;
+    }
+    const entry = JSON.parse(captured);
+    assertEquals(entry.context.body.password, "[REDACTED]");
+    assertEquals(entry.context.body.cartao, "4111");
+    assertEquals(entry.context.body.nivel2.api_token, "[REDACTED]");
+    assertEquals(entry.context.body.nivel2.ok, "keep");
+    assertEquals(entry.context.lista[0].secret, "[REDACTED]");
+    assertEquals(entry.context.lista[1].seguro, "mantido");
+    // Tipos que nao sao objeto simples continuam intactos (nao viram {}).
+    assertEquals(entry.context.quando, "2026-01-02T03:04:05.000Z");
+  },
+});
+
+Deno.test({
+  name: "EdgeLogger: QA 049 corta profundidade excessiva sem entrar em ciclo",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("depth-redact-fn");
+    const ciclo: Record<string, unknown> = { token: "x" };
+    ciclo.self = ciclo;
+    let captured = "";
+    const orig = console.error;
+    console.error = (out: string) => {
+      captured = String(out);
+    };
+    try {
+      log.error("deep", {
+        deep: { l1: { l2: { l3: { l4: { l5: { l6: { l7: { l8: { l9: "fundo" } } } } } } } } },
+        ciclo,
+      });
+    } finally {
+      console.error = orig;
+    }
+    const entry = JSON.parse(captured);
+    assertEquals(entry.context.deep.l1.l2.l3.l4.l5.l6.l7, "[TRUNCATED]");
+    assertEquals(entry.context.ciclo.token, "[REDACTED]");
+    assert(typeof entry.context.ciclo.self === "object", "ciclo cortado e serializavel");
+  },
+});
+
+Deno.test({
   name: "EdgeLogger: contexto com valores exóticos vira JSON sem quebrar",
   ...opts,
   fn: () => {
