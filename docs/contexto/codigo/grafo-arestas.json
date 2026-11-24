@@ -1214,6 +1214,7 @@
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/dialog.tsx",
+   "src/features/auth/hooks/useAuth.tsx",
    "src/features/auth/index.ts",
    "src/hooks/useSecurityLogs.ts",
    "src/lib/feedbackToast.ts"
@@ -2149,6 +2150,7 @@
    "src/lib/logger.ts"
   ],
   "src/hooks/useSecurityLogs.ts": [
+   "src/features/auth/hooks/useAuth.tsx",
    "src/features/auth/index.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts"

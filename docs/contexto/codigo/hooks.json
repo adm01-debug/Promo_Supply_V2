@@ -285,11 +285,13 @@
     "useState"
    ],
    "canais_realtime": [],
-   "usado_por": 1,
+   "usado_por": 3,
    "usado_por_arquivos": [
-    "src/features/auth/index.ts"
+    "src/components/security/ActiveSessionsPanel.tsx",
+    "src/features/auth/index.ts",
+    "src/hooks/useSecurityLogs.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/features/auth/hooks/useAuthContext.ts",
@@ -1956,7 +1958,7 @@
    "hooks_exportados": [
     "useSecurityLogs"
    ],
-   "linhas": 288,
+   "linhas": 312,
    "dominio": "hooks",
    "tabelas": [
     "active_sessions",
@@ -1985,7 +1987,7 @@
     "src/components/security/SecurityLogsPanel.tsx",
     "src/pages/seguranca/Seguranca.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useSessionIdleTimeout.ts",

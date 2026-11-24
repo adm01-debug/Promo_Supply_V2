@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 627,
- "arestas": 2791,
+ "arestas": 2793,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 134
+   "importado_por": 135
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",

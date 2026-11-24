@@ -2299,7 +2299,7 @@
     "ActiveSessionsPanel"
    ],
    "export_default": null,
-   "linhas": 196,
+   "linhas": 259,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth",
@@ -3664,7 +3664,7 @@
     "user_tenants"
    ],
    "edges": [],
-   "usado_por": 1,
+   "usado_por": 3,
    "orfao": false
   },
   {

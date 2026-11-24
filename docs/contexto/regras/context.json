@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "700e3fd55076f5e59f1e66fd677169a22618b58d",
+  "sha": "75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:04 UTC",
-  "files_total": 1356,
-  "code_files": 1185,
-  "code_lines": 202731,
+  "generated_at": "2026-11-24 04:20 UTC",
+  "files_total": 1357,
+  "code_files": 1186,
+  "code_lines": 202979,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c0d337ee0d509edb",
+ "facts_hash": "a6ba5bd6bf6784ff",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 413,
-   ".tsx": 366,
+   ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -34754,7 +34754,7 @@
   {
    "module": "src/components",
    "files": 264,
-   "lines": 49238,
+   "lines": 49301,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35268,8 +35268,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 82,
-   "lines": 14057,
+   "files": 83,
+   "lines": 14148,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35480,9 +35480,9 @@
     "src/hooks/__tests__/usePermissions.test.tsx",
     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
-    "src/hooks/__tests__/useToastReducer.test.ts",
-    "src/hooks/__tests__/useWebAuthn.sessao.test.tsx"
+    "src/hooks/__tests__/useToastReducer.test.ts"
    ]
   },
   {
@@ -36061,7 +36061,7 @@
   {
    "module": "supabase/functions",
    "files": 115,
-   "lines": 18992,
+   "lines": 19086,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -40931,6 +40931,10 @@
    {
     "file": "src/components/pwa/PWAInstallPrompt.tsx",
     "msg": "Sem Conexão"
+   },
+   {
+    "file": "src/components/security/ActiveSessionsPanel.tsx",
+    "msg": "Erro ao encerrar as outras sessões"
    },
    {
     "file": "src/components/security/ActiveSessionsPanel.tsx",
@@ -62389,6 +62393,18 @@
     "name": "reinscreve quando a lista de tabelas muda de verdade"
    },
    {
+    "file": "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+    "name": "terminateOtherSessions (QA 037)"
+   },
+   {
+    "file": "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+    "name": "revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo"
+   },
+   {
+    "file": "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+    "name": "apaga todas as linhas do usuario quando este navegador nao tem registro"
+   },
+   {
     "file": "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
     "name": "useSpotIntegration — checkout"
    },
@@ -69131,6 +69147,38 @@
    {
     "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
     "name": "assertBridgeRequest: múltiplos filtros, um inválido entre válidos, retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: selectColumns \\"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: selectColumns com lista de colunas simples e permitido"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: selectColumns com recurso embutido retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: selectColumns com alias de recurso embutido retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: selectColumns vazio retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: chave de filtro com separador de query retorna 400"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "assertBridgeRequest: chave de filtro snake_case e permitida"
+   },
+   {
+    "file": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    "name": "index do bridge envia selectColumns para a allowlist"
    },
    {
     "file": "supabase/functions/_shared/logLevel.test.ts",
@@ -96854,11 +96902,12 @@
   },
   "src/components/security/ActiveSessionsPanel.tsx": {
    "path": "src/components/security/ActiveSessionsPanel.tsx",
-   "lines": 196,
+   "lines": 259,
    "exports": [
     "const ActiveSessionsPanel"
    ],
    "errors": [
+    "Erro ao encerrar as outras sessões",
     "Erro ao encerrar sessão"
    ]
   },
@@ -102149,7 +102198,7 @@
   },
   "src/hooks/useSecurityLogs.ts": {
    "path": "src/hooks/useSecurityLogs.ts",
-   "lines": 288,
+   "lines": 312,
    "exports": [
     "interface SecurityLog",
     "interface LoginAttempt",
@@ -102202,6 +102251,10 @@
     },
     {
      "table": "ip_whitelist",
+     "op": "delete"
+    },
+    {
+     "table": "active_sessions",
      "op": "delete"
     },
     {
@@ -102957,6 +103010,16 @@
     "useRealtimeSubscription (HK-02)",
     "nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo",
     "reinscreve quando a lista de tabelas muda de verdade"
+   ]
+  },
+  "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx": {
+   "path": "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+   "lines": 67,
+   "is_test": true,
+   "tests": [
+    "terminateOtherSessions (QA 037)",
+    "revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo",
+    "apaga todas as linhas do usuario quando este navegador nao tem registro"
    ]
   },
   "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx": {
@@ -110936,7 +110999,7 @@
   },
   "supabase/functions/_shared/external-bridge-allowlist.test.ts": {
    "path": "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-   "lines": 106,
+   "lines": 172,
    "is_test": true,
    "doc": "Testes da allowlist do `external-db-bridge` (PR 2.1 do plano de integração PIM/Promo Supply V2: a bridge só lê as views de compra do PIM, nunca escreve). Rodar: deno test supabase/functions/_shared/external-bridge-allowlist.test.ts",
    "tests": [
@@ -110951,12 +111014,20 @@
     "assertBridgeRequest: limit exatamente igual a MAX_SELECT_LIMIT é permitido (boundary)",
     "assertBridgeRequest: filter operator fora da allowlist retorna 400",
     "assertBridgeRequest: filter aninhado sem campo operator é permitido",
-    "assertBridgeRequest: múltiplos filtros, um inválido entre válidos, retorna 400"
+    "assertBridgeRequest: múltiplos filtros, um inválido entre válidos, retorna 400",
+    "assertBridgeRequest: selectColumns \\",
+    "assertBridgeRequest: selectColumns com lista de colunas simples e permitido",
+    "assertBridgeRequest: selectColumns com recurso embutido retorna 400",
+    "assertBridgeRequest: selectColumns com alias de recurso embutido retorna 400",
+    "assertBridgeRequest: selectColumns vazio retorna 400",
+    "assertBridgeRequest: chave de filtro com separador de query retorna 400",
+    "assertBridgeRequest: chave de filtro snake_case e permitida",
+    "index do bridge envia selectColumns para a allowlist"
    ]
   },
   "supabase/functions/_shared/external-bridge-allowlist.ts": {
    "path": "supabase/functions/_shared/external-bridge-allowlist.ts",
-   "lines": 100,
+   "lines": 128,
    "exports": [
     "const ALLOWED_TABLES",
     "const ALLOWED_RPCS",
@@ -117614,10 +117685,34 @@
   }
  },
  "git": {
-  "sha": "700e3fd55076f5e59f1e66fd677169a22618b58d",
+  "sha": "75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "75fbc3e",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+     "supabase/functions/_shared/external-bridge-allowlist.ts",
+     "supabase/functions/external-db-bridge/index.ts"
+    ]
+   },
+   {
+    "sha": "e20b078",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/security/ActiveSessionsPanel.tsx",
+     "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+     "src/hooks/useSecurityLogs.ts"
+    ]
+   },
    {
     "sha": "700e3fd",
     "date": "2026-11-24",
@@ -117943,34 +118038,16 @@
      "src/hooks/usePermissions.ts",
      "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
     ]
-   },
-   {
-    "sha": "81a44e1",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(seguranca): versiona o seed de permissions e role_permissions (#296)",
-    "files": [
-     "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql"
-    ]
-   },
-   {
-    "sha": "fdeede4",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "feat: recebe fechamento de OS do Promo Design e abre solicitacao de compra (#326)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "supabase/functions/receive-os-sync/index.ts",
-     "supabase/functions/receive-os-sync/mapping.test.ts",
-     "supabase/functions/receive-os-sync/mapping.ts",
-     "supabase/migrations/20261125140000_integracao_promo_design.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    23
+    25
+   ],
+   [
+    "supabase/functions/external-db-bridge/index.ts",
+    2
    ],
    [
     "supabase/functions/_shared/security.timing.test.ts",
@@ -117983,6 +118060,26 @@
    [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
     2
+   ],
+   [
+    "supabase/functions/_shared/external-bridge-allowlist.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/external-bridge-allowlist.ts",
+    1
+   ],
+   [
+    "src/components/security/ActiveSessionsPanel.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useSecurityLogs.ts",
+    1
    ],
    [
     "src/features/auth/__tests__/activeSession.test.ts",
@@ -118022,30 +118119,6 @@
    ],
    [
     "supabase/functions/scim-v2/auth.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/security.ts",
-    1
-   ],
-   [
-    "supabase/functions/spot-api/index.ts",
-    1
-   ],
-   [
-    "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
-    1
-   ],
-   [
-    "src/features/layout/components/AppSidebar.tsx",
-    1
-   ],
-   [
-    "src/components/security/PasskeyManager.tsx",
-    1
-   ],
-   [
-    "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
     1
    ]
   ]

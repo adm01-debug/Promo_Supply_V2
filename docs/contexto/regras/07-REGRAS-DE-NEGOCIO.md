@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `700e3fd550` · branch `main` · 2026-11-24 04:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `75fbc3e4bf` · branch `main` · 2026-11-24 04:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2256,6 +2256,7 @@ _nenhum item encontrado_
 | Organização não identificada | `src/components/pagamentos/PagamentoDetailModal.tsx` |
 | Selecione uma data | `src/components/pagamentos/PagamentoScheduleModal.tsx` |
 | Sem Conexão | `src/components/pwa/PWAInstallPrompt.tsx` |
+| Erro ao encerrar as outras sessões | `src/components/security/ActiveSessionsPanel.tsx` |
 | Erro ao encerrar sessão | `src/components/security/ActiveSessionsPanel.tsx` |
 | Erro ao bloquear país | `src/components/security/BlockedCountriesPanel.tsx` |
 | Erro ao desbloquear | `src/components/security/BlockedCountriesPanel.tsx` |
@@ -2402,8 +2403,7 @@ _nenhum item encontrado_
 | , params) as unknown as RpcResult<void>; }  export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {   return supabase.rpc( | `src/lib/supabaseRpc.ts` |
 | Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| Status inválido para o Kanban: ${novoStatus} | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| … +245 linhas — lista completa em `context.json` | |
+| … +246 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2422,7 +2422,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2892 testes em 174 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2903 testes em 175 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2491,6 +2491,7 @@ _nenhum item encontrado_
 | `src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts` | 20 | CHART_COLORS · has 6 color entries · all entries are non-empty strings · first color uses CSS variable syntax … |
 | `src/components/ui/indicators/__tests__/statusConfigs.test.ts` | 20 | statusConfigs · has 13 status entries · covers all expected StatusType values · every entry has a non-empty label string … |
 | `src/lib/__tests__/security.test.ts` | 20 | security.isDangerous · detects <script tag · detects javascript: protocol · detects onerror= attribute … |
+| `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 20 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts` | 19 | entityConfig · has exactly 4 entity types · covers all required entity types · each entity has a non-empty label … |
 | `src/components/compras/executive/__tests__/executiveDashboardData.test.ts` | 19 | calculateChange · returns positive value when current > previous · returns negative value when current < previous · returns 0 when current equals previous … |
 | `src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts` | 19 | resolveApprovalDeadline · prioriza step.prazo_limite quando presente · cai para workflow.prazo_limite quando step é nulo · usa workflow.created_at + 24h quando ambos prazos são nulos … |
@@ -2514,7 +2515,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
 | `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
-| `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 12 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
@@ -2582,6 +2582,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 3 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
+| `src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx` | 3 | terminateOtherSessions (QA 037) · revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo · apaga todas as linhas do usuario quando este navegador nao tem registro |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
 | `src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx` | 3 | KPIs do painel fiscal derivados de fiscal_events · mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa · calcula autorizadas, pendentes, erros e latencia media real |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |

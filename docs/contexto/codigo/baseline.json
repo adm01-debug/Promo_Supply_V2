@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "700e3fd55076f5e59f1e66fd677169a22618b58d",
+  "commit": "75fbc3e4bf8ff3a924214326ccf8f91fdf09b1fe",
   "branch": "main",
-  "data_commit": "2026-11-24T01:04:12-03:00",
+  "data_commit": "2026-11-24T01:17:23-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "75fbc3e",
+    "data": "2026-11-24",
+    "assunto": "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)"
+   },
+   {
+    "sha": "e20b078",
+    "data": "2026-11-24",
+    "assunto": "fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)"
+   },
    {
     "sha": "700e3fd",
     "data": "2026-11-24",
@@ -121,27 +131,17 @@
     "sha": "4ea4805",
     "data": "2026-11-23",
     "assunto": "fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)"
-   },
-   {
-    "sha": "c318737",
-    "data": "2026-11-23",
-    "assunto": "fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)"
-   },
-   {
-    "sha": "294d385",
-    "data": "2026-11-23",
-    "assunto": "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)"
    }
   ],
-  "arquivos_mudados_7d": 385,
+  "arquivos_mudados_7d": 388,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 169
+    "mudancas": 168
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 76
+    "mudancas": 78
    },
    {
     "pasta": "src/components/ui",
@@ -165,15 +165,15 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 26
+    "mudancas": 28
+   },
+   {
+    "pasta": "src/hooks/__tests__",
+    "mudancas": 25
    },
    {
     "pasta": "src/pages/catalogo-xbz",
     "mudancas": 25
-   },
-   {
-    "pasta": "src/hooks/__tests__",
-    "mudancas": 24
    },
    {
     "pasta": "src/features/auth",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/components/security",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 26
+    "mudancas": 28
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1355,
-  "arquivos_codigo": 852,
-  "linhas_codigo": 175547,
+  "arquivos_total": 1356,
+  "arquivos_codigo": 853,
+  "linhas_codigo": 175795,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 225,
+  "testes": 226,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -428,15 +428,15 @@
   },
   "src/components": {
    "arquivos": 264,
-   "linhas": 49238
+   "linhas": 49301
   },
   "src/features": {
    "arquivos": 68,
    "linhas": 9164
   },
   "src/hooks": {
-   "arquivos": 82,
-   "linhas": 14057
+   "arquivos": 83,
+   "linhas": 14148
   },
   "src/i18n": {
    "arquivos": 1,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 115,
-   "linhas": 18992
+   "linhas": 19086
   },
   "tailwind.config.ts": {
    "arquivos": 1,
