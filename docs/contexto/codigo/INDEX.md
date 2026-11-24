@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `728759ebce9b6eb3b871ed11c0dff677d0dcf81b` (2026-11-24T13:19:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0d51bc43b50ad23500baf1aebf86a87f0ac67e1e` (2026-11-24T13:22:55-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1432 |
 | arquivos_codigo | 922 |
-| linhas_codigo | 185217 |
+| linhas_codigo | 185265 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (86)
+- docs/qa/05-PROGRESSO.md (87)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `0d51bc4` fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)
 - 2026-11-24 `728759e` fix: matriz de transicoes de status alinhada ao banco (#394)
 - 2026-11-24 `85d63f7` chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)
 - 2026-11-24 `73aaa9d` fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `c3726dd` fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)
 - 2026-11-24 `0f24e15` fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)
 - 2026-11-24 `0165b41` test: prova o retry quando o numero da solicitacao colide (#427)
-- 2026-11-24 `fa27d6f` fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

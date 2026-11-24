@@ -1252,12 +1252,13 @@
   {
    "arquivo": "src/i18n/__tests__/locales.test.ts",
    "tipo": "unit",
-   "linhas": 63,
+   "linhas": 111,
    "testa": [
     "src/locales/en/translation.json",
+    "src/locales/es/translation.json",
     "src/locales/pt/translation.json"
    ],
-   "casos": 6
+   "casos": 10
   },
   {
    "arquivo": "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -2710,7 +2711,7 @@
   "src/lib/unicidadeCadastro.ts": 1,
   "src/lib/utils.ts": 1,
   "src/locales/en/translation.json": 2,
-  "src/locales/es/translation.json": 1,
+  "src/locales/es/translation.json": 2,
   "src/locales/pt/translation.json": 2,
   "src/pages/acompanhamento/Acompanhamento.tsx": 2,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 2,

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)",
    "fix: matriz de transicoes de status alinhada ao banco (#394)",
    "chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)",
    "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)",
-   "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)",
-   "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)"
+   "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)"
   ]
  },
  "pr_template": null,

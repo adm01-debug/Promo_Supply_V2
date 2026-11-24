@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "728759ebce9b6eb3b871ed11c0dff677d0dcf81b",
+  "commit": "0d51bc43b50ad23500baf1aebf86a87f0ac67e1e",
   "branch": "main",
-  "data_commit": "2026-11-24T13:19:00-03:00",
+  "data_commit": "2026-11-24T13:22:55-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0d51bc4",
+    "data": "2026-11-24",
+    "assunto": "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)"
+   },
    {
     "sha": "728759e",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "db1bf92",
     "data": "2026-11-24",
     "assunto": "chore(lint): liga as regras de teclado e interacao estatica do jsx-a11y (#417)"
-   },
-   {
-    "sha": "b996391",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)"
    }
   ],
-  "arquivos_mudados_7d": 472,
+  "arquivos_mudados_7d": 474,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 86
+    "mudancas": 87
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 86
+    "mudancas": 87
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1432,
   "arquivos_codigo": 922,
-  "linhas_codigo": 185217,
+  "linhas_codigo": 185265,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -440,7 +440,7 @@
   },
   "src/i18n": {
    "arquivos": 3,
-   "linhas": 172
+   "linhas": 220
   },
   "src/integrations": {
    "arquivos": 3,

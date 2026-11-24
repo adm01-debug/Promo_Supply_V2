@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `728759ebce` · branch `main` · 2026-11-24 16:22 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0d51bc43b5` · branch `main` · 2026-11-24 16:23 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2465,7 +2465,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3310 testes em 233 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3315 testes em 233 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2558,6 +2558,7 @@ _nenhum item encontrado_
 | `src/pages/pedidos/__tests__/followUpPedido.test.tsx` | 15 | montarInteracoesPedido · sem cotacao e sem notificacao devolve lista vazia, sem dialogo fabricado · cotacao sem last_follow_up_at nao gera registro de follow-up · usa a data e o status reais do follow-up gravado na cotacao … |
 | `src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts` | 14 | montarPessoas · usa o user_id como id, que e o valor de aprovador_id · cai para display_name e depois e-mail quando nao ha nome completo · descarta linha sem user_id: sem id nao ha o que gravar … |
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
+| `src/i18n/__tests__/locales.test.ts` | 13 | chaves que a tela do catalogo usa existem de verdade · pt, en e es trazem catalog.title, catalog.subtitle e common.new com texto real · CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas) · pt, en e es cobrem as mesmas chaves … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
 | `src/pages/pedidos/__tests__/pedidosHelpers.test.ts` | 13 | prazoConsumido · mede o quanto da janela emissao -> previsao ja passou · devolve o piso de 5% quando o prazo acabou de comecar · nao mede nada sem as duas datas ou com janela invalida … |
@@ -2584,7 +2585,6 @@ _nenhum item encontrado_
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
-| `src/i18n/__tests__/locales.test.ts` | 8 | chaves que a tela do catalogo usa existem de verdade · pt e en trazem catalog.title, catalog.subtitle e common.new com texto real · CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas) · nenhuma chave de pt falta em en … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
 | `src/pages/documentos/__tests__/conciliacaoFiscal.test.ts` | 8 | conciliacao de NF-e com pedido · nao casa a nota com pedido de outro fornecedor so porque o valor e igual · deixa sem vinculo quando o valor so existe em pedido de outro fornecedor · nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor … |
 | `src/tests/contracts-elite.test.ts` | 8 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve validar submit_decision com approve … |
