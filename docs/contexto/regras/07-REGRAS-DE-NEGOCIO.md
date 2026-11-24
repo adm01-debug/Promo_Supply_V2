@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0165b4121f` · branch `main` · 2026-11-24 14:30 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0f24e154ff` · branch `main` · 2026-11-24 14:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -776,6 +776,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | z_audit_logs_append_only | BEFORE UPDATE OR DELETE | `audit_logs` | `audit_logs_bloquear_alteracao` |  |
 | z_audit_logs_no_truncate | BEFORE TRUNCATE | `audit_logs` | `audit_logs_bloquear_truncate` |  |
 | trg_workflow_approved_promotes_solicitacao | AFTER UPDATE OF STATUS | `approval_workflows` | `auto_transition_solicitacao_on_workflow_approved` | `NEW.status = 'approved'` |
+| trg_assign_numero_solicitacao | BEFORE INSERT | `solicitacoes` | `assign_numero_solicitacao` |  |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 
@@ -2458,7 +2459,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3217 testes em 220 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3219 testes em 220 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2604,6 +2605,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
 | `supabase/functions/process-invoice-idp/extraction.test.ts` | 6 | normaliza numeros e datas do formato brasileiro · nao inventa campo ausente e reporta no campos_ausentes · chave de acesso incompleta vira null em vez de zero-padded · identifica campos obrigatorios faltantes … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
+| `supabase/functions/receive-os-sync/create-solicitacao.test.ts` | 6 | a entrega nao manda numero: quem gera e o trigger do banco · numero em colisao e retentado: a entrega nao morre em 500 · reenvio idempotente devolve a solicitacao existente sem inserir de novo · erro que nao e colisao sobe na primeira tentativa … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/components/compras/__tests__/contratoCamposRotulos.test.tsx` | 5 | ContractModal - nome acessivel dos campos (etapa 239) · associa os 3 rotulos de select ao gatilho certo · associa as duas janelas de data ao botao que as abre · todo label[for] do modal aponta para um elemento existente … |
@@ -2647,7 +2649,6 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
 | `supabase/functions/_shared/validation.error_response.test.ts` | 4 | errorResponse:  · errorResponse:  · errorResponse: unauthorized e sessao invalida virem 401 · errorResponse: demais categorias seguem iguais |
-| `supabase/functions/receive-os-sync/create-solicitacao.test.ts` | 4 | numero em colisao e regerado: a entrega nao morre em 500 · reenvio idempotente devolve a solicitacao existente sem regerar numero · erro que nao e colisao sobe na primeira tentativa · colisao que nao cede desiste depois de 5 tentativas |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |

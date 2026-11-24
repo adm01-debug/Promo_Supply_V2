@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0165b4121f53ed3199215fa17824bfb561817329` (2026-11-24T11:30:03-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0f24e154ffac95e6e9df4097474cf6eb033d26fc` (2026-11-24T11:55:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (835), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (835), SQL (332), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1413 |
+| arquivos_total | 1414 |
 | arquivos_codigo | 908 |
-| linhas_codigo | 183123 |
+| linhas_codigo | 183168 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 93 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 329 |
+| migrations | 330 |
 | cron_jobs | 74 |
 | testes | 271 |
 | workflows | 15 |
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `0f24e15` fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)
 - 2026-11-24 `0165b41` test: prova o retry quando o numero da solicitacao colide (#427)
 - 2026-11-24 `fa27d6f` fix(acompanhamento): timeline usa a data real de cada etapa (QA 246) (#426)
 - 2026-11-24 `00e99d9` fix(mobile): liga a area segura do iOS com viewport-fit=cover (#425)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `b996391` fix(a11y): abre pedido no celular e nomeia o controle de pagamento (#416)
 - 2026-11-24 `1b88913` fix(a11y): filtra SLA e abre detalhes do pedido pelo teclado (#415)
 - 2026-11-24 `69fe938` fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)
-- 2026-11-24 `66c9eb7` chore(lint): liga o gate de acessibilidade no eslint (#413)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

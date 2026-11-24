@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0165b4121f53ed3199215fa17824bfb561817329",
+  "sha": "0f24e154ffac95e6e9df4097474cf6eb033d26fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 14:30 UTC",
-  "files_total": 1414,
-  "code_files": 1241,
-  "code_lines": 210307,
+  "generated_at": "2026-11-24 14:55 UTC",
+  "files_total": 1415,
+  "code_files": 1242,
+  "code_lines": 210394,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bb2e88dbfa413ad1",
+ "facts_hash": "839e942bafd98408",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 435,
    ".tsx": 400,
-   ".sql": 331,
+   ".sql": 332,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -19832,6 +19832,15 @@
     "condition": "NEW.status = 'approved'",
     "each": "row",
     "src": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql"
+   },
+   {
+    "name": "trg_assign_numero_solicitacao",
+    "when": "BEFORE INSERT",
+    "table": "solicitacoes",
+    "function": "assign_numero_solicitacao",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
    }
   ],
   "functions": {
@@ -22578,6 +22587,17 @@
      "role_permissions",
      "user_roles"
     ]
+   },
+   "assign_numero_solicitacao": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF NEW.numero IS NULL OR btrim(NEW.numero) = '' THEN NEW.numero := public.generate_sequential_number('SOL', 'solicitacoes'); END IF; RETURN NEW; END;",
+    "raises": [],
+    "tables": []
    },
    "Returns": {
     "args": "",
@@ -27188,6 +27208,7 @@
    "supabase/migrations/20261123090000_seed_permissions_e_role_permissions.sql",
    "supabase/migrations/20261123093000_sla_real_no_dashboard.sql",
    "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
+   "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
    "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "src/integrations/supabase/types.ts"
   ],
@@ -31135,6 +31156,14 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "assign_numero_solicitacao",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
    }
   ],
   "raises": [
@@ -36130,7 +36159,7 @@
   {
    "module": "supabase/functions",
    "files": 118,
-   "lines": 19374,
+   "lines": 19419,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36323,8 +36352,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 329,
-   "lines": 26961,
+   "files": 330,
+   "lines": 27003,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -42423,11 +42452,11 @@
    },
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
-    "msg": "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)"
+    "msg": "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas)"
    },
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.ts",
-    "msg": "numero: ${numeroError.message}"
+    "msg": "numero: ${erroNumero.message}"
    },
    {
     "file": "supabase/functions/receive-os-sync/mapping.ts",
@@ -71210,11 +71239,15 @@
    },
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-    "name": "numero em colisao e regerado: a entrega nao morre em 500"
+    "name": "a entrega nao manda numero: quem gera e o trigger do banco"
    },
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-    "name": "reenvio idempotente devolve a solicitacao existente sem regerar numero"
+    "name": "numero em colisao e retentado: a entrega nao morre em 500"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "reenvio idempotente devolve a solicitacao existente sem inserir de novo"
    },
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
@@ -71223,6 +71256,10 @@
    {
     "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
     "name": "colisao que nao cede desiste depois de 5 tentativas"
+   },
+   {
+    "file": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    "name": "banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente"
    },
    {
     "file": "supabase/functions/receive-os-sync/mapping.test.ts",
@@ -76072,6 +76109,15 @@
     "condition": "NEW.status = 'approved'",
     "each": "row",
     "src": "supabase/migrations/20261120120000_fio2_workflow_approved_promove_solicitacao.sql"
+   },
+   {
+    "name": "trg_assign_numero_solicitacao",
+    "when": "BEFORE INSERT",
+    "table": "solicitacoes",
+    "function": "assign_numero_solicitacao",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
    }
   ],
   "db_functions": {
@@ -78818,6 +78864,17 @@
      "role_permissions",
      "user_roles"
     ]
+   },
+   "assign_numero_solicitacao": {
+    "args": "",
+    "returns": "trigger",
+    "lang": "plpgsql",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "BEGIN IF NEW.numero IS NULL OR btrim(NEW.numero) = '' THEN NEW.numero := public.generate_sequential_number('SOL', 'solicitacoes'); END IF; RETURN NEW; END;",
+    "raises": [],
+    "tables": []
    },
    "Returns": {
     "args": "",
@@ -83760,6 +83817,7 @@
    "apply_lgpd_retention",
    "archive_audit_logs_older_than",
    "archive_telemetry_logs_older_than",
+   "assign_numero_solicitacao",
    "audit_logs_encadear_hash",
    "audit_pagamento_changes",
    "audit_user_roles_changes",
@@ -87703,6 +87761,14 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "assign_numero_solicitacao",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
    }
   ],
   "guards": [
@@ -117359,7 +117425,7 @@
   },
   "supabase/functions/receive-os-sync/create-solicitacao.test.ts": {
    "path": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-   "lines": 132,
+   "lines": 162,
    "is_test": true,
    "params": [
     {
@@ -117368,15 +117434,17 @@
     }
    ],
    "tests": [
-    "numero em colisao e regerado: a entrega nao morre em 500",
-    "reenvio idempotente devolve a solicitacao existente sem regerar numero",
+    "a entrega nao manda numero: quem gera e o trigger do banco",
+    "numero em colisao e retentado: a entrega nao morre em 500",
+    "reenvio idempotente devolve a solicitacao existente sem inserir de novo",
     "erro que nao e colisao sobe na primeira tentativa",
-    "colisao que nao cede desiste depois de 5 tentativas"
+    "colisao que nao cede desiste depois de 5 tentativas",
+    "banco sem o trigger: cai no RPC e entrega mesmo com a migration pendente"
    ]
   },
   "supabase/functions/receive-os-sync/create-solicitacao.ts": {
    "path": "supabase/functions/receive-os-sync/create-solicitacao.ts",
-   "lines": 63,
+   "lines": 77,
    "exports": [
     "function createSolicitacao"
    ],
@@ -117402,8 +117470,8 @@
    ],
    "errors": [
     "insert solicitacoes: ${error.message}",
-    "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas de numero)",
-    "numero: ${numeroError.message}"
+    "insert solicitacoes: ${error.message} (apos ${tentativa} tentativas)",
+    "numero: ${erroNumero.message}"
    ],
    "params": [
     {
@@ -117511,7 +117579,7 @@
   },
   "supabase/functions/receive-os-sync/mapping.ts": {
    "path": "supabase/functions/receive-os-sync/mapping.ts",
-   "lines": 178,
+   "lines": 179,
    "exports": [
     "interface OsPayload",
     "interface OsEventBody",
@@ -120454,6 +120522,10 @@
    "path": "supabase/migrations/20261123120000_get_my_permissions_rpc.sql",
    "lines": 21
   },
+  "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql": {
+   "path": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
+   "lines": 42
+  },
   "supabase/migrations/20261125140000_integracao_promo_design.sql": {
    "path": "supabase/migrations/20261125140000_integracao_promo_design.sql",
    "lines": 24
@@ -120681,10 +120753,22 @@
   }
  },
  "git": {
-  "sha": "0165b4121f53ed3199215fa17824bfb561817329",
+  "sha": "0f24e154ffac95e6e9df4097474cf6eb033d26fc",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0f24e15",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)",
+    "files": [
+     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+     "supabase/functions/receive-os-sync/create-solicitacao.ts",
+     "supabase/functions/receive-os-sync/mapping.ts",
+     "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
+    ]
+   },
    {
     "sha": "0165b41",
     "date": "2026-11-24",
@@ -121018,24 +121102,12 @@
      "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
      "src/hooks/useDevolucoes.ts"
     ]
-   },
-   {
-    "sha": "ae31825",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
-     "src/features/pedidos/hooks/usePedidos.ts",
-     "src/pages/gerar-ordem/GerarOrdem.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    24
    ],
    [
     "supabase/functions/receive-os-sync/index.ts",
@@ -121048,6 +121120,18 @@
    [
     "eslint.config.js",
     3
+   ],
+   [
+    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    2
+   ],
+   [
+    "supabase/functions/receive-os-sync/mapping.ts",
+    2
    ],
    [
     "src/components/compras/EnhancedBulkActionsBar.tsx",
@@ -121070,23 +121154,11 @@
     2
    ],
    [
-    "src/pages/gerar-ordem/GerarOrdem.tsx",
-    2
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    2
-   ],
-   [
     "src/hooks/useDevolucoes.ts",
     2
    ],
    [
-    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/receive-os-sync/create-solicitacao.ts",
+    "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
     1
    ],
    [

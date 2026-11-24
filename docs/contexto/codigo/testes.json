@@ -2284,12 +2284,12 @@
   {
    "arquivo": "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
    "tipo": "unit",
-   "linhas": 132,
+   "linhas": 162,
    "testa": [
     "supabase/functions/receive-os-sync/create-solicitacao.ts",
     "supabase/functions/receive-os-sync/mapping.ts"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "supabase/functions/receive-os-sync/mapping.test.ts",

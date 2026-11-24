@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 329,
+ "migrations": 330,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -172,6 +172,7 @@
   "apply_penalty_escalation",
   "archive_audit_logs_older_than",
   "archive_telemetry_logs_older_than",
+  "assign_numero_solicitacao",
   "audit_log_conteudo_canonico",
   "audit_logs_bloquear_alteracao",
   "audit_logs_bloquear_truncate",
@@ -905,6 +906,13 @@
    "evento": "update",
    "tabela": "solicitacoes",
    "funcao": "update_updated_at"
+  },
+  {
+   "nome": "trg_assign_numero_solicitacao",
+   "quando": "before",
+   "evento": "insert",
+   "tabela": "solicitacoes",
+   "funcao": "assign_numero_solicitacao"
   },
   {
    "nome": "trg_auto_approve_low_value",
@@ -15912,6 +15920,7 @@
    "triggers": [
     "a0_guard_solicitacao_escrita",
     "solicitacoes_updated_at",
+    "trg_assign_numero_solicitacao",
     "trg_auto_approve_low_value",
     "trg_update_budget_on_solicitacao",
     "trg_update_solicitacoes_updated_at",
