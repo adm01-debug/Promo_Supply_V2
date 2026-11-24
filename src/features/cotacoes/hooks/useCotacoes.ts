@@ -45,6 +45,7 @@ async function fetchCotacoesData(userId: string | undefined, organizationId: str
       prazo_entrega, validade_proposta, condicao_pagamento, observacoes,
       selecionada, justificativa_selecao, score_total, score_preco, score_prazo, score_qualidade,
       organization_id, tenant_id, created_at, updated_at,
+      last_follow_up_at, follow_up_status,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo, produto_id)
     `)
