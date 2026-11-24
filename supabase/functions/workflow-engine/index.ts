@@ -38,12 +38,20 @@ serve(async (req) => {
 
     // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
     const data = await validateBody(req, WorkflowContract, logger);
-    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, comment } = data;
+    const { action } = data;
+    // Uniao discriminada por `action`: cada variante so carrega os seus campos,
+    // entao os opcionais sao lidos por um tipo comum ja validado no contrato.
+    const { template_id, instance_id, entity_type, entity_id, node_id, decision, comment } = data as {
+      template_id?: string; instance_id?: string; entity_type?: string;
+      entity_id?: string; node_id?: string; decision?: string; comment?: string;
+    };
 
     // QA-022: approver_id must come from the verified JWT, never from the request body.
     const approver_id = user.id;
 
-    const tenant_id = await getTenantId(supabase, user);
+    // Fronteira: `SupabaseClientLike` e estrutural e a lib muda de forma entre
+    // versoes; o cast evita a varredura estrutural profunda dos genericos.
+    const tenant_id = await getTenantId(supabase as unknown as Parameters<typeof getTenantId>[0], user);
 
 
 

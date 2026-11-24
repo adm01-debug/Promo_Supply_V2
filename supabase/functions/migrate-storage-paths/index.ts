@@ -7,7 +7,7 @@ import { safeErrorMessage, buildCorsHeaders } from "../_shared/security.ts";
 // Dry-run: passe { dryRun: true } no body para apenas simular.
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const BUCKETS = ["documentos", "comprovantes"] as const;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -36,7 +36,7 @@ interface MigrationStats {
 }
 
 
-async function listAll(admin: ReturnType<typeof createClient>, bucket: string, prefix = ""): Promise<string[]> {
+async function listAll(admin: SupabaseClient, bucket: string, prefix = ""): Promise<string[]> {
   // Recursivamente lista todos os paths abaixo de `prefix` no bucket.
   const out: string[] = [];
   const pageSize = 1000;
@@ -190,16 +190,16 @@ serve(async (req) => {
             continue;
           }
           for (const row of rows ?? []) {
-            const current = (row as Record<string, unknown>)[target.column];
+            const current = (row as unknown as Record<string, unknown>)[target.column];
             if (typeof current !== "string") continue;
             const next = current.split(oldUrlFragment).join(newUrlFragment);
             if (next === current) continue;
             const { error: upErr } = await admin
               .from(target.table)
               .update({ [target.column]: next })
-              .eq("id", (row as { id: string }).id);
+              .eq("id", (row as unknown as { id: string }).id);
             if (upErr) {
-              stats.errors.push({ path: `${target.table}.${target.column}#${(row as { id: string }).id}`, error: upErr.message });
+              stats.errors.push({ path: `${target.table}.${target.column}#${(row as unknown as { id: string }).id}`, error: upErr.message });
             } else {
               stats.url_rows_updated += 1;
             }

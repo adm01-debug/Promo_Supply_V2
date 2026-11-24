@@ -5,6 +5,12 @@ import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import { detectConsecutiveFailures } from "./failures.ts";
 import { insertNotification } from "../_shared/notifications.ts";
 
+// A edge importa a lib flutuante (@2): `ReturnType<typeof createClient>` resolve
+// para uma instanciacao diferente do client real. `Db` documenta o contrato
+// minimo usado pelas helpers locais, a mesma convencao de _shared/notifications.ts.
+// deno-lint-ignore no-explicit-any
+type Db = any;
+
 interface AlertResult {
   sla_warnings: number;
   sla_critical: number;
@@ -16,7 +22,7 @@ interface AlertResult {
 }
 
 async function insertIfNotDuplicate(
-  supabase: ReturnType<typeof createClient>,
+  supabase: Db,
   notif: { user_id: string; tenant_id?: string | null; type: string; title: string; message: string; priority: string; data?: Record<string, unknown>; action_url?: string; action_label?: string },
   today: string
 ): Promise<boolean> {
@@ -40,7 +46,7 @@ interface IntegrationFailure {
 }
 
 async function detectIntegrationFailures(
-  supabase: ReturnType<typeof createClient>
+  supabase: Db
 ): Promise<IntegrationFailure[]> {
   const now = Date.now();
   const failures: IntegrationFailure[] = [];
@@ -88,15 +94,25 @@ Deno.serve(async (req) => {
     const { user } = await getAuthUser(req);
     if (user) authorized = true;
   }
-  if (!authorized) return cronDenied;
+  if (!authorized) {
+    // `cronDenied` e sempre uma Response neste ramo; o fallback garante que o
+    // handler nunca devolva null para o Deno.serve.
+    return cronDenied ?? new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // O logger nasce fora do try para o catch conseguir persistir a falha em
+  // telemetry_logs: dentro do bloco ele saia do escopo e o catch estourava
+  // ReferenceError antes de registrar o erro.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('check-sla-alerts', requestId);
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('check-sla-alerts', requestId);
 
     logger.info('Starting SLA and alerts check...');
 
@@ -304,11 +320,7 @@ Deno.serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    if (typeof logger !== 'undefined') {
-      logger.error('Error in check-sla-alerts', { error: errorMessage, stack: error instanceof Error ? error.stack : undefined });
-    } else {
-      console.error('Error in check-sla-alerts:', error);
-    }
+    logger.error('Error in check-sla-alerts', { error: errorMessage, stack: error instanceof Error ? error.stack : undefined });
     const supabaseForHb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     await recordCronHeartbeat(supabaseForHb as any, "check-sla-alerts", errorMessage);
     return new Response(

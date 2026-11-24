@@ -51,7 +51,9 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { global: { headers: { Authorization: req.headers.get("authorization") ?? "" } } },
     );
-    const tenantId = await getTenantId(authClient, user);
+    // Fronteira: `SupabaseClientLike` e estrutural e a lib muda de forma entre
+    // versoes; o cast evita a varredura estrutural profunda dos genericos.
+    const tenantId = await getTenantId(authClient as unknown as Parameters<typeof getTenantId>[0], user);
     if (!tenantId) {
       return new Response(JSON.stringify({ error: "tenant not resolved" }), {
         status: 403,

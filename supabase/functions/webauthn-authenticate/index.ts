@@ -215,11 +215,12 @@ Deno.serve(async (req) => {
       }
 
       // Extract the token from the link
-      const linkUrl = new URL(signInData.properties?.hashed_token ? 
-        `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify?token=${signInData.properties.hashed_token}&type=magiclink` : 
+      const hashedToken = signInData.properties?.hashed_token;
+      const linkUrl = new URL(hashedToken ? 
+        `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify?token=${hashedToken}&type=magiclink` : 
         signInData.properties?.action_link || '');
       
-      const token = linkUrl.searchParams.get('token') || signInData.properties?.hashed_token;
+      const token = linkUrl.searchParams.get('token') || hashedToken;
 
       console.log('WebAuthn authentication successful for:', email);
 

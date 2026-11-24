@@ -12,14 +12,17 @@ Deno.serve(async (req) => {
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
 
+  // O logger nasce fora do try para o catch conseguir persistir a falha em
+  // telemetry_logs: dentro do bloco ele saia do escopo e o catch estourava
+  // ReferenceError antes de registrar o erro.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('weekly-summary-report', requestId);
+
   try {
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
-
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('weekly-summary-report', requestId);
 
     logger.info("Starting weekly summary generation...");
 
@@ -104,9 +107,7 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error generating weekly summary", { error: errorMessage });
-    }
+    logger.error("Error generating weekly summary", { error: errorMessage });
     const supabaseForHb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     await recordCronHeartbeat(supabaseForHb as any, "weekly-summary-report", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {

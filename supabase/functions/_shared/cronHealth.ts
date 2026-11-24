@@ -14,7 +14,7 @@
  */
 
 type AdminClient = {
-  rpc: (fn: string, params?: Record<string, unknown>) => Promise<{ error: unknown }>;
+  rpc: (fn: string, params?: Record<string, unknown>) => PromiseLike<{ error: unknown }>;
 };
 
 /**

@@ -97,7 +97,9 @@ serve(async (req) => {
     );
 
     const { getTenantId } = await import("../_shared/security.ts");
-    const tenant_id = await getTenantId(supabaseAdmin, user);
+    // Fronteira: `SupabaseClientLike` e estrutural e a lib muda de forma entre
+    // versoes; o cast evita a varredura estrutural profunda dos genericos.
+    const tenant_id = await getTenantId(supabaseAdmin as unknown as Parameters<typeof getTenantId>[0], user);
     if (!tenant_id) {
       logger.error("Contexto de tenant não encontrado para o usuário", { userId: user.id });
       throw new Error("Validation error: Tenant context not found");

@@ -75,7 +75,7 @@ serve(async (req) => {
       };
     });
 
-    const criticalIssues = reportEntries.filter(e => e.severity === "CRITICAL");
+    const criticalIssues = reportEntries.filter((e: { severity: string }) => e.severity === "CRITICAL");
 
     const complianceSummary = {
       timestamp: new Date().toISOString(),
@@ -83,7 +83,7 @@ serve(async (req) => {
       total_policies: pgPolicies.length,
       critical_findings: criticalIssues.length,
       compliance_report: reportEntries,
-      remediation_required: criticalIssues.map(i => `${i.table}: ${i.policy}`)
+      remediation_required: criticalIssues.map((i: { table: string; policy: string }) => `${i.table}: ${i.policy}`)
     };
 
     return new Response(JSON.stringify(complianceSummary, null, 2), {
@@ -93,7 +93,7 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       headers: buildResponseHeaders(cors),
       status: 500,
     });

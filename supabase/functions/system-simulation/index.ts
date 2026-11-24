@@ -103,7 +103,7 @@ serve(async (req) => {
       }
     };
 
-    await Promise.all(scenarios.map(s => runBatch(s)));
+    await Promise.all(scenarios.map((s: string) => runBatch(s)));
 
     const summary = engine.getSummary();
     logger.info(`Simulation completed in ${mode} mode`, { summary });
@@ -115,8 +115,8 @@ serve(async (req) => {
       headers: { ...cors, "Content-Type": "application/json" },
     });
   } catch (e) {
-    logger.error("Simulation failed", { error: e.message });
-    return new Response(JSON.stringify({ error: e.message }), {
+    logger.error("Simulation failed", { error: e instanceof Error ? e.message : String(e) });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
       status: 500, headers: { ...cors, "Content-Type": "application/json" },
     });
   }
