@@ -1419,8 +1419,8 @@
   {
    "modulo": "components/security",
    "arquivos": 15,
-   "testes": 0,
-   "linhas": 3291,
+   "testes": 1,
+   "linhas": 3294,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2361,7 +2361,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11610,
+   "linhas": 11619,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2765,7 +2765,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 18,
+   "testes": 19,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],

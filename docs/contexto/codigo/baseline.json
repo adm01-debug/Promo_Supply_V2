@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "aac5577aa2f27e321cffc4c42e384b65bb416c12",
+  "commit": "33cb8a001a25ad19dad7aa36842900caa057d68c",
   "branch": "main",
-  "data_commit": "2026-11-23T23:42:14-03:00",
+  "data_commit": "2026-11-23T23:49:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "33cb8a0",
+    "data": "2026-11-23",
+    "assunto": "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)"
+   },
    {
     "sha": "aac5577",
     "data": "2026-11-23",
@@ -126,18 +131,13 @@
     "sha": "b2c53db",
     "data": "2026-11-23",
     "assunto": "fix(dashboard): calcula SLA com dados reais em vez de valores fixos (#298)"
-   },
-   {
-    "sha": "334a384",
-    "data": "2026-11-23",
-    "assunto": "fix(edges): importa buildCorsHeaders de security.ts nas 9 edges quebradas (#338)"
    }
   ],
-  "arquivos_mudados_7d": 374,
+  "arquivos_mudados_7d": 378,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 173
+    "mudancas": 169
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -169,18 +169,18 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 22
+    "mudancas": 23
+   },
+   {
+    "pasta": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 21
    },
    {
     "pasta": "src/features/auth",
     "mudancas": 21
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 20
-   },
-   {
-    "pasta": "src/pages/recebimento",
+    "pasta": "src/components/security",
     "mudancas": 19
    },
    {
@@ -188,7 +188,7 @@
     "mudancas": 17
    },
    {
-    "pasta": "src/components/security",
+    "pasta": "src/pages/recebimento",
     "mudancas": 17
    },
    {
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -266,14 +266,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
-    "mudancas": 6
-   },
-   {
     "arquivo": "supabase/functions/_shared/xbz_client.ts",
     "mudancas": 6
    },
@@ -296,6 +288,14 @@
    {
     "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
     "mudancas": 5
+   },
+   {
+    "arquivo": "scripts/realtime-audit.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1348,
-  "arquivos_codigo": 845,
-  "linhas_codigo": 174503,
+  "arquivos_total": 1350,
+  "arquivos_codigo": 847,
+  "linhas_codigo": 174669,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 218,
+  "testes": 220,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -427,16 +427,16 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 263,
-   "linhas": 49186
+   "arquivos": 264,
+   "linhas": 49226
   },
   "src/features": {
    "arquivos": 66,
    "linhas": 8880
   },
   "src/hooks": {
-   "arquivos": 80,
-   "linhas": 13809
+   "arquivos": 81,
+   "linhas": 13951
   },
   "src/i18n": {
    "arquivos": 1,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 114,
-   "linhas": 18905
+   "linhas": 18889
   },
   "tailwind.config.ts": {
    "arquivos": 1,

@@ -1334,7 +1334,7 @@
    "nome": "webauthn-authenticate",
    "entrada": "supabase/functions/webauthn-authenticate/index.ts",
    "arquivos": 1,
-   "linhas": 256,
+   "linhas": 240,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",

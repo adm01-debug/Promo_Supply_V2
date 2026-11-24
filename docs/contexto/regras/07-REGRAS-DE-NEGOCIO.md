@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `aac5577aa2` · branch `main` · 2026-11-24 02:42 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `33cb8a001a` · branch `main` · 2026-11-24 02:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2381,7 +2381,11 @@ _nenhum item encontrado_
 | Failed to create credential | `src/hooks/useWebAuthn.ts` |
 | Failed to get credential | `src/hooks/useWebAuthn.ts` |
 | Falha ao remover passkey | `src/hooks/useWebAuthn.ts` |
+| Nao foi possivel abrir a sessao com a passkey | `src/hooks/useWebAuthn.ts` |
 | Nenhuma passkey registrada para este email | `src/hooks/useWebAuthn.ts` |
+| O login por passkey nao abriu sessao | `src/hooks/useWebAuthn.ts` |
+| O login por passkey nao devolveu o link de sessao | `src/hooks/useWebAuthn.ts` |
+| O login por passkey nao devolveu token de sessao | `src/hooks/useWebAuthn.ts` |
 | Operação cancelada pelo usuário | `src/hooks/useWebAuthn.ts` |
 | WebAuthn não é suportado neste navegador | `src/hooks/useWebAuthn.ts` |
 | handler returned false | `src/hooks/useWorkflowDLQ.ts` |
@@ -2393,11 +2397,7 @@ _nenhum item encontrado_
 | Erro ao atualizar pedido: ${error.message} | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Pedido #${pedidoId} não encontrado | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | Status inválido para o Kanban: ${novoStatus} | `src/pages/acompanhamento/Acompanhamento.tsx` |
-| , id],     enabled: !!id,     queryFn: async () => {       const { data, error } = await supabase.functions.invoke<Payload>(          | `src/pages/admin/AlertDetail.tsx` |
-| Sem dados | `src/pages/admin/AlertDetail.tsx` |
-| Email inválido | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| Falha: ${(e as Error).message} | `src/pages/admin/AlertSubscriptionsPanel.tsx` |
-| … +239 linhas — lista completa em `context.json` | |
+| … +243 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2416,7 +2416,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2850 testes em 167 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2858 testes em 169 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2540,6 +2540,7 @@ _nenhum item encontrado_
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
@@ -2562,6 +2563,7 @@ _nenhum item encontrado_
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
+| `src/components/security/__tests__/PasskeyManager.pendente.test.tsx` | 3 | PasskeyManager / anuncio honesto (SEC-11) · nao promete login por biometria enquanto o servidor recusa · botao Adicionar Passkey fica desabilitado |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
 | `src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx` | 3 | useApprovalWorkflow · checkEscalations (HK-04) · grava organization_id na etapa do aprovador escalado · nao cria etapa quando outro navegador ja escalou o mesmo workflow |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |

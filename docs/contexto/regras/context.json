@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "aac5577aa2f27e321cffc4c42e384b65bb416c12",
+  "sha": "33cb8a001a25ad19dad7aa36842900caa057d68c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:42 UTC",
-  "files_total": 1349,
-  "code_files": 1178,
-  "code_lines": 201687,
+  "generated_at": "2026-11-24 02:49 UTC",
+  "files_total": 1351,
+  "code_files": 1180,
+  "code_lines": 201853,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "130476a54a4f17d5",
+ "facts_hash": "7b8fc5ecaaf1d532",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 410,
-   ".tsx": 362,
+   ".tsx": 364,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -33695,7 +33695,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 298,
+  "components_count": 299,
   "hooks": [
    {
     "name": "useContacts",
@@ -34725,8 +34725,8 @@
   },
   {
    "module": "src/components",
-   "files": 263,
-   "lines": 49186,
+   "files": 264,
+   "lines": 49226,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35233,8 +35233,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 80,
-   "lines": 13809,
+   "files": 81,
+   "lines": 13951,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35444,8 +35444,8 @@
     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
     "src/hooks/__tests__/useSpotIntegration.checkout.test.tsx",
     "src/hooks/__tests__/useToastReducer.test.ts",
-    "src/hooks/__tests__/useWorkflowDLQ.test.ts",
-    "src/hooks/__tests__/useXbzIntegration.cache.test.tsx"
+    "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "src/hooks/__tests__/useWorkflowDLQ.test.ts"
    ]
   },
   {
@@ -36024,7 +36024,7 @@
   {
    "module": "supabase/functions",
    "files": 114,
-   "lines": 18905,
+   "lines": 18889,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37770,7 +37770,6 @@
      "supabase/functions/webauthn-register/index.ts"
     ],
     "delete": [
-     "supabase/functions/webauthn-authenticate/index.ts",
      "supabase/functions/webauthn-register/index.ts"
     ]
    },
@@ -37782,9 +37781,6 @@
     ],
     "delete": [
      "src/hooks/useWebAuthn.ts"
-    ],
-    "update": [
-     "supabase/functions/webauthn-authenticate/index.ts"
     ],
     "insert": [
      "supabase/functions/webauthn-register/index.ts"
@@ -41402,7 +41398,23 @@
    },
    {
     "file": "src/hooks/useWebAuthn.ts",
+    "msg": "Nao foi possivel abrir a sessao com a passkey"
+   },
+   {
+    "file": "src/hooks/useWebAuthn.ts",
     "msg": "Nenhuma passkey registrada para este email"
+   },
+   {
+    "file": "src/hooks/useWebAuthn.ts",
+    "msg": "O login por passkey nao abriu sessao"
+   },
+   {
+    "file": "src/hooks/useWebAuthn.ts",
+    "msg": "O login por passkey nao devolveu o link de sessao"
+   },
+   {
+    "file": "src/hooks/useWebAuthn.ts",
+    "msg": "O login por passkey nao devolveu token de sessao"
    },
    {
     "file": "src/hooks/useWebAuthn.ts",
@@ -60261,6 +60273,18 @@
     "name": "all strict filters together can return empty"
    },
    {
+    "file": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+    "name": "PasskeyManager / anuncio honesto (SEC-11)"
+   },
+   {
+    "file": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+    "name": "nao promete login por biometria enquanto o servidor recusa"
+   },
+   {
+    "file": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+    "name": "botao Adicionar Passkey fica desabilitado"
+   },
+   {
     "file": "src/components/ui/__tests__/celebrationConfigs.test.ts",
     "name": "celebrationConfigs"
    },
@@ -62315,6 +62339,26 @@
    {
     "file": "src/hooks/__tests__/useToastReducer.test.ts",
     "name": "UPDATE_TOAST on a non-existing id preserves all existing toasts"
+   },
+   {
+    "file": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "name": "useWebAuthn / authenticateWithPasskey (SEC-11)"
+   },
+   {
+    "file": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "name": "nao anuncia sucesso quando o servidor nao devolve actionLink"
+   },
+   {
+    "file": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "name": "nao anuncia sucesso quando o OTP falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "name": "nao anuncia sucesso quando o OTP passa mas nao ha sessao"
+   },
+   {
+    "file": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+    "name": "anuncia sucesso quando a sessao existe de verdade"
    },
    {
     "file": "src/hooks/__tests__/useWorkflowDLQ.test.ts",
@@ -96746,7 +96790,7 @@
   },
   "src/components/security/PasskeyManager.tsx": {
    "path": "src/components/security/PasskeyManager.tsx",
-   "lines": 269,
+   "lines": 272,
    "exports": [
     "function PasskeyManager"
    ]
@@ -96867,6 +96911,16 @@
    "lines": 175,
    "exports": [
     "const SecurityLogsPanel"
+   ]
+  },
+  "src/components/security/__tests__/PasskeyManager.pendente.test.tsx": {
+   "path": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+   "lines": 37,
+   "is_test": true,
+   "tests": [
+    "PasskeyManager / anuncio honesto (SEC-11)",
+    "nao promete login por biometria enquanto o servidor recusa",
+    "botao Adicionar Passkey fica desabilitado"
    ]
   },
   "src/components/settings/FeedbackSettingsPanel.tsx": {
@@ -102161,7 +102215,7 @@
   },
   "src/hooks/useWebAuthn.ts": {
    "path": "src/hooks/useWebAuthn.ts",
-   "lines": 312,
+   "lines": 321,
    "exports": [
     "function useWebAuthn"
    ],
@@ -102189,12 +102243,19 @@
     "webauthn-authenticate",
     "webauthn-register"
    ],
+   "navigates": [
+    "/"
+   ],
    "errors": [
     "Erro de segurança. Verifique se está usando HTTPS.",
     "Failed to create credential",
     "Failed to get credential",
     "Falha ao remover passkey",
+    "Nao foi possivel abrir a sessao com a passkey",
     "Nenhuma passkey registrada para este email",
+    "O login por passkey nao abriu sessao",
+    "O login por passkey nao devolveu o link de sessao",
+    "O login por passkey nao devolveu token de sessao",
     "Operação cancelada pelo usuário",
     "WebAuthn não é suportado neste navegador"
    ],
@@ -102664,6 +102725,21 @@
     "DISMISS_TOAST on empty state does not throw",
     "REMOVE_TOAST on empty state does not throw",
     "UPDATE_TOAST on a non-existing id preserves all existing toasts"
+   ]
+  },
+  "src/hooks/__tests__/useWebAuthn.sessao.test.tsx": {
+   "path": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+   "lines": 133,
+   "is_test": true,
+   "temporal": [
+    "timeout: 60000,"
+   ],
+   "tests": [
+    "useWebAuthn / authenticateWithPasskey (SEC-11)",
+    "nao anuncia sucesso quando o servidor nao devolve actionLink",
+    "nao anuncia sucesso quando o OTP falha",
+    "nao anuncia sucesso quando o OTP passa mas nao ha sessao",
+    "anuncia sucesso quando a sessao existe de verdade"
    ]
   },
   "src/hooks/__tests__/useWorkflowDLQ.test.ts": {
@@ -114647,7 +114723,7 @@
   },
   "supabase/functions/webauthn-authenticate/index.ts": {
    "path": "supabase/functions/webauthn-authenticate/index.ts",
-   "lines": 256,
+   "lines": 240,
    "tables": [
     {
      "table": "webauthn_credentials",
@@ -114664,27 +114740,17 @@
     {
      "table": "webauthn_credentials",
      "op": "select"
-    },
-    {
-     "table": "webauthn_credentials",
-     "op": "update"
-    },
-    {
-     "table": "webauthn_challenges",
-     "op": "delete"
     }
    ],
    "table_cols": {
     "webauthn_credentials": [
      "credential_id",
-     "id",
      "transports",
      "user_id"
     ],
     "webauthn_challenges": [
      "email",
      "expires_at",
-     "id",
      "type"
     ]
    },
@@ -117187,10 +117253,24 @@
   }
  },
  "git": {
-  "sha": "aac5577aa2f27e321cffc4c42e384b65bb416c12",
+  "sha": "33cb8a001a25ad19dad7aa36842900caa057d68c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "33cb8a0",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): exige sessao real no login por passkey e bloqueia cadastro (#361)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/security/PasskeyManager.tsx",
+     "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+     "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+     "src/hooks/useWebAuthn.ts",
+     "supabase/functions/webauthn-authenticate/index.ts"
+    ]
+   },
    {
     "sha": "aac5577",
     "date": "2026-11-23",
@@ -117563,23 +117643,16 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "fa08c73",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)",
-    "files": [
-     "supabase/functions/scim-v2/auth.test.ts",
-     "supabase/functions/scim-v2/auth.ts",
-     "supabase/functions/scim-v2/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    19
+   ],
+   [
+    "supabase/functions/webauthn-authenticate/index.ts",
+    3
    ],
    [
     "supabase/functions/fiscal-orchestrator/index.ts",
@@ -117619,10 +117692,6 @@
    ],
    [
     "supabase/functions/system-simulation/index.ts",
-    2
-   ],
-   [
-    "supabase/functions/webauthn-authenticate/index.ts",
     2
    ],
    [

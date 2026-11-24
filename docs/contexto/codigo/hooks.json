@@ -2138,7 +2138,7 @@
    "hooks_exportados": [
     "useWebAuthn"
    ],
-   "linhas": 312,
+   "linhas": 321,
    "dominio": "hooks",
    "tabelas": [
     "webauthn_credentials"
@@ -2158,7 +2158,7 @@
     "src/components/security/PasskeyManager.tsx",
     "src/pages/auth/Auth.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useWorkflowDLQ.ts",

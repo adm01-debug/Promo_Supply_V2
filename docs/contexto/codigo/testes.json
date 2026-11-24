@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 218,
+ "total": 220,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 201
+  "unit": 203
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 126
+   "arquivos": 128
   },
   {
    "padrao": "outro",
@@ -533,6 +533,15 @@
    "casos": 28
   },
   {
+   "arquivo": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
+   "tipo": "unit",
+   "linhas": 37,
+   "testa": [
+    "src/components/security/PasskeyManager.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/components/ui/__tests__/celebrationConfigs.test.ts",
    "tipo": "unit",
    "linhas": 130,
@@ -827,6 +836,16 @@
     "src/hooks/use-toast.ts"
    ],
    "casos": 19
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useWebAuthn.sessao.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/hooks/useWebAuthn.ts",
+    "src/lib/feedbackToast.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/__tests__/useWorkflowDLQ.test.ts",
@@ -1997,6 +2016,7 @@
   "src/components/compras/timeline/timelineConfig.ts": 1,
   "src/components/onboarding/tourStepDefinitions.ts": 1,
   "src/components/pagamentos/PagamentoAdvancedFilters.tsx": 1,
+  "src/components/security/PasskeyManager.tsx": 1,
   "src/components/ui/celebration-particles.tsx": 1,
   "src/components/ui/chart.tsx": 1,
   "src/components/ui/enhanced-search-helpers.ts": 1,
@@ -2032,6 +2052,7 @@
   "src/hooks/useRealtimeSubscription.ts": 1,
   "src/hooks/useRecentlyViewed.ts": 1,
   "src/hooks/useSpotIntegration.ts": 1,
+  "src/hooks/useWebAuthn.ts": 1,
   "src/hooks/useWorkflowDLQ.ts": 1,
   "src/hooks/useXbzIntegration.ts": 1,
   "src/integrations/supabase/client.ts": 5,
@@ -2039,7 +2060,7 @@
   "src/lib/creditoFornecedor.ts": 1,
   "src/lib/dbMapping.ts": 1,
   "src/lib/exportData.ts": 2,
-  "src/lib/feedbackToast.ts": 2,
+  "src/lib/feedbackToast.ts": 3,
   "src/lib/filterClearReporter.ts": 1,
   "src/lib/haptics.ts": 1,
   "src/lib/imageCompression.ts": 1,
@@ -2233,8 +2254,7 @@
    "src/hooks/useSidebarBadges.ts",
    "src/hooks/useSupplierQualification.ts",
    "src/hooks/useTourPreferences.ts",
-   "src/hooks/useUnsavedChangesWarning.ts",
-   "src/hooks/useWebAuthn.ts"
+   "src/hooks/useUnsavedChangesWarning.ts"
   ],
   "edges": [
    "ai-demand-prediction",

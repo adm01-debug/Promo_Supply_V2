@@ -2432,7 +2432,7 @@
     "PasskeyManager"
    ],
    "export_default": null,
-   "linhas": 269,
+   "linhas": 272,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth",
