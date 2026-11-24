@@ -326,8 +326,17 @@ const Pedidos = () => {
                               </span>
                             </TableCell>
                             <TableCell className="pr-6">
-                              <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all">
-                                <Button aria-label="Ações do pedido" variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
+                              <div className="flex justify-end opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all">
+                                <Button
+                                  aria-label={`Ver pedido ${pedido.numero}`}
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleViewDetails(pedido);
+                                  }}
+                                >
                                   <MoreHorizontal className="w-4 h-4" />
                                 </Button>
                               </div>

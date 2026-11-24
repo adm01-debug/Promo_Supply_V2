@@ -396,8 +396,17 @@ export default function RecebimentoOffline() {
                   return (
                     <Card
                       key={order.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Selecionar pedido ${order.numero}`}
+                      className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       onClick={() => selectOrder(order)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectOrder(order);
+                        }
+                      }}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
