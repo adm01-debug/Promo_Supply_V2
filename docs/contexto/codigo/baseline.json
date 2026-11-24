@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ea97162f763a246f137a152e7b086b6059b5aef7",
+  "commit": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
   "branch": "main",
-  "data_commit": "2026-11-24T09:30:46-03:00",
+  "data_commit": "2026-11-24T09:40:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "66c9eb7",
+    "data": "2026-11-24",
+    "assunto": "chore(lint): liga o gate de acessibilidade no eslint (#413)"
+   },
    {
     "sha": "ea97162",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "d0c644d",
     "data": "2026-11-24",
     "assunto": "﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)"
-   },
-   {
-    "sha": "410aae2",
-    "data": "2026-11-24",
-    "assunto": "﻿fix(pedidos): exclusao de pedido exige status pendente ou cancelado (#384)"
    }
   ],
-  "arquivos_mudados_7d": 456,
+  "arquivos_mudados_7d": 457,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "pasta": "src/features/layout",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -214,20 +214,20 @@
     "mudancas": 12
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 8
+   },
+   {
     "arquivo": "docs/pendencias/_ordem.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "package.json",
     "mudancas": 8
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
     "mudancas": 8
-   },
-   {
-    "arquivo": "bun.lock",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "package.json",
-    "mudancas": 7
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1404,
   "arquivos_codigo": 899,
-  "linhas_codigo": 182030,
+  "linhas_codigo": 182038,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
  "por_pasta": {
   "eslint.config.js": {
    "arquivos": 1,
-   "linhas": 39
+   "linhas": 47
   },
   "playwright.config.ts": {
    "arquivos": 1,

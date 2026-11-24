@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(lint): liga o gate de acessibilidade no eslint (#413)",
    "fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)",
    "fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)",
    "ci: provisiona o segredo do webhook Promo Champions (#411)",
-   "feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)",
-   "fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)"
+   "feat: receive-os-sync aceita pedido aprovado do Promo Champions (#407)"
   ]
  },
  "pr_template": null,

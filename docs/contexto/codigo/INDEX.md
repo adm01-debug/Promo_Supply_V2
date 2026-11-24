@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ea97162f763a246f137a152e7b086b6059b5aef7` (2026-11-24T09:30:46-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `66c9eb77567f0ee8f4a208e5e1c88bbb6e887943` (2026-11-24T09:40:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1404 |
 | arquivos_codigo | 899 |
-| linhas_codigo | 182030 |
+| linhas_codigo | 182038 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,14 +338,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (62)
+- docs/qa/05-PROGRESSO.md (63)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
 - docs/ci/README.md (12)
+- bun.lock (8)
 - docs/pendencias/_ordem.md (8)
+- package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
-- bun.lock (7)
-- package.json (7)
 - src/integrations/supabase/types.ts (7)
 - src/pages/acompanhamento/Acompanhamento.tsx (7)
 - supabase/functions/punchout-receive/index.ts (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `66c9eb7` chore(lint): liga o gate de acessibilidade no eslint (#413)
 - 2026-11-24 `ea97162` fix(a11y): nome acessivel nos controles so-icone do chat e da barra de selecao (#412)
 - 2026-11-24 `cd7093a` fix(a11y): nome acessivel nos controles so-icone do cartao e da lista de pedidos (#410)
 - 2026-11-24 `c42cabb` ci: provisiona o segredo do webhook Promo Champions (#411)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `d8d2b56` fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)
 - 2026-11-24 `8c81633` chore(qa): fecha a 128 e remove a 112 orfa do progresso (#401)
 - 2026-11-24 `005038d` fix(devolucoes): nao avisa credito gerado quando o credito nao gravou (#399)
-- 2026-11-24 `ae31825` fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

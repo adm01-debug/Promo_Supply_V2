@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ea97162f763a246f137a152e7b086b6059b5aef7",
+  "sha": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 12:31 UTC",
+  "generated_at": "2026-11-24 12:41 UTC",
   "files_total": 1405,
   "code_files": 1232,
-  "code_lines": 209214,
+  "code_lines": 209222,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "326fbbacbb002ba6",
+ "facts_hash": "c6660f18c99cfba8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34457,7 +34457,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 847,
+   "lines": 855,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -34474,6 +34474,7 @@
     "@playwright/test",
     "@tailwindcss/typography",
     "@vitejs/plugin-react-swc",
+    "eslint-plugin-jsx-a11y",
     "eslint-plugin-react-hooks",
     "eslint-plugin-react-refresh",
     "globals",
@@ -90495,7 +90496,7 @@
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
-   "lines": 39,
+   "lines": 47,
    "exports": [
     "default tseslint"
    ]
@@ -120265,10 +120266,22 @@
   }
  },
  "git": {
-  "sha": "ea97162f763a246f137a152e7b086b6059b5aef7",
+  "sha": "66c9eb77567f0ee8f4a208e5e1c88bbb6e887943",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "66c9eb7",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore(lint): liga o gate de acessibilidade no eslint (#413)",
+    "files": [
+     "bun.lock",
+     "docs/qa/05-PROGRESSO.md",
+     "eslint.config.js",
+     "package.json"
+    ]
+   },
    {
     "sha": "ea97162",
     "date": "2026-11-24",
@@ -120613,16 +120626,6 @@
      "src/pages/pedidos/PedidoDetailsDialog.tsx",
      "src/pages/pedidos/__tests__/followUpPedido.test.tsx"
     ]
-   },
-   {
-    "sha": "e2ea735",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: teste do prefetch volta a apontar para a chave de 15 posicoes da listagem (#379)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -120679,6 +120682,18 @@
     2
    ],
    [
+    "bun.lock",
+    1
+   ],
+   [
+    "eslint.config.js",
+    1
+   ],
+   [
+    "package.json",
+    1
+   ],
+   [
     "src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx",
     1
    ],
@@ -120692,18 +120707,6 @@
    ],
    [
     "src/components/compras/SolicitacaoCard.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx",
-    1
-   ],
-   [
-    "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
-    1
-   ],
-   [
-    ".github/workflows/provisionar-secret-champions-webhook.yml",
     1
    ]
   ]

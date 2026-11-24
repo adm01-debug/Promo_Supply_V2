@@ -85,7 +85,7 @@
    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
   },
   "dependencias": 68,
-  "dev_dependencias": 35,
+  "dev_dependencias": 36,
   "principais": {
    "@supabase/supabase-js": "^2.119.0",
    "@tanstack/query-sync-storage-persister": "^5.107.1",
