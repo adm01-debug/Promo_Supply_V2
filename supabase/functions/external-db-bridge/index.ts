@@ -298,13 +298,14 @@ Deno.serve(async (req) => {
       { headers: buildResponseHeaders(cors) }
     );
   } catch (err) {
+    const errMessage = err instanceof Error ? err.message : String(err);
     if (typeof logger !== 'undefined') {
-      logger.error("Error in external-db-bridge", { error: err.message });
+      logger.error("Error in external-db-bridge", { error: errMessage });
     } else {
       console.error("[external-db-bridge] Error:", err);
     }
     return new Response(
-      JSON.stringify({ error: err.message || "Internal server error" }),
+      JSON.stringify({ error: errMessage || "Internal server error" }),
       { status: 500, headers: buildResponseHeaders(cors) }
     );
   }

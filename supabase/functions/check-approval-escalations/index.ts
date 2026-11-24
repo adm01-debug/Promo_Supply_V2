@@ -13,10 +13,13 @@ Deno.serve(async (req) => {
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
 
-  try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('check-approval-escalations', requestId);
+  // O logger nasce fora do try para o catch conseguir persistir a falha em
+  // telemetry_logs: dentro do bloco ele saia do escopo e o catch estourava
+  // ReferenceError antes de registrar o erro.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('check-approval-escalations', requestId);
 
+  try {
     logger.info('Starting approval escalation check...');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -231,11 +234,7 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    if (typeof logger !== 'undefined') {
-      logger.error('Error in escalation check', { error: errorMessage });
-    } else {
-      console.error('Error in escalation check:', error);
-    }
+    logger.error('Error in escalation check', { error: errorMessage });
     const supabaseForHb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     await recordCronHeartbeat(supabaseForHb as any, "check-approval-escalations", errorMessage);
     return new Response(JSON.stringify({

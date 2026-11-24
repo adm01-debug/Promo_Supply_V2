@@ -116,8 +116,10 @@ serve(async (req) => {
             message: `Outbox item ${row.id} (target: ${row.target}) reached dead status after ${retries} retries. Last error: ${errMsg}`,
             metadata: { source: "process-outbox", id: row.id, target: row.target, endpoint: row.endpoint, retries, last_error: errMsg },
           })
-          .then(() => {/* fire-and-forget */})
-          .catch(() => {/* system_alerts may not exist — silently ignore */});
+          .then(
+            () => {/* fire-and-forget */},
+            () => {/* system_alerts may not exist — silently ignore */},
+          );
       }
 
       results.push({ id: row.id, ok: false, error: errMsg, retries });

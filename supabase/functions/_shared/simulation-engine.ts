@@ -24,7 +24,7 @@ export class SimulationEngine {
         name,
         status: "error",
         duration: performance.now() - start,
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       });
       throw error;
     }
