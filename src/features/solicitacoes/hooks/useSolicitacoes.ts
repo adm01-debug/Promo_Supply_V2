@@ -210,9 +210,16 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         throw solError;
       }
 
-      // Iniciar Workflow de Aprovação se houver valor ou centro de custo
+      // Iniciar Workflow de Aprovação se houver valor ou centro de custo.
+      // O trigger auto_approve_low_value_solicitacao pode devolver a solicitação já como
+      // 'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma
+      // aprovação pendente que ninguém consegue concluir, porque
+      // auto_transition_solicitacao_on_workflow_approved só age em 'pendente'/'em_cotacao'.
+      const autoAprovada = solData?.status === 'aprovada';
       if (solData && (input.valor_estimado || input.cost_center_id)) {
-        await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+        if (!autoAprovada) {
+          await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+        }
         
         // Audit Log
         await auditHelpers.logCreate(
@@ -224,7 +231,11 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       }
 
       logger.info('Solicitação criada com sucesso', { id: solData?.id, numero: solData?.numero });
-      toast.success('Solicitação criada e enviada para aprovação!');
+      toast.success(
+        autoAprovada
+          ? 'Solicitação criada e aprovada automaticamente (valor abaixo do limite de alçada).'
+          : 'Solicitação criada e enviada para aprovação!',
+      );
       invalidate();
       return solData;
     } catch (err: unknown) {
