@@ -200,8 +200,11 @@ export function rpcAdminScanRunsSlaStatus(supabase: SupabaseClient): RpcResult<S
 
 export function rpcGetCostCenterPerformanceReport(
   supabase: SupabaseClient,
+  organizationId: string,
 ): RpcResult<CostCenterPerformance[]> {
-  return supabase.rpc("get_cost_center_performance_report") as unknown as RpcResult<CostCenterPerformance[]>;
+  return supabase.rpc("get_cost_center_performance_report", {
+    p_organization_id: organizationId,
+  }) as unknown as RpcResult<CostCenterPerformance[]>;
 }
 
 export function rpcHasRole(

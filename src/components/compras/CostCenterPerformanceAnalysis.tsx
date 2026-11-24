@@ -18,16 +18,21 @@ import {
 } from 'recharts';
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/exportData";
+import { useAuth } from "@/features/auth";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 export const CostCenterPerformanceAnalysis = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { organizationId } = useAuth();
 
   const { data: report = [], isLoading } = useQuery({
-    queryKey: ['cost-center-performance-report'],
+    queryKey: ['cost-center-performance-report', organizationId],
+    enabled: !!organizationId,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_cost_center_performance_report');
+      const { data, error } = await supabase.rpc('get_cost_center_performance_report', {
+        p_organization_id: organizationId!,
+      });
       if (error) throw error;
       return data ?? [];
     }

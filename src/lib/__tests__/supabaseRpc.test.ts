@@ -134,9 +134,11 @@ describe('supabaseRpc typed wrappers', () => {
     expect(mockRpc).toHaveBeenCalledWith('admin_scan_runs_sla_status');
   });
 
-  it('rpcGetCostCenterPerformanceReport → rpc("get_cost_center_performance_report") with no params', async () => {
-    await rpcGetCostCenterPerformanceReport(supabase);
-    expect(mockRpc).toHaveBeenCalledWith('get_cost_center_performance_report');
+  it('rpcGetCostCenterPerformanceReport → rpc("get_cost_center_performance_report") with p_organization_id', async () => {
+    await rpcGetCostCenterPerformanceReport(supabase, 'org-1');
+    expect(mockRpc).toHaveBeenCalledWith('get_cost_center_performance_report', {
+      p_organization_id: 'org-1',
+    });
   });
 
   it('rpcHasRole → correct name and params', async () => {
