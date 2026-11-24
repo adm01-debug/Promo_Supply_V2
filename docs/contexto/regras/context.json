@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "18ef743962e4b9840e7e5842a24624a5e70558a7",
+  "sha": "ae31825fdc294a5f5501b3abc7c3c179b37ce299",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:28 UTC",
-  "files_total": 1388,
-  "code_files": 1217,
-  "code_lines": 207179,
+  "generated_at": "2026-11-24 09:31 UTC",
+  "files_total": 1389,
+  "code_files": 1218,
+  "code_lines": 207327,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "258a3086fcd3efa9",
+ "facts_hash": "4dae18a5524d2b8d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 431,
-   ".tsx": 380,
+   ".tsx": 381,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -35211,11 +35211,12 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 7,
-   "lines": 619,
+   "files": 8,
+   "lines": 745,
    "tables": [
     "pedido_itens",
-    "pedidos"
+    "pedidos",
+    "solicitacoes"
    ],
    "exports": [
     "exclusaoPedido.ts: STATUS_PEDIDO_EXCLUIVEL, MOTIVO_EXCLUSAO_BLOQUEADA, statusPermiteExcluirPedido, selecaoTemExclusaoBloqueada, mensagemExclusaoParcial",
@@ -35246,7 +35247,8 @@
     "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
     "src/features/pedidos/hooks/usePedidos.ts",
     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-    "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx"
+    "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
+    "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
   },
   {
@@ -35702,7 +35704,7 @@
   {
    "module": "src/pages",
    "files": 140,
-   "lines": 32568,
+   "lines": 32590,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37528,6 +37530,7 @@
      "src/components/compras/SavingsGoalPanel.tsx",
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
      "src/components/mobile/BottomNavigation.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useApprovalWorkflow.ts",
      "src/hooks/useBuyerPerformanceData.ts",
@@ -41260,6 +41263,10 @@
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Só é possível gerar ordem de compra de uma solicitação aprovada"
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Transição inválida: ${pedido.status} → ${newStatus}"
    },
    {
@@ -41929,6 +41936,10 @@
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "msg": "Dados insuficientes para gerar a ordem."
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "msg": "Ordem salva, mas a solicitação não foi atualizada"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -53264,6 +53275,12 @@
     "kind": "compara"
    },
    {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "field": "status",
+    "value": "aprovada",
+    "kind": "compara"
+   },
+   {
     "file": "src/features/solicitacoes/fluxoAprovacao.ts",
     "field": "status",
     "value": "rejected",
@@ -54852,6 +54869,24 @@
     "field": "status",
     "value": "em_andamento",
     "kind": "escreve"
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "field": "status",
+    "value": "aprovada",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "field": "status",
+    "value": "aprovada",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "field": "status",
+    "value": "aprovada",
+    "kind": "compara"
    },
    {
     "file": "src/pages/gerar-ordem/GerarOrdem.tsx",
@@ -62018,6 +62053,18 @@
    {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "name": "deletePedido de pedido descartavel continua funcionando"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+    "name": "usePedidos · ordem de compra so com solicitacao aprovada (NEG-06)"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+    "name": "nao cria a ordem quando a solicitacao nao esta aprovada"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+    "name": "cria a ordem quando a solicitacao esta aprovada"
    },
    {
     "file": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
@@ -80030,8 +80077,10 @@
       "compara:src/components/ui/indicators/StepAndHealth.tsx"
      ],
      "aprovada": [
+      "compara:src/features/pedidos/hooks/usePedidos.ts",
       "compara:src/features/solicitacoes/fluxoAprovacao.ts",
       "compara:src/features/solicitacoes/hooks/useSolicitacoes.ts",
+      "compara:src/pages/gerar-ordem/GerarOrdem.tsx",
       "compara:src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
@@ -100307,7 +100356,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 371,
+   "lines": 384,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -100319,6 +100368,10 @@
    "tables": [
     {
      "table": "pedidos",
+     "op": "select"
+    },
+    {
+     "table": "solicitacoes",
      "op": "select"
     },
     {
@@ -100368,6 +100421,10 @@
      "updated_at",
      "valor_frete",
      "valor_total"
+    ],
+    "solicitacoes": [
+     "id",
+     "status"
     ]
    },
    "rpc": [
@@ -100381,6 +100438,7 @@
     "Erro ao excluir pedidos: ",
     "Erro ao excluir: ",
     "Pedido não encontrado",
+    "Só é possível gerar ordem de compra de uma solicitação aprovada",
     "Transição inválida: ${pedido.status} → ${newStatus}",
     "Você precisa estar logado em uma organização"
    ],
@@ -100388,6 +100446,11 @@
     {
      "field": "status",
      "value": "todos",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
      "kind": "compara"
     }
    ],
@@ -100423,6 +100486,16 @@
     "bulkDelete parcial avisa quantos ficaram de fora e nao comemora",
     "deletePedido bloqueado pelo status nao comemora",
     "deletePedido de pedido descartavel continua funcionando"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+   "lines": 113,
+   "is_test": true,
+   "tests": [
+    "usePedidos · ordem de compra so com solicitacao aprovada (NEG-06)",
+    "nao cria a ordem quando a solicitacao nao esta aprovada",
+    "cria a ordem quando a solicitacao esta aprovada"
    ]
   },
   "src/features/solicitacoes/fluxoAprovacao.ts": {
@@ -109037,7 +109110,7 @@
   },
   "src/pages/gerar-ordem/GerarOrdem.tsx": {
    "path": "src/pages/gerar-ordem/GerarOrdem.tsx",
-   "lines": 613,
+   "lines": 635,
    "exports": [
     "default GerarOrdem"
    ],
@@ -109075,6 +109148,7 @@
    ],
    "errors": [
     "Dados insuficientes para gerar a ordem.",
+    "Ordem salva, mas a solicitação não foi atualizada",
     "Selecione a cotação vencedora: a ordem de compra é emitida com o preço dela."
    ],
    "status_values": [
@@ -109087,6 +109161,21 @@
      "field": "status",
      "value": "em_andamento",
      "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "aprovada",
+     "kind": "compara"
     },
     {
      "field": "status",
@@ -119324,10 +119413,31 @@
   }
  },
  "git": {
-  "sha": "18ef743962e4b9840e7e5842a24624a5e70558a7",
+  "sha": "ae31825fdc294a5f5501b3abc7c3c179b37ce299",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ae31825",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(pedidos): ordem de compra so nasce de solicitacao aprovada (#400)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/pages/gerar-ordem/GerarOrdem.tsx"
+    ]
+   },
+   {
+    "sha": "4accdce",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore(qa): fecha 095 e 096 como duplicatas ja resolvidas na main (#398)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "18ef743",
     "date": "2026-11-24",
@@ -119672,35 +119782,16 @@
      "supabase/functions/punchout-receive/index.ts",
      "supabase/functions/scim-v2/auth.ts"
     ]
-   },
-   {
-    "sha": "fc4c451",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "security(segredos): comparacao de tempo constante em cron e service role (QA 064) (#363)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/security.timing.test.ts",
-     "supabase/functions/_shared/security.ts",
-     "supabase/functions/spot-api/index.ts"
-    ]
-   },
-   {
-    "sha": "6e74b0d",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(menu): marca o Dashboard como ativo na tela inicial (#362)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/layout/__tests__/AppSidebar.ativo.test.ts",
-     "src/features/layout/components/AppSidebar.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     28
+   ],
+   [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    3
    ],
    [
     "src/pages/pedidos/Pedidos.tsx",
@@ -119719,16 +119810,16 @@
     2
    ],
    [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    2
-   ],
-   [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     2
    ],
    [
-    "supabase/functions/_shared/security.timing.test.ts",
-    2
+    "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+    1
+   ],
+   [
+    "src/pages/gerar-ordem/GerarOrdem.tsx",
+    1
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -119772,10 +119863,6 @@
    ],
    [
     "src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/CotacaoManualModal.tsx",
     1
    ]
   ]

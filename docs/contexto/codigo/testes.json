@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 249,
+ "total": 250,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 231
+  "unit": 232
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 155
+   "arquivos": 156
   },
   {
    "padrao": "outro",
@@ -765,6 +765,15 @@
     "src/features/pedidos/hooks/usePedidos.ts"
    ],
    "casos": 5
+  },
+  {
+   "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/features/pedidos/hooks/usePedidos.ts"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
@@ -2314,7 +2323,7 @@
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
   "src/features/pedidos/exclusaoPedido.ts": 1,
-  "src/features/pedidos/hooks/usePedidos.ts": 1,
+  "src/features/pedidos/hooks/usePedidos.ts": 2,
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": 4,

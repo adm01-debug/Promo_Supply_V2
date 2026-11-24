@@ -1357,6 +1357,7 @@
     "pedido_itens",
     "pedidos",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],
@@ -2216,8 +2217,8 @@
   {
    "modulo": "features/pedidos",
    "arquivos": 4,
-   "testes": 3,
-   "linhas": 438,
+   "testes": 4,
+   "linhas": 451,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2243,6 +2244,7 @@
     "pedido_itens",
     "pedidos",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],
@@ -2265,7 +2267,8 @@
     "edges": [],
     "tabelas": [
      "pedido_itens",
-     "pedidos"
+     "pedidos",
+     "solicitacoes"
     ],
     "rpcs": [
      "generate_sequential_number",
@@ -5389,7 +5392,7 @@
    "modulo": "pages/gerar-ordem",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 718,
+   "linhas": 740,
    "itens_menu": [],
    "telas": [
     "/gerar-ordem"
@@ -6241,6 +6244,7 @@
     "pedidos",
     "produto_fornecedores",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],

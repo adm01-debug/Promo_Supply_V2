@@ -3805,6 +3805,7 @@
     "pedidos",
     "produto_fornecedores",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],
