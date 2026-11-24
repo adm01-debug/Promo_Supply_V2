@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1b8434a99919fe5c703b3bd00937b9aac3d8ad5f` (2026-11-24T13:24:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0372d491f6827d5f8c3d21afedb004ed06a0373c` (2026-11-24T13:41:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (849), SQL (340), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (851), SQL (341), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1436 |
-| arquivos_codigo | 922 |
-| linhas_codigo | 185265 |
+| arquivos_total | 1439 |
+| arquivos_codigo | 924 |
+| linhas_codigo | 185467 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,9 +46,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 334 |
+| migrations | 335 |
 | cron_jobs | 74 |
-| testes | 284 |
+| testes | 285 |
 | workflows | 15 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -57,8 +57,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
-- servicos_logica: src/lib (28), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (189), outro (43), co-localizado (*.test) (42)
+- servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (190), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -80,7 +80,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/layout | 0 | 0 | 32 | 81 | 9 | 55 |
 | features/solicitacoes | 0 | 0 | 8 | 12 | 1 | 13 |
 | hooks | 0 | 0 | 62 | 61 | 7 | 60 |
-| lib | 0 | 0 | 28 | 61 | 8 | 51 |
+| lib | 0 | 0 | 29 | 61 | 8 | 51 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (89)
+- docs/qa/05-PROGRESSO.md (90)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - docs/ci/README.md (11)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `0372d49` fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)
 - 2026-11-24 `1b8434a` fix: remove trigger duplicado de validacao de status em pedidos (#391)
 - 2026-11-24 `4209cc0` fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)
 - 2026-11-24 `0d51bc4` fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `806c4fc` fix(aprovacoes): falha de leitura deixa de virar 'nada pendente' e 'zero' nos documentos (#432)
 - 2026-11-24 `66b65cc` fix(pedidos): nao deixar falha de carga virar lista vazia (#430)
 - 2026-11-24 `da3107b` feat: registra no log quando o numero da solicitacao colide (#431)
-- 2026-11-24 `c3726dd` fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

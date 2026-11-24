@@ -1933,6 +1933,9 @@
   "src/features/pedidos/index.ts": [
    "src/features/pedidos/hooks/usePedidos.ts"
   ],
+  "src/features/pedidos/statusTransitions.ts": [
+   "src/lib/statusTransitionsBanco.ts"
+  ],
   "src/features/solicitacoes/hooks/useFluxosAprovacao.ts": [
    "src/features/solicitacoes/fluxoAprovacao.ts",
    "src/integrations/supabase/client.ts"
@@ -2128,6 +2131,7 @@
    "src/integrations/supabase/types.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/logger.ts",
+   "src/lib/statusTransitionsBanco.ts",
    "src/lib/supabaseQuery.ts",
    "src/services/auditService.ts"
   ],
@@ -2232,6 +2236,9 @@
   ],
   "src/integrations/supabase/client.ts": [
    "src/integrations/supabase/types.ts"
+  ],
+  "src/lib/creditoFornecedor.ts": [
+   "src/lib/statusTransitionsBanco.ts"
   ],
   "src/lib/exportData.ts": [
    "src/lib/dateUtils.ts"

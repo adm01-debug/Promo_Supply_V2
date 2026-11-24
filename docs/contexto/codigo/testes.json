@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 284,
+ "total": 285,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 266
+  "unit": 267
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 189
+   "arquivos": 190
   },
   {
    "padrao": "outro",
@@ -874,11 +874,12 @@
   {
    "arquivo": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
    "tipo": "unit",
-   "linhas": 33,
+   "linhas": 41,
    "testa": [
-    "src/features/pedidos/statusTransitions.ts"
+    "src/features/pedidos/statusTransitions.ts",
+    "src/lib/statusTransitionsBanco.ts"
    ],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
@@ -1272,7 +1273,7 @@
   {
    "arquivo": "src/lib/__tests__/creditoFornecedor.test.ts",
    "tipo": "unit",
-   "linhas": 86,
+   "linhas": 88,
    "testa": [
     "src/lib/creditoFornecedor.ts"
    ],
@@ -1490,6 +1491,16 @@
     "src/lib/sourcingAnalytics.ts"
    ],
    "casos": 11
+  },
+  {
+   "arquivo": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+   "tipo": "unit",
+   "linhas": 147,
+   "testa": [
+    "src/lib/creditoFornecedor.ts",
+    "src/lib/statusTransitionsBanco.ts"
+   ],
+   "casos": 9
   },
   {
    "arquivo": "src/lib/__tests__/storageFiles.test.ts",
@@ -2685,7 +2696,7 @@
   "src/i18n/config.ts": 1,
   "src/integrations/supabase/client.ts": 6,
   "src/lib/clearFiltersShortcut.ts": 1,
-  "src/lib/creditoFornecedor.ts": 1,
+  "src/lib/creditoFornecedor.ts": 2,
   "src/lib/dbMapping.ts": 1,
   "src/lib/exportData.ts": 3,
   "src/lib/feedbackToast.ts": 7,
@@ -2705,6 +2716,7 @@
   "src/lib/secureStorage.ts": 1,
   "src/lib/security.ts": 1,
   "src/lib/sourcingAnalytics.ts": 1,
+  "src/lib/statusTransitionsBanco.ts": 2,
   "src/lib/storageFiles.ts": 1,
   "src/lib/supabaseQuery.ts": 1,
   "src/lib/supabaseRpc.ts": 1,

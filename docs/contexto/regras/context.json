@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1b8434a99919fe5c703b3bd00937b9aac3d8ad5f",
+  "sha": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 16:27 UTC",
-  "files_total": 1437,
-  "code_files": 1264,
-  "code_lines": 212971,
+  "generated_at": "2026-11-24 16:41 UTC",
+  "files_total": 1440,
+  "code_files": 1267,
+  "code_lines": 213213,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5f57293007193695",
+ "facts_hash": "ffccf44822031d48",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,9 +277,9 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 440,
+   ".ts": 442,
    ".tsx": 409,
-   ".sql": 340,
+   ".sql": 341,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -27205,6 +27205,7 @@
    "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
+   "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "src/integrations/supabase/types.ts"
   ],
@@ -35302,7 +35303,7 @@
   {
    "module": "src/features/pedidos",
    "files": 9,
-   "lines": 924,
+   "lines": 932,
    "tables": [
     "pedido_itens",
     "pedidos",
@@ -35315,8 +35316,7 @@
     "usePedidos.ts: Pedido, PedidoItem, CreatePedidoInput, PedidoFilters, usePedidos, usePedidosKPIs"
    ],
    "docs": [
-    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …",
-    "statusTransitions.ts: Regra única de transição de status de pedido. Vive fora do hook para poder ser reusada por qualquer tela que grave `pedidos.status` (ex.: o Kanban de Acompanhamento) sem arrastar o hook inteiro."
+    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …"
    ],
    "deps": [
     "@tanstack/react-query",
@@ -35408,7 +35408,7 @@
   {
    "module": "src/hooks",
    "files": 89,
-   "lines": 15175,
+   "lines": 15170,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35677,8 +35677,8 @@
   },
   {
    "module": "src/lib",
-   "files": 60,
-   "lines": 7128,
+   "files": 62,
+   "lines": 7327,
    "tables": [
     "profiles"
    ],
@@ -35706,6 +35706,7 @@
     "secureStorage.ts: secureStorage",
     "security.ts: security, openExternalUrl",
     "sourcingAnalytics.ts: SourcingRecordLike, SupplierLike, RepurchasePrediction, CategoryBenchmark, TrendPoint, productKeyOf",
+    "statusTransitionsBanco.ts: TRANSICOES_PAGAMENTO_BANCO, TRANSICOES_PEDIDO_BANCO, transicaoPermitidaNaTela",
     "storageFiles.ts: PrivateBucket, getStorageTenantId, privateStoragePath, storagePathFromStoredValue, resolveStoredFileUrl",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
@@ -35765,6 +35766,7 @@
     "src/lib/secureStorage.ts",
     "src/lib/security.ts",
     "src/lib/sourcingAnalytics.ts",
+    "src/lib/statusTransitionsBanco.ts",
     "src/lib/storageFiles.ts",
     "src/lib/supabaseQuery.ts",
     "src/lib/supabaseRpc.ts",
@@ -35796,6 +35798,7 @@
     "src/lib/__tests__/secureStorage.test.ts",
     "src/lib/__tests__/security.test.ts",
     "src/lib/__tests__/sourcingAnalytics.test.ts",
+    "src/lib/__tests__/statusTransitionsBanco.test.ts",
     "src/lib/__tests__/storageFiles.test.ts",
     "src/lib/__tests__/supabaseQuery.test.ts",
     "src/lib/__tests__/supabaseRpc.test.ts",
@@ -36406,8 +36409,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 334,
-   "lines": 27269,
+   "files": 335,
+   "lines": 27309,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -43050,6 +43053,10 @@
    {
     "file": "src/features/pedidos/statusTransitions.ts",
     "text": "* Regra única de transição de status de pedido."
+   },
+   {
+    "file": "src/features/pedidos/statusTransitions.ts",
+    "text": "pedido cancelado seria mudança de regra de negócio e exigiria migration; não é"
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
@@ -51222,11 +51229,6 @@
   ],
   "transition_maps": [
    {
-    "file": "src/features/pedidos/statusTransitions.ts",
-    "name": "VALID_PEDIDO_TRANSITIONS",
-    "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
-   },
-   {
     "file": "src/features/solicitacoes/fluxoAprovacao.ts",
     "name": "fluxos",
     "body": ""
@@ -51240,11 +51242,6 @@
     "file": "src/hooks/useDevolucoes.ts",
     "name": "VALID_TRANSITIONS",
     "body": "rascunho: ['solicitada', 'cancelada'], solicitada: ['aprovada', 'rejeitada', 'cancelada'], aprovada: ['em_transito', 'cancelada'], em_transito: ['recebida_fornecedor'], recebida_fornecedor: ['credito_emitido', 'reposicao_enviada', 'concluida'], credito_emitido: ['concluida'], reposicao_enviada: ['concluida'], concluida: [], rejeitada: ['solicitada'], cancelada: [],"
-   },
-   {
-    "file": "src/hooks/usePagamentos.ts",
-    "name": "VALID_PAGAMENTO_TRANSITIONS",
-    "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],"
    },
    {
     "file": "src/pages/devolucoes/DevolucoesModals.tsx",
@@ -57450,7 +57447,7 @@
     "file": "src/hooks/usePagamentos.ts",
     "name": "canTransition",
     "params": "from: string, to: string",
-    "body": "const allowed = VALID_PAGAMENTO_TRANSITIONS[from]; return !allowed || allowed.includes(to);"
+    "body": "return transicaoPermitidaNaTela(VALID_PAGAMENTO_TRANSITIONS, from, to);"
    },
    {
     "file": "src/hooks/useWorkflowDLQ.ts",
@@ -62632,6 +62629,10 @@
    },
    {
     "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    "name": "usa a matriz do banco, sem copia propria"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
     "name": "recusa pular etapas do fluxo de compra"
    },
    {
@@ -62644,7 +62645,7 @@
    },
    {
     "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-    "name": "permite corrigir o status de um pedido cancelado"
+    "name": "não reabre pedido cancelado: o banco recusa a transição"
    },
    {
     "file": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
@@ -64392,7 +64393,7 @@
    },
    {
     "file": "src/lib/__tests__/creditoFornecedor.test.ts",
-    "name": "bloqueia parcial fora de parcial, porque o banco so aceita pago depois de pago"
+    "name": "permite parcial a partir de aprovado, agendado e atrasado (matriz do banco na etapa 123)"
    },
    {
     "file": "src/lib/__tests__/creditoFornecedor.test.ts",
@@ -66389,6 +66390,58 @@
    {
     "file": "src/lib/__tests__/sourcingAnalytics.test.ts",
     "name": "usa o nome normalizado como chave quando o produto não tem id"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "matriz de pagamentos (src/lib/statusTransitionsBanco.ts)"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "bate com a ultima migration que define o trigger"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "cobre os caminhos de pagamento parcial que o banco passou a aceitar"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "matriz de pedidos (src/lib/statusTransitionsBanco.ts)"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "bate com a ultima migration que define o trigger"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "mantem cancelado como estado terminal"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "statusAbatimentoAlcancavel x trigger"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "concorda com o banco em toda combinacao de status de pagamento"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "transicaoPermitidaNaTela"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "aceita a mesma transicao, que o trigger devolve sem validar"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "recusa as transicoes que o trigger recusa"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "aceita a auto-transicao de todo status dos dois vocabularios"
+   },
+   {
+    "file": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    "name": "deixa status desconhecido para o banco decidir"
    },
    {
     "file": "src/lib/__tests__/storageFiles.test.ts",
@@ -101893,16 +101946,10 @@
     "const KANBAN_STATUS_SEM_ESCRITA",
     "const transicaoDeStatusPermitida"
    ],
-   "transition_maps": [
-    {
-     "name": "VALID_PEDIDO_TRANSITIONS",
-     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],"
-    }
-   ],
    "rule_comments": [
-    "* Regra única de transição de status de pedido."
-   ],
-   "doc": "Regra única de transição de status de pedido. Vive fora do hook para poder ser reusada por qualquer tela que grave `pedidos.status` (ex.: o Kanban de Acompanhamento) sem arrastar o hook inteiro."
+    "* Regra única de transição de status de pedido.",
+    "pedido cancelado seria mudança de regra de negócio e exigiria migration; não é"
+   ]
   },
   "src/features/pedidos/__tests__/exclusaoPedido.test.ts": {
    "path": "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
@@ -102034,14 +102081,15 @@
   },
   "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts": {
    "path": "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-   "lines": 33,
+   "lines": 41,
    "is_test": true,
    "tests": [
     "transicaoDeStatusPermitida",
+    "usa a matriz do banco, sem copia propria",
     "recusa pular etapas do fluxo de compra",
     "aceita o caminho normal do pedido",
     "não devolve pedido concluído para uma etapa anterior",
-    "permite corrigir o status de um pedido cancelado",
+    "não reabre pedido cancelado: o banco recusa a transição",
     "não bloqueia quando o status atual é nulo ou desconhecido"
    ]
   },
@@ -104620,7 +104668,7 @@
   },
   "src/hooks/usePagamentos.ts": {
    "path": "src/hooks/usePagamentos.ts",
-   "lines": 377,
+   "lines": 372,
    "exports": [
     "type Pagamento",
     "interface CreatePagamentoInput",
@@ -104704,12 +104752,6 @@
     "Transição inválida: ${current.status} → ${updates.status}",
     "Você precisa estar logado"
    ],
-   "transition_maps": [
-    {
-     "name": "VALID_PAGAMENTO_TRANSITIONS",
-     "body": "pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],"
-    }
-   ],
    "status_values": [
     {
      "field": "status",
@@ -104730,7 +104772,7 @@
     {
      "name": "canTransition",
      "params": "from: string, to: string",
-     "body": "const allowed = VALID_PAGAMENTO_TRANSITIONS[from]; return !allowed || allowed.includes(to);"
+     "body": "return transicaoPermitidaNaTela(VALID_PAGAMENTO_TRANSITIONS, from, to);"
     }
    ]
   },
@@ -106419,7 +106461,7 @@
   },
   "src/lib/creditoFornecedor.ts": {
    "path": "src/lib/creditoFornecedor.ts",
-   "lines": 80,
+   "lines": 71,
    "exports": [
     "interface CreditoAtual",
     "interface CreditoAbatido",
@@ -106837,6 +106879,15 @@
     "const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);"
    ]
   },
+  "src/lib/statusTransitionsBanco.ts": {
+   "path": "src/lib/statusTransitionsBanco.ts",
+   "lines": 59,
+   "exports": [
+    "const TRANSICOES_PAGAMENTO_BANCO",
+    "const TRANSICOES_PEDIDO_BANCO",
+    "function transicaoPermitidaNaTela"
+   ]
+  },
   "src/lib/storageFiles.ts": {
    "path": "src/lib/storageFiles.ts",
    "lines": 66,
@@ -107053,7 +107104,7 @@
   },
   "src/lib/__tests__/creditoFornecedor.test.ts": {
    "path": "src/lib/__tests__/creditoFornecedor.test.ts",
-   "lines": 86,
+   "lines": 88,
    "is_test": true,
    "rule_comments": [
     "o banco aceita pago -> parcial (ARRAY['parcial'] na function de validacao)"
@@ -107070,7 +107121,7 @@
     "statusAbatimentoAlcancavel",
     "permite quitar um pagamento aprovado, agendado ou atrasado",
     "bloqueia quitar um pagamento pendente (exige aprovacao), cancelado ou concluido",
-    "bloqueia parcial fora de parcial, porque o banco so aceita pago depois de pago",
+    "permite parcial a partir de aprovado, agendado e atrasado (matriz do banco na etapa 123)",
     "mantem o status quando ja esta no alvo (banco aceita mesma transicao)",
     "mensagemAbatimentoBloqueado",
     "explica o bloqueio de cada alvo"
@@ -107791,6 +107842,31 @@
     "distribui o spend por categoria em percentual fechado",
     "classifica a matriz de sourcing pelo gasto e número de fornecedores",
     "usa o nome normalizado como chave quando o produto não tem id"
+   ]
+  },
+  "src/lib/__tests__/statusTransitionsBanco.test.ts": {
+   "path": "src/lib/__tests__/statusTransitionsBanco.test.ts",
+   "lines": 147,
+   "is_test": true,
+   "errors": [
+    "${arquivos[i]}: corpo de ${nomeFuncao} sem delimitador $function$",
+    "nao achei nenhum WHEN em ${nomeFuncao}",
+    "nenhuma migration define public.${nomeFuncao}()"
+   ],
+   "tests": [
+    "matriz de pagamentos (src/lib/statusTransitionsBanco.ts)",
+    "bate com a ultima migration que define o trigger",
+    "cobre os caminhos de pagamento parcial que o banco passou a aceitar",
+    "matriz de pedidos (src/lib/statusTransitionsBanco.ts)",
+    "bate com a ultima migration que define o trigger",
+    "mantem cancelado como estado terminal",
+    "statusAbatimentoAlcancavel x trigger",
+    "concorda com o banco em toda combinacao de status de pagamento",
+    "transicaoPermitidaNaTela",
+    "aceita a mesma transicao, que o trigger devolve sem validar",
+    "recusa as transicoes que o trigger recusa",
+    "aceita a auto-transicao de todo status dos dois vocabularios",
+    "deixa status desconhecido para o banco decidir"
    ]
   },
   "src/lib/__tests__/storageFiles.test.ts": {
@@ -121370,6 +121446,10 @@
    "path": "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "lines": 80
   },
+  "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql": {
+   "path": "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
+   "lines": 40
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -121597,10 +121677,27 @@
   }
  },
  "git": {
-  "sha": "1b8434a99919fe5c703b3bd00937b9aac3d8ad5f",
+  "sha": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0372d49",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+     "src/features/pedidos/statusTransitions.ts",
+     "src/hooks/usePagamentos.ts",
+     "src/lib/__tests__/creditoFornecedor.test.ts",
+     "src/lib/__tests__/statusTransitionsBanco.test.ts",
+     "src/lib/creditoFornecedor.ts",
+     "src/lib/statusTransitionsBanco.ts",
+     "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql"
+    ]
+   },
    {
     "sha": "1b8434a",
     "date": "2026-11-24",
@@ -121937,19 +122034,6 @@
      "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx"
     ]
-   },
-   {
-    "sha": "69fe938",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): abre pedido e seleciona recebimento pelo teclado (#414)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/pedidos/__tests__/pedidosA11y.test.tsx",
-     "src/pages/recebimento/RecebimentoOffline.tsx",
-     "src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -121986,10 +122070,6 @@
     2
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
-    2
-   ],
-   [
     "supabase/functions/receive-os-sync/index.ts",
     2
    ],
@@ -122002,35 +122082,39 @@
     2
    ],
    [
+    "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
+    1
+   ],
+   [
+    "src/features/pedidos/statusTransitions.ts",
+    1
+   ],
+   [
+    "src/hooks/usePagamentos.ts",
+    1
+   ],
+   [
+    "src/lib/__tests__/creditoFornecedor.test.ts",
+    1
+   ],
+   [
+    "src/lib/__tests__/statusTransitionsBanco.test.ts",
+    1
+   ],
+   [
+    "src/lib/creditoFornecedor.ts",
+    1
+   ],
+   [
+    "src/lib/statusTransitionsBanco.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
+    1
+   ],
+   [
     "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
-    1
-   ],
-   [
-    "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125150000_find_approval_rule_escopo_tenant.sql",
-    1
-   ],
-   [
-    "src/locales/es/translation.json",
-    1
-   ],
-   [
-    "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-    1
-   ],
-   [
-    "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
     1
    ]
   ]

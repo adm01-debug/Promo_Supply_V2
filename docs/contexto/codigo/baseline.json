@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1b8434a99919fe5c703b3bd00937b9aac3d8ad5f",
+  "commit": "0372d491f6827d5f8c3d21afedb004ed06a0373c",
   "branch": "main",
-  "data_commit": "2026-11-24T13:24:12-03:00",
+  "data_commit": "2026-11-24T13:41:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0372d49",
+    "data": "2026-11-24",
+    "assunto": "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)"
+   },
    {
     "sha": "1b8434a",
     "data": "2026-11-24",
@@ -126,14 +131,9 @@
     "sha": "9398283",
     "data": "2026-11-24",
     "assunto": "fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)"
-   },
-   {
-    "sha": "004f06d",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)"
    }
   ],
-  "arquivos_mudados_7d": 478,
+  "arquivos_mudados_7d": 480,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 89
+    "mudancas": 90
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 57
+    "mudancas": 56
    },
    {
     "pasta": "docs/pendencias/_indice.md",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 33
+    "mudancas": 35
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 29
+    "mudancas": 28
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -188,18 +188,18 @@
     "mudancas": 22
    },
    {
-    "pasta": "src/components/security",
+    "pasta": "src/pages/pedidos",
     "mudancas": 21
    },
    {
-    "pasta": "src/pages/pedidos",
-    "mudancas": 21
+    "pasta": "src/components/security",
+    "mudancas": 20
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 89
+    "mudancas": 90
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1436,
-  "arquivos_codigo": 922,
-  "linhas_codigo": 185265,
+  "arquivos_total": 1439,
+  "arquivos_codigo": 924,
+  "linhas_codigo": 185467,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,9 +326,9 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 334,
+  "migrations": 335,
   "cron_jobs": 74,
-  "testes": 284,
+  "testes": 285,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -432,11 +432,11 @@
   },
   "src/features": {
    "arquivos": 88,
-   "linhas": 11007
+   "linhas": 11015
   },
   "src/hooks": {
    "arquivos": 89,
-   "linhas": 15175
+   "linhas": 15170
   },
   "src/i18n": {
    "arquivos": 3,
@@ -447,8 +447,8 @@
    "linhas": 10462
   },
   "src/lib": {
-   "arquivos": 59,
-   "linhas": 7108
+   "arquivos": 61,
+   "linhas": 7307
   },
   "src/main.tsx": {
    "arquivos": 1,

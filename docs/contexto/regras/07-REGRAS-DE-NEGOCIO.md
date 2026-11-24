@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1b8434a999` · branch `main` · 2026-11-24 16:27 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0372d491f6` · branch `main` · 2026-11-24 16:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -875,10 +875,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 
 ### E.2 Mapas de transição declarados no código
 
-- **VALID_PEDIDO_TRANSITIONS** (`src/features/pedidos/statusTransitions.ts`):
-  ```ts
-  pendente: ['aprovado', 'cancelado'], aprovado: ['enviado', 'em_transito', 'cancelado'], enviado: ['em_transito', 'entregue', 'cancelado'], em_transito: ['entregue', 'parcial', 'cancelado'], entregue: ['parcial'], parcial: ['entregue', 'cancelado'], cancelado: ['pendente'], /* Allow reset for corrections */ concluido: [],
-  ```
 - **fluxos** (`src/features/solicitacoes/fluxoAprovacao.ts`):
   ```ts
   
@@ -890,10 +886,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 - **VALID_TRANSITIONS** (`src/hooks/useDevolucoes.ts`):
   ```ts
   rascunho: ['solicitada', 'cancelada'], solicitada: ['aprovada', 'rejeitada', 'cancelada'], aprovada: ['em_transito', 'cancelada'], em_transito: ['recebida_fornecedor'], recebida_fornecedor: ['credito_emitido', 'reposicao_enviada', 'concluida'], credito_emitido: ['concluida'], reposicao_enviada: ['concluida'], concluida: [], rejeitada: ['solicitada'], cancelada: [],
-  ```
-- **VALID_PAGAMENTO_TRANSITIONS** (`src/hooks/usePagamentos.ts`):
-  ```ts
-  pendente: ['aprovado', 'cancelado'], aprovado: ['agendado', 'pago', 'parcial', 'cancelado'], agendado: ['pago', 'parcial', 'cancelado'], pago: ['parcial'], parcial: ['pago', 'parcial', 'cancelado'], cancelado: [], atrasado: ['pago', 'parcial', 'cancelado'],
   ```
 - **transitions** (`src/pages/devolucoes/DevolucoesModals.tsx`):
   ```ts
@@ -1465,7 +1457,7 @@ _nenhum item encontrado_
   ```
 - **canTransition(from: string, to: string)** — `src/hooks/usePagamentos.ts`
   ```
-  const allowed = VALID_PAGAMENTO_TRANSITIONS[from]; return !allowed || allowed.includes(to);
+  return transicaoPermitidaNaTela(VALID_PAGAMENTO_TRANSITIONS, from, to);
   ```
 - **generateId()** — `src/hooks/useWorkflowDLQ.ts`
   ```
@@ -2464,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3315 testes em 233 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3329 testes em 234 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2560,6 +2552,7 @@ _nenhum item encontrado_
 | `src/i18n/__tests__/locales.test.ts` | 13 | chaves que a tela do catalogo usa existem de verdade · pt, en e es trazem catalog.title, catalog.subtitle e common.new com texto real · CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas) · pt, en e es cobrem as mesmas chaves … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
+| `src/lib/__tests__/statusTransitionsBanco.test.ts` | 13 | matriz de pagamentos (src/lib/statusTransitionsBanco.ts) · bate com a ultima migration que define o trigger · cobre os caminhos de pagamento parcial que o banco passou a aceitar · matriz de pedidos (src/lib/statusTransitionsBanco.ts) … |
 | `src/pages/pedidos/__tests__/pedidosHelpers.test.ts` | 13 | prazoConsumido · mede o quanto da janela emissao -> previsao ja passou · devolve o piso de 5% quando o prazo acabou de comecar · nao mede nada sem as duas datas ou com janela invalida … |
 | `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
@@ -2592,6 +2585,7 @@ _nenhum item encontrado_
 | `supabase/functions/scim-v2/conformance.test.ts` | 8 | SCIM POST /Users — 201 with SCIM schema and Location header · SCIM GET /Users/:id — 200 with full User representation · SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2 · SCIM PATCH /Users/:id — updates displayName via Operations array … |
 | `tests-rls/rls-isolation.test.ts` | 8 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
+| `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
@@ -2602,7 +2596,6 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/pendingApprovalsEstados.test.tsx` | 6 | PendingApprovalsList - falha e carga nao viram  · mostra o erro da consulta em vez de  · o botao de nova tentativa refaz as duas buscas da tela · enquanto carrega, nao afirma que nao ha nada pendente … |
 | `src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx` | 6 | PedidoMobileCard - cartao acessivel pelo teclado (etapa 235) · o cartao expoe papel de botao, nome e entra na tabulacao · Enter abre os detalhes · espaco abre os detalhes … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
-| `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 6 | transicaoDeStatusPermitida · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido · não devolve pedido concluído para uma etapa anterior … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
 | `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
 | `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |
@@ -2775,6 +2768,7 @@ _nenhum item encontrado_
 | Subscribe to realtime rate limit alerts | `src/components/security/RateLimitDashboard.tsx` |
 | * Regra de ciclo de vida da exclusao de pedido. | `src/features/pedidos/exclusaoPedido.ts` |
 | * Regra única de transição de status de pedido. | `src/features/pedidos/statusTransitions.ts` |
+| pedido cancelado seria mudança de regra de negócio e exigiria migration; não é | `src/features/pedidos/statusTransitions.ts` |
 | Update status with transition validation | `src/features/pedidos/hooks/usePedidos.ts` |
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | 'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
