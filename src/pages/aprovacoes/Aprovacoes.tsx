@@ -20,20 +20,30 @@ import {
   StatusDistributionChart,
   BottleneckAnalysis,
   ApprovalKPIs,
-  type ApprovalHistoryItem,
 } from "@/features/aprovacoes";
 
 import {
-  approvalHistory,
-  approvalStats,
-  approvalTrendData,
-  statusDistribution,
-  bottleneckData,
+  distribuicaoPorStatus,
+  gargalos,
+  historicoDaLista,
+  inicioDaJanela,
+  resumirAprovacoes,
+  serieMensal,
 } from './aprovacoesData';
 
 const Aprovacoes = () => {
   const [periodo, setPeriodo] = useState("6m");
-  const { allHistory, fetchAllHistory, checkEscalations } = useApprovalWorkflow();
+  const {
+    allHistory,
+    allSteps,
+    allWorkflows,
+    workflows,
+    loading,
+    fetchAllHistory,
+    fetchAllWorkflows,
+    fetchAllSteps,
+    checkEscalations,
+  } = useApprovalWorkflow();
 
   useEffect(() => {
     checkEscalations();
@@ -41,23 +51,24 @@ const Aprovacoes = () => {
 
   useEffect(() => {
     fetchAllHistory();
-  }, [fetchAllHistory]);
+    fetchAllWorkflows();
+    fetchAllSteps();
+  }, [fetchAllHistory, fetchAllWorkflows, fetchAllSteps]);
 
-  const metricas = useMemo(() => {
-    const totalAprovacoes = approvalTrendData.reduce((acc: number, d) => acc + d.aprovadas + d.rejeitadas, 0);
-    const totalAprovadas = approvalTrendData.reduce((acc: number, d) => acc + d.aprovadas, 0);
-    const totalRejeitadas = approvalTrendData.reduce((acc: number, d) => acc + d.rejeitadas, 0);
-    const tempoMedioGeral = approvalTrendData.reduce((acc: number, d) => acc + d.tempoMedio, 0) / approvalTrendData.length;
-    const taxaAprovacao = totalAprovacoes > 0 ? (totalAprovadas / totalAprovacoes) * 100 : 0;
-    
-    return {
-      totalAprovacoes,
-      totalAprovadas,
-      totalRejeitadas,
-      tempoMedioGeral,
-      taxaAprovacao,
-    };
-  }, []);
+  const inicio = useMemo(() => inicioDaJanela(periodo), [periodo]);
+
+  const resumo = useMemo(
+    () => resumirAprovacoes(allHistory, workflows.length, allSteps, inicio),
+    [allHistory, workflows.length, allSteps, inicio],
+  );
+
+  const tendencia = useMemo(() => serieMensal(allHistory, allSteps, periodo), [allHistory, allSteps, periodo]);
+
+  const distribuicao = useMemo(() => distribuicaoPorStatus(allWorkflows), [allWorkflows]);
+
+  const listaGargalos = useMemo(() => gargalos(allSteps), [allSteps]);
+
+  const historico = useMemo(() => historicoDaLista(allHistory), [allHistory]);
 
   return (
     <ModuleErrorBoundary module="aprovacoes">
@@ -72,23 +83,23 @@ const Aprovacoes = () => {
         <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-5">
           <Card className="p-3 sm:p-4 border-amber-500/20">
             <p className="text-xs text-muted-foreground truncate">Pendentes</p>
-            <p className="text-xl sm:text-2xl font-bold text-warning">{approvalStats.pendentes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-warning">{resumo.pendentes}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-emerald-500/20">
             <p className="text-xs text-muted-foreground truncate">Aprovadas</p>
-            <p className="text-xl sm:text-2xl font-bold text-success">{approvalStats.aprovadasMes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-success">{resumo.aprovadas}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-red-500/20">
             <p className="text-xs text-muted-foreground truncate">Rejeitadas</p>
-            <p className="text-xl sm:text-2xl font-bold text-destructive">{approvalStats.rejeitadasMes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-destructive">{resumo.rejeitadas}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-blue-500/20">
             <p className="text-xs text-muted-foreground truncate">Tempo Médio</p>
-            <p className="text-xl sm:text-2xl font-bold text-info">{approvalStats.tempoMedioAprovacao}</p>
+            <p className="text-xl sm:text-2xl font-bold text-info">{resumo.tempoMedioHoras === null ? "—" : `${resumo.tempoMedioHoras.toFixed(1)}h`}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-purple-500/20 col-span-2 md:col-span-1">
             <p className="text-xs text-muted-foreground truncate">Escalações</p>
-            <p className="text-xl sm:text-2xl font-bold text-purple-600">{approvalStats.escalacoesMes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-600">{resumo.escalacoes}</p>
           </Card>
         </div>
 
@@ -97,7 +108,7 @@ const Aprovacoes = () => {
             <TabsTrigger value="pendentes" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <ClipboardCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden xs:inline">Pendentes</span>
-              <Badge variant="secondary" className="ml-1 text-xs">{approvalStats.pendentes}</Badge>
+              <Badge variant="secondary" className="ml-1 text-xs">{resumo.pendentes}</Badge>
             </TabsTrigger>
             <TabsTrigger value="config" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -129,17 +140,15 @@ const Aprovacoes = () => {
                 Histórico de Aprovações
               </h2>
               <div className="space-y-3">
-                {(allHistory.length > 0 
-                  ? allHistory.map(h => ({
-                      id: h.id,
-                      solicitacao: h.solicitacao_id?.substring(0, 8) || 'N/A',
-                      valor: (h.detalhes as { valor?: number } | null)?.valor || 0,
-                      acao: h.acao,
-                      por: h.usuario_nome || 'Sistema',
-                      data: new Date(h.created_at).toLocaleString('pt-BR')
-                    }))
-                  : (approvalHistory as ApprovalHistoryItem[])
-                ).map((item) => (
+                {loading && historico.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Carregando histórico…</p>
+                )}
+                {!loading && historico.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    Nenhuma decisão de aprovação registrada até agora.
+                  </p>
+                )}
+                {historico.map((item) => (
                   <div 
                     key={item.id} 
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
@@ -195,15 +204,46 @@ const Aprovacoes = () => {
               </Select>
             </div>
 
-            <ApprovalKPIs metrics={metricas} />
+            {resumo.taxaAprovacao === null || resumo.tempoMedioHoras === null ? (
+              <Card className="p-6 text-sm text-muted-foreground">
+                Sem decisões de aprovação no período selecionado — não há taxa de aprovação nem tempo médio para calcular.
+              </Card>
+            ) : (
+              <ApprovalKPIs
+                metrics={{
+                  taxaAprovacao: resumo.taxaAprovacao,
+                  tempoMedioGeral: resumo.tempoMedioHoras,
+                  totalAprovadas: resumo.aprovadas,
+                  totalRejeitadas: resumo.rejeitadas,
+                }}
+              />
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ApprovalTrendChart data={approvalTrendData} />
-              <StatusDistributionChart data={statusDistribution} />
+              {allHistory.length === 0 ? (
+                <Card className="p-6 text-sm text-muted-foreground">
+                  Nenhuma movimentação de aprovação no período selecionado.
+                </Card>
+              ) : (
+                <ApprovalTrendChart data={tendencia} />
+              )}
+              {allWorkflows.length === 0 ? (
+                <Card className="p-6 text-sm text-muted-foreground">
+                  Nenhum workflow de aprovação registrado.
+                </Card>
+              ) : (
+                <StatusDistributionChart data={distribuicao} />
+              )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <BottleneckAnalysis data={bottleneckData} />
+              {listaGargalos.length === 0 ? (
+                <Card className="p-6 text-sm text-muted-foreground">
+                  Nenhuma etapa de aprovação em aberto no momento.
+                </Card>
+              ) : (
+                <BottleneckAnalysis data={listaGargalos} />
+              )}
             </div>
           </TabsContent>
         </Tabs>
