@@ -5437,13 +5437,14 @@
     "Solicitacoes"
    ],
    "export_default": "Solicitacoes",
-   "linhas": 535,
+   "linhas": 542,
    "dominio": "pages/solicitacoes",
    "hooks_locais": [
     "useAccountFilters",
     "useAuth",
     "useEmpresaFilter",
     "useFluxosAprovacao",
+    "useNomesDeGestor",
     "useRealtimeSubscription",
     "useSolicitacoes"
    ],

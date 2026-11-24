@@ -1937,6 +1937,10 @@
    "src/features/solicitacoes/fluxoAprovacao.ts",
    "src/integrations/supabase/client.ts"
   ],
+  "src/features/solicitacoes/hooks/useNomesDeGestor.ts": [
+   "src/features/solicitacoes/pessoasDaEmpresa.ts",
+   "src/integrations/supabase/client.ts"
+  ],
   "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": [
    "src/features/solicitacoes/pessoasDaEmpresa.ts",
    "src/integrations/supabase/client.ts"
@@ -3366,6 +3370,7 @@
    "src/features/empresas/hooks/useEmpresaFilter.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+   "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
    "src/features/solicitacoes/index.ts",
    "src/hooks/useAccountFilters.ts",
    "src/hooks/useClearFiltersFlow.tsx",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `773117bdb3` · branch `main` · 2026-11-24 15:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9e585d8de2` · branch `main` · 2026-11-24 15:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1792,6 +1792,8 @@ _nenhum item encontrado_
 | `TOLERANCIA_VALOR_CONCILIACAO` | `0.01` | `src/pages/documentos/conciliacaoFiscal.ts` |
 | `PEDIDOS_PAGE_SIZE` | `50` | `src/pages/pedidos/Pedidos.tsx` |
 | `SOLICITACOES_PAGE_SIZE` | `100` | `src/pages/solicitacoes/Solicitacoes.tsx` |
+| `SEM_GESTOR` | `'Sem gestor'` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
+| `GESTOR_SEM_NOME` | `'Gestor nao identificado'` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `DIAS_DE_FOLGA_TOTAL` | `90` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `URGENCIA_SEM_PRAZO` | `0.35` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
@@ -1897,6 +1899,7 @@ _nenhum item encontrado_
 | `const weekEnd = addWeeks(weekStart, 1);` | `src/components/pagamentos/PagamentoFinancialDashboard.tsx` |
 | `: new Date(Date.now() + parseInt(expiresHours, 10) * 60 * 60 * 1000).toISOString();` | `src/components/security/BlockedIPsPanel.tsx` |
 | `typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);` | `src/features/layout/components/SupplierChat.tsx` |
+| `staleTime: 5 * 60 * 1000,` | `src/features/solicitacoes/hooks/useNomesDeGestor.ts` |
 | `staleTime: 5 * 60 * 1000,` | `src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts` |
 | `const diff = (new Date(p.data_entrega!).getTime() - new Date(p.data_emissao).getTime()) / (1000 * 60 * 60 * 24);` | `src/hooks/useBuyerPerformanceData.ts` |
 | `const days = Math.max(0, Math.round((new Date().getTime() - new Date(w.created_at \|\| Date.now()).getTime()) / (1000 * 60 * 60 * 24)));` | `src/hooks/useExecutiveDashboardData.ts` |
@@ -2089,6 +2092,7 @@ _nenhum item encontrado_
 | 1000 | `src/features/solicitacoes/hooks/useFluxosAprovacao.ts` |
 | 300 | `src/features/solicitacoes/hooks/useFluxosAprovacao.ts` |
 | 500 | `src/features/solicitacoes/hooks/useFluxosAprovacao.ts` |
+| 200 | `src/features/solicitacoes/hooks/useNomesDeGestor.ts` |
 | 200 | `src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts` |
 | 100 | `src/hooks/useApprovalHistory.ts` |
 | 500 | `src/hooks/useApprovalWorkflow.ts` |
@@ -2461,7 +2465,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3275 testes em 229 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3289 testes em 230 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2474,12 +2478,12 @@ _nenhum item encontrado_
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
+| `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 47 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 45 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
 | `src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts` | 39 | getStatusLabel · maps %s → %s · returns the raw status for unknown values · returns empty string for empty input … |
-| `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 38 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 37 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
@@ -2620,6 +2624,7 @@ _nenhum item encontrado_
 | `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
+| `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |

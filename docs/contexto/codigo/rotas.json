@@ -1198,6 +1198,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -1301,6 +1302,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -1440,7 +1442,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 351
+   "arquivos_puxados": 352
   },
   {
    "protegida": true,
@@ -1514,6 +1516,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -1613,6 +1616,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -1742,7 +1746,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 356
+   "arquivos_puxados": 357
   },
   {
    "protegida": true,
@@ -1984,6 +1988,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -2081,6 +2086,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -2208,7 +2214,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 347
+   "arquivos_puxados": 348
   },
   {
    "protegida": true,
@@ -3084,6 +3090,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -3181,6 +3188,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -3308,7 +3316,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 347
+   "arquivos_puxados": 348
   },
   {
    "protegida": true,
@@ -3441,6 +3449,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -3539,6 +3548,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -3667,7 +3677,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 348
+   "arquivos_puxados": 349
   },
   {
    "protegida": true,
@@ -3924,6 +3934,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -4022,6 +4033,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -4151,7 +4163,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 346
+   "arquivos_puxados": 347
   },
   {
    "protegida": true,
@@ -4224,6 +4236,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -4322,6 +4335,7 @@
     "useLongPress",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -4454,7 +4468,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 349
+   "arquivos_puxados": 350
   },
   {
    "protegida": true,
@@ -4776,6 +4790,7 @@
     "useNavBadges",
     "useNavigate",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -4880,6 +4895,7 @@
     "useMFA",
     "useMonthStats",
     "useNavigation",
+    "useNomesDeGestor",
     "useOfflineSync",
     "useOnboardingTour",
     "usePagamentos",
@@ -5029,7 +5045,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 368
+   "arquivos_puxados": 369
   },
   {
    "protegida": true,
@@ -5068,6 +5084,7 @@
     "useMotionValue",
     "useMutation",
     "useNavigate",
+    "useNomesDeGestor",
     "usePessoasDaEmpresa",
     "useProdutos",
     "usePullToRefresh",
@@ -5101,6 +5118,7 @@
     "useImageCompression",
     "useIsMobile",
     "useLongPress",
+    "useNomesDeGestor",
     "usePessoasDaEmpresa",
     "useProdutos",
     "usePullToRefresh",
@@ -5146,7 +5164,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 106
+   "arquivos_puxados": 107
   },
   {
    "protegida": true,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "773117bdb3f862d7c05c6d6c1c7fd31a45af1cc4",
+  "sha": "9e585d8de295df26a63a57f2dc76b226562a2e8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:41 UTC",
-  "files_total": 1424,
-  "code_files": 1251,
-  "code_lines": 211975,
+  "generated_at": "2026-11-24 15:47 UTC",
+  "files_total": 1426,
+  "code_files": 1253,
+  "code_lines": 212202,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d2095320d1d7cc6c",
+ "facts_hash": "3ab280caaa60d43d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,8 +277,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 436,
-   ".tsx": 408,
+   ".ts": 437,
+   ".tsx": 409,
    ".sql": 332,
    ".mjs": 67,
    ".py": 5,
@@ -33858,6 +33858,10 @@
     "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts"
    },
    {
+    "name": "useNomesDeGestor",
+    "file": "src/features/solicitacoes/hooks/useNomesDeGestor.ts"
+   },
+   {
     "name": "usePessoasDaEmpresa",
     "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts"
    },
@@ -35306,8 +35310,8 @@
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 15,
-   "lines": 1765,
+   "files": 17,
+   "lines": 1890,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35321,6 +35325,7 @@
     "fluxoAprovacao.ts: StatusEtapaAprovacao, PessoaDoQuadro, WorkflowAprovacaoRow, EtapaAprovacaoRow, HistoricoAprovacaoRow, EtapaAprovacao",
     "pessoasDaEmpresa.ts: PessoaDaEmpresa, ProfileRow, EmpresaOpcao, EmpresaRow, nomeDaPessoa, montarPessoas",
     "useFluxosAprovacao.ts: useFluxosAprovacao",
+    "useNomesDeGestor.ts: useNomesDeGestor",
     "usePessoasDaEmpresa.ts: usePessoasDaEmpresa",
     "useSolicitacoes.ts: CostCenter, Solicitacao, SolicitacaoFilters, solicitacoesQueryKey, fetchSolicitacoesData, useSolicitacoes",
     "solicitacao.schemas.ts: SolicitacaoStatusSchema, SolicitacaoPrioridadeSchema, CreateSolicitacaoSchema, CreateSolicitacaoInput"
@@ -35352,8 +35357,10 @@
     "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
     "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
     "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+    "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
     "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -35760,7 +35767,7 @@
   {
    "module": "src/pages",
    "files": 152,
-   "lines": 34594,
+   "lines": 34696,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37420,7 +37427,8 @@
    },
    "profiles": {
     "ref": [
-     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
+     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs",
+     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts"
     ],
     "select": [
      "src/components/compras/DynamicApprovalMatrix.tsx",
@@ -37428,6 +37436,7 @@
      "src/components/compras/approval/ApprovalRuleModal.tsx",
      "src/features/auth/hooks/useAuth.tsx",
      "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
+     "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
      "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
      "src/hooks/useBuyerPerformanceData.ts",
      "src/lib/storageFiles.ts",
@@ -50855,6 +50864,16 @@
    },
    {
     "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "name": "SEM_GESTOR",
+    "value": "'Sem gestor'"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "name": "GESTOR_SEM_NOME",
+    "value": "'Gestor nao identificado'"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
     "name": "DIAS_DE_FOLGA_TOTAL",
     "value": "90"
    },
@@ -57847,6 +57866,10 @@
     "line": "typingTimeoutRef.current = setTimeout(() => { setIsTyping(false); updateTypingStatus(false); }, 2000);"
    },
    {
+    "file": "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+    "line": "staleTime: 5 * 60 * 1000,"
+   },
+   {
     "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
     "line": "staleTime: 5 * 60 * 1000,"
    },
@@ -62717,6 +62740,26 @@
    {
     "file": "src/features/solicitacoes/__tests__/pessoasDaEmpresa.test.ts",
     "name": "o filtro avancado lista as empresas do usuario"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    "name": "useNomesDeGestor"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    "name": "resolve o nome do perfil por profiles.user_id"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    "name": "cai no e-mail quando o perfil nao tem nome nem display_name"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    "name": "deduplica ids, descarta vazio e nao consulta sem id"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    "name": "erro na leitura dos perfis nao quebra a lista: devolve mapa vazio"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
@@ -69312,11 +69355,35 @@
    },
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-    "name": "uses observacoes as vendedor"
+    "name": "nao le mais observacoes: texto livre nao vira nome de gestor"
    },
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-    "name": "defaults vendedor to "
+    "name": "solicitacao sem aprovador_id (legado) mostra "
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "vendedor e o nome do gestor gravado em aprovador_id"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "id gravado com espacos em volta ainda encontra o nome"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "id sem nome carregado nao vira "
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "nome em branco no mapa cai em "
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "sem o mapa (perfis ainda nao carregados) nao inventa nome"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "nomeDoGestor aceita a solicitacao crua do banco"
    },
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
@@ -69389,6 +69456,18 @@
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
     "name": "usa posicoesDaMatriz para o eixo X e Y"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "Solicitacoes.tsx resolve o gestor pelo aprovador_id"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "passa o mapa de nomes para o adaptador"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "o mapa sai de profiles.user_id"
    },
    {
     "file": "src/schemas/__tests__/solicitacao.schema.test.ts",
@@ -79586,6 +79665,10 @@
    {
     "file": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
     "limit": "500"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+    "limit": "200"
    },
    {
     "file": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
@@ -101990,6 +102073,36 @@
     "500"
    ]
   },
+  "src/features/solicitacoes/hooks/useNomesDeGestor.ts": {
+   "path": "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+   "lines": 38,
+   "exports": [
+    "function useNomesDeGestor"
+   ],
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "select"
+    }
+   ],
+   "table_cols": {
+    "profiles": [
+     "display_name",
+     "email",
+     "full_name",
+     "user_id"
+    ]
+   },
+   "hooks": [
+    "useNomesDeGestor"
+   ],
+   "temporal": [
+    "staleTime: 5 * 60 * 1000,"
+   ],
+   "pagination": [
+    "200"
+   ]
+  },
   "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts": {
    "path": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
    "lines": 38,
@@ -102180,6 +102293,18 @@
    "hooks": [
     "useSolicitacoes",
     "useSolicitacoesKPIs"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+   "lines": 87,
+   "is_test": true,
+   "tests": [
+    "useNomesDeGestor",
+    "resolve o nome do perfil por profiles.user_id",
+    "cai no e-mail quando o perfil nao tem nome nem display_name",
+    "deduplica ids, descarta vazio e nao consulta sem id",
+    "erro na leitura dos perfis nao quebra a lista: devolve mapa vazio"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx": {
@@ -112344,7 +112469,7 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 535,
+   "lines": 542,
    "exports": [
     "default Solicitacoes"
    ],
@@ -112357,16 +112482,27 @@
   },
   "src/pages/solicitacoes/solicitacoesHelpers.ts": {
    "path": "src/pages/solicitacoes/solicitacoesHelpers.ts",
-   "lines": 115,
+   "lines": 147,
    "exports": [
     "const mapDbStatusToLegacy",
     "const mapLegacyStatusToDb",
+    "const SEM_GESTOR",
+    "const GESTOR_SEM_NOME",
+    "const nomeDoGestor",
     "const adaptToLegacyFormat",
     "interface PontoMatriz",
     "const posicoesDaMatriz",
     "const statusConfig"
    ],
    "params": [
+    {
+     "name": "SEM_GESTOR",
+     "value": "'Sem gestor'"
+    },
+    {
+     "name": "GESTOR_SEM_NOME",
+     "value": "'Gestor nao identificado'"
+    },
     {
      "name": "DIAS_DE_FOLGA_TOTAL",
      "value": "90"
@@ -112398,7 +112534,7 @@
   },
   "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx": {
    "path": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
-   "lines": 137,
+   "lines": 144,
    "is_test": true,
    "tests": [
     "Solicitacoes - falha de carga nao vira lista vazia (QA 250)",
@@ -112411,8 +112547,14 @@
   },
   "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts": {
    "path": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-   "lines": 260,
+   "lines": 316,
    "is_test": true,
+   "tables": [
+    {
+     "table": "profiles",
+     "op": "ref"
+    }
+   ],
    "tests": [
     "mapDbStatusToLegacy",
     "maps %s → %s",
@@ -112432,8 +112574,14 @@
     "maps tipo servico to FAB_LISO",
     "maps other tipo to FAB_PERSONALIZADO",
     "maps status via mapDbStatusToLegacy",
-    "uses observacoes as vendedor",
-    "defaults vendedor to ",
+    "nao le mais observacoes: texto livre nao vira nome de gestor",
+    "solicitacao sem aprovador_id (legado) mostra ",
+    "vendedor e o nome do gestor gravado em aprovador_id",
+    "id gravado com espacos em volta ainda encontra o nome",
+    "id sem nome carregado nao vira ",
+    "nome em branco no mapa cai em ",
+    "sem o mapa (perfis ainda nao carregados) nao inventa nome",
+    "nomeDoGestor aceita a solicitacao crua do banco",
     "uses data_necessidade as prazoEntrega",
     "falls back to created_at when data_necessidade is null",
     "maps valor_estimado to valorTotal",
@@ -112451,7 +112599,10 @@
     "lista sem valor nenhum nao divide por zero",
     "lista vazia devolve vazio",
     "Solicitacoes.tsx nao posiciona os pontos da matriz pelo indice",
-    "usa posicoesDaMatriz para o eixo X e Y"
+    "usa posicoesDaMatriz para o eixo X e Y",
+    "Solicitacoes.tsx resolve o gestor pelo aprovador_id",
+    "passa o mapa de nomes para o adaptador",
+    "o mapa sai de profiles.user_id"
    ]
   },
   "src/pages/sourcing/AuctionRoom.tsx": {
@@ -121182,10 +121333,25 @@
   }
  },
  "git": {
-  "sha": "773117bdb3f862d7c05c6d6c1c7fd31a45af1cc4",
+  "sha": "9e585d8de295df26a63a57f2dc76b226562a2e8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9e585d8",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+     "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+     "src/pages/solicitacoes/Solicitacoes.tsx",
+     "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+     "src/pages/solicitacoes/solicitacoesHelpers.ts"
+    ]
+   },
    {
     "sha": "773117b",
     "date": "2026-11-24",
@@ -121525,17 +121691,6 @@
      "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
      "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
     ]
-   },
-   {
-    "sha": "090a030",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(integridade): guarda exclusao de pagamento com historico (#405)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
-     "src/hooks/usePagamentos.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -121572,6 +121727,14 @@
     3
    ],
    [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    2
+   ],
+   [
+    "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
+    2
+   ],
+   [
     "supabase/functions/receive-os-sync/mapping.ts",
     2
    ],
@@ -121588,35 +121751,27 @@
     2
    ],
    [
+    "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    1
+   ],
+   [
     "src/components/compras/ProductionRoutingEngine.tsx",
     1
    ],
    [
     "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
-    1
-   ],
-   [
-    "src/pages/estoque/GestaoEstoque.tsx",
-    1
-   ],
-   [
-    "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 93,
+ "total": 94,
  "hooks": [
   {
    "arquivo": "src/components/accessibility/AdvancedAccessibility.tsx",
@@ -565,6 +565,28 @@
     "src/pages/solicitacoes/Solicitacoes.tsx"
    ],
    "coberto_por_testes": 0
+  },
+  {
+   "arquivo": "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
+   "hooks_exportados": [
+    "useNomesDeGestor"
+   ],
+   "linhas": 38,
+   "dominio": "features/solicitacoes",
+   "tabelas": [
+    "profiles"
+   ],
+   "rpcs": [],
+   "edges": [],
+   "hooks_internos": [
+    "useQuery"
+   ],
+   "canais_realtime": [],
+   "usado_por": 1,
+   "usado_por_arquivos": [
+    "src/pages/solicitacoes/Solicitacoes.tsx"
+   ],
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
