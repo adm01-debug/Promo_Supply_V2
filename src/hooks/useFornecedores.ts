@@ -7,6 +7,11 @@ import { auditHelpers } from '@/services/auditService';
 import { toast } from '@/lib/feedbackToast';
 import { format } from 'date-fns';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import {
+  mensagemCnpjJaCadastrado,
+  mensagemDuplicidadeFornecedor,
+  somenteDigitos,
+} from '@/lib/unicidadeCadastro';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -104,6 +109,24 @@ export function useFornecedores(filters?: FornecedorFilters) {
       return null;
     }
 
+        // CNPJ e UNIQUE global no banco (fornecedores_cnpj_key nao inclui a empresa):
+        // o duplicado desta empresa da para pegar antes do insert; o de outra empresa
+        // a RLS esconde, e esse caso cai no 23505 traduzido no catch.
+        const cnpjDigitos = somenteDigitos(input.cnpj);
+        if (cnpjDigitos) {
+          const { data: cnpjExistente, error: erroChecagem } = await supabase
+            .from('fornecedores')
+            .select('id, razao_social')
+            .eq('cnpj', cnpjDigitos)
+            .maybeSingle();
+          if (erroChecagem) {
+            logger.warn('Nao foi possivel checar CNPJ duplicado antes do insert', { error: erroChecagem });
+          } else if (cnpjExistente) {
+            toast.error(mensagemCnpjJaCadastrado(cnpjExistente.razao_social));
+            return null;
+          }
+        }
+
     try {
       logger.info('Criando novo fornecedor', { razaoSocial: input.razao_social, cnpj: input.cnpj });
       // Generate codigo
@@ -159,7 +182,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       logger.error('Erro fatal ao cadastrar fornecedor', { error: errorMessage, input });
-      toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
+          toast.error(mensagemDuplicidadeFornecedor(err) ?? 'Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
   }, [user, tenantId, organizationId, queryClient, validateCNPJ]);
