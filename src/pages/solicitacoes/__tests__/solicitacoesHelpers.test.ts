@@ -1,9 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import {
   mapDbStatusToLegacy,
   mapLegacyStatusToDb,
   adaptToLegacyFormat,
   statusConfig,
+  posicoesDaMatriz,
 } from '../solicitacoesHelpers';
 import type { Solicitacao } from '@/features/solicitacoes';
 
@@ -197,5 +200,60 @@ describe('statusConfig', () => {
       expect(typeof cfg.color).toBe('string');
       expect(['pending', 'processing', 'approved', 'completed', 'warning', 'info', 'error']).toContain(cfg.indicatorStatus);
     });
+  });
+});
+
+describe('posicoesDaMatriz', () => {
+  const agora = new Date('2026-06-10T12:00:00Z');
+  const emDias = (dias: number) => new Date(agora.getTime() + dias * 86_400_000).toISOString();
+
+  const item = (id: string, valorTotal: number, prazoEntrega: string | null) =>
+    ({ id, valorTotal, prazoEntrega }) as { id: string; valorTotal: number; prazoEntrega: string | null };
+
+  it('eixo X vem do valor relativo ao maior da lista', () => {
+    const pontos = posicoesDaMatriz([
+      item('a', 1000, emDias(10)),
+      item('b', 500, emDias(10)),
+      item('c', 0, emDias(10)),
+    ], agora);
+    expect(pontos.map((p) => p.esquerda)).toEqual([95, 50, 5]);
+  });
+
+  it('eixo Y vem do prazo: atrasado no topo, folga longa no rodape', () => {
+    const pontos = posicoesDaMatriz([
+      item('urgente', 100, emDias(0)),
+      item('meio', 100, emDias(45)),
+      item('folgado', 100, emDias(90)),
+    ], agora);
+    expect(pontos[0].base).toBe(95);
+    expect(pontos[1].base).toBe(50);
+    expect(pontos[2].base).toBe(5);
+  });
+
+  it('item sem prazo fica em faixa neutra e com diasRestantes nulo', () => {
+    const [ponto] = posicoesDaMatriz([item('sem-prazo', 100, null)], agora);
+    expect(ponto.diasRestantes).toBeNull();
+    expect(ponto.base).toBe(36.5);
+  });
+
+  it('lista sem valor nenhum nao divide por zero', () => {
+    const pontos = posicoesDaMatriz([item('a', 0, emDias(10)), item('b', 0, emDias(10))], agora);
+    expect(pontos.every((p) => p.esquerda === 50)).toBe(true);
+  });
+
+  it('lista vazia devolve vazio', () => {
+    expect(posicoesDaMatriz([], agora)).toEqual([]);
+  });
+});
+
+describe('Solicitacoes.tsx nao posiciona os pontos da matriz pelo indice', () => {
+  const fonte = readFileSync(join(process.cwd(), 'src/pages/solicitacoes/Solicitacoes.tsx'), 'utf-8');
+
+  it('usa posicoesDaMatriz para o eixo X e Y', () => {
+    expect(fonte).toContain('posicoesDaMatriz(filteredSolicitacoes.slice(0, 15))');
+    expect(fonte).toContain('ponto.esquerda');
+    expect(fonte).toContain('ponto.base');
+    expect(fonte).not.toContain('i * 7');
+    expect(fonte).not.toContain('valorTotal / 10000');
   });
 });
