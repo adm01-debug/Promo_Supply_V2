@@ -27,6 +27,18 @@ import {
   statusCotacao,
 } from './portalFornecedorData';
 
+// SEC-06 / etapa 039: o convite por magic link cadastrava o e-mail informado
+// como usuario do app (shouldCreateUser vem true por padrao no GoTrue) sem
+// papel em user_roles nem vinculo em user_tenants, e o gate de rota libera tudo
+// que nao exige papel. O papel de fornecedor ainda nao existe no enum app_role
+// do banco (producao: admin, coordinator, buyer, finance, viewer), entao nao ha
+// como provisionar o convidado: o botao fica desabilitado ate o provisionamento
+// controlado (scim-v2 / SSOConfig) definir papel e empresa. Ligar o convite e
+// trocar esta constante, depois do papel existir no banco.
+const CONVITE_FORNECEDOR_HABILITADO = false;
+const AVISO_CONVITE_INDISPONIVEL =
+  'Convite desabilitado: o acesso do fornecedor depende de papel e vinculo de empresa aprovados, e o papel de fornecedor ainda nao existe no banco. Fale com o administrador.';
+
 export default function PortalFornecedor() {
   const { user } = useAuth();
   const [selectedFornecedorId, setSelectedFornecedorId] = useState<string | null>(null);
@@ -76,7 +88,13 @@ export default function PortalFornecedor() {
     }
     setSendingMagicLink(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({ email: fornecedor.email });
+      const { error } = await supabase.auth.signInWithOtp({
+        email: fornecedor.email,
+        // SEC-06 / etapa 039: sem shouldCreateUser o GoTrue cadastra o e-mail
+        // informado como usuario do app, sem papel em user_roles nem vinculo em
+        // user_tenants, e o gate de rota libera tudo que nao exige papel.
+        options: { shouldCreateUser: false },
+      });
       if (error) throw error;
       toast.success('Link de acesso enviado por e-mail', {
         description: `Enviado para ${fornecedor.email}`,
@@ -403,7 +421,8 @@ export default function PortalFornecedor() {
                       variant="outline"
                       className="mt-4"
                       onClick={() => void handleSendMagicLink()}
-                      disabled={sendingMagicLink}
+                      disabled={sendingMagicLink || !CONVITE_FORNECEDOR_HABILITADO}
+                      title={AVISO_CONVITE_INDISPONIVEL}
                     >
                       {sendingMagicLink ? (
                         <>
