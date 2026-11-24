@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (188)",
+   "co-localizado (__tests__) (189)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)",
    "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)",
    "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)",
    "fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)",
-   "fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)",
-   "fix(acompanhamento): falha de carga nao vira pipeline vazio nem KPI zerado (#433)"
+   "fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)"
   ]
  },
  "pr_template": null,

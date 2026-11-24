@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3beb6dab2adc18f34aaff39c01d2661c310de06a",
+  "sha": "73aaa9d100aafbc6b4447e1dc2be63fcf25e664c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 16:06 UTC",
-  "files_total": 1428,
-  "code_files": 1255,
-  "code_lines": 212380,
+  "generated_at": "2026-11-24 16:11 UTC",
+  "files_total": 1429,
+  "code_files": 1256,
+  "code_lines": 212443,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "190ed77129910fd1",
+ "facts_hash": "5d495229ecde49f9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 439,
+   ".ts": 440,
    ".tsx": 409,
    ".sql": 332,
    ".mjs": 67,
@@ -35592,8 +35592,8 @@
   },
   {
    "module": "src/i18n",
-   "files": 2,
-   "lines": 109,
+   "files": 3,
+   "lines": 172,
    "tables": [],
    "exports": [
     "config.ts: sincronizarIdiomaDoDocumento, i18n"
@@ -35602,6 +35602,8 @@
    "deps": [
     "i18next",
     "i18next-browser-languagedetector",
+    "node:fs",
+    "node:path",
     "react-i18next",
     "vitest"
    ],
@@ -35610,7 +35612,8 @@
    ],
    "file_list": [
     "src/i18n/config.ts",
-    "src/i18n/__tests__/config.test.ts"
+    "src/i18n/__tests__/config.test.ts",
+    "src/i18n/__tests__/locales.test.ts"
    ]
   },
   {
@@ -64022,6 +64025,38 @@
    {
     "file": "src/i18n/__tests__/config.test.ts",
     "name": "trocar o idioma pelo i18n atualiza o documento na hora (WCAG 3.1.2)"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "chaves que a tela do catalogo usa existem de verdade"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "pt e en trazem catalog.title, catalog.subtitle e common.new com texto real"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas)"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "nenhuma chave de pt falta em en"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "nenhum texto e vazio ou so espaco"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "o KPI do dashboard nomeia a etapa que a RPC conta"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "pt diz Aguardando Cotacao (status pendente/em_cotacao na RPC)"
+   },
+   {
+    "file": "src/i18n/__tests__/locales.test.ts",
+    "name": "en diz Awaiting Quote e nao Pending Approval, que e outra etapa do fluxo"
    },
    {
     "file": "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -106194,6 +106229,21 @@
     "trocar o idioma pelo i18n atualiza o documento na hora (WCAG 3.1.2)"
    ]
   },
+  "src/i18n/__tests__/locales.test.ts": {
+   "path": "src/i18n/__tests__/locales.test.ts",
+   "lines": 63,
+   "is_test": true,
+   "tests": [
+    "chaves que a tela do catalogo usa existem de verdade",
+    "pt e en trazem catalog.title, catalog.subtitle e common.new com texto real",
+    "CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas)",
+    "nenhuma chave de pt falta em en",
+    "nenhum texto e vazio ou so espaco",
+    "o KPI do dashboard nomeia a etapa que a RPC conta",
+    "pt diz Aguardando Cotacao (status pendente/em_cotacao na RPC)",
+    "en diz Awaiting Quote e nao Pending Approval, que e outra etapa do fluxo"
+   ]
+  },
   "src/integrations/lovable/index.ts": {
    "path": "src/integrations/lovable/index.ts",
    "lines": 39,
@@ -121427,10 +121477,22 @@
   }
  },
  "git": {
-  "sha": "3beb6dab2adc18f34aaff39c01d2661c310de06a",
+  "sha": "73aaa9d100aafbc6b4447e1dc2be63fcf25e664c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "73aaa9d",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/i18n/__tests__/locales.test.ts",
+     "src/locales/en/translation.json",
+     "src/locales/pt/translation.json"
+    ]
+   },
    {
     "sha": "3beb6da",
     "date": "2026-11-24",
@@ -121771,29 +121833,12 @@
      "supabase/functions/receive-os-sync/mapping.test.ts",
      "supabase/functions/receive-os-sync/mapping.ts"
     ]
-   },
-   {
-    "sha": "eb55789",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/PendingApprovalsList.tsx",
-     "src/components/compras/__tests__/pendingApprovalsA11y.test.tsx",
-     "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",
-     "src/features/layout/components/AppSidebar.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     24
-   ],
-   [
-    "src/components/compras/PendingApprovalsList.tsx",
-    3
    ],
    [
     "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -121828,6 +121873,10 @@
     2
    ],
    [
+    "src/components/compras/PendingApprovalsList.tsx",
+    2
+   ],
+   [
     "supabase/functions/receive-os-sync/mapping.ts",
     2
    ],
@@ -121844,6 +121893,18 @@
     2
    ],
    [
+    "src/i18n/__tests__/locales.test.ts",
+    1
+   ],
+   [
+    "src/locales/en/translation.json",
+    1
+   ],
+   [
+    "src/locales/pt/translation.json",
+    1
+   ],
+   [
     "src/i18n/__tests__/config.test.ts",
     1
    ],
@@ -121853,18 +121914,6 @@
    ],
    [
     "src/components/compras/NovaSolicitacaoModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/anexosNaoEnviados.test.ts",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
     1
    ]
   ]

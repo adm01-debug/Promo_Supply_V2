@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 283,
+ "total": 284,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 265
+  "unit": 266
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 188
+   "arquivos": 189
   },
   {
    "padrao": "outro",
@@ -1248,6 +1248,16 @@
     "src/i18n/config.ts"
    ],
    "casos": 4
+  },
+  {
+   "arquivo": "src/i18n/__tests__/locales.test.ts",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "src/locales/en/translation.json",
+    "src/locales/pt/translation.json"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "src/lib/__tests__/clearFiltersShortcut.test.ts",
@@ -2699,9 +2709,9 @@
   "src/lib/supabaseRpc.ts": 1,
   "src/lib/unicidadeCadastro.ts": 1,
   "src/lib/utils.ts": 1,
-  "src/locales/en/translation.json": 1,
+  "src/locales/en/translation.json": 2,
   "src/locales/es/translation.json": 1,
-  "src/locales/pt/translation.json": 1,
+  "src/locales/pt/translation.json": 2,
   "src/pages/acompanhamento/Acompanhamento.tsx": 2,
   "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 2,
   "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
