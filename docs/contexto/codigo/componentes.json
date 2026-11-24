@@ -5241,7 +5241,7 @@
     "Pedidos"
    ],
    "export_default": "Pedidos",
-   "linhas": 362,
+   "linhas": 369,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "useEmpresaFilter",

@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 236,
+ "total": 239,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 218
+  "unit": 221
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 143
+   "arquivos": 146
   },
   {
    "padrao": "outro",
@@ -719,6 +719,24 @@
     "src/features/layout/transitions/presets.ts"
    ],
    "casos": 29
+  },
+  {
+   "arquivo": "src/features/pedidos/__tests__/exclusaoPedido.test.ts",
+   "tipo": "unit",
+   "linhas": 32,
+   "testa": [
+    "src/features/pedidos/exclusaoPedido.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
+   "tipo": "unit",
+   "linhas": 116,
+   "testa": [
+    "src/features/pedidos/hooks/usePedidos.ts"
+   ],
+   "casos": 5
   },
   {
    "arquivo": "src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts",
@@ -1485,6 +1503,15 @@
    "casos": 5
   },
   {
+   "arquivo": "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx",
+   "tipo": "unit",
+   "linhas": 128,
+   "testa": [
+    "src/pages/pedidos/Pedidos.tsx"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/pages/pedidos/__tests__/followUpPedido.test.tsx",
    "tipo": "unit",
    "linhas": 154,
@@ -2192,6 +2219,8 @@
   "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx": 1,
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
+  "src/features/pedidos/exclusaoPedido.ts": 1,
+  "src/features/pedidos/hooks/usePedidos.ts": 1,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": 3,
   "src/features/solicitacoes/index.ts": 1,
@@ -2273,6 +2302,7 @@
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
   "src/pages/historico/HistoricoHelpers.tsx": 2,
   "src/pages/pedidos/PedidoDetailsDialog.tsx": 1,
+  "src/pages/pedidos/Pedidos.tsx": 1,
   "src/pages/pedidos/pedidosHelpers.ts": 1,
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": 1,
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
@@ -2353,7 +2383,6 @@
    "src/pages/negociacao-ia/NegociacaoIA.tsx",
    "src/pages/orcamentos/Orcamentos.tsx",
    "src/pages/pagamentos/Pagamentos.tsx",
-   "src/pages/pedidos/Pedidos.tsx",
    "src/pages/qualificacao/QualificacaoFornecedores.tsx",
    "src/pages/recebimento/RecebimentoOffline.tsx",
    "src/pages/recompra/RecompraInteligente.tsx",
@@ -2380,7 +2409,6 @@
    "src/features/empresas/index.ts",
    "src/features/layout/transitions/index.ts",
    "src/features/layout/transitions/usePageTransition.ts",
-   "src/features/pedidos/hooks/usePedidos.ts",
    "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
    "src/hooks/use-mobile.tsx",

@@ -1916,6 +1916,7 @@
   ],
   "src/features/pedidos/hooks/usePedidos.ts": [
    "src/features/auth/index.ts",
+   "src/features/pedidos/exclusaoPedido.ts",
    "src/hooks/useRealtimeSubscription.ts",
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",
@@ -3156,6 +3157,7 @@
    "src/components/ui/table.tsx",
    "src/features/empresas/hooks/useEmpresaFilter.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
+   "src/features/pedidos/exclusaoPedido.ts",
    "src/features/pedidos/index.ts",
    "src/hooks/use-mobile.tsx",
    "src/hooks/useFornecedores.ts",

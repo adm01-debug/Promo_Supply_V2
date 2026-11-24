@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2f53e1037c` · branch `main` · 2026-11-24 06:40 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `410aae24a1` · branch `main` · 2026-11-24 06:58 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2445,7 +2445,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3014 testes em 185 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3028 testes em 188 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2569,6 +2569,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `src/components/compras/__tests__/contractFornecedorId.test.tsx` | 6 | ContractModal grava o fornecedor do cadastro · oferece so os fornecedores ativos, com id real e sem sufixo de status · sem fornecedor escolhido nao salva e avisa · salva supplier_id com o id do cadastro e supplier_name como copia congelada … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
+| `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/auth/__tests__/Auth.novaSenha.test.tsx` | 6 | Auth: recuperacao de senha (etapa 035 / AUT-03) · sem email digitado, nao dispara o link e explica o que falta · com email digitado, envia o link apontando para a rota de nova senha · link expirado ou invalido avisa em vez de mostrar o formulario … |
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
@@ -2593,11 +2594,13 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
+| `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
+| `src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx` | 4 | acao de excluir na lista de pedidos · some quando o pedido selecionado ja entrou no ciclo de recebimento · continua disponivel para pedido pendente · some na selecao mista de pendente com entregue |
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
 | `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `src/tests/integration/contract-testing.test.ts` | 4 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload with invalid UUID · should reject negotiation payload with missing fields |
@@ -2704,6 +2707,7 @@ _nenhum item encontrado_
 | Add permission | `src/components/security/PermissionMatrix.tsx` |
 | Remove permission | `src/components/security/PermissionMatrix.tsx` |
 | Subscribe to realtime rate limit alerts | `src/components/security/RateLimitDashboard.tsx` |
+| * Regra de ciclo de vida da exclusao de pedido. | `src/features/pedidos/exclusaoPedido.ts` |
 | Update status with transition validation | `src/features/pedidos/hooks/usePedidos.ts` |
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
