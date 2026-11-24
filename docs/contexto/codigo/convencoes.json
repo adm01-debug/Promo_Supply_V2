@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (124)",
+   "co-localizado (__tests__) (125)",
    "outro (43)",
    "co-localizado (*.test) (37)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)",
    "fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)",
    "test(palette): trava atalhos e badges do Command Palette no registry real (#353)",
    "fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)",
-   "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)",
-   "fix: escalacao de aprovacao grava organization_id e nao duplica etapa (etapa 082) (#348)"
+   "fix(recebimento): grava o status pelo caminho do trigger e checa o erro do update (etapa 083) (#349)"
   ]
  },
  "pr_template": null,

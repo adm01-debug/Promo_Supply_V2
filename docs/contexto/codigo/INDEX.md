@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7ea54f28c200ded745f94dd265a6e4da9a3d0448` (2026-11-23T22:17:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d32b847eeec5a70fe12f31eae7046b6857ff4db2` (2026-11-23T22:40:10-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (768), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (769), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1344 |
-| arquivos_codigo | 841 |
-| linhas_codigo | 174080 |
+| arquivos_total | 1345 |
+| arquivos_codigo | 842 |
+| linhas_codigo | 174209 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 329 |
 | cron_jobs | 74 |
-| testes | 214 |
+| testes | 215 |
 | workflows | 13 |
 | scripts | 50 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/components (11), src/features (11)
 - servicos_logica: src/lib (27), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (124), outro (43), co-localizado (*.test) (37)
+- testes: co-localizado (__tests__) (125), outro (43), co-localizado (*.test) (37)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (17), scripts/types-sync (7), scripts/inventario (5)
@@ -338,19 +338,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/qa/05-PROGRESSO.md (15)
+- docs/qa/05-PROGRESSO.md (16)
 - docs/ci/README.md (12)
-- package.json (12)
-- bun.lock (10)
+- package.json (11)
+- bun.lock (9)
 - docs/prod-readiness.md (9)
-- .github/workflows/main.yml (8)
 - docs/pendencias/_ordem.md (8)
-- supabase/functions/punchout-receive/index.ts (8)
-- supabase/functions/xbz-proxy/index.ts (8)
-- src/features/solicitacoes/hooks/useSolicitacoes.ts (7)
-- src/integrations/supabase/types.ts (7)
-- src/pages/acompanhamento/Acompanhamento.tsx (7)
-- src/pages/recebimento/RecebimentoOffline.tsx (7)
+- .github/workflows/main.yml (7)
+- supabase/functions/punchout-receive/index.ts (7)
+- supabase/functions/xbz-proxy/index.ts (7)
+- .github/workflows/deploy-edge-functions.yml (6)
+- scripts/automation.config.json (6)
+- src/features/solicitacoes/hooks/useSolicitacoes.ts (6)
+- src/integrations/supabase/types.ts (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `d32b847` chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)
 - 2026-11-23 `7ea54f2` fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)
 - 2026-11-23 `2827890` test(palette): trava atalhos e badges do Command Palette no registry real (#353)
 - 2026-11-23 `619c2bb` fix(pagamentos): unifica o abatimento de credito e nao debita sem alterar o pagamento (etapa 084) (#350)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `c318737` fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)
 - 2026-11-23 `294d385` fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)
 - 2026-11-23 `9fd5491` chore(qa): marca a etapa 042 como concluida (#337)
-- 2026-11-23 `50aa142` chore(db): sincronizar types.ts com o banco [auto] (#303)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

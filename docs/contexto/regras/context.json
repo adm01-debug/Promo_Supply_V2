@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7ea54f28c200ded745f94dd265a6e4da9a3d0448",
+  "sha": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 01:19 UTC",
-  "files_total": 1345,
-  "code_files": 1174,
-  "code_lines": 201264,
+  "generated_at": "2026-11-24 01:43 UTC",
+  "files_total": 1346,
+  "code_files": 1175,
+  "code_lines": 201393,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "8636f6745d847adc",
+ "facts_hash": "c19cc67771d01ce0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -264,7 +264,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 408,
-   ".tsx": 360,
+   ".tsx": 361,
    ".sql": 331,
    ".mjs": 67,
    ".py": 5,
@@ -32874,6 +32874,13 @@
    },
    {
     "path": "/",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx"
+   },
+   {
+    "path": "/",
     "component": "Navigate",
     "guard": "",
     "roles": [],
@@ -33114,6 +33121,20 @@
     "guard": "",
     "roles": [],
     "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx"
+   },
+   {
+    "path": "/auth",
+    "component": "AuthProbe",
+    "guard": "",
+    "roles": [],
+    "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx"
+   },
+   {
+    "path": "/auth",
+    "component": "Auth",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx"
    },
    {
     "path": "/ação",
@@ -33424,6 +33445,13 @@
     "guard": "",
     "roles": [],
     "file": "scripts/ai-context/gerar.unit.mjs"
+   },
+   {
+    "path": "/pedidos",
+    "component": "div",
+    "guard": "",
+    "roles": [],
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx"
    },
    {
     "path": "/pedidos",
@@ -34193,6 +34221,10 @@
    },
    {
     "guard": "ProtectedRoute",
+    "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx"
+   },
+   {
+    "guard": "ProtectedRoute",
     "file": "src/routes/AppRoutes.tsx"
    },
    {
@@ -34931,7 +34963,7 @@
   {
    "module": "src/features/auth",
    "files": 11,
-   "lines": 984,
+   "lines": 1046,
    "tables": [
     "profiles",
     "user_roles",
@@ -35592,8 +35624,8 @@
   },
   {
    "module": "src/pages",
-   "files": 130,
-   "lines": 30766,
+   "files": 131,
+   "lines": 30833,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -35753,6 +35785,7 @@
     "src/pages/auditoria/Auditoria.tsx",
     "src/pages/auth/Auth.tsx",
     "src/pages/auth/AuthBranding.tsx",
+    "src/pages/auth/__tests__/Auth.destino.test.tsx",
     "src/pages/buyer/BuyerComparisonView.tsx",
     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
     "src/pages/buyer/buyerDashboardHelpers.tsx",
@@ -35800,8 +35833,7 @@
     "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
     "src/pages/documentos/DocumentosFiscais.tsx",
     "src/pages/estoque/GestaoEstoque.tsx",
-    "src/pages/fornecedores/Fornecedores.tsx",
-    "src/pages/fornecedores/SupplierPerformance.tsx"
+    "src/pages/fornecedores/Fornecedores.tsx"
    ]
   },
   {
@@ -60609,6 +60641,10 @@
    },
    {
     "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx",
+    "name": "entrega a rota de origem (path + busca) para o login devolver o usuario la"
+   },
+   {
+    "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx",
     "name": "bloqueia quando o papel nao foi carregado"
    },
    {
@@ -60630,6 +60666,14 @@
    {
     "file": "src/features/auth/__tests__/useAuth.test.tsx",
     "name": "should sign out successfully"
+   },
+   {
+    "file": "src/features/auth/__tests__/useAuth.test.tsx",
+    "name": "avisa que a sessao expirou quando o SIGNED_OUT nao foi pedido pelo usuario"
+   },
+   {
+    "file": "src/features/auth/__tests__/useAuth.test.tsx",
+    "name": "nao avisa sessao expirada quando o proprio usuario clicou em sair"
    },
    {
     "file": "src/features/auth/schemas/__tests__/auth.schemas.test.ts",
@@ -65406,6 +65450,26 @@
    {
     "file": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
     "name": "all colors are hex strings"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "name": "Auth: destino pos-login (etapa 043 / AUT-08)"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "name": "volta para a rota que o ProtectedRoute registrou, com a query string"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "name": "sem origem registrada cai na raiz, que o AppRoutes manda para /compras"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "name": "recusa origem protocol-relative (//evil.com) e cai na raiz"
+   },
+   {
+    "file": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    "name": "recusa origem apontando para o proprio /auth e cai na raiz"
    },
    {
     "file": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
@@ -85677,6 +85741,10 @@
    },
    {
     "guard": "ProtectedRoute",
+    "file": "src/features/auth/__tests__/ProtectedRoute.test.tsx"
+   },
+   {
+    "guard": "ProtectedRoute",
     "file": "src/routes/AppRoutes.tsx"
    },
    {
@@ -97694,7 +97762,7 @@
   },
   "src/features/auth/__tests__/ProtectedRoute.test.tsx": {
    "path": "src/features/auth/__tests__/ProtectedRoute.test.tsx",
-   "lines": 76,
+   "lines": 97,
    "is_test": true,
    "routes": [
     {
@@ -97714,12 +97782,25 @@
      "component": "div",
      "guard": "",
      "roles": []
+    },
+    {
+     "path": "/auditoria",
+     "component": "ProtectedRoute",
+     "guard": "ProtectedRoute",
+     "roles": []
+    },
+    {
+     "path": "/auth",
+     "component": "AuthProbe",
+     "guard": "",
+     "roles": []
     }
    ],
    "role_checks": [
     "admin"
    ],
    "guards": [
+    "ProtectedRoute",
     "ProtectedRoute"
    ],
    "tests": [
@@ -97727,19 +97808,25 @@
     "renderiza o conteudo quando o papel tem permissao",
     "mostra acesso restrito em vez de redirecionar silenciosamente",
     "redireciona para o login quando nao ha sessao",
+    "entrega a rota de origem (path + busca) para o login devolver o usuario la",
     "bloqueia quando o papel nao foi carregado"
    ]
   },
   "src/features/auth/__tests__/useAuth.test.tsx": {
    "path": "src/features/auth/__tests__/useAuth.test.tsx",
-   "lines": 84,
+   "lines": 125,
    "is_test": true,
+   "rule_comments": [
+    "QA-043 (AUT-08): useAuth avisa quando a sessao expira, mas nao quando o"
+   ],
    "tests": [
     "useAuth",
     "should throw error when used outside AuthProvider",
     "should provide initial loading state",
     "should sign in successfully",
-    "should sign out successfully"
+    "should sign out successfully",
+    "avisa que a sessao expirou quando o SIGNED_OUT nao foi pedido pelo usuario",
+    "nao avisa sessao expirada quando o proprio usuario clicou em sair"
    ]
   },
   "src/features/auth/components/ProtectedRoute.tsx": {
@@ -105453,6 +105540,38 @@
    "exports": [
     "const AuthBackground",
     "const AuthBrandingPanel"
+   ]
+  },
+  "src/pages/auth/__tests__/Auth.destino.test.tsx": {
+   "path": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+   "lines": 67,
+   "is_test": true,
+   "routes": [
+    {
+     "path": "/auth",
+     "component": "Auth",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/",
+     "component": "div",
+     "guard": "",
+     "roles": []
+    },
+    {
+     "path": "/pedidos",
+     "component": "div",
+     "guard": "",
+     "roles": []
+    }
+   ],
+   "tests": [
+    "Auth: destino pos-login (etapa 043 / AUT-08)",
+    "volta para a rota que o ProtectedRoute registrou, com a query string",
+    "sem origem registrada cai na raiz, que o AppRoutes manda para /compras",
+    "recusa origem protocol-relative (//evil.com) e cai na raiz",
+    "recusa origem apontando para o proprio /auth e cai na raiz"
    ]
   },
   "src/pages/buyer/BuyerComparisonView.tsx": {
@@ -116994,10 +117113,22 @@
   }
  },
  "git": {
-  "sha": "7ea54f28c200ded745f94dd265a6e4da9a3d0448",
+  "sha": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d32b847",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/auth/__tests__/ProtectedRoute.test.tsx",
+     "src/features/auth/__tests__/useAuth.test.tsx",
+     "src/pages/auth/__tests__/Auth.destino.test.tsx"
+    ]
+   },
    {
     "sha": "7ea54f2",
     "date": "2026-11-23",
@@ -117349,22 +117480,16 @@
     "files": [
      "supabase/functions/generate-contract-pdf/index.ts"
     ]
-   },
-   {
-    "sha": "e02eb15",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(mfa): remove backup codes inseguros e sem consumidor (#327)",
-    "files": [
-     "src/components/security/MFASettings.tsx",
-     "src/hooks/useMFA.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    13
+    14
+   ],
+   [
+    "src/features/auth/__tests__/ProtectedRoute.test.tsx",
+    2
    ],
    [
     "src/components/pagamentos/PagamentoDetailModal.tsx",
@@ -117423,23 +117548,19 @@
     2
    ],
    [
+    "src/features/auth/__tests__/useAuth.test.tsx",
+    1
+   ],
+   [
+    "src/pages/auth/__tests__/Auth.destino.test.tsx",
+    1
+   ],
+   [
     "src/pages/portal-fornecedor/PortalFornecedor.tsx",
     1
    ],
    [
     "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useDevolucoes.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/creditoFornecedor.test.ts",
     1
    ]
   ]

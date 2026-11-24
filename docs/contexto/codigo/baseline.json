@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7ea54f28c200ded745f94dd265a6e4da9a3d0448",
+  "commit": "d32b847eeec5a70fe12f31eae7046b6857ff4db2",
   "branch": "main",
-  "data_commit": "2026-11-23T22:17:35-03:00",
+  "data_commit": "2026-11-23T22:40:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d32b847",
+    "data": "2026-11-23",
+    "assunto": "chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)"
+   },
    {
     "sha": "7ea54f2",
     "data": "2026-11-23",
@@ -126,74 +131,69 @@
     "sha": "4358c8c",
     "data": "2026-11-23",
     "assunto": "chore(qa): marca 034, 043, 044, 045, 046 e 047 como concluidas (#335)"
-   },
-   {
-    "sha": "fa08c73",
-    "data": "2026-11-23",
-    "assunto": "fix(scim): extrai gate de credencial para modulo testavel sem rede (#331)"
    }
   ],
-  "arquivos_mudados_7d": 365,
+  "arquivos_mudados_7d": 367,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 290
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 131
+    "mudancas": 173
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 94
+    "mudancas": 68
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 66
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 85
-   },
-   {
-    "pasta": "src/lib/__tests__",
-    "mudancas": 55
-   },
-   {
-    "pasta": "src/pages/admin",
-    "mudancas": 45
+    "mudancas": 49
    },
    {
     "pasta": "docs/pendencias/_indice.md",
     "mudancas": 44
    },
    {
-    "pasta": "src/pages/catalogo-xbz",
-    "mudancas": 36
+    "pasta": "src/lib/__tests__",
+    "mudancas": 32
    },
    {
-    "pasta": "src/components/security",
-    "mudancas": 32
+    "pasta": "src/pages/admin",
+    "mudancas": 30
+   },
+   {
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 25
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 32
+    "mudancas": 22
    },
    {
     "pasta": "src/features/auth",
-    "mudancas": 29
-   },
-   {
-    "pasta": "src/components/pagamentos",
-    "mudancas": 23
+    "mudancas": 21
    },
    {
     "pasta": "src/pages/recebimento",
-    "mudancas": 23
-   },
-   {
-    "pasta": "src/pages/historico",
-    "mudancas": 20
-   },
-   {
-    "pasta": "src/components/admin",
     "mudancas": 19
+   },
+   {
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "mudancas": 17
+   },
+   {
+    "pasta": "src/components/security",
+    "mudancas": 17
+   },
+   {
+    "pasta": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 16
+   },
+   {
+    "pasta": "src/components/pagamentos",
+    "mudancas": 13
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -215,62 +215,30 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 10
+    "mudancas": 9
    },
    {
     "arquivo": "docs/prod-readiness.md",
     "mudancas": 9
    },
    {
-    "arquivo": ".github/workflows/main.yml",
-    "mudancas": 8
-   },
-   {
     "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 8
    },
    {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 7
+   },
+   {
     "arquivo": "supabase/functions/punchout-receive/index.ts",
-    "mudancas": 8
+    "mudancas": 7
    },
    {
     "arquivo": "supabase/functions/xbz-proxy/index.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/functions/_shared/xbz_client.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/functions/dependency-health/index.ts",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/functions/workflow-engine/index.ts",
     "mudancas": 7
    },
    {
@@ -282,20 +250,52 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/_shared/xbz_client.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/dependency-health/index.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "supabase/functions/workflow-engine/index.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/contexto.yml",
+    "mudancas": 5
+   },
+   {
+    "arquivo": ".github/workflows/types-sync.yml",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "scripts/ci/scripts-operacionais.unit.mjs",
+    "mudancas": 5
+   },
+   {
     "arquivo": "scripts/realtime-audit.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/features/auth/hooks/useAuth.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
-    "mudancas": 6
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -310,17 +310,13 @@
    {
     "autor": "github-actions[bot]",
     "commits": 2
-   },
-   {
-    "autor": "copilot-swe-agent[bot]",
-    "commits": 1
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 1344,
-  "arquivos_codigo": 841,
-  "linhas_codigo": 174080,
+  "arquivos_total": 1345,
+  "arquivos_codigo": 842,
+  "linhas_codigo": 174209,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -332,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 214,
+  "testes": 215,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -436,7 +432,7 @@
   },
   "src/features": {
    "arquivos": 66,
-   "linhas": 8818
+   "linhas": 8880
   },
   "src/hooks": {
    "arquivos": 80,
@@ -459,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 130,
-   "linhas": 30766
+   "arquivos": 131,
+   "linhas": 30833
   },
   "src/routes": {
    "arquivos": 1,

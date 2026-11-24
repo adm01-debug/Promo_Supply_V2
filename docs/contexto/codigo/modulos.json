@@ -3745,7 +3745,7 @@
   {
    "modulo": "pages/auth",
    "arquivos": 2,
-   "testes": 0,
+   "testes": 1,
    "linhas": 385,
    "itens_menu": [],
    "telas": [

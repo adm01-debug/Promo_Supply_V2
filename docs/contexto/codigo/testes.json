@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 214,
+ "total": 215,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 197
+  "unit": 198
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 124
+   "arquivos": 125
   },
   {
    "padrao": "outro",
@@ -571,22 +571,22 @@
   {
    "arquivo": "src/features/auth/__tests__/ProtectedRoute.test.tsx",
    "tipo": "unit",
-   "linhas": 76,
+   "linhas": 97,
    "testa": [
     "src/features/auth/components/ProtectedRoute.tsx",
     "src/features/auth/index.ts"
    ],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "src/features/auth/__tests__/useAuth.test.tsx",
    "tipo": "unit",
-   "linhas": 84,
+   "linhas": 125,
    "testa": [
     "src/features/auth/index.ts",
     "src/integrations/supabase/client.ts"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "src/features/auth/schemas/__tests__/auth.schemas.test.ts",
@@ -1175,6 +1175,15 @@
     "src/pages/aprovacoes/aprovacoesData.ts"
    ],
    "casos": 30
+  },
+  {
+   "arquivo": "src/pages/auth/__tests__/Auth.destino.test.tsx",
+   "tipo": "unit",
+   "linhas": 67,
+   "testa": [
+    "src/pages/auth/Auth.tsx"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
@@ -2038,6 +2047,7 @@
   "src/pages/admin/SourcingPipeline.tsx": 1,
   "src/pages/admin/alertRunbooks.ts": 1,
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
+  "src/pages/auth/Auth.tsx": 1,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
   "src/pages/catalogo-xbz/xbzHelpers.ts": 4,
@@ -2109,7 +2119,6 @@
    "src/pages/admin/WorkflowAdmin.tsx",
    "src/pages/aprovacoes/Aprovacoes.tsx",
    "src/pages/auditoria/Auditoria.tsx",
-   "src/pages/auth/Auth.tsx",
    "src/pages/buyer/BuyerPerformanceDashboard.tsx",
    "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
    "src/pages/catalogo-spot/CatalogoSpot.tsx",
