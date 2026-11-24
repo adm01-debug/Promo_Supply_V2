@@ -5,6 +5,8 @@ import { isPast } from "date-fns/isPast";
 import { isToday } from "date-fns/isToday";
 import { isTomorrow } from "date-fns/isTomorrow";
 import { parseISO } from "date-fns/parseISO";
+import { format } from "date-fns/format";
+import { isValid } from "date-fns/isValid";
 import { AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
 import { EtapaPipeline } from "@/components/compras/PedidoTimeline";
 import { TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";
@@ -29,6 +31,12 @@ export interface AcompanhamentoPedido {
   valorUnitario: number | null;
   createdAt: string;
   tipo: string;
+  /** `solicitacoes.created_at`: marco real da 1a etapa. */
+  solicitacaoCriadaEm?: string | null;
+  /** `pedidos.data_emissao`: marco real do pedido emitido ao fornecedor. */
+  dataEmissao?: string | null;
+  /** `pedidos.data_entrega`: so existe depois do recebimento da mercadoria. */
+  dataEntrega?: string | null;
 }
 
 export interface SLAInfo {
@@ -145,7 +153,26 @@ export const avaliarAlteracaoStatusKanban = (
   return { permitido: true, dbStatus };
 };
 
-export const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
+/** Marcos reais de cada etapa; o que nao estiver registrado no banco fica de fora. */
+export interface MarcosDoPipeline {
+  solicitacao?: string | null;
+  emissao?: string | null;
+  entrega?: string | null;
+}
+
+const instanteDaEtapa: Record<string, keyof MarcosDoPipeline> = {
+  solicitacao: 'solicitacao',
+  pedido: 'emissao',
+  entregue: 'entrega',
+};
+
+const formatarMarco = (valor: string | null | undefined): string | undefined => {
+  if (!valor) return undefined;
+  const quando = parseISO(valor);
+  return isValid(quando) ? format(quando, 'dd/MM/yyyy') : undefined;
+};
+
+export const gerarEtapasPipeline = (status: string, marcos: MarcosDoPipeline = {}): EtapaPipeline[] => {
   const todasEtapas = [
     { id: 'solicitacao', nome: 'Solicitação' }, { id: 'cotacao', nome: 'Cotação' },
     { id: 'pedido', nome: 'Pedido' }, { id: 'pagamento', nome: 'Pagamento' },
@@ -156,11 +183,17 @@ export const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
     AGUARDANDO_PAGAMENTO: 3, PAGO: 4, EM_TRANSITO: 4, ENTREGUE: 5,
   };
   const etapaAtual = statusOrdem[status] ?? 0;
-  return todasEtapas.map((etapa, index) => ({
-    ...etapa,
-    status: index < etapaAtual ? 'concluido' : index === etapaAtual ? 'atual' : 'pendente',
-    data: index < etapaAtual ? '15/12/2025' : index === etapaAtual ? 'Agora' : undefined,
-  }));
+  return todasEtapas.map((etapa, index) => {
+    const statusDaEtapa = index < etapaAtual ? 'concluido' : index === etapaAtual ? 'atual' : 'pendente';
+    const chave = instanteDaEtapa[etapa.id];
+    const registrado = chave ? formatarMarco(marcos[chave]) : undefined;
+    return {
+      ...etapa,
+      status: statusDaEtapa,
+      // So data registrada no banco; a etapa em andamento sem marco diz "Agora".
+      data: registrado ?? (statusDaEtapa === 'atual' ? 'Agora' : undefined),
+    };
+  });
 };
 
 export const gerarEtapasEnhanced = (pedido: AcompanhamentoPedido): TimelineStep[] => {
