@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fb36e1017a9bc3f155ec5f22fa0743d2efa7071d` (2026-11-23T23:00:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d6a5f1880fd175a79e12852634b1d1ade5d29e1c` (2026-11-23T23:17:01-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1346 |
 | arquivos_codigo | 843 |
-| linhas_codigo | 174283 |
+| linhas_codigo | 174364 |
 | rotas | 55 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -337,10 +337,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/pendencias/_indice.md (44)
+- docs/qa/05-PROGRESSO.md (18)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/qa/05-PROGRESSO.md (17)
 - docs/ci/README.md (12)
-- package.json (11)
+- package.json (10)
 - bun.lock (9)
 - docs/prod-readiness.md (9)
 - docs/pendencias/_ordem.md (8)
@@ -418,6 +418,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-23 `d6a5f18` fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)
 - 2026-11-23 `fb36e10` fix(edge): autentica o punchout-setup antes do cache de idempotencia (#356)
 - 2026-11-23 `d32b847` chore(qa): restaura os marcadores 043/045/046/047 e trava a 043 com testes (#355)
 - 2026-11-23 `7ea54f2` fix(portal): bloqueia o convite de fornecedor que criava conta no GoTrue (#354)
@@ -432,7 +433,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-23 `77ddaeb` fix: receive-os-sync sem verify_jwt (webhook HMAC)
 - 2026-11-23 `4ea4805` fix(oc): ordem de compra passa a usar o preco da cotacao vencedora (#343)
 - 2026-11-23 `c318737` fix(prefetch): prefetch de solicitacoes usa a chave e o fetcher da listagem (#341)
-- 2026-11-23 `294d385` fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

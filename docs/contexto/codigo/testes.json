@@ -1602,12 +1602,12 @@
   {
    "arquivo": "supabase/functions/_shared/logger.fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 270,
+   "linhas": 328,
    "testa": [
     "supabase/functions/_shared/fuzzSeed.ts",
     "supabase/functions/_shared/logger.ts"
    ],
-   "casos": 10
+   "casos": 12
   },
   {
    "arquivo": "supabase/functions/_shared/logLevel.test.ts",

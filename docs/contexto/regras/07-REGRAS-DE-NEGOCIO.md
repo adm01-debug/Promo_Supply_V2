@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fb36e1017a` · branch `main` · 2026-11-24 02:00 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d6a5f1880f` · branch `main` · 2026-11-24 02:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1767,6 +1767,7 @@ _nenhum item encontrado_
 | `MAX_USER_AGENT_LENGTH` | `512` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_LOG_MESSAGE_LEN` | `45000` | `supabase/functions/_shared/logger.ts` |
 | `MAX_ERR_MESSAGE_LEN` | `500` | `supabase/functions/_shared/logger.ts` |
+| `MAX_SANITIZE_DEPTH` | `8` | `supabase/functions/_shared/logger.ts` |
 | `ENC_LABEL` | `"enc"` | `supabase/functions/_shared/punchout_crypto.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/punchout_crypto.ts` |
 | `KDF_ALGO` | `"aesgcm"` | `supabase/functions/_shared/punchout_crypto.ts` |

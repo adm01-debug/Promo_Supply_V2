@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
+  "commit": "d6a5f1880fd175a79e12852634b1d1ade5d29e1c",
   "branch": "main",
-  "data_commit": "2026-11-23T23:00:12-03:00",
+  "data_commit": "2026-11-23T23:17:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d6a5f18",
+    "data": "2026-11-23",
+    "assunto": "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)"
+   },
    {
     "sha": "fb36e10",
     "data": "2026-11-23",
@@ -126,14 +131,9 @@
     "sha": "b48d644",
     "data": "2026-11-23",
     "assunto": "fix(auth): distingue sem permissao de sem dados nas rotas e na auditoria (#336)"
-   },
-   {
-    "sha": "a8582d4",
-    "data": "2026-11-23",
-    "assunto": "fix(auth): preserva a rota e avisa quando a sessao expira (#329)"
    }
   ],
-  "arquivos_mudados_7d": 368,
+  "arquivos_mudados_7d": 370,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 68
+    "mudancas": 70
    },
    {
     "pasta": "src/components/ui",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 30
+    "mudancas": 29
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -180,11 +180,11 @@
     "mudancas": 19
    },
    {
-    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 17
+    "pasta": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 18
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
+    "pasta": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 17
    },
    {
@@ -202,11 +202,11 @@
     "mudancas": 44
    },
    {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 17
+    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "mudancas": 18
    },
    {
-    "arquivo": "docs/qa/05-PROGRESSO.md",
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 17
    },
    {
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 11
+    "mudancas": 10
    },
    {
     "arquivo": "bun.lock",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1346,
   "arquivos_codigo": 843,
-  "linhas_codigo": 174283,
+  "linhas_codigo": 174364,
   "rotas": 55,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 113,
-   "linhas": 18753
+   "linhas": 18834
   },
   "tailwind.config.ts": {
    "arquivos": 1,

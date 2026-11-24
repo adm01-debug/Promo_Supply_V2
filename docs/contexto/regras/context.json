@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
+  "sha": "d6a5f1880fd175a79e12852634b1d1ade5d29e1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 02:00 UTC",
+  "generated_at": "2026-11-24 02:17 UTC",
   "files_total": 1347,
   "code_files": 1176,
-  "code_lines": 201467,
+  "code_lines": 201548,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6e7c9d632084cd69",
+ "facts_hash": "e23ff33c05be7164",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36024,7 +36024,7 @@
   {
    "module": "supabase/functions",
    "files": 113,
-   "lines": 18753,
+   "lines": 18834,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -50400,6 +50400,11 @@
     "file": "supabase/functions/_shared/logger.ts",
     "name": "MAX_ERR_MESSAGE_LEN",
     "value": "500"
+   },
+   {
+    "file": "supabase/functions/_shared/logger.ts",
+    "name": "MAX_SANITIZE_DEPTH",
+    "value": "8"
    },
    {
     "file": "supabase/functions/_shared/punchout_crypto.ts",
@@ -110762,7 +110767,7 @@
   },
   "supabase/functions/_shared/logger.fuzz.test.ts": {
    "path": "supabase/functions/_shared/logger.fuzz.test.ts",
-   "lines": 270,
+   "lines": 328,
    "is_test": true,
    "errors": [
     "falha reprodutível: seed=${rng.seed} iter=${i} lvl=${lvl}: ${err}"
@@ -110783,7 +110788,7 @@
   },
   "supabase/functions/_shared/logger.ts": {
    "path": "supabase/functions/_shared/logger.ts",
-   "lines": 119,
+   "lines": 142,
    "exports": [
     "type LogLevel",
     "interface LogEntry",
@@ -110813,6 +110818,10 @@
     {
      "name": "MAX_ERR_MESSAGE_LEN",
      "value": "500"
+    },
+    {
+     "name": "MAX_SANITIZE_DEPTH",
+     "value": "8"
     }
    ],
    "doc": "Centralized logging utility for Edge Functions. Enforces JSON structured logging for observability and persistence.",
@@ -117124,10 +117133,21 @@
   }
  },
  "git": {
-  "sha": "fb36e1017a9bc3f155ec5f22fa0743d2efa7071d",
+  "sha": "d6a5f1880fd175a79e12852634b1d1ade5d29e1c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "d6a5f18",
+    "date": "2026-11-23",
+    "author": "adm01-debug",
+    "subject": "fix(edge): redige chaves sensiveis no contexto aninhado do logger (#357)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/logger.fuzz.test.ts",
+     "supabase/functions/_shared/logger.ts"
+    ]
+   },
    {
     "sha": "fb36e10",
     "date": "2026-11-23",
@@ -117483,22 +117503,12 @@
     "files": [
      "src/features/layout/components/CommandPalette.tsx"
     ]
-   },
-   {
-    "sha": "013232a",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(xbz): datas do XBZ deixam de depender do fuso de quem executa (#332)",
-    "files": [
-     "supabase/functions/_shared/xbz_client.ts",
-     "supabase/functions/_shared/xbz_date_tz.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    15
+    16
    ],
    [
     "supabase/functions/punchout-setup/index.ts",
@@ -117561,19 +117571,19 @@
     2
    ],
    [
+    "supabase/functions/_shared/logger.fuzz.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/logger.ts",
+    1
+   ],
+   [
     "supabase/functions/punchout-setup/seguranca.test.ts",
     1
    ],
    [
     "src/features/auth/__tests__/useAuth.test.tsx",
-    1
-   ],
-   [
-    "src/pages/auth/__tests__/Auth.destino.test.tsx",
-    1
-   ],
-   [
-    "src/pages/portal-fornecedor/PortalFornecedor.tsx",
     1
    ]
   ]
