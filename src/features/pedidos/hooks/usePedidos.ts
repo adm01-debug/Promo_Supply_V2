@@ -8,6 +8,11 @@ import { auditHelpers } from '@/services/auditService';
 import { escapeIlike } from '@/lib/supabaseQuery';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
+import {
+  STATUS_PEDIDO_EXCLUIVEL,
+  MOTIVO_EXCLUSAO_BLOQUEADA,
+  mensagemExclusaoParcial,
+} from '@/features/pedidos/exclusaoPedido';
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   fornecedor?: {
@@ -264,10 +269,24 @@ export function usePedidos(filters?: PedidoFilters) {
   // Bulk delete
   const bulkDelete = useCallback(async (ids: string[]) => {
     try {
-      const { error } = await supabase.from('pedidos').delete().in('id', ids);
+      const { data, error } = await supabase
+        .from('pedidos')
+        .delete()
+        .in('id', ids)
+        .in('status', [...STATUS_PEDIDO_EXCLUIVEL])
+        .select('id');
       if (error) throw error;
-      toast.success(`${ids.length} pedido(s) excluído(s)!`);
-      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+      const excluidos = data?.length ?? 0;
+      if (excluidos > 0) queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+      if (excluidos === 0) {
+        toast.error(MOTIVO_EXCLUSAO_BLOQUEADA);
+        return false;
+      }
+      if (excluidos < ids.length) {
+        toast.warning(mensagemExclusaoParcial(excluidos, ids.length));
+        return false;
+      }
+      toast.success(`${excluidos} pedido(s) excluído(s)!`);
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -280,10 +299,20 @@ export function usePedidos(filters?: PedidoFilters) {
   const deletePedido = useCallback(async (id: string) => {
     try {
       logger.info('Excluindo pedido', { id });
-      const { error } = await supabase.from('pedidos').delete().eq('id', id);
+      const { data, error } = await supabase
+        .from('pedidos')
+        .delete()
+        .eq('id', id)
+        .in('status', [...STATUS_PEDIDO_EXCLUIVEL])
+        .select('id');
       if (error) {
         logger.error('Erro ao excluir pedido no banco', { error, id });
         throw error;
+      }
+      if (!data?.length) {
+        logger.warn('Exclusao de pedido bloqueada pelo status', { id });
+        toast.error(MOTIVO_EXCLUSAO_BLOQUEADA);
+        return false;
       }
       logger.info('Pedido excluído com sucesso', { id });
       toast.success('Pedido excluído!');
