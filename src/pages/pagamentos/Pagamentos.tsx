@@ -247,7 +247,7 @@ const Pagamentos = () => {
                             </span>
                           </TableCell>
                           <TableCell className="pr-4">
-                             <EliteButton variant="ghost" size="icon" className="h-10 w-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                             <EliteButton variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handlePagar(p); }} aria-label={`Abrir pagamento ${p.numero}`} className="h-10 w-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity">
                                <MoreHorizontal className="w-4 h-4" />
                              </EliteButton>
                           </TableCell>
