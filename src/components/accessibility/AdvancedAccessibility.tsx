@@ -110,14 +110,175 @@ AccessibilityProvider.displayName = 'AccessibilityProvider';
 // Accessibility Panel
 // ============================================
 
-export const AccessibilityPanel: React.FC = () => {
+export const AccessibilityPanelContent: React.FC = () => {
   const { settings, updateSettings, resetSettings, announceToScreenReader } = useAccessibility();
-  const [open, setOpen] = useState(false);
 
   const handleChange = (key: keyof AccessibilitySettings, value: string | number | boolean) => {
     updateSettings({ [key]: value });
     announceToScreenReader(`${key} alterado para ${value}`);
   };
+
+  return (
+    <div className="space-y-6 py-6">
+      {/* Font Size */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium flex items-center gap-2">
+            <Type className="w-4 h-4" />
+            Tamanho do texto
+          </label>
+          <span className="text-sm text-muted-foreground">{settings.fontSize}%</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => handleChange('fontSize', Math.max(80, settings.fontSize - 10))}
+          >
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+          <Slider
+            value={[settings.fontSize]}
+            onValueChange={([v]) => handleChange('fontSize', v)}
+            min={80}
+            max={150}
+            step={10}
+            className="flex-1"
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => handleChange('fontSize', Math.min(150, settings.fontSize + 10))}
+          >
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Line Spacing */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium">Espaçamento entre linhas</label>
+          <span className="text-sm text-muted-foreground">{settings.lineSpacing}</span>
+        </div>
+        <Slider
+          value={[settings.lineSpacing]}
+          onValueChange={([v]) => handleChange('lineSpacing', v)}
+          min={1}
+          max={2.5}
+          step={0.1}
+        />
+      </div>
+
+      {/* Letter Spacing */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium">Espaçamento entre letras</label>
+          <span className="text-sm text-muted-foreground">{settings.letterSpacing}em</span>
+        </div>
+        <Slider
+          value={[settings.letterSpacing]}
+          onValueChange={([v]) => handleChange('letterSpacing', v)}
+          min={0}
+          max={0.2}
+          step={0.02}
+        />
+      </div>
+
+      {/* Toggles */}
+      <div className="space-y-4">
+        <ToggleSetting
+          icon={<Contrast className="w-4 h-4" />}
+          label="Alto contraste"
+          description="Aumenta o contraste das cores"
+          checked={settings.highContrast}
+          onChange={(v) => handleChange('highContrast', v)}
+        />
+
+        <ToggleSetting
+          icon={<EyeOff className="w-4 h-4" />}
+          label="Reduzir movimento"
+          description="Desativa animações"
+          checked={settings.reducedMotion}
+          onChange={(v) => handleChange('reducedMotion', v)}
+        />
+
+        <ToggleSetting
+          icon={<MousePointer2 className="w-4 h-4" />}
+          label="Ponteiro grande"
+          description="Aumenta o tamanho do cursor"
+          checked={settings.largePointer}
+          onChange={(v) => handleChange('largePointer', v)}
+        />
+
+        <ToggleSetting
+          icon={<Keyboard className="w-4 h-4" />}
+          label="Destaque de foco"
+          description="Destaca elemento focado"
+          checked={settings.focusHighlight}
+          onChange={(v) => handleChange('focusHighlight', v)}
+        />
+
+        <ToggleSetting
+          icon={<Type className="w-4 h-4" />}
+          label="Fonte para dislexia"
+          description="Usa fonte OpenDyslexic"
+          checked={settings.dyslexiaFont}
+          onChange={(v) => handleChange('dyslexiaFont', v)}
+        />
+
+        <ToggleSetting
+          icon={<Volume2 className="w-4 h-4" />}
+          label="Leitor de tela"
+          description="Otimiza para leitores de tela"
+          checked={settings.screenReaderMode}
+          onChange={(v) => handleChange('screenReaderMode', v)}
+        />
+      </div>
+
+      {/* Color Blind Mode */}
+      <div className="space-y-3">
+        <label className="text-sm font-medium">Daltonismo</label>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { value: 'none', label: 'Nenhum' },
+            { value: 'protanopia', label: 'Protanopia' },
+            { value: 'deuteranopia', label: 'Deuteranopia' },
+            { value: 'tritanopia', label: 'Tritanopia' }
+          ].map((option) => (
+            <Button
+              key={option.value}
+              variant={settings.colorBlindMode === option.value ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleChange('colorBlindMode', option.value)}
+              className="w-full"
+            >
+              {settings.colorBlindMode === option.value && (
+                <Check className="w-3 h-3 mr-1" />
+              )}
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset button */}
+      <Button
+        variant="outline"
+        className="w-full gap-2"
+        onClick={resetSettings}
+      >
+        <RotateCcw className="w-4 h-4" />
+        Restaurar padrões
+      </Button>
+    </div>
+  );
+};
+
+export const AccessibilityPanel: React.FC = () => {
+  const [open, setOpen] = useState(false);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -138,162 +299,7 @@ export const AccessibilityPanel: React.FC = () => {
             Acessibilidade
           </SheetTitle>
         </SheetHeader>
-
-        <div className="space-y-6 py-6">
-          {/* Font Size */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <Type className="w-4 h-4" />
-                Tamanho do texto
-              </label>
-              <span className="text-sm text-muted-foreground">{settings.fontSize}%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleChange('fontSize', Math.max(80, settings.fontSize - 10))}
-              >
-                <ZoomOut className="w-4 h-4" />
-              </Button>
-              <Slider
-                value={[settings.fontSize]}
-                onValueChange={([v]) => handleChange('fontSize', v)}
-                min={80}
-                max={150}
-                step={10}
-                className="flex-1"
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleChange('fontSize', Math.min(150, settings.fontSize + 10))}
-              >
-                <ZoomIn className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Line Spacing */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Espaçamento entre linhas</label>
-              <span className="text-sm text-muted-foreground">{settings.lineSpacing}</span>
-            </div>
-            <Slider
-              value={[settings.lineSpacing]}
-              onValueChange={([v]) => handleChange('lineSpacing', v)}
-              min={1}
-              max={2.5}
-              step={0.1}
-            />
-          </div>
-
-          {/* Letter Spacing */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Espaçamento entre letras</label>
-              <span className="text-sm text-muted-foreground">{settings.letterSpacing}em</span>
-            </div>
-            <Slider
-              value={[settings.letterSpacing]}
-              onValueChange={([v]) => handleChange('letterSpacing', v)}
-              min={0}
-              max={0.2}
-              step={0.02}
-            />
-          </div>
-
-          {/* Toggles */}
-          <div className="space-y-4">
-            <ToggleSetting
-              icon={<Contrast className="w-4 h-4" />}
-              label="Alto contraste"
-              description="Aumenta o contraste das cores"
-              checked={settings.highContrast}
-              onChange={(v) => handleChange('highContrast', v)}
-            />
-
-            <ToggleSetting
-              icon={<EyeOff className="w-4 h-4" />}
-              label="Reduzir movimento"
-              description="Desativa animações"
-              checked={settings.reducedMotion}
-              onChange={(v) => handleChange('reducedMotion', v)}
-            />
-
-            <ToggleSetting
-              icon={<MousePointer2 className="w-4 h-4" />}
-              label="Ponteiro grande"
-              description="Aumenta o tamanho do cursor"
-              checked={settings.largePointer}
-              onChange={(v) => handleChange('largePointer', v)}
-            />
-
-            <ToggleSetting
-              icon={<Keyboard className="w-4 h-4" />}
-              label="Destaque de foco"
-              description="Destaca elemento focado"
-              checked={settings.focusHighlight}
-              onChange={(v) => handleChange('focusHighlight', v)}
-            />
-
-            <ToggleSetting
-              icon={<Type className="w-4 h-4" />}
-              label="Fonte para dislexia"
-              description="Usa fonte OpenDyslexic"
-              checked={settings.dyslexiaFont}
-              onChange={(v) => handleChange('dyslexiaFont', v)}
-            />
-
-            <ToggleSetting
-              icon={<Volume2 className="w-4 h-4" />}
-              label="Leitor de tela"
-              description="Otimiza para leitores de tela"
-              checked={settings.screenReaderMode}
-              onChange={(v) => handleChange('screenReaderMode', v)}
-            />
-          </div>
-
-          {/* Color Blind Mode */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium">Daltonismo</label>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { value: 'none', label: 'Nenhum' },
-                { value: 'protanopia', label: 'Protanopia' },
-                { value: 'deuteranopia', label: 'Deuteranopia' },
-                { value: 'tritanopia', label: 'Tritanopia' }
-              ].map((option) => (
-                <Button
-                  key={option.value}
-                  variant={settings.colorBlindMode === option.value ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => handleChange('colorBlindMode', option.value)}
-                  className="w-full"
-                >
-                  {settings.colorBlindMode === option.value && (
-                    <Check className="w-3 h-3 mr-1" />
-                  )}
-                  {option.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Reset button */}
-          <Button
-            variant="outline"
-            className="w-full gap-2"
-            onClick={resetSettings}
-          >
-            <RotateCcw className="w-4 h-4" />
-            Restaurar padrões
-          </Button>
-        </div>
+        <AccessibilityPanelContent />
       </SheetContent>
     </Sheet>
   );

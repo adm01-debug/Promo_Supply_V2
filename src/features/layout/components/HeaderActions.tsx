@@ -7,7 +7,7 @@ import { SLASettingsPanel } from "./SLASettingsPanel";
 import { UserMenu } from "./UserMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
+import { AccessibilityPanelContent } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
 import { TenantSwitcher } from "@/components/admin/TenantSwitcher";
 import { EmpresaSelector } from "@/features/empresas";
@@ -77,8 +77,8 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             <p>Acessibilidade</p>
           </TooltipContent>
         </Tooltip>
-        <PopoverContent className="w-96 p-0" align="end">
-          <AccessibilityPanel />
+        <PopoverContent className="w-96 p-4 max-h-[70vh] overflow-y-auto" align="end">
+          <AccessibilityPanelContent />
         </PopoverContent>
       </Popover>
 
