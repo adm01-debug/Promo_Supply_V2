@@ -136,12 +136,12 @@ jobs:
           # isso ("exige conexao como postgres"), ou quando falta privilegio de
           # schema/objeto, o MESMO arquivo e' reaplicado pelo Management API -
           # que roda como postgres. O psql nao e' reexecutado depois.
-          # "must be owner of table" entra na lista: ALTER TABLE em tabela que o
+          # "must be owner of table"/"... of function" entram na lista: ALTER/CREATE OR REPLACE
           # ci_snapshot nao possui e' negado por ownership, nao por GRANT, e o
           # Postgres devolve essa mensagem em vez de "permission denied". Sem
           # este padrao a migration abortava sem cair no fallback (caso da
           # 20261121160000_pim_refs_compras, que ficou inerte em producao).
-          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser|must be owner of (table|relation|sequence|view|database) |sem permissao para conceder' "${RUNNER_TEMP}/psql.err"; then
+          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser|must be owner of (table|relation|sequence|view|database|function|routine|type|trigger) |sem permissao para conceder' "${RUNNER_TEMP}/psql.err"; then
             cat "${RUNNER_TEMP}/psql.err"
             echo "::error::psql falhou por motivo que nao e' privilegio. Nada aplicado."
             exit "${codigo}"
