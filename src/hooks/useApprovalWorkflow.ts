@@ -34,6 +34,13 @@ let latestCheckEscalations: (() => Promise<void>) | null = null;
  *   - useApprovalHistory  → fetchHistory / fetchAllHistory
  * Workflow state (pending workflows/steps) and step actions remain here.
  */
+// O erro do PostgREST e um objeto simples ({ message, details, hint }), nao um
+// Error: `String(error)` imprimiria "[object Object]" na tela (QA 251).
+const mensagemDeErro = (error: unknown): string =>
+  error instanceof Error
+    ? error.message
+    : ((error as { message?: string } | null)?.message ?? String(error));
+
 export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
   const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
@@ -44,6 +51,22 @@ export const useApprovalWorkflow = () => {
   const [allWorkflows, setAllWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [allSteps, setAllSteps] = useState<ApprovalStep[]>([]);
   const [loading, setLoading] = useState(false);
+  // Falha de leitura nao pode virar "nada pendente" (QA 251): os fetches abaixo
+  // engoliam o erro no logger, entao a tela de aprovacoes anunciava "todas as
+  // solicitacoes foram processadas" quando a consulta tinha falhado.
+  const [fetching, setFetching] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const fetchesEmCursoRef = useRef(0);
+
+  const iniciarFetch = useCallback(() => {
+    fetchesEmCursoRef.current += 1;
+    setFetching(true);
+  }, []);
+
+  const encerrarFetch = useCallback(() => {
+    fetchesEmCursoRef.current = Math.max(0, fetchesEmCursoRef.current - 1);
+    if (fetchesEmCursoRef.current === 0) setFetching(false);
+  }, []);
 
   const rulesApi = useApprovalRules();
   const historyApi = useApprovalHistory();
@@ -60,6 +83,7 @@ export const useApprovalWorkflow = () => {
 
   const fetchPendingWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
+    iniciarFetch();
     try {
       const { data, error } = await supabase
         .from('approval_workflows')
@@ -69,11 +93,18 @@ export const useApprovalWorkflow = () => {
         .order('created_at', { ascending: false });
       if (error) throw error;
       setWorkflows((data ?? []) as unknown as ApprovalWorkflowWithRelations[]);
-    } catch (error) { logger.error('Error fetching workflows', { error }); }
-  }, [user, organizationId]);
+      setFetchError(null);
+    } catch (error) {
+      logger.error('Error fetching workflows', { error });
+      setFetchError(mensagemDeErro(error));
+    } finally {
+      encerrarFetch();
+    }
+  }, [user, organizationId, iniciarFetch, encerrarFetch]);
 
   const fetchPendingSteps = useCallback(async () => {
     if (!user || !organizationId) return;
+    iniciarFetch();
     try {
       const { data, error } = await supabase.from('approval_steps').select('*')
         .eq('status', 'pending')
@@ -82,8 +113,14 @@ export const useApprovalWorkflow = () => {
         .order('prazo_limite', { ascending: true });
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
-    } catch (error) { logger.error('Error fetching pending steps', { error }); }
-  }, [user, organizationId]);
+      setFetchError(null);
+    } catch (error) {
+      logger.error('Error fetching pending steps', { error });
+      setFetchError(mensagemDeErro(error));
+    } finally {
+      encerrarFetch();
+    }
+  }, [user, organizationId, iniciarFetch, encerrarFetch]);
 
   const fetchAllWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
@@ -432,7 +469,8 @@ export const useApprovalWorkflow = () => {
     allWorkflows,
     allSteps,
     allHistory: historyApi.allHistory,
-    loading: loading || rulesApi.loading,
+    loading: loading || rulesApi.loading || fetching,
+    error: fetchError,
     // Fetches
     fetchRules: rulesApi.fetchRules,
     fetchDelegations: rulesApi.fetchDelegations,
