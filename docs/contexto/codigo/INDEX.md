@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `eeaf28fa08f1b634421b740695378129f528d764` (2026-11-24T06:55:44-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e14e3a529a26b8e4df1aef6eafbf5705b9159199` (2026-11-24T06:58:09-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (819), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (15), Shell (7), CSS (6)
+- linguagens: TypeScript (819), SQL (331), Markdown (100), JavaScript (70), JSON (24), YAML (16), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1395 |
+| arquivos_total | 1396 |
 | arquivos_codigo | 892 |
 | linhas_codigo | 181256 |
 | rotas | 56 |
@@ -49,7 +49,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | migrations | 329 |
 | cron_jobs | 74 |
 | testes | 256 |
-| workflows | 13 |
+| workflows | 14 |
 | scripts | 50 |
 | docs_md | 100 |
 
@@ -341,7 +341,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/qa/05-PROGRESSO.md (56)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (17)
-- docs/ci/README.md (10)
+- docs/ci/README.md (11)
 - docs/pendencias/_ordem.md (8)
 - docs/prod-readiness.md (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
@@ -366,6 +366,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `main.yml` — Freight Quest CI/CD (pull_request, push)
 - `notifica-falha-main.yml` — Notifica falha na main (workflow_run)
 - `paridade-banco.yml` — Paridade migrations x banco (semanal) (push, schedule, workflow_dispatch; cron 0 9 * * 1)
+- `provisionar-secret-design-sync.yml` — Provisionar secret do webhook Promo Design (workflow_dispatch)
 - `provisionar-vapid.yml` — Provisionar VAPID na edge de push (workflow_dispatch)
 - `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7 * * * *)
 
@@ -420,6 +421,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-24 `e14e3a5` chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)
 - 2026-11-24 `eeaf28f` fix(integridade): guarda exclusao de solicitacao e pedido com historico (#404)
 - 2026-11-24 `67eee5c` fix(integridade): barra exclusao que apagava credito de fornecedor (#403)
 - 2026-11-24 `d8d2b56` fix(documentos): concilia NF-e por fornecedor, nao so por valor (#402)
@@ -434,7 +436,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `b58ed9d` fix: cotacao manual grava condicao, validade e observacoes (#388)
 - 2026-11-24 `4e72f55` fix: escolha de alcada passa a ter fonte unica (RPC find_approval_rule) (#387)
 - 2026-11-24 `72256cb` fix(pedidos): Kanban so entrega via Recebimento (#383)
-- 2026-11-24 `d0c644d` ﻿fix(solicitacoes): nao cria workflow para solicitacao auto aprovada (#385)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

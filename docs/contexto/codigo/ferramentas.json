@@ -8,7 +8,7 @@
    "Markdown (100)",
    "JavaScript (70)",
    "JSON (24)",
-   "YAML (15)",
+   "YAML (16)",
    "Shell (7)",
    "CSS (6)"
   ],
@@ -495,6 +495,29 @@
    ]
   },
   {
+   "arquivo": ".github/workflows/provisionar-secret-design-sync.yml",
+   "nome": "Provisionar secret do webhook Promo Design",
+   "gatilhos": [
+    "workflow_dispatch"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "provisionar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [],
+   "npm_scripts": [],
+   "secrets": [
+    "PROMO_DESIGN_WEBHOOK_SECRET",
+    "SUPABASE_ACCESS_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID"
+   ],
+   "actions": []
+  },
+  {
    "arquivo": ".github/workflows/provisionar-vapid.yml",
    "nome": "Provisionar VAPID na edge de push",
    "gatilhos": [
@@ -712,6 +735,7 @@
   "secrets_em_workflows": [
    "E2E_TEST_EMAIL",
    "E2E_TEST_PASSWORD",
+   "PROMO_DESIGN_WEBHOOK_SECRET",
    "SUPABASE_ACCESS_TOKEN",
    "SUPABASE_DB_URL",
    "SUPABASE_SERVICE_ROLE_KEY",

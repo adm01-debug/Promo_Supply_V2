@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "eeaf28fa08f1b634421b740695378129f528d764",
+  "sha": "e14e3a529a26b8e4df1aef6eafbf5705b9159199",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 09:56 UTC",
-  "files_total": 1396,
+  "generated_at": "2026-11-24 09:58 UTC",
+  "files_total": 1397,
   "code_files": 1225,
   "code_lines": 208440,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "15953ae51df726c3",
+ "facts_hash": "af7601ec00c1f4d0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -241,6 +241,13 @@
     "triggers": [
      "push",
      "schedule",
+     "workflow_dispatch"
+    ]
+   },
+   {
+    "file": ".github/workflows/provisionar-secret-design-sync.yml",
+    "name": "Provisionar secret do webhook Promo Design",
+    "triggers": [
      "workflow_dispatch"
     ]
    },
@@ -119937,10 +119944,20 @@
   }
  },
  "git": {
-  "sha": "eeaf28fa08f1b634421b740695378129f528d764",
+  "sha": "e14e3a529a26b8e4df1aef6eafbf5705b9159199",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e14e3a5",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "chore: provisionar PROMO_DESIGN_WEBHOOK_SECRET (receive-os-sync 503) (#352)",
+    "files": [
+     ".github/workflows/provisionar-secret-design-sync.yml",
+     "docs/ci/README.md"
+    ]
+   },
    {
     "sha": "eeaf28f",
     "date": "2026-11-24",
@@ -120296,24 +120313,12 @@
      "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
      "src/pages/recebimento/recebimentoHelpers.ts"
     ]
-   },
-   {
-    "sha": "75fbc3e",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-     "supabase/functions/_shared/external-bridge-allowlist.ts",
-     "supabase/functions/external-db-bridge/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    29
+    28
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
@@ -120352,6 +120357,14 @@
     2
    ],
    [
+    ".github/workflows/provisionar-secret-design-sync.yml",
+    1
+   ],
+   [
+    "docs/ci/README.md",
+    1
+   ],
+   [
     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
     1
    ],
@@ -120381,14 +120394,6 @@
    ],
    [
     "src/pages/documentos/conciliacaoFiscal.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
     1
    ]
   ]
