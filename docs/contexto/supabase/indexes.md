@@ -471,6 +471,7 @@ Uso e tamanho em `stats.md`.
 | public.solicitacoes | idx_solicitacoes_cost_center | btree | cost_center_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_dashboard | btree | status, created_at | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_data | btree | created_at | não | sim |  |
+| public.solicitacoes | idx_solicitacoes_external_ref | btree | external_ref | sim | sim | `(external_ref IS NOT NULL)` |
 | public.solicitacoes | idx_solicitacoes_fornecedor_id | btree | fornecedor_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_org_status_created | btree | organization_id, status, created_at | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_organization_id | btree | organization_id | não | sim |  |

@@ -47,6 +47,7 @@
 | 29 | `produto_id` | `uuid` | sim |  |  |  |
 | 30 | `pim_product_id` | `uuid` | sim |  |  |  |
 | 31 | `pim_variant_id` | `uuid` | sim |  |  |  |
+| 32 | `external_ref` | `text` | sim |  |  | Chave de idempotencia da origem externa (ex.: service_orders.id do Promo Design). |
 
 
 ## Constraints
@@ -89,6 +90,7 @@
 | idx_solicitacoes_cost_center | btree | cost_center_id | não | sim |  | `CREATE INDEX idx_solicitacoes_cost_center ON public.solicitacoes USING btree (cost_center_id)` |
 | idx_solicitacoes_dashboard | btree | status, created_at | não | sim |  | `CREATE INDEX idx_solicitacoes_dashboard ON public.solicitacoes USING btree (status, created_at)` |
 | idx_solicitacoes_data | btree | created_at | não | sim |  | `CREATE INDEX idx_solicitacoes_data ON public.solicitacoes USING btree (created_at DESC)` |
+| idx_solicitacoes_external_ref | btree | external_ref | sim | sim | `(external_ref IS NOT NULL)` | `CREATE UNIQUE INDEX idx_solicitacoes_external_ref ON public.solicitacoes USING btree (external_ref) WHERE (external_ref IS NOT NULL)` |
 | idx_solicitacoes_fornecedor_id | btree | fornecedor_id | não | sim |  | `CREATE INDEX idx_solicitacoes_fornecedor_id ON public.solicitacoes USING btree (fornecedor_id)` |
 | idx_solicitacoes_org_status_created | btree | organization_id, status, created_at | não | sim |  | `CREATE INDEX idx_solicitacoes_org_status_created ON public.solicitacoes USING btree (organization_id, status, created_at DESC)` |
 | idx_solicitacoes_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_solicitacoes_organization_id ON public.solicitacoes USING btree (organization_id)` |

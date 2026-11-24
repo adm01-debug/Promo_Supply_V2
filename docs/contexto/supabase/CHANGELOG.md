@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-24 00:29 UTC
+
+- **colunas** adicionado (1): `public.solicitacoes.external_ref`
+- **functions** alterado (1): `public.validate_pagamento_status_transition()`
+- **indexes** adicionado (1): `public.idx_solicitacoes_external_ref`
+
 ## 2026-11-23 22:12 UTC
 
 - **functions** alterado (1): `public.generate_sequential_number(prefix text, table_name text)`

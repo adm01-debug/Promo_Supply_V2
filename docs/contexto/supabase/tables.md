@@ -103,7 +103,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.secret_rotation_schedule](tables/public/secret_rotation_schedule.md) | table | sim | 1 | 12 | não |  |
 | [public.security_definer_baseline](tables/public/security_definer_baseline.md) | table | sim | 1 | 8 | não |  |
 | [public.security_logs](tables/public/security_logs.md) | table | sim | 2 | 9 | não |  |
-| [public.solicitacoes](tables/public/solicitacoes.md) | table | sim | 9 | 31 | sim |  |
+| [public.solicitacoes](tables/public/solicitacoes.md) | table | sim | 9 | 32 | sim |  |
 | [public.sourcing_awards](tables/public/sourcing_awards.md) | table | sim | 1 | 13 | não |  |
 | [public.sourcing_event_criteria](tables/public/sourcing_event_criteria.md) | table | sim | 1 | 8 | não |  |
 | [public.sourcing_event_lots](tables/public/sourcing_event_lots.md) | table | sim | 1 | 12 | não |  |

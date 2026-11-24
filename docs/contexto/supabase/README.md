@@ -20,12 +20,12 @@ Gerado automaticamente a cada hora pelo workflow `contexto` (job `banco`). **Nã
 | categoria | quantidade |
 |---|---|
 | tabelas | 160 |
-| colunas | 1979 |
+| colunas | 1980 |
 | views | 3 |
 | functions | 187 |
 | triggers | 166 |
 | policies (RLS) | 352 |
-| índices | 704 |
+| índices | 705 |
 | tipos/enums | 18 |
 | extensões | 8 |
 | cron jobs | 27 |

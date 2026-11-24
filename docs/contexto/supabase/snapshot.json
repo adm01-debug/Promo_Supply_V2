@@ -16399,6 +16399,19 @@
         "type": "uuid"
       },
       {
+        "comment": "Chave de idempotencia da origem externa (ex.: service_orders.id do Promo Design).",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "external_ref",
+        "nullable": true,
+        "position": 32,
+        "schema": "public",
+        "table": "solicitacoes",
+        "type": "text"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -44423,6 +44436,10 @@
         "callers": {
           "code": [
             {
+              "file": "src/lib/creditoFornecedor.ts",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20260315150226_a87f820e-b073-45d2-8637-5fbb0dc5fbb9.sql",
               "hits": 1
             },
@@ -44431,7 +44448,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -54708,6 +54725,20 @@
         "method": "btree",
         "name": "idx_solicitacoes_data",
         "predicate": null,
+        "schema": "public",
+        "table": "solicitacoes"
+      },
+      {
+        "columns": [
+          "external_ref"
+        ],
+        "definition": "CREATE UNIQUE INDEX idx_solicitacoes_external_ref ON public.solicitacoes USING btree (external_ref) WHERE (external_ref IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_solicitacoes_external_ref",
+        "predicate": "(external_ref IS NOT NULL)",
         "schema": "public",
         "table": "solicitacoes"
       },
