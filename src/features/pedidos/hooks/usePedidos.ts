@@ -12,8 +12,28 @@ import {
   STATUS_PEDIDO_EXCLUIVEL,
   MOTIVO_EXCLUSAO_BLOQUEADA,
   mensagemExclusaoParcial,
+  MOTIVO_EXCLUSAO_COM_CHECKLIST,
 } from '@/features/pedidos/exclusaoPedido';
 import { transicaoDeStatusPermitida } from '../statusTransitions';
+
+/**
+ * receiving_checklists.pedido_id esta em ON DELETE CASCADE: excluir o pedido
+ * apagava a conferencia de recebimento (quantidade e divergencia recebidas).
+ * O filtro por status ja barra pedido recebido; esta guarda cobre o caso de
+ * checklist criado antes da transicao de status.
+ */
+async function pedidosComChecklist(ids: string[]): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('receiving_checklists')
+    .select('pedido_id')
+    .in('pedido_id', ids);
+  if (error) throw error;
+  return new Set(
+    ((data ?? []) as Array<{ pedido_id: string | null }>)
+      .map((linha) => linha.pedido_id)
+      .filter((id): id is string => Boolean(id)),
+  );
+}
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   fornecedor?: {
@@ -270,6 +290,17 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Bulk delete
   const bulkDelete = useCallback(async (ids: string[]) => {
+    let comChecklist: Set<string>;
+    try {
+      comChecklist = await pedidosComChecklist(ids);
+    } catch {
+      toast.error('Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada.');
+      return false;
+    }
+    if (comChecklist.size > 0) {
+      toast.error(MOTIVO_EXCLUSAO_COM_CHECKLIST);
+      return false;
+    }
     try {
       const { data, error } = await supabase
         .from('pedidos')
@@ -299,6 +330,18 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Delete pedido
   const deletePedido = useCallback(async (id: string) => {
+    let comChecklist: Set<string>;
+    try {
+      comChecklist = await pedidosComChecklist([id]);
+    } catch {
+      toast.error('Não foi possível conferir o recebimento do pedido. Exclusão cancelada.');
+      return false;
+    }
+    if (comChecklist.has(id)) {
+      logger.warn('Exclusao de pedido bloqueada por checklist de recebimento', { id });
+      toast.error(MOTIVO_EXCLUSAO_COM_CHECKLIST);
+      return false;
+    }
     try {
       logger.info('Excluindo pedido', { id });
       const { data, error } = await supabase

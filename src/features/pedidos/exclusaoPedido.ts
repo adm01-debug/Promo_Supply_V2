@@ -11,6 +11,9 @@ export const STATUS_PEDIDO_EXCLUIVEL: readonly string[] = ['pendente', 'cancelad
 export const MOTIVO_EXCLUSAO_BLOQUEADA =
   'Só pedidos pendentes ou cancelados podem ser excluídos. Pedidos em andamento guardam itens recebidos, checklists e devoluções.';
 
+export const MOTIVO_EXCLUSAO_COM_CHECKLIST =
+  'Pedido com checklist de recebimento nao pode ser excluido: a conferencia do recebimento seria apagada junto.';
+
 export function statusPermiteExcluirPedido(status: string): boolean {
   return STATUS_PEDIDO_EXCLUIVEL.includes(status);
 }
