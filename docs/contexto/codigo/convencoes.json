@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(mobile): tira o chat e a barra de acoes da faixa da navegacao (#423)",
    "fix(mobile): separa os botoes flutuantes que se sobrepunham (#422)",
    "fix(mobile): da rolagem ao comparador de cotacoes e limita a altura do chat (#421)",
    "fix(a11y): rotula os campos do modal de contrato e liga a regra de rotulo no lint (#420)",
-   "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)",
-   "fix(a11y): nome acessivel nos campos de cotacao e solicitacao e vinculo dos erros (#418)"
+   "fix(a11y): nomeia os campos dos modais de aprovacao e do cadastro de fornecedor (#419)"
   ]
  },
  "pr_template": null,
