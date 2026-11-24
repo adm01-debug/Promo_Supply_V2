@@ -1,11 +1,11 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight, GitBranch, MessageSquare, Zap } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight, GitBranch, MessageSquare } from "lucide-react";
+import type { EventoAprovacao, FluxoAprovacao, StatusEtapaAprovacao } from "@/features/solicitacoes/fluxoAprovacao";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
@@ -14,12 +14,6 @@ import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "@/lib/feedbackToast";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   Popover,
   PopoverContent,
@@ -37,7 +31,20 @@ interface SolicitacaoCardProps {
   onReject?: () => void;
   onArchive?: () => void;
   onDuplicate?: () => void;
+  /** Etapas reais de aprovacao da solicitacao (`approval_steps`). */
+  fluxo?: FluxoAprovacao | null;
+  fluxoLoading?: boolean;
+  /** Historico real de decisoes (`approval_history`). */
+  historicoAprovacao?: EventoAprovacao[];
 }
+
+const APRESENTACAO_ETAPA: Record<StatusEtapaAprovacao, { rotulo: string; bolinha: string; texto: string }> = {
+  concluida: { rotulo: 'Concluida', bolinha: 'bg-emerald-500 border-emerald-500', texto: 'text-emerald-400' },
+  atual: { rotulo: 'Em analise', bolinha: 'bg-violet-500 border-violet-500 animate-pulse', texto: 'text-violet-300' },
+  rejeitada: { rotulo: 'Rejeitada', bolinha: 'bg-rose-500 border-rose-500', texto: 'text-rose-400' },
+  pulada: { rotulo: 'Pulada', bolinha: 'bg-zinc-800 border-zinc-700', texto: 'text-zinc-500' },
+  pendente: { rotulo: 'Aguardando', bolinha: 'bg-zinc-900 border-zinc-800', texto: 'text-zinc-500' },
+};
 
 const statusActions: Record<string, {
   // `param` overrides the default `id` query key. Used when the destination
@@ -87,6 +94,9 @@ export const SolicitacaoCard = ({
   onReject,
   onArchive,
   onDuplicate,
+  fluxo = null,
+  fluxoLoading = false,
+  historicoAprovacao = [],
 }: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
@@ -173,18 +183,6 @@ export const SolicitacaoCard = ({
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="font-black text-xs font-mono text-violet-400 uppercase tracking-widest">#{solicitacao.id}</span>
                 <span className="font-bold text-white text-base truncate">{solicitacao.empresa}</span>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge className="text-[9px] font-black uppercase tracking-widest py-0.5 bg-emerald-500/10 text-emerald-400 border-none">
-                        <Zap className="w-2.5 h-2.5 mr-1" /> Predicted: {new Date(new Date(solicitacao.prazoEntrega).getTime() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0a0a0f] border-white/10 text-[10px] font-bold uppercase tracking-widest">
-                      Predição Neural: 94% Confiança baseada em logística histórica.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
               </div>
               
               <div className="flex items-center gap-2">
@@ -195,29 +193,48 @@ export const SolicitacaoCard = ({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
-                    <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Fluxo de Aprovação Neural</h5>
-                    <div className="space-y-4">
-                      {[
-                        { label: 'Gerente Depto', status: 'completed', user: 'João Silva' },
-                        { label: 'Diretor Financeiro', status: 'current', user: 'Maria Santos' },
-                        { label: 'CEO Approval', status: 'pending', user: 'Roberto Costa' }
-                      ].map((step, i) => (
-                        <div key={i} className="flex gap-3 relative">
-                          {i < 2 && <div className="absolute left-2 top-5 bottom-0 w-[1px] bg-white/10" />}
-                          <div className={cn(
-                            "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 z-10",
-                            step.status === 'completed' ? "bg-emerald-500 border-emerald-500" : 
-                            step.status === 'current' ? "bg-violet-500 border-violet-500 animate-pulse" : "bg-zinc-900 border-zinc-800"
-                          )}>
-                            {step.status === 'completed' && <Check className="w-2 h-2 text-white" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black uppercase text-white tracking-widest">{step.label}</p>
-                            <p className="text-[9px] text-zinc-500 font-bold">{step.user}</p>
-                          </div>
+                    <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-1">Fluxo de Aprovação</h5>
+                    {fluxo ? (
+                      <>
+                        <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-4">
+                          Etapa {fluxo.etapaAtual} de {fluxo.totalEtapas} · {fluxo.status}
+                        </p>
+                        <div className="space-y-4">
+                          {fluxo.etapas.map((etapa, i) => {
+                            const aparencia = APRESENTACAO_ETAPA[etapa.status];
+                            return (
+                              <div key={`${fluxo.workflowId}-${etapa.ordem}`} className="flex gap-3 relative">
+                                {i < fluxo.etapas.length - 1 && <div className="absolute left-2 top-5 bottom-0 w-[1px] bg-white/10" />}
+                                <div className={cn(
+                                  "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 z-10",
+                                  aparencia.bolinha
+                                )}>
+                                  {etapa.status === 'concluida' && <Check className="w-2 h-2 text-white" />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[10px] font-black uppercase text-white tracking-widest">
+                                    Etapa {etapa.ordem} · {aparencia.rotulo}
+                                  </p>
+                                  <p className="text-[9px] text-zinc-500 font-bold truncate">{etapa.responsavel}</p>
+                                  {etapa.decididoEm && (
+                                    <p className="text-[8px] text-zinc-600 font-bold">
+                                      {new Date(etapa.decididoEm).toLocaleString('pt-BR')}
+                                    </p>
+                                  )}
+                                  {etapa.comentario && (
+                                    <p className={cn("text-[9px] font-medium mt-0.5", aparencia.texto)}>{etapa.comentario}</p>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    ) : (
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                        {fluxoLoading ? 'Carregando fluxo de aprovação...' : 'Nenhum fluxo de aprovação iniciado para esta solicitação.'}
+                      </p>
+                    )}
                   </PopoverContent>
                 </Popover>
 
@@ -281,26 +298,23 @@ export const SolicitacaoCard = ({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
-              <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Neural Context Thread</h5>
+              <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Histórico de Aprovação</h5>
               <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
-                <div className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-[9px] font-black text-white">@João Silva</span>
-                    <span className="text-[8px] text-zinc-600">há 2h</span>
-                  </div>
-                  <p className="text-[10px] text-zinc-400">Verifiquei que o estoque de Dell está baixo. @Maria Santos, aprova a urgência?</p>
-                </div>
-                <div className="p-3 bg-violet-500/10 rounded-xl border border-violet-500/20">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-[9px] font-black text-violet-300">@Maria Santos</span>
-                    <span className="text-[8px] text-zinc-600">há 15min</span>
-                  </div>
-                  <p className="text-[10px] text-zinc-300">Ok, orçamento validado. Seguir com a compra.</p>
-                </div>
-              </div>
-              <div className="mt-4 flex gap-2">
-                <Input placeholder="Adicionar nota neural..." className="h-8 text-[10px] bg-white/5 border-white/5" />
-                <Button size="icon" className="h-8 w-8 bg-violet-600"><ArrowRight className="w-3 h-3" /></Button>
+                {historicoAprovacao.length > 0 ? (
+                  historicoAprovacao.map((evento, i) => (
+                    <div key={`${evento.quando}-${i}`} className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-[9px] font-black text-white">{evento.usuario}</span>
+                        <span className="text-[8px] text-zinc-600">{new Date(evento.quando).toLocaleString('pt-BR')}</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400">{evento.rotulo}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    Nenhuma decisão de aprovação registrada para esta solicitação.
+                  </p>
+                )}
               </div>
             </PopoverContent>
           </Popover>

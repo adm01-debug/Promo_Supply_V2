@@ -29,6 +29,7 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
 import { useSolicitacoes } from "@/features/solicitacoes";
+import { useFluxosAprovacao } from "@/features/solicitacoes/hooks/useFluxosAprovacao";
 import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
@@ -131,6 +132,13 @@ const Solicitacoes = () => {
     () => posicoesDaMatriz(filteredSolicitacoes.slice(0, 15)),
     [filteredSolicitacoes],
   );
+
+  const idsVisiveis = useMemo(() => filteredSolicitacoes.map((s) => s.id), [filteredSolicitacoes]);
+  const {
+    fluxos: fluxosAprovacao,
+    historicos: historicosAprovacao,
+    loading: fluxosLoading,
+  } = useFluxosAprovacao(idsVisiveis);
 
   const stats = useMemo(() => {
     const pending = filteredSolicitacoes.filter(s => ['AGUARDANDO_COTACAO', 'EM_COTACAO'].includes(s.status)).length;
@@ -417,6 +425,9 @@ const Solicitacoes = () => {
                         selectable
                         selected={selectedIds.has(s.id)}
                         onSelectChange={(selected) => handleSelectChange(s.id, selected)}
+                        fluxo={fluxosAprovacao[s.id] ?? null}
+                        fluxoLoading={fluxosLoading}
+                        historicoAprovacao={historicosAprovacao[s.id] ?? []}
                       />
                     ))
                   ) : (
