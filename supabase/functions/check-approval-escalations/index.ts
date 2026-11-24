@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
           )
         )
       `)
-      .eq('status', 'pendente')
+      .eq('status', 'pending')
       .lt('prazo_limite', now)
       .is('decidido_em', null);
 
@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     for (const step of expiredSteps || []) {
       const workflow = step.workflow;
       
-      if (!workflow || workflow.status !== 'em_andamento') {
+      if (!workflow || workflow.status !== 'pending') {
         continue;
       }
 
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         const { error: updateWorkflowError } = await supabase
           .from('approval_workflows')
           .update({
-            status: 'escalado',
+            status: 'escalated',
             escalado_em: now,
             escalado_para: rule.escalacao_para,
             updated_at: now
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
         const { error: updateStepError } = await supabase
           .from('approval_steps')
           .update({
-            status: 'expirado'
+            status: 'skipped'
           })
           .eq('id', step.id);
 
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
             workflow_id: workflow.id,
             solicitacao_id: workflow.solicitacao_id,
             step_id: step.id,
-            acao: 'escalado_automatico',
+            acao: 'escalated',
             usuario_id: null,
             usuario_nome: 'Sistema',
             detalhes: {
@@ -183,7 +183,7 @@ Deno.serve(async (req) => {
     const { data: approachingSteps, error: approachingError } = await supabase
       .from('approval_steps')
       .select('*')
-      .eq('status', 'pendente')
+      .eq('status', 'pending')
       .gt('prazo_limite', now)
       .lt('prazo_limite', warningTime.toISOString())
       .eq('lembrete_enviado', false);
