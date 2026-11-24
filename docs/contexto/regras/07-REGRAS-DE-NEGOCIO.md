@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66b65cc18f` · branch `main` · 2026-11-24 15:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `806c4fc09e` · branch `main` · 2026-11-24 15:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2276,6 +2276,7 @@ _nenhum item encontrado_
 | Resposta IA sem campos preenchíveis | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Você precisa estar logado em uma organização | `src/components/compras/NovaSolicitacaoModal.tsx` |
 | Erro ao criar regra | `src/components/compras/PenaltyEscalationConfigPanel.tsx` |
+|  className= | `src/components/compras/PendingApprovalsList.tsx` |
 | Erro ao aprovar solicitação | `src/components/compras/PendingApprovalsList.tsx` |
 | Erro ao rejeitar solicitação | `src/components/compras/PendingApprovalsList.tsx` |
 | Erro na comparação | `src/components/compras/PriceComparator.tsx` |
@@ -2442,8 +2443,7 @@ _nenhum item encontrado_
 | Organization ID missing | `src/hooks/useProdutos.ts` |
 | Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
 | Acesso negado | `src/hooks/useSecurityLogs.ts` |
-| Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
-| … +270 linhas — lista completa em `context.json` | |
+| … +272 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2461,7 +2461,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3244 testes em 223 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3255 testes em 225 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2594,6 +2594,7 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/contractFornecedorId.test.tsx` | 6 | ContractModal grava o fornecedor do cadastro · oferece so os fornecedores ativos, com id real e sem sufixo de status · sem fornecedor escolhido nao salva e avisa · salva supplier_id com o id do cadastro e supplier_name como copia congelada … |
 | `src/components/compras/__tests__/formulariosRotulos2.test.tsx` | 6 | Campos de formulario com nome acessivel (etapa 238) · o modal de rejeicao associa o rotulo ao motivo · o modal de detalhes associa o rotulo ao comentario · o cadastro de fornecedor nomeia os campos, inclusive os dois selects e os ramos … |
 | `src/components/compras/__tests__/kanbanEntregaBloqueada.test.tsx` | 6 | KanbanBoard — entrega só pelo Recebimento · não grava nada quando o card é arrastado para a coluna de entrega · marca a coluna como somente leitura na interface · continua gravando nas outras colunas … |
+| `src/components/compras/__tests__/pendingApprovalsEstados.test.tsx` | 6 | PendingApprovalsList - falha e carga nao viram  · mostra o erro da consulta em vez de  · o botao de nova tentativa refaz as duas buscas da tela · enquanto carrega, nao afirma que nao ha nada pendente … |
 | `src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx` | 6 | PedidoMobileCard - cartao acessivel pelo teclado (etapa 235) · o cartao expoe papel de botao, nome e entra na tabulacao · Enter abre os detalhes · espaco abre os detalhes … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 6 | transicaoDeStatusPermitida · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido · não devolve pedido concluído para uma etapa anterior … |
@@ -2622,6 +2623,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
+| `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
 | `src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx` | 5 | RecebimentoOffline - selecao de pedido acessivel por teclado · seleciona o pedido no clique · seleciona o pedido com Enter · seleciona o pedido com a barra de espaco … |
@@ -2766,6 +2768,7 @@ _nenhum item encontrado_
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | * F-023 fix: replaced setInterval deadline-polling with Realtime subscription | `src/hooks/useApprovalNotifications.ts` |
 | Business logic lives in focused sub-hooks: | `src/hooks/useApprovalWorkflow.ts` |
+| Falha de leitura nao pode virar "nada pendente" (QA 251): os fetches abaixo | `src/hooks/useApprovalWorkflow.ts` |
 | Rule/delegation mutations | `src/hooks/useApprovalWorkflow.ts` |
 | Entregues no prazo | `src/hooks/useBuyerPerformanceData.ts` |
 | null = faixa aberta (sem limite superior) */ | `src/hooks/useCatalogoPim.ts` |

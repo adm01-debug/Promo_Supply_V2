@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "66b65cc18f1e14fce47bb00689c8a4feb3e5e780",
+  "commit": "806c4fc09e9a30335c6b58ff39c8aea336af73b2",
   "branch": "main",
-  "data_commit": "2026-11-24T12:07:25-03:00",
+  "data_commit": "2026-11-24T12:16:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "806c4fc",
+    "data": "2026-11-24",
+    "assunto": "fix(aprovacoes): falha de leitura deixa de virar 'nada pendente' e 'zero' nos documentos (#432)"
+   },
    {
     "sha": "66b65cc",
     "data": "2026-11-24",
@@ -126,22 +131,17 @@
     "sha": "eb55789",
     "data": "2026-11-24",
     "assunto": "fix(a11y): nome acessivel nos controles so-icone da sidebar e aprovacoes (#409)"
-   },
-   {
-    "sha": "d08b3c4",
-    "data": "2026-11-24",
-    "assunto": "fix(ux): modal de detalhe do pedido e dossie com altura maxima (#408)"
    }
   ],
-  "arquivos_mudados_7d": 455,
+  "arquivos_mudados_7d": 457,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 189
+    "mudancas": 191
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 77
+    "mudancas": 78
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 77
+    "mudancas": 78
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -238,6 +238,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 6
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1417,
-  "arquivos_codigo": 911,
-  "linhas_codigo": 183771,
+  "arquivos_total": 1419,
+  "arquivos_codigo": 913,
+  "linhas_codigo": 184056,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 330,
   "cron_jobs": 74,
-  "testes": 274,
+  "testes": 276,
   "workflows": 15,
   "scripts": 50,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 91
   },
   "src/components": {
-   "arquivos": 277,
-   "linhas": 51226
+   "arquivos": 278,
+   "linhas": 51355
   },
   "src/features": {
    "arquivos": 86,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 89,
-   "linhas": 15137
+   "linhas": 15175
   },
   "src/i18n": {
    "arquivos": 1,
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 149,
-   "linhas": 34077
+   "arquivos": 150,
+   "linhas": 34195
   },
   "src/routes": {
    "arquivos": 1,

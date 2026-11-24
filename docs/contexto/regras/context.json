@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "66b65cc18f1e14fce47bb00689c8a4feb3e5e780",
+  "sha": "806c4fc09e9a30335c6b58ff39c8aea336af73b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 15:08 UTC",
-  "files_total": 1418,
-  "code_files": 1245,
-  "code_lines": 210997,
+  "generated_at": "2026-11-24 15:17 UTC",
+  "files_total": 1420,
+  "code_files": 1247,
+  "code_lines": 211282,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5d6083b13f178294",
+ "facts_hash": "2c9e286999003843",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 436,
-   ".tsx": 402,
+   ".tsx": 404,
    ".sql": 332,
    ".mjs": 67,
    ".py": 5,
@@ -33764,7 +33764,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 313,
+  "components_count": 314,
   "hooks": [
    {
     "name": "useContacts",
@@ -34803,8 +34803,8 @@
   },
   {
    "module": "src/components",
-   "files": 277,
-   "lines": 51226,
+   "files": 278,
+   "lines": 51355,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35359,7 +35359,7 @@
   {
    "module": "src/hooks",
    "files": 89,
-   "lines": 15137,
+   "lines": 15175,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35752,8 +35752,8 @@
   },
   {
    "module": "src/pages",
-   "files": 149,
-   "lines": 34077,
+   "files": 150,
+   "lines": 34195,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41040,6 +41040,10 @@
    },
    {
     "file": "src/components/compras/PendingApprovalsList.tsx",
+    "msg": " className="
+   },
+   {
+    "file": "src/components/compras/PendingApprovalsList.tsx",
     "msg": "Erro ao aprovar solicitação"
    },
    {
@@ -42052,6 +42056,10 @@
    },
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "msg": " className="
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "msg": "Apenas arquivos PDF ou Imagem são aceitos"
    },
    {
@@ -42989,6 +42997,10 @@
    {
     "file": "src/hooks/useApprovalWorkflow.ts",
     "text": "Business logic lives in focused sub-hooks:"
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "text": "Falha de leitura nao pode virar \"nada pendente\" (QA 251): os fetches abaixo"
    },
    {
     "file": "src/hooks/useApprovalWorkflow.ts",
@@ -59640,6 +59652,30 @@
     "name": "nao sobra botao so-icone sem nome no cartao da aprovacao"
    },
    {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "PendingApprovalsList - falha e carga nao viram "
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "mostra o erro da consulta em vez de "
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "o botao de nova tentativa refaz as duas buscas da tela"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "enquanto carrega, nao afirma que nao ha nada pendente"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "sem erro e sem carga, o estado vazio legitimo continua igual"
+   },
+   {
+    "file": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    "name": "o hook de aprovacoes passa a expor erro e a sinalizar fetch em curso"
+   },
+   {
     "file": "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx",
     "name": "SolicitacaoCard - nome acess\\u00edvel dos controles"
    },
@@ -67942,6 +67978,26 @@
    {
     "file": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
     "name": "normaliza o CNPJ para digitos e resolve o cadastro"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    "name": "DocumentosFiscais - falha e carga nao viram "
+   },
+   {
+    "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    "name": "mostra o erro da consulta e um botao de nova tentativa"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    "name": "o botao de nova tentativa refaz a busca da lista"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    "name": "com a consulta em curso, mostra carregando e nao zera os contadores"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    "name": "com a consulta bem sucedida e vazia, o estado vazio legitimo continua igual"
    },
    {
     "file": "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
@@ -95467,11 +95523,12 @@
   },
   "src/components/compras/PendingApprovalsList.tsx": {
    "path": "src/components/compras/PendingApprovalsList.tsx",
-   "lines": 468,
+   "lines": 499,
    "exports": [
     "const PendingApprovalsList"
    ],
    "errors": [
+    " className=",
     "Erro ao aprovar solicitação",
     "Erro ao rejeitar solicitação"
    ],
@@ -96751,6 +96808,23 @@
     "PendingApprovalsList acessibilidade (UX-04 1/4)",
     "o menu de acoes de cada aprovacao tem nome acessivel",
     "nao sobra botao so-icone sem nome no cartao da aprovacao"
+   ]
+  },
+  "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx": {
+   "path": "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+   "lines": 98,
+   "is_test": true,
+   "errors": [
+    ")).not.toBeInTheDocument();\n  });\n\n  it(",
+    ");\n    expect(alerta).toHaveTextContent(/Não foi possível carregar as aprovações/i);\n    expect(alerta).toHaveTextContent("
+   ],
+   "tests": [
+    "PendingApprovalsList - falha e carga nao viram ",
+    "mostra o erro da consulta em vez de ",
+    "o botao de nova tentativa refaz as duas buscas da tela",
+    "enquanto carrega, nao afirma que nao ha nada pendente",
+    "sem erro e sem carga, o estado vazio legitimo continua igual",
+    "o hook de aprovacoes passa a expor erro e a sinalizar fetch em curso"
    ]
   },
   "src/components/compras/__tests__/solicitacaoCardA11y.test.tsx": {
@@ -102435,7 +102509,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 460,
+   "lines": 498,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -102693,6 +102767,7 @@
    ],
    "rule_comments": [
     "Business logic lives in focused sub-hooks:",
+    "Falha de leitura nao pode virar \"nada pendente\" (QA 251): os fetches abaixo",
     "Rule/delegation mutations"
    ],
    "hooks": [
@@ -110112,7 +110187,7 @@
   },
   "src/pages/documentos/DocumentosFiscais.tsx": {
    "path": "src/pages/documentos/DocumentosFiscais.tsx",
-   "lines": 398,
+   "lines": 429,
    "exports": [
     "default DocumentosFiscais"
    ],
@@ -110162,6 +110237,7 @@
     "fiscal-documents"
    ],
    "errors": [
+    " className=",
     "Apenas arquivos PDF ou Imagem são aceitos",
     "Apenas arquivos XML são aceitos",
     "Documento não encontrado",
@@ -110324,6 +110400,23 @@
     "mantem a tolerancia de um centavo e ignora valor ausente",
     "fornecedor do emitente da nota",
     "normaliza o CNPJ para digitos e resolve o cadastro"
+   ]
+  },
+  "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx": {
+   "path": "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+   "lines": 87,
+   "is_test": true,
+   "errors": [
+    ")).not.toBeInTheDocument();\n    expect(screen.queryByText(",
+    ");\n    const antes = estado.buscas.filter((t) => t === ",
+    ");\n    expect(alerta).toHaveTextContent(/Não foi possível carregar os documentos fiscais/i);\n    expect(alerta).toHaveTextContent("
+   ],
+   "tests": [
+    "DocumentosFiscais - falha e carga nao viram ",
+    "mostra o erro da consulta e um botao de nova tentativa",
+    "o botao de nova tentativa refaz a busca da lista",
+    "com a consulta em curso, mostra carregando e nao zera os contadores",
+    "com a consulta bem sucedida e vazia, o estado vazio legitimo continua igual"
    ]
   },
   "src/pages/estoque/GestaoEstoque.tsx": {
@@ -120926,10 +121019,24 @@
   }
  },
  "git": {
-  "sha": "66b65cc18f1e14fce47bb00689c8a4feb3e5e780",
+  "sha": "806c4fc09e9a30335c6b58ff39c8aea336af73b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "806c4fc",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(aprovacoes): falha de leitura deixa de virar 'nada pendente' e 'zero' nos documentos (#432)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/PendingApprovalsList.tsx",
+     "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+     "src/hooks/useApprovalWorkflow.ts",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx"
+    ]
+   },
    {
     "sha": "66b65cc",
     "date": "2026-11-24",
@@ -121264,19 +121371,6 @@
      "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts"
     ]
-   },
-   {
-    "sha": "67eee5c",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(integridade): barra exclusao que apagava credito de fornecedor (#403)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
-     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
-     "src/hooks/useDevolucoes.ts",
-     "src/hooks/useFornecedores.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -121309,6 +121403,10 @@
     3
    ],
    [
+    "src/components/compras/PendingApprovalsList.tsx",
+    2
+   ],
+   [
     "supabase/functions/receive-os-sync/mapping.ts",
     2
    ],
@@ -121329,6 +121427,22 @@
     2
    ],
    [
+    "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    1
+   ],
+   [
+    "src/pages/documentos/DocumentosFiscais.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx",
+    1
+   ],
+   [
     "src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx",
     1
    ],
@@ -121338,26 +121452,6 @@
    ],
    [
     "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
-    1
-   ],
-   [
-    "src/pages/cotacao/Cotacao.tsx",
-    1
-   ],
-   [
-    "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
-    1
-   ],
-   [
-    "src/pages/cotacao/cotacaoHelpers.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql",
-    1
-   ],
-   [
-    "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     1
    ]
   ]

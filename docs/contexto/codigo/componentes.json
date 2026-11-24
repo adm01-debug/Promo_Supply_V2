@@ -1251,7 +1251,7 @@
     "PendingApprovalsList"
    ],
    "export_default": null,
-   "linhas": 468,
+   "linhas": 499,
    "dominio": "components/compras",
    "hooks_locais": [
     "useApprovalNotifications",
@@ -4903,7 +4903,7 @@
     "DocumentosFiscais"
    ],
    "export_default": "DocumentosFiscais",
-   "linhas": 398,
+   "linhas": 429,
    "dominio": "pages/documentos",
    "hooks_locais": [],
    "tabelas": [

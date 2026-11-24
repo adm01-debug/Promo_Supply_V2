@@ -821,7 +821,7 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 460,
+   "linhas": 498,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",

@@ -419,8 +419,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 29,
-   "linhas": 25871,
+   "testes": 30,
+   "linhas": 25902,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2408,7 +2408,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11817,
+   "linhas": 11855,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -5209,8 +5209,8 @@
   {
    "modulo": "pages/documentos",
    "arquivos": 2,
-   "testes": 1,
-   "linhas": 529,
+   "testes": 2,
+   "linhas": 560,
    "itens_menu": [
     "Docs Fiscais"
    ],
