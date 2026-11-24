@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 227,
+ "total": 228,
  "por_tipo": {
   "contrato": 6,
   "e2e": 9,
   "pytest": 2,
-  "unit": 210
+  "unit": 211
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 134
+   "arquivos": 135
   },
   {
    "padrao": "outro",
@@ -1427,6 +1427,15 @@
    "casos": 3
   },
   {
+   "arquivo": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 78,
+   "testa": [
+    "src/pages/pedidos/pedidosHelpers.ts"
+   ],
+   "casos": 10
+  },
+  {
    "arquivo": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
    "tipo": "unit",
    "linhas": 126,
@@ -1483,12 +1492,12 @@
   {
    "arquivo": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 202,
+   "linhas": 260,
    "testa": [
     "src/features/solicitacoes/index.ts",
     "src/pages/solicitacoes/solicitacoesHelpers.ts"
    ],
-   "casos": 26
+   "casos": 32
   },
   {
    "arquivo": "src/schemas/__tests__/solicitacao.schema.test.ts",
@@ -2177,6 +2186,7 @@
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
   "src/pages/historico/HistoricoHelpers.tsx": 2,
+  "src/pages/pedidos/pedidosHelpers.ts": 1,
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": 1,
   "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
   "src/pages/recebimento/recebimentoHelpers.ts": 2,

@@ -5223,7 +5223,7 @@
     "Pedidos"
    ],
    "export_default": "Pedidos",
-   "linhas": 363,
+   "linhas": 362,
    "dominio": "pages/pedidos",
    "hooks_locais": [
     "useEmpresaFilter",
@@ -5415,7 +5415,7 @@
     "Solicitacoes"
    ],
    "export_default": "Solicitacoes",
-   "linhas": 443,
+   "linhas": 446,
    "dominio": "pages/solicitacoes",
    "hooks_locais": [
     "useAccountFilters",

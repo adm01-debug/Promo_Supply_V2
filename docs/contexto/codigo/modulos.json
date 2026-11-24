@@ -3372,6 +3372,7 @@
    },
    "importado_por_outros_modulos": [
     "lib",
+    "pages/pedidos",
     "routes"
    ],
    "depende_de_modulos": [
@@ -6159,9 +6160,9 @@
   },
   {
    "modulo": "pages/pedidos",
-   "arquivos": 3,
-   "testes": 1,
-   "linhas": 877,
+   "arquivos": 4,
+   "testes": 2,
+   "linhas": 955,
    "itens_menu": [
     "Pedidos"
    ],
@@ -6246,6 +6247,7 @@
     "hooks",
     "integrations/supabase",
     "lib",
+    "pages/acompanhamento",
     "pages/devolucoes"
    ],
    "pacotes_externos": [
@@ -7230,7 +7232,7 @@
    "modulo": "pages/solicitacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 510,
+   "linhas": 561,
    "itens_menu": [
     "Solicitações"
    ],

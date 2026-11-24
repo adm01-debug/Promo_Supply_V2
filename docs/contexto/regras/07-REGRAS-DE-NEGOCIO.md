@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `92ec30477c` · branch `main` · 2026-11-24 04:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9269c9838d` · branch `main` · 2026-11-24 04:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1021,7 +1021,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `aprovado` | compara, escreve, filtra | `src/components/compras/OrderPreviewModal.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/hooks/usePagamentos.ts`<br>`src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/pagamentos/Pagamentos.tsx`<br>… +1 |
 | `status` | `atencao` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
 | `status` | `ativo` | compara, escreve, filtra | `src/components/compras/PriceComparator.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierBonificationsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>… +14 |
-| `status` | `atrasado` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts` |
+| `status` | `atrasado` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts`<br>`src/pages/pedidos/pedidosHelpers.ts`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts` |
 | `status` | `atual` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx` |
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
 | `status` | `awarded` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
@@ -1051,7 +1051,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `empty` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `encerrada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `encontrado` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/pages/cotacao/cotacaoHelpers.ts` |
-| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +12 |
+| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +13 |
 | `status` | `enviado` | compara | `src/components/pedidos/PedidoMobileCard.tsx` |
 | `status` | `erro` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx` |
 | `status` | `error` | compara, escreve | `src/components/ui/indicators/StepAndHealth.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/FiscalDashboard.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/integrity_test.ts`<br>… +7 |
@@ -1210,6 +1210,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | XBZ_FILTROS_FINANCEIROS | { value: 0, label: 'Todos' }, { value: 2, label: 'Somente pagos' }, { value: 3, label: 'Somente pendentes' }, | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | XbzNetworkLevel | collecting \| below \| warning \| healthy | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | XbzTrendDirection | unknown \| degrading \| stable \| improving | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| SaudeDoPrazoStatus | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo | `src/pages/pedidos/pedidosHelpers.ts` |
 | AuditActionType | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel | `src/services/auditTypes.ts` |
 | AuditEntityType | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio | `src/services/auditTypes.ts` |
 | RlsSeverity | CRITICAL \| INFO \| OK | `src/services/rlsAuditService.ts` |
@@ -1704,7 +1705,9 @@ _nenhum item encontrado_
 | `gainNode.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);` | `src/lib/feedbackToast.ts` |
 | `const indice = Math.max(0, Math.min(100, pontualidade * 0.45 + qualidade * 0.45 + (100 - devolucao) * 0.1));` | `src/lib/sourcingAnalytics.ts` |
 | `const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);` | `src/lib/sourcingAnalytics.ts` |
+| `* cada terceiro pedido a barra virava 40% ambar com o rotulo ATENCAO, sem` | `src/pages/pedidos/pedidosHelpers.ts` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
+| `/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
 | `* `%#COT-1 %` N?O casa `#COT-12 `. Os curingas do usu?rio s?o escapados para` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `assertEquals(dedupePattern("COT%1", "id-1"), "%#COT\\%1 %");` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp_test.ts` |
@@ -1772,6 +1775,8 @@ _nenhum item encontrado_
 | `TREND_MIN_SAMPLES` | `6` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `NON_PARENT` | `"__none__"` | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
+| `DIAS_DE_FOLGA_TOTAL` | `90` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
+| `URGENCIA_SEM_PRAZO` | `0.35` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `DEFAULT_TTL_MS` | `5 * 60_000` | `src/stores/undoStore.ts` |
 | `MAX_SELECT_LIMIT` | `500` | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | `DEFAULT_LEVEL` | `"info"` | `supabase/functions/_shared/logLevel.ts` |
@@ -2431,7 +2436,7 @@ _nenhum item encontrado_
 | `coordinator` | `src/pages/cotacao/Cotacao.tsx` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (2899 testes em 176 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (2920 testes em 177 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2447,6 +2452,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/tests/spot/spotApi.test.ts` | 41 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
+| `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 38 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts` | 37 | SolicitacaoStatusSchema · has exactly 7 valid status values · rejects unknown status · rejects empty string … |
 | `src/pages/cotacao/__tests__/cotacaoHelpers.test.ts` | 37 | adaptFornecedoresToLegacy · maps a basic fornecedor row correctly · returns empty array for empty input · falls back to razao_social when nome_fantasia is null … |
 | `src/pages/devolucoes/__tests__/devolucoesData.test.ts` | 37 | STATUS_MAP · has exactly 10 status keys · covers all expected status keys · every entry has a non-empty label string … |
@@ -2463,7 +2469,6 @@ _nenhum item encontrado_
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |
 | `src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts` | 30 | mockPendingApprovals · has 3 items · each item has required string fields · each item has numeric fields … |
 | `src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts` | 30 | historicoMensal · has 6 months of data · every item has mes, economia, volume, percentual, cotacoes · all economia values are positive … |
-| `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 30 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
 | `src/components/ui/__tests__/enhanced-search-helpers.test.ts` | 28 | typeLabels · covers all 5 result types · solicitacao →  · pedido →  … |
 | `src/hooks/__tests__/keyboardShortcutsData.test.ts` | 28 | getShortcutsList · is a function · returns an array · returns 4 categories … |
 | `src/lib/__tests__/feedbackToast.test.ts` | 28 | toast · is defined · exposes success, error, warning, info, dismiss, promise, loading, custom · toast.success … |
@@ -2522,6 +2527,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/haptics.test.ts` | 14 | haptics · light() calls navigator.vibrate(10) · medium() calls navigator.vibrate(25) · success() calls navigator.vibrate([10, 50, 10]) … |
 | `src/lib/__tests__/logger.fuzz.test.ts` | 13 | logger (frontend) — fuzz & property · não lança para mensagens exóticas em nenhum nível válido · não lança quando o nível é chamado com API válida mas contexto exótico · níveis inválidos não quebram — chamador não deve conseguir invocar … |
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
+| `src/pages/pedidos/__tests__/pedidosHelpers.test.ts` | 13 | prazoConsumido · mede o quanto da janela emissao -> previsao ja passou · devolve o piso de 5% quando o prazo acabou de comecar · nao mede nada sem as duas datas ou com janela invalida … |
 | `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
@@ -2737,8 +2743,15 @@ _nenhum item encontrado_
 | Calculos financeiros — frete e desconto vem da cotacao vencedora; o `\|\| 12` | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
+| * Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06). | `src/pages/pedidos/pedidosHelpers.ts` |
+| olhar prazo, status ou data. Aqui o estado vem do dado: a mesma `calcularSLA` | `src/pages/pedidos/pedidosHelpers.ts` |
+| prazo (emissao -> previsao) ja foi consumido. Sem previsao nao ha medida - | `src/pages/pedidos/pedidosHelpers.ts` |
+| % do prazo ja consumido - 100 quando estourou, 0 quando nao da para medir. */ | `src/pages/pedidos/pedidosHelpers.ts` |
+| % do prazo consumido entre a emissao e a previsao; 0 quando nao da para medir. */ | `src/pages/pedidos/pedidosHelpers.ts` |
 | * A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um | `src/pages/recebimento/pedidoComplementar.ts` |
 | Rate Limit Tab */} | `src/pages/seguranca/Seguranca.tsx` |
+| Posicao no eixo Y (urgencia pelo prazo), em %. */ | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
+| dias ou mais no rodape). Item sem prazo fica numa faixa neutra, no meio. | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | Validate: thresholds must be positive | `src/stores/slaSettingsStore.ts` |
 | Warning must be >= critical | `src/stores/slaSettingsStore.ts` |
 | * Registry of contracts per function name for automated testing/validation. | `supabase/functions/_shared/contracts.ts` |

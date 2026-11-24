@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `92ec30477c` · branch `main` · 2026-11-24 04:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9269c9838d` · branch `main` · 2026-11-24 04:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -208,6 +208,7 @@
 | `XBZ_FILTROS_FINANCEIROS` (TS) | { value: 0, label: 'Todos' }, { value: 2, label: 'Somente pagos' }, { value: 3, label: 'Somente pendentes' }, |  | `src/pages/catalogo-xbz/xbzHelpers.ts` |
 | `XbzNetworkLevel` (TS) | collecting \| below \| warning \| healthy |  | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `XbzTrendDirection` (TS) | unknown \| degrading \| stable \| improving |  | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
+| `SaudeDoPrazoStatus` (TS) | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo |  | `src/pages/pedidos/pedidosHelpers.ts` |
 | `AuditActionType` (TS) | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel |  | `src/services/auditTypes.ts` |
 | `AuditEntityType` (TS) | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio |  | `src/services/auditTypes.ts` |
 | `RlsSeverity` (TS) | CRITICAL \| INFO \| OK |  | `src/services/rlsAuditService.ts` |

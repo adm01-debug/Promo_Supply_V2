@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "92ec30477c8fb61952f737ff20d51af08632c3c4",
+  "commit": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
   "branch": "main",
-  "data_commit": "2026-11-24T01:43:42-03:00",
+  "data_commit": "2026-11-24T01:43:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "9269c98",
+    "data": "2026-11-24",
+    "assunto": "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)"
+   },
    {
     "sha": "92ec304",
     "data": "2026-11-24",
@@ -126,18 +131,13 @@
     "sha": "cd9ae3f",
     "data": "2026-11-23",
     "assunto": "fix(fornecedores): organization_id recebe o id da organizacao, nao do tenant (VAL-12) (#346)"
-   },
-   {
-    "sha": "a1f9fe0",
-    "data": "2026-11-23",
-    "assunto": "fix(pagamentos): aprovacao exposta na tela e transicao validada no lote (#344)"
    }
   ],
-  "arquivos_mudados_7d": 391,
+  "arquivos_mudados_7d": 395,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 163
+    "mudancas": 162
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -156,12 +156,12 @@
     "mudancas": 44
    },
    {
-    "pasta": "src/lib/__tests__",
+    "pasta": "docs/qa/05-PROGRESSO.md",
     "mudancas": 32
    },
    {
-    "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 31
+    "pasta": "src/lib/__tests__",
+    "mudancas": 32
    },
    {
     "pasta": "src/pages/admin",
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 31
+    "mudancas": 32
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1357,
-  "arquivos_codigo": 854,
-  "linhas_codigo": 176116,
+  "arquivos_total": 1359,
+  "arquivos_codigo": 856,
+  "linhas_codigo": 176381,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 329,
   "cron_jobs": 74,
-  "testes": 227,
+  "testes": 228,
   "workflows": 13,
   "scripts": 50,
   "docs_md": 100
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 134,
-   "linhas": 31548
+   "arquivos": 136,
+   "linhas": 31813
   },
   "src/routes": {
    "arquivos": 1,

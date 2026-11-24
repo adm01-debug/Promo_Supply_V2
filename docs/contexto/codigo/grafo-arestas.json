@@ -3144,10 +3144,14 @@
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
    "src/pages/pedidos/PedidoDetailsDialog.tsx",
-   "src/pages/pedidos/PedidosKPIs.tsx"
+   "src/pages/pedidos/PedidosKPIs.tsx",
+   "src/pages/pedidos/pedidosHelpers.ts"
   ],
   "src/pages/pedidos/PedidosKPIs.tsx": [
    "src/components/compras/executive/ExecutiveMetricCard.tsx"
+  ],
+  "src/pages/pedidos/pedidosHelpers.ts": [
+   "src/pages/acompanhamento/AcompanhamentoHelpers.ts"
   ],
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": [
    "src/components/ui/badge.tsx",

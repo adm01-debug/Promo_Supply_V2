@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "92ec30477c8fb61952f737ff20d51af08632c3c4",
+  "sha": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-24 04:44 UTC",
-  "files_total": 1358,
-  "code_files": 1187,
-  "code_lines": 203300,
+  "generated_at": "2026-11-24 04:45 UTC",
+  "files_total": 1360,
+  "code_files": 1189,
+  "code_lines": 203565,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6f43eec6fdab1458",
+ "facts_hash": "6e105da2d2fe1b5a",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -263,7 +263,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 414,
+   ".ts": 416,
    ".tsx": 367,
    ".sql": 331,
    ".mjs": 67,
@@ -35658,8 +35658,8 @@
   },
   {
    "module": "src/pages",
-   "files": 134,
-   "lines": 31548,
+   "files": 136,
+   "lines": 31813,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -40267,6 +40267,11 @@
     "values": "unknown | degrading | stable | improving"
    },
    {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "name": "SaudeDoPrazoStatus",
+    "values": "entregue | atrasado | critico | atencao | no_prazo | sem_prazo"
+   },
+   {
     "file": "src/services/auditTypes.ts",
     "name": "AuditActionType",
     "values": "create | update | delete | view | export | login | logout | approve | reject | cancel"
@@ -42912,12 +42917,40 @@
     "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
    },
    {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "text": "* Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06)."
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "text": "olhar prazo, status ou data. Aqui o estado vem do dado: a mesma `calcularSLA`"
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "text": "prazo (emissao -> previsao) ja foi consumido. Sem previsao nao ha medida -"
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "text": "% do prazo ja consumido - 100 quando estourou, 0 quando nao da para medir. */"
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "text": "% do prazo consumido entre a emissao e a previsao; 0 quando nao da para medir. */"
+   },
+   {
     "file": "src/pages/recebimento/pedidoComplementar.ts",
     "text": "* A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um"
    },
    {
     "file": "src/pages/seguranca/Seguranca.tsx",
     "text": "Rate Limit Tab */}"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "text": "Posicao no eixo Y (urgencia pelo prazo), em %. */"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "text": "dias ou mais no rodape). Item sem prazo fica numa faixa neutra, no meio."
    },
    {
     "file": "src/stores/slaSettingsStore.ts",
@@ -50477,6 +50510,16 @@
     "value": "\"__none__\""
    },
    {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "name": "DIAS_DE_FOLGA_TOTAL",
+    "value": "90"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "name": "URGENCIA_SEM_PRAZO",
+    "value": "0.35"
+   },
+   {
     "file": "src/stores/undoStore.ts",
     "name": "DEFAULT_TTL_MS",
     "value": "5 * 60_000"
@@ -54974,6 +55017,24 @@
     "kind": "compara"
    },
    {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "field": "status",
+    "value": "atrasado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
     "file": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
     "field": "status",
     "value": "pendente",
@@ -58326,8 +58387,16 @@
     "line": "const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);"
    },
    {
+    "file": "src/pages/pedidos/pedidosHelpers.ts",
+    "line": "* cada terceiro pedido a barra virava 40% ambar com o rotulo ATENCAO, sem"
+   },
+   {
     "file": "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
     "line": "<span>Meta: 12%</span>"
+   },
+   {
+    "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    "line": "/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */"
    },
    {
     "file": "supabase/functions/_shared/retry.ts",
@@ -66920,6 +66989,58 @@
     "name": "nao anuncia sucesso quando nao ha pedido para exportar"
    },
    {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "prazoConsumido"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "mede o quanto da janela emissao -> previsao ja passou"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "devolve o piso de 5% quando o prazo acabou de comecar"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "nao mede nada sem as duas datas ou com janela invalida"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "saudeDoPrazo"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "pedido entregue fica cheio e verde"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "sem previsao nao inventa percentual"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "prazo estourado mostra ATRASADO com a barra cheia e o detalhe real"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "vence hoje e amanha sao criticos"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "ate 3 dias e atencao, acima disso e no prazo"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "a barra reflete o prazo consumido, nao o indice da linha"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "Pedidos.tsx nao volta a desenhar SLA pelo indice"
+   },
+   {
+    "file": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    "name": "usa saudeDoPrazo e nao a posicao na lista"
+   },
+   {
     "file": "src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx",
     "name": "PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06)"
    },
@@ -67538,6 +67659,38 @@
    {
     "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
     "name": "each entry has label, color, and indicatorStatus"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "posicoesDaMatriz"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "eixo X vem do valor relativo ao maior da lista"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "eixo Y vem do prazo: atrasado no topo, folga longa no rodape"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "item sem prazo fica em faixa neutra e com diasRestantes nulo"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "lista sem valor nenhum nao divide por zero"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "lista vazia devolve vazio"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "Solicitacoes.tsx nao posiciona os pontos da matriz pelo indice"
+   },
+   {
+    "file": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    "name": "usa posicoesDaMatriz para o eixo X e Y"
    },
    {
     "file": "src/schemas/__tests__/solicitacao.schema.test.ts",
@@ -78997,6 +79150,7 @@
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
       "compara:src/hooks/useBuyerPerformanceData.ts",
       "compara:src/pages/acompanhamento/Acompanhamento.tsx",
+      "compara:src/pages/pedidos/pedidosHelpers.ts",
       "compara:src/pages/recebimento/recebimentoHelpers.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "compara:supabase/migrations/20260315150651_927a71bc-ebad-480f-b1c4-efe83c949cc4.sql",
@@ -79215,6 +79369,7 @@
      ],
      "atrasado": [
       "compara:src/pages/acompanhamento/Acompanhamento.tsx",
+      "compara:src/pages/pedidos/pedidosHelpers.ts",
       "compara:supabase/functions/weekly-report/index.ts",
       "escreve:src/pages/acompanhamento/AcompanhamentoHelpers.ts",
       "escreve:supabase/functions/check-expiry-alerts/index.ts"
@@ -108264,7 +108419,7 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 363,
+   "lines": 362,
    "exports": [
     "default Pedidos"
    ]
@@ -108276,6 +108431,49 @@
     "const PedidosKPIs"
    ]
   },
+  "src/pages/pedidos/pedidosHelpers.ts": {
+   "path": "src/pages/pedidos/pedidosHelpers.ts",
+   "lines": 79,
+   "exports": [
+    "type SaudeDoPrazoStatus",
+    "interface SaudeDoPrazo",
+    "const prazoConsumido",
+    "const saudeDoPrazo"
+   ],
+   "enums": [
+    {
+     "name": "SaudeDoPrazoStatus",
+     "values": "entregue | atrasado | critico | atencao | no_prazo | sem_prazo"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "atrasado",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ],
+   "rule_comments": [
+    "* Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06).",
+    "olhar prazo, status ou data. Aqui o estado vem do dado: a mesma `calcularSLA`",
+    "prazo (emissao -> previsao) ja foi consumido. Sem previsao nao ha medida -",
+    "% do prazo ja consumido - 100 quando estourou, 0 quando nao da para medir. */",
+    "% do prazo consumido entre a emissao e a previsao; 0 quando nao da para medir. */"
+   ],
+   "percents": [
+    "* cada terceiro pedido a barra virava 40% ambar com o rotulo ATENCAO, sem"
+   ]
+  },
   "src/pages/pedidos/__tests__/pedidosExportacao.test.ts": {
    "path": "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
    "lines": 39,
@@ -108285,6 +108483,26 @@
     "usa o conjunto canonico de colunas em vez de lista vazia",
     "o objeto exportado declara todas as chaves de pedidoColumns",
     "nao anuncia sucesso quando nao ha pedido para exportar"
+   ]
+  },
+  "src/pages/pedidos/__tests__/pedidosHelpers.test.ts": {
+   "path": "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+   "lines": 78,
+   "is_test": true,
+   "tests": [
+    "prazoConsumido",
+    "mede o quanto da janela emissao -> previsao ja passou",
+    "devolve o piso de 5% quando o prazo acabou de comecar",
+    "nao mede nada sem as duas datas ou com janela invalida",
+    "saudeDoPrazo",
+    "pedido entregue fica cheio e verde",
+    "sem previsao nao inventa percentual",
+    "prazo estourado mostra ATRASADO com a barra cheia e o detalhe real",
+    "vence hoje e amanha sao criticos",
+    "ate 3 dias e atencao, acima disso e no prazo",
+    "a barra reflete o prazo consumido, nao o indice da linha",
+    "Pedidos.tsx nao volta a desenhar SLA pelo indice",
+    "usa saudeDoPrazo e nao a posicao na lista"
    ]
   },
   "src/pages/portal-fornecedor/PortalFornecedor.tsx": {
@@ -109064,19 +109282,31 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 443,
+   "lines": 446,
    "exports": [
     "default Solicitacoes"
    ]
   },
   "src/pages/solicitacoes/solicitacoesHelpers.ts": {
    "path": "src/pages/solicitacoes/solicitacoesHelpers.ts",
-   "lines": 67,
+   "lines": 115,
    "exports": [
     "const mapDbStatusToLegacy",
     "const mapLegacyStatusToDb",
     "const adaptToLegacyFormat",
+    "interface PontoMatriz",
+    "const posicoesDaMatriz",
     "const statusConfig"
+   ],
+   "params": [
+    {
+     "name": "DIAS_DE_FOLGA_TOTAL",
+     "value": "90"
+    },
+    {
+     "name": "URGENCIA_SEM_PRAZO",
+     "value": "0.35"
+    }
    ],
    "status_values": [
     {
@@ -109089,11 +109319,18 @@
      "value": "servico",
      "kind": "compara"
     }
+   ],
+   "rule_comments": [
+    "Posicao no eixo Y (urgencia pelo prazo), em %. */",
+    "dias ou mais no rodape). Item sem prazo fica numa faixa neutra, no meio."
+   ],
+   "percents": [
+    "/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */"
    ]
   },
   "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts": {
    "path": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-   "lines": 202,
+   "lines": 260,
    "is_test": true,
    "tests": [
     "mapDbStatusToLegacy",
@@ -109125,7 +109362,15 @@
     "includes costCenterName and costCenterCode",
     "statusConfig",
     "has entries for all legacy statuses",
-    "each entry has label, color, and indicatorStatus"
+    "each entry has label, color, and indicatorStatus",
+    "posicoesDaMatriz",
+    "eixo X vem do valor relativo ao maior da lista",
+    "eixo Y vem do prazo: atrasado no topo, folga longa no rodape",
+    "item sem prazo fica em faixa neutra e com diasRestantes nulo",
+    "lista sem valor nenhum nao divide por zero",
+    "lista vazia devolve vazio",
+    "Solicitacoes.tsx nao posiciona os pontos da matriz pelo indice",
+    "usa posicoesDaMatriz para o eixo X e Y"
    ]
   },
   "src/pages/sourcing/AuctionRoom.tsx": {
@@ -117799,10 +118044,25 @@
   }
  },
  "git": {
-  "sha": "92ec30477c8fb61952f737ff20d51af08632c3c4",
+  "sha": "9269c9838ddc8087aa5843ba2d5da030cd00c0a8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9269c98",
+    "date": "2026-11-24",
+    "author": "adm01-debug",
+    "subject": "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+     "src/pages/pedidos/pedidosHelpers.ts",
+     "src/pages/solicitacoes/Solicitacoes.tsx",
+     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+     "src/pages/solicitacoes/solicitacoesHelpers.ts"
+    ]
+   },
    {
     "sha": "92ec304",
     "date": "2026-11-24",
@@ -118150,23 +118410,16 @@
      "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",
      "src/hooks/usePrefetch.ts"
     ]
-   },
-   {
-    "sha": "294d385",
-    "date": "2026-11-23",
-    "author": "adm01-debug",
-    "subject": "fix(edges): 'Nao autorizado' responde 401 e o corpo recusado para de vazar no log (#339)",
-    "files": [
-     "supabase/functions/_shared/validation.error_response.test.ts",
-     "supabase/functions/_shared/validation.log_body.test.ts",
-     "supabase/functions/_shared/validation.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    28
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    2
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
@@ -118201,6 +118454,26 @@
     2
    ],
    [
+    "src/pages/pedidos/__tests__/pedidosHelpers.test.ts",
+    1
+   ],
+   [
+    "src/pages/pedidos/pedidosHelpers.ts",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/solicitacoesHelpers.ts",
+    1
+   ],
+   [
     "src/pages/aprovacoes/Aprovacoes.tsx",
     1
    ],
@@ -118213,35 +118486,11 @@
     1
    ],
    [
-    "src/pages/pedidos/Pedidos.tsx",
-    1
-   ],
-   [
     "src/pages/pedidos/__tests__/pedidosExportacao.test.ts",
     1
    ],
    [
     "supabase/functions/_shared/external-bridge-allowlist.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/external-bridge-allowlist.ts",
-    1
-   ],
-   [
-    "src/components/security/ActiveSessionsPanel.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useSecurityLogs.ts",
-    1
-   ],
-   [
-    "src/features/auth/__tests__/activeSession.test.ts",
     1
    ]
   ]

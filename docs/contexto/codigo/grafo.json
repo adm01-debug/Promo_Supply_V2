@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 627,
- "arestas": 2795,
+ "nos": 628,
+ "arestas": 2797,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -251,14 +251,14 @@
    "importado_por": 21
   },
   {
+   "modulo": "pages/pedidos",
+   "depende_de": 13,
+   "importado_por": 2
+  },
+  {
    "modulo": "components/atoms",
    "depende_de": 2,
    "importado_por": 12
-  },
-  {
-   "modulo": "pages/pedidos",
-   "depende_de": 12,
-   "importado_por": 2
   },
   {
    "modulo": "components/organisms",
@@ -288,7 +288,7 @@
   {
    "modulo": "pages/acompanhamento",
    "depende_de": 8,
-   "importado_por": 2
+   "importado_por": 3
   },
   {
    "modulo": "pages/contratos",

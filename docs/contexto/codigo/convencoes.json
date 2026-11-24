@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (134)",
+   "co-localizado (__tests__) (135)",
    "outro (43)",
    "co-localizado (*.test) (40)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(indicadores): Saude do SLA e matriz de prioridade saem do dado, nao do indice (QA 103) (#373)",
    "fix(aprovacoes): tira os numeros inventados da tela de aprovacoes (#372)",
    "fix(exportacao): CSV de pedidos sai com as colunas reais e toast honesto (QA 104) (#371)",
    "fix: recebimento confere as gravacoes e nao sobrescreve as observacoes do pedido (QA 098) (#370)",
-   "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)",
-   "fix(seguranca): painel de sessoes encerra as outras de verdade e para de mentir (QA 037) (#368)"
+   "fix(bridge): valida selectColumns e chaves de filtro na allowlist (QA 059) (#369)"
   ]
  },
  "pr_template": null,
