@@ -210,3 +210,36 @@ test('guard: fora de repositorio git e sem a variavel, passa dizendo que nao com
     repo.limpar();
   }
 });
+
+test('guard: visibilidade e `.env` viram fato cobrado quando os docs operacionais existem', () => {
+  // Ate a etapa 264 o guard so contava secoes e bytes, e AGENTS.md/docs/agentes/github-ci.md
+  // diziam "privado" num repositorio publico. Agora o fato e cobrado -- e so quando o checkout
+  // tem docs/agentes/github-ci.md, senao os repositorios sinteticos acima reprovariam.
+  const agents = `${SECOES.map((s) => `${s}\n${'x'.repeat(300)}\n`).join('')}- Repo \`adm01-debug/Promo_Supply_V2\`, \`main\`, **público**.\n`;
+  const doc = '- Repo \`adm01-debug/Promo_Supply_V2\`, branch \`main\`, **público**.\n| Visibilidade | **público** |\n';
+  const repo = repoSintetico({
+    'AGENTS.md': agents,
+    'docs/agentes/github-ci.md': doc,
+    '.gitignore': '.env\n.env.*\n!.env.example\n',
+  });
+  try {
+    const limpo = repo.guard();
+    assert.equal(limpo.status, 0, limpo.stderr);
+    repo.escrever('docs/agentes/github-ci.md', doc.replace('| Visibilidade | **público** |', '| Visibilidade | privado |'));
+    const contradiz = repo.guard();
+    assert.equal(contradiz.status, 1);
+    assert.match(contradiz.stderr, /afirma que o repo e privado/);
+    repo.escrever('docs/agentes/github-ci.md', doc);
+    repo.escrever('AGENTS.md', SECOES.map((s) => `${s}\n${'x'.repeat(300)}\n`).join(''));
+    const semLinha = repo.guard();
+    assert.equal(semLinha.status, 1);
+    assert.match(semLinha.stderr, /linha de visibilidade/);
+    repo.escrever('AGENTS.md', agents);
+    repo.escrever('.gitignore', 'node_modules\n');
+    const semEnv = repo.guard();
+    assert.equal(semEnv.status, 1);
+    assert.match(semEnv.stderr, /nao esta ignorado/);
+  } finally {
+    repo.limpar();
+  }
+});

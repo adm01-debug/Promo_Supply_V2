@@ -5,7 +5,7 @@ workflow falhar de forma estranha.
 
 ## Escrita no GitHub
 
-- Repo `adm01-debug/Promo_Supply_V2`, branch `main`, **privado**.
+- Repo `adm01-debug/Promo_Supply_V2`, branch `main`, **público**.
 - **Escrita: somente MCP `GITHUB - MCP - FOREVER`** (`github_push_files`). O MCP padrão do GitHub retorna
   403 em write. `github_push_files` sobrescreve o arquivo — mande o conteúdo integral com apenas a mudança
   semântica e confira depois que o arquivo remoto bate com o que você testou. Ele aceita `files` e `delete`
@@ -14,7 +14,7 @@ workflow falhar de forma estranha.
   `feat fix docs style refactor perf test build ci chore security revert`. **Não há hook `commit-msg`
   neste repo** (sem `.husky/`, `"prepare": ""`, sem `commitlint`): a convenção não é cobrada por máquina
   em lugar nenhum — siga mesmo assim. `infra` não é tipo de commit; para mudança de CI/infra use `ci:` ou `chore:`.
-- Repo privado: `raw.githubusercontent.com` só responde com token, e `git push` da sessão em nuvem volta 403
+- Repo público: `raw.githubusercontent.com` responde sem token, e `git push` da sessão em nuvem volta 403
   do proxy quando o repo não está entre as fontes autorizadas da sessão — escreva pelo MCP.
 - Para listar PRs abertas com os arquivos que tocam numa chamada só, use `github_graphql`
   (`pullRequests(states:OPEN){ nodes { number isDraft files { nodes { path } } } }`):
@@ -61,7 +61,8 @@ wsl -d Ubuntu-24.04 -- bash -lc "cd /home/joaquim_ataides/projetos/Promo_Supply_
 | Required status checks | **nenhum** — consequência do acima: nada impede merge com CI vermelha | idem |
 | Review obrigatório | nenhum | idem |
 | Merge | `allow_squash_merge=true` · `allow_merge_commit=true` · `allow_rebase_merge=true` · `delete_branch_on_merge=**false**` | `github_graphql`, 2026-11-08 |
-| Visibilidade | privado (minuto de Actions é cobrado — ver custo do `contexto.yml`) | idem |
+| Visibilidade | **público** (minuto de Actions é grátis em repo público; o `contexto.yml` ocupa um runner por hora) | `GET /repos/adm01-debug/Promo_Supply_V2`, 2026-11-25 |
+| Varredura de segredo | `secret_scanning` e `secret_scanning_push_protection` **ligados** (2026-11-25); `validity_checks` e `non_provider_patterns` exigem GitHub Secret Protection pago e seguem desligados | `GET /repos/adm01-debug/Promo_Supply_V2` |
 | `.github/` | só `workflows/` — **não existe** `copilot-instructions.md`, `CODEOWNERS`, `dependabot.yml` nem template de PR/issue | `ls .github/` |
 
 Consequências práticas, não opinião:
@@ -107,7 +108,8 @@ Fatos que já custaram retrabalho:
   oficial; os comentários ficaram para trás. Fonte de verdade do ref: `docs/agentes/banco.md`.
 - **`main.yml` não tem passo de migration nem de deploy de edge function** — nenhum workflow publica edge;
   ver `docs/agentes/deploy.md`.
-- **Custo:** o repo é privado e o `contexto.yml` roda a cada hora. Antes de propor outro agendamento,
+- **Custo:** o `contexto.yml` roda a cada hora e ocupa um runner (em repo público o minuto de Actions é
+  grátis). Antes de propor outro agendamento,
   confira se um dos sete workflows já cobre o que você quer. A issue `[kpi-actions]`, atualizada toda
   segunda pelo `branch-hygiene-audit.yml`, diz quantos minutos cada workflow consumiu nos últimos 7 dias —
   consulte ela antes de discutir custo de chute.
@@ -174,6 +176,6 @@ contrato de banco em shell, Talk X/Evolution/telefonia), `scripts/e2e-isolated/`
   bundle e o dono decidir o teto.
 - `redigir-relatorio.mjs` (apaga segredos do relatório Playwright antes do artifact): o `main.yml` sobe
   `playwright-report/` como artifact sem redigir nada; o passo entra junto com a próxima edição do `main.yml`.
-- `codeql.yml` (SAST diário): repo privado, minuto de Actions cobrado — custo, logo decisão do dono.
+- `codeql.yml` (SAST diário): repo público, minuto de Actions grátis — o custo é runner ocupado, não dinheiro.
 - `fila-merge.mjs` / `auto-update-pr-branch.yml` e `reuso-arvore.mjs`: pressupõem `strict=true` e auto-merge
   ligados. Aqui `allow_auto_merge=false` (medido em 2026-11-08).
