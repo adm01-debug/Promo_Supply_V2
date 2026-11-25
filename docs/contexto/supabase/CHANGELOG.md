@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 19:10 UTC
+
+- **functions** alterado (2): `public.current_tenant_id()`, `public.user_belongs_to_tenant(_user_id uuid, _tenant_id uuid)`
+- **migrations** adicionado (2): `20261113180001_storage_policies_por_bucket`, `20261126140000_rls_fase2_notifications_e_category_strategies`
+
 ## 2026-11-25 12:20 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_28`

@@ -39093,7 +39093,7 @@
               "hits": 1
             },
             {
-              "file": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+              "file": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
               "hits": 1
             }
           ],
@@ -44441,7 +44441,7 @@
               "hits": 1
             },
             {
-              "file": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+              "file": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
               "hits": 6
             }
           ],
@@ -61321,6 +61321,12 @@
         "version": "20261113180000"
       },
       {
+        "name": "storage_policies_por_bucket",
+        "statements": 64,
+        "statements_sha": "206d3b951a3eb3dc",
+        "version": "20261113180001"
+      },
+      {
         "name": "gatilhos_duplicados_e_orcamento_do_pedido",
         "statements": null,
         "version": "20261113180500"
@@ -61495,6 +61501,12 @@
         "name": "pedido_cancelado_terminal",
         "statements": null,
         "version": "20261126130000"
+      },
+      {
+        "name": "rls_fase2_notifications_e_category_strategies",
+        "statements": 10,
+        "statements_sha": "be9f23473b8884fc",
+        "version": "20261126140000"
       },
       {
         "name": "reconcilia_ledger_migrations",

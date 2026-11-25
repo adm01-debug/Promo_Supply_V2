@@ -304,6 +304,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261113123738 | [comprador_nao_altera_dados_de_outros](migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql) | 0 |
 | 20261113124508 | [cron_limpa_historico_semanal](migrations/20261113124508_cron_limpa_historico_semanal.sql) | 0 |
 | 20261113180000 | [corrige_crons_lgpd_e_mv_kpis](migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql) | 0 |
+| 20261113180001 | [storage_policies_por_bucket](migrations/20261113180001_storage_policies_por_bucket.sql) | 64 |
 | 20261113180500 | [gatilhos_duplicados_e_orcamento_do_pedido](migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql) | 0 |
 | 20261114095500 | [corrige_mojibake_nome_sourcing_event_lots](migrations/20261114095500_corrige_mojibake_nome_sourcing_event_lots.sql) | 0 |
 | 20261117150000 | [religa_cadastro_de_usuarios](migrations/20261117150000_religa_cadastro_de_usuarios.sql) | 0 |
@@ -339,4 +340,5 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125170000 | [matriz_transicoes_alinhada](migrations/20261125170000_matriz_transicoes_alinhada.sql) | 0 |
 | 20261126120000 | [alinha_transicoes_pagamento_pedido](migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql) | 0 |
 | 20261126130000 | [pedido_cancelado_terminal](migrations/20261126130000_pedido_cancelado_terminal.sql) | 0 |
+| 20261126140000 | [rls_fase2_notifications_e_category_strategies](migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql) | 10 |
 | 20261127000000 | [reconcilia_ledger_migrations](migrations/20261127000000_reconcilia_ledger_migrations.sql) | 0 |
