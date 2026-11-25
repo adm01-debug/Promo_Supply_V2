@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `415c0e6c59b7c7dba1470768dd2fa956589fd362` (2026-11-25T10:46:46-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `52746df9cd40a5dee220564469e9721c42790254` (2026-11-25T12:04:59-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (856), SQL (348), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (856), SQL (349), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1451 |
+| arquivos_total | 1452 |
 | arquivos_codigo | 929 |
 | linhas_codigo | 186173 |
 | rotas | 56 |
@@ -342,9 +342,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (15)
 - bun.lock (9)
-- docs/ci/README.md (9)
 - package.json (9)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
+- docs/ci/README.md (8)
 - docs/pendencias/_ordem.md (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `52746df` docs(pendencias): registra o estado real das views de compra no PIM (#464)
 - 2026-11-25 `415c0e6` feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)
 - 2026-11-25 `c770dfc` docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)
 - 2026-11-25 `1cc59fe` docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `7c837da` chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)
 - 2026-11-24 `8477e9a` fix(ci): fallback do aplicar-migration-prod cobre "must be owner of function" (#446)
 - 2026-11-24 `a2f2741` chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)
-- 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "415c0e6c59b7c7dba1470768dd2fa956589fd362",
+  "sha": "52746df9cd40a5dee220564469e9721c42790254",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 13:50 UTC",
-  "files_total": 1452,
-  "code_files": 1279,
-  "code_lines": 215008,
+  "generated_at": "2026-11-25 15:13 UTC",
+  "files_total": 1453,
+  "code_files": 1280,
+  "code_lines": 215298,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9560ee950133d22d",
+ "facts_hash": "d92066aa27da6cc1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 442,
    ".tsx": 414,
-   ".sql": 348,
+   ".sql": 349,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -34602,14 +34602,15 @@
   },
   {
    "module": "docs",
-   "files": 4,
-   "lines": 226,
+   "files": 5,
+   "lines": 516,
    "tables": [],
    "exports": [],
    "docs": [],
    "deps": [],
    "imports_modules": [],
    "file_list": [
+    "docs/pendencias/sql/pim-v_compras_views.sql",
     "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql",
     "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
@@ -91691,6 +91692,10 @@
    "path": "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
    "lines": 333
   },
+  "docs/pendencias/sql/pim-v_compras_views.sql": {
+   "path": "docs/pendencias/sql/pim-v_compras_views.sql",
+   "lines": 290
+  },
   "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql": {
    "path": "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql",
    "lines": 29
@@ -122059,10 +122064,20 @@
   }
  },
  "git": {
-  "sha": "415c0e6c59b7c7dba1470768dd2fa956589fd362",
+  "sha": "52746df9cd40a5dee220564469e9721c42790254",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "52746df",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(pendencias): registra o estado real das views de compra no PIM (#464)",
+    "files": [
+     "docs/pendencias/integracao-pim-promo-supply.md",
+     "docs/pendencias/sql/pim-v_compras_views.sql"
+    ]
+   },
    {
     "sha": "415c0e6",
     "date": "2026-11-25",
@@ -122393,23 +122408,12 @@
      "src/i18n/__tests__/config.test.ts",
      "src/i18n/config.ts"
     ]
-   },
-   {
-    "sha": "338a212",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/NovaSolicitacaoModal.tsx",
-     "src/components/compras/__tests__/anexosNaoEnviados.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    25
    ],
    [
     "AGENTS.md",
@@ -122438,6 +122442,14 @@
    [
     "src/i18n/__tests__/locales.test.ts",
     2
+   ],
+   [
+    "docs/pendencias/integracao-pim-promo-supply.md",
+    1
+   ],
+   [
+    "docs/pendencias/sql/pim-v_compras_views.sql",
+    1
    ],
    [
     "src/pages/historico/HistoricoCompras.tsx",
@@ -122477,14 +122489,6 @@
    ],
    [
     "scripts/ci/paridade-migrations-banco.mjs",
-    1
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.unit.mjs",
-    1
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
     1
    ]
   ]

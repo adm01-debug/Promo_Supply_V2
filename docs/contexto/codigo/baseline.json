@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "415c0e6c59b7c7dba1470768dd2fa956589fd362",
+  "commit": "52746df9cd40a5dee220564469e9721c42790254",
   "branch": "main",
-  "data_commit": "2026-11-25T10:46:46-03:00",
+  "data_commit": "2026-11-25T12:04:59-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "52746df",
+    "data": "2026-11-25",
+    "assunto": "docs(pendencias): registra o estado real das views de compra no PIM (#464)"
+   },
    {
     "sha": "415c0e6",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "4209cc0",
     "data": "2026-11-24",
     "assunto": "fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)"
-   },
-   {
-    "sha": "0d51bc4",
-    "data": "2026-11-24",
-    "assunto": "fix(i18n): es ganha as chaves do catalogo e as telas deixam de esconder chave faltando (#440)"
    }
   ],
-  "arquivos_mudados_7d": 492,
+  "arquivos_mudados_7d": 491,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -214,16 +214,16 @@
     "mudancas": 9
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 9
-   },
-   {
     "arquivo": "package.json",
     "mudancas": 9
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 9
+   },
+   {
+    "arquivo": "docs/ci/README.md",
+    "mudancas": 8
    },
    {
     "arquivo": "docs/pendencias/_ordem.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1451,
+  "arquivos_total": 1452,
   "arquivos_codigo": 929,
   "linhas_codigo": 186173,
   "rotas": 56,
