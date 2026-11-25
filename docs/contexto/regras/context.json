@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
+  "sha": "f2e050c59a720033eccc7da79d64f20e192bb82b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 15:57 UTC",
-  "files_total": 1453,
-  "code_files": 1280,
-  "code_lines": 215310,
+  "generated_at": "2026-11-25 16:17 UTC",
+  "files_total": 1452,
+  "code_files": 1279,
+  "code_lines": 215364,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "f32b92306493ed87",
+ "facts_hash": "81881653281e8c92",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 442,
+   ".ts": 441,
    ".tsx": 414,
    ".sql": 349,
    ".mjs": 67,
@@ -36199,8 +36199,8 @@
   },
   {
    "module": "src/tests",
-   "files": 11,
-   "lines": 921,
+   "files": 10,
+   "lines": 975,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36208,9 +36208,7 @@
     "cron_heartbeats",
     "solicitacoes"
    ],
-   "exports": [
-    "shared-schemas.ts: NegotiationSchema, WorkflowSchema, ApprovalDecisionSchema"
-   ],
+   "exports": [],
    "docs": [
     "supabase-db.test.ts: F-051: Real Supabase integration tests. These tests connect to a live Supabase instance and verify the actual schema, RLS policies, and stored functions. PREREQUISITES Set the following env vars (use a staging/test project, never production): VITE_SUPABASE_URL – Supabase project URL SUPABASE_SERVICE …",
     "rls-tenant-isolation-restrictive.test.ts: Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono. Como PERMISSIVE, o Postgres junta a policy de tenant com as de papel por OR, e qualquer logado do tenant (mesmo sem papel em user_roles) lia e escrevia fornecedores, contratos, cotações etc. Migration: …"
@@ -36219,8 +36217,7 @@
     "@supabase/supabase-js",
     "node:fs",
     "node:path",
-    "vitest",
-    "zod"
+    "vitest"
    ],
    "imports_modules": [
     "supabase/functions"
@@ -36233,7 +36230,6 @@
     "src/tests/integration/contract-testing.test.ts",
     "src/tests/integration/contract-validation.test.ts",
     "src/tests/integration/core-integrity.test.ts",
-    "src/tests/integration/shared-schemas.ts",
     "src/tests/integration/supabase-db.test.ts",
     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
     "src/tests/spot/spotApi.test.ts"
@@ -71130,11 +71126,15 @@
    },
    {
     "file": "src/tests/integration/contract-testing.test.ts",
-    "name": "should reject negotiation payload with invalid UUID"
+    "name": "should reject negotiation payload without cotacoes"
    },
    {
     "file": "src/tests/integration/contract-testing.test.ts",
-    "name": "should reject negotiation payload with missing fields"
+    "name": "should reject solicitacao with a malformed UUID"
+   },
+   {
+    "file": "src/tests/integration/contract-testing.test.ts",
+    "name": "documents that a malformed UUID inside cotacoes is not rejected"
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
@@ -71150,11 +71150,15 @@
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
-    "name": "should fail with invalid currency (negative total)"
+    "name": "should reject payload without cotacoes"
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
-    "name": "should fail with malformed UUID"
+    "name": "should reject solicitacao without titulo"
+   },
+   {
+    "file": "src/tests/integration/contract-validation.test.ts",
+    "name": "documents that the real contract does not validate cotacao internals"
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
@@ -71162,7 +71166,11 @@
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
-    "name": "should accept valid actions"
+    "name": "should accept a complete start_workflow action"
+   },
+   {
+    "file": "src/tests/integration/contract-validation.test.ts",
+    "name": "should require template_id, entity_type and entity_id on start_workflow"
    },
    {
     "file": "src/tests/integration/contract-validation.test.ts",
@@ -114731,27 +114739,52 @@
   },
   "src/tests/integration/contract-testing.test.ts": {
    "path": "src/tests/integration/contract-testing.test.ts",
-   "lines": 30,
+   "lines": 57,
    "is_test": true,
+   "params": [
+    {
+     "name": "UUID_SOLICITACAO",
+     "value": "'550e8400-e29b-41d4-a716-446655440000'"
+    }
+   ],
+   "rule_comments": [
+    "real ganhar essa validacao, este teste falha de proposito para o achado ser revisto."
+   ],
    "tests": [
     "Edge Function Contract Validation",
     "should validate a correct negotiation payload",
-    "should reject negotiation payload with invalid UUID",
-    "should reject negotiation payload with missing fields"
+    "should reject negotiation payload without cotacoes",
+    "should reject solicitacao with a malformed UUID",
+    "documents that a malformed UUID inside cotacoes is not rejected"
    ]
   },
   "src/tests/integration/contract-validation.test.ts": {
    "path": "src/tests/integration/contract-validation.test.ts",
-   "lines": 41,
+   "lines": 97,
    "is_test": true,
+   "params": [
+    {
+     "name": "UUID_COTACAO",
+     "value": "'550e8400-e29b-41d4-a716-446655440000'"
+    },
+    {
+     "name": "UUID_SOLICITACAO",
+     "value": "'550e8400-e29b-41d4-a716-446655440001'"
+    }
+   ],
+   "rule_comments": [
+    "ganhar validacao de cotacao, este teste falha de proposito para o achado ser revisto."
+   ],
    "tests": [
     "Edge Function Contract Tests",
     "Negotiation Workflow",
     "should pass with valid data",
-    "should fail with invalid currency (negative total)",
-    "should fail with malformed UUID",
+    "should reject payload without cotacoes",
+    "should reject solicitacao without titulo",
+    "documents that the real contract does not validate cotacao internals",
     "Workflow Engine",
-    "should accept valid actions",
+    "should accept a complete start_workflow action",
+    "should require template_id, entity_type and entity_id on start_workflow",
     "should reject unsupported actions"
    ]
   },
@@ -114763,39 +114796,6 @@
     "System Core Integrity",
     "should validate core modules initialization",
     "should handle external API failures gracefully"
-   ]
-  },
-  "src/tests/integration/shared-schemas.ts": {
-   "path": "src/tests/integration/shared-schemas.ts",
-   "lines": 29,
-   "is_test": true,
-   "exports": [
-    "const NegotiationSchema",
-    "const WorkflowSchema",
-    "const ApprovalDecisionSchema"
-   ],
-   "zod": [
-    {
-     "name": "NegotiationSchema",
-     "kind": "object",
-     "body": "{ cotacoes: z.array(z.object({ id: z.string().uuid(), fornecedor: z.string(), total: z.number().positive(), })), solicitacao: z.object({ id: z.string().uuid(), titulo: z.string().min(3), }), }",
-     "refines": [],
-     "chain": []
-    },
-    {
-     "name": "WorkflowSchema",
-     "kind": "object",
-     "body": "{ action: z.enum(['start_workflow', 'approve_step', 'submit_decision']), tenant_id: z.string().uuid().optional(), entity_id: z.string().uuid().optional(), instance_id: z.string().uuid().optional(), }",
-     "refines": [],
-     "chain": []
-    },
-    {
-     "name": "ApprovalDecisionSchema",
-     "kind": "object",
-     "body": "{ workflow_id: z.string().uuid(), step_id: z.string().uuid(), decision: z.enum(['approved', 'rejected', 'delegated']), comment: z.string().optional(), delegate_to: z.string().uuid().optional(), }",
-     "refines": [],
-     "chain": []
-    }
    ]
   },
   "src/tests/integration/supabase-db.test.ts": {
@@ -122052,10 +122052,22 @@
   }
  },
  "git": {
-  "sha": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
+  "sha": "f2e050c59a720033eccc7da79d64f20e192bb82b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "f2e050c",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/tests/integration/contract-testing.test.ts",
+     "src/tests/integration/contract-validation.test.ts",
+     "src/tests/integration/shared-schemas.ts"
+    ]
+   },
    {
     "sha": "ac3487c",
     "date": "2026-11-25",
@@ -122385,18 +122397,6 @@
      "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
      "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql"
     ]
-   },
-   {
-    "sha": "73aaa9d",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/i18n/__tests__/locales.test.ts",
-     "src/locales/en/translation.json",
-     "src/locales/pt/translation.json"
-    ]
    }
   ],
   "hot_files": [
@@ -122429,8 +122429,16 @@
     2
    ],
    [
-    "src/i18n/__tests__/locales.test.ts",
-    2
+    "src/tests/integration/contract-testing.test.ts",
+    1
+   ],
+   [
+    "src/tests/integration/contract-validation.test.ts",
+    1
+   ],
+   [
+    "src/tests/integration/shared-schemas.ts",
+    1
    ],
    [
     "src/tests/contracts-elite.test.ts",
@@ -122470,14 +122478,6 @@
    ],
    [
     "supabase/functions/run-audit/rls_test.ts",
-    1
-   ],
-   [
-    "docs/qa/03-ACHADOS.md",
-    1
-   ],
-   [
-    "supabase/config.toml",
     1
    ]
   ]

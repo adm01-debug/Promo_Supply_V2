@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e` (2026-11-25T12:56:51-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f2e050c59a720033eccc7da79d64f20e192bb82b` (2026-11-25T13:07:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (856), SQL (349), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (855), SQL (349), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1452 |
-| arquivos_codigo | 929 |
-| linhas_codigo | 186185 |
+| arquivos_total | 1451 |
+| arquivos_codigo | 928 |
+| linhas_codigo | 186239 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 338 |
 | cron_jobs | 74 |
-| testes | 290 |
+| testes | 289 |
 | workflows | 15 |
 | scripts | 51 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (195), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (195), co-localizado (*.test) (42), outro (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (18), scripts/types-sync (7), scripts/inventario (5)
@@ -338,14 +338,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (108)
+- docs/qa/05-PROGRESSO.md (109)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (15)
-- bun.lock (9)
-- package.json (9)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
+- bun.lock (8)
 - docs/ci/README.md (8)
 - docs/pendencias/_ordem.md (8)
+- package.json (8)
 - src/features/pedidos/hooks/usePedidos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - src/hooks/useApprovalWorkflow.ts (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `f2e050c` fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)
 - 2026-11-25 `ac3487c` fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)
 - 2026-11-25 `52746df` docs(pendencias): registra o estado real das views de compra no PIM (#464)
 - 2026-11-25 `415c0e6` feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `5724587` chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)
 - 2026-11-25 `dddc66e` chore: corrige o estado real do ledger de migrations na doc de agentes (#449)
 - 2026-11-24 `7c837da` chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)
-- 2026-11-24 `8477e9a` fix(ci): fallback do aplicar-migration-prod cobre "must be owner of function" (#446)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 290,
+ "total": 289,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 272
+  "unit": 271
  },
  "onde_ficam": [
   {
@@ -18,11 +18,11 @@
    "arquivos": 195
   },
   {
-   "padrao": "outro",
-   "arquivos": 43
+   "padrao": "co-localizado (*.test)",
+   "arquivos": 42
   },
   {
-   "padrao": "co-localizado (*.test)",
+   "padrao": "outro",
    "arquivos": 42
   },
   {
@@ -2166,16 +2166,20 @@
   {
    "arquivo": "src/tests/integration/contract-testing.test.ts",
    "tipo": "contrato",
-   "linhas": 30,
-   "testa": [],
-   "casos": 3
+   "linhas": 57,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/tests/integration/contract-validation.test.ts",
    "tipo": "contrato",
-   "linhas": 41,
-   "testa": [],
-   "casos": 5
+   "linhas": 97,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/tests/integration/core-integrity.test.ts",
@@ -2183,13 +2187,6 @@
    "linhas": 25,
    "testa": [],
    "casos": 2
-  },
-  {
-   "arquivo": "src/tests/integration/shared-schemas.ts",
-   "tipo": "unit",
-   "linhas": 29,
-   "testa": [],
-   "casos": 0
   },
   {
    "arquivo": "src/tests/integration/supabase-db.test.ts",
@@ -2826,7 +2823,7 @@
   "src/stores/undoStore.ts": 1,
   "src/types/contract.ts": 1,
   "src/types/legacyTypes.ts": 2,
-  "supabase/functions/_shared/contracts.ts": 5,
+  "supabase/functions/_shared/contracts.ts": 7,
   "supabase/functions/_shared/external-bridge-allowlist.ts": 1,
   "supabase/functions/_shared/fuzzSeed.ts": 2,
   "supabase/functions/_shared/fuzzer.ts": 2,

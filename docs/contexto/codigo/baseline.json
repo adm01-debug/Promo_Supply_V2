@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
+  "commit": "f2e050c59a720033eccc7da79d64f20e192bb82b",
   "branch": "main",
-  "data_commit": "2026-11-25T12:56:51-03:00",
+  "data_commit": "2026-11-25T13:07:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "f2e050c",
+    "data": "2026-11-25",
+    "assunto": "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)"
+   },
    {
     "sha": "ac3487c",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "0372d49",
     "data": "2026-11-24",
     "assunto": "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)"
-   },
-   {
-    "sha": "1b8434a",
-    "data": "2026-11-24",
-    "assunto": "fix: remove trigger duplicado de validacao de status em pedidos (#391)"
    }
   ],
-  "arquivos_mudados_7d": 490,
+  "arquivos_mudados_7d": 492,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 108
+    "mudancas": 109
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -210,16 +210,12 @@
     "mudancas": 15
    },
    {
-    "arquivo": "bun.lock",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "package.json",
-    "mudancas": 9
-   },
-   {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 9
+   },
+   {
+    "arquivo": "bun.lock",
+    "mudancas": 8
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -227,6 +223,10 @@
    },
    {
     "arquivo": "docs/pendencias/_ordem.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "package.json",
     "mudancas": 8
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 292
+    "commits": 293
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 7
+    "commits": 6
    },
    {
     "autor": "github-actions[bot]",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1452,
-  "arquivos_codigo": 929,
-  "linhas_codigo": 186185,
+  "arquivos_total": 1451,
+  "arquivos_codigo": 928,
+  "linhas_codigo": 186239,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 338,
   "cron_jobs": 74,
-  "testes": 290,
+  "testes": 289,
   "workflows": 15,
   "scripts": 51,
   "docs_md": 100
@@ -479,8 +479,8 @@
    "linhas": 16
   },
   "src/tests": {
-   "arquivos": 11,
-   "linhas": 921
+   "arquivos": 10,
+   "linhas": 975
   },
   "src/types": {
    "arquivos": 3,
