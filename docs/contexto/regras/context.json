@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "57245877a7b8ce78e363c6364a0933c4f6901634",
+  "sha": "b4575e8ee53384d8ef6b50fe3e5739e3145d5680",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 10:53 UTC",
-  "files_total": 1449,
-  "code_files": 1276,
-  "code_lines": 214619,
+  "generated_at": "2026-11-25 11:11 UTC",
+  "files_total": 1451,
+  "code_files": 1278,
+  "code_lines": 214819,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "27db01b055412322",
+ "facts_hash": "ecb1af52f673feb1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 442,
    ".tsx": 413,
-   ".sql": 346,
+   ".sql": 348,
    ".mjs": 67,
    ".py": 5,
    ".js": 3
@@ -16803,16 +16803,6 @@
     "src": "supabase/migrations/20260507205217_c1daf575-4225-464d-98fa-da42f4a035ce.sql"
    },
    {
-    "name": "tenant_isolation",
-    "table": "category_strategies",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id = public.get_my_organization()",
-    "check": "",
-    "src": "supabase/migrations/20260507205950_2c5935a1-33c9-4058-a56f-1c2fad76969f.sql"
-   },
-   {
     "name": "Admins can view all audit logs",
     "table": "financial_audit_logs",
     "cmd": "SELECT",
@@ -17061,16 +17051,6 @@
     "using": "user_id = auth.uid()",
     "check": "",
     "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
-   },
-   {
-    "name": "tenant_isolation_notifications",
-    "table": "notifications",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175349_55a359a1-5530-4b7e-871c-5c853f1e29a2.sql"
    },
    {
     "name": "SSO configurations isolated by tenant",
@@ -18831,6 +18811,26 @@
     "using": "",
     "check": "changed_by IS NULL OR auth.uid() = changed_by",
     "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
+   },
+   {
+    "name": "tenant_isolation_notifications",
+    "table": "notifications",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+   },
+   {
+    "name": "tenant_isolation",
+    "table": "category_strategies",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_my_organization()",
+    "check": "",
+    "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
    }
   ],
   "triggers": [
@@ -27206,8 +27206,10 @@
    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
+   "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
+   "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -34632,7 +34634,7 @@
   {
    "module": "scripts",
    "files": 80,
-   "lines": 29342,
+   "lines": 29436,
    "tables": [
     "a",
     "a_tabela",
@@ -34699,6 +34701,7 @@
     "audit-prod.mjs: parseAuditText, evaluate, validarRelatorio, lerStatusColetor, main",
     "branch-podaveis.mjs: DIAS_MINIMOS, SEMPRE_FORA, motivoNomeInseguro, nomeVisivel, selecionarPodaveis, relatorio",
     "bump-toolchain.mjs: partes, maisNova",
+    "check-agents-md-integrity.mjs: VISIBILIDADE, ARQUIVOS_DE_VISIBILIDADE, linhaQueAlegaPrivado, linhaDeVisibilidade, problemasDeVisibilidade",
     "check-bundle-secrets.mjs: extrairChavesSecretas, extrairTokens, decodificarPayload, ehArquivoVarrido, listarArquivosVarridos, varrer",
     "check-test-inventory.mjs: RAIZ, ALLOWLIST_NODE, comandoExecutadoNoWorkflow, codigoExecutavelDeWorkflow, semComentarioDeShell, padroesNodeDeWorkflow",
     "commit-msg-lint.mjs: TIPOS, SUBJECT_MIN_LENGTH, cabecalhoDaMensagem, validarMensagem, main",
@@ -36196,7 +36199,7 @@
   {
    "module": "src/tests",
    "files": 11,
-   "lines": 910,
+   "lines": 911,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36454,8 +36457,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 337,
-   "lines": 27829,
+   "files": 338,
+   "lines": 27910,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36546,15 +36549,16 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 1,
-   "lines": 67,
+   "files": 2,
+   "lines": 91,
    "tables": [],
    "exports": [],
    "docs": [],
    "deps": [],
    "imports_modules": [],
    "file_list": [
-    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql"
+    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
+    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
    ]
   },
   {
@@ -38937,6 +38941,9 @@
   },
   "env": {
    "AGENTS_MD_BASE": [
+    "scripts/ci/check-agents-md-integrity.mjs"
+   ],
+   "AGENTS_MD_SKIP_FATOS": [
     "scripts/ci/check-agents-md-integrity.mjs"
    ],
    "AI_CONTEXT_DIR": [
@@ -73831,16 +73838,6 @@
     "src": "supabase/migrations/20260507205217_c1daf575-4225-464d-98fa-da42f4a035ce.sql"
    },
    {
-    "name": "tenant_isolation",
-    "table": "category_strategies",
-    "cmd": "ALL",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "organization_id = public.get_my_organization()",
-    "check": "",
-    "src": "supabase/migrations/20260507205950_2c5935a1-33c9-4058-a56f-1c2fad76969f.sql"
-   },
-   {
     "name": "Admins can view all audit logs",
     "table": "financial_audit_logs",
     "cmd": "SELECT",
@@ -74089,16 +74086,6 @@
     "using": "user_id = auth.uid()",
     "check": "",
     "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
-   },
-   {
-    "name": "tenant_isolation_notifications",
-    "table": "notifications",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175349_55a359a1-5530-4b7e-871c-5c853f1e29a2.sql"
    },
    {
     "name": "SSO configurations isolated by tenant",
@@ -75859,6 +75846,26 @@
     "using": "",
     "check": "changed_by IS NULL OR auth.uid() = changed_by",
     "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
+   },
+   {
+    "name": "tenant_isolation_notifications",
+    "table": "notifications",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+   },
+   {
+    "name": "tenant_isolation",
+    "table": "category_strategies",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "organization_id = public.get_my_organization()",
+    "check": "",
+    "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
    }
   ],
   "db_triggers": [
@@ -82468,20 +82475,20 @@
     "rls": "enabled",
     "SELECT": [
      "public: organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())",
-     "public: organization_id = public.get_my_organization()",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: organization_id = public.get_my_organization()"
     ],
     "INSERT": [
-     "public: organization_id = public.get_my_organization()",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: organization_id = public.get_my_organization()"
     ],
     "UPDATE": [
-     "public: organization_id = public.get_my_organization()",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: organization_id = public.get_my_organization()"
     ],
     "DELETE": [
-     "public: organization_id = public.get_my_organization()",
-     "authenticated: public.tenant_in_my_group(tenant_id)"
+     "authenticated: public.tenant_in_my_group(tenant_id)",
+     "authenticated: organization_id = public.get_my_organization()"
     ]
    },
    "checkpoint_snapshots": {
@@ -83201,22 +83208,22 @@
     "rls": "enabled",
     "SELECT": [
      "public: auth.uid() = user_id",
-     "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: user_id = auth.uid()"
+     "authenticated: user_id = auth.uid()",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: auth.uid() = user_id",
-     "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: user_id = auth.uid()"
+     "authenticated: user_id = auth.uid()",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "public: auth.uid() = user_id",
-     "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: user_id = auth.uid()"
+     "authenticated: user_id = auth.uid()",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: user_id = auth.uid()"
+     "authenticated: user_id = auth.uid()",
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "order_contracts": {
@@ -92525,7 +92532,7 @@
   },
   "scripts/ci/agents-docs-baseline.unit.mjs": {
    "path": "scripts/ci/agents-docs-baseline.unit.mjs",
-   "lines": 213,
+   "lines": 246,
    "rule_comments": [
     "Baseline das instrucoes para agentes: frases que outra sessao nao pode apagar sem decidir apagar."
    ],
@@ -92653,9 +92660,17 @@
   },
   "scripts/ci/check-agents-md-integrity.mjs": {
    "path": "scripts/ci/check-agents-md-integrity.mjs",
-   "lines": 147,
+   "lines": 208,
+   "exports": [
+    "const VISIBILIDADE",
+    "const ARQUIVOS_DE_VISIBILIDADE",
+    "function linhaQueAlegaPrivado",
+    "function linhaDeVisibilidade",
+    "function problemasDeVisibilidade"
+   ],
    "env": [
-    "AGENTS_MD_BASE"
+    "AGENTS_MD_BASE",
+    "AGENTS_MD_SKIP_FATOS"
    ],
    "params": [
     {
@@ -92673,6 +92688,10 @@
     {
      "name": "FILE_SHRINK_THRESHOLD",
      "value": "0.50"
+    },
+    {
+     "name": "VISIBILIDADE",
+     "value": "'publico'"
     }
    ],
    "doc": "!/usr/bin/env node",
@@ -114888,7 +114907,7 @@
   },
   "src/tests/security/rls-tenant-isolation-restrictive.test.ts": {
    "path": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-   "lines": 82,
+   "lines": 83,
    "is_test": true,
    "rule_comments": [
     "* Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono."
@@ -121763,6 +121782,10 @@
    "path": "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "lines": 40
   },
+  "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql": {
+   "path": "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+   "lines": 81
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 411
@@ -121770,6 +121793,10 @@
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
+  },
+  "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql": {
+   "path": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
+   "lines": 24
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -121994,10 +122021,36 @@
   }
  },
  "git": {
-  "sha": "57245877a7b8ce78e363c6364a0933c4f6901634",
+  "sha": "b4575e8ee53384d8ef6b50fe3e5739e3145d5680",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b4575e8",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(rls): fecha escrita em notifications e category_strategies (#451)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/paridade-migrations-banco.allowlist.json",
+     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+     "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+     "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+    ]
+   },
+   {
+    "sha": "dc1ce2c",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)",
+    "files": [
+     "AGENTS.md",
+     "docs/agentes/github-ci.md",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/agents-docs-baseline.unit.mjs",
+     "scripts/ci/check-agents-md-integrity.mjs"
+    ]
+   },
    {
     "sha": "5724587",
     "date": "2026-11-25",
@@ -122326,43 +122379,16 @@
      "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
      "src/pages/cotacao/cotacaoHelpers.ts"
     ]
-   },
-   {
-    "sha": "0f24e15",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: numero da solicitacao gerado dentro do INSERT, sem corrida (#428)",
-    "files": [
-     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-     "supabase/functions/receive-os-sync/create-solicitacao.ts",
-     "supabase/functions/receive-os-sync/mapping.ts",
-     "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
-    ]
-   },
-   {
-    "sha": "0165b41",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "test: prova o retry quando o numero da solicitacao colide (#427)",
-    "files": [
-     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-     "supabase/functions/receive-os-sync/create-solicitacao.ts",
-     "supabase/functions/receive-os-sync/index.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    23
+    25
    ],
    [
-    "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-    3
-   ],
-   [
-    "supabase/functions/receive-os-sync/create-solicitacao.ts",
-    3
+    "AGENTS.md",
+    2
    ],
    [
     "src/features/layout/components/MainLayout.tsx",
@@ -122393,6 +122419,34 @@
     2
    ],
    [
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    1
+   ],
+   [
+    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
+    1
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    1
+   ],
+   [
+    "scripts/ci/agents-docs-baseline.unit.mjs",
+    1
+   ],
+   [
+    "scripts/ci/check-agents-md-integrity.mjs",
+    1
+   ],
+   [
     "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
     1
    ],
@@ -122401,35 +122455,11 @@
     1
    ],
    [
-    "AGENTS.md",
-    1
-   ],
-   [
     "docs/agentes/banco.md",
     1
    ],
    [
     "scripts/ci/sonda-edges-negocio.sql",
-    1
-   ],
-   [
-    ".github/workflows/aplicar-migration-prod.yml",
-    1
-   ],
-   [
-    "bun.lock",
-    1
-   ],
-   [
-    "package.json",
-    1
-   ],
-   [
-    ".github/workflows/main.yml",
-    1
-   ],
-   [
-    "src/components/compras/CostCenterPerformanceAnalysis.tsx",
     1
    ]
   ]

@@ -64,9 +64,9 @@
   {
    "arquivo": "scripts/ci/agents-docs-baseline.unit.mjs",
    "tipo": "unit",
-   "linhas": 213,
+   "linhas": 246,
    "testa": [],
-   "casos": 11
+   "casos": 12
   },
   {
    "arquivo": "scripts/ci/ai-context-generator.unit.mjs",
@@ -2188,7 +2188,7 @@
   {
    "arquivo": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
    "tipo": "unit",
-   "linhas": 82,
+   "linhas": 83,
    "testa": [],
    "casos": 1
   },

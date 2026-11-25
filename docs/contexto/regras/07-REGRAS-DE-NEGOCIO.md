@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `57245877a7` · branch `main` · 2026-11-25 10:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `b4575e8ee5` · branch `main` · 2026-11-25 11:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -151,7 +151,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `solicitacoes` | Tenant isolation for solicitacoes | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `category_strategies` | Tenant isolation for category_strategies | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
 | `spend_forecasts` | Tenant isolation for spend_forecasts | SELECT | public | permissive | `organization_id IN (SELECT organization_id FROM public.user_organizations WHERE user_id = auth.uid())` |  |
-| `category_strategies` | tenant_isolation | ALL | public | permissive | `organization_id = public.get_my_organization()` |  |
 | `financial_audit_logs` | Admins can view all audit logs | SELECT | public | permissive | `EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text IN ('admin', 'coordinator'))` |  |
 | `dashboard_layouts` | Users can view their own dashboard layouts | SELECT | public | permissive | `auth.uid() = user_id` |  |
 | `dashboard_layouts` | Users can insert their own dashboard layouts | INSERT | public | permissive |  | `auth.uid() = user_id` |
@@ -177,7 +176,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `approval_hierarchy` | tenant_isolation_approval_hierarchy | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `tenants` | tenants visible to members | SELECT | authenticated | permissive | `public.user_belongs_to_tenant(auth.uid(), id)` |  |
 | `user_tenants` | user_tenants own rows | SELECT | authenticated | permissive | `user_id = auth.uid()` |  |
-| `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `scim_provisioning_log` | SCIM logs isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
@@ -354,6 +352,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
 | `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
+| `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `category_strategies` | tenant_isolation | ALL | authenticated | permissive | `organization_id = public.get_my_organization()` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

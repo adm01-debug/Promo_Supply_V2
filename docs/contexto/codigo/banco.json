@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 337,
+ "migrations": 338,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -4390,10 +4390,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "category_strategies_escrita_admin_coord",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "Tenant isolation for category_strategies",
      "comando": "select",
      "para": "public",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     },
     {
      "nome": "tenant_isolation_category_strategies",
@@ -11165,8 +11177,26 @@
    "rls": true,
    "policies": [
     {
+     "nome": "notificacoes_thread_followup_cotacao",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_notifications",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
      "nome": "Users can create own notifications",
      "comando": "insert",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "Users can delete their own notifications",
+     "comando": "delete",
      "para": "authenticated",
      "tipo": "permissive"
     },

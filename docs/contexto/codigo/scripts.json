@@ -122,9 +122,10 @@
   {
    "arquivo": "scripts/ci/check-agents-md-integrity.mjs",
    "descricao": "* GA02: garante que as instrucoes para agentes nao foram apagadas ou esvaziadas por outra sessao.",
-   "linhas": 147,
+   "linhas": 208,
    "env": [
-    "AGENTS_MD_BASE"
+    "AGENTS_MD_BASE",
+    "AGENTS_MD_SKIP_FATOS"
    ],
    "npm_scripts": [],
    "workflows": [

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `57245877a7b8ce78e363c6364a0933c4f6901634` (2026-11-25T07:46:05-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b4575e8ee53384d8ef6b50fe3e5739e3145d5680` (2026-11-25T08:06:08-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (855), SQL (346), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (855), SQL (348), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1448 |
+| arquivos_total | 1450 |
 | arquivos_codigo | 928 |
-| linhas_codigo | 185889 |
+| linhas_codigo | 185984 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 337 |
+| migrations | 338 |
 | cron_jobs | 74 |
 | testes | 289 |
 | workflows | 15 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (98)
+- docs/qa/05-PROGRESSO.md (100)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - bun.lock (9)
@@ -411,7 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (152 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (153 linhas)
 - `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
@@ -422,6 +422,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `b4575e8` fix(rls): fecha escrita em notifications e category_strategies (#451)
+- 2026-11-25 `dc1ce2c` chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)
 - 2026-11-25 `5724587` chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)
 - 2026-11-25 `dddc66e` chore: corrige o estado real do ledger de migrations na doc de agentes (#449)
 - 2026-11-24 `7c837da` chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)
@@ -435,8 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `d93a2df` fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)
 - 2026-11-24 `d1500f1` fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)
 - 2026-11-24 `0372d49` fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)
-- 2026-11-24 `1b8434a` fix: remove trigger duplicado de validacao de status em pedidos (#391)
-- 2026-11-24 `4209cc0` fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
