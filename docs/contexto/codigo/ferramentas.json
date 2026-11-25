@@ -87,10 +87,10 @@
   "dependencias": 68,
   "dev_dependencias": 36,
   "principais": {
-   "@supabase/supabase-js": "^2.119.0",
-   "@tanstack/query-sync-storage-persister": "^5.107.1",
-   "@tanstack/react-query": "^5.107.1",
-   "@tanstack/react-query-persist-client": "^5.107.1",
+   "@supabase/supabase-js": "^2.119.2",
+   "@tanstack/query-sync-storage-persister": "^5.108.2",
+   "@tanstack/react-query": "^5.108.2",
+   "@tanstack/react-query-persist-client": "^5.108.2",
    "date-fns": "3.6.0",
    "framer-motion": "^14.14.0",
    "i18next": "^26.7.2",
@@ -103,7 +103,7 @@
    "react-hook-form": "^7.92.0",
    "react-i18next": "^17.1.13",
    "react-markdown": "^10.1.0",
-   "react-router-dom": "^7.18.5",
+   "react-router-dom": "^7.18.6",
    "recharts": "^2.15.4",
    "tailwindcss-animate": "^1.0.7",
    "zod": "^4.6.7",
@@ -813,12 +813,12 @@
    {
     "pacote": "@tanstack/react-query",
     "servico": "react-query",
-    "versao": "^5.107.1"
+    "versao": "^5.108.2"
    },
    {
     "pacote": "@supabase/supabase-js",
     "servico": "Supabase",
-    "versao": "^2.119.0"
+    "versao": "^2.119.2"
    },
    {
     "pacote": "zod",

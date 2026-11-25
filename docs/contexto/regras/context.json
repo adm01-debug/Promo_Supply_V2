@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "096419745752e3f6803eb4b3dd7af35e15f51867",
+  "sha": "5d7b9a1eb43b792f460a61175636525867ddd1da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 20:13 UTC",
+  "generated_at": "2026-11-25 22:02 UTC",
   "files_total": 1458,
   "code_files": 1284,
   "code_lines": 217028,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ff9047bdcd53db6b",
+ "facts_hash": "9f0924667b079e70",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -23,12 +23,12 @@
     "in": "package.json"
    },
    "@supabase/supabase-js": {
-    "version": "^2.119.0",
+    "version": "^2.119.2",
     "role": "Supabase (DB/Auth/Storage/Functions)",
     "in": "package.json"
    },
    "@tanstack/react-query": {
-    "version": "^5.107.1",
+    "version": "^5.108.2",
     "role": "Cache/fetch de dados (TanStack Query)",
     "in": "package.json"
    },
@@ -48,7 +48,7 @@
     "in": "package.json"
    },
    "lucide-react": {
-    "version": "^1.73.0",
+    "version": "^1.77.0",
     "role": "Ícones Lucide",
     "in": "package.json"
    },
@@ -63,7 +63,7 @@
     "in": "package.json"
    },
    "react-router-dom": {
-    "version": "^7.18.5",
+    "version": "^7.18.6",
     "role": "Roteamento (React Router)",
     "in": "package.json"
    },
@@ -122179,10 +122179,30 @@
   }
  },
  "git": {
-  "sha": "096419745752e3f6803eb4b3dd7af35e15f51867",
+  "sha": "5d7b9a1eb43b792f460a61175636525867ddd1da",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5d7b9a1",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)",
+    "files": [
+     ".github/dependabot.yml",
+     "bun.lock",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "6463184",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)",
+    "files": [
+     "scripts/ci/paridade-migrations-banco.allowlist.json"
+    ]
+   },
    {
     "sha": "0964197",
     "date": "2026-11-25",
@@ -122497,45 +122517,20 @@
      "bun.lock",
      "package.json"
     ]
-   },
-   {
-    "sha": "f1dd010",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "ci: adiciona gate de tipos (deno check) das edge functions (#359)",
-    "files": [
-     ".github/workflows/main.yml"
-    ]
-   },
-   {
-    "sha": "2be0c92",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-     "src/lib/__tests__/supabaseRpc.test.ts",
-     "src/lib/supabaseRpc.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    19
+   ],
+   [
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    4
    ],
    [
     "AGENTS.md",
     4
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
-    3
-   ],
-   [
-    ".github/workflows/main.yml",
-    3
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
@@ -122546,7 +122541,19 @@
     3
    ],
    [
+    "bun.lock",
+    2
+   ],
+   [
+    "package.json",
+    2
+   ],
+   [
     ".github/workflows/guards.yml",
+    2
+   ],
+   [
+    ".github/workflows/main.yml",
     2
    ],
    [
@@ -122578,6 +122585,10 @@
     2
    ],
    [
+    ".github/dependabot.yml",
+    1
+   ],
+   [
     "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
     1
    ],
@@ -122587,18 +122598,6 @@
    ],
    [
     "docs/pendencias/_indice.md",
-    1
-   ],
-   [
-    "docs/qa/baseline-orfaos-componentes.json",
-    1
-   ],
-   [
-    "scripts/automation.config.json",
-    1
-   ],
-   [
-    "scripts/ci/check-orfaos-componentes.mjs",
     1
    ]
   ]

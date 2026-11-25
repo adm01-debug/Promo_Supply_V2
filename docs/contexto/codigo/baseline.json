@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "096419745752e3f6803eb4b3dd7af35e15f51867",
+  "commit": "5d7b9a1eb43b792f460a61175636525867ddd1da",
   "branch": "main",
-  "data_commit": "2026-11-25T16:34:49-03:00",
+  "data_commit": "2026-11-25T18:55:42-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5d7b9a1",
+    "data": "2026-11-25",
+    "assunto": "chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)"
+   },
+   {
+    "sha": "6463184",
+    "data": "2026-11-25",
+    "assunto": "infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)"
+   },
    {
     "sha": "0964197",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "dc1ce2c",
     "data": "2026-11-25",
     "assunto": "chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)"
-   },
-   {
-    "sha": "5724587",
-    "data": "2026-11-25",
-    "assunto": "chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)"
-   },
-   {
-    "sha": "dddc66e",
-    "data": "2026-11-25",
-    "assunto": "chore: corrige o estado real do ledger de migrations na doc de agentes (#449)"
    }
   ],
-  "arquivos_mudados_7d": 1477,
+  "arquivos_mudados_7d": 1476,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 15
+    "mudancas": 14
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -230,10 +230,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/main.yml",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 7
    },
@@ -248,6 +244,10 @@
    {
     "arquivo": "supabase/functions/xbz-proxy/index.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "AGENTS.md",
@@ -274,16 +274,16 @@
     "mudancas": 6
    },
    {
-    "arquivo": "supabase/config.toml",
-    "mudancas": 6
-   },
-   {
     "arquivo": "supabase/functions/_shared/xbz_client.ts",
     "mudancas": 6
    },
    {
     "arquivo": "supabase/functions/workflow-engine/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
+    "mudancas": 5
    },
    {
     "arquivo": "src/components/compras/EnhancedBulkActionsBar.tsx",
