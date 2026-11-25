@@ -22,14 +22,21 @@ test.describe('Freight Quest E2E Excellence', () => {
       { name: 'Pedidos', path: '/pedidos' }
     ];
 
+    let visitouModulo = false;
     for (const mod of modules) {
       const link = page.getByRole('link', { name: mod.name }).first();
       if (await link.isVisible()) {
+        visitouModulo = true;
         await link.click();
         await expect(page).toHaveURL(new RegExp(mod.path));
         // Garantir que nenhum esqueleto ou loader infinito ficou travado
         await expect(page.locator('.animate-pulse')).not.toBeVisible();
       }
+    }
+
+    if (!visitouModulo) {
+      // Sem sessao de teste nenhum link de modulo renderiza: o que da para afirmar e o gate.
+      await expect(page).toHaveURL(/\/auth/);
     }
   });
 
@@ -37,7 +44,11 @@ test.describe('Freight Quest E2E Excellence', () => {
     await page.goto('/admin/telemetria');
     // Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)
     await page.waitForURL(/\/admin\/telemetria|\/auth/, { timeout: 3000 }).catch(() => {});
-    if (!page.url().includes('/admin/telemetria')) return;
+    if (!page.url().includes('/admin/telemetria')) {
+      // Painel exige sessao/permissao: sem sessao de teste o invariante e o gate de auth.
+      await expect(page).toHaveURL(/\/auth/);
+      return;
+    }
     
     // Página carregou em /admin/telemetria — verifica URL como evidência
     await expect(page).toHaveURL(/\/admin\/telemetria/);

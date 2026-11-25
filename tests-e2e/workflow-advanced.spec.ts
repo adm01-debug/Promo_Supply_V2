@@ -12,7 +12,12 @@ test.describe('Advanced Workflow & Security Tests', () => {
     await page.goto('/compras');
 
     const addBtn = page.getByRole('button', { name: /Nova/i }).first();
-    if ((await addBtn.count()) === 0 || !(await addBtn.isVisible())) return;
+    if ((await addBtn.count()) === 0 || !(await addBtn.isVisible())) {
+      // Sem sessao de teste o app manda para /auth: o invariante verificavel aqui e o gate
+      // de autenticacao, nao o formulario. TST-02 (sessao de teste) segue aberto.
+      await expect(page).toHaveURL(/\/auth/);
+      return;
+    }
 
     await addBtn.click();
 
@@ -43,7 +48,10 @@ test.describe('Advanced Workflow & Security Tests', () => {
     await page.goto('/dashboard');
     // Aguarda SPA redirecionar (pode ir para /auth se não autenticado)
     await page.waitForURL(/\/dashboard|\/auth/, { timeout: 3000 }).catch(() => {});
-    if (page.url().includes('/auth')) return;
+    if (page.url().includes('/auth')) {
+      await expect(page.locator('form').first()).toBeVisible();
+      return;
+    }
     // Verifica que o dashboard carregou
     await expect(page).toHaveURL(/\/dashboard/);
     const loadTime = Date.now() - startTime;

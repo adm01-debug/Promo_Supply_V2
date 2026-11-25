@@ -20,7 +20,10 @@ test.describe('Freight Quest - Fluxos de Negócio', () => {
 
   test('Validação de Contratos e Compliance', async ({ page }) => {
     await page.goto('/contratos');
-    if (page.url().includes('/auth')) return;
+    if (page.url().includes('/auth')) {
+      await expect(page.locator('form').first()).toBeVisible();
+      return;
+    }
 
     // Verifica se a página de contratos carregou
     await expect(page).toHaveURL(/\/contratos/);
@@ -31,12 +34,19 @@ test.describe('Freight Quest - Fluxos de Negócio', () => {
     await page.route('**/functions/v1/external-db-bridge', route => route.abort('failed'));
     
     await page.goto('/pedidos');
+    if (page.url().includes('/auth')) {
+      await expect(page.locator('form').first()).toBeVisible();
+      return;
+    }
     // Deve mostrar um estado de erro amigável ou tentar reconectar
     // O sistema usa react-query, então verificamos se há algum feedback de erro
     const errorFeedback = page.locator('text=Erro').or(page.locator('text=error'));
     // Não falha o teste se não houver erro imediato (cache), mas verifica visibilidade se aparecer
     if (await errorFeedback.isVisible()) {
       await expect(errorFeedback).toBeVisible();
+        } else {
+          // Sem feedback o app tem que manter a tela de pé: nada de pagina em branco.
+          await expect(page.locator('.card, main, [role="main"], form').first()).toBeVisible();
     }
   });
 });

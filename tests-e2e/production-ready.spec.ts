@@ -33,6 +33,9 @@ test.describe('Freight Quest Production Readiness', () => {
     const helpLink = page.getByRole('link', { name: /Ajuda/i }).or(page.getByRole('link', { name: /Suporte/i }));
     if (await helpLink.isVisible()) {
       await expect(helpLink).toBeEnabled();
+        } else {
+          // Sem link de ajuda, a tela de /auth tem que estar de pé (mesmo invariante do teste anterior).
+          await expect(page.locator('input[type="email"]')).toBeVisible();
     }
   });
 

@@ -81,6 +81,7 @@ catalogo, Fase 2 execucao vertical por item.
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | ui-acomp-novos | "NOVA ATUALIZACAO" onClick vazio | CONCLUIDO (PR #185, merge 2026-11-20) | `Acompanhamento.tsx:198` |
+| ui-orfao-guard | componente de `src/` sem importador (12 na `main`) | DECIDIDO (etapa 274, 2026-11-25): o CI passa a reprovar orfao NOVO; os 12 ja existentes ficam congelados na baseline e saem dela quando forem ligados | `scripts/ci/check-orfaos-componentes.mjs` + `docs/qa/baseline-orfaos-componentes.json` + `guards.yml` |
 | ui-acomp-filtros | "FILTROS AVANCADOS" sem acao | CONCLUIDO (PR #185, merge 2026-11-20) | `Acompanhamento.tsx:298` |
 | ui-acomp-nfe | "VISUALIZAR NF-E" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:450` |
 | ui-acomp-logs | "HISTORICO DE LOGS" sem acao | CONCLUIDO (PR #184, merge 2026-11-20) | `Acompanhamento.tsx:451` |

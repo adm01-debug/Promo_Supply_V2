@@ -1,11 +1,12 @@
 # docs:
 #   gatilho: pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch
-#   prova: docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado
+#   prova: docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, nenhum componente novo de src/ nasce sem importador, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado
 #   falha: o check fica vermelho. A `main` TEM branch protection: o check obrigatorio e "Contratos da automacao local" (automation-local.yml); os demais o mergeador le no PR
 #   avisa: ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml
 # nao-e-bug:
 #   - doc-desatualizada: `--check` vermelho significa que o YAML mudou e a doc gerada nao foi regerada; rode o gerador e comite, nao edite o .md
 #   - suite-orfa: check-test-inventory vermelho significa que uma suite nova de scripts/ nao tem passo que a execute em nenhum workflow
+#   - componente-orfao: check-orfaos-componentes vermelho significa que um .tsx novo de src/ nao e importado por ninguem; ligue-o ou (se for trabalho em curso) registre na baseline docs/qa/baseline-orfaos-componentes.json
 #   - bundle-so-na-main: o job do bundle precisa de `bun run build` (minutos de Actions em repo privado), entao roda no push que vai para producao, nao em cada PR
 # ==================================================================
 # Guards offline do repositorio (portados do Zapp_Web_V2, de scripts/ci/).
@@ -85,6 +86,11 @@ jobs:
 
       - name: Inventario de testes (nenhuma suite orfa)
         run: node scripts/ci/check-test-inventory.mjs
+
+      - name: Componente de src/ sem importador (orfao novo reprova)
+        # Etapa 274: o Console de Sourcing nasceu orfao em #304/#306 e so foi ligado em #463.
+        # A baseline versionada guarda os 12 orfaos que ja existiam; o que nascer agora reprova.
+        run: node scripts/ci/check-orfaos-componentes.mjs
 
       - name: docs/ci/README.md bate com os blocos `# docs:` dos workflows
         run: node scripts/ci/render-workflow-docs.mjs --check
