@@ -217,11 +217,11 @@
   {
    "arquivo": "scripts/ci/paridade-migrations-banco.unit.mjs",
    "tipo": "unit",
-   "linhas": 91,
+   "linhas": 129,
    "testa": [
     "scripts/ci/paridade-migrations-banco.mjs"
    ],
-   "casos": 8
+   "casos": 11
   },
   {
    "arquivo": "scripts/ci/regras-negocio.unit.mjs",

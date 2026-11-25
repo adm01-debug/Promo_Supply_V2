@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "b4575e8ee53384d8ef6b50fe3e5739e3145d5680",
+  "sha": "f2f3e24cd80d1a666e39e801dadb84ec7d0918a6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 11:11 UTC",
+  "generated_at": "2026-11-25 12:20 UTC",
   "files_total": 1451,
   "code_files": 1278,
-  "code_lines": 214819,
+  "code_lines": 214880,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ecb1af52f673feb1",
+ "facts_hash": "ccbbcdcbda86617d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34634,7 +34634,7 @@
   {
    "module": "scripts",
    "files": 80,
-   "lines": 29436,
+   "lines": 29497,
    "tables": [
     "a",
     "a_tabela",
@@ -92974,7 +92974,7 @@
   },
   "scripts/ci/paridade-migrations-banco.mjs": {
    "path": "scripts/ci/paridade-migrations-banco.mjs",
-   "lines": 207,
+   "lines": 230,
    "exports": [
     "const TIPOS",
     "function limparSql",
@@ -92996,7 +92996,7 @@
     {
      "name": "aplicarMigration",
      "params": "estado, sqlBruto",
-     "body": "const sql = limparSql(sqlBruto); const add = (tipo, nome) => { if (nome) estado[tipo].add(nome); }; const del = (tipo, nome) => { if (nome) estado[tipo].delete(nome); }; for (const m of casar(sql, `create\\\\s+table\\\\s+(?:if\\\\s+not\\\\s+exists\\\\s+)?${PREFIXO}${NOME}`)) { if (ehPublic(m[1])) add('tabelas', nomeDe(m, 2)); } for (const m of casar(sql, `drop\\\\s+table\\\\s+(?:if\\\\s+exists\\\\s+)?${PREFIXO}${NOME}`)) { if (ehPublic(m[1])"
+     "body": "const sql = limparSql(sqlBruto); const ops = []; const add = (pos, tipo, nome) => { if (nome) ops.push({ pos, seq: ops.length, aplica: () => estado[tipo].add(nome) }); }; const del = (pos, tipo, nome) => { if (nome) ops.push({ pos, seq: ops.length, aplica: () => estado[tipo].delete(nome) }); }; for (const m of casar(sql, `create\\\\s+table\\\\s+(?:if\\\\s+not\\\\s+exists\\\\s+)?${PREFIXO}${NOME}`)) { if (ehPublic(m[1])) add(m.index, 'tabelas', nomeDe(m, 2)); } for (const m of casar(sql, `drop\\\\s+table\\\\s+ …"
     }
    ]
   },
@@ -93006,7 +93006,10 @@
   },
   "scripts/ci/paridade-migrations-banco.unit.mjs": {
    "path": "scripts/ci/paridade-migrations-banco.unit.mjs",
-   "lines": 91
+   "lines": 129,
+   "rule_comments": [
+    "paridade so lista public, entao olhar apenas o nome do trigger acusava"
+   ]
   },
   "scripts/ci/regras-negocio.unit.mjs": {
    "path": "scripts/ci/regras-negocio.unit.mjs",
@@ -122021,10 +122024,21 @@
   }
  },
  "git": {
-  "sha": "b4575e8ee53384d8ef6b50fe3e5739e3145d5680",
+  "sha": "f2f3e24cd80d1a666e39e801dadb84ec7d0918a6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "f2f3e24",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/paridade-migrations-banco.mjs",
+     "scripts/ci/paridade-migrations-banco.unit.mjs"
+    ]
+   },
    {
     "sha": "b4575e8",
     "date": "2026-11-25",
@@ -122367,18 +122381,6 @@
      "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
      "supabase/functions/receive-os-sync/create-solicitacao.ts"
     ]
-   },
-   {
-    "sha": "c3726dd",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(cotacao): comparador aparece no fluxo normal e a auto busca grava a escolha (QA 249) (#429)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/cotacao/Cotacao.tsx",
-     "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
-     "src/pages/cotacao/cotacaoHelpers.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -122419,6 +122421,14 @@
     2
    ],
    [
+    "scripts/ci/paridade-migrations-banco.mjs",
+    1
+   ],
+   [
+    "scripts/ci/paridade-migrations-banco.unit.mjs",
+    1
+   ],
+   [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
     1
    ],
@@ -122452,14 +122462,6 @@
    ],
    [
     "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
-    1
-   ],
-   [
-    "docs/agentes/banco.md",
-    1
-   ],
-   [
-    "scripts/ci/sonda-edges-negocio.sql",
     1
    ]
   ]

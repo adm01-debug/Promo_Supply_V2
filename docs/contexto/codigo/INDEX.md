@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b4575e8ee53384d8ef6b50fe3e5739e3145d5680` (2026-11-25T08:06:08-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f2f3e24cd80d1a666e39e801dadb84ec7d0918a6` (2026-11-25T08:49:09-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1450 |
 | arquivos_codigo | 928 |
-| linhas_codigo | 185984 |
+| linhas_codigo | 186045 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (100)
+- docs/qa/05-PROGRESSO.md (101)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - bun.lock (9)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `f2f3e24` fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)
 - 2026-11-25 `b4575e8` fix(rls): fecha escrita em notifications e category_strategies (#451)
 - 2026-11-25 `dc1ce2c` chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)
 - 2026-11-25 `5724587` chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `4186556` fix(a11y): "Reduzir movimento" passa a valer no framer-motion e limpa o codigo morto (#444)
 - 2026-11-24 `d93a2df` fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)
 - 2026-11-24 `d1500f1` fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)
-- 2026-11-24 `0372d49` fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

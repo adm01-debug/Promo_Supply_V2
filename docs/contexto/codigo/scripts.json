@@ -210,7 +210,7 @@
   {
    "arquivo": "scripts/ci/paridade-migrations-banco.mjs",
    "descricao": "Paridade entre o que as migrations DECLARAM e o que o banco de producao TEM. Motivo: em 17/11/2026 uma varredura manual comparando `supabase/migrations/`",
-   "linhas": 207,
+   "linhas": 230,
    "env": [],
    "npm_scripts": [],
    "workflows": [
