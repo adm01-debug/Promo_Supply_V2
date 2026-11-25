@@ -4813,7 +4813,7 @@
     "ComprasDashboard"
    ],
    "export_default": "ComprasDashboard",
-   "linhas": 376,
+   "linhas": 396,
    "dominio": "pages/dashboard",
    "hooks_locais": [
     "useAccountFilters",

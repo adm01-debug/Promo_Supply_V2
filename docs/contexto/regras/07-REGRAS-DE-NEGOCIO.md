@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a2505419db` · branch `main` · 2026-11-25 17:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81bd8c5e95` · branch `main` · 2026-11-25 17:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2455,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3383 testes em 240 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3385 testes em 240 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2590,6 +2590,7 @@ _nenhum item encontrado_
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
+| `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 7 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
 | `supabase/functions/receive-os-sync/create-solicitacao.test.ts` | 7 | a entrega nao manda numero: quem gera e o trigger do banco · numero em colisao e retentado: a entrega nao morre em 500 · reenvio idempotente devolve a solicitacao existente sem inserir de novo · erro que nao e colisao sobe na primeira tentativa … |
@@ -2628,7 +2629,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
-| `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 5 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |

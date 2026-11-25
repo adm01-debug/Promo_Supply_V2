@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a2505419db0cbb227c708804088e08a5728b74ff",
+  "commit": "81bd8c5e9542b2ea9dd67fc3e73579a0de119a3f",
   "branch": "main",
-  "data_commit": "2026-11-25T14:48:32-03:00",
+  "data_commit": "2026-11-25T14:55:02-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "81bd8c5",
+    "data": "2026-11-25",
+    "assunto": "fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)"
+   },
    {
     "sha": "a250541",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "19d6ce8",
     "data": "2026-11-24",
     "assunto": "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)"
-   },
-   {
-    "sha": "4186556",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)"
    }
   ],
   "arquivos_mudados_7d": 490,
@@ -286,15 +286,15 @@
     "mudancas": 5
    },
    {
-    "arquivo": "bun.lock",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "package.json",
-    "mudancas": 5
-   },
-   {
     "arquivo": "src/components/compras/EnhancedBulkActionsBar.tsx",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/hooks/usePagamentos.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 5
    }
   ],
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1452,
   "arquivos_codigo": 929,
-  "linhas_codigo": 186426,
+  "linhas_codigo": 186471,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 153,
-   "linhas": 34781
+   "linhas": 34826
   },
   "src/routes": {
    "arquivos": 1,

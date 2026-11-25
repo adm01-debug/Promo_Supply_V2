@@ -4991,7 +4991,7 @@
    "modulo": "pages/dashboard",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 400,
+   "linhas": 420,
    "itens_menu": [
     "Início",
     "Dashboard",

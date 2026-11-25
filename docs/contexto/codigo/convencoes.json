@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)",
    "fix(push): so anuncia \"Notificacoes ativadas\" depois de registrar a inscricao (#470)",
    "feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)",
    "fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)",
-   "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)",
-   "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)"
+   "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)"
   ]
  },
  "pr_template": null,
