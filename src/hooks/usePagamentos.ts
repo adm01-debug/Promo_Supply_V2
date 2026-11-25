@@ -60,7 +60,7 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
     .from('pagamentos')
     .select(`
       id, numero, status, fornecedor_id, pedido_id, cost_center_id,
-      valor, valor_pago, data_vencimento, data_pagamento, data_aprovacao,
+      valor, valor_pago, data_vencimento, data_pagamento, data_agendamento, data_aprovacao,
       forma_pagamento, numero_nf, chave_nf, observacoes,
       aprovador_id, created_by, organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
@@ -224,7 +224,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     });
   }, [user, updatePagamento]);
 
-  const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status']) => {
+  const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status'], dataAgendamento?: string) => {
       const validIds: string[] = [];
       const blocked: string[] = [];
       for (const id of ids) {
@@ -242,6 +242,8 @@ export function usePagamentos(filters?: PagamentoFilters) {
     try {
       const updates: Database['public']['Tables']['pagamentos']['Update'] = { status: newStatus };
       if (newStatus === 'pago') updates.data_pagamento = new Date().toISOString().split('T')[0];
+            // Etapa 247 (UI-12): o agendamento grava a data escolhida no calendario.
+            if (newStatus === 'agendado' && dataAgendamento) updates.data_agendamento = dataAgendamento;
       if (newStatus === 'aprovado' && user) {
         updates.aprovador_id = user.id;
         updates.data_aprovacao = new Date().toISOString();
