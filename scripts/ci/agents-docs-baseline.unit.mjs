@@ -172,6 +172,87 @@ test('guard: doc com acento ou espaco no nome continua vigiado', () => {
   }
 });
 
+test('guard: workflow novo, contagem errada e "nao ha protecao" viram fato cobrado', () => {
+  // Etapa 271. Ate a 270 o guard provava secoes, tamanho e visibilidade: o manual podia afirmar
+  // "Sao 7 workflows" (eram 15) ou "nenhum workflow publica edge" e o guard dava OK. Aqui as
+  // afirmacoes de numero e de nome viram assercao contra o proprio checkout.
+  const agents =
+    SECOES.map((s) => `${s}\n${'x'.repeat(300)}\n`).join('') +
+    '- Repo `adm01-debug/Promo_Supply_V2`, `main`, **público**.\n' +
+    '- A proteção de `main` exige **um** check obrigatório (`Contratos da automação local`).\n' +
+    '- São **2**\n  workflows (`ls .github/workflows/*.yml`).\n' +
+    '- O `deploy-edge-functions.yml` publica as edges no push da `main`.\n' +
+    '- O canal de DDL é o `aplicar-migration-prod.yml` (dispatch manual).\n' +
+    '- São 5 migrations hoje.\n';
+  const docCi = [
+    '- `deploy-edge-functions` publica as edges.',
+    '- `aplicar-migration-prod` aplica DDL.',
+    '',
+  ].join('\n');
+  const extras = {
+    'AGENTS.md': agents,
+    'docs/agentes/github-ci.md': docCi,
+    '.gitignore': '.env\n.env.*\n!.env.example\n',
+    '.github/workflows/deploy-edge-functions.yml': 'run: supabase functions deploy "$FUNCAO"\n',
+    '.github/workflows/aplicar-migration-prod.yml': 'run: psql --single-transaction -f "$ARQUIVO"\n',
+  };
+  for (const nome of ['a', 'b', 'c', 'd', 'e']) extras[`supabase/migrations/2026${nome}.sql`] = 'select 1;\n';
+  const repo = repoSintetico(extras);
+  try {
+    const limpo = repo.guard();
+    assert.equal(limpo.status, 0, limpo.stderr);
+
+    // 1) workflow novo que a lista de referencia nao cita
+    repo.escrever('.github/workflows/provisionar-novo.yml', 'run: echo oi\n');
+    const naoCitado = repo.guard();
+    assert.equal(naoCitado.status, 1);
+    assert.match(naoCitado.stderr, /nao cita provisionar-novo\.yml/);
+    assert.match(naoCitado.stderr, /afirma 2 workflows, mas \.github\/workflows tem 3/);
+
+    // 2) citado e com a contagem certa, volta a passar
+    repo.escrever('docs/agentes/github-ci.md', `${docCi}- \`provisionar-novo\` provisiona.\n`);
+    repo.escrever('AGENTS.md', agents.replace('**2**', '**3**'));
+    const corrigido = repo.guard();
+    assert.equal(corrigido.status, 0, corrigido.stderr);
+
+    // 3) `deploy-edge-functions.yml` que nao publica mais nada
+    repo.escrever('.github/workflows/deploy-edge-functions.yml', 'run: echo nao-publica\n');
+    const semDeploy = repo.guard();
+    assert.equal(semDeploy.status, 1);
+    assert.match(semDeploy.stderr, /nao roda "functions deploy"/);
+
+    // 4) migration nova sem atualizar a contagem do manual
+    repo.escrever('supabase/migrations/2026f.sql', 'select 1;\n');
+    const migracoes = repo.guard();
+    assert.equal(migracoes.status, 1);
+    assert.match(migracoes.stderr, /afirma 5 migrations, mas supabase\/migrations tem 6/);
+
+    // 5) volta a afirmar que a `main` nao tem protecao
+    repo.escrever('AGENTS.md', agents.replace('**2**', '**3**').replace('exige **um** check', 'não há branch protection'));
+    const negaProtecao = repo.guard();
+    assert.equal(negaProtecao.status, 1);
+    assert.match(negaProtecao.stderr, /afirma que nao ha protecao em `main`/);
+  } finally {
+    repo.limpar();
+  }
+});
+
+test('guard: sem `.github/workflows` no checkout as asseracoes de fato nao rodam', () => {
+  // Os repositorios sinteticos das outras provas nao tem workflows; cobrar o fato ali reprovaria
+  // um guard bem calibrado por um diretorio que nao existe.
+  const repo = repoSintetico({
+    'docs/agentes/github-ci.md': 'sem workflows aqui\n',
+    'AGENTS.md': `${SECOES.map((s) => `${s}\n${'x'.repeat(300)}\n`).join('')}- Repo \`adm01-debug/Promo_Supply_V2\`, \`main\`, **público**.\n`,
+    '.gitignore': '.env\n.env.*\n!.env.example\n',
+  });
+  try {
+    const r = repo.guard();
+    assert.equal(r.status, 0, r.stderr);
+  } finally {
+    repo.limpar();
+  }
+});
+
 test('guard: subpasta de docs/agentes conta dos dois lados (sem falso positivo, e apagar reprova)', () => {
   // Medido: a base listava a subpasta (`ls-tree -r`) e o checkout nao; um arquivo grande e
   // intacto em docs/agentes/<sub>/ fazia o guard reprovar com "encolheram 85%".

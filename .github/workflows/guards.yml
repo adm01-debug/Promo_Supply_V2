@@ -1,7 +1,7 @@
 # docs:
 #   gatilho: pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch
 #   prova: docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, nenhum componente novo de src/ nasce sem importador, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado
-#   falha: o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado
+#   falha: o check fica vermelho. A `main` TEM branch protection: o check obrigatorio e "Contratos da automacao local" (automation-local.yml); os demais o mergeador le no PR
 #   avisa: ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml
 # nao-e-bug:
 #   - doc-desatualizada: `--check` vermelho significa que o YAML mudou e a doc gerada nao foi regerada; rode o gerador e comite, nao edite o .md

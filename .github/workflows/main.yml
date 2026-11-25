@@ -1,7 +1,7 @@
 # docs:
 #   gatilho: push em main/develop e pull_request para main
-#   prova: lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright
-#   falha: o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado
+#   prova: lint, typecheck, guard de integridade e de fatos do AGENTS.md (PR e push), Vitest do front, testes Deno das edges e E2E Playwright
+#   falha: o check fica vermelho. A `main` TEM branch protection: o check obrigatorio e "Contratos da automacao local"; os demais o mergeador le no PR
 #   avisa: ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml
 # nao-e-bug:
 #   - nome-do-arquivo: o `name:` ainda e "Freight Quest CI/CD", herdado de outro projeto; renomear quebraria a lista de `workflows:` do notifica-falha-main.yml, que casa por nome
@@ -24,6 +24,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
+        with:
+          # depth 2: o guard de fatos compara AGENTS.md com HEAD~1 quando o gatilho e push
+          fetch-depth: 2
       - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
@@ -34,13 +37,19 @@ jobs:
       # check-test-inventory.mjs (que reprova suite sem passo em workflow). Rodar aqui
       # tambem pagava o mesmo minuto de Actions duas vezes por PR, em repo privado.
 
-      - name: Integrity Guard AGENTS.md (PRs only)
-        if: github.event_name == 'pull_request'
+      - name: Integrity Guard AGENTS.md (integridade + fatos)
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          node scripts/ci/check-agents-md-integrity.mjs
-        env:
-          AGENTS_MD_BASE: origin/${{ github.base_ref }}
+                # PR: compara com a base da PR. Push: compara com HEAD~1, para que uma afirmacao falsa
+                # em AGENTS.md nao chegue na main sem ninguem ver.
+                if [ "${{ github.event_name }}" = "pull_request" ]; then
+                  git fetch origin ${{ github.base_ref }} --depth=1
+                  BASE="origin/${{ github.base_ref }}"
+                elif git rev-parse -q --verify HEAD~1 >/dev/null; then
+                  BASE="HEAD~1"
+                else
+                  BASE=""
+                fi
+                AGENTS_MD_BASE="$BASE" node scripts/ci/check-agents-md-integrity.mjs
 
       - name: Linting
         run: bun run lint
