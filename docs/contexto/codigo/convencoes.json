@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)",
    "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)",
    "fix(ci): o teste de edge pulado deixa de ser invisivel no CI (#457)",
    "fix(ci): reprova componente de src sem importador no guards (#465)",
-   "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)",
-   "feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)"
+   "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)"
   ]
  },
  "pr_template": null,

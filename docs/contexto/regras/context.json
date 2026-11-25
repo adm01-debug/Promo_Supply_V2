@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "66f6b9d56871966c0395a0d3ff88d63905b7eefd",
+  "sha": "47a8cb5432341c1328b32da98428220625c6ff7f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 19:20 UTC",
+  "generated_at": "2026-11-25 19:32 UTC",
   "files_total": 1458,
   "code_files": 1284,
-  "code_lines": 216820,
+  "code_lines": 217028,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "681ca42ea65d9acf",
+ "facts_hash": "ff9047bdcd53db6b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34637,7 +34637,7 @@
   {
    "module": "scripts",
    "files": 82,
-   "lines": 29709,
+   "lines": 29917,
    "tables": [
     "a",
     "a_tabela",
@@ -34704,7 +34704,7 @@
     "audit-prod.mjs: parseAuditText, evaluate, validarRelatorio, lerStatusColetor, main",
     "branch-podaveis.mjs: DIAS_MINIMOS, SEMPRE_FORA, motivoNomeInseguro, nomeVisivel, selecionarPodaveis, relatorio",
     "bump-toolchain.mjs: partes, maisNova",
-    "check-agents-md-integrity.mjs: VISIBILIDADE, ARQUIVOS_DE_VISIBILIDADE, linhaQueAlegaPrivado, linhaDeVisibilidade, problemasDeVisibilidade",
+    "check-agents-md-integrity.mjs: VISIBILIDADE, ARQUIVOS_DE_VISIBILIDADE, linhaQueAlegaPrivado, linhaDeVisibilidade, problemasDeVisibilidade, WORKFLOWS_DIR",
     "check-bundle-secrets.mjs: extrairChavesSecretas, extrairTokens, decodificarPayload, ehArquivoVarrido, listarArquivosVarridos, varrer",
     "check-orfaos-componentes.mjs: RAIZ, BASELINE, varrer, ehComponente, analisar, comparar",
     "check-test-inventory.mjs: RAIZ, ALLOWLIST_NODE, comandoExecutadoNoWorkflow, codigoExecutavelDeWorkflow, semComentarioDeShell, padroesNodeDeWorkflow",
@@ -92621,7 +92621,7 @@
   },
   "scripts/ci/agents-docs-baseline.unit.mjs": {
    "path": "scripts/ci/agents-docs-baseline.unit.mjs",
-   "lines": 246,
+   "lines": 327,
    "rule_comments": [
     "Baseline das instrucoes para agentes: frases que outra sessao nao pode apagar sem decidir apagar."
    ],
@@ -92749,13 +92749,22 @@
   },
   "scripts/ci/check-agents-md-integrity.mjs": {
    "path": "scripts/ci/check-agents-md-integrity.mjs",
-   "lines": 208,
+   "lines": 335,
    "exports": [
     "const VISIBILIDADE",
     "const ARQUIVOS_DE_VISIBILIDADE",
     "function linhaQueAlegaPrivado",
     "function linhaDeVisibilidade",
-    "function problemasDeVisibilidade"
+    "function problemasDeVisibilidade",
+    "const WORKFLOWS_DIR",
+    "const MIGRATIONS_DIR",
+    "const DOC_CI",
+    "const WORKFLOWS_CITADOS_NO_AGENTS",
+    "function workflowsNoDiretorio",
+    "function workflowsAfirmados",
+    "function migrationsAfirmadas",
+    "function linhaQueNegaProtecao",
+    "function problemasDeFatos"
    ],
    "env": [
     "AGENTS_MD_BASE",
@@ -92781,6 +92790,24 @@
     {
      "name": "VISIBILIDADE",
      "value": "'publico'"
+    },
+    {
+     "name": "WORKFLOWS_DIR",
+     "value": "'.github/workflows'"
+    },
+    {
+     "name": "MIGRATIONS_DIR",
+     "value": "'supabase/migrations'"
+    },
+    {
+     "name": "DOC_CI",
+     "value": "'docs/agentes/github-ci.md'"
+    }
+   ],
+   "transition_maps": [
+    {
+     "name": "conteudosDeWorkflow",
+     "body": ""
     }
    ],
    "doc": "!/usr/bin/env node",
@@ -122152,10 +122179,25 @@
   }
  },
  "git": {
-  "sha": "66f6b9d56871966c0395a0d3ff88d63905b7eefd",
+  "sha": "47a8cb5432341c1328b32da98428220625c6ff7f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "47a8cb5",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)",
+    "files": [
+     ".github/workflows/guards.yml",
+     ".github/workflows/main.yml",
+     "AGENTS.md",
+     "docs/ci/README.md",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/agents-docs-baseline.unit.mjs",
+     "scripts/ci/check-agents-md-integrity.mjs"
+    ]
+   },
    {
     "sha": "66f6b9d",
     "date": "2026-11-25",
@@ -122478,23 +122520,20 @@
      "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
      "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
     ]
-   },
-   {
-    "sha": "19d6ce8",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/layout/__tests__/menuMobile.test.tsx",
-     "src/features/layout/components/MainLayout.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
     21
+   ],
+   [
+    "AGENTS.md",
+    4
+   ],
+   [
+    ".github/workflows/main.yml",
+    3
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
@@ -122505,8 +122544,20 @@
     3
    ],
    [
-    "AGENTS.md",
-    3
+    ".github/workflows/guards.yml",
+    2
+   ],
+   [
+    "docs/ci/README.md",
+    2
+   ],
+   [
+    "scripts/ci/agents-docs-baseline.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/check-agents-md-integrity.mjs",
+    2
    ],
    [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
@@ -122514,10 +122565,6 @@
    ],
    [
     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-    2
-   ],
-   [
-    ".github/workflows/main.yml",
     2
    ],
    [
@@ -122541,14 +122588,6 @@
     1
    ],
    [
-    ".github/workflows/guards.yml",
-    1
-   ],
-   [
-    "docs/ci/README.md",
-    1
-   ],
-   [
     "docs/pendencias/_indice.md",
     1
    ],
@@ -122562,14 +122601,6 @@
    ],
    [
     "scripts/ci/check-orfaos-componentes.mjs",
-    1
-   ],
-   [
-    "scripts/ci/check-orfaos-componentes.unit.mjs",
-    1
-   ],
-   [
-    "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
     1
    ]
   ]
