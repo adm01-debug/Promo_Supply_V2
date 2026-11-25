@@ -62,6 +62,25 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
         run: |
+          # Run disparado pelo Dependabot nao recebe secret do repositorio (o GitHub trata o
+          # PR do bot como PR de fork). Sem o secret o --strict reprovava TODO PR do Dependabot
+          # por um motivo que o bot nao pode corrigir: o Quality Gate ficava vermelho para
+          # sempre e nenhuma atualizacao de dependencia podia ser avaliada. A isencao e so
+          # deste caso e so quando o diff nao toca banco -- se o PR do Dependabot mexer em
+          # supabase/ ou em qualquer .sql, a auditoria continua obrigatoria.
+          # O gate segue intacto no push da main, onde o secret existe.
+          if [ -z "$SUPABASE_DB_URL" ] && [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+            base="${{ github.base_ref }}"
+            if [ -n "$base" ]; then
+              git fetch --no-tags --depth=1 origin "$base"
+              if git diff --name-only FETCH_HEAD | grep -qE '(^|/)supabase/|\.sql$'; then
+                echo "::error::PR do Dependabot toca banco/DDL, mas SUPABASE_DB_URL nao esta disponivel neste run -- auditoria de RLS nao pode ser pulada"
+                exit 1
+              fi
+            fi
+            echo "::warning::RLS Audit nao executada: run do Dependabot nao recebe SUPABASE_DB_URL e o diff nao toca banco/DDL. O gate roda no push da main."
+            exit 0
+          fi
           # Run the audit script if it exists
           if [ -f "scripts/rls-audit.ts" ]; then
             bun run scripts/rls-audit.ts --strict
