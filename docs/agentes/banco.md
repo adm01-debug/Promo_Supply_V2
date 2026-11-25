@@ -1,8 +1,9 @@
 # Banco de dados — referência para agentes
 
 Ler **antes** de rodar SQL, criar/aplicar migration ou rodar qualquer teste que fale com o Supabase.
-Resumo das regras no `AGENTS.md`; aqui está o detalhe. Errar o banco aqui é fácil: não há ledger de
-migration, não há banco local e o `.env` do repo aponta para produção.
+Resumo das regras no `AGENTS.md`; aqui está o detalhe. Errar o banco aqui é fácil: o ledger de
+migration está incompleto (14 linhas para 336 arquivos em 25/11/2026), não há banco local e o `.env` do
+repo aponta para produção.
 
 ## Onde se trabalha
 
@@ -41,7 +42,7 @@ migration, não há banco local e o `.env` do repo aponta para produção.
 | Dashboard | https://supabase.com/dashboard/project/lmypcdfsrgfftzhxawao |
 | Onde está escrito | `supabase/config.toml:1` · `supabase/.temp/linked-project.json` · `.env` · `vite.config.ts:90,106,121` · `index.html:13-14` · `deploy_edge_functions_promo_supply.sh:4,9` |
 | MCP para SQL | o MCP Supabase apontado para este ref. **Confira o ref antes do primeiro comando** — há MCPs de outros projetos carregados na mesma sessão (abaixo) |
-| Ledger de migration | **não existe** (`supabase_migrations.schema_migrations` ausente, conforme `DOCS/ESTADO/L12_BANCO_E_RUNTIME.md:35`; não reverificado no banco ao vivo) |
+| Ledger de migration | **existe e está incompleto** — `supabase_migrations.schema_migrations` com 14 linhas para 336 arquivos (medido no banco ao vivo em 25/11/2026; `DOCS/ESTADO/L12_BANCO_E_RUNTIME.md:35` afirmava o contrário e está desatualizado) |
 
 ### Bancos que NÃO são deste projeto (não escrever neles)
 
@@ -67,15 +68,21 @@ migration, não há banco local e o `.env` do repo aponta para produção.
 1. **Ordem obrigatória: arquivo → PR → merge em `main` → deploy do código → apply.** Nunca DDL a partir
    de branch aberta. `REVOKE`, `DROP`, rename ou mudança de contrato de função usada pelo front/edges:
    **nunca** antes do deploy do código correspondente.
-2. **NÃO VERIFICADO: como o DDL entra em produção hoje.** Não há workflow de migration
-   (grep por `supabase db|functions deploy` em `.github/workflows/` = zero), não há script de registro e
-   não há ledger. O indício é aplicação pelo painel/Lovable (279 arquivos, maioria com nome UUID gerado
-   pela Lovable). **Antes de aplicar qualquer DDL, pergunte ao dono qual é o caminho** — aplicar por fora
-   e não registrar é como o repo chegou a 279 arquivos sem saber o que rodou.
-3. **Sem ledger, "aplicado" não é verificável por arquivo.** Confirme o estado real no banco
-   (`pg_get_functiondef`, `pg_indexes`, `pg_policies`, `information_schema.columns`) antes de afirmar que
-   uma migration está em produção. `inventario/estado/banco.json` — que cruzaria isso — **não existe**
-   ainda (falta o secret `SUPABASE_ACCESS_TOKEN`; `inventario/README.md`).
+2. **Caminho oficial de apply: workflow `aplicar-migration-prod.yml`** (dispatch manual, exige o nome exato
+   do arquivo em `supabase/migrations/` e a confirmação `APLICAR`; transação única — migration não roda em
+   pedaços). Ele **não grava no ledger**: quem aplica por ele precisa registrar a versão depois (ou a
+   próxima migration pelo caminho padrão tenta reexecutar o arquivo). Origem dos 336 arquivos: painel/
+   Lovable e aplicações manuais, maioria com nome UUID gerado pela Lovable. **Antes de aplicar qualquer
+   DDL, pergunte ao dono qual é o caminho.**
+3. **Sem ledger completo, "aplicado" não é verificável por arquivo.** A paridade de objetos
+   (`paridade-banco.yml`, run de 24/11/2026 = success) prova que o conjunto de objetos declarado nas
+   migrations bate com o banco vivo, mas 50 dos arquivos não declaram objeto (só `DML`/`GRANT`). Confirme
+   o estado real no banco (`pg_get_functiondef`, `pg_indexes`, `pg_policies`,
+   `information_schema.columns`) antes de afirmar que uma migration está em produção.
+   A PR #448 registra as 321 versões já aplicadas no ledger (321 + a própria = 322 linhas novas, com
+   `ON CONFLICT (version) DO NOTHING`); enquanto ela não for aplicada, é a evidência de "já rodou".
+   `inventario/estado/banco.json` — que cruzaria isso — **não existe** ainda (falta o secret
+   `SUPABASE_ACCESS_TOKEN`; `inventario/README.md`).
 4. **Versão sem colisão:** antes de criar o arquivo, `ls supabase/migrations | tail` **e** busca de PRs
    abertas tocando `supabase/migrations/` (`github_graphql`; há PRs abertas de outros agentes).
    Padrão do nome: `AAAAMMDDHHMMSS_<slug>.sql` para arquivo novo escrito à mão.
@@ -83,7 +90,7 @@ migration, não há banco local e o `.env` do repo aponta para produção.
    `CREATE INDEX` simples.
 6. **`scripts/squash-migrations.sh` é destrutivo e nunca foi executado:** concatena tudo antes de um
    cutoff em `<última migration consolidada>_squashed_baseline.sql` e **apaga os originais**. Só com o
-   dono, e só depois de existir ledger. `--dry-run` mostra o plano sem tocar em nada.
+   dono, e só depois do ledger estar reconciliado (PR #448). `--dry-run` mostra o plano sem tocar em nada.
 7. Mexeu em RLS, função, trigger ou índice → leia antes
    `git show origin/contexto:docs/contexto/supabase/lints.md` (fonte dona do schema ao vivo) e rode
    `npm run test:rls` ciente de que ele fala com produção.
