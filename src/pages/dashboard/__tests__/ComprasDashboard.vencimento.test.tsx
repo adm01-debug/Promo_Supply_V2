@@ -14,14 +14,17 @@ const urgentItems = [
 ];
 
 const comparacao = { current: 0, previous: 0, sparkline: [] as number[] };
+// Taxa de SLA real (RPC get_compras_sla_metrics) — etapa 290/291.
+const comparacaoSla = { current: 87.5, previous: 80, sparkline: [80, 87.5] };
 
 vi.mock('@/hooks/useDashboardKPIs', () => ({
   useDashboardKPIs: () => ({
     kpis: {
-      comparisons: { aguardando: comparacao, volume: comparacao, economia: comparacao, sla: comparacao },
+      comparisons: { aguardando: comparacao, volume: comparacao, economia: comparacao, sla: comparacaoSla },
       economiaPercentual: 0,
       economiaGerada: 0,
       avgSla: 0,
+      taxaSlaReal: 87.5,
       charts: { monthlyTrends: [], cotacaoStatus: [], topCategories: [] },
     },
     pipeline: {},
@@ -44,7 +47,11 @@ vi.mock('@/integrations/supabase/client', () => {
 });
 vi.mock('@/components/compras/CriticalAlertsBar', () => ({ CriticalAlertsBar: () => null }));
 vi.mock('@/components/compras/PurchaseClimateWidget', () => ({ PurchaseClimateWidget: () => null }));
-vi.mock('@/components/compras/EnhancedKpiCard', () => ({ EnhancedKpiCard: () => null }));
+vi.mock('@/components/compras/EnhancedKpiCard', () => ({
+  EnhancedKpiCard: ({ title, value, format }: { title: string; value: number; format?: string }) => (
+    <div data-testid={`kpi-${title}`} data-value={String(value)} data-format={format} />
+  ),
+}));
 vi.mock('@/components/compras/PipelineChart', () => ({ PipelineChart: () => null }));
 vi.mock('@/components/compras/TrendAnalysisCharts', () => ({ TrendAnalysisCharts: () => null }));
 vi.mock('@/components/compras/SourcingIntelligenceWidget', () => ({ SourcingIntelligenceWidget: () => null }));
@@ -100,5 +107,24 @@ describe('ComprasDashboard — distribuição de SLA', () => {
       );
     });
     expect(await screen.findByTestId('sla-distribution')).toBeTruthy();
+  });
+});
+
+// Etapa 290/291: o widget `kpi-sla` esta no layout padrao (order 3) e o hook ja expoe
+// comparisons.sla da RPC get_compras_sla_metrics, mas o card nunca era renderizado.
+describe('ComprasDashboard — KPI de taxa de SLA', () => {
+  it('monta o card de Taxa SLA (kpi-sla) com o valor real em percentual', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    const card = await screen.findByTestId('kpi-dashboard.kpis.sla');
+    expect(card.getAttribute('data-value')).toBe('87.5');
+    expect(card.getAttribute('data-format')).toBe('percent');
   });
 });
