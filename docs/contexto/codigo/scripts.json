@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 51,
+ "total": 52,
  "scripts": [
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
@@ -137,6 +137,17 @@
    "arquivo": "scripts/ci/check-bundle-secrets.mjs",
    "descricao": "Guarda que o bundle publicado (dist/) nao expoe o JWT service_role do Supabase. Incidente de 20/08 (porta da V3): a variavel de ambiente errada",
    "linhas": 224,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "guards.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci/check-orfaos-componentes.mjs",
+   "descricao": "Etapa 274 (achado HIG-03, parte 2 de 2). Nada no CI reprovava um componente de `src/` sem importador: o Console de Sourcing nasceu orfao em duas PRs mergeadas em producao",
+   "linhas": 136,
    "env": [],
    "npm_scripts": [],
    "workflows": [

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 290,
+ "total": 291,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 272
+  "unit": 273
  },
  "onde_ficam": [
   {
@@ -18,11 +18,11 @@
    "arquivos": 196
   },
   {
-   "padrao": "co-localizado (*.test)",
-   "arquivos": 42
+   "padrao": "outro",
+   "arquivos": 43
   },
   {
-   "padrao": "outro",
+   "padrao": "co-localizado (*.test)",
    "arquivos": 42
   },
   {
@@ -102,6 +102,15 @@
     "scripts/ci/check-bundle-secrets.mjs"
    ],
    "casos": 35
+  },
+  {
+   "arquivo": "scripts/ci/check-orfaos-componentes.unit.mjs",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [
+    "scripts/ci/check-orfaos-componentes.mjs"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "scripts/ci/check-test-inventory.unit.mjs",
@@ -2638,6 +2647,7 @@
   "scripts/ci/branch-podaveis.mjs": 1,
   "scripts/ci/bump-toolchain.mjs": 1,
   "scripts/ci/check-bundle-secrets.mjs": 1,
+  "scripts/ci/check-orfaos-componentes.mjs": 1,
   "scripts/ci/check-test-inventory.mjs": 1,
   "scripts/ci/commit-msg-lint.mjs": 1,
   "scripts/ci/gerar-matriz-edge-tabela.mjs": 1,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "91c7aac6640392e735c62bd1035eecc2f33383ac",
+  "sha": "0d68cdf9c5b8eeeeb5435362da1b67ac18152bf0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 19:09 UTC",
-  "files_total": 1453,
-  "code_files": 1280,
-  "code_lines": 215641,
+  "generated_at": "2026-11-25 19:11 UTC",
+  "files_total": 1456,
+  "code_files": 1282,
+  "code_lines": 215853,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b1d786c99ae31f71",
+ "facts_hash": "a05726ffd74bfedb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -280,7 +280,7 @@
    ".ts": 441,
    ".tsx": 415,
    ".sql": 349,
-   ".mjs": 67,
+   ".mjs": 69,
    ".py": 5,
    ".js": 3
   },
@@ -34634,8 +34634,8 @@
   },
   {
    "module": "scripts",
-   "files": 80,
-   "lines": 29497,
+   "files": 82,
+   "lines": 29709,
    "tables": [
     "a",
     "a_tabela",
@@ -34704,6 +34704,7 @@
     "bump-toolchain.mjs: partes, maisNova",
     "check-agents-md-integrity.mjs: VISIBILIDADE, ARQUIVOS_DE_VISIBILIDADE, linhaQueAlegaPrivado, linhaDeVisibilidade, problemasDeVisibilidade",
     "check-bundle-secrets.mjs: extrairChavesSecretas, extrairTokens, decodificarPayload, ehArquivoVarrido, listarArquivosVarridos, varrer",
+    "check-orfaos-componentes.mjs: RAIZ, BASELINE, varrer, ehComponente, analisar, comparar",
     "check-test-inventory.mjs: RAIZ, ALLOWLIST_NODE, comandoExecutadoNoWorkflow, codigoExecutavelDeWorkflow, semComentarioDeShell, padroesNodeDeWorkflow",
     "commit-msg-lint.mjs: TIPOS, SUBJECT_MIN_LENGTH, cabecalhoDaMensagem, validarMensagem, main",
     "edge-tenant-guard.unit.mjs: listarFontesEdge, chamadasGetTenantId",
@@ -34802,6 +34803,8 @@
     "scripts/ci/check-agents-md-integrity.mjs",
     "scripts/ci/check-bundle-secrets.mjs",
     "scripts/ci/check-bundle-secrets.unit.mjs",
+    "scripts/ci/check-orfaos-componentes.mjs",
+    "scripts/ci/check-orfaos-componentes.unit.mjs",
     "scripts/ci/check-test-inventory.mjs",
     "scripts/ci/check-test-inventory.unit.mjs",
     "scripts/ci/commit-msg-lint.mjs",
@@ -34855,9 +34858,7 @@
     "scripts/supabase_snapshot/snapshot.py",
     "scripts/supabase_snapshot/test_snapshot.py",
     "scripts/types-sync/check-remocoes-destrutivas.mjs",
-    "scripts/types-sync/identidade-banco.mjs",
-    "scripts/types-sync/local-pg-proxy.mjs",
-    "scripts/types-sync/typecheck-ratchet.mjs"
+    "scripts/types-sync/identidade-banco.mjs"
    ]
   },
   {
@@ -92829,6 +92830,34 @@
    ],
    "uses_service_role": true
   },
+  "scripts/ci/check-orfaos-componentes.mjs": {
+   "path": "scripts/ci/check-orfaos-componentes.mjs",
+   "lines": 136,
+   "exports": [
+    "const RAIZ",
+    "const BASELINE",
+    "function varrer",
+    "function ehComponente",
+    "function analisar",
+    "function comparar",
+    "function lerBaseline"
+   ],
+   "params": [
+    {
+     "name": "BASELINE",
+     "value": "'docs/qa/baseline-orfaos-componentes.json'"
+    }
+   ],
+   "doc": "!/usr/bin/env node Etapa 274 (achado HIG-03, parte 2 de 2). Nada no CI reprovava um componente de `src/` sem importador: o Console de Sourcing nasceu orfao em duas PRs mergeadas em producao (#304/#306, ~1.026 linhas) e so foi ligado na etapa 273 (PR #463). Este verificador compara o conjunto de orfa …"
+  },
+  "scripts/ci/check-orfaos-componentes.unit.mjs": {
+   "path": "scripts/ci/check-orfaos-componentes.unit.mjs",
+   "lines": 76,
+   "rule_comments": [
+    "forma que deve reprovar: componente que ninguem menciona."
+   ],
+   "doc": "Suite do guard de componentes orfaos (etapa 274). Fixture em diretorio temporario para provar as tres formas de ligacao que o criterio textual precisa enxergar — import direto com alias `@/`, barrel `index.ts` reexportando, e import dinamico (lazy) — e a unica forma que deve reprovar: componente que …"
+  },
   "scripts/ci/check-test-inventory.mjs": {
    "path": "scripts/ci/check-test-inventory.mjs",
    "lines": 304,
@@ -122112,10 +122141,36 @@
   }
  },
  "git": {
-  "sha": "91c7aac6640392e735c62bd1035eecc2f33383ac",
+  "sha": "0d68cdf9c5b8eeeeb5435362da1b67ac18152bf0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0d68cdf",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): o teste de edge pulado deixa de ser invisivel no CI (#457)",
+    "files": [
+     ".github/workflows/main.yml",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
+   {
+    "sha": "f751a0e",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): reprova componente de src sem importador no guards (#465)",
+    "files": [
+     ".github/workflows/guards.yml",
+     "docs/ci/README.md",
+     "docs/pendencias/_indice.md",
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/baseline-orfaos-componentes.json",
+     "scripts/automation.config.json",
+     "scripts/ci/check-orfaos-componentes.mjs",
+     "scripts/ci/check-orfaos-componentes.unit.mjs"
+    ]
+   },
    {
     "sha": "91c7aac",
     "date": "2026-11-25",
@@ -122421,34 +122476,6 @@
      "src/components/accessibility/AdvancedAccessibility.tsx",
      "src/components/accessibility/__tests__/reducaoMovimento.test.tsx"
     ]
-   },
-   {
-    "sha": "d93a2df",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/App.tsx",
-     "src/components/accessibility/SkipLinks.tsx",
-     "src/components/accessibility/__tests__/skipLinks.test.tsx",
-     "src/components/mobile/BottomNavigation.tsx",
-     "src/features/layout/components/MainLayout.tsx"
-    ]
-   },
-   {
-    "sha": "d1500f1",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/App.tsx",
-     "src/components/accessibility/AdvancedAccessibility.tsx",
-     "src/components/accessibility/__tests__/painelAcessibilidade.test.tsx",
-     "src/features/layout/components/HeaderActions.tsx",
-     "src/pages/auth/Auth.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122469,6 +122496,10 @@
     3
    ],
    [
+    ".github/workflows/main.yml",
+    2
+   ],
+   [
     "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
     2
    ],
@@ -122481,16 +122512,32 @@
     2
    ],
    [
-    "src/features/layout/components/MainLayout.tsx",
-    2
+    ".github/workflows/guards.yml",
+    1
    ],
    [
-    "src/components/accessibility/AdvancedAccessibility.tsx",
-    2
+    "docs/ci/README.md",
+    1
    ],
    [
-    "src/App.tsx",
-    2
+    "docs/pendencias/_indice.md",
+    1
+   ],
+   [
+    "docs/qa/baseline-orfaos-componentes.json",
+    1
+   ],
+   [
+    "scripts/automation.config.json",
+    1
+   ],
+   [
+    "scripts/ci/check-orfaos-componentes.mjs",
+    1
+   ],
+   [
+    "scripts/ci/check-orfaos-componentes.unit.mjs",
+    1
    ],
    [
     "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
@@ -122510,26 +122557,6 @@
    ],
    [
     "tests-e2e/dashboard-ui.spec.ts",
-    1
-   ],
-   [
-    "tests-e2e/elite-validation.spec.ts",
-    1
-   ],
-   [
-    "tests-e2e/production-ready.spec.ts",
-    1
-   ],
-   [
-    "tests-e2e/workflow-advanced.spec.ts",
-    1
-   ],
-   [
-    "src/tests/integration/contract-testing.test.ts",
-    1
-   ],
-   [
-    "src/tests/integration/contract-validation.test.ts",
     1
    ]
   ]
