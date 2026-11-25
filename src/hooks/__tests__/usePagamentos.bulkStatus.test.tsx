@@ -96,4 +96,32 @@ describe('usePagamentos · bulkUpdateStatus (UI-01)', () => {
     expect(updatesAplicados[0].updates.status).toBe('agendado');
     expect(toastError).toHaveBeenCalledWith(expect.stringContaining('PAG-1'));
   });
+
+      // Etapa 247 (UI-12): a data escolhida no calendario era descartada.
+      it('grava a data escolhida quando o agendamento tem data', async () => {
+        const { result } = renderHook(() => usePagamentos(), { wrapper });
+        await waitFor(() => expect(result.current.pagamentos).toHaveLength(2));
+
+        await act(async () => {
+          await result.current.bulkUpdateStatus(['p2'], 'agendado', '2026-12-15');
+        });
+
+        expect(updatesAplicados).toHaveLength(1);
+        expect(updatesAplicados[0].updates).toMatchObject({
+          status: 'agendado',
+          data_agendamento: '2026-12-15',
+        });
+      });
+
+      it('nao inventa data de agendamento quando nenhuma foi escolhida', async () => {
+        const { result } = renderHook(() => usePagamentos(), { wrapper });
+        await waitFor(() => expect(result.current.pagamentos).toHaveLength(2));
+
+        await act(async () => {
+          await result.current.bulkUpdateStatus(['p2'], 'agendado');
+        });
+
+        expect(updatesAplicados).toHaveLength(1);
+        expect(updatesAplicados[0].updates).not.toHaveProperty('data_agendamento');
+      });
 });

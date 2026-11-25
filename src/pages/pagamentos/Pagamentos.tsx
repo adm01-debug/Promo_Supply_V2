@@ -35,7 +35,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -258,6 +258,9 @@ const Pagamentos = () => {
                                {vencInfo.label}
                              </div>
                              <p className="text-[10px] text-muted-foreground font-medium mt-1">{format(new Date(p.data_vencimento), 'dd MMM yyyy')}</p>
+                             {p.status === 'agendado' && p.data_agendamento && (
+                                                            <p className="text-[10px] font-bold text-purple-600 mt-1">AGENDADO: {formatDate(p.data_agendamento)}</p>
+                             )}
                           </TableCell>
                           <TableCell className="text-right">
                             <span className="font-black text-foreground">
@@ -307,7 +310,7 @@ const Pagamentos = () => {
         onOpenChange={setScheduleModalOpen} 
         pagamentos={selectedForSchedule} 
         onSchedule={async (ids, date) => {
-          const ok = await bulkUpdateStatus(ids, 'agendado');
+                  const ok = await bulkUpdateStatus(ids, 'agendado', date);
           if (ok) {
             setSelectedIds([]);
             setScheduleModalOpen(false);
