@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9a655d1bafd8673cb5ca784f1e110a245d6e42dd",
+  "sha": "91c7aac6640392e735c62bd1035eecc2f33383ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 18:18 UTC",
+  "generated_at": "2026-11-25 19:09 UTC",
   "files_total": 1453,
   "code_files": 1280,
-  "code_lines": 215634,
+  "code_lines": 215641,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "46abd01733a13e47",
+ "facts_hash": "b1d786c99ae31f71",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -18680,7 +18680,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_dono_insert",
@@ -18690,7 +18690,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_dono_delete",
@@ -18700,7 +18700,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_gestor_select",
@@ -18710,7 +18710,7 @@
     "mode": "permissive",
     "using": "( (bucket_id = 'documentos' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role))) OR (bucket_id = 'comprovantes' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_admin_delete",
@@ -18720,7 +18720,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND public.has_role(auth.uid(), 'admin'::public.app_role) AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_select",
@@ -18730,7 +18730,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_insert",
@@ -18740,7 +18740,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_delete",
@@ -18750,7 +18750,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_gestor_select",
@@ -18760,7 +18760,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_leitura_publica",
@@ -18770,7 +18770,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'product-images'",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_insert",
@@ -18780,7 +18780,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_dono_delete",
@@ -18790,7 +18790,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "Authenticated can view versions",
@@ -27170,7 +27170,7 @@
    "supabase/migrations/20261113123738_comprador_nao_altera_dados_de_outros.sql",
    "supabase/migrations/20261113124508_cron_limpa_historico_semanal.sql",
    "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
-   "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+   "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
    "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql",
    "supabase/migrations/20261114095500_corrige_mojibake_nome_sourcing_event_lots.sql",
    "supabase/migrations/20261117150000_religa_cadastro_de_usuarios.sql",
@@ -36455,7 +36455,7 @@
   {
    "module": "supabase/migrations",
    "files": 338,
-   "lines": 27910,
+   "lines": 27917,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -75796,7 +75796,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_dono_insert",
@@ -75806,7 +75806,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_dono_delete",
@@ -75816,7 +75816,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND (storage.foldername(name))[2] = (auth.uid())::text AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) ELS …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_gestor_select",
@@ -75826,7 +75826,7 @@
     "mode": "permissive",
     "using": "( (bucket_id = 'documentos' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role))) OR (bucket_id = 'comprovantes' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_tenant_admin_delete",
@@ -75836,7 +75836,7 @@
     "mode": "permissive",
     "using": "bucket_id IN ('documentos', 'comprovantes') AND public.has_role(auth.uid(), 'admin'::public.app_role) AND CASE WHEN (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN public.user_belongs_to_tenant(auth.uid(), ((storage.foldername(name))[1])::uuid) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_select",
@@ -75846,7 +75846,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_insert",
@@ -75856,7 +75856,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_dono_delete",
@@ -75866,7 +75866,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_fiscal_gestor_select",
@@ -75876,7 +75876,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_leitura_publica",
@@ -75886,7 +75886,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'product-images'",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_insert",
@@ -75896,7 +75896,7 @@
     "mode": "permissive",
     "using": "",
     "check": "bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "storage_produtos_dono_delete",
@@ -75906,7 +75906,7 @@
     "mode": "permissive",
     "using": "bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)",
     "check": "",
-    "src": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql"
+    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
     "name": "Authenticated can view versions",
@@ -121719,8 +121719,8 @@
     "WHERE created_at < now() - interval '90 days'"
    ]
   },
-  "supabase/migrations/20261113180000_storage_policies_por_bucket.sql": {
-   "path": "supabase/migrations/20261113180000_storage_policies_por_bucket.sql",
+  "supabase/migrations/20261113180001_storage_policies_por_bucket.sql": {
+   "path": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
    "lines": 209
   },
   "supabase/migrations/20261113180500_gatilhos_duplicados_e_orcamento_do_pedido.sql": {
@@ -121878,7 +121878,7 @@
   },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
-   "lines": 411
+   "lines": 418
   },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
@@ -122112,10 +122112,20 @@
   }
  },
  "git": {
-  "sha": "9a655d1bafd8673cb5ca784f1e110a245d6e42dd",
+  "sha": "91c7aac6640392e735c62bd1035eecc2f33383ac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "91c7aac",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)",
+    "files": [
+     "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
+     "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql"
+    ]
+   },
    {
     "sha": "9a655d1",
     "date": "2026-11-25",
@@ -122439,29 +122449,12 @@
      "src/features/layout/components/HeaderActions.tsx",
      "src/pages/auth/Auth.tsx"
     ]
-   },
-   {
-    "sha": "0372d49",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(transicoes): recupera a frente das PRs #395 e #396 (matriz de status unica no front, etapas 124/125) (#441)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
-     "src/features/pedidos/statusTransitions.ts",
-     "src/hooks/usePagamentos.ts",
-     "src/lib/__tests__/creditoFornecedor.test.ts",
-     "src/lib/__tests__/statusTransitionsBanco.test.ts",
-     "src/lib/creditoFornecedor.ts",
-     "src/lib/statusTransitionsBanco.ts",
-     "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    22
+    21
    ],
    [
     "src/pages/dashboard/ComprasDashboard.tsx",
@@ -122474,6 +122467,10 @@
    [
     "AGENTS.md",
     3
+   ],
+   [
+    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
+    2
    ],
    [
     "docs/agentes/banco.md",
@@ -122494,6 +122491,10 @@
    [
     "src/App.tsx",
     2
+   ],
+   [
+    "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
+    1
    ],
    [
     "src/hooks/__tests__/useRealPushNotifications.test.tsx",
@@ -122529,14 +122530,6 @@
    ],
    [
     "src/tests/integration/contract-validation.test.ts",
-    1
-   ],
-   [
-    "src/tests/integration/shared-schemas.ts",
-    1
-   ],
-   [
-    "src/tests/contracts-elite.test.ts",
     1
    ]
   ]

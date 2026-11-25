@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "9a655d1bafd8673cb5ca784f1e110a245d6e42dd",
+  "commit": "91c7aac6640392e735c62bd1035eecc2f33383ac",
   "branch": "main",
-  "data_commit": "2026-11-25T15:16:45-03:00",
+  "data_commit": "2026-11-25T16:08:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "91c7aac",
+    "data": "2026-11-25",
+    "assunto": "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)"
+   },
    {
     "sha": "9a655d1",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "2be0c92",
     "data": "2026-11-24",
     "assunto": "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)"
-   },
-   {
-    "sha": "b1db1c7",
-    "data": "2026-11-24",
-    "assunto": "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)"
    }
   ],
   "arquivos_mudados_7d": 490,
@@ -301,15 +301,15 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 297
-   },
-   {
-    "autor": "dependabot[bot]",
-    "commits": 2
+    "commits": 298
    },
    {
     "autor": "github-actions[bot]",
     "commits": 2
+   },
+   {
+    "autor": "dependabot[bot]",
+    "commits": 1
    }
   ]
  },
