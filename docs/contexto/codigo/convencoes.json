@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)",
    "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)",
    "fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)",
    "fix(rls): fecha escrita em notifications e category_strategies (#451)",
-   "chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)",
-   "chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)"
+   "chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)"
   ]
  },
  "pr_template": null,

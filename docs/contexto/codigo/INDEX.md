@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `b22b3ab19416474516f1afbd0c7f379af687967e` (2026-11-25T09:26:21-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5f80e289449b64ff08c709f5ec7f6170bbe49bd7` (2026-11-25T09:27:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (102)
+- docs/qa/05-PROGRESSO.md (103)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (16)
 - bun.lock (9)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `5f80e28` chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)
 - 2026-11-25 `b22b3ab` fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)
 - 2026-11-25 `f2f3e24` fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)
 - 2026-11-25 `b4575e8` fix(rls): fecha escrita em notifications e category_strategies (#451)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `b1db1c7` fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)
 - 2026-11-24 `19d6ce8` fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)
 - 2026-11-24 `4186556` fix(a11y): "Reduzir movimento" passa a valer no framer-motion e limpa o codigo morto (#444)
-- 2026-11-24 `d93a2df` fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "b22b3ab19416474516f1afbd0c7f379af687967e",
+  "commit": "5f80e289449b64ff08c709f5ec7f6170bbe49bd7",
   "branch": "main",
-  "data_commit": "2026-11-25T09:26:21-03:00",
+  "data_commit": "2026-11-25T09:27:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5f80e28",
+    "data": "2026-11-25",
+    "assunto": "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)"
+   },
    {
     "sha": "b22b3ab",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "3beb6da",
     "data": "2026-11-24",
     "assunto": "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)"
-   },
-   {
-    "sha": "338a212",
-    "data": "2026-11-24",
-    "assunto": "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)"
    }
   ],
   "arquivos_mudados_7d": 494,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 102
+    "mudancas": 103
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 102
+    "mudancas": 103
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -282,6 +282,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "supabase/config.toml",
+    "mudancas": 6
+   },
+   {
     "arquivo": "supabase/functions/_shared/xbz_client.ts",
     "mudancas": 6
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "supabase/functions/workflow-engine/index.ts",
     "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/deploy-edge-functions.yml",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
