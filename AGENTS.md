@@ -20,8 +20,9 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   exploração ampla → subagente; nenhuma tool "por garantia"; não gere código que não será aplicado.
 - Segredos nunca em código, commit ou resposta — só em env/secret do serviço (edge: `supabase secrets set`
   ou painel; workflow: secret do GitHub). PAT exposto em chat → rotacionar na hora. Nunca imprima nem
-  commite token, `service_role` ou `SUPABASE_DB_URL`. O `.env` deste repo está comitado e o `.gitignore` não
-  tem entrada de env: não acrescente nada sensível a ele.
+  commite token, `service_role` ou `SUPABASE_DB_URL`. O `.env` **não** é versionado (`.gitignore` linhas 49-52,
+  com `!.env.example` de propósito): nunca crie arquivo de ambiente versionado — este repo é **público**
+  e todo commit é leitura de qualquer um.
 
 ## Bugs e funcionalidades
 - Diagnóstico antes de patch: logs e estado real, ponto exato (arquivo:linha), causa; várias causas → liste
@@ -51,7 +52,7 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   `Próximos passos: nada pendente neste escopo.`
 
 ## Fluxo Git — detalhe em `docs/agentes/github-ci.md`
-- Repo `adm01-debug/Promo_Supply_V2`, `main`, **privado**. Escrita no GitHub: MCP **`GITHUB - MCP - FOREVER`**
+- Repo `adm01-debug/Promo_Supply_V2`, `main`, **público**. Escrita no GitHub: MCP **`GITHUB - MCP - FOREVER`**
   (`github_push_files`: `files` + `delete` num commit); o MCP padrão do GitHub dá 403 em write. `git push`/`gh`
   só em repo autorizado na sessão.
 - Nunca commite em `main`. Só escreva em branch que **você** criou nesta sessão; branch alheia ou já

@@ -48,6 +48,67 @@ if (missing.length > 0) {
   process.exit();
 }
 
+// Fatos verificaveis offline (etapa 264). A visibilidade do repositorio e PUBLICA e os
+// documentos operacionais afirmavam "privado" em 6 linhas -- inclusive a frase que dizia
+// que o `.env` estava comitado. Num repo publico esse par de mentiras convida a tratar
+// segredo como seguro. A visibilidade em si nao e checavel aqui (guard offline, sem rede);
+// o que este bloco afirma e a consistencia dos documentos com o fato e com o .gitignore.
+// Se a visibilidade mudar, mude AGENTS.md + docs/agentes/github-ci.md e a constante
+// VISIBILIDADE na MESMA PR -- e de proposito que o guard reprove a mudanca silenciosa.
+export const VISIBILIDADE = 'publico';
+export const ARQUIVOS_DE_VISIBILIDADE = ['AGENTS.md', 'docs/agentes/github-ci.md'];
+
+/** Linha que afirma visibilidade contraria ao fato, ou null. */
+export function linhaQueAlegaPrivado(texto) {
+  const regra = /(repo|reposit[oó]rio|visibilidade)[^.\n]{0,40}privad/i;
+  return texto.split('\n').find((l) => regra.test(l)) || null;
+}
+
+/** Linha de AGENTS.md que declara a visibilidade do repo, ou null. */
+export function linhaDeVisibilidade(texto) {
+  return texto.split('\n').find((l) => /`main`[^.\n]*p[uú]blico/i.test(l)) || null;
+}
+
+/** Lista de problemas de consistencia documental; vazia quando tudo bate. */
+export function problemasDeVisibilidade({ agents, docVisibilidade, gitignore }) {
+  const problemas = [];
+  for (const [nome, texto] of [
+    [AGENTS, agents],
+    [ARQUIVOS_DE_VISIBILIDADE[1], docVisibilidade],
+  ]) {
+    const linha = linhaQueAlegaPrivado(texto);
+    if (linha) {
+      problemas.push(`${nome}: afirma que o repo e privado, mas ele e ${VISIBILIDADE}: ${linha.trim()}`);
+    }
+  }
+  if (!linhaDeVisibilidade(agents)) {
+    problemas.push(`${AGENTS}: a linha de visibilidade nao afirma que o repositorio e ${VISIBILIDADE}.`);
+  }
+  // AGENTS.md afirma que o `.env` nao e versionado; o fato mora no .gitignore.
+  if (gitignore !== null && !/^\.env$/m.test(gitignore)) {
+    problemas.push('.gitignore: `.env` nao esta ignorado, e AGENTS.md afirma que nao e versionado.');
+  }
+  return problemas;
+}
+
+// Sem `docs/agentes/github-ci.md` este nao e o checkout deste projeto (a suite do guard usa
+// repositorios sinteticos): nao ha fato a conferir, e reprovar ali seria falso positivo.
+const docVisibilidade = existsSync(ARQUIVOS_DE_VISIBILIDADE[1])
+  ? readFileSync(ARQUIVOS_DE_VISIBILIDADE[1], 'utf8')
+  : null;
+if (docVisibilidade !== null && process.env.AGENTS_MD_SKIP_FATOS !== '1') {
+  const problemas = problemasDeVisibilidade({
+    agents: content,
+    docVisibilidade,
+    gitignore: existsSync('.gitignore') ? readFileSync('.gitignore', 'utf8') : null,
+  });
+  for (const p of problemas) console.error(`::error::${p}`);
+  if (problemas.length > 0) {
+    process.exitCode = 1;
+    process.exit();
+  }
+}
+
 function bytesAtuais() {
   let total = 0;
   for (const f of CONJUNTO_RAIZ) {
