@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5d7b9a1eb43b792f460a61175636525867ddd1da` (2026-11-25T18:55:42-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `df2f22e2ab87f86ffa3f855a0b5efcca07b88e2a` (2026-11-25T19:23:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (856), SQL (351), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (857), SQL (351), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1457 |
-| arquivos_codigo | 931 |
-| linhas_codigo | 186959 |
+| arquivos_total | 1458 |
+| arquivos_codigo | 932 |
+| linhas_codigo | 187078 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 339 |
 | cron_jobs | 74 |
-| testes | 291 |
+| testes | 292 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (196), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (197), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `df2f22e` fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)
 - 2026-11-25 `5d7b9a1` chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)
 - 2026-11-25 `6463184` infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)
 - 2026-11-25 `0964197` chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `6d00e2a` feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)
 - 2026-11-25 `4d16bc6` fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)
 - 2026-11-25 `f2e050c` fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)
-- 2026-11-25 `ac3487c` fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

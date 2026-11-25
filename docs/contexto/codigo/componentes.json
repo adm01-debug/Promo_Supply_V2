@@ -5205,7 +5205,7 @@
     "Pagamentos"
    ],
    "export_default": "Pagamentos",
-   "linhas": 305,
+   "linhas": 323,
    "dominio": "pages/pagamentos",
    "hooks_locais": [
     "useEmpresaFilter",

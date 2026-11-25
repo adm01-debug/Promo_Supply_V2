@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (196)",
+   "co-localizado (__tests__) (197)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)",
    "chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)",
    "infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)",
    "chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)",
-   "ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)",
-   "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)"
+   "ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)"
   ]
  },
  "pr_template": null,

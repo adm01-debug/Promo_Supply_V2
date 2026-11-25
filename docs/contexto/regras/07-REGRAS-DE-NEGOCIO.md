@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5d7b9a1eb4` · branch `main` · 2026-11-25 22:02 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `df2f22e2ab` · branch `main` · 2026-11-25 22:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1021,7 +1021,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `awarded` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `backlog` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `cancelada` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
-| `status` | `cancelado` | compara, filtra | `src/components/pagamentos/PagamentoFinancialDashboard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/pages/pedidos/PedidoDetailsDialog.tsx`<br>`supabase/functions/weekly-summary-report/index.ts` |
+| `status` | `cancelado` | compara, filtra | `src/components/pagamentos/PagamentoFinancialDashboard.tsx`<br>`src/components/pedidos/PedidoMobileCard.tsx`<br>`src/pages/pagamentos/Pagamentos.tsx`<br>`src/pages/pedidos/PedidoDetailsDialog.tsx`<br>`supabase/functions/weekly-summary-report/index.ts` |
 | `status` | `cancelled` | compara | `src/pages/admin/SourcingPipeline.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `completed` | compara, escreve | `src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/StatusTimeline.tsx`<br>`src/components/settings/TourSettingsPanel.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx`<br>`src/hooks/usePasswordResetRequests.ts`<br>… +2 |
 | `status` | `concluida` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/SolicitacaoCard.tsx`<br>`src/hooks/useDevolucoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx` |
@@ -2455,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3387 testes em 240 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3392 testes em 241 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2631,6 +2631,7 @@ _nenhum item encontrado_
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
 | `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
+| `src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx` | 5 | Pagamentos - os 7 status do CHECK aparecem na tela (J7-16 e J7-17) · pagamento  · pagamento  · a aba CANCELADOS lista o pagamento cancelado com o badge CANCELADO … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
 | `src/pages/recebimento/__tests__/recebimentoOfflineA11y.test.tsx` | 5 | RecebimentoOffline - selecao de pedido acessivel por teclado · seleciona o pedido no clique · seleciona o pedido com Enter · seleciona o pedido com a barra de espaco … |
 | `src/tests/integration/contract-testing.test.ts` | 5 | Edge Function Contract Validation · should validate a correct negotiation payload · should reject negotiation payload without cotacoes · should reject solicitacao with a malformed UUID … |

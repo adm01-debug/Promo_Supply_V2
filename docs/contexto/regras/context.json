@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5d7b9a1eb43b792f460a61175636525867ddd1da",
+  "sha": "df2f22e2ab87f86ffa3f855a0b5efcca07b88e2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 22:02 UTC",
-  "files_total": 1458,
-  "code_files": 1284,
-  "code_lines": 217028,
+  "generated_at": "2026-11-25 22:30 UTC",
+  "files_total": 1459,
+  "code_files": 1285,
+  "code_lines": 217147,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9f0924667b079e70",
+ "facts_hash": "88bf61e49f1be5d5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 415,
+   ".tsx": 416,
    ".sql": 351,
    ".mjs": 69,
    ".py": 5,
@@ -35861,8 +35861,8 @@
   },
   {
    "module": "src/pages",
-   "files": 153,
-   "lines": 34864,
+   "files": 154,
+   "lines": 34983,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -55469,6 +55469,12 @@
    {
     "file": "src/pages/pagamentos/Pagamentos.tsx",
     "field": "status",
+    "value": "cancelado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/pagamentos/Pagamentos.tsx",
+    "field": "status",
     "value": "aprovado",
     "kind": "compara"
    },
@@ -55476,6 +55482,12 @@
     "file": "src/pages/pagamentos/Pagamentos.tsx",
     "field": "status",
     "value": "pago",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/pagamentos/Pagamentos.tsx",
+    "field": "status",
+    "value": "cancelado",
     "kind": "compara"
    },
    {
@@ -69009,6 +69021,26 @@
     "name": "o clique na linha continua abrindo o detalhe (mouse preservado)"
    },
    {
+    "file": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    "name": "Pagamentos - os 7 status do CHECK aparecem na tela (J7-16 e J7-17)"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    "name": "pagamento "
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    "name": "pagamento "
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    "name": "a aba CANCELADOS lista o pagamento cancelado com o badge CANCELADO"
+   },
+   {
+    "file": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    "name": "a coluna de vencimento do cancelado nao afirma que ele esta vencido"
+   },
+   {
     "file": "src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx",
     "name": "acao de excluir na lista de pedidos"
    },
@@ -81636,6 +81668,7 @@
      "cancelado": [
       "compara:src/components/pagamentos/PagamentoFinancialDashboard.tsx",
       "compara:src/components/pedidos/PedidoMobileCard.tsx",
+      "compara:src/pages/pagamentos/Pagamentos.tsx",
       "compara:src/pages/pedidos/PedidoDetailsDialog.tsx",
       "filtra:supabase/functions/weekly-summary-report/index.ts"
      ],
@@ -112232,7 +112265,7 @@
   },
   "src/pages/pagamentos/Pagamentos.tsx": {
    "path": "src/pages/pagamentos/Pagamentos.tsx",
-   "lines": 305,
+   "lines": 323,
    "exports": [
     "default Pagamentos"
    ],
@@ -112244,12 +112277,22 @@
     },
     {
      "field": "status",
+     "value": "cancelado",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
      "value": "aprovado",
      "kind": "compara"
     },
     {
      "field": "status",
      "value": "pago",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "cancelado",
      "kind": "compara"
     }
    ]
@@ -112267,6 +112310,25 @@
     "o acionamento do controle abre o detalhe do pagamento",
     "o clique no controle abre o detalhe uma unica vez",
     "o clique na linha continua abrindo o detalhe (mouse preservado)"
+   ]
+  },
+  "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx": {
+   "path": "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+   "lines": 101,
+   "is_test": true,
+   "rule_comments": [
+    "o badge do status usa bg-muted; a coluna de vencimento repete o rotulo (mesmo padrao do PAGO)"
+   ],
+   "temporal": [
+    "data_vencimento: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(),",
+    "data_vencimento: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),"
+   ],
+   "tests": [
+    "Pagamentos - os 7 status do CHECK aparecem na tela (J7-16 e J7-17)",
+    "pagamento ",
+    "pagamento ",
+    "a aba CANCELADOS lista o pagamento cancelado com o badge CANCELADO",
+    "a coluna de vencimento do cancelado nao afirma que ele esta vencido"
    ]
   },
   "src/pages/pedidos/PedidoDetailsDialog.tsx": {
@@ -122179,10 +122241,22 @@
   }
  },
  "git": {
-  "sha": "5d7b9a1eb43b792f460a61175636525867ddd1da",
+  "sha": "df2f22e2ab87f86ffa3f855a0b5efcca07b88e2a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "df2f22e",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)",
+    "files": [
+     ".github/workflows/main.yml",
+     "docs/qa/02-CENARIOS.md",
+     "src/pages/pagamentos/Pagamentos.tsx",
+     "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx"
+    ]
+   },
    {
     "sha": "5d7b9a1",
     "date": "2026-11-25",
@@ -122507,16 +122581,6 @@
     "files": [
      ".github/workflows/aplicar-migration-prod.yml"
     ]
-   },
-   {
-    "sha": "a2f2741",
-    "date": "2026-11-24",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)",
-    "files": [
-     "bun.lock",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -122533,6 +122597,10 @@
     4
    ],
    [
+    ".github/workflows/main.yml",
+    3
+   ],
+   [
     "src/pages/dashboard/ComprasDashboard.tsx",
     3
    ],
@@ -122541,19 +122609,7 @@
     3
    ],
    [
-    "bun.lock",
-    2
-   ],
-   [
-    "package.json",
-    2
-   ],
-   [
     ".github/workflows/guards.yml",
-    2
-   ],
-   [
-    ".github/workflows/main.yml",
     2
    ],
    [
@@ -122585,19 +122641,27 @@
     2
    ],
    [
+    "docs/qa/02-CENARIOS.md",
+    1
+   ],
+   [
+    "src/pages/pagamentos/Pagamentos.tsx",
+    1
+   ],
+   [
+    "src/pages/pagamentos/__tests__/pagamentosStatusBanco.test.tsx",
+    1
+   ],
+   [
     ".github/dependabot.yml",
     1
    ],
    [
-    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+    "bun.lock",
     1
    ],
    [
-    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
-    1
-   ],
-   [
-    "docs/pendencias/_indice.md",
+    "package.json",
     1
    ]
   ]

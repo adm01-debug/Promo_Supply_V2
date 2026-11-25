@@ -6190,8 +6190,8 @@
   {
    "modulo": "pages/pagamentos",
    "arquivos": 1,
-   "testes": 1,
-   "linhas": 305,
+   "testes": 2,
+   "linhas": 323,
    "itens_menu": [
     "Pagamentos"
    ],
