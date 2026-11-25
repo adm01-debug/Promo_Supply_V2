@@ -2560,21 +2560,21 @@
   {
    "arquivo": "tests-e2e/critical-flows.spec.ts",
    "tipo": "e2e",
-   "linhas": 43,
+   "linhas": 53,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests-e2e/dashboard-ui.spec.ts",
    "tipo": "e2e",
-   "linhas": 37,
+   "linhas": 42,
    "testa": [],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "tests-e2e/elite-validation.spec.ts",
    "tipo": "e2e",
-   "linhas": 54,
+   "linhas": 65,
    "testa": [],
    "casos": 2
   },
@@ -2595,14 +2595,14 @@
   {
    "arquivo": "tests-e2e/production-ready.spec.ts",
    "tipo": "e2e",
-   "linhas": 60,
+   "linhas": 63,
    "testa": [],
    "casos": 5
   },
   {
    "arquivo": "tests-e2e/workflow-advanced.spec.ts",
    "tipo": "e2e",
-   "linhas": 55,
+   "linhas": 63,
    "testa": [],
    "casos": 3
   },

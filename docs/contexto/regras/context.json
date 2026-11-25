@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "f2e050c59a720033eccc7da79d64f20e192bb82b",
+  "sha": "4d16bc6fc97dae61dad50f81487b844fbb5edc5a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 16:17 UTC",
+  "generated_at": "2026-11-25 17:10 UTC",
   "files_total": 1452,
   "code_files": 1279,
-  "code_lines": 215364,
+  "code_lines": 215401,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "81881653281e8c92",
+ "facts_hash": "58599984a6c31653",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36561,7 +36561,7 @@
   {
    "module": "tests-e2e",
    "files": 9,
-   "lines": 553,
+   "lines": 590,
    "tables": [],
    "exports": [
     "fixtures.ts: test",
@@ -121847,7 +121847,7 @@
   },
   "tests-e2e/critical-flows.spec.ts": {
    "path": "tests-e2e/critical-flows.spec.ts",
-   "lines": 43,
+   "lines": 53,
    "is_test": true,
    "rule_comments": [
     "* Auditoria Técnica: Testes de Fluxo Crítico de Negócio",
@@ -121862,7 +121862,7 @@
   },
   "tests-e2e/dashboard-ui.spec.ts": {
    "path": "tests-e2e/dashboard-ui.spec.ts",
-   "lines": 37,
+   "lines": 42,
    "is_test": true,
    "tests": [
     "Dashboard & Compras Interface",
@@ -121873,7 +121873,7 @@
   },
   "tests-e2e/elite-validation.spec.ts": {
    "path": "tests-e2e/elite-validation.spec.ts",
-   "lines": 54,
+   "lines": 65,
    "is_test": true,
    "errors": [
     "Console Error: ${msg.text()}"
@@ -121882,6 +121882,7 @@
     "* Playwright E2E Elite Validation",
     "Simulates real user flows with deep validation and zero-tolerance for errors.",
     "Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)",
+    "Painel exige sessao/permissao: sem sessao de teste o invariante e o gate de auth.",
     "apenas confirma que a pagina carrega e expoe o botao."
    ],
    "temporal": [
@@ -121921,7 +121922,7 @@
   },
   "tests-e2e/production-ready.spec.ts": {
    "path": "tests-e2e/production-ready.spec.ts",
-   "lines": 60,
+   "lines": 63,
    "is_test": true,
    "tests": [
     "Freight Quest Production Readiness",
@@ -121934,7 +121935,7 @@
   },
   "tests-e2e/workflow-advanced.spec.ts": {
    "path": "tests-e2e/workflow-advanced.spec.ts",
-   "lines": 55,
+   "lines": 63,
    "is_test": true,
    "temporal": [
     "await page.waitForURL(/\\/dashboard|\\/auth/, { timeout: 3000 }).catch(() => {});"
@@ -122052,10 +122053,24 @@
   }
  },
  "git": {
-  "sha": "f2e050c59a720033eccc7da79d64f20e192bb82b",
+  "sha": "4d16bc6fc97dae61dad50f81487b844fbb5edc5a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4d16bc6",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "tests-e2e/critical-flows.spec.ts",
+     "tests-e2e/dashboard-ui.spec.ts",
+     "tests-e2e/elite-validation.spec.ts",
+     "tests-e2e/production-ready.spec.ts",
+     "tests-e2e/workflow-advanced.spec.ts"
+    ]
+   },
    {
     "sha": "f2e050c",
     "date": "2026-11-25",
@@ -122386,17 +122401,6 @@
      "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
      "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql"
     ]
-   },
-   {
-    "sha": "85d63f7",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "chore(db): alinha as transicoes de pagamento e pedido com o que a UI oferece (etapa 085) (#351)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
-     "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -122429,6 +122433,26 @@
     2
    ],
    [
+    "tests-e2e/critical-flows.spec.ts",
+    1
+   ],
+   [
+    "tests-e2e/dashboard-ui.spec.ts",
+    1
+   ],
+   [
+    "tests-e2e/elite-validation.spec.ts",
+    1
+   ],
+   [
+    "tests-e2e/production-ready.spec.ts",
+    1
+   ],
+   [
+    "tests-e2e/workflow-advanced.spec.ts",
+    1
+   ],
+   [
     "src/tests/integration/contract-testing.test.ts",
     1
    ],
@@ -122458,26 +122482,6 @@
    ],
    [
     "docs/pendencias/sql/pim-v_compras_views.sql",
-    1
-   ],
-   [
-    "src/pages/historico/HistoricoCompras.tsx",
-    1
-   ],
-   [
-    "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
-    1
-   ],
-   [
-    "docs/agentes/deploy.md",
-    1
-   ],
-   [
-    "supabase/functions/dependency-health/index.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/run-audit/rls_test.ts",
     1
    ]
   ]
