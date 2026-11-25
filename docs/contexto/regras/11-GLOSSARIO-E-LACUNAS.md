@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `df2f22e2ab` · branch `main` · 2026-11-25 22:30 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81d308c5f2` · branch `main` · 2026-11-25 23:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -81,7 +81,7 @@
 | `notifications` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
 | `order_contracts` | _(sem COMMENT ON TABLE — significado não documentado)_ | 5 colunas | migration |
 | `organizations` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `pagamentos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 23 colunas | migration |
+| `pagamentos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 24 colunas | migration |
 | `password_reset_requests` | _(sem COMMENT ON TABLE — significado não documentado)_ | 14 colunas | migration |
 | `payment_history` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
 | `pedido_itens` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |

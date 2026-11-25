@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 339,
+ "migrations": 340,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -11591,6 +11591,13 @@
      "default": null,
      "ref": null
     },
+    "data_agendamento": {
+     "tipo": "date",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "data_aprovacao": {
      "tipo": "timestamp with time zone",
      "nn": false,
@@ -11798,6 +11805,7 @@
     "created_at": "string",
     "created_by": "string | null",
     "dados_bancarios": "Json | null",
+    "data_agendamento": "string | null",
     "data_aprovacao": "string | null",
     "data_pagamento": "string | null",
     "data_vencimento": "string",

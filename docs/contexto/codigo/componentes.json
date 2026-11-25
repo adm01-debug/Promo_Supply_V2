@@ -2209,7 +2209,7 @@
     "PagamentoMobileCard"
    ],
    "export_default": null,
-   "linhas": 282,
+   "linhas": 284,
    "dominio": "components/pagamentos",
    "hooks_locais": [],
    "tabelas": [],
@@ -2237,7 +2237,7 @@
     "PagamentoScheduleModal"
    ],
    "export_default": null,
-   "linhas": 102,
+   "linhas": 103,
    "dominio": "components/pagamentos",
    "hooks_locais": [],
    "tabelas": [],
@@ -5205,7 +5205,7 @@
     "Pagamentos"
    ],
    "export_default": "Pagamentos",
-   "linhas": 323,
+   "linhas": 326,
    "dominio": "pages/pagamentos",
    "hooks_locais": [
     "useEmpresaFilter",

@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "df2f22e2ab87f86ffa3f855a0b5efcca07b88e2a",
+  "commit": "81d308c5f22c2a08a36268315a6c107ff6d81d2f",
   "branch": "main",
-  "data_commit": "2026-11-25T19:23:02-03:00",
+  "data_commit": "2026-11-25T20:01:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "81d308c",
+    "data": "2026-11-25",
+    "assunto": "fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)"
+   },
+   {
+    "sha": "949c3d5",
+    "data": "2026-11-25",
+    "assunto": "docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)"
+   },
    {
     "sha": "df2f22e",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "b22b3ab",
     "data": "2026-11-25",
     "assunto": "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)"
-   },
-   {
-    "sha": "f2f3e24",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)"
-   },
-   {
-    "sha": "b4575e8",
-    "data": "2026-11-25",
-    "assunto": "fix(rls): fecha escrita em notifications e category_strategies (#451)"
    }
   ],
-  "arquivos_mudados_7d": 1477,
+  "arquivos_mudados_7d": 1480,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 115
+    "mudancas": 116
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "pasta": "src/pages/admin",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 115
+    "mudancas": 116
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -230,6 +230,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "AGENTS.md",
+    "mudancas": 7
+   },
+   {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 7
    },
@@ -250,10 +254,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "AGENTS.md",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
@@ -262,11 +262,23 @@
     "mudancas": 6
    },
    {
+    "arquivo": "src/hooks/usePagamentos.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/auth/Auth.tsx",
     "mudancas": 6
    },
    {
     "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
     "mudancas": 6
    },
    {
@@ -283,18 +295,6 @@
    },
    {
     "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/components/compras/EnhancedBulkActionsBar.tsx",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/hooks/usePagamentos.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 5
    }
   ],
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1458,
-  "arquivos_codigo": 932,
-  "linhas_codigo": 187078,
+  "arquivos_total": 1461,
+  "arquivos_codigo": 933,
+  "linhas_codigo": 187229,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,9 +326,9 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 339,
+  "migrations": 340,
   "cron_jobs": 74,
-  "testes": 292,
+  "testes": 293,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 100
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 284,
-   "linhas": 52081
+   "linhas": 52084
   },
   "src/features": {
    "arquivos": 89,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 90,
-   "linhas": 15297
+   "linhas": 15327
   },
   "src/i18n": {
    "arquivos": 3,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10462
+   "linhas": 10465
   },
   "src/lib": {
    "arquivos": 61,
@@ -455,8 +455,8 @@
    "linhas": 55
   },
   "src/pages": {
-   "arquivos": 154,
-   "linhas": 34983
+   "arquivos": 155,
+   "linhas": 35098
   },
   "src/routes": {
    "arquivos": 1,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10403
+   "linhas": 10406
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

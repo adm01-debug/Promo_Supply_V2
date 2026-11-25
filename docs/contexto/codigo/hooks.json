@@ -1678,7 +1678,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 372,
+   "linhas": 374,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos",

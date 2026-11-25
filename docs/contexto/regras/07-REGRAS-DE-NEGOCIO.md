@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `df2f22e2ab` · branch `main` · 2026-11-25 22:30 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81d308c5f2` · branch `main` · 2026-11-25 23:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1009,6 +1009,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `SUBSCRIBED` | compara | `src/features/layout/components/SupplierChat.tsx` |
 | `status` | `aceito` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `active` | compara, escreve, filtra | `src/components/compras/ContractDetailsModal.tsx`<br>`src/hooks/useExecutiveDashboardData.ts`<br>`src/pages/contratos/Contratos.tsx`<br>`src/pages/portal-fornecedor/PortalFornecedor.tsx`<br>`supabase/functions/check-expiry-alerts/contractExpiry_test.ts`<br>… +2 |
+| `status` | `agendado` | compara | `src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/pagamentos/Pagamentos.tsx` |
 | `status` | `applied` | compara | `src/components/compras/contract/ContractDetailsTabs.tsx`<br>`supabase/functions/generate-contract-pdf/index.ts` |
 | `status` | `approved` | compara, escreve | `src/components/security/PasswordResetRequestsPanel.tsx`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/hooks/useApprovalWorkflow.ts`<br>`src/hooks/usePasswordResetRequests.ts`<br>`src/pages/aprovacoes/aprovacoesData.ts`<br>… +1 |
 | `status` | `aprovada` | compara, escreve | `src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/features/solicitacoes/fluxoAprovacao.ts`<br>`src/features/solicitacoes/hooks/useSolicitacoes.ts`<br>`src/pages/devolucoes/DevolucoesModals.tsx`<br>… +5 |
@@ -2455,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3392 testes em 241 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3397 testes em 242 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2624,6 +2625,7 @@ _nenhum item encontrado_
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 5 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados · grava a data escolhida quando o agendamento tem data … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/i18n/__tests__/config.test.ts` | 5 | i18n mantem o atributo lang do documento igual ao idioma ativo · o atributo nao fica no pt-BR fixo do index.html: ele segue o idioma resolvido · cada idioma suportado vira a tag BCP-47 correspondente no documento · idioma fora da lista ou ausente cai no pt-BR, nunca em tag invalida … |
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
@@ -2678,7 +2680,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useDevolucoes.credito.test.tsx` | 3 | useDevolucoes · credito do fornecedor (NEG-12) · nao deixa a devolucao em credito_emitido quando o credito nao grava · grava o credito com o valor da devolucao e so entao avisa sucesso |
 | `src/hooks/__tests__/useImageCompression.test.ts` | 3 | useAutoImageCompression · should process image files when input changes · should ignore non-image files |
 | `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
-| `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 3 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
 | `src/hooks/__tests__/useRealPushNotifications.test.tsx` | 3 | useRealPushNotifications — aviso honesto de push (etapa 288) · sem VITE_VAPID_PUBLIC_KEY nao anuncia sucesso · com a chave publica e inscricao existente anuncia sucesso |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
@@ -2688,6 +2689,7 @@ _nenhum item encontrado_
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
 | `src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx` | 3 | KPIs do Sourcing Pipeline derivados do banco · nao exibe numeros fixos quando nao ha projeto · agrega estimated_spend dos projetos ativos ignorando concluidos |
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
+| `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
