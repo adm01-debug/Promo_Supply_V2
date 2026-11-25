@@ -11,6 +11,10 @@
  * Na base o conjunto e o que existir la.
  * Fail-closed: AGENTS_MD_BASE informada que nao resolve para um commit (ref nao buscada,
  * nome errado) reprova -- sem base nao ha comparacao, e o guard sairia OK sem ter comparado nada.
+ * Tambem afirma fatos do proprio checkout (etapa 271): numero de workflows e de migrations que o
+ * AGENTS.md declara, workflow que existe e nao aparece na lista de docs/agentes/github-ci.md, e a
+ * existencia de deploy de edge e de canal de apply de DDL -- as afirmacoes que mudam o que o
+ * agente faz sozinho. Tudo offline; rodam sempre (nao dependem da base).
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -91,6 +95,96 @@ export function problemasDeVisibilidade({ agents, docVisibilidade, gitignore }) 
   return problemas;
 }
 
+// Fatos verificaveis offline (etapa 271). Ate aqui o guard provava que as secoes e o tamanho
+// continuavam no lugar: o manual podia afirmar "Sao 7 workflows" (sao 15) ou "nenhum workflow
+// publica edge" (ha um) e o guard dava OK. As afirmacoes abaixo sao as que mudam o que o agente
+// faz sozinho, e todas sao checaveis no proprio checkout, sem rede.
+export const WORKFLOWS_DIR = '.github/workflows';
+export const MIGRATIONS_DIR = 'supabase/migrations';
+export const DOC_CI = 'docs/agentes/github-ci.md';
+export const WORKFLOWS_CITADOS_NO_AGENTS = ['deploy-edge-functions.yml', 'aplicar-migration-prod.yml'];
+
+/** Nomes dos workflows (`.yml`/`.yaml`) do diretorio, ordenados; [] quando o diretorio nao existe. */
+export function workflowsNoDiretorio(dir = WORKFLOWS_DIR) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
+    .sort();
+}
+
+/** N de workflows declarado em AGENTS.md (`Sao **15** workflows`), ou null se nao declara. */
+export function workflowsAfirmados(agents) {
+  const m = agents.match(/S[ãa]o\s+\*\*(\d+)\*\*\s*\n?\s*workflows/i);
+  return m ? Number.parseInt(m[1], 10) : null;
+}
+
+/** N de migrations declarado em AGENTS.md (`338 migrations hoje`), ou null se nao declara. */
+export function migrationsAfirmadas(agents) {
+  const m = agents.match(/(\d+)\s+migrations\s+hoje/i);
+  return m ? Number.parseInt(m[1], 10) : null;
+}
+
+/** Linha de um doc que afirma nao haver protecao em `main`, ou null. */
+export function linhaQueNegaProtecao(texto) {
+  return (
+    texto
+      .split('\n')
+      .find((l) => /n[ãa]o h[áa]\s+(nenhuma\s+)?(branch protection|prote[çc][ãa]o)/i.test(l)) || null
+  );
+}
+
+/** Problemas entre o que os docs afirmam e o que este checkout tem; vazio quando bate. */
+export function problemasDeFatos({ agents, docCi, workflows, migrations, conteudosDeWorkflow = {} }) {
+  const problemas = [];
+  const declarado = workflowsAfirmados(agents);
+  if (declarado === null) {
+    problemas.push(
+      `${AGENTS}: nao declara o numero de workflows (esperado: "Sao **${workflows.length}** workflows").`,
+    );
+  } else if (declarado !== workflows.length) {
+    problemas.push(
+      `${AGENTS}: afirma ${declarado} workflows, mas ${WORKFLOWS_DIR} tem ${workflows.length} (${workflows.join(', ')}).`,
+    );
+  }
+  for (const nome of workflows) {
+    // A lista completa mora no doc de CI; workflow novo sem linha la fica invisivel para quem le.
+    if (!docCi.includes(nome.replace(/\.ya?ml$/, ''))) {
+      problemas.push(`${DOC_CI}: nao cita ${nome}; e a lista de referencia de ${WORKFLOWS_DIR}.`);
+    }
+  }
+  for (const nome of WORKFLOWS_CITADOS_NO_AGENTS) {
+    if (workflows.includes(nome) && !agents.includes(nome)) {
+      problemas.push(`${AGENTS}: nao cita ${nome}, workflow que muda o que o agente pode fazer sozinho.`);
+    }
+  }
+  // `deploy-edge-functions.yml` so muda o comportamento do agente se publicar de verdade.
+  const deployEdge = conteudosDeWorkflow['deploy-edge-functions.yml'];
+  if (deployEdge !== undefined && !/functions deploy/.test(deployEdge)) {
+    problemas.push(
+      `${WORKFLOWS_DIR}/deploy-edge-functions.yml: nao roda "functions deploy", e ${AGENTS} afirma que ele publica as edges.`,
+    );
+  }
+  const migracoes = migrationsAfirmadas(agents);
+  if (migracoes === null) {
+    problemas.push(`${AGENTS}: nao declara o numero de migrations (esperado: "${migrations.length} migrations hoje").`);
+  } else if (migracoes !== migrations.length) {
+    problemas.push(`${AGENTS}: afirma ${migracoes} migrations, mas ${MIGRATIONS_DIR} tem ${migrations.length} arquivos .sql.`);
+  }
+  for (const [nome, texto] of [
+    [AGENTS, agents],
+    [DOC_CI, docCi],
+  ]) {
+    const linha = linhaQueNegaProtecao(texto);
+    if (linha) {
+      problemas.push(`${nome}: afirma que nao ha protecao em \`main\`, mas ha (check obrigatorio): ${linha.trim()}`);
+    }
+  }
+  if (!/prote[çc][ãa]o de\s+`?main/i.test(agents)) {
+    problemas.push(`${AGENTS}: nao declara que \`main\` tem protecao com check obrigatorio.`);
+  }
+  return problemas;
+}
+
 // Sem `docs/agentes/github-ci.md` este nao e o checkout deste projeto (a suite do guard usa
 // repositorios sinteticos): nao ha fato a conferir, e reprovar ali seria falso positivo.
 const docVisibilidade = existsSync(ARQUIVOS_DE_VISIBILIDADE[1])
@@ -106,6 +200,39 @@ if (docVisibilidade !== null && process.env.AGENTS_MD_SKIP_FATOS !== '1') {
   if (problemas.length > 0) {
     process.exitCode = 1;
     process.exit();
+  }
+}
+
+// Fatos do proprio checkout (etapa 271). So rodam quando ha workflows para conferir -- os
+// repositorios sinteticos da suite nao tem `.github/workflows`, e reprovar ali seria falso
+// positivo. As assercoes de fato nao dependem da base: valem tambem no push da main, onde
+// AGENTS_MD_BASE costuma estar ausente.
+if (process.env.AGENTS_MD_SKIP_FATOS !== '1') {
+  const workflows = workflowsNoDiretorio();
+  if (workflows.length > 0) {
+    const conteudosDeWorkflow = {};
+    for (const nome of workflows) {
+      try {
+        conteudosDeWorkflow[nome] = readFileSync(join(WORKFLOWS_DIR, nome), 'utf8');
+      } catch {
+        /* ilegivel: o nome continua cobrado na lista do doc */
+      }
+    }
+    const docCi = docVisibilidade ?? '';
+    const problemas = problemasDeFatos({
+      agents: content,
+      docCi,
+      workflows,
+      migrations: existsSync(MIGRATIONS_DIR)
+        ? readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith('.sql'))
+        : [],
+      conteudosDeWorkflow,
+    });
+    for (const p of problemas) console.error(`::error::${p}`);
+    if (problemas.length > 0) {
+      process.exitCode = 1;
+      process.exit();
+    }
   }
 }
 
