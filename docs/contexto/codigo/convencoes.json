@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)",
+   "chore: corrige o estado real do ledger de migrations na doc de agentes (#449)",
    "chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)",
    "fix(ci): fallback do aplicar-migration-prod cobre \"must be owner of function\" (#446)",
-   "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)",
-   "ci: adiciona gate de tipos (deno check) das edge functions (#359)",
-   "fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)"
+   "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)"
   ]
  },
  "pr_template": null,
