@@ -1857,8 +1857,8 @@
   {
    "modulo": "features/cotacoes",
    "arquivos": 2,
-   "testes": 0,
-   "linhas": 214,
+   "testes": 1,
+   "linhas": 240,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2411,7 +2411,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11906,
+   "linhas": 11933,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2817,7 +2817,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 29,
+   "testes": 30,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -4885,7 +4885,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 2,
-   "linhas": 652,
+   "linhas": 656,
    "itens_menu": [
     "Cotações"
    ],

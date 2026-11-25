@@ -369,7 +369,7 @@
    "hooks_exportados": [
     "useCotacoes"
    ],
-   "linhas": 212,
+   "linhas": 238,
    "dominio": "features/cotacoes",
    "tabelas": [
     "cotacoes"
@@ -391,7 +391,7 @@
    "usado_por_arquivos": [
     "src/features/cotacoes/index.ts"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/features/empresas/hooks/useEmpresaFilter.ts",
@@ -1678,7 +1678,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 374,
+   "linhas": 401,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos",
@@ -1711,7 +1711,7 @@
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
     "src/pages/pagamentos/Pagamentos.tsx"
    ],
-   "coberto_por_testes": 2
+   "coberto_por_testes": 3
   },
   {
    "arquivo": "src/hooks/usePasswordResetRequests.ts",

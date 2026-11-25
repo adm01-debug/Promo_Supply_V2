@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (200)",
+   "co-localizado (__tests__) (202)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(cotacoes): nao anuncia vencedor nem exclusao quando o RLS barra a gravacao (#490)",
+   "docs(qa): marca as etapas 247 e 281 como entregues (#489)",
    "chore(db): sincronizar types.ts com o banco [auto] (#487)",
    "fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)",
-   "fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)",
-   "docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)",
-   "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)"
+   "fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)"
   ]
  },
  "pr_template": null,

@@ -4794,7 +4794,7 @@
     "ResumoFollowUpCotacao"
    ],
    "export_default": "Cotacao",
-   "linhas": 405,
+   "linhas": 409,
    "dominio": "pages/cotacao",
    "hooks_locais": [
     "useAuth",

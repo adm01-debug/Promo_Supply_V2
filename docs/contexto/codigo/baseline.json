@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8b2cfee37cebc85e9116aae0bfe4d4586e34d146",
+  "commit": "885cd9a8c8d5c2087d5dda67b9466885cf3c5e80",
   "branch": "main",
-  "data_commit": "2026-11-25T20:22:34-03:00",
+  "data_commit": "2026-11-25T20:49:33-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "885cd9a",
+    "data": "2026-11-25",
+    "assunto": "fix(cotacoes): nao anuncia vencedor nem exclusao quando o RLS barra a gravacao (#490)"
+   },
+   {
+    "sha": "2dbada9",
+    "data": "2026-11-25",
+    "assunto": "docs(qa): marca as etapas 247 e 281 como entregues (#489)"
+   },
    {
     "sha": "8b2cfee",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "c770dfc",
     "data": "2026-11-25",
     "assunto": "docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)"
-   },
-   {
-    "sha": "1cc59fe",
-    "data": "2026-11-25",
-    "assunto": "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)"
-   },
-   {
-    "sha": "dc66ebe",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)"
    }
   ],
-  "arquivos_mudados_7d": 1481,
+  "arquivos_mudados_7d": 1483,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 116
+    "mudancas": 117
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 34
+    "mudancas": 36
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 116
+    "mudancas": 117
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 12
+    "mudancas": 11
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -230,6 +230,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/pages/cotacao/Cotacao.tsx",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/pages/pedidos/Pedidos.tsx",
     "mudancas": 8
    },
@@ -238,11 +242,11 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/integrations/supabase/types.ts",
+    "arquivo": "src/hooks/usePagamentos.ts",
     "mudancas": 7
    },
    {
-    "arquivo": "src/pages/cotacao/Cotacao.tsx",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
    {
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/usePagamentos.ts",
     "mudancas": 6
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1463,
-  "arquivos_codigo": 935,
-  "linhas_codigo": 187595,
+  "arquivos_total": 1465,
+  "arquivos_codigo": 937,
+  "linhas_codigo": 188081,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 340,
   "cron_jobs": 74,
-  "testes": 295,
+  "testes": 297,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 100
@@ -431,12 +431,12 @@
    "linhas": 52084
   },
   "src/features": {
-   "arquivos": 90,
-   "linhas": 11244
+   "arquivos": 91,
+   "linhas": 11480
   },
   "src/hooks": {
-   "arquivos": 91,
-   "linhas": 15556
+   "arquivos": 92,
+   "linhas": 15802
   },
   "src/i18n": {
    "arquivos": 3,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 155,
-   "linhas": 35098
+   "linhas": 35102
   },
   "src/routes": {
    "arquivos": 1,
