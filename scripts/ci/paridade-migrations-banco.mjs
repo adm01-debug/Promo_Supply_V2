@@ -16,7 +16,7 @@
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const RAIZ = join(fileURLToPath(import.meta.url), '../../..');
 const DIR_MIGRATIONS = join(RAIZ, 'supabase', 'migrations');
@@ -69,63 +69,83 @@ function nomeDe(m, i) {
 // Cada migration e' aplicada em ordem cronologica sobre o mesmo estado: CREATE
 // adiciona, DROP remove, ALTER ... RENAME TO move. Assim um objeto criado na
 // migration de marco e removido na de maio nao e' cobrado do banco de hoje.
+//
+// Dentro de um arquivo a ordem que vale e' a textual (e' a ordem que o Postgres
+// executa). Por isso cada operacao entra numa fila com a posicao do match e a
+// fila e' aplicada no fim. Antes, todos os CREATEs eram aplicados e so depois
+// todos os DROPs: no padrao idempotente do repositorio (`DROP POLICY IF EXISTS x`
+// seguido de `CREATE POLICY x`) o DROP vinha depois e apagava do estado a policy
+// recem-criada, que passava a nunca ser cobrada do banco. MEDIDO com o snapshot
+// real: 209 policies declaradas pela logica antiga contra 313 pela logica correta.
 export function aplicarMigration(estado, sqlBruto) {
   const sql = limparSql(sqlBruto);
 
-  const add = (tipo, nome) => { if (nome) estado[tipo].add(nome); };
-  const del = (tipo, nome) => { if (nome) estado[tipo].delete(nome); };
+  const ops = [];
+  const add = (pos, tipo, nome) => {
+    if (nome) ops.push({ pos, seq: ops.length, aplica: () => estado[tipo].add(nome) });
+  };
+  const del = (pos, tipo, nome) => {
+    if (nome) ops.push({ pos, seq: ops.length, aplica: () => estado[tipo].delete(nome) });
+  };
 
   for (const m of casar(sql, `create\\s+table\\s+(?:if\\s+not\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
-    if (ehPublic(m[1])) add('tabelas', nomeDe(m, 2));
+    if (ehPublic(m[1])) add(m.index, 'tabelas', nomeDe(m, 2));
   }
   for (const m of casar(sql, `drop\\s+table\\s+(?:if\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
-    if (ehPublic(m[1])) del('tabelas', nomeDe(m, 2));
+    if (ehPublic(m[1])) del(m.index, 'tabelas', nomeDe(m, 2));
   }
   for (const m of casar(sql, `alter\\s+table\\s+(?:if\\s+exists\\s+)?${PREFIXO}${NOME}\\s+rename\\s+to\\s+${NOME}`)) {
     if (!ehPublic(m[1])) continue;
-    del('tabelas', nomeDe(m, 2));
-    add('tabelas', nomeDe(m, 4));
+    del(m.index, 'tabelas', nomeDe(m, 2));
+    add(m.index, 'tabelas', nomeDe(m, 4));
   }
 
   for (const m of casar(sql, `create\\s+(?:or\\s+replace\\s+)?(?:materialized\\s+)?view\\s+(?:if\\s+not\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
     if (!ehPublic(m[1])) continue;
     const materializada = /materialized/i.test(m[0]);
-    add(materializada ? 'matviews' : 'views', nomeDe(m, 2));
+    add(m.index, materializada ? 'matviews' : 'views', nomeDe(m, 2));
   }
   for (const m of casar(sql, `drop\\s+(?:materialized\\s+)?view\\s+(?:if\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
     if (!ehPublic(m[1])) continue;
-    del('views', nomeDe(m, 2));
-    del('matviews', nomeDe(m, 2));
+    del(m.index, 'views', nomeDe(m, 2));
+    del(m.index, 'matviews', nomeDe(m, 2));
   }
 
   for (const m of casar(sql, `create\\s+(?:or\\s+replace\\s+)?function\\s+${PREFIXO}${NOME}\\s*\\(`)) {
-    if (ehPublic(m[1])) add('funcoes', nomeDe(m, 2));
+    if (ehPublic(m[1])) add(m.index, 'funcoes', nomeDe(m, 2));
   }
   for (const m of casar(sql, `drop\\s+function\\s+(?:if\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
-    if (ehPublic(m[1])) del('funcoes', nomeDe(m, 2));
+    if (ehPublic(m[1])) del(m.index, 'funcoes', nomeDe(m, 2));
   }
 
   // O nome do indice nao carrega schema: quem decide o schema e' a tabela do ON.
   for (const m of casar(sql, `create\\s+(?:unique\\s+)?index\\s+(?:concurrently\\s+)?(?:if\\s+not\\s+exists\\s+)?${NOME}\\s+on\\s+(?:only\\s+)?${PREFIXO}`)) {
-    if (ehPublic(m[3])) add('indices', nomeDe(m, 1));
+    if (ehPublic(m[3])) add(m.index, 'indices', nomeDe(m, 1));
   }
   for (const m of casar(sql, `drop\\s+index\\s+(?:concurrently\\s+)?(?:if\\s+exists\\s+)?${PREFIXO}${NOME}`)) {
-    if (ehPublic(m[1])) del('indices', nomeDe(m, 2));
+    if (ehPublic(m[1])) del(m.index, 'indices', nomeDe(m, 2));
   }
 
-  for (const m of casar(sql, `create\\s+(?:or\\s+replace\\s+)?(?:constraint\\s+)?trigger\\s+${NOME}`)) {
-    add('triggers', nomeDe(m, 1));
+  // O nome do trigger nao carrega schema: quem decide e' a tabela do ON. Trigger
+  // criado em auth.users (`on_auth_user_created`) existe no banco, mas o
+  // inventario de paridade so lista o schema public - olhando so o nome ele
+  // aparecia como ausente.
+  for (const m of casar(sql, `create\\s+(?:or\\s+replace\\s+)?(?:constraint\\s+)?trigger\\s+${NOME}[^;]*?\\bon\\s+(?:only\\s+)?${PREFIXO}`)) {
+    if (ehPublic(m[3])) add(m.index, 'triggers', nomeDe(m, 1));
   }
-  for (const m of casar(sql, `drop\\s+trigger\\s+(?:if\\s+exists\\s+)?${NOME}`)) {
-    del('triggers', nomeDe(m, 1));
+  for (const m of casar(sql, `drop\\s+trigger\\s+(?:if\\s+exists\\s+)?${NOME}\\s+on\\s+(?:only\\s+)?${PREFIXO}`)) {
+    if (ehPublic(m[3])) del(m.index, 'triggers', nomeDe(m, 1));
   }
 
   for (const m of casar(sql, `create\\s+policy\\s+${NOME}\\s+on\\s+${PREFIXO}`)) {
-    if (ehPublic(m[3])) add('politicas', nomeDe(m, 1));
+    if (ehPublic(m[3])) add(m.index, 'politicas', nomeDe(m, 1));
   }
   for (const m of casar(sql, `drop\\s+policy\\s+(?:if\\s+exists\\s+)?${NOME}\\s+on\\s+${PREFIXO}`)) {
-    if (ehPublic(m[3])) del('politicas', nomeDe(m, 1));
+    if (ehPublic(m[3])) del(m.index, 'politicas', nomeDe(m, 1));
   }
+
+  ops.sort((a, b) => a.pos - b.pos || a.seq - b.seq);
+  for (const op of ops) op.aplica();
 
   return estado;
 }
@@ -202,6 +222,9 @@ function principal(argv) {
   return total === 0 ? 0 : 1;
 }
 
-if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+// `file://${process.argv[1]}` nao casa no Windows (barra invertida e drive): o
+// script saia com 0 sem verificar nada, um verde falso para quem roda local.
+// `pathToFileURL` monta a mesma URL que o Node usa no import.meta.url.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   process.exit(principal(process.argv.slice(2)));
 }
