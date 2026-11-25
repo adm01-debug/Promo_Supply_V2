@@ -27,17 +27,75 @@ imagem). Três critérios de corte:
 
 ### Fase 1 — Views de compra no PIM 🔒
 
-- [ ] **PR 1.1** — view `v_compras_catalogo` no PIM (`doufsxqlfjyuvxuezpln`).
-- [ ] **PR 1.2** — view `v_compras_precos_faixa` (faixas de preço de
-      personalização) no PIM.
-- [ ] **PR 1.3** — backfill de `supplier_external_id` no PIM.
-  Bloqueadas nesta sessão: regra 8 (DDL em banco de produção de outro repo) e
-  nenhum MCP disponível aqui tem acesso de escrita/SQL a `doufsxqlfjyuvxuezpln`.
+- [x] **PR 1.1** — view `v_compras_catalogo` no PIM (`doufsxqlfjyuvxuezpln`).
+      **Já existia** e estava **inutilizável**: ver "Estado medido no PIM" abaixo.
+      Corrigida em produção em 25/11/2026 (predicado com caminho de serviço).
+- [x] **PR 1.2** — view `v_compras_precos_faixa` (faixas de preço de
+      personalização) no PIM. Mesmo caso da 1.1: existia, devolvia 0 linhas,
+      corrigida junto. A 3ª view do mesmo autor, `v_compras_precos_variante`
+      (62 colunas, sem uso no front ainda), recebeu a mesma correção.
+- [ ] **PR 1.3** — backfill de `supplier_external_id` no PIM. Medido em
+      25/11/2026: `products` 4.500/8.398 preenchidos, `product_variants`
+      14.031/20.987. **Não é derivável:** em 100% das linhas com as duas
+      colunas, `supplier_external_id` ≠ `supplier_reference` (o id externo é o
+      id numérico do produto no fornecedor — `28574`; o `supplier_reference` é
+      o SKU do fornecedor — `15635`). Sobram 3.898 produtos e 6.919 variantes
+      sem o id, e o único preenchimento possível é o catálogo do fornecedor
+      (XBZ), ou seja, um re-sync do lado do PIM — trabalho no repo do Promo
+      Gifts V4, não um `UPDATE` aqui.
+
+#### Estado medido no PIM (`doufsxqlfjyuvxuezpln`, 25/11/2026)
+
+Acesso obtido por SQL direto (pooler `aws-1-sa-east-1`, usuário
+`postgres.doufsxqlfjyuvxuezpln`; o host `db.*` do projeto só resolve em IPv6 e
+não é alcançável daqui). Postgres 17.6, 417 tabelas, 196 views.
+
+1. As três views de integração **não estavam ausentes — estavam vazias**:
+   `v_compras_catalogo` (33 colunas), `v_compras_precos_faixa` (16) e
+   `v_compras_precos_variante` (62) existem e devolviam `0` linhas.
+2. Causa raiz: cada definição termina em `AND can_view_all_sales()`, e essa
+   função é `auth.uid() IS NOT NULL AND has_role(admin|manager|supervisor|dev)`.
+   O bridge autentica com chave de serviço, sem JWT → `auth.uid()` é NULL →
+   predicado falso → 0 linhas **sempre**, para qualquer leitor de serviço.
+3. Sem o gate, o funil de predicados devolve 20.779 linhas (produtos ativos ×
+   variantes ativas de fornecedores `is_product_supplier` ativos).
+4. O gate não é decorativo: `authenticated` **tem** `SELECT` nas três views
+   (`anon` não tem nenhum privilégio). Remover o gate puro e simples exporia
+   `cost_price` / `unit_cost` a qualquer usuário logado do PIM.
+5. Correção aplicada em produção (`CREATE OR REPLACE VIEW`, sem tocar em
+   grants): `AND can_view_all_sales()` →
+   `AND (auth.uid() IS NULL OR can_view_all_sales())`. Sessão de serviço
+   (uid NULL) passa; usuário logado sem papel de gestão continua em 0 linhas;
+   `anon` continua barrado por privilégio.
+
+| Leitor | Antes | Depois |
+| --- | --- | --- |
+| serviço (uid NULL — o caso do bridge) | 0 / 0 / 0 | **20.779 / 426.267 / 28.814** |
+| JWT de admin | 20.779 / 426.267 / 28.814 | 20.779 / 426.267 / 28.814 (idêntico) |
+| JWT de usuário comum | 0 / 0 / 0 | 0 / 0 / 0 (mantido) |
+| `anon` | `permission denied` | `permission denied` (mantido) |
+
+(colunas na ordem catálogo / faixa / variante)
+
+6. **Dívida aberta:** as três views **não têm migration em nenhum
+   repositório** — `grep -r "v_compras_"` no clone do Promo Gifts V4 não acha
+   nada. A DDL vive só no banco de produção do PIM; um `db reset` ou a
+   recriação do ambiente apaga a integração. Falta versionar a definição
+   corrigida no repo do PIM.
 
 - [ ] **Secret 🔒** — configurar `EXTERNAL_DB_URL`/`EXTERNAL_DB_KEY` na edge
       function `external-db-bridge` (Promo Supply V2), apontando para o PIM.
   Bloqueado: nenhum MCP disponível aqui escreve secret de edge function em
   `lmypcdfsrgfftzhxawao`; e é item de regra 8 mesmo quando houver acesso.
+    **Achado que muda a decisão da Fase 2:** o plano previa usar a chave
+    *publishable* (anon) do PIM em `EXTERNAL_DB_KEY`, contando com `GRANT SELECT`
+    para `anon` nas views. Medido: `anon` **não** tem `SELECT` nas três views —
+    só `authenticated` tem. Com a chave publishable o bridge continuaria
+    recebendo `permission denied` mesmo depois da correção acima. As duas saídas
+    são (a) usar a chave **secreta** do PIM como `EXTERNAL_DB_KEY` — o bridge é
+    server-side, valida JWT, allowlist e rate limit, e a chave nunca vai ao
+    navegador — ou (b) `GRANT SELECT TO anon`, que entrega `cost_price` a
+    qualquer portador da chave pública. Recomendação: (a).
 
 ### Fase 2 — Bridge somente leitura para o PIM
 
