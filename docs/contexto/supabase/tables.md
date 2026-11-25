@@ -28,7 +28,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.budget_audit_logs](tables/public/budget_audit_logs.md) | table | sim | 1 | 7 | não |  |
 | [public.budget_transactions](tables/public/budget_transactions.md) | table | sim | 2 | 10 | não |  |
 | [public.categorias](tables/public/categorias.md) | table | sim | 5 | 10 | não |  |
-| [public.category_strategies](tables/public/category_strategies.md) | table | sim | 3 | 12 | não |  |
+| [public.category_strategies](tables/public/category_strategies.md) | table | sim | 4 | 12 | não |  |
 | [public.checkpoint_snapshots](tables/public/checkpoint_snapshots.md) | table | sim | 1 | 12 | não |  |
 | [public.contact_notes](tables/public/contact_notes.md) | table | sim | 5 | 8 | não |  |
 | [public.contract_documents](tables/public/contract_documents.md) | table | sim | 4 | 9 | não |  |
@@ -74,7 +74,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.mfa_settings](tables/public/mfa_settings.md) | table | sim | 1 | 8 | não |  |
 | [public.negotiation_analyses](tables/public/negotiation_analyses.md) | table | sim | 2 | 10 | não |  |
 | [public.notification_preferences](tables/public/notification_preferences.md) | table | sim | 1 | 13 | não |  |
-| [public.notifications](tables/public/notifications.md) | table | sim | 4 | 14 | não |  |
+| [public.notifications](tables/public/notifications.md) | table | sim | 6 | 14 | não |  |
 | [public.order_contracts](tables/public/order_contracts.md) | table | sim | 2 | 5 | não |  |
 | [public.organizations](tables/public/organizations.md) | table | sim | 1 | 9 | não |  |
 | [public.pagamentos](tables/public/pagamentos.md) | table | sim | 4 | 23 | sim |  |

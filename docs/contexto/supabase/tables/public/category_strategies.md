@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 3 |
+| policies | 4 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -65,15 +65,25 @@
 | USING | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |
 | WITH CHECK |  |
 
-### `tenant_isolation`
+### `category_strategies_escrita_admin_coord`
 
 | campo | valor |
 |---|---|
 | comando | ALL |
 | tipo | PERMISSIVE |
-| roles | public |
-| USING | `(organization_id = get_my_organization())` |
-| WITH CHECK |  |
+| roles | authenticated |
+| USING | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| WITH CHECK | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+
+### `tenant_isolation`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | authenticated |
+| USING | `((organization_id = get_my_organization()) OR (EXISTS ( SELECT 1    FROM user_organizations uo   WHERE ((uo.organization_id = category_strategies.organization_id) AND (uo.user_id = auth.uid())))))` |
+| WITH CHECK | `(organization_id = get_my_organization())` |
 
 ### `tenant_isolation_category_strategies`
 

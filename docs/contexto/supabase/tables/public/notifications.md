@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 4 |
+| policies | 6 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -65,6 +65,16 @@
 | USING |  |
 | WITH CHECK | `(auth.uid() = user_id)` |
 
+### `Users can delete their own notifications`
+
+| campo | valor |
+|---|---|
+| comando | DELETE |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `(auth.uid() = user_id)` |
+| WITH CHECK |  |
+
 ### `Users can update their own notifications`
 
 | campo | valor |
@@ -85,14 +95,24 @@
 | USING | `(auth.uid() = user_id)` |
 | WITH CHECK |  |
 
+### `notificacoes_thread_followup_cotacao`
+
+| campo | valor |
+|---|---|
+| comando | SELECT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `((type = 'cotacao_followup'::text) AND tenant_in_my_group(tenant_id))` |
+| WITH CHECK |  |
+
 ### `tenant_isolation_notifications`
 
 | campo | valor |
 |---|---|
 | comando | ALL |
-| tipo | PERMISSIVE |
+| tipo | RESTRICTIVE |
 | roles | authenticated |
-| USING | `tenant_in_my_group(tenant_id)` |
+| USING | `(tenant_in_my_group(tenant_id) OR (user_id = auth.uid()))` |
 | WITH CHECK | `tenant_in_my_group(tenant_id)` |
 
 

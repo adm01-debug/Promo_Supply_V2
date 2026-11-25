@@ -76,7 +76,8 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.categorias | categorias_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
 | public.categorias | tenant_isolation_categorias | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
 | public.category_strategies | Tenant isolation for category_strategies | SELECT | PERMISSIVE | public | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
-| public.category_strategies | tenant_isolation | ALL | PERMISSIVE | public | `(organization_id = get_my_organization())` |  |
+| public.category_strategies | category_strategies_escrita_admin_coord | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
+| public.category_strategies | tenant_isolation | ALL | RESTRICTIVE | authenticated | `((organization_id = get_my_organization()) OR (EXISTS ( SELECT 1    FROM user_organizations uo   WHERE ((uo.organization_id = category_strategies.organization_id) AND (uo.user_id = auth.uid())))))` | `(organization_id = get_my_organization())` |
 | public.category_strategies | tenant_isolation_category_strategies | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
 | public.checkpoint_snapshots | ckpt_snapshots_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.contact_notes | Authenticated users can create contact notes | INSERT | PERMISSIVE | public |  | `((auth.uid() IS NOT NULL) AND (auth.uid() = author_id))` |
@@ -182,9 +183,11 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.negotiation_analyses | Role-restricted negotiation analysis access | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |  |
 | public.notification_preferences | Users can manage their own preferences | ALL | PERMISSIVE | public | `(auth.uid() = user_id)` | `(auth.uid() = user_id)` |
 | public.notifications | Users can create own notifications | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.notifications | Users can delete their own notifications | DELETE | PERMISSIVE | authenticated | `(auth.uid() = user_id)` |  |
 | public.notifications | Users can update their own notifications | UPDATE | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
 | public.notifications | Users can view their own notifications | SELECT | PERMISSIVE | public | `(auth.uid() = user_id)` |  |
-| public.notifications | tenant_isolation_notifications | ALL | PERMISSIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
+| public.notifications | notificacoes_thread_followup_cotacao | SELECT | PERMISSIVE | authenticated | `((type = 'cotacao_followup'::text) AND tenant_in_my_group(tenant_id))` |  |
+| public.notifications | tenant_isolation_notifications | ALL | RESTRICTIVE | authenticated | `(tenant_in_my_group(tenant_id) OR (user_id = auth.uid()))` | `tenant_in_my_group(tenant_id)` |
 | public.order_contracts | Buyers coordinators admins can manage order contracts | ALL | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
 | public.order_contracts | tenant_isolation_order_contracts | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
 | public.organizations | Users can see their organizations | SELECT | PERMISSIVE | public | `(id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |  |
