@@ -35,8 +35,23 @@ vi.mock('@/hooks/useDashboardKPIs', () => ({
 vi.mock('@/hooks/useAccountFilters', () => ({
   useAccountFilters: (_k: string, defaults: Record<string, unknown>) => ({ filters: defaults, patchFilters: vi.fn(), loading: false }),
 }));
+// Layout minimo do store: o dashboard renderiza o que estiver aqui (DraggableDashboard).
+const layoutWidgets = [
+  { id: 'kpi-sla', type: 'kpi', title: 'Taxa SLA', visible: true, order: 0, size: 'small' },
+  { id: 'chart-sla', type: 'chart', title: 'Distribuicao SLA', visible: true, order: 1, size: 'large' },
+  { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 2, size: 'medium' },
+];
 vi.mock('@/stores/dashboardLayoutStore', () => ({
-  useDashboardLayoutStore: () => ({ loadFromDb: vi.fn(), saveToDb: vi.fn() }),
+  useDashboardLayoutStore: () => ({
+    widgets: layoutWidgets,
+    setWidgets: vi.fn(),
+    toggleWidgetVisibility: vi.fn(),
+    resizeWidget: vi.fn(),
+    resetLayout: vi.fn(),
+    loadFromDb: vi.fn(),
+    saveToDb: vi.fn(),
+    isLoading: false,
+  }),
 }));
 vi.mock('@/hooks/useRealtimeSubscription', () => ({ useRealtimeSubscription: vi.fn() }));
 vi.mock('@/integrations/supabase/client', () => {
@@ -126,5 +141,25 @@ describe('ComprasDashboard — KPI de taxa de SLA', () => {
     const card = await screen.findByTestId('kpi-dashboard.kpis.sla');
     expect(card.getAttribute('data-value')).toBe('87.5');
     expect(card.getAttribute('data-format')).toBe('percent');
+  });
+});
+
+// Trabalho parcial: a pagina chamava loadFromDb('compras') e depois renderizava um layout
+// curado, jogando fora o layout do usuario (18 widgets no store, 11 sem ponto de montagem).
+describe('ComprasDashboard — layout vindo do store', () => {
+  it('renderiza os widgets do store em vez do layout fixo anterior', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    await screen.findByTestId('kpi-dashboard.kpis.sla');
+    expect(screen.getByRole('region', { name: 'Indicadores' })).toBeTruthy();
+    // kpi-volume existia apenas no layout curado e nao esta no store mockado.
+    expect(screen.queryByTestId('kpi-dashboard.kpis.volume')).toBeNull();
   });
 });

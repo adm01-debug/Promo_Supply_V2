@@ -41,7 +41,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { performanceMonitor } from "@/lib/performance";
 import { EliteButton } from "@/components/atoms/EliteButton";
-import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { formatCurrency } from "@/lib/utils";
 import { formatDateBR } from "@/lib/dateUtils";
 
@@ -82,6 +81,16 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
     {children}
   </Suspense>
 );
+
+// Colunas ocupadas por widget no grid de 4 do DraggableDashboard.
+const GRID_CLASSES: Record<string, string> = {
+  small: 'col-span-1',
+  medium: 'col-span-1 lg:col-span-2',
+  large: 'col-span-1 lg:col-span-3',
+  full: 'col-span-1 lg:col-span-4',
+};
+
+const gridClassesFor = (size: string) => GRID_CLASSES[size] ?? 'col-span-1';
 
 const ComprasDashboard = () => {
   const { t } = useTranslation();
@@ -369,24 +378,18 @@ const ComprasDashboard = () => {
           </div>
         </motion.div>
 
-        <EliteCardGrid columns={4} className="mb-8">
-          {['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].map(id => (
-            <div key={id}>{getWidgetComponent(id)}</div>
-          ))}
-        </EliteCardGrid>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3 space-y-8">
-            {getWidgetComponent('chart-pipeline')}
-            {getWidgetComponent('trend-charts')}
-            {getWidgetComponent('chart-sla')}
-            {getWidgetComponent('sourcing-intelligence')}
-            {getWidgetComponent('dashboard-insights')}
-          </div>
-          <div className="space-y-8">
-            {getWidgetComponent('urgent-items')}
-          </div>
-        </div>
+        {/*
+                  O layout curado (KPIs em EliteCardGrid + 2 colunas fixas) ignorava o
+                  resultado de loadFromDb('compras') chamado no topo do componente: o
+                  usuario salvava o layout em dashboard_layouts e a tela nao mudava.
+                  O DraggableDashboard renderiza exatamente os widgets do store
+                  (visibilidade, ordem e tamanho), incluindo os 11 que nao tinham
+                  ponto de montagem no layout fixo.
+                */}
+                <DraggableDashboard
+                  renderWidget={(widgetId) => getWidgetComponent(widgetId)}
+                  getGridClasses={gridClassesFor}
+                />
       </div>
     </ModuleErrorBoundary>
   );
