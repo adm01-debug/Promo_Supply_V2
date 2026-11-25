@@ -21,10 +21,6 @@
     { "tipo": "politicas", "nome": "authenticated can read exchange_rates", "motivo": "Renomeada para `exchange_rates_authenticated_read`, presente em exchange_rates." },
     { "tipo": "politicas", "nome": "authenticated users can view active approval rules", "motivo": "Substituida por `Role-restricted approval rules select` + `Users can view their organization rules` em approval_rules." },
     { "tipo": "politicas", "nome": "authenticated users can view escalation config", "motivo": "A tabela escalation_config nao existe no banco (to_regclass = null)." },
-    { "tipo": "politicas", "nome": "users can view their own reset tokens", "motivo": "A tabela password_reset_tokens nao existe no banco." },
-
-    { "tipo": "politicas", "nome": "users can delete their own notifications", "motivo": "Declarada em 20261126140000_rls_fase2_notifications_e_category_strategies.sql: a pendente de aprovacao do dono, porque e' DDL em producao (fase 2 do RLS-01). REMOVER ESTA ENTRADA depois de aplicar a migration." },
-    { "tipo": "politicas", "nome": "notificacoes_thread_followup_cotacao", "motivo": "Declarada em 20261126140000_rls_fase2_notifications_e_category_strategies.sql: a pendente de aprovacao do dono, porque e' DDL em producao (fase 2 do RLS-01). REMOVER ESTA ENTRADA depois de aplicar a migration." },
-    { "tipo": "politicas", "nome": "category_strategies_escrita_admin_coord", "motivo": "Declarada em 20261126140000_rls_fase2_notifications_e_category_strategies.sql: a pendente de aprovacao do dono, porque e' DDL em producao (fase 2 do RLS-01). REMOVER ESTA ENTRADA depois de aplicar a migration." }
+    { "tipo": "politicas", "nome": "users can view their own reset tokens", "motivo": "A tabela password_reset_tokens nao existe no banco." }
   ]
 }
