@@ -48,7 +48,11 @@ vi.mock('@/integrations/supabase/client', () => ({
       update: (updates: Record<string, unknown>) => ({
         in: (_col: string, ids: string[]) => {
           updatesAplicados.push({ updates, ids });
-          return Promise.resolve({ error: null });
+          // O hook confere as linhas realmente gravadas (RLS pode devolver 0
+          // linhas sem erro), entao o mock devolve uma linha por id enviado.
+          const gravadas = Promise.resolve({ data: ids.map((id) => ({ id })), error: null }) as unknown as Record<string, unknown>;
+          gravadas.select = () => gravadas;
+          return gravadas;
         },
       }),
     }),
