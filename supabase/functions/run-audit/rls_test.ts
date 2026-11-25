@@ -10,8 +10,15 @@ const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const RLSAUDIT_AVAILABLE = supabaseUrl.startsWith("http") && serviceRoleKey !== "";
 
 if (!RLSAUDIT_AVAILABLE) {
+  // ::warning:: aparece no resumo do job no GitHub Actions: antes o skip so existia no log
+  // inteiro e o check terminava verde como se a auditoria tivesse rodado.
+  // NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo
+  // fazem INSERT real em public.solicitacoes via rpc exec_sql com SUPABASE_URL apontando para
+  // PRODUCAO -- liga-la escreve no banco de producao a cada PR e entrega a service role a todo
+  // workflow do repositorio. Habilitar exige decisao do dono (projeto de QA separado, ou um
+  // `--strict` explicito que transforme o skip em falha).
   console.warn(
-    "[rls_test] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing — skipping RLS security audit.",
+    "::warning::[rls_test] SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes -- auditoria de isolamento multiempresa pulada (o CI fica verde sem esta verificacao).",
   );
 }
 
