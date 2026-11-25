@@ -82,8 +82,12 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 - **Não existe banco local nem desvio:** `.env` está comitado e aponta para produção, então `npm run dev`,
   `npm run test:rls` e o E2E falam com **produção**. Diagnóstico = só leitura. `npm run test:rls` com
   `RLS_TEST_USER_A/B` faz login real. O passo "RLS Audit" do CI é **no-op** (sai `exit 0` sem os secrets).
-- **Não há ledger de migration** (`supabase_migrations.schema_migrations` ausente) e nenhum workflow aplica
-  DDL: 279 arquivos sem registro do que rodou. Ordem obrigatória: arquivo → PR → merge → deploy do código →
+- **O ledger de migration existe, mas está incompleto** (medido em 25/11/2026:
+  `supabase_migrations.schema_migrations` com 14 linhas para 336 arquivos). A PR #448 registra as 321
+  versões já aplicadas no banco; enquanto ela não for aplicada, `supabase db push` tentaria reexecutar 322
+  arquivos (37 `CREATE TABLE` sem `IF NOT EXISTS`, 24 `DELETE FROM`, 4 `DROP TABLE`) e abortaria no
+  primeiro. O canal oficial de apply é o workflow `aplicar-migration-prod.yml` (dispatch manual, 1 arquivo,
+  transação única), que **não grava no ledger**. Ordem obrigatória: arquivo → PR → merge → deploy do código →
   apply, e **pergunte ao dono qual é o caminho do apply** antes do primeiro DDL. Destrutivo, segredos e
   rotação: só com o dono.
 - `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.
