@@ -5,6 +5,7 @@ import {
   TrendingUp,
   BarChart3,
   PiggyBank,
+  Gauge,
   Filter,
   X,
   Calendar
@@ -191,6 +192,25 @@ const ComprasDashboard = () => {
             />
           </InteractiveCard>
         );
+      case 'kpi-sla':
+        // kpi-sla esta no layout padrao (dashboardLayoutStore, order 3) e o hook
+        // ja expoe comparisons.sla vindo da RPC get_compras_sla_metrics; o card
+        // existia no layout de 4 colunas e nunca era renderizado.
+        return (
+          <InteractiveCard>
+            <EnhancedKpiCard
+              title={t('dashboard.kpis.sla')}
+              value={kpis.comparisons.sla.current}
+              previousValue={kpis.comparisons.sla.previous}
+              sparklineData={kpis.comparisons.sla.sparkline}
+              icon={Gauge}
+              color="violet"
+              subtitle={t('dashboard.kpis.subtitles.sla')}
+              format="percent"
+              variant="default"
+            />
+          </InteractiveCard>
+        );
       case 'chart-pipeline':
         return (
           <Card className="p-6 h-full border-border/40 bg-card/50 backdrop-blur-sm">
@@ -350,7 +370,7 @@ const ComprasDashboard = () => {
         </motion.div>
 
         <EliteCardGrid columns={4} className="mb-8">
-          {['kpi-aguardando', 'kpi-volume', 'kpi-economia'].map(id => (
+          {['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].map(id => (
             <div key={id}>{getWidgetComponent(id)}</div>
           ))}
         </EliteCardGrid>
