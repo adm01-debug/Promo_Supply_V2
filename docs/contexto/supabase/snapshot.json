@@ -40710,7 +40710,7 @@
               "hits": 37
             }
           ],
-          "code_total_files": 78,
+          "code_total_files": 79,
           "cron": [],
           "db": [
             "public.count_legacy_storage_urls",
@@ -43453,9 +43453,13 @@
             {
               "file": "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
               "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+              "hits": 152
             }
           ],
-          "code_total_files": 13,
+          "code_total_files": 14,
           "cron": [],
           "db": [
             "public.current_tenant_id",
@@ -44121,9 +44125,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -58307,6 +58315,12 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.approval_hierarchy.approval_hierarchy_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.approval_history.Restricted approval history insert",
         "severity": "BAIXA"
       },
@@ -58398,6 +58412,12 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.approval_workflows.Users can view their organization workflows",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.auction_bids.auction_bids_escrita_ordem",
         "severity": "BAIXA"
       },
       {
@@ -58799,6 +58819,12 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.erp_sync_log.erp_sync_log_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.estoque.Estoque: ver da própria organização",
         "severity": "BAIXA"
       },
@@ -58848,6 +58874,18 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.fiscal_documents.Role-restricted fiscal document access",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.fiscal_events.fiscal_events_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.fornecedor_categorias.fornecedor_categorias_escrita_gestao",
         "severity": "BAIXA"
       },
       {
@@ -58914,6 +58952,12 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.ip_whitelist.Admins can view IP whitelist",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.licitacao_lances.licitacao_lances_escrita_ordem",
         "severity": "BAIXA"
       },
       {
@@ -59171,6 +59215,12 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.punchout_sessions.punchout_sessions_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.push_subscriptions.Users can manage their own subscriptions",
         "severity": "BAIXA"
       },
@@ -59279,6 +59329,18 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.savings_tracker.savings_tracker_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.scim_provisioning_log.scim_provisioning_log_escrita_admin",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.secret_rotation_schedule.Admins manage secret rotation schedule",
         "severity": "BAIXA"
       },
@@ -59345,6 +59407,72 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_awards.sourcing_awards_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_event_criteria.sourcing_event_criteria_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_event_lots.sourcing_event_lots_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_event_questions.sourcing_event_questions_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_events.sourcing_events_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_invitations.sourcing_invitations_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_pipeline.sourcing_pipeline_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_projects.sourcing_projects_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_response_answers.sourcing_response_answers_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_response_items.sourcing_response_items_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sourcing_responses.sourcing_responses_escrita_ordem",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.spend_forecasts.Tenant isolation for spend_forecasts",
         "severity": "BAIXA"
       },
@@ -59388,6 +59516,12 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.spot_skus.Allowed roles can view spot skus",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.sso_configurations.sso_configurations_escrita_admin",
         "severity": "BAIXA"
       },
       {
@@ -59640,6 +59774,60 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.webhook_events.Admins can view webhook events",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_approvals.workflow_approvals_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_audit_log.workflow_audit_log_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_edges.workflow_edges_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_instances.workflow_instances_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_logs.workflow_logs_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_nodes.workflow_nodes_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_sod_rules.workflow_sod_rules_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_tasks.workflow_tasks_escrita_gestao",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.workflow_templates.workflow_templates_escrita_gestao",
         "severity": "BAIXA"
       },
       {
@@ -61509,6 +61697,12 @@
         "version": "20261126140000"
       },
       {
+        "name": "rls_fase2_30_tabelas_por_papel",
+        "statements": 211,
+        "statements_sha": "a1bfc1b51e3ac2ed",
+        "version": "20261126153000"
+      },
+      {
         "name": "reconcilia_ledger_migrations",
         "statements": null,
         "version": "20261127000000"
@@ -61757,8 +61951,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_approval_hierarchy",
+        "name": "approval_hierarchy_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "approval_hierarchy",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "approval_hierarchy_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "approval_hierarchy",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_approval_hierarchy",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -62033,8 +62251,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_auction_bids",
+        "name": "auction_bids_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "auction_bids",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "auction_bids_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "auction_bids",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_auction_bids",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -63173,8 +63415,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "ERP sync logs are tenant-isolated",
+        "name": "erp_sync_log_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "erp_sync_log",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "erp_sync_log_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "erp_sync_log",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_erp_sync_log",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -63317,8 +63583,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "fiscal_events tenant isolation",
+        "name": "fiscal_events_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "fiscal_events",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "fiscal_events_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "fiscal_events",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_fiscal_events",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -63329,8 +63619,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_fornecedor_categorias",
+        "name": "fornecedor_categorias_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "fornecedor_categorias",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "fornecedor_categorias_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "fornecedor_categorias",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_fornecedor_categorias",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -63497,8 +63811,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_licitacao_lances",
+        "name": "licitacao_lances_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "licitacao_lances",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "licitacao_lances_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "licitacao_lances",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_licitacao_lances",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64145,8 +64483,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant isolation punchout_sessions",
+        "name": "punchout_sessions_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "punchout_sessions",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "punchout_sessions_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "punchout_sessions",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_punchout_sessions",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64397,8 +64759,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_savings_tracker",
+        "name": "savings_tracker_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "savings_tracker",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "savings_tracker_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "savings_tracker",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_savings_tracker",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64409,8 +64795,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "SCIM logs isolated by tenant",
+        "name": "scim_provisioning_log_escrita_admin",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "scim_provisioning_log",
+        "using": "(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "scim_provisioning_log_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "scim_provisioning_log",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_scim_provisioning_log",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64577,8 +64987,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_awards",
+        "name": "sourcing_awards_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_awards",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_awards_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_awards",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_awards",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64589,8 +65023,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_event_criteria",
+        "name": "sourcing_event_criteria_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_criteria",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_event_criteria_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_criteria",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_event_criteria",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64601,8 +65059,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_event_lots",
+        "name": "sourcing_event_lots_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_lots",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_event_lots_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_lots",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_event_lots",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64613,8 +65095,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_event_questions",
+        "name": "sourcing_event_questions_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_questions",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_event_questions_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_event_questions",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_event_questions",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64625,8 +65131,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_events",
+        "name": "sourcing_events_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_events",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_events_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_events",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_events",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64637,8 +65167,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_invitations",
+        "name": "sourcing_invitations_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_invitations",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_invitations_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_invitations",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_invitations",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64649,8 +65203,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_pipeline",
+        "name": "sourcing_pipeline_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_pipeline",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_pipeline_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_pipeline",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_pipeline",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64661,8 +65239,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_projects",
+        "name": "sourcing_projects_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_projects",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_projects_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_projects",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_projects",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64673,8 +65275,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_response_answers",
+        "name": "sourcing_response_answers_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_response_answers",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_response_answers_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_response_answers",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_response_answers",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64685,8 +65311,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_response_items",
+        "name": "sourcing_response_items_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_response_items",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_response_items_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_response_items",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_response_items",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64697,8 +65347,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_sourcing_responses",
+        "name": "sourcing_responses_escrita_ordem",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_responses",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role) OR has_role(auth.uid(), 'finance'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sourcing_responses_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sourcing_responses",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sourcing_responses",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -64829,8 +65503,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "SSO configurations isolated by tenant",
+        "name": "sso_configurations_escrita_admin",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sso_configurations",
+        "using": "(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND has_role(auth.uid(), 'admin'::app_role))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "sso_configurations_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "sso_configurations",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_sso_configurations",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65441,8 +66139,8 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_approvals",
-        "permissive": "PERMISSIVE",
+        "name": "tenant_isolation_workflow_approvals",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65453,8 +66151,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_workflow_audit_log",
+        "name": "workflow_approvals_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_approvals",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_approvals_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_approvals",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_audit_log",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65465,8 +66187,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_edges",
+        "name": "workflow_audit_log_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_audit_log",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_audit_log_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_audit_log",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_edges",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65477,8 +66223,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_instances",
+        "name": "workflow_edges_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_edges",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_edges_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_edges",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_instances",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65489,8 +66259,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_logs",
+        "name": "workflow_instances_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_instances",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_instances_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_instances",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_logs",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65501,8 +66295,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_nodes",
+        "name": "workflow_logs_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_logs",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_logs_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_logs",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_nodes",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65513,8 +66331,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_workflow_sod_rules",
+        "name": "workflow_nodes_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_nodes",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_nodes_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_nodes",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_sod_rules",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65525,8 +66367,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "tenant_isolation_workflow_tasks",
+        "name": "workflow_sod_rules_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_sod_rules",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_sod_rules_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_sod_rules",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_tasks",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65537,8 +66403,32 @@
       },
       {
         "cmd": "ALL",
-        "name": "Tenant isolation for workflow_templates",
+        "name": "workflow_tasks_escrita_gestao",
         "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_tasks",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_tasks_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_tasks",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_workflow_templates",
+        "permissive": "RESTRICTIVE",
         "roles": [
           "authenticated"
         ],
@@ -65546,6 +66436,30 @@
         "table": "workflow_templates",
         "using": "tenant_in_my_group(tenant_id)",
         "with_check": "tenant_in_my_group(tenant_id)"
+      },
+      {
+        "cmd": "ALL",
+        "name": "workflow_templates_escrita_gestao",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_templates",
+        "using": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "workflow_templates_select_grupo",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "workflow_templates",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": null
       },
       {
         "cmd": "SELECT",

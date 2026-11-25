@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "47a8cb5432341c1328b32da98428220625c6ff7f",
+  "sha": "096419745752e3f6803eb4b3dd7af35e15f51867",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 19:32 UTC",
+  "generated_at": "2026-11-25 20:13 UTC",
   "files_total": 1458,
   "code_files": 1284,
   "code_lines": 217028,
@@ -122179,10 +122179,19 @@
   }
  },
  "git": {
-  "sha": "47a8cb5432341c1328b32da98428220625c6ff7f",
+  "sha": "096419745752e3f6803eb4b3dd7af35e15f51867",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0964197",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)",
+    "files": [
+     "scripts/ci/paridade-migrations-banco.allowlist.json"
+    ]
+   },
    {
     "sha": "47a8cb5",
     "date": "2026-11-25",
@@ -122509,27 +122518,20 @@
      "src/lib/__tests__/supabaseRpc.test.ts",
      "src/lib/supabaseRpc.ts"
     ]
-   },
-   {
-    "sha": "b1db1c7",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
-     "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    21
+    20
    ],
    [
     "AGENTS.md",
     4
+   ],
+   [
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    3
    ],
    [
     ".github/workflows/main.yml",
@@ -122557,10 +122559,6 @@
    ],
    [
     "scripts/ci/check-agents-md-integrity.mjs",
-    2
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
     2
    ],
    [

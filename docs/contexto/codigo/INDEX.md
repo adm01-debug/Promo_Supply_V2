@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `47a8cb5432341c1328b32da98428220625c6ff7f` (2026-11-25T16:32:03-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `096419745752e3f6803eb4b3dd7af35e15f51867` (2026-11-25T16:34:49-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -340,19 +340,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (115)
 - docs/pendencias/_indice.md (45)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (16)
-- docs/ci/README.md (11)
-- src/pages/acompanhamento/Acompanhamento.tsx (10)
-- src/features/pedidos/hooks/usePedidos.ts (9)
-- src/pages/pedidos/Pedidos.tsx (9)
-- .github/workflows/main.yml (8)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (15)
+- docs/ci/README.md (10)
+- src/pages/acompanhamento/Acompanhamento.tsx (9)
 - docs/pendencias/_ordem.md (8)
-- src/hooks/useApprovalWorkflow.ts (8)
-- src/pages/cotacao/Cotacao.tsx (8)
-- src/pages/solicitacoes/Solicitacoes.tsx (8)
-- supabase/functions/xbz-proxy/index.ts (8)
-- AGENTS.md (7)
-- src/features/auth/hooks/useAuth.tsx (7)
+- src/features/pedidos/hooks/usePedidos.ts (8)
+- src/pages/pedidos/Pedidos.tsx (8)
+- .github/workflows/main.yml (7)
+- src/hooks/useApprovalWorkflow.ts (7)
+- src/pages/cotacao/Cotacao.tsx (7)
+- src/pages/solicitacoes/Solicitacoes.tsx (7)
+- supabase/functions/xbz-proxy/index.ts (7)
+- AGENTS.md (6)
+- src/features/auth/hooks/useAuth.tsx (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `0964197` chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)
 - 2026-11-25 `47a8cb5` ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)
 - 2026-11-25 `66f6b9d` fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)
 - 2026-11-25 `0d68cdf` fix(ci): o teste de edge pulado deixa de ser invisivel no CI (#457)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `ac3487c` fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)
 - 2026-11-25 `52746df` docs(pendencias): registra o estado real das views de compra no PIM (#464)
 - 2026-11-25 `415c0e6` feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)
-- 2026-11-25 `c770dfc` docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

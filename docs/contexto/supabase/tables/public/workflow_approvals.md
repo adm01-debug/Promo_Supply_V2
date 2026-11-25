@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 1 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -53,15 +53,35 @@
 
 ## Policies (RLS)
 
-### `Tenant isolation for workflow_approvals`
+### `tenant_isolation_workflow_approvals`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | authenticated |
+| USING | `tenant_in_my_group(tenant_id)` |
+| WITH CHECK | `tenant_in_my_group(tenant_id)` |
+
+### `workflow_approvals_escrita_gestao`
 
 | campo | valor |
 |---|---|
 | comando | ALL |
 | tipo | PERMISSIVE |
 | roles | authenticated |
+| USING | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| WITH CHECK | `(tenant_in_my_group(tenant_id) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+
+### `workflow_approvals_select_grupo`
+
+| campo | valor |
+|---|---|
+| comando | SELECT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
 | USING | `tenant_in_my_group(tenant_id)` |
-| WITH CHECK | `tenant_in_my_group(tenant_id)` |
+| WITH CHECK |  |
 
 
 ## Triggers
