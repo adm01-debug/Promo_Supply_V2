@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "f2f3e24cd80d1a666e39e801dadb84ec7d0918a6",
+  "sha": "b22b3ab19416474516f1afbd0c7f379af687967e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 12:20 UTC",
+  "generated_at": "2026-11-25 12:29 UTC",
   "files_total": 1451,
   "code_files": 1278,
-  "code_lines": 214880,
+  "code_lines": 214927,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ccbbcdcbda86617d",
+ "facts_hash": "5e8f1bc3b075477e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36264,7 +36264,7 @@
   {
    "module": "supabase/functions",
    "files": 118,
-   "lines": 19454,
+   "lines": 19501,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -39152,10 +39152,12 @@
     "supabase/functions/dependency-health/index.test.ts"
    ],
    "QA_USER_EMAIL": [
-    "supabase/functions/telemetry/index.test.ts"
+    "supabase/functions/telemetry/index.test.ts",
+    "supabase/functions/workflow-engine/fuzz.test.ts"
    ],
    "QA_USER_PASSWORD": [
-    "supabase/functions/telemetry/index.test.ts"
+    "supabase/functions/telemetry/index.test.ts",
+    "supabase/functions/workflow-engine/fuzz.test.ts"
    ],
    "RENDER_WF_RAIZ": [
     "scripts/ci/render-workflow-docs.mjs"
@@ -119389,7 +119391,7 @@
   },
   "supabase/functions/telemetry/index.test.ts": {
    "path": "supabase/functions/telemetry/index.test.ts",
-   "lines": 124,
+   "lines": 139,
    "is_test": true,
    "env": [
     "QA_USER_EMAIL",
@@ -119818,13 +119820,16 @@
   },
   "supabase/functions/workflow-engine/fuzz.test.ts": {
    "path": "supabase/functions/workflow-engine/fuzz.test.ts",
-   "lines": 105,
+   "lines": 137,
    "is_test": true,
    "env": [
+    "QA_USER_EMAIL",
+    "QA_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
    "rule_comments": [
+    "autentica usuario nenhum (medido em 2026-11-25: POST com ela -> 401), entao nao pode",
     "Devem falhar com 400 (Validation Error)",
     "M-02: sem JWT válido, o tenant não pode ser resolvido → 401."
    ],
@@ -122024,10 +122029,21 @@
   }
  },
  "git": {
-  "sha": "f2f3e24cd80d1a666e39e801dadb84ec7d0918a6",
+  "sha": "b22b3ab19416474516f1afbd0c7f379af687967e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "b22b3ab",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/telemetry/index.test.ts",
+     "supabase/functions/workflow-engine/fuzz.test.ts"
+    ]
+   },
    {
     "sha": "f2f3e24",
     "date": "2026-11-25",
@@ -122371,22 +122387,12 @@
      "src/pages/solicitacoes/Solicitacoes.tsx",
      "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx"
     ]
-   },
-   {
-    "sha": "da3107b",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "feat: registra no log quando o numero da solicitacao colide (#431)",
-    "files": [
-     "supabase/functions/receive-os-sync/create-solicitacao.test.ts",
-     "supabase/functions/receive-os-sync/create-solicitacao.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    26
    ],
    [
     "AGENTS.md",
@@ -122419,6 +122425,14 @@
    [
     "src/components/compras/PendingApprovalsList.tsx",
     2
+   ],
+   [
+    "supabase/functions/telemetry/index.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/workflow-engine/fuzz.test.ts",
+    1
    ],
    [
     "scripts/ci/paridade-migrations-banco.mjs",
@@ -122454,14 +122468,6 @@
    ],
    [
     "scripts/ci/check-agents-md-integrity.mjs",
-    1
-   ],
-   [
-    "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
     1
    ]
   ]

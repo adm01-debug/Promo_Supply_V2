@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f2f3e24cd80d1a666e39e801dadb84ec7d0918a6",
+  "commit": "b22b3ab19416474516f1afbd0c7f379af687967e",
   "branch": "main",
-  "data_commit": "2026-11-25T08:49:09-03:00",
+  "data_commit": "2026-11-25T09:26:21-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "b22b3ab",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)"
+   },
    {
     "sha": "f2f3e24",
     "data": "2026-11-25",
@@ -126,22 +131,17 @@
     "sha": "338a212",
     "data": "2026-11-24",
     "assunto": "fix(anexos): avisa quando o anexo nao sobe e a solicitacao ja foi criada (#437)"
-   },
-   {
-    "sha": "9e585d8",
-    "data": "2026-11-24",
-    "assunto": "fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)"
    }
   ],
-  "arquivos_mudados_7d": 493,
+  "arquivos_mudados_7d": 494,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 198
+    "mudancas": 196
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 101
+    "mudancas": 102
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -176,10 +176,6 @@
     "mudancas": 25
    },
    {
-    "pasta": "src/pages/recebimento",
-    "mudancas": 24
-   },
-   {
     "pasta": "src/features/auth",
     "mudancas": 23
    },
@@ -192,6 +188,10 @@
     "mudancas": 21
    },
    {
+    "pasta": "src/pages/recebimento",
+    "mudancas": 21
+   },
+   {
     "pasta": "src/components/security",
     "mudancas": 20
    }
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 101
+    "mudancas": 102
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -246,10 +246,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
     "mudancas": 7
    },
@@ -282,7 +278,7 @@
     "mudancas": 6
    },
    {
-    "arquivo": "src/pages/recebimento/recebimentoHelpers.ts",
+    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
     "mudancas": 6
    },
    {
@@ -296,6 +292,10 @@
    {
     "arquivo": "supabase/functions/workflow-engine/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/deploy-edge-functions.yml",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1450,
   "arquivos_codigo": 928,
-  "linhas_codigo": 186045,
+  "linhas_codigo": 186092,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 118,
-   "linhas": 19454
+   "linhas": 19501
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -651,7 +651,7 @@
  ],
  "qualidade": {
   "any": 159,
-  "console_log": 85,
+  "console_log": 89,
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,

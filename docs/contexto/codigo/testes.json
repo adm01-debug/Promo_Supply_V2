@@ -2509,7 +2509,7 @@
   {
    "arquivo": "supabase/functions/telemetry/index.test.ts",
    "tipo": "unit",
-   "linhas": 124,
+   "linhas": 139,
    "testa": [],
    "casos": 4
   },
@@ -2533,7 +2533,7 @@
   {
    "arquivo": "supabase/functions/workflow-engine/fuzz.test.ts",
    "tipo": "unit",
-   "linhas": 105,
+   "linhas": 137,
    "testa": [
     "supabase/functions/_shared/contracts.ts",
     "supabase/functions/_shared/fuzzer.ts"
