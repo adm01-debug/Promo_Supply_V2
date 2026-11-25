@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "81bd8c5e9542b2ea9dd67fc3e73579a0de119a3f",
+  "commit": "9a655d1bafd8673cb5ca784f1e110a245d6e42dd",
   "branch": "main",
-  "data_commit": "2026-11-25T14:55:02-03:00",
+  "data_commit": "2026-11-25T15:16:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "9a655d1",
+    "data": "2026-11-25",
+    "assunto": "feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)"
+   },
    {
     "sha": "81bd8c5",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "b1db1c7",
     "data": "2026-11-24",
     "assunto": "fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)"
-   },
-   {
-    "sha": "19d6ce8",
-    "data": "2026-11-24",
-    "assunto": "fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)"
    }
   ],
   "arquivos_mudados_7d": 490,
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 36
+    "mudancas": 34
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 296
+    "commits": 297
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 3
+    "commits": 2
    },
    {
     "autor": "github-actions[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1452,
   "arquivos_codigo": 929,
-  "linhas_codigo": 186471,
+  "linhas_codigo": 186509,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 153,
-   "linhas": 34826
+   "linhas": 34864
   },
   "src/routes": {
    "arquivos": 1,

@@ -2832,7 +2832,6 @@
    "src/components/compras/SupplierRankingPanel.tsx",
    "src/components/compras/TrendAnalysisCharts.tsx",
    "src/components/compras/UrgentItemsList.tsx",
-   "src/components/organisms/EliteCardGrid.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/interactive-card.tsx",

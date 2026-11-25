@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 639,
- "arestas": 2841,
+ "arestas": 2840,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -260,11 +260,6 @@
    "importado_por": 12
   },
   {
-   "modulo": "components/organisms",
-   "depende_de": 2,
-   "importado_por": 11
-  },
-  {
    "modulo": "pages/cotacao",
    "depende_de": 11,
    "importado_por": 2
@@ -275,19 +270,24 @@
    "importado_por": 2
   },
   {
+   "modulo": "components/organisms",
+   "depende_de": 2,
+   "importado_por": 10
+  },
+  {
    "modulo": "pages/acompanhamento",
    "depende_de": 9,
    "importado_por": 3
   },
   {
-   "modulo": "pages/dashboard",
-   "depende_de": 10,
-   "importado_por": 2
-  },
-  {
    "modulo": "features/solicitacoes",
    "depende_de": 5,
    "importado_por": 6
+  },
+  {
+   "modulo": "pages/dashboard",
+   "depende_de": 9,
+   "importado_por": 2
   },
   {
    "modulo": "features/pedidos",

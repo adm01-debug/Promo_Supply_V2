@@ -2094,7 +2094,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 3,
+   "usado_por": 2,
    "orfao": false
   },
   {
@@ -4813,7 +4813,7 @@
     "ComprasDashboard"
    ],
    "export_default": "ComprasDashboard",
-   "linhas": 396,
+   "linhas": 399,
    "dominio": "pages/dashboard",
    "hooks_locais": [
     "useAccountFilters",

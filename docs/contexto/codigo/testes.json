@@ -1823,11 +1823,11 @@
   {
    "arquivo": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
    "tipo": "unit",
-   "linhas": 130,
+   "linhas": 165,
    "testa": [
     "src/pages/dashboard/ComprasDashboard.tsx"
    ],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "src/pages/devolucoes/__tests__/devolucoesData.test.ts",

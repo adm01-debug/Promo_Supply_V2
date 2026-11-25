@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `81bd8c5e9542b2ea9dd67fc3e73579a0de119a3f` (2026-11-25T14:55:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9a655d1bafd8673cb5ca784f1e110a245d6e42dd` (2026-11-25T15:16:45-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1452 |
 | arquivos_codigo | 929 |
-| linhas_codigo | 186471 |
+| linhas_codigo | 186509 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `9a655d1` feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)
 - 2026-11-25 `81bd8c5` fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)
 - 2026-11-25 `a250541` fix(push): so anuncia "Notificacoes ativadas" depois de registrar a inscricao (#470)
 - 2026-11-25 `6d00e2a` feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `5f80e28` chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)
 - 2026-11-25 `b22b3ab` fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)
 - 2026-11-25 `f2f3e24` fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)
-- 2026-11-25 `b4575e8` fix(rls): fecha escrita em notifications e category_strategies (#451)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
