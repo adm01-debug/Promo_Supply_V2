@@ -77,7 +77,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.notifications](tables/public/notifications.md) | table | sim | 6 | 14 | não |  |
 | [public.order_contracts](tables/public/order_contracts.md) | table | sim | 2 | 5 | não |  |
 | [public.organizations](tables/public/organizations.md) | table | sim | 1 | 9 | não |  |
-| [public.pagamentos](tables/public/pagamentos.md) | table | sim | 4 | 23 | sim |  |
+| [public.pagamentos](tables/public/pagamentos.md) | table | sim | 4 | 24 | sim |  |
 | [public.password_reset_requests](tables/public/password_reset_requests.md) | table | sim | 4 | 14 | não |  |
 | [public.payment_history](tables/public/payment_history.md) | table | sim | 2 | 9 | não |  |
 | [public.pedido_itens](tables/public/pedido_itens.md) | table | sim | 3 | 19 | não |  |

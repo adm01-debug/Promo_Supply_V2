@@ -11966,6 +11966,19 @@
         "type": "uuid"
       },
       {
+        "comment": "Data escolhida pelo financeiro ao agendar o pagamento (status agendado). data_pagamento continua sendo a data efetiva do pagamento.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "data_agendamento",
+        "nullable": true,
+        "position": 24,
+        "schema": "public",
+        "table": "pagamentos",
+        "type": "date"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -61706,6 +61719,12 @@
         "name": "reconcilia_ledger_migrations",
         "statements": null,
         "version": "20261127000000"
+      },
+      {
+        "name": "pagamentos_data_agendamento",
+        "statements": 2,
+        "statements_sha": "171dca0569a6ad93",
+        "version": "20261127120000"
       }
     ],
     "policies": [

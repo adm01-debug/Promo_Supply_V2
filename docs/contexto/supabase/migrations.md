@@ -343,3 +343,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261126140000 | [rls_fase2_notifications_e_category_strategies](migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql) | 10 |
 | 20261126153000 | [rls_fase2_30_tabelas_por_papel](migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql) | 211 |
 | 20261127000000 | [reconcilia_ledger_migrations](migrations/20261127000000_reconcilia_ledger_migrations.sql) | 0 |
+| 20261127120000 | [pagamentos_data_agendamento](migrations/20261127120000_pagamentos_data_agendamento.sql) | 2 |

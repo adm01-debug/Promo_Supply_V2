@@ -39,6 +39,7 @@
 | 21 | `organization_id` | `uuid` | sim |  |  |  |
 | 22 | `cost_center_id` | `uuid` | sim |  |  |  |
 | 23 | `tenant_id` | `uuid` | não |  |  |  |
+| 24 | `data_agendamento` | `date` | sim |  |  | Data escolhida pelo financeiro ao agendar o pagamento (status agendado). data_pagamento continua sendo a data efetiva do pagamento. |
 
 
 ## Constraints

@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-25 23:25 UTC
+
+- **colunas** adicionado (1): `public.pagamentos.data_agendamento`
+- **migrations** adicionado (1): `20261127120000_pagamentos_data_agendamento`
+
 ## 2026-11-25 20:13 UTC
 
 - **functions** alterado (3): `public.has_role(_user_id uuid, _role app_role)`, `public.tenant_in_my_group(_tenant_id uuid)`, `public.update_licitacao_best_bid()`
