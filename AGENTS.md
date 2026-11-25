@@ -32,8 +32,10 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   de git neste repo** (sem `.husky/`, `"prepare": ""`, sem `commitlint`): nada roda sozinho no commit. Só erro
   seu conta; erro herdado da `main` → "Próximos passos".
 - "Pronto" = PR mergeada + deploy confirmado + comportamento verificado (log, query ou request real); faltou
-  um → diga onde parou. Merge em `main` = deploy de produção na Vercel, e **não há branch protection**:
-  conferir o resultado do CI antes de mergear é obrigação de quem mergeia.
+  um → diga onde parou. Merge em `main` = deploy de produção na Vercel. A proteção de `main` exige **um** check
+  obrigatório (`Contratos da automação local`) e nenhuma revisão; os outros checks (Quality Gate, E2E, guards)
+  não bloqueiam, então ler o resultado do CI antes de mergear continua sendo obrigação de quem mergeia
+  (`gh api /repos/adm01-debug/Promo_Supply_V2/branches/main/protection`).
 - Funcionalidade pronta = integrada ponta a ponta (rota em `src/routes/AppRoutes.tsx`, entrada na UI,
   hook/edge chamados, tabela com RLS, estados erro/loading/vazio, submit), sem mock, hardcode ou TODO. Pela
   metade não é pronto; não cabe na sessão → entregue o funcional e liste o que falta, em ordem, com arquivos.
@@ -80,34 +82,38 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   commit `0bdc3cb`; ainda citados em migrations antigas e em comentários desatualizados de workflow).
   `pgxfvjmuubtbowutlide` (MCP "GESTÃO DE CLIENTES"/CRM) e `doufsxqlfjyuvxuezpln` (MCP "GESTÃO DE PRODUTOS")
   são outros projetos: só leitura.
-- **Não existe banco local nem desvio:** `.env` está comitado e aponta para produção, então `npm run dev`,
-  `npm run test:rls` e o E2E falam com **produção**. Diagnóstico = só leitura. `npm run test:rls` com
-  `RLS_TEST_USER_A/B` faz login real. O passo "RLS Audit" do CI é **no-op** (sai `exit 0` sem os secrets).
-- **O ledger de migration existe, mas está incompleto** (medido em 25/11/2026:
-  `supabase_migrations.schema_migrations` com 14 linhas para 336 arquivos). A PR #448 registra as 321
-  versões já aplicadas no banco; enquanto ela não for aplicada, `supabase db push` tentaria reexecutar 322
-  arquivos (37 `CREATE TABLE` sem `IF NOT EXISTS`, 24 `DELETE FROM`, 4 `DROP TABLE`) e abortaria no
-  primeiro. O canal oficial de apply é o workflow `aplicar-migration-prod.yml` (dispatch manual, 1 arquivo,
-  transação única), que **não grava no ledger**. Ordem obrigatória: arquivo → PR → merge → deploy do código →
-  apply, e **pergunte ao dono qual é o caminho do apply** antes do primeiro DDL. Destrutivo, segredos e
-  rotação: só com o dono.
+- **Não existe banco local nem desvio:** o `.env` local aponta para **produção** e `.env`/`.env.*` são
+  ignorados (`.gitignore:49-52`, com `!.env.example` de propósito), então `npm run dev`, `npm run test:rls` e o
+  E2E falam com **produção**. Diagnóstico = só leitura. `npm run test:rls` com `RLS_TEST_USER_A/B` faz login
+  real. O passo `Security RLS Audit` do CI roda de verdade (`bun run scripts/rls-audit.ts --strict`, job
+  `quality-gate` de `main.yml`): com `--strict` a auditoria **sai 1** quando falta `SUPABASE_DB_URL`
+  (`scripts/rls-audit.ts:247,273`), e o job está verde — logo o secret existe e a RLS é auditada no CI.
+- **O ledger de migration foi reconciliado pela #448 (mergeada em 25/11/2026 10:46); o estado pós-merge não foi
+  conferido por query** — medido em 25/11/2026, antes dela: `supabase_migrations.schema_migrations` com 14 linhas
+  para 336 arquivos. A #448 entrega `supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql`, que
+  registra no ledger as 322 versões já aplicadas; **NÃO VERIFICADO** se esse arquivo já rodou no banco oficial.
+  O canal oficial de apply é o workflow `aplicar-migration-prod.yml` (dispatch manual, 1 arquivo, transação
+  única), que **não grava no ledger**. Enquanto ledger e banco divergirem, `supabase db push` tentaria reexecutar
+  arquivos destrutivos (339 migrations hoje: 94 `CREATE TABLE` sem `IF NOT EXISTS`, 51 `DELETE FROM`, 8 `DROP
+  TABLE`). Ordem obrigatória: arquivo → PR → merge → deploy do código → apply, e **pergunte ao dono qual é o
+  caminho do apply** antes do primeiro DDL. Destrutivo, segredos e rotação: só com o dono.
 - `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.
 
 ## Serviços
 - **Deploy** — ler `docs/agentes/deploy.md` ao confirmar deploy ou mexer em env/domínio. Front na **Vercel**
-  (projeto `promo-supply-v2`, team `juca1`): merge em `main` = produção. **Edge: deploy manual** por
-  `deploy_edge_functions_promo_supply.sh` (31 das 39); nenhum workflow publica edge. Nunca segredo de servidor
-  na Vercel; `VITE_*` é público.
+  (projeto `promo-supply-v2`, team `juca1`): merge em `main` = produção. **Edge: o workflow
+  `deploy-edge-functions.yml` publica** no push da `main` que toque `supabase/functions/**` (e no dispatch manual,
+  por função, lista ou todas); o script `deploy_edge_functions_promo_supply.sh` publica à mão as **31** funções
+  da lista `FUNCTIONS=(`. São **43** pastas em `supabase/functions/` (41 com `index.ts`), então nenhum dos dois
+  caminhos publica tudo. Nunca segredo de servidor na Vercel; `VITE_*` é público.
 - **Serviços externos** — ler `docs/agentes/servicos-externos.md` ao mexer em edge que fale com fora (XBZ,
   Spot Gifts, AI Gateway da Lovable, SEFAZ, Resend/Slack, `external-db-bridge`, punchout, `erp-sync`, SCIM,
   WebAuthn). CORS/auth/tenant vêm de `supabase/functions/_shared/security.ts`.
-- **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em settings ou `.github/workflows/`. São 7
-  workflows (`main`, `contexto`, `types-sync`, `inventario-estado-semanal`, `guards`,
-  `branch-hygiene-audit`, `notifica-falha-main`); `main.yml` ainda se chama "Freight Quest CI/CD". A tabela
-  do que cada um prova é **gerada** em `docs/ci/README.md` a partir do bloco `# docs:` do YAML — não edite
-  o README. As suítes de `scripts/` rodam no `guards.yml`, e `check-test-inventory.mjs` reprova suíte nova
-  sem passo em workflow. O que foi portado do Zapp e o que faltou (com motivo) está no fim do
-  `docs/agentes/github-ci.md`.
+- **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em settings ou `.github/workflows/`. São **15**
+  workflows (`ls .github/workflows/*.yml`); `main.yml` ainda se chama "Freight Quest CI/CD". A lista completa e o
+  que cada um prova é **gerada** em `docs/ci/README.md` a partir do bloco `# docs:` do YAML — não edite o README.
+  As suítes de `scripts/` rodam no `guards.yml`, e `check-test-inventory.mjs` reprova suíte nova sem passo em
+  workflow. O que foi portado do Zapp e o que faltou (com motivo) está no fim do `docs/agentes/github-ci.md`.
 - **Regras de domínio** — ler `docs/agentes/regras-dominio.md` antes de mexer em solicitação, cotação,
   aprovação, acompanhamento ou login/passkey.
 

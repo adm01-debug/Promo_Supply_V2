@@ -89,3 +89,40 @@ test('view e materialized view sao classificadas em baldes diferentes', () => {
   assert.deepEqual([...e.views], ['v_simples']);
   assert.deepEqual([...e.matviews], ['mv_pesada']);
 });
+test('DROP seguido de CREATE no mesmo arquivo mantem o objeto declarado', () => {
+  // Padrao idempotente usado em todo o repositorio: o CREATE precisa sobreviver ao
+  // DROP que vem antes dele. Com todos os CREATEs aplicados antes dos DROPs, o
+  // objeto era apagado do estado e nunca cobrado do banco.
+  const e = declarar(`
+    DROP POLICY IF EXISTS "leitura" ON public.pedidos;
+    CREATE POLICY "leitura" ON public.pedidos FOR SELECT USING (true);
+    DROP TRIGGER IF EXISTS audita ON public.pedidos;
+    CREATE TRIGGER audita AFTER INSERT ON public.pedidos FOR EACH ROW EXECUTE FUNCTION public.audita();
+    DROP INDEX IF EXISTS idx_pedido;
+    CREATE INDEX idx_pedido ON public.pedidos (id);
+  `);
+  assert.deepEqual([...e.politicas], ['leitura']);
+  assert.deepEqual([...e.triggers], ['audita']);
+  assert.deepEqual([...e.indices], ['idx_pedido']);
+});
+
+test('CREATE seguido de DROP no mesmo arquivo continua removendo o objeto', () => {
+  const e = declarar(`
+    CREATE POLICY "curta" ON public.pedidos FOR SELECT USING (true);
+    DROP POLICY IF EXISTS "curta" ON public.pedidos;
+  `);
+  assert.equal(e.politicas.size, 0);
+});
+
+test('trigger de tabela fora do public nao e cobrado do inventario', () => {
+  // `on_auth_user_created` existe no banco, mas em auth.users; o inventario de
+  // paridade so lista public, entao olhar apenas o nome do trigger acusava
+  // ausencia falsa - e o DROP do trigger de outro schema apagava o homonimo.
+  const e = declarar(`
+    CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+    CREATE TRIGGER audita_publico AFTER UPDATE ON public.pedidos FOR EACH ROW EXECUTE FUNCTION public.audita();
+    CREATE TRIGGER audita_sem_schema BEFORE DELETE ON pedidos FOR EACH ROW EXECUTE FUNCTION public.audita();
+    DROP TRIGGER IF EXISTS audita_publico ON auth.users;
+  `);
+  assert.deepEqual([...e.triggers].sort(), ['audita_publico', 'audita_sem_schema']);
+});

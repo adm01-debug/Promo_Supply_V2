@@ -1,11 +1,16 @@
 // Deno tests for the dependency-health edge function.
 //
 // Coverage:
-//  • GET                       → 200 + valid snapshot shape
-//  • POST (no auth)            → 401
+//  • OPTIONS                   → 204 + CORS (nao exige JWT)
+//  • POST (no auth)            → 403 "Forbidden: admin role required"
+//  • GET (usuario autenticado) → 200 + valid snapshot shape
 //  • POST (non-admin user)     → 403
 //  • POST (admin user)         → 200 + valid snapshot shape (best-effort:
 //      skipped if QA admin login or GITHUB_REPO_RAW_BASE secret is missing)
+//
+// Quem precisa de usuario autenticado usa QA_USER_EMAIL/QA_USER_PASSWORD (GET e POST non-admin)
+// e QA_ADMIN_EMAIL/QA_ADMIN_PASSWORD (POST admin). Sem essas credenciais o teste avisa com
+// ::warning:: e e' pulado; com a credencial definida, login que falha REPROVA o teste.
 //
 // Run with: deno test --allow-net --allow-env supabase/functions/dependency-health
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
@@ -23,22 +28,26 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/dependency-health`;
 
-// Guard: skip integration tests when the edge function is not reachable with
-// the credentials this environment provides (e.g., CI against placeholder or
-// unauthenticated projects). A 401/403 from the gateway means valid JWT
-// credentials are missing, so the integration cannot run here.
+// Guard: disponibilidade medida por OPTIONS (o proprio handler da funcao responde sem
+// passar por autenticacao). Medido neste projeto em 2026-11-25: OPTIONS
+// /functions/v1/dependency-health -> 204 com `Access-Control-Allow-Origin: *`,
+// GET com `apikey` + `Bearer <chave publica>` -> 401 `{"error":"Unauthorized"}`
+// (a funcao exige usuario real: `index.ts:539-546` recusa sem `getUser()`) e
+// POST sem Authorization -> 403 `{"error":"Forbidden: admin role required"}`.
+// O criterio antigo (`status !== 401 && status !== 403`) lia o 401 da propria funcao
+// como "ambiente indisponivel", entao o teste se desativava exatamente quando a
+// autenticacao esta ligada.
 async function isSupabaseReachable(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
     const res = await fetch(FN_URL, {
+      method: "OPTIONS",
       signal: controller.signal,
-      headers: { apikey: SUPABASE_ANON_KEY },
+      headers: { apikey: SUPABASE_ANON_KEY, "Access-Control-Request-Method": "POST" },
     });
     clearTimeout(timeoutId);
-    // 2xx/4xx/5xx (except gateway auth barriers) means the function is live;
-    // 401/403 means this env has no credentials to exercise it.
-    return res.status !== 401 && res.status !== 403;
+    return res.status >= 200 && res.status < 300;
   } catch {
     return false;
   }
@@ -46,11 +55,24 @@ async function isSupabaseReachable(): Promise<boolean> {
 
 const SUPABASE_AVAILABLE = await isSupabaseReachable();
 
-// Sem fallback literal: a credencial admin so entra por secret (QA_ADMIN_EMAIL/QA_ADMIN_PASSWORD).
-// Sem as duas variaveis o teste admin e pulado.
+// Sem fallback literal: as credenciais so entram por secret.
+// QA_USER_* = usuario comum (GET e POST non-admin); QA_ADMIN_* = usuario admin (POST admin).
+const QA_USER_EMAIL = Deno.env.get("QA_USER_EMAIL") ?? "";
+const QA_USER_PASSWORD = Deno.env.get("QA_USER_PASSWORD") ?? "";
+const HAS_QA_CREDS = QA_USER_EMAIL !== "" && QA_USER_PASSWORD !== "";
 const QA_ADMIN_EMAIL = Deno.env.get("QA_ADMIN_EMAIL") ?? "";
 const QA_ADMIN_PASSWORD = Deno.env.get("QA_ADMIN_PASSWORD") ?? "";
 const HAS_QA_ADMIN = QA_ADMIN_EMAIL !== "" && QA_ADMIN_PASSWORD !== "";
+
+if (!SUPABASE_AVAILABLE) {
+  console.log("::warning::dependency-health: edge nao responde ao OPTIONS -- testes de integracao pulados");
+}
+if (!HAS_QA_CREDS) {
+  console.log("::warning::dependency-health: QA_USER_EMAIL/QA_USER_PASSWORD ausentes -- testes que exigem usuario autenticado pulados");
+}
+if (!HAS_QA_ADMIN) {
+  console.log("::warning::dependency-health: QA_ADMIN_EMAIL/QA_ADMIN_PASSWORD ausentes -- teste de POST admin pulado");
+}
 
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
@@ -69,19 +91,9 @@ async function signIn(email: string, password: string): Promise<string | null> {
   return body?.access_token ?? null;
 }
 
-async function signUpEphemeral(): Promise<string | null> {
-  // Create a throwaway non-admin account. Auto-confirm is enabled in QA.
-  const email = `dh-test-${crypto.randomUUID()}@promobrindes.test`;
-  const password = `Tmp_${crypto.randomUUID()}!Aa1`;
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-    method: "POST",
-    headers: baseHeaders,
-    body: JSON.stringify({ email, password }),
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) return null;
-  return body?.access_token ?? (await signIn(email, password));
-}
+// O antigo `signUpEphemeral()` (POST /auth/v1/signup com email descartavel) foi removido nesta
+// etapa: ele criava usuario real em PRODUCAO a cada execucao do CI para obter um JWT de usuario
+// comum. O usuario comum agora vem de QA_USER_EMAIL/QA_USER_PASSWORD.
 
 function assertSnapshotShape(payload: unknown) {
   assert(payload && typeof payload === "object", "payload should be an object");
@@ -110,11 +122,13 @@ function assertSnapshotShape(payload: unknown) {
 // ── tests ────────────────────────────────────────────────────────
 Deno.test({
   name: "GET dependency-health → 200 with valid snapshot shape",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
+  const token = await signIn(QA_USER_EMAIL, QA_USER_PASSWORD);
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
   const res = await fetch(FN_URL, {
     method: "GET",
-    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
   });
   const body = await res.json();
   assertEquals(res.status, 200);
@@ -124,11 +138,13 @@ Deno.test({
 
 Deno.test({
   name: "GET dependency-health?history=true → 200 with history array",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
+  const token = await signIn(QA_USER_EMAIL, QA_USER_PASSWORD);
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
   const res = await fetch(`${FN_URL}?history=true`, {
     method: "GET",
-    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` },
   });
   const body = await res.json();
   // history endpoint requires service-role internally; if it errors, the
@@ -157,13 +173,10 @@ Deno.test({
 
 Deno.test({
   name: "POST dependency-health (non-admin user) → 403",
-  ignore: !SUPABASE_AVAILABLE,
+  ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
-  const token = await signUpEphemeral();
-  if (!token) {
-    console.warn("⚠ Skipping non-admin POST test — could not create ephemeral user");
-    return;
-  }
+  const token = await signIn(QA_USER_EMAIL, QA_USER_PASSWORD);
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
   const res = await fetch(FN_URL, {
     method: "POST",
     headers: {
@@ -184,10 +197,9 @@ Deno.test({
   ignore: (!SUPABASE_AVAILABLE || !HAS_QA_ADMIN),
   async fn() {
   const token = await signIn(QA_ADMIN_EMAIL, QA_ADMIN_PASSWORD);
-  if (!token) {
-    console.warn("⚠ Skipping admin POST test — QA admin login failed");
-    return;
-  }
+  // O ignore: deste teste ja' garantiu HAS_QA_ADMIN: credencial presente e login falhando e'
+  // ambiente degradado (ou credencial invalida) -- falhar, nao pular.
+  assert(token, "QA_ADMIN_EMAIL/QA_ADMIN_PASSWORD definidos, mas o login falhou");
   const res = await fetch(FN_URL, {
     method: "POST",
     headers: {

@@ -6,10 +6,12 @@
 //  • POST auth + single entry   → 200 + inserted == 1
 //  • POST auth + entry sem message → 200 + inserted == 0 (filtrado, sem 400)
 //
-// Skips silently se QA_USER_EMAIL/QA_USER_PASSWORD não estiverem definidos.
+// Os testes autenticados exigem QA_USER_EMAIL/QA_USER_PASSWORD (secret do repositorio,
+// nao cadastrado hoje): sem eles os testes avisam com ::warning:: e sao pulados; com eles,
+// login que falha REPROVA o teste em vez de pular em silencio.
 // Run: deno test --allow-net --allow-env supabase/functions/telemetry
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals, assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 await load({ export: true, allowEmptyValues: true, examplePath: null });
 
@@ -28,28 +30,35 @@ const baseHeaders = {
   "Content-Type": "application/json",
 };
 
-// Guard: skip integration tests when the edge function is not reachable with
-// the credentials this environment provides (e.g., CI against placeholder or
-// unauthenticated projects). A 401/403 from the gateway means valid
-// credentials are missing, so the integration cannot run here.
+// Guard: disponibilidade medida por OPTIONS (preflight de CORS), que nao passa pela
+// verificacao de JWT. Medido neste projeto em 2026-11-25: OPTIONS /functions/v1/telemetry
+// -> 200 e POST sem Authorization -> 401. Usar o 401 do POST como "ambiente indisponivel"
+// invertia o criterio: quanto mais corretamente a funcao exige JWT, mais certo era que o
+// teste que verifica essa exigencia ficasse pulado.
 async function isSupabaseReachable(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
     const res = await fetch(FN_URL, {
-      method: "POST",
+      method: "OPTIONS",
       signal: controller.signal,
-      headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-      body: "{}",
+      headers: { apikey: SUPABASE_ANON_KEY, "Access-Control-Request-Method": "POST" },
     });
     clearTimeout(timeoutId);
-    return res.status !== 401 && res.status !== 403;
+    return res.status >= 200 && res.status < 300;
   } catch {
     return false;
   }
 }
 
 const SUPABASE_AVAILABLE = await isSupabaseReachable();
+
+if (!SUPABASE_AVAILABLE) {
+  console.log("::warning::telemetry: edge nao responde ao OPTIONS -- testes de integracao pulados");
+}
+if (!HAS_QA_CREDS) {
+  console.log("::warning::telemetry: QA_USER_EMAIL/QA_USER_PASSWORD ausentes -- testes autenticados pulados");
+}
 
 async function signIn(): Promise<string | null> {
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -84,7 +93,9 @@ Deno.test({
   ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
-  if (!token) return; // skip when QA creds ausentes
+  // O ignore: deste teste ja' garantiu HAS_QA_CREDS: credencial presente e login
+  // falhando e' ambiente degradado (ou credencial invalida) -- falhar, nao pular.
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
 
   const batch = [
     { level: "info", message: "test-batch-1", requestId: crypto.randomUUID() },
@@ -101,7 +112,9 @@ Deno.test({
   ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
-  if (!token) return;
+  // O ignore: deste teste ja' garantiu HAS_QA_CREDS: credencial presente e login
+  // falhando e' ambiente degradado (ou credencial invalida) -- falhar, nao pular.
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
   const { status, body } = await post(token, { level: "info", message: "single-entry-test" });
   assertEquals(status, 200);
   assertEquals(body.inserted, 1);
@@ -113,7 +126,9 @@ Deno.test({
   ignore: (!SUPABASE_AVAILABLE || !HAS_QA_CREDS),
   async fn() {
   const token = await signIn();
-  if (!token) return;
+  // O ignore: deste teste ja' garantiu HAS_QA_CREDS: credencial presente e login
+  // falhando e' ambiente degradado (ou credencial invalida) -- falhar, nao pular.
+  assert(token, "QA_USER_EMAIL/QA_USER_PASSWORD definidos, mas o login falhou");
   const { status, body } = await post(token, {
     batch: [{ level: "info" }, { level: "info", message: "ok" }],
   });

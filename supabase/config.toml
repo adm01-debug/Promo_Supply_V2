@@ -32,3 +32,18 @@ verify_jwt = false
 # PROMO_DESIGN_WEBHOOK_SECRET, fail-closed (401 sem assinatura valida).
 [functions.receive-os-sync]
 verify_jwt = false
+
+# QA-268 (sonda em 2026-11-25, sem Management API): o gateway do projeto responde
+# {"code":"UNAUTHORIZED_NO_AUTH_HEADER"} quando verify_jwt=true, e a resposta e da
+# propria funcao quando o pedido chega ate ela. Medido com GET sem Authorization:
+# scim-v2, punchout-receive, webauthn-authenticate, dependency-health e
+# receive-os-sync chegam a funcao (correto - sao as isencoes declaradas acima);
+# run-audit, system-simulation, telemetry e process-outbox TAMBEM chegam e nao
+# estao declaradas em lugar nenhum - sobra de quando o script isentava mais
+# funcoes. As quatro validam credencial no proprio codigo (requireAdmin,
+# auth.getUser(), segredo de cron) e responderam 401, entao nao ha dado exposto;
+# o que falta nelas e a camada do gateway. Elas passam a exigir JWT no proximo
+# deploy da pasta (ou no deploy total, quando _shared/ muda), porque este arquivo
+# e a fonte unica e o padrao e verify_jwt = true. Chamadores que ja mandam Bearer
+# do projeto: o navegador com sessao (telemetry, run-audit, system-simulation) e
+# _invoke_edge_function, que le edge_invoke_service_key do Vault (process-outbox).
