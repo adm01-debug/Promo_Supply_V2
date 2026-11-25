@@ -118,6 +118,20 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
   `Atrasado`/`Vence hoje`/`Nd restantes`/`Sem prazo` (`PedidoMobileCard.tsx:94-106`). Nenhum dos dois inventa dado; e
   consistencia de rotulo entre as duas telas do mesmo sistema.
 
+- `scripts/ci/paridade-migrations-banco.mjs` (`aplicarMigration`, linhas 72-131 antes do fix) - a fila aplicava todos os
+  `CREATE` antes de todos os `DROP` do mesmo arquivo, e o padrao idempotente do repo e' `DROP ... IF EXISTS x; CREATE ... x`:
+  todo objeto criado nesse padrao era apagado do estado e nunca cobrado do banco. MEDIDO contra o snapshot real de producao
+  (`docs/contexto/supabase/snapshot.json` da branch `contexto`: 160 tabelas / 2 views / 1 matview / 185 funcoes / 705 indices /
+  107 triggers / 319 policies no schema public): a logica antiga declarava 143 tabelas, 1 view, 0 matviews, 171 funcoes, 358
+  indices, 66 triggers e 209 policies; a correta declara 145, 2, 1, 178, 358, 101 e 308 - ou seja 135 objetos declarados nas
+  migrations nunca eram verificados pelo job semanal `paridade-banco.yml`. Dois defeitos vizinhos, os dois medidos: (1) o
+  trigger `on_auth_user_created` existe em `auth.users`, fora do inventario `public`, e olhar so o nome acusava ausencia
+  falsa (o `DROP TRIGGER` do outro schema tambem apagava o homonimo do public); (2) no Windows
+  o teste de entrada `import.meta.url == "file://" + process.argv[1]` nunca casa (barra invertida e drive), entao rodar o script na
+  local saia com exit 0 sem verificar nada - verde falso. Corrigido na branch
+  `claude/fix-paridade-ordem-create-drop-261125-1100` com 3 testes novos em `paridade-migrations-banco.unit.mjs`, provados por
+  mutacao contra o script de `origin/main` (9 passam / 2 falham la, 11/11 aqui).
+
 ## Etapas
 
 - [x] 001 — Senha de uma conta admin de QA está escrita em claro em dois testes de edge function versionados — onda 1 — Alta — TST-04
