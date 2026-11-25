@@ -2399,7 +2399,7 @@
   {
    "arquivo": "supabase/functions/dependency-health/index.test.ts",
    "tipo": "unit",
-   "linhas": 229,
+   "linhas": 241,
    "testa": [],
    "casos": 6
   },
@@ -2468,7 +2468,7 @@
   {
    "arquivo": "supabase/functions/run-audit/rls_test.ts",
    "tipo": "unit",
-   "linhas": 67,
+   "linhas": 74,
    "testa": [],
    "casos": 1
   },

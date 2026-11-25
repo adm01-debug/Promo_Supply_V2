@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5f80e28944` · branch `main` · 2026-11-25 12:34 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `dc66ebe284` · branch `main` · 2026-11-25 12:48 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2921,6 +2921,7 @@ _nenhum item encontrado_
 | * Regras de negocio que este arquivo garante: | `supabase/functions/receive-os-sync/mapping.ts` |
 | - `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega | `supabase/functions/receive-os-sync/mapping.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
+| NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo | `supabase/functions/run-audit/rls_test.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |

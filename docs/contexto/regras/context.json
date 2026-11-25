@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5f80e289449b64ff08c709f5ec7f6170bbe49bd7",
+  "sha": "dc66ebe28451cb36405c350b3ef10ba487269aac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 12:34 UTC",
+  "generated_at": "2026-11-25 12:48 UTC",
   "files_total": 1451,
   "code_files": 1278,
-  "code_lines": 214927,
+  "code_lines": 214946,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5e8f1bc3b075477e",
+ "facts_hash": "b33a2d1981694c76",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36264,7 +36264,7 @@
   {
    "module": "supabase/functions",
    "files": 118,
-   "lines": 19501,
+   "lines": 19520,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -39152,10 +39152,12 @@
     "supabase/functions/dependency-health/index.test.ts"
    ],
    "QA_USER_EMAIL": [
+    "supabase/functions/dependency-health/index.test.ts",
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/workflow-engine/fuzz.test.ts"
    ],
    "QA_USER_PASSWORD": [
+    "supabase/functions/dependency-health/index.test.ts",
     "supabase/functions/telemetry/index.test.ts",
     "supabase/functions/workflow-engine/fuzz.test.ts"
    ],
@@ -43707,6 +43709,10 @@
    {
     "file": "supabase/functions/run-audit/rls_test.ts",
     "text": "without those secrets it would crash with \"supabaseUrl is required\" or"
+   },
+   {
+    "file": "supabase/functions/run-audit/rls_test.ts",
+    "text": "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo"
    },
    {
     "file": "supabase/functions/scim-v2/index.ts",
@@ -117411,15 +117417,21 @@
   },
   "supabase/functions/dependency-health/index.test.ts": {
    "path": "supabase/functions/dependency-health/index.test.ts",
-   "lines": 229,
+   "lines": 241,
    "is_test": true,
    "env": [
     "QA_ADMIN_EMAIL",
     "QA_ADMIN_PASSWORD",
+    "QA_USER_EMAIL",
+    "QA_USER_PASSWORD",
     "VITE_SUPABASE_PUBLISHABLE_KEY",
     "VITE_SUPABASE_URL"
    ],
-   "doc": "Deno tests for the dependency-health edge function. Coverage: • GET → 200 + valid snapshot shape • POST (no auth) → 401 • POST (non-admin user) → 403 • POST (admin user) → 200 + valid snapshot shape (best-effort: skipped if QA admin login or GITHUB_REPO_RAW_BASE secret is missing)",
+   "rule_comments": [
+    "• POST (no auth)            → 403 \"Forbidden: admin role required\"",
+    "POST sem Authorization -> 403 `{\"error\":\"Forbidden: admin role required\"}`."
+   ],
+   "doc": "Deno tests for the dependency-health edge function. Coverage: • OPTIONS → 204 + CORS (nao exige JWT) • POST (no auth) → 403 \"Forbidden: admin role required\" • GET (usuario autenticado) → 200 + valid snapshot shape • POST (non-admin user) → 403 • POST (admin user) → 200 + valid snapshot shape (best-e …",
    "temporal": [
     "const timeoutId = setTimeout(() => controller.abort(), 3000);"
    ]
@@ -118875,7 +118887,7 @@
   },
   "supabase/functions/run-audit/rls_test.ts": {
    "path": "supabase/functions/run-audit/rls_test.ts",
-   "lines": 67,
+   "lines": 74,
    "rpc": [
     "exec_sql"
    ],
@@ -118884,7 +118896,8 @@
     "SUPABASE_URL"
    ],
    "rule_comments": [
-    "without those secrets it would crash with \"supabaseUrl is required\" or"
+    "without those secrets it would crash with \"supabaseUrl is required\" or",
+    "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo"
    ],
    "uses_service_role": true
   },
@@ -122029,10 +122042,21 @@
   }
  },
  "git": {
-  "sha": "5f80e289449b64ff08c709f5ec7f6170bbe49bd7",
+  "sha": "dc66ebe28451cb36405c350b3ef10ba487269aac",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "dc66ebe",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/dependency-health/index.test.ts",
+     "supabase/functions/run-audit/rls_test.ts"
+    ]
+   },
    {
     "sha": "5f80e28",
     "date": "2026-11-25",
@@ -122371,20 +122395,6 @@
      "src/pages/acompanhamento/Acompanhamento.tsx",
      "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx"
     ]
-   },
-   {
-    "sha": "806c4fc",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(aprovacoes): falha de leitura deixa de virar 'nada pendente' e 'zero' nos documentos (#432)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/PendingApprovalsList.tsx",
-     "src/components/compras/__tests__/pendingApprovalsEstados.test.tsx",
-     "src/hooks/useApprovalWorkflow.ts",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122413,8 +122423,12 @@
     2
    ],
    [
-    "src/components/compras/PendingApprovalsList.tsx",
-    2
+    "supabase/functions/dependency-health/index.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/run-audit/rls_test.ts",
+    1
    ],
    [
     "docs/qa/03-ACHADOS.md",
@@ -122462,10 +122476,6 @@
    ],
    [
     "scripts/ci/agents-docs-baseline.unit.mjs",
-    1
-   ],
-   [
-    "scripts/ci/check-agents-md-integrity.mjs",
     1
    ]
   ]

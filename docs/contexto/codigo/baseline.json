@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5f80e289449b64ff08c709f5ec7f6170bbe49bd7",
+  "commit": "dc66ebe28451cb36405c350b3ef10ba487269aac",
   "branch": "main",
-  "data_commit": "2026-11-25T09:27:34-03:00",
+  "data_commit": "2026-11-25T09:46:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "dc66ebe",
+    "data": "2026-11-25",
+    "assunto": "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)"
+   },
    {
     "sha": "5f80e28",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "73aaa9d",
     "data": "2026-11-24",
     "assunto": "fix(i18n): chaves do catalogo passam a existir e o KPI do dashboard nomeia a etapa certa (#439)"
-   },
-   {
-    "sha": "3beb6da",
-    "data": "2026-11-24",
-    "assunto": "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)"
    }
   ],
-  "arquivos_mudados_7d": 494,
+  "arquivos_mudados_7d": 495,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 103
+    "mudancas": 104
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 28
+    "mudancas": 27
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 103
+    "mudancas": 104
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "bun.lock",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1450,
   "arquivos_codigo": 928,
-  "linhas_codigo": 186092,
+  "linhas_codigo": 186111,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 118,
-   "linhas": 19501
+   "linhas": 19520
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -651,7 +651,7 @@
  ],
  "qualidade": {
   "any": 159,
-  "console_log": 89,
+  "console_log": 92,
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
