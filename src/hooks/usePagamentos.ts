@@ -188,10 +188,17 @@ export function usePagamentos(filters?: PagamentoFilters) {
       }
     }
     try {
-      const { error } = await supabase.from('pagamentos').update(updates).eq('id', id);
+      const { data: afetadas, error } = await supabase.from('pagamentos').update(updates).eq('id', id).select('id');
       if (error) {
         logger.error('Erro ao atualizar pagamento no banco', { error, id, updates });
         throw error;
+      }
+      // RLS barra a linha em silencio: 0 linhas e nenhum erro. Sem esta
+      // conferencia o toast de sucesso aparecia com o banco intacto.
+      if (!afetadas || afetadas.length === 0) {
+        logger.error('Pagamento nao gravado: 0 linhas afetadas', { id, updates });
+        toast.error('Nada foi gravado: pagamento inexistente ou sem permissão.');
+        return false;
       }
       toast.success('Pagamento atualizado!');
       invalidate();
@@ -248,12 +255,22 @@ export function usePagamentos(filters?: PagamentoFilters) {
         updates.aprovador_id = user.id;
         updates.data_aprovacao = new Date().toISOString();
       }
-        const { error } = await supabase.from('pagamentos').update(updates).in('id', validIds);
+        const { data: atualizados, error } = await supabase.from('pagamentos').update(updates).in('id', validIds).select('id');
       if (error) throw error;
+        const atualizadosCount = atualizados?.length ?? 0;
+        if (atualizadosCount === 0) {
+          invalidate();
+          toast.error('Nada foi gravado: nenhum dos pagamentos está acessível para alteração.');
+          return false;
+        }
         if (blocked.length > 0) {
           toast.error(`${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join(', ')}`);
         }
-        toast.success(`${validIds.length} pagamento(s) atualizado(s)!`);
+        if (atualizadosCount < validIds.length) {
+          toast.warning(`${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s).`);
+        } else {
+          toast.success(`${validIds.length} pagamento(s) atualizado(s)!`);
+        }
       invalidate();
       return true;
     } catch (err: unknown) {
@@ -278,10 +295,15 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
     try {
       logger.info('Excluindo registro de pagamento', { id });
-      const { error } = await supabase.from('pagamentos').delete().eq('id', id);
+      const { data: excluidos, error } = await supabase.from('pagamentos').delete().eq('id', id).select('id');
       if (error) {
         logger.error('Erro ao excluir pagamento no banco', { error, id });
         throw error;
+      }
+      if (!excluidos || excluidos.length === 0) {
+        logger.error('Pagamento nao excluido: 0 linhas afetadas', { id });
+        toast.error('Nada foi excluído: pagamento inexistente ou sem permissão.');
+        return false;
       }
       logger.info('Pagamento excluído com sucesso', { id });
       toast.success('Pagamento excluído!');
@@ -309,9 +331,14 @@ export function usePagamentos(filters?: PagamentoFilters) {
       return false;
     }
     try {
-      const { error } = await supabase.from('pagamentos').delete().in('id', liberados);
+      const { data: apagados, error } = await supabase.from('pagamentos').delete().in('id', liberados).select('id');
       if (error) throw error;
       invalidate();
+      const apagadosCount = apagados?.length ?? 0;
+      if (apagadosCount < liberados.length) {
+        toast.warning(`${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão.`);
+        return false;
+      }
       if (liberados.length < ids.length) {
         toast.warning(`${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO}`);
         return false;
