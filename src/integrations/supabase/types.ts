@@ -4284,7 +4284,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           dados_bancarios: Json | null
-                    data_agendamento: string | null
+          data_agendamento: string | null
           data_aprovacao: string | null
           data_pagamento: string | null
           data_vencimento: string
@@ -4310,7 +4310,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           dados_bancarios?: Json | null
-                    data_agendamento?: string | null
+          data_agendamento?: string | null
           data_aprovacao?: string | null
           data_pagamento?: string | null
           data_vencimento: string
@@ -4336,7 +4336,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           dados_bancarios?: Json | null
-                    data_agendamento?: string | null
+          data_agendamento?: string | null
           data_aprovacao?: string | null
           data_pagamento?: string | null
           data_vencimento?: string
