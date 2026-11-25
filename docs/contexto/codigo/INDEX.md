@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `81d308c5f22c2a08a36268315a6c107ff6d81d2f` (2026-11-25T20:01:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `8b2cfee37cebc85e9116aae0bfe4d4586e34d146` (2026-11-25T20:22:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (858), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (860), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1461 |
-| arquivos_codigo | 933 |
-| linhas_codigo | 187229 |
+| arquivos_total | 1463 |
+| arquivos_codigo | 935 |
+| linhas_codigo | 187595 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 340 |
 | cron_jobs | 74 |
-| testes | 293 |
+| testes | 295 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (198), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (200), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -340,19 +340,19 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (116)
 - docs/pendencias/_indice.md (45)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (14)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (12)
 - docs/ci/README.md (10)
+- src/features/pedidos/hooks/usePedidos.ts (9)
 - src/pages/acompanhamento/Acompanhamento.tsx (9)
 - docs/pendencias/_ordem.md (8)
-- src/features/pedidos/hooks/usePedidos.ts (8)
+- src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - AGENTS.md (7)
-- src/hooks/useApprovalWorkflow.ts (7)
+- src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
 - src/pages/solicitacoes/Solicitacoes.tsx (7)
 - supabase/functions/xbz-proxy/index.ts (7)
 - .github/workflows/main.yml (6)
-- src/features/auth/hooks/useAuth.tsx (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `8b2cfee` chore(db): sincronizar types.ts com o banco [auto] (#487)
+- 2026-11-25 `73078a0` fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)
 - 2026-11-25 `81d308c` fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)
 - 2026-11-25 `949c3d5` docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)
 - 2026-11-25 `df2f22e` fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)
@@ -435,8 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `91c7aac` fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)
 - 2026-11-25 `9a655d1` feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)
 - 2026-11-25 `81bd8c5` fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)
-- 2026-11-25 `a250541` fix(push): so anuncia "Notificacoes ativadas" depois de registrar a inscricao (#470)
-- 2026-11-25 `6d00e2a` feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

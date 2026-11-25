@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (198)",
+   "co-localizado (__tests__) (200)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(db): sincronizar types.ts com o banco [auto] (#487)",
+   "fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)",
    "fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)",
    "docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)",
-   "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)",
-   "chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)",
-   "infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)"
+   "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)"
   ]
  },
  "pr_template": null,

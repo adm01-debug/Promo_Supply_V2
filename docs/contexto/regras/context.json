@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "81d308c5f22c2a08a36268315a6c107ff6d81d2f",
+  "sha": "8b2cfee37cebc85e9116aae0bfe4d4586e34d146",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 23:11 UTC",
-  "files_total": 1462,
-  "code_files": 1288,
-  "code_lines": 217330,
+  "generated_at": "2026-11-25 23:32 UTC",
+  "files_total": 1464,
+  "code_files": 1290,
+  "code_lines": 217696,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0dc3e25a2b945133",
+ "facts_hash": "944786d98542b329",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 417,
+   ".tsx": 419,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -35364,8 +35364,8 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 9,
-   "lines": 932,
+   "files": 10,
+   "lines": 1069,
    "tables": [
     "pedido_itens",
     "pedidos",
@@ -35378,7 +35378,8 @@
     "usePedidos.ts: Pedido, PedidoItem, CreatePedidoInput, PedidoFilters, usePedidos, usePedidosKPIs"
    ],
    "docs": [
-    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …"
+    "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …",
+    "usePedidos.escrita.test.tsx: TST-06 (etapa 281): o caminho de ESCRITA de usePedidos nunca era exercitado. O RLS filtra a linha em silencio (0 linhas, sem erro), entao updatePedido e bulkUpdateStatus comemoravam \"atualizado\" sem gravar nada."
    ],
    "deps": [
     "@tanstack/react-query",
@@ -35401,6 +35402,7 @@
     "src/features/pedidos/hooks/usePedidos.ts",
     "src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts",
     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
+    "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
@@ -35469,8 +35471,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 90,
-   "lines": 15327,
+   "files": 91,
+   "lines": 15556,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35576,7 +35578,8 @@
     "useCatalogoPim.ts: useCatalogoPim Hook para leitura do catálogo de produtos e faixas de preço de personalização diretamente do PIM (Promo Gifts V4) via edge function external-db-bridge. Nenhum dado de catálogo é armazenado no Promo Supply V2 — a fonte canônica é o banco do Promo Gifts V4, acessado via views públicas: …",
     "useImageCompression.ts: Hook for image compression with progress and status tracking",
     "useOfflineSync.ts: Hook para sincronização offline Gerencia o estado de conexão e sincronização de dados pendentes",
-    "usePrefetch.ts: Hook para prefetch de dados críticos Melhora a percepção de velocidade pré-carregando dados quando o usuário hover em links Prefetch keys must match the live query keys used by feature hooks so that the populated cache is consumed instead of producing a separate entry."
+    "usePrefetch.ts: Hook para prefetch de dados críticos Melhora a percepção de velocidade pré-carregando dados quando o usuário hover em links Prefetch keys must match the live query keys used by feature hooks so that the populated cache is consumed instead of producing a separate entry.",
+    "useApprovalWorkflow.escrita.test.tsx: TST-06 (etapa 281): o caminho de ESCRITA de useApprovalWorkflow nunca era exercitado. O RLS do Postgres filtra a linha em silencio -- o PostgREST devolve 0 linhas e nenhum erro --, entao approveStep/rejectStep anunciavam \"Aprovacao registrada\" e a solicitacao continuava parada na etapa."
    ],
    "deps": [
     "@supabase/supabase-js",
@@ -35673,6 +35676,7 @@
     "src/hooks/__tests__/useApprovalHistory.test.ts",
     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
+    "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
@@ -35683,8 +35687,7 @@
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
     "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
-    "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
-    "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx"
+    "src/hooks/__tests__/usePagamentos.exclusao.test.tsx"
    ]
   },
   {
@@ -41489,6 +41492,10 @@
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "${atualizados} de ${ids.length} pedido(s) atualizado(s). Os demais não foram alterados: sem permissão."
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Erro ao atualizar pedidos: "
    },
    {
@@ -41509,6 +41516,10 @@
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos."
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Não foi possível conferir o recebimento do pedido. Exclusão cancelada."
    },
    {
@@ -41518,6 +41529,10 @@
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Pedido não encontrado"
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Pedido não foi atualizado: você não tem permissão para alterar este pedido."
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
@@ -41585,7 +41600,19 @@
    },
    {
     "file": "src/hooks/useApprovalWorkflow.ts",
+    "msg": "Aprovação não gravada: você não tem permissão para aprovar esta etapa."
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "msg": "Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação."
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
     "msg": "Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado"
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "msg": "Rejeição não gravada: você não tem permissão para rejeitar esta etapa."
    },
    {
     "file": "src/hooks/useBudgetManagement.ts",
@@ -53927,6 +53954,12 @@
    {
     "file": "src/hooks/useApprovalWorkflow.ts",
     "field": "status",
+    "value": "rejeitada",
+    "kind": "compara"
+   },
+   {
+    "file": "src/hooks/useApprovalWorkflow.ts",
+    "field": "status",
     "value": "pending",
     "kind": "filtra"
    },
@@ -62929,6 +62962,30 @@
     "name": "exclui pedido sem checklist"
    },
    {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "usePedidos - escrita negada pelo RLS nao vira sucesso"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "updatePedido com 0 linhas afetadas retorna false e nao comemora"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "updatePedido com linha afetada continua atualizando"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "bulkUpdateStatus sem nenhuma linha afetada falha e explica"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "bulkUpdateStatus parcial avisa quantos ficaram de fora"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    "name": "bulkUpdateStatus com todas as linhas afetadas comemora a contagem real"
+   },
+   {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "name": "usePedidos - exclusao so em pedido pendente ou cancelado"
    },
@@ -63819,6 +63876,34 @@
    {
     "file": "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "name": "nao cria etapa quando outro navegador ja escalou o mesmo workflow"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "approveStep com 0 linhas afetadas retorna false e nao comemora"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "approveStep com linha afetada registra a aprovacao"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "rejectStep com 0 linhas afetadas retorna false e nao comemora"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "rejectStep com erro explicito do banco manda para a DLQ e nao escreve o resto do fluxo"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "rejectStep avisa quando a etapa e rejeitada mas a solicitacao nao pode ser atualizada"
+   },
+   {
+    "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "name": "rejectStep nao alarma quando a solicitacao ja estava rejeitada"
    },
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -81800,6 +81885,7 @@
      ],
      "rejeitada": [
       "compara:src/features/solicitacoes/fluxoAprovacao.ts",
+      "compara:src/hooks/useApprovalWorkflow.ts",
       "escreve:src/hooks/useApprovalWorkflow.ts",
       "escreve:src/pages/devolucoes/DevolucoesModals.tsx"
      ],
@@ -102525,7 +102611,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 427,
+   "lines": 446,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -102557,11 +102643,11 @@
     },
     {
      "table": "pedidos",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "pedidos",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "pedidos",
@@ -102608,14 +102694,17 @@
     "get_pedidos_kpis"
    ],
    "errors": [
+    "${atualizados} de ${ids.length} pedido(s) atualizado(s). Os demais não foram alterados: sem permissão.",
     "Erro ao atualizar pedidos: ",
     "Erro ao atualizar: ",
     "Erro ao criar pedido: ",
     "Erro ao excluir pedidos: ",
     "Erro ao excluir: ",
+    "Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos.",
     "Não foi possível conferir o recebimento do pedido. Exclusão cancelada.",
     "Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada.",
     "Pedido não encontrado",
+    "Pedido não foi atualizado: você não tem permissão para alterar este pedido.",
     "Só é possível gerar ordem de compra de uma solicitação aprovada",
     "Transição inválida: ${pedido.status} → ${newStatus}",
     "Você precisa estar logado em uma organização"
@@ -102664,6 +102753,20 @@
     "bulkDelete recusa o lote inteiro quando algum pedido tem checklist",
     "erro na contagem de checklist cancela a exclusao",
     "exclui pedido sem checklist"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+   "lines": 118,
+   "is_test": true,
+   "doc": "TST-06 (etapa 281): o caminho de ESCRITA de usePedidos nunca era exercitado. O RLS filtra a linha em silencio (0 linhas, sem erro), entao updatePedido e bulkUpdateStatus comemoravam \"atualizado\" sem gravar nada.",
+   "tests": [
+    "usePedidos - escrita negada pelo RLS nao vira sucesso",
+    "updatePedido com 0 linhas afetadas retorna false e nao comemora",
+    "updatePedido com linha afetada continua atualizando",
+    "bulkUpdateStatus sem nenhuma linha afetada falha e explica",
+    "bulkUpdateStatus parcial avisa quantos ficaram de fora",
+    "bulkUpdateStatus com todas as linhas afetadas comemora a contagem real"
    ]
   },
   "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx": {
@@ -103584,7 +103687,7 @@
   },
   "src/hooks/useApprovalWorkflow.ts": {
    "path": "src/hooks/useApprovalWorkflow.ts",
-   "lines": 498,
+   "lines": 532,
    "exports": [
     "const useApprovalWorkflow"
    ],
@@ -103635,7 +103738,7 @@
     },
     {
      "table": "approval_steps",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "approval_steps",
@@ -103667,7 +103770,7 @@
     },
     {
      "table": "approval_steps",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "approval_workflows",
@@ -103683,7 +103786,11 @@
     },
     {
      "table": "solicitacoes",
-     "op": "update"
+     "op": "select,update"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "select"
     },
     {
      "table": "approval_history",
@@ -103731,7 +103838,10 @@
     ]
    },
    "errors": [
-    "Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado"
+    "Aprovação não gravada: você não tem permissão para aprovar esta etapa.",
+    "Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação.",
+    "Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado",
+    "Rejeição não gravada: você não tem permissão para rejeitar esta etapa."
    ],
    "status_values": [
     {
@@ -103797,6 +103907,11 @@
     {
      "field": "status",
      "value": "pending",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "rejeitada",
      "kind": "compara"
     },
     {
@@ -106605,6 +106720,21 @@
     "useApprovalWorkflow · checkEscalations (HK-04)",
     "grava organization_id na etapa do aprovador escalado",
     "nao cria etapa quando outro navegador ja escalou o mesmo workflow"
+   ]
+  },
+  "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx": {
+   "path": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+   "lines": 195,
+   "is_test": true,
+   "doc": "TST-06 (etapa 281): o caminho de ESCRITA de useApprovalWorkflow nunca era exercitado. O RLS do Postgres filtra a linha em silencio -- o PostgREST devolve 0 linhas e nenhum erro --, entao approveStep/rejectStep anunciavam \"Aprovacao registrada\" e a solicitacao continuava parada na etapa.",
+   "tests": [
+    "useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso",
+    "approveStep com 0 linhas afetadas retorna false e nao comemora",
+    "approveStep com linha afetada registra a aprovacao",
+    "rejectStep com 0 linhas afetadas retorna false e nao comemora",
+    "rejectStep com erro explicito do banco manda para a DLQ e nao escreve o resto do fluxo",
+    "rejectStep avisa quando a etapa e rejeitada mas a solicitacao nao pode ser atualizada",
+    "rejectStep nao alarma quando a solicitacao ja estava rejeitada"
    ]
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
@@ -122323,10 +122453,31 @@
   }
  },
  "git": {
-  "sha": "81d308c5f22c2a08a36268315a6c107ff6d81d2f",
+  "sha": "8b2cfee37cebc85e9116aae0bfe4d4586e34d146",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8b2cfee",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#487)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
+   {
+    "sha": "73078a0",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)",
+    "files": [
+     "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+     "src/hooks/useApprovalWorkflow.ts"
+    ]
+   },
    {
     "sha": "81d308c",
     "date": "2026-11-25",
@@ -122650,38 +122801,16 @@
      "scripts/ci/agents-docs-baseline.unit.mjs",
      "scripts/ci/check-agents-md-integrity.mjs"
     ]
-   },
-   {
-    "sha": "5724587",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)",
-    "files": [
-     "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql"
-    ]
-   },
-   {
-    "sha": "dddc66e",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore: corrige o estado real do ledger de migrations na doc de agentes (#449)",
-    "files": [
-     "AGENTS.md",
-     "docs/agentes/banco.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    20
+    18
    ],
    [
     "AGENTS.md",
-    5
+    4
    ],
    [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
@@ -122698,6 +122827,10 @@
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     3
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    2
    ],
    [
     "src/pages/pagamentos/Pagamentos.tsx",
@@ -122724,16 +122857,24 @@
     2
    ],
    [
-    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
-    2
-   ],
-   [
-    "docs/agentes/banco.md",
-    2
-   ],
-   [
     "docs/agentes/github-ci.md",
     2
+   ],
+   [
+    "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+    1
+   ],
+   [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useApprovalWorkflow.ts",
+    1
    ],
    [
     "src/components/pagamentos/PagamentoMobileCard.tsx",
@@ -122741,18 +122882,6 @@
    ],
    [
     "src/components/pagamentos/PagamentoScheduleModal.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/usePagamentos.ts",
-    1
-   ],
-   [
-    "src/integrations/supabase/types.ts",
     1
    ]
   ]

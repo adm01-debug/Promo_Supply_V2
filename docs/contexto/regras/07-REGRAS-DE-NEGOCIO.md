@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `81d308c5f2` · branch `main` · 2026-11-25 23:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `8b2cfee37c` · branch `main` · 2026-11-25 23:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2348,14 +2348,17 @@ _nenhum item encontrado_
 | O threshold de SLA do fornecedor deve estar entre 50% e 100% | `src/features/layout/components/SLASettingsPanel.tsx` |
 | O threshold de atenção deve ser maior que o crítico | `src/features/layout/components/SLASettingsPanel.tsx` |
 | Os thresholds devem ser pelo menos 1 dia | `src/features/layout/components/SLASettingsPanel.tsx` |
+| ${atualizados} de ${ids.length} pedido(s) atualizado(s). Os demais não foram alterados: sem permissão. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao atualizar pedidos:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao atualizar:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao criar pedido:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao excluir pedidos:  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Erro ao excluir:  | `src/features/pedidos/hooks/usePedidos.ts` |
+| Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Não foi possível conferir o recebimento do pedido. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Pedido não encontrado | `src/features/pedidos/hooks/usePedidos.ts` |
+| Pedido não foi atualizado: você não tem permissão para alterar este pedido. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Só é possível gerar ordem de compra de uma solicitação aprovada | `src/features/pedidos/hooks/usePedidos.ts` |
 | Transição inválida: ${pedido.status} → ${newStatus} | `src/features/pedidos/hooks/usePedidos.ts` |
 | Você precisa estar logado em uma organização | `src/features/pedidos/hooks/usePedidos.ts` |
@@ -2372,7 +2375,10 @@ _nenhum item encontrado_
 | Erro ao excluir regra | `src/hooks/useApprovalRules.ts` |
 | Erro ao salvar delegação | `src/hooks/useApprovalRules.ts` |
 | Erro ao salvar regra | `src/hooks/useApprovalRules.ts` |
+| Aprovação não gravada: você não tem permissão para aprovar esta etapa. | `src/hooks/useApprovalWorkflow.ts` |
+| Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação. | `src/hooks/useApprovalWorkflow.ts` |
 | Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado | `src/hooks/useApprovalWorkflow.ts` |
+| Rejeição não gravada: você não tem permissão para rejeitar esta etapa. | `src/hooks/useApprovalWorkflow.ts` |
 | Erro ao atualizar orçamento | `src/hooks/useBudgetManagement.ts` |
 | Erro ao criar orçamento | `src/hooks/useBudgetManagement.ts` |
 | Erro ao remover orçamento | `src/hooks/useBudgetManagement.ts` |
@@ -2432,13 +2438,7 @@ _nenhum item encontrado_
 | Usuário não autenticado | `src/hooks/usePasswordResetRequests.ts` |
 | Erro ao vincular fornecedor:  | `src/hooks/useProdutoFornecedores.ts` |
 | Tenant ID missing | `src/hooks/useProdutoFornecedores.ts` |
-| Erro ao atualizar:  | `src/hooks/useProdutos.ts` |
-| Erro ao criar produto:  | `src/hooks/useProdutos.ts` |
-| Organization ID missing | `src/hooks/useProdutos.ts` |
-| Não foi possível salvar as preferências. | `src/hooks/useRealPushNotifications.ts` |
-| Acesso negado | `src/hooks/useSecurityLogs.ts` |
-| Sessão expirada por inatividade. Faça login novamente. | `src/hooks/useSessionIdleTimeout.ts` |
-| … +272 linhas — lista completa em `context.json` | |
+| … +278 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3397 testes em 242 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3410 testes em 244 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2591,6 +2591,7 @@ _nenhum item encontrado_
 | `tests-rls/rls-isolation.test.ts` | 8 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
+| `src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx` | 7 | useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso · approveStep com 0 linhas afetadas retorna false e nao comemora · approveStep com linha afetada registra a aprovacao · rejectStep com 0 linhas afetadas retorna false e nao comemora … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
@@ -2601,6 +2602,7 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/pendingApprovalsEstados.test.tsx` | 6 | PendingApprovalsList - falha e carga nao viram  · mostra o erro da consulta em vez de  · o botao de nova tentativa refaz as duas buscas da tela · enquanto carrega, nao afirma que nao ha nada pendente … |
 | `src/components/pedidos/__tests__/pedidoMobileCardA11y.test.tsx` | 6 | PedidoMobileCard - cartao acessivel pelo teclado (etapa 235) · o cartao expoe papel de botao, nome e entra na tabulacao · Enter abre os detalhes · espaco abre os detalhes … |
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
+| `src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx` | 6 | usePedidos - escrita negada pelo RLS nao vira sucesso · updatePedido com 0 linhas afetadas retorna false e nao comemora · updatePedido com linha afetada continua atualizando · bulkUpdateStatus sem nenhuma linha afetada falha e explica … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
 | `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
 | `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |

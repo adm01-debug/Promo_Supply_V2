@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "81d308c5f22c2a08a36268315a6c107ff6d81d2f",
+  "commit": "8b2cfee37cebc85e9116aae0bfe4d4586e34d146",
   "branch": "main",
-  "data_commit": "2026-11-25T20:01:26-03:00",
+  "data_commit": "2026-11-25T20:22:34-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "8b2cfee",
+    "data": "2026-11-25",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#487)"
+   },
+   {
+    "sha": "73078a0",
+    "data": "2026-11-25",
+    "assunto": "fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)"
+   },
    {
     "sha": "81d308c",
     "data": "2026-11-25",
@@ -121,19 +131,9 @@
     "sha": "dc66ebe",
     "data": "2026-11-25",
     "assunto": "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)"
-   },
-   {
-    "sha": "5f80e28",
-    "data": "2026-11-25",
-    "assunto": "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)"
-   },
-   {
-    "sha": "b22b3ab",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)"
    }
   ],
-  "arquivos_mudados_7d": 1480,
+  "arquivos_mudados_7d": 1481,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -160,12 +160,12 @@
     "mudancas": 45
    },
    {
-    "pasta": "src/lib/__tests__",
+    "pasta": "src/hooks/__tests__",
     "mudancas": 34
    },
    {
-    "pasta": "src/hooks/__tests__",
-    "mudancas": 33
+    "pasta": "src/lib/__tests__",
+    "mudancas": 34
    },
    {
     "pasta": "src/pages/admin",
@@ -184,16 +184,16 @@
     "mudancas": 22
    },
    {
+    "pasta": "src/features/pedidos",
+    "mudancas": 21
+   },
+   {
     "pasta": "src/pages/pedidos",
     "mudancas": 21
    },
    {
     "pasta": "src/pages/recebimento",
     "mudancas": 21
-   },
-   {
-    "pasta": "src/components/security",
-    "mudancas": 20
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -207,11 +207,15 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 14
+    "mudancas": 12
    },
    {
     "arquivo": "docs/ci/README.md",
     "mudancas": 10
+   },
+   {
+    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "mudancas": 9
    },
    {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
@@ -222,7 +226,7 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 8
    },
    {
@@ -234,7 +238,7 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 7
    },
    {
@@ -263,10 +267,6 @@
    },
    {
     "arquivo": "src/hooks/usePagamentos.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 6
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 297
+    "commits": 296
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 2
+    "commits": 3
    },
    {
     "autor": "dependabot[bot]",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1461,
-  "arquivos_codigo": 933,
-  "linhas_codigo": 187229,
+  "arquivos_total": 1463,
+  "arquivos_codigo": 935,
+  "linhas_codigo": 187595,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 340,
   "cron_jobs": 74,
-  "testes": 293,
+  "testes": 295,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 100
@@ -431,12 +431,12 @@
    "linhas": 52084
   },
   "src/features": {
-   "arquivos": 89,
-   "linhas": 11107
+   "arquivos": 90,
+   "linhas": 11244
   },
   "src/hooks": {
-   "arquivos": 90,
-   "linhas": 15327
+   "arquivos": 91,
+   "linhas": 15556
   },
   "src/i18n": {
    "arquivos": 3,
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 36
+  "arquivos_acima_500_linhas": 37
  },
  "todos": [
   {

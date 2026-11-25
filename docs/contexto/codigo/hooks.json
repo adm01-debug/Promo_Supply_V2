@@ -512,7 +512,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 427,
+   "linhas": 446,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
@@ -538,7 +538,7 @@
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
@@ -844,7 +844,7 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 498,
+   "linhas": 532,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",
@@ -877,7 +877,7 @@
     "src/pages/aprovacoes/Aprovacoes.tsx",
     "src/pages/aprovacoes/aprovacoesData.ts"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/hooks/useBudgetManagement.ts",

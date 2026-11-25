@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 293,
+ "total": 295,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 275
+  "unit": 277
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 198
+   "arquivos": 200
   },
   {
    "padrao": "outro",
@@ -935,6 +935,15 @@
    "casos": 4
   },
   {
+   "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
+   "tipo": "unit",
+   "linhas": 118,
+   "testa": [
+    "src/features/pedidos/hooks/usePedidos.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
    "tipo": "unit",
    "linhas": 116,
@@ -1089,6 +1098,15 @@
     "src/hooks/useApprovalWorkflow.ts"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+   "tipo": "unit",
+   "linhas": 195,
+   "testa": [
+    "src/hooks/useApprovalWorkflow.ts"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -2744,7 +2762,7 @@
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
   "src/features/pedidos/exclusaoPedido.ts": 1,
-  "src/features/pedidos/hooks/usePedidos.ts": 3,
+  "src/features/pedidos/hooks/usePedidos.ts": 4,
   "src/features/pedidos/index.ts": 1,
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
@@ -2755,7 +2773,7 @@
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
   "src/hooks/use-toast.ts": 1,
   "src/hooks/useApprovalHistory.ts": 1,
-  "src/hooks/useApprovalWorkflow.ts": 4,
+  "src/hooks/useApprovalWorkflow.ts": 5,
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useDevolucoes.ts": 2,
