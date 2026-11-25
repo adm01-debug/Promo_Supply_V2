@@ -345,10 +345,30 @@ export const useApprovalWorkflow = () => {
       const { data: workflow } = await supabase.from('approval_workflows')
         .select('solicitacao_id').eq('id', step.workflow_id).single();
       if (workflow?.solicitacao_id) {
-        await supabase.from('solicitacoes')
+        // Mesma armadilha da etapa: a solicitacao tem RLS propria, entao o update
+        // pode casar 0 linhas e voltar sem erro — a etapa ficava 'rejected' e a
+        // solicitacao seguia 'pendente' para sempre, sem ninguem saber.
+        const { data: solicitacaoRejeitada, error: erroRejeicao } = await supabase.from('solicitacoes')
           .update({ status: 'rejeitada', updated_at: new Date().toISOString() })
           .eq('id', workflow.solicitacao_id)
-          .in('status', ['pendente', 'em_cotacao']);
+          .in('status', ['pendente', 'em_cotacao'])
+          .select('id');
+        if (erroRejeicao) throw erroRejeicao;
+        if (!solicitacaoRejeitada?.length) {
+          // 0 linhas tambem e o resultado normal quando a solicitacao ja nao esta
+          // pendente (ex.: rejeitada antes). So alarmar se o estado final estiver errado.
+          const { data: atual } = await supabase.from('solicitacoes')
+            .select('status').eq('id', workflow.solicitacao_id).single();
+          if (atual?.status !== 'rejeitada') {
+            logger.error('Solicitacao nao marcada como rejeitada (RLS)', {
+              solicitacaoId: workflow.solicitacao_id, statusAtual: atual?.status,
+            });
+            toast.error('Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação.');
+            await fetchPendingSteps();
+            await fetchPendingWorkflows();
+            return false;
+          }
+        }
       }
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',

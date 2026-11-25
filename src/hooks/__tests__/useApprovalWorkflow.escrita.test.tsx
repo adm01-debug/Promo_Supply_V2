@@ -149,4 +149,47 @@ describe('useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso', () =>
     expect(h.toast.success).not.toHaveBeenCalled();
     expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('não tem permissão para rejeitar'));
   });
+
+  it('rejectStep com erro explicito do banco manda para a DLQ e nao escreve o resto do fluxo', async () => {
+    h.estado.atualizado['approval_steps'] = { data: null, error: { message: 'permission denied' } };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = true;
+    await act(async () => { ok = await result.current.rejectStep('step-1', 'sem verba'); });
+
+    expect(ok).toBe(false);
+    expect(h.toast.success).not.toHaveBeenCalled();
+    expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('Erro ao rejeitar'));
+    expect(h.dlq.pushToDLQ).toHaveBeenCalledWith(
+      'reject_step', expect.objectContaining({ stepId: 'step-1' }), expect.any(String),
+    );
+  });
+
+  it('rejectStep avisa quando a etapa e rejeitada mas a solicitacao nao pode ser atualizada', async () => {
+    h.estado.atualizado['approval_steps'] = { data: [{ id: 'step-1' }], error: null };
+    h.estado.atualizado['solicitacoes'] = { data: [], error: null };
+    h.estado.single['solicitacoes'] = { data: { status: 'pendente' }, error: null };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = true;
+    await act(async () => { ok = await result.current.rejectStep('step-1', 'sem verba'); });
+
+    expect(ok).toBe(false);
+    expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('não foi marcada como rejeitada'));
+    expect(h.toast.success).not.toHaveBeenCalled();
+  });
+
+  it('rejectStep nao alarma quando a solicitacao ja estava rejeitada', async () => {
+    h.estado.atualizado['approval_steps'] = { data: [{ id: 'step-1' }], error: null };
+    h.estado.atualizado['solicitacoes'] = { data: [], error: null };
+    h.estado.single['solicitacoes'] = { data: { status: 'rejeitada' }, error: null };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = false;
+    await act(async () => { ok = await result.current.rejectStep('step-1', 'sem verba'); });
+
+    expect(ok).toBe(true);
+    expect(h.toast.success).toHaveBeenCalledWith('Rejeição registrada');
+    expect(h.toast.error).not.toHaveBeenCalled();
+  });
 });
