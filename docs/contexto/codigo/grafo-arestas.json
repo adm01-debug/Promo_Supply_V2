@@ -2980,6 +2980,7 @@
    "src/lib/utils.ts"
   ],
   "src/pages/historico/HistoricoCompras.tsx": [
+   "src/components/compras/SourcingHistoryConsole.tsx",
    "src/components/compras/SupplierIntelligenceConsole.tsx",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",

@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (194)",
+   "co-localizado (__tests__) (195)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)",
+   "docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)",
    "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)",
    "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)",
-   "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)",
-   "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)",
-   "fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)"
+   "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)"
   ]
  },
  "pr_template": null,

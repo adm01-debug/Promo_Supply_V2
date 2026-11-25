@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1cc59fe1aa7e8154cacf5f1b952c5796dd6e6bbd",
+  "sha": "415c0e6c59b7c7dba1470768dd2fa956589fd362",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 13:13 UTC",
-  "files_total": 1451,
-  "code_files": 1278,
-  "code_lines": 214946,
+  "generated_at": "2026-11-25 13:50 UTC",
+  "files_total": 1452,
+  "code_files": 1279,
+  "code_lines": 215008,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b33a2d1981694c76",
+ "facts_hash": "9560ee950133d22d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 442,
-   ".tsx": 413,
+   ".tsx": 414,
    ".sql": 348,
    ".mjs": 67,
    ".py": 5,
@@ -35857,8 +35857,8 @@
   },
   {
    "module": "src/pages",
-   "files": 152,
-   "lines": 34696,
+   "files": 153,
+   "lines": 34758,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -68886,6 +68886,14 @@
    {
     "file": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
     "name": "nao inventa valor unitario quando a cotacao veio zerada"
+   },
+   {
+    "file": "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
+    "name": "HistoricoCompras - aba Console de Sourcing"
+   },
+   {
+    "file": "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
+    "name": "monta o SourcingHistoryConsole quando a aba e selecionada"
    },
    {
     "file": "src/pages/historico/__tests__/historicoColors.test.ts",
@@ -111688,7 +111696,7 @@
   },
   "src/pages/historico/HistoricoCompras.tsx": {
    "path": "src/pages/historico/HistoricoCompras.tsx",
-   "lines": 379,
+   "lines": 386,
    "exports": [
     "default HistoricoCompras"
    ],
@@ -111821,6 +111829,15 @@
      "value": "delivered",
      "kind": "compara"
     }
+   ]
+  },
+  "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx": {
+   "path": "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
+   "lines": 55,
+   "is_test": true,
+   "tests": [
+    "HistoricoCompras - aba Console de Sourcing",
+    "monta o SourcingHistoryConsole quando a aba e selecionada"
    ]
   },
   "src/pages/historico/__tests__/historicoColors.test.ts": {
@@ -122042,10 +122059,32 @@
   }
  },
  "git": {
-  "sha": "1cc59fe1aa7e8154cacf5f1b952c5796dd6e6bbd",
+  "sha": "415c0e6c59b7c7dba1470768dd2fa956589fd362",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "415c0e6",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/historico/HistoricoCompras.tsx",
+     "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx"
+    ]
+   },
+   {
+    "sha": "c770dfc",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)",
+    "files": [
+     "docs/agentes/banco.md",
+     "docs/agentes/github-ci.md",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "1cc59fe",
     "date": "2026-11-25",
@@ -122365,36 +122404,6 @@
      "src/components/compras/NovaSolicitacaoModal.tsx",
      "src/components/compras/__tests__/anexosNaoEnviados.test.ts"
     ]
-   },
-   {
-    "sha": "9e585d8",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(solicitacoes): gestor responsavel vem do aprovador_id, nao de observacoes (#435)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
-     "src/features/solicitacoes/hooks/useNomesDeGestor.ts",
-     "src/pages/solicitacoes/Solicitacoes.tsx",
-     "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",
-     "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
-     "src/pages/solicitacoes/solicitacoesHelpers.ts"
-    ]
-   },
-   {
-    "sha": "773117b",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(botoes): liga 'Filtros Avancados', 'Ver Historico' e LISTAR/CONECTAR a acoes reais (#434)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/PendingApprovalsList.tsx",
-     "src/components/compras/ProductionRoutingEngine.tsx",
-     "src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx",
-     "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
-     "src/pages/estoque/GestaoEstoque.tsx",
-     "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122405,6 +122414,14 @@
    [
     "AGENTS.md",
     3
+   ],
+   [
+    "docs/agentes/banco.md",
+    2
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    2
    ],
    [
     "src/features/layout/components/MainLayout.tsx",
@@ -122421,6 +122438,14 @@
    [
     "src/i18n/__tests__/locales.test.ts",
     2
+   ],
+   [
+    "src/pages/historico/HistoricoCompras.tsx",
+    1
+   ],
+   [
+    "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
+    1
    ],
    [
     "docs/agentes/deploy.md",
@@ -122460,22 +122485,6 @@
    ],
    [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
-    1
-   ],
-   [
-    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
-    1
-   ],
-   [
-    "docs/agentes/github-ci.md",
     1
    ]
   ]

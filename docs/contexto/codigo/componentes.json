@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 330,
- "orfaos": 13,
+ "orfaos": 12,
  "nomes_duplicados": {
   "AnimatedCounter": [
    "src/components/animations/MotionComponents.tsx",
@@ -1536,8 +1536,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/compras/SourcingIntelligenceWidget.tsx",
@@ -4996,7 +4996,7 @@
     "HistoricoCompras"
    ],
    "export_default": "HistoricoCompras",
-   "linhas": 379,
+   "linhas": 386,
    "dominio": "pages/historico",
    "hooks_locais": [
     "useAccountFilters",
