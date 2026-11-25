@@ -239,6 +239,7 @@ const ComprasDashboard = () => {
             />
           </LazyPanel>
         );
+      case 'chart-sla': return <LazyPanel><SLADistributionChart /></LazyPanel>;
       case 'supplier-alerts': return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
       case 'supplier-ranking': return <LazyPanel><SupplierRankingPanel /></LazyPanel>;
       case 'buyer-performance': return <LazyPanel><BuyerPerformancePanel /></LazyPanel>;
@@ -358,6 +359,7 @@ const ComprasDashboard = () => {
           <div className="lg:col-span-3 space-y-8">
             {getWidgetComponent('chart-pipeline')}
             {getWidgetComponent('trend-charts')}
+            {getWidgetComponent('chart-sla')}
             {getWidgetComponent('sourcing-intelligence')}
             {getWidgetComponent('dashboard-insights')}
           </div>
