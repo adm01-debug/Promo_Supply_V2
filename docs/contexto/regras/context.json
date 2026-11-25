@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "4d16bc6fc97dae61dad50f81487b844fbb5edc5a",
+  "sha": "6d00e2a8b4bb81a082d251e01fb5ea61000d984e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 17:10 UTC",
+  "generated_at": "2026-11-25 17:33 UTC",
   "files_total": 1452,
   "code_files": 1279,
-  "code_lines": 215401,
+  "code_lines": 215424,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "58599984a6c31653",
+ "facts_hash": "9e220c8322b1683d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35859,7 +35859,7 @@
   {
    "module": "src/pages",
    "files": 153,
-   "lines": 34758,
+   "lines": 34781,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -68251,6 +68251,14 @@
    {
     "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     "name": "data_necessidade "
+   },
+   {
+    "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    "name": "ComprasDashboard — distribuição de SLA"
+   },
+   {
+    "file": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    "name": "monta o gráfico de distribuição de SLA no widget chart-sla"
    },
    {
     "file": "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
@@ -110894,7 +110902,7 @@
   },
   "src/pages/dashboard/ComprasDashboard.tsx": {
    "path": "src/pages/dashboard/ComprasDashboard.tsx",
-   "lines": 374,
+   "lines": 376,
    "exports": [
     "default memo"
    ],
@@ -110939,7 +110947,7 @@
   },
   "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx": {
    "path": "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
-   "lines": 84,
+   "lines": 105,
    "is_test": true,
    "rule_comments": [
     "e, no fuso do Brasil, exibia \"28/02/2026\" — o vencimento aparecia um dia antes."
@@ -110947,7 +110955,9 @@
    "tests": [
     "ComprasDashboard — vencimento das urgências",
     "roda no fuso do Brasil (pré-condição do teste)",
-    "data_necessidade "
+    "data_necessidade ",
+    "ComprasDashboard — distribuição de SLA",
+    "monta o gráfico de distribuição de SLA no widget chart-sla"
    ]
   },
   "src/pages/dev/XbzNetworkPanelHarness.tsx": {
@@ -122053,10 +122063,21 @@
   }
  },
  "git": {
-  "sha": "4d16bc6fc97dae61dad50f81487b844fbb5edc5a",
+  "sha": "6d00e2a8b4bb81a082d251e01fb5ea61000d984e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6d00e2a",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/dashboard/ComprasDashboard.tsx",
+     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
+    ]
+   },
    {
     "sha": "4d16bc6",
     "date": "2026-11-25",
@@ -122390,17 +122411,6 @@
      "src/locales/es/translation.json",
      "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
     ]
-   },
-   {
-    "sha": "728759e",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix: matriz de transicoes de status alinhada ao banco (#394)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
-     "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -122431,6 +122441,14 @@
    [
     "src/App.tsx",
     2
+   ],
+   [
+    "src/pages/dashboard/ComprasDashboard.tsx",
+    1
+   ],
+   [
+    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
+    1
    ],
    [
     "tests-e2e/critical-flows.spec.ts",
@@ -122474,14 +122492,6 @@
    ],
    [
     "vitest.config.ts",
-    1
-   ],
-   [
-    "docs/pendencias/integracao-pim-promo-supply.md",
-    1
-   ],
-   [
-    "docs/pendencias/sql/pim-v_compras_views.sql",
     1
    ]
   ]

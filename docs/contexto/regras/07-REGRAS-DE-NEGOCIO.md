@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `4d16bc6fc9` · branch `main` · 2026-11-25 17:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6d00e2a8b4` · branch `main` · 2026-11-25 17:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2455,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3378 testes em 239 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3380 testes em 239 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2628,6 +2628,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/pushHandler.test.ts` | 5 | service worker de push · registra listener do evento push · exibe a notificacao com titulo vindo do payload da edge · abre a acao no clique e respeita action_url … |
 | `src/pages/acompanhamento/__tests__/statusKanban.test.ts` | 5 | avaliarAlteracaoStatusKanban · bloqueia a entrega feita pelo Kanban · traduz as colunas válidas para o status do banco · recusa transição que o banco rejeitaria, com mensagem de negócio … |
 | `src/pages/auth/__tests__/Auth.destino.test.tsx` | 5 | Auth: destino pos-login (etapa 043 / AUT-08) · volta para a rota que o ProtectedRoute registrou, com a query string · sem origem registrada cai na raiz, que o AppRoutes manda para /compras · recusa origem protocol-relative (//evil.com) e cai na raiz … |
+| `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 5 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/documentos/__tests__/documentosFiscaisEstados.test.tsx` | 5 | DocumentosFiscais - falha e carga nao viram  · mostra o erro da consulta e um botao de nova tentativa · o botao de nova tentativa refaz a busca da lista · com a consulta em curso, mostra carregando e nao zera os contadores … |
 | `src/pages/pagamentos/__tests__/pagamentosA11y.test.tsx` | 5 | Pagamentos - detalhe do pagamento acessivel pelo teclado (etapa 235) · a linha ganha um controle nomeado, focavel e nativo (Enter/espaco sao do navegador) · o acionamento do controle abre o detalhe do pagamento · o clique no controle abre o detalhe uma unica vez … |
 | `src/pages/portal-fornecedor/__tests__/PortalFornecedor.convite.test.tsx` | 5 | PortalFornecedor: convite de fornecedor (etapa 039 / SEC-06) · mantem o convite desabilitado e explica o motivo · nao chama signInWithOtp, entao nao cria usuario no GoTrue · quando o convite for liberado, mantem shouldCreateUser: false e nao cria usuario novo … |
@@ -2685,7 +2686,6 @@ _nenhum item encontrado_
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
 | `src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx` | 3 | KPIs do Sourcing Pipeline derivados do banco · nao exibe numeros fixos quando nao ha projeto · agrega estimated_spend dos projetos ativos ignorando concluidos |
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
-| `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 3 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
 | `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |

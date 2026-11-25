@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)",
    "fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)",
    "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)",
    "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)",
-   "docs(pendencias): registra o estado real das views de compra no PIM (#464)",
-   "feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)"
+   "docs(pendencias): registra o estado real das views de compra no PIM (#464)"
   ]
  },
  "pr_template": null,

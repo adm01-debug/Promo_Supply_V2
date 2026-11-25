@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4d16bc6fc97dae61dad50f81487b844fbb5edc5a",
+  "commit": "6d00e2a8b4bb81a082d251e01fb5ea61000d984e",
   "branch": "main",
-  "data_commit": "2026-11-25T13:32:42-03:00",
+  "data_commit": "2026-11-25T14:32:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6d00e2a",
+    "data": "2026-11-25",
+    "assunto": "feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)"
+   },
    {
     "sha": "4d16bc6",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "d93a2df",
     "data": "2026-11-24",
     "assunto": "fix(a11y): cada link de pular leva a um menu que existe no breakpoint atual (#443)"
-   },
-   {
-    "sha": "d1500f1",
-    "data": "2026-11-24",
-    "assunto": "fix(a11y): painel do cabecalho abre de verdade e sobra um unico <main> por rota (#442)"
    }
   ],
-  "arquivos_mudados_7d": 488,
+  "arquivos_mudados_7d": 489,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 110
+    "mudancas": 111
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "pasta": "src/pages/catalogo-xbz",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 110
+    "mudancas": 111
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -230,14 +230,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": "bun.lock",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "package.json",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 7
    },
@@ -252,6 +244,14 @@
    {
     "arquivo": "supabase/functions/xbz-proxy/index.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": "bun.lock",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "package.json",
+    "mudancas": 6
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 294
+    "commits": 295
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 5
+    "commits": 4
    },
    {
     "autor": "github-actions[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1451,
   "arquivos_codigo": 928,
-  "linhas_codigo": 186276,
+  "linhas_codigo": 186299,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 153,
-   "linhas": 34758
+   "linhas": 34781
   },
   "src/routes": {
    "arquivos": 1,
