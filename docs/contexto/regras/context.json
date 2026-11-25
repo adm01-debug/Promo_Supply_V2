@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0d68cdf9c5b8eeeeb5435362da1b67ac18152bf0",
+  "sha": "66f6b9d56871966c0395a0d3ff88d63905b7eefd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 19:11 UTC",
-  "files_total": 1456,
-  "code_files": 1282,
-  "code_lines": 215853,
+  "generated_at": "2026-11-25 19:20 UTC",
+  "files_total": 1458,
+  "code_files": 1284,
+  "code_lines": 216820,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a05726ffd74bfedb",
+ "facts_hash": "681ca42ea65d9acf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 441,
    ".tsx": 415,
-   ".sql": 349,
+   ".sql": 351,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -16903,136 +16903,6 @@
     "src": "supabase/migrations/20260512213555_f76282b1-3f3a-4b2d-a0f7-5e22efb9180c.sql"
    },
    {
-    "name": "tenant_isolation_sourcing_events",
-    "table": "sourcing_events",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_responses",
-    "table": "sourcing_responses",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_invitations",
-    "table": "sourcing_invitations",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_auction_bids",
-    "table": "auction_bids",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_pipeline",
-    "table": "sourcing_pipeline",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_awards",
-    "table": "sourcing_awards",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_lots",
-    "table": "sourcing_event_lots",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_criteria",
-    "table": "sourcing_event_criteria",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_questions",
-    "table": "sourcing_event_questions",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_response_items",
-    "table": "sourcing_response_items",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_response_answers",
-    "table": "sourcing_response_answers",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_licitacao_lances",
-    "table": "licitacao_lances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_approval_hierarchy",
-    "table": "approval_hierarchy",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
     "name": "tenants visible to members",
     "table": "tenants",
     "cmd": "SELECT",
@@ -17053,36 +16923,6 @@
     "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
    },
    {
-    "name": "SSO configurations isolated by tenant",
-    "table": "sso_configurations",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175852_1a519f80-6495-479d-b1e3-db2533aa2b4b.sql"
-   },
-   {
-    "name": "SCIM logs isolated by tenant",
-    "table": "scim_provisioning_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175852_1a519f80-6495-479d-b1e3-db2533aa2b4b.sql"
-   },
-   {
-    "name": "tenant isolation punchout_sessions",
-    "table": "punchout_sessions",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513180103_6594fc62-2b28-4adf-b34d-07c17d33f430.sql"
-   },
-   {
     "name": "ERP field mappings are visible to tenant admins",
     "table": "erp_field_mappings",
     "cmd": "ALL",
@@ -17091,136 +16931,6 @@
     "using": "EXISTS ( SELECT 1 FROM public.erp_connections c WHERE c.id = connection_id AND c.tenant_id = public.current_tenant_id() )",
     "check": "",
     "src": "supabase/migrations/20260513182736_ef4a16ea-2f80-4bd5-8f3e-65f6b9b69170.sql"
-   },
-   {
-    "name": "ERP sync logs are tenant-isolated",
-    "table": "erp_sync_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513182736_ef4a16ea-2f80-4bd5-8f3e-65f6b9b69170.sql"
-   },
-   {
-    "name": "fiscal_events tenant isolation",
-    "table": "fiscal_events",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513183822_e2d05f87-9e62-4ae9-8c2c-dba4017edca1.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_projects",
-    "table": "sourcing_projects",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql"
-   },
-   {
-    "name": "tenant_isolation_savings_tracker",
-    "table": "savings_tracker",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_templates",
-    "table": "workflow_templates",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_nodes",
-    "table": "workflow_nodes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_edges",
-    "table": "workflow_edges",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_instances",
-    "table": "workflow_instances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_approvals",
-    "table": "workflow_approvals",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_logs",
-    "table": "workflow_logs",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_sod_rules",
-    "table": "workflow_sod_rules",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_tasks",
-    "table": "workflow_tasks",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_audit_log",
-    "table": "workflow_audit_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
    },
    {
     "name": "Apenas administradores podem inserir centros de custo",
@@ -17301,16 +17011,6 @@
     "using": "true",
     "check": "",
     "src": "supabase/migrations/20260522202740_6521e169-0e00-4dba-a144-aad68c528a8e.sql"
-   },
-   {
-    "name": "tenant_isolation_fornecedor_categorias",
-    "table": "fornecedor_categorias",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
    },
    {
     "name": "authenticated_insert_telemetry_logs",
@@ -18831,6 +18531,306 @@
     "using": "organization_id = public.get_my_organization()",
     "check": "",
     "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+   },
+   {
+    "name": "SSO configurations isolated by tenant",
+    "table": "sso_configurations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "SCIM logs isolated by tenant",
+    "table": "scim_provisioning_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_templates",
+    "table": "workflow_templates",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_sod_rules",
+    "table": "workflow_sod_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_nodes",
+    "table": "workflow_nodes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_edges",
+    "table": "workflow_edges",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_instances",
+    "table": "workflow_instances",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_approvals",
+    "table": "workflow_approvals",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_logs",
+    "table": "workflow_logs",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_tasks",
+    "table": "workflow_tasks",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_audit_log",
+    "table": "workflow_audit_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_hierarchy",
+    "table": "approval_hierarchy",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "ERP sync logs are tenant-isolated",
+    "table": "erp_sync_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_fornecedor_categorias",
+    "table": "fornecedor_categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant isolation sourcing_pipeline",
+    "table": "sourcing_pipeline",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_savings_tracker",
+    "table": "savings_tracker",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_projects",
+    "table": "sourcing_projects",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_events",
+    "table": "sourcing_events",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_criteria",
+    "table": "sourcing_event_criteria",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_lots",
+    "table": "sourcing_event_lots",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_questions",
+    "table": "sourcing_event_questions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_invitations",
+    "table": "sourcing_invitations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_responses",
+    "table": "sourcing_responses",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_response_items",
+    "table": "sourcing_response_items",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_response_answers",
+    "table": "sourcing_response_answers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_awards",
+    "table": "sourcing_awards",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacao_lances",
+    "table": "licitacao_lances",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_auction_bids",
+    "table": "auction_bids",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant isolation punchout_sessions",
+    "table": "punchout_sessions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "fiscal_events tenant isolation",
+    "table": "fiscal_events",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
    }
   ],
   "triggers": [
@@ -27207,9 +27207,11 @@
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+   "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
+   "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -36201,7 +36203,7 @@
   {
    "module": "src/tests",
    "files": 10,
-   "lines": 975,
+   "lines": 1005,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36455,8 +36457,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 338,
-   "lines": 27917,
+   "files": 339,
+   "lines": 28579,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36547,8 +36549,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 2,
-   "lines": 91,
+   "files": 3,
+   "lines": 366,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36556,7 +36558,8 @@
    "imports_modules": [],
    "file_list": [
     "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
-    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
+    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
    ]
   },
   {
@@ -74020,136 +74023,6 @@
     "src": "supabase/migrations/20260512213555_f76282b1-3f3a-4b2d-a0f7-5e22efb9180c.sql"
    },
    {
-    "name": "tenant_isolation_sourcing_events",
-    "table": "sourcing_events",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_responses",
-    "table": "sourcing_responses",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_invitations",
-    "table": "sourcing_invitations",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_auction_bids",
-    "table": "auction_bids",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_pipeline",
-    "table": "sourcing_pipeline",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_awards",
-    "table": "sourcing_awards",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_lots",
-    "table": "sourcing_event_lots",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_criteria",
-    "table": "sourcing_event_criteria",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_event_questions",
-    "table": "sourcing_event_questions",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_response_items",
-    "table": "sourcing_response_items",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_response_answers",
-    "table": "sourcing_response_answers",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_licitacao_lances",
-    "table": "licitacao_lances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
-    "name": "tenant_isolation_approval_hierarchy",
-    "table": "approval_hierarchy",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513165732_bc77e691-6a3d-4549-b31b-33a4799f2bd5.sql"
-   },
-   {
     "name": "tenants visible to members",
     "table": "tenants",
     "cmd": "SELECT",
@@ -74170,36 +74043,6 @@
     "src": "supabase/migrations/20260513175245_11ef6ac9-80dd-488f-b352-d01021edafbc.sql"
    },
    {
-    "name": "SSO configurations isolated by tenant",
-    "table": "sso_configurations",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175852_1a519f80-6495-479d-b1e3-db2533aa2b4b.sql"
-   },
-   {
-    "name": "SCIM logs isolated by tenant",
-    "table": "scim_provisioning_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513175852_1a519f80-6495-479d-b1e3-db2533aa2b4b.sql"
-   },
-   {
-    "name": "tenant isolation punchout_sessions",
-    "table": "punchout_sessions",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513180103_6594fc62-2b28-4adf-b34d-07c17d33f430.sql"
-   },
-   {
     "name": "ERP field mappings are visible to tenant admins",
     "table": "erp_field_mappings",
     "cmd": "ALL",
@@ -74208,136 +74051,6 @@
     "using": "EXISTS ( SELECT 1 FROM public.erp_connections c WHERE c.id = connection_id AND c.tenant_id = public.current_tenant_id() )",
     "check": "",
     "src": "supabase/migrations/20260513182736_ef4a16ea-2f80-4bd5-8f3e-65f6b9b69170.sql"
-   },
-   {
-    "name": "ERP sync logs are tenant-isolated",
-    "table": "erp_sync_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513182736_ef4a16ea-2f80-4bd5-8f3e-65f6b9b69170.sql"
-   },
-   {
-    "name": "fiscal_events tenant isolation",
-    "table": "fiscal_events",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513183822_e2d05f87-9e62-4ae9-8c2c-dba4017edca1.sql"
-   },
-   {
-    "name": "tenant_isolation_sourcing_projects",
-    "table": "sourcing_projects",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql"
-   },
-   {
-    "name": "tenant_isolation_savings_tracker",
-    "table": "savings_tracker",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260513184438_97b3a914-55db-4559-9ca0-bb2e5f1af27a.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_templates",
-    "table": "workflow_templates",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_nodes",
-    "table": "workflow_nodes",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_edges",
-    "table": "workflow_edges",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_instances",
-    "table": "workflow_instances",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_approvals",
-    "table": "workflow_approvals",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "Tenant isolation for workflow_logs",
-    "table": "workflow_logs",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513190856_cd1b993a-ef56-42f9-9ee8-ae7fff0e715c.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_sod_rules",
-    "table": "workflow_sod_rules",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_tasks",
-    "table": "workflow_tasks",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
-   },
-   {
-    "name": "tenant_isolation_workflow_audit_log",
-    "table": "workflow_audit_log",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "",
-    "src": "supabase/migrations/20260513191456_ed2c760f-4644-4fc0-8822-bbc2306bf219.sql"
    },
    {
     "name": "Apenas administradores podem inserir centros de custo",
@@ -74418,16 +74131,6 @@
     "using": "true",
     "check": "",
     "src": "supabase/migrations/20260522202740_6521e169-0e00-4dba-a144-aad68c528a8e.sql"
-   },
-   {
-    "name": "tenant_isolation_fornecedor_categorias",
-    "table": "fornecedor_categorias",
-    "cmd": "ALL",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "tenant_id = public.current_tenant_id()",
-    "check": "tenant_id = public.current_tenant_id()",
-    "src": "supabase/migrations/20260522202821_45a255f6-b00b-40b9-a864-5f9e6abfca85.sql"
    },
    {
     "name": "authenticated_insert_telemetry_logs",
@@ -75948,6 +75651,306 @@
     "using": "organization_id = public.get_my_organization()",
     "check": "",
     "src": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql"
+   },
+   {
+    "name": "SSO configurations isolated by tenant",
+    "table": "sso_configurations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "SCIM logs isolated by tenant",
+    "table": "scim_provisioning_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_templates",
+    "table": "workflow_templates",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_sod_rules",
+    "table": "workflow_sod_rules",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_nodes",
+    "table": "workflow_nodes",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_edges",
+    "table": "workflow_edges",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_instances",
+    "table": "workflow_instances",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_approvals",
+    "table": "workflow_approvals",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Tenant isolation for workflow_logs",
+    "table": "workflow_logs",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_tasks",
+    "table": "workflow_tasks",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_workflow_audit_log",
+    "table": "workflow_audit_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_approval_hierarchy",
+    "table": "approval_hierarchy",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "ERP sync logs are tenant-isolated",
+    "table": "erp_sync_log",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_fornecedor_categorias",
+    "table": "fornecedor_categorias",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant isolation sourcing_pipeline",
+    "table": "sourcing_pipeline",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_savings_tracker",
+    "table": "savings_tracker",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_projects",
+    "table": "sourcing_projects",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_events",
+    "table": "sourcing_events",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_criteria",
+    "table": "sourcing_event_criteria",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_lots",
+    "table": "sourcing_event_lots",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_event_questions",
+    "table": "sourcing_event_questions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_invitations",
+    "table": "sourcing_invitations",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_responses",
+    "table": "sourcing_responses",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_response_items",
+    "table": "sourcing_response_items",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_response_answers",
+    "table": "sourcing_response_answers",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_sourcing_awards",
+    "table": "sourcing_awards",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_licitacao_lances",
+    "table": "licitacao_lances",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant_isolation_auction_bids",
+    "table": "auction_bids",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "tenant isolation punchout_sessions",
+    "table": "punchout_sessions",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "fiscal_events tenant isolation",
+    "table": "fiscal_events",
+    "cmd": "ALL",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.tenant_in_my_group(tenant_id)",
+    "check": "public.tenant_in_my_group(tenant_id)",
+    "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
    }
   ],
   "db_triggers": [
@@ -82299,16 +82302,16 @@
    "approval_hierarchy": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "approval_history": {
@@ -82405,16 +82408,16 @@
    "auction_bids": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "audit_logs": {
@@ -82969,16 +82972,16 @@
    "erp_sync_log": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "estoque": {
@@ -83049,35 +83052,35 @@
    "fiscal_events": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "fornecedor_categorias": {
     "rls": "enabled",
     "SELECT": [
      "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
      "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
      "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
      "authenticated: tenant_id = public.current_tenant_id()",
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "fornecedores": {
@@ -83178,16 +83181,16 @@
    "licitacao_lances": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "licitacao_propostas": {
@@ -83546,16 +83549,16 @@
    "punchout_sessions": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "push_subscriptions": {
@@ -83691,31 +83694,31 @@
    "savings_tracker": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "scim_provisioning_log": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "secret_rotation_schedule": {
@@ -83780,166 +83783,166 @@
    "sourcing_awards": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_event_criteria": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_event_lots": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_event_questions": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_events": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_invitations": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_pipeline": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_projects": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_response_answers": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_response_items": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "sourcing_responses": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "spend_forecasts": {
@@ -84037,16 +84040,16 @@
    "sso_configurations": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "supplier_bonifications": {
@@ -84325,136 +84328,136 @@
    "workflow_approvals": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_audit_log": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_edges": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_instances": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_logs": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_nodes": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_sod_rules": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_tasks": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "workflow_templates": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "INSERT": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "UPDATE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ],
     "DELETE": [
-     "authenticated: tenant_id = public.current_tenant_id()"
+     "authenticated: public.tenant_in_my_group(tenant_id)"
     ]
    },
    "xbz_carrinho_log": {
@@ -115016,7 +115019,7 @@
   },
   "src/tests/security/rls-tenant-isolation-restrictive.test.ts": {
    "path": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-   "lines": 83,
+   "lines": 113,
    "is_test": true,
    "rule_comments": [
     "* Regressão: tenant_isolation_<tabela> precisa ser RESTRICTIVE nas tabelas com regra por papel/dono."
@@ -121905,6 +121908,10 @@
    "path": "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
    "lines": 81
   },
+  "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql": {
+   "path": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+   "lines": 662
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -121916,6 +121923,10 @@
   "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql": {
    "path": "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "lines": 24
+  },
+  "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql": {
+   "path": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
+   "lines": 275
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -122141,10 +122152,23 @@
   }
  },
  "git": {
-  "sha": "0d68cdf9c5b8eeeeb5435362da1b67ac18152bf0",
+  "sha": "66f6b9d56871966c0395a0d3ff88d63905b7eefd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "66f6b9d",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/paridade-migrations-banco.allowlist.json",
+     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+     "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+    ]
+   },
    {
     "sha": "0d68cdf",
     "date": "2026-11-25",
@@ -122465,17 +122489,6 @@
      "src/features/layout/__tests__/menuMobile.test.tsx",
      "src/features/layout/components/MainLayout.tsx"
     ]
-   },
-   {
-    "sha": "4186556",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(a11y): \"Reduzir movimento\" passa a valer no framer-motion e limpa o codigo morto (#444)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/accessibility/AdvancedAccessibility.tsx",
-     "src/components/accessibility/__tests__/reducaoMovimento.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122496,6 +122509,14 @@
     3
    ],
    [
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    2
+   ],
+   [
+    "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
+    2
+   ],
+   [
     ".github/workflows/main.yml",
     2
    ],
@@ -122510,6 +122531,14 @@
    [
     "docs/agentes/github-ci.md",
     2
+   ],
+   [
+    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
+    1
    ],
    [
     ".github/workflows/guards.yml",
@@ -122541,22 +122570,6 @@
    ],
    [
     "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useRealPushNotifications.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useRealPushNotifications.ts",
-    1
-   ],
-   [
-    "tests-e2e/critical-flows.spec.ts",
-    1
-   ],
-   [
-    "tests-e2e/dashboard-ui.spec.ts",
     1
    ]
   ]

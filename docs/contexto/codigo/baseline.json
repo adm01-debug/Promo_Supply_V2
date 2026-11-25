@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0d68cdf9c5b8eeeeb5435362da1b67ac18152bf0",
+  "commit": "66f6b9d56871966c0395a0d3ff88d63905b7eefd",
   "branch": "main",
-  "data_commit": "2026-11-25T16:10:44-03:00",
+  "data_commit": "2026-11-25T16:19:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "66f6b9d",
+    "data": "2026-11-25",
+    "assunto": "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)"
+   },
    {
     "sha": "0d68cdf",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "8477e9a",
     "data": "2026-11-24",
     "assunto": "fix(ci): fallback do aplicar-migration-prod cobre \"must be owner of function\" (#446)"
-   },
-   {
-    "sha": "a2f2741",
-    "data": "2026-11-24",
-    "assunto": "chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)"
    }
   ],
-  "arquivos_mudados_7d": 1475,
+  "arquivos_mudados_7d": 1477,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 113
+    "mudancas": 114
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1455,
+  "arquivos_total": 1457,
   "arquivos_codigo": 931,
-  "linhas_codigo": 186721,
+  "linhas_codigo": 186751,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 338,
+  "migrations": 339,
   "cron_jobs": 74,
   "testes": 291,
   "workflows": 15,
@@ -480,7 +480,7 @@
   },
   "src/tests": {
    "arquivos": 10,
-   "linhas": 975
+   "linhas": 1005
   },
   "src/types": {
    "arquivos": 3,

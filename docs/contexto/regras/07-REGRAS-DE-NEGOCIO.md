@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0d68cdf9c5` · branch `main` · 2026-11-25 19:11 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `66f6b9d568` · branch `main` · 2026-11-25 19:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -161,38 +161,9 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `approval_workflows` | Users can manage their organization workflows | ALL | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `categorias` | Users can view their organization categories | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `department_budgets` | Users can view their organization budgets | SELECT | public | permissive | `organization_id IN (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `sourcing_events` | tenant_isolation_sourcing_events | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_responses` | tenant_isolation_sourcing_responses | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_invitations` | tenant_isolation_sourcing_invitations | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `auction_bids` | tenant_isolation_auction_bids | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_pipeline` | tenant_isolation_sourcing_pipeline | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_awards` | tenant_isolation_sourcing_awards | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_event_lots` | tenant_isolation_sourcing_event_lots | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_event_criteria` | tenant_isolation_sourcing_event_criteria | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_event_questions` | tenant_isolation_sourcing_event_questions | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_response_items` | tenant_isolation_sourcing_response_items | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_response_answers` | tenant_isolation_sourcing_response_answers | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `licitacao_lances` | tenant_isolation_licitacao_lances | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `approval_hierarchy` | tenant_isolation_approval_hierarchy | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `tenants` | tenants visible to members | SELECT | authenticated | permissive | `public.user_belongs_to_tenant(auth.uid(), id)` |  |
 | `user_tenants` | user_tenants own rows | SELECT | authenticated | permissive | `user_id = auth.uid()` |  |
-| `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `scim_provisioning_log` | SCIM logs isolated by tenant | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `erp_field_mappings` | ERP field mappings are visible to tenant admins | ALL | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.erp_connections c WHERE c.id = connection_id AND c.tenant_id = public.current_tenant_id() )` |  |
-| `erp_sync_log` | ERP sync logs are tenant-isolated | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `sourcing_projects` | tenant_isolation_sourcing_projects | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `savings_tracker` | tenant_isolation_savings_tracker | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
-| `workflow_templates` | Tenant isolation for workflow_templates | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_nodes` | Tenant isolation for workflow_nodes | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_edges` | Tenant isolation for workflow_edges | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_instances` | Tenant isolation for workflow_instances | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_approvals` | Tenant isolation for workflow_approvals | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_logs` | Tenant isolation for workflow_logs | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_sod_rules` | tenant_isolation_workflow_sod_rules | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_tasks` | tenant_isolation_workflow_tasks | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
-| `workflow_audit_log` | tenant_isolation_workflow_audit_log | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `cost_centers` | Apenas administradores podem inserir centros de custo | INSERT | authenticated | permissive |  | `has_role(auth.uid(), 'admin'::app_role)` |
 | `telemetry_logs_legacy_20260712` | Admins can view telemetry logs | SELECT | public | permissive | `EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )` |  |
 | `fornecedor_categorias` | tenant_isolation | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
@@ -201,7 +172,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `profiles` | Users can view profiles in their tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
 | `currencies` | currencies_authenticated_read | SELECT | authenticated | permissive | `true` |  |
 | `exchange_rates` | exchange_rates_authenticated_read | SELECT | authenticated | permissive | `true` |  |
-| `fornecedor_categorias` | tenant_isolation_fornecedor_categorias | ALL | authenticated | permissive | `tenant_id = public.current_tenant_id()` | `tenant_id = public.current_tenant_id()` |
 | `telemetry_logs_legacy_20260712` | authenticated_insert_telemetry_logs | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `budget_audit_logs` | admin_view_budget_audit_logs | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin')` |  |
 | `dependency_health` | authenticated_read_dependency_health | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
@@ -354,6 +324,36 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
 | `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `category_strategies` | tenant_isolation | ALL | authenticated | permissive | `organization_id = public.get_my_organization()` |  |
+| `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `scim_provisioning_log` | SCIM logs isolated by tenant | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_templates` | Tenant isolation for workflow_templates | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_sod_rules` | tenant_isolation_workflow_sod_rules | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_nodes` | Tenant isolation for workflow_nodes | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_edges` | Tenant isolation for workflow_edges | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_instances` | Tenant isolation for workflow_instances | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_approvals` | Tenant isolation for workflow_approvals | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_logs` | Tenant isolation for workflow_logs | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_tasks` | tenant_isolation_workflow_tasks | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `workflow_audit_log` | tenant_isolation_workflow_audit_log | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `approval_hierarchy` | tenant_isolation_approval_hierarchy | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `erp_sync_log` | ERP sync logs are tenant-isolated | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `fornecedor_categorias` | tenant_isolation_fornecedor_categorias | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_pipeline` | tenant isolation sourcing_pipeline | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `savings_tracker` | tenant_isolation_savings_tracker | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_projects` | tenant_isolation_sourcing_projects | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_events` | tenant_isolation_sourcing_events | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_event_criteria` | tenant_isolation_sourcing_event_criteria | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_event_lots` | tenant_isolation_sourcing_event_lots | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_event_questions` | tenant_isolation_sourcing_event_questions | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_invitations` | tenant_isolation_sourcing_invitations | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_responses` | tenant_isolation_sourcing_responses | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_response_items` | tenant_isolation_sourcing_response_items | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_response_answers` | tenant_isolation_sourcing_response_answers | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `sourcing_awards` | tenant_isolation_sourcing_awards | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `licitacao_lances` | tenant_isolation_licitacao_lances | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `auction_bids` | tenant_isolation_auction_bids | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

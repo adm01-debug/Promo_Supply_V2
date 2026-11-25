@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 338,
+ "migrations": 339,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -2390,7 +2390,26 @@
     }
    },
    "rls": true,
-   "policies": [],
+   "policies": [
+    {
+     "nome": "approval_hierarchy_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "approval_hierarchy_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_approval_hierarchy",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    }
+   ],
    "indices": [
     {
      "nome": "idx_approval_hierarchy_cost_center_id",
@@ -3296,10 +3315,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "auction_bids_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "auction_bids_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_auction_bids",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -8004,10 +8035,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "ERP sync logs are tenant-isolated",
+     "nome": "erp_sync_log_escrita_gestao",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "erp_sync_log_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_erp_sync_log",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -8971,10 +9014,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "fiscal_events tenant isolation",
+     "nome": "fiscal_events_escrita_ordem",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "fiscal_events_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_fiscal_events",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -9071,10 +9126,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "tenant_isolation_fornecedor_categorias",
+     "nome": "fornecedor_categorias_escrita_gestao",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "fornecedor_categorias_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_fornecedor_categorias",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -10072,7 +10139,26 @@
     }
    },
    "rls": true,
-   "policies": [],
+   "policies": [
+    {
+     "nome": "licitacao_lances_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "licitacao_lances_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_licitacao_lances",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    }
+   ],
    "indices": [
     {
      "nome": "idx_licitacao_lances_fornecedor_id",
@@ -13690,10 +13776,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "tenant isolation punchout_sessions",
+     "nome": "punchout_sessions_escrita_ordem",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "punchout_sessions_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_punchout_sessions",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -14939,10 +15037,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "tenant_isolation_savings_tracker",
+     "nome": "savings_tracker_escrita_gestao",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "savings_tracker_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_savings_tracker",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -15052,10 +15162,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "SCIM logs isolated by tenant",
+     "nome": "scim_provisioning_log_escrita_admin",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "scim_provisioning_log_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_scim_provisioning_log",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16042,10 +16164,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_awards_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_awards_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_awards",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16171,10 +16305,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_event_criteria_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_event_criteria_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_event_criteria",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16293,10 +16439,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_event_lots_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_event_lots_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_event_lots",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16419,10 +16577,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_event_questions_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_event_questions_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_event_questions",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16608,10 +16778,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_events_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_events_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_events",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16769,10 +16951,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_invitations_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_invitations_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_invitations",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -16917,7 +17111,26 @@
     }
    },
    "rls": true,
-   "policies": [],
+   "policies": [
+    {
+     "nome": "sourcing_pipeline_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_pipeline_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_sourcing_pipeline",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    }
+   ],
    "indices": [
     {
      "nome": "idx_pipeline_status",
@@ -17072,10 +17285,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "tenant_isolation_sourcing_projects",
+     "nome": "sourcing_projects_escrita_gestao",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_projects_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_sourcing_projects",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -17190,10 +17415,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_response_answers_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_response_answers_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_response_answers",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -17307,10 +17544,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_response_items_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_response_items_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_response_items",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -17440,10 +17689,22 @@
    "rls": true,
    "policies": [
     {
+     "nome": "sourcing_responses_escrita_ordem",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "sourcing_responses_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "tenant_isolation_sourcing_responses",
      "comando": "all",
-     "para": "public",
-     "tipo": "permissive"
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -18720,10 +18981,22 @@
    "rls": true,
    "policies": [
     {
-     "nome": "SSO configurations isolated by tenant",
+     "nome": "sso_configurations_escrita_admin",
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "sso_configurations_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_sso_configurations",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -21268,8 +21541,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_approvals",
+     "nome": "tenant_isolation_workflow_approvals",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_approvals_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_approvals_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -21404,6 +21689,18 @@
      "nome": "tenant_isolation_workflow_audit_log",
      "comando": "all",
      "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_audit_log_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_audit_log_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
      "tipo": "permissive"
     }
    ],
@@ -21512,8 +21809,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_edges",
+     "nome": "tenant_isolation_workflow_edges",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_edges_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_edges_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -21656,8 +21965,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_instances",
+     "nome": "tenant_isolation_workflow_instances",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_instances_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_instances_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -21777,8 +22098,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_logs",
+     "nome": "tenant_isolation_workflow_logs",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_logs_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_logs_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -21902,8 +22235,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_nodes",
+     "nome": "tenant_isolation_workflow_nodes",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_nodes_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_nodes_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -22012,6 +22357,18 @@
     {
      "nome": "tenant_isolation_workflow_sod_rules",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_sod_rules_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_sod_rules_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
@@ -22161,6 +22518,18 @@
      "nome": "tenant_isolation_workflow_tasks",
      "comando": "all",
      "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_tasks_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_tasks_select_grupo",
+     "comando": "select",
+     "para": "authenticated",
      "tipo": "permissive"
     }
    ],
@@ -22296,8 +22665,20 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Tenant isolation for workflow_templates",
+     "nome": "tenant_isolation_workflow_templates",
      "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
+    },
+    {
+     "nome": "workflow_templates_escrita_gestao",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
+     "nome": "workflow_templates_select_grupo",
+     "comando": "select",
      "para": "authenticated",
      "tipo": "permissive"
     }
