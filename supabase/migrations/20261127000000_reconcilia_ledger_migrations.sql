@@ -37,6 +37,13 @@
 -- primeiro arquivo em ordem alfabetica. Um db push futuro nao consegue
 -- distinguir os dois -- por isso o registro guardado e o mais conservador.
 --
+-- RESOLVIDO (25/11/2026): a colisao de arquivos foi desfeita renomeando
+-- storage_policies_por_bucket para a versao 20261113180001. A ordem de
+-- aplicacao (corrige_crons -> storage_policies) e a mesma, a linha abaixo
+-- continua sendo a unica do par 180000 e o storage_policies passa a ser
+-- aplicado uma vez pelo caminho padrao (arquivo idempotente, DROP POLICY IF
+-- EXISTS antes de cada CREATE).
+--
 -- REVERTER: DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql
 -- (nao aplicado automaticamente; apaga apenas as versoes registradas aqui).
 --
