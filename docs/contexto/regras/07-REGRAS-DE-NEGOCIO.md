@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6d00e2a8b4` · branch `main` · 2026-11-25 17:33 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a2505419db` · branch `main` · 2026-11-25 17:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2455,7 +2455,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3380 testes em 239 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3383 testes em 240 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2679,6 +2679,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 3 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
+| `src/hooks/__tests__/useRealPushNotifications.test.tsx` | 3 | useRealPushNotifications — aviso honesto de push (etapa 288) · sem VITE_VAPID_PUBLIC_KEY nao anuncia sucesso · com a chave publica e inscricao existente anuncia sucesso |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
 | `src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx` | 3 | terminateOtherSessions (QA 037) · revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo · apaga todas as linhas do usuario quando este navegador nao tem registro |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
@@ -2794,6 +2795,7 @@ _nenhum item encontrado_
 | Check if user has specific permission | `src/hooks/usePermissions.ts` |
 | * Prefetch keys must match the live query keys used by feature hooks so that | `src/hooks/usePrefetch.ts` |
 | Check browser notification permission | `src/hooks/useRealPushNotifications.ts` |
+| Devolve true SOMENTE quando ha subscription no navegador E ela foi | `src/hooks/useRealPushNotifications.ts` |
 | Request browser notification permission | `src/hooks/useRealPushNotifications.ts` |
 | tables MUST be scoped to the active tenant to prevent cross-tenant leakage. | `src/hooks/useRealtimeSubscription.ts` |
 | Limit to maxItems | `src/hooks/useRecentlyViewed.ts` |

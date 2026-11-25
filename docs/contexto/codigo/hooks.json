@@ -1911,7 +1911,7 @@
    "hooks_exportados": [
     "useRealPushNotifications"
    ],
-   "linhas": 487,
+   "linhas": 507,
    "dominio": "hooks",
    "tabelas": [
     "notification_preferences",
@@ -1934,7 +1934,7 @@
     "src/components/notifications/NotificationSettingsPanel.tsx",
     "src/features/layout/components/RealNotificationCenter.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useRealtimeSubscription.ts",

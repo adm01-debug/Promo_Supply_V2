@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 289,
+ "total": 290,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 271
+  "unit": 272
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 195
+   "arquivos": 196
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -1207,6 +1207,15 @@
    "linhas": 79,
    "testa": [
     "src/hooks/usePrefetch.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useRealPushNotifications.test.tsx",
+   "tipo": "unit",
+   "linhas": 107,
+   "testa": [
+    "src/hooks/useRealPushNotifications.ts"
    ],
    "casos": 2
   },
@@ -2733,6 +2742,7 @@
   "src/hooks/usePasswordResetRequests.ts": 1,
   "src/hooks/usePermissions.ts": 2,
   "src/hooks/usePrefetch.ts": 1,
+  "src/hooks/useRealPushNotifications.ts": 1,
   "src/hooks/useRealtimeSubscription.ts": 1,
   "src/hooks/useRecentlyViewed.ts": 1,
   "src/hooks/useSecurityLogs.ts": 1,
@@ -2936,7 +2946,6 @@
    "src/hooks/useProdutoFornecedores.ts",
    "src/hooks/useProdutos.ts",
    "src/hooks/usePurchaseHistory.ts",
-   "src/hooks/useRealPushNotifications.ts",
    "src/hooks/useRenderProfiler.ts",
    "src/hooks/useScrollRestoration.ts",
    "src/hooks/useSessionIdleTimeout.ts",

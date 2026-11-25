@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (195)",
+   "co-localizado (__tests__) (196)",
    "co-localizado (*.test) (42)",
    "outro (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(push): so anuncia \"Notificacoes ativadas\" depois de registrar a inscricao (#470)",
    "feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)",
    "fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)",
    "fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)",
-   "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)",
-   "docs(pendencias): registra o estado real das views de compra no PIM (#464)"
+   "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)"
   ]
  },
  "pr_template": null,

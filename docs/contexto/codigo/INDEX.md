@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6d00e2a8b4bb81a082d251e01fb5ea61000d984e` (2026-11-25T14:32:39-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a2505419db0cbb227c708804088e08a5728b74ff` (2026-11-25T14:48:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (855), SQL (349), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (856), SQL (349), Markdown (100), JavaScript (70), JSON (24), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1451 |
-| arquivos_codigo | 928 |
-| linhas_codigo | 186299 |
+| arquivos_total | 1452 |
+| arquivos_codigo | 929 |
+| linhas_codigo | 186426 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 338 |
 | cron_jobs | 74 |
-| testes | 289 |
+| testes | 290 |
 | workflows | 15 |
 | scripts | 51 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (195), co-localizado (*.test) (42), outro (42)
+- testes: co-localizado (__tests__) (196), co-localizado (*.test) (42), outro (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (18), scripts/types-sync (7), scripts/inventario (5)
@@ -350,9 +350,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/pages/cotacao/Cotacao.tsx (7)
 - src/pages/solicitacoes/Solicitacoes.tsx (7)
 - supabase/functions/xbz-proxy/index.ts (7)
-- bun.lock (6)
-- package.json (6)
 - src/features/auth/hooks/useAuth.tsx (6)
+- src/features/solicitacoes/hooks/useSolicitacoes.ts (6)
+- src/pages/auth/Auth.tsx (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `a250541` fix(push): so anuncia "Notificacoes ativadas" depois de registrar a inscricao (#470)
 - 2026-11-25 `6d00e2a` feat(dashboard): liga o widget de distribuicao de SLA que nao tinha case (#469)
 - 2026-11-25 `4d16bc6` fix(e2e): testes deixam de passar sem assercao ao cair no gate de auth (#468)
 - 2026-11-25 `f2e050c` fix(testes): integracao importa o contrato real e o espelho shared-schemas sai (#467)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `f2f3e24` fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)
 - 2026-11-25 `b4575e8` fix(rls): fecha escrita em notifications e category_strategies (#451)
 - 2026-11-25 `dc1ce2c` chore(docs): diz que o repositorio e publico e liga a varredura de segredo (#450)
-- 2026-11-25 `5724587` chore(banco): reconcilia o ledger de migrations com as 322 versoes aplicadas (#448)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
