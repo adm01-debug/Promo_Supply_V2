@@ -36,7 +36,13 @@ imagem). Três critérios de corte:
       (62 colunas, sem uso no front ainda), recebeu a mesma correção.
 - [ ] **PR 1.3** — backfill de `supplier_external_id` no PIM. Medido em
       25/11/2026: `products` 4.500/8.398 preenchidos, `product_variants`
-      14.031/20.987. Falta o mapeamento código-do-fornecedor → id externo XBZ.
+      14.031/20.987. **Não é derivável:** em 100% das linhas com as duas
+      colunas, `supplier_external_id` ≠ `supplier_reference` (o id externo é o
+      id numérico do produto no fornecedor — `28574`; o `supplier_reference` é
+      o SKU do fornecedor — `15635`). Sobram 3.898 produtos e 6.919 variantes
+      sem o id, e o único preenchimento possível é o catálogo do fornecedor
+      (XBZ), ou seja, um re-sync do lado do PIM — trabalho no repo do Promo
+      Gifts V4, não um `UPDATE` aqui.
 
 #### Estado medido no PIM (`doufsxqlfjyuvxuezpln`, 25/11/2026)
 
