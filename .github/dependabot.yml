@@ -14,7 +14,11 @@ updates:
     labels:
       - "dependencies"
     commit-message:
-      prefix: "chore(deps)"
+      # Sem o escopo dentro do prefix: com `prefix: "chore(deps)"` + `include: "scope"` o
+      # dependabot escrevia `chore(deps)(deps): bump ...`, que reprova no gate de mensagem de
+      # commit (`<tipo>(<escopo>): <assunto>` — scripts/ci/commit-msg-lint.mjs) e deixava todo
+      # PR do dependabot vermelho. Aqui o escopo vem so do `include: "scope"` (deps/deps-dev).
+      prefix: "chore"
       include: "scope"
     groups:
       producao-minor-patch:
@@ -29,7 +33,9 @@ updates:
         update-types:
           - "minor"
           - "patch"
-          - "major"
+          # Sem `major` aqui de proposito: agrupado, major de dev vinha junto com minor num
+          # unico PR impossivel de avaliar (o #309 juntou typescript 5.9 -> 7.0, eslint 9 -> 10,
+          # @testing-library/jest-dom 7 -> 8 e 3 outros). Major agora abre sozinho, um por vez.
 
   # Ações dos workflows (fixadas por SHA): mensal, num PR só
   - package-ecosystem: "github-actions"
