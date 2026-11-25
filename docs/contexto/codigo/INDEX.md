@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `dc66ebe28451cb36405c350b3ef10ba487269aac` (2026-11-25T09:46:39-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1cc59fe1aa7e8154cacf5f1b952c5796dd6e6bbd` (2026-11-25T09:48:03-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (104)
+- docs/qa/05-PROGRESSO.md (105)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (15)
 - bun.lock (9)
@@ -411,7 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (153 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (159 linhas)
 - `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `1cc59fe` docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)
 - 2026-11-25 `dc66ebe` fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)
 - 2026-11-25 `5f80e28` chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)
 - 2026-11-25 `b22b3ab` fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-24 `f1dd010` ci: adiciona gate de tipos (deno check) das edge functions (#359)
 - 2026-11-24 `2be0c92` fix: relatorio de centro de custo passa a informar a empresa na chamada (#393)
 - 2026-11-24 `b1db1c7` fix: RPC de desempenho de centro de custo passa a filtrar por empresa (#392)
-- 2026-11-24 `19d6ce8` fix: drawer do celular sai da ordem de tabulacao e fecha com Escape (#445)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

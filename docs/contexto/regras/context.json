@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "dc66ebe28451cb36405c350b3ef10ba487269aac",
+  "sha": "1cc59fe1aa7e8154cacf5f1b952c5796dd6e6bbd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 12:48 UTC",
+  "generated_at": "2026-11-25 13:13 UTC",
   "files_total": 1451,
   "code_files": 1278,
   "code_lines": 214946,
@@ -122042,10 +122042,21 @@
   }
  },
  "git": {
-  "sha": "dc66ebe28451cb36405c350b3ef10ba487269aac",
+  "sha": "1cc59fe1aa7e8154cacf5f1b952c5796dd6e6bbd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1cc59fe",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)",
+    "files": [
+     "AGENTS.md",
+     "docs/agentes/deploy.md",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "dc66ebe",
     "date": "2026-11-25",
@@ -122384,17 +122395,6 @@
      "src/pages/estoque/GestaoEstoque.tsx",
      "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx"
     ]
-   },
-   {
-    "sha": "0d83f61",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(acompanhamento): falha de carga nao vira pipeline vazio nem KPI zerado (#433)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -122404,7 +122404,7 @@
    ],
    [
     "AGENTS.md",
-    2
+    3
    ],
    [
     "src/features/layout/components/MainLayout.tsx",
@@ -122421,6 +122421,10 @@
    [
     "src/i18n/__tests__/locales.test.ts",
     2
+   ],
+   [
+    "docs/agentes/deploy.md",
+    1
    ],
    [
     "supabase/functions/dependency-health/index.test.ts",
@@ -122472,10 +122476,6 @@
    ],
    [
     "docs/agentes/github-ci.md",
-    1
-   ],
-   [
-    "scripts/ci/agents-docs-baseline.unit.mjs",
     1
    ]
   ]
