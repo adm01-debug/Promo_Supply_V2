@@ -39,6 +39,7 @@ const TABELAS_RESTRICTIVE = [
   "fornecedores",
   "licitacao_propostas",
   "licitacoes",
+  "notifications",
   "order_contracts",
   "pagamentos",
   "payment_history",
