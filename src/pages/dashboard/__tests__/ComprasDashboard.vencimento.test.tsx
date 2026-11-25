@@ -49,6 +49,9 @@ vi.mock('@/components/compras/PipelineChart', () => ({ PipelineChart: () => null
 vi.mock('@/components/compras/TrendAnalysisCharts', () => ({ TrendAnalysisCharts: () => null }));
 vi.mock('@/components/compras/SourcingIntelligenceWidget', () => ({ SourcingIntelligenceWidget: () => null }));
 vi.mock('@/components/compras/DashboardInsights', () => ({ DashboardInsights: () => null }));
+vi.mock('@/components/compras/SLADistributionChart', () => ({
+  SLADistributionChart: () => <div data-testid="sla-distribution" />,
+}));
 vi.mock('@/components/compras/UrgentItemsList', () => ({
   UrgentItemsList: ({ items }: { items: { id: string; vencimento: string }[] }) => (
     <ul>
@@ -79,5 +82,23 @@ describe('ComprasDashboard — vencimento das urgências', () => {
     });
     expect(screen.getByTestId('venc-SOL-1').textContent).toBe('01/03/2026');
     expect(screen.getByTestId('venc-SOL-2').textContent).toBe('TBD');
+  });
+});
+
+// Etapa 291: o widget `chart-sla` está no layout padrão (dashboardLayoutStore) e o
+// SLADistributionChart era importado sem nenhum `case` no switch — o gráfico existia e nunca
+// aparecia. Este teste falha se o widget voltar a ficar sem render.
+describe('ComprasDashboard — distribuição de SLA', () => {
+  it('monta o gráfico de distribuição de SLA no widget chart-sla', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    expect(await screen.findByTestId('sla-distribution')).toBeTruthy();
   });
 });
