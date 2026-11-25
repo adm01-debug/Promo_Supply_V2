@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "52746df9cd40a5dee220564469e9721c42790254",
+  "commit": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
   "branch": "main",
-  "data_commit": "2026-11-25T12:04:59-03:00",
+  "data_commit": "2026-11-25T12:56:51-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ac3487c",
+    "data": "2026-11-25",
+    "assunto": "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)"
+   },
    {
     "sha": "52746df",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "1b8434a",
     "data": "2026-11-24",
     "assunto": "fix: remove trigger duplicado de validacao de status em pedidos (#391)"
-   },
-   {
-    "sha": "4209cc0",
-    "data": "2026-11-24",
-    "assunto": "fix(db): find_approval_rule respeita escopo de tenant e desempate do front (#386)"
    }
   ],
-  "arquivos_mudados_7d": 491,
+  "arquivos_mudados_7d": 490,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 107
+    "mudancas": 108
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 107
+    "mudancas": 108
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -254,10 +254,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/main.yml",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
@@ -290,11 +286,15 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/deploy-edge-functions.yml",
+    "arquivo": ".github/workflows/main.yml",
     "mudancas": 5
    },
    {
     "arquivo": "AGENTS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "src/App.tsx",
     "mudancas": 5
    }
   ],
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1452,
   "arquivos_codigo": 929,
-  "linhas_codigo": 186173,
+  "linhas_codigo": 186185,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -480,7 +480,7 @@
   },
   "src/tests": {
    "arquivos": 11,
-   "linhas": 911
+   "linhas": 921
   },
   "src/types": {
    "arquivos": 3,
@@ -540,7 +540,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 51
+   "linhas": 53
   },
   "vitest.rls.config.ts": {
    "arquivos": 1,

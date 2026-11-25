@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "52746df9cd40a5dee220564469e9721c42790254",
+  "sha": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 15:13 UTC",
+  "generated_at": "2026-11-25 15:57 UTC",
   "files_total": 1453,
   "code_files": 1280,
-  "code_lines": 215298,
+  "code_lines": 215310,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d92066aa27da6cc1",
+ "facts_hash": "f32b92306493ed87",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34546,7 +34546,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 866,
+   "lines": 868,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -36200,7 +36200,7 @@
   {
    "module": "src/tests",
    "files": 11,
-   "lines": 911,
+   "lines": 921,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -71046,7 +71046,15 @@
    },
    {
     "file": "src/tests/contracts-elite.test.ts",
+    "name": "WorkflowContract: deve exigir entity_type em start_workflow"
+   },
+   {
+    "file": "src/tests/contracts-elite.test.ts",
     "name": "WorkflowContract: deve validar submit_decision com approve"
+   },
+   {
+    "file": "src/tests/contracts-elite.test.ts",
+    "name": "WorkflowContract: deve aceitar submit_decision sem approver_id (QA-022)"
    },
    {
     "file": "src/tests/contracts-elite.test.ts",
@@ -71055,6 +71063,10 @@
    {
     "file": "src/tests/contracts-elite.test.ts",
     "name": "ERPSyncContract: deve validar ação sync_po"
+   },
+   {
+    "file": "src/tests/contracts-elite.test.ts",
+    "name": "ERPSyncContract: deve exigir connectionId e entity"
    },
    {
     "file": "src/tests/contracts-elite.test.ts",
@@ -71075,6 +71087,10 @@
    {
     "file": "src/tests/contracts.test.ts",
     "name": "NegotiationContract should reject empty cotacoes"
+   },
+   {
+    "file": "src/tests/contracts.test.ts",
+    "name": "NegotiationContract should reject payload without solicitacao"
    },
    {
     "file": "src/tests/fuzzing/edge-functions.test.ts",
@@ -91669,7 +91685,7 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 51,
+   "lines": 53,
    "exports": [
     "default defineConfig"
    ],
@@ -114644,62 +114660,34 @@
   },
   "src/tests/contracts-elite.test.ts": {
    "path": "src/tests/contracts-elite.test.ts",
-   "lines": 123,
+   "lines": 130,
    "is_test": true,
-   "zod": [
-    {
-     "name": "NegotiationContract",
-     "kind": "object",
-     "body": "{ cotacoes: z.array(z.any()).min(1, \"É necessário pelo menos uma cotação para análise\"), solicitacao: z.object({ id: z.string().uuid(), titulo: z.string(), valor_estimado: z.number().optional().nullable(), quantidade: z.number().optional().nullable(), }), historico_precos: z.array(z.any()).optional().nullable(), }",
-     "refines": [],
-     "chain": []
-    },
-    {
-     "name": "WorkflowContract",
-     "kind": "discriminatedUnion",
-     "body": "\"action\", [ z.object({ action: z.literal('start_workflow'), template_id: z.string().uuid(), entity_type: z.string().optional(), entity_id: z.string().uuid(), }), z.object({ action: z.literal('approve_step'), instance_id: z.string().uuid(), node_id: z.string().uuid(), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }), z.object({ action: z.literal('submit_decision'), instance_id: z.string().uuid(), node_id: z.string().uuid(), decision: ciEnum(['approve', 'reject']), approver_id: z.string().uuid(), comment: z.string().max(1000).optional() }) ]",
-     "refines": [],
-     "chain": []
-    },
-    {
-     "name": "ERPSyncContract",
-     "kind": "object",
-     "body": "{ action: ciEnum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']), entity_id: z.string().uuid().optional(), payload: z.record(z.string(), z.unknown()).optional(), }",
-     "refines": [],
-     "chain": []
-    }
-   ],
    "tests": [
     "NegotiationContract: deve validar payloads reais",
     "NegotiationContract: deve rejeitar cotacoes vazia",
     "WorkflowContract: deve validar ação start_workflow",
+    "WorkflowContract: deve exigir entity_type em start_workflow",
     "WorkflowContract: deve validar submit_decision com approve",
+    "WorkflowContract: deve aceitar submit_decision sem approver_id (QA-022)",
     "WorkflowContract: deve normalizar decision case-insensitive",
     "ERPSyncContract: deve validar ação sync_po",
+    "ERPSyncContract: deve exigir connectionId e entity",
     "ERPSyncContract: deve rejeitar ação inválida",
     "ERPSyncContract: deve aceitar action em maiúsculas (ciEnum)"
    ]
   },
   "src/tests/contracts.test.ts": {
    "path": "src/tests/contracts.test.ts",
-   "lines": 69,
+   "lines": 72,
    "is_test": true,
-   "zod": [
-    {
-     "name": "NegotiationContract",
-     "kind": "object",
-     "body": "{ cotacoes: z.array(z.any()).min(1, \"É necessário pelo menos uma cotação para análise\"), solicitacao: z.object({ id: z.string().uuid(), titulo: z.string(), valor_estimado: z.number().optional().nullable(), quantidade: z.number().optional().nullable(), }), historico_precos: z.array(z.any()).optional().nullable(), }",
-     "refines": [],
-     "chain": []
-    }
-   ],
    "rule_comments": [
     "* Suite de Testes de Regressão: Contratos e Validação de Dados"
    ],
    "tests": [
     "NegotiationContract should validate correct payloads",
     "NegotiationContract should reject invalid UUIDs",
-    "NegotiationContract should reject empty cotacoes"
+    "NegotiationContract should reject empty cotacoes",
+    "NegotiationContract should reject payload without solicitacao"
    ]
   },
   "src/tests/fuzzing/edge-functions.test.ts": {
@@ -122064,10 +122052,22 @@
   }
  },
  "git": {
-  "sha": "52746df9cd40a5dee220564469e9721c42790254",
+  "sha": "ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "ac3487c",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/tests/contracts-elite.test.ts",
+     "src/tests/contracts.test.ts",
+     "vitest.config.ts"
+    ]
+   },
    {
     "sha": "52746df",
     "date": "2026-11-25",
@@ -122397,17 +122397,6 @@
      "src/locales/en/translation.json",
      "src/locales/pt/translation.json"
     ]
-   },
-   {
-    "sha": "3beb6da",
-    "date": "2026-11-24",
-    "author": "adm01-debug",
-    "subject": "fix(i18n): documento passa a declarar o idioma escolhido na interface (#438)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/i18n/__tests__/config.test.ts",
-     "src/i18n/config.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -122444,6 +122433,18 @@
     2
    ],
    [
+    "src/tests/contracts-elite.test.ts",
+    1
+   ],
+   [
+    "src/tests/contracts.test.ts",
+    1
+   ],
+   [
+    "vitest.config.ts",
+    1
+   ],
+   [
     "docs/pendencias/integracao-pim-promo-supply.md",
     1
    ],
@@ -122477,18 +122478,6 @@
    ],
    [
     "supabase/config.toml",
-    1
-   ],
-   [
-    "supabase/functions/telemetry/index.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/workflow-engine/fuzz.test.ts",
-    1
-   ],
-   [
-    "scripts/ci/paridade-migrations-banco.mjs",
     1
    ]
   ]

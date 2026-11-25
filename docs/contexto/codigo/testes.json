@@ -2134,16 +2134,20 @@
   {
    "arquivo": "src/tests/contracts-elite.test.ts",
    "tipo": "contrato",
-   "linhas": 123,
-   "testa": [],
-   "casos": 8
+   "linhas": 130,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts"
+   ],
+   "casos": 11
   },
   {
    "arquivo": "src/tests/contracts.test.ts",
    "tipo": "contrato",
-   "linhas": 69,
-   "testa": [],
-   "casos": 3
+   "linhas": 72,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/tests/fuzzing/edge-functions.test.ts",
@@ -2822,7 +2826,7 @@
   "src/stores/undoStore.ts": 1,
   "src/types/contract.ts": 1,
   "src/types/legacyTypes.ts": 2,
-  "supabase/functions/_shared/contracts.ts": 3,
+  "supabase/functions/_shared/contracts.ts": 5,
   "supabase/functions/_shared/external-bridge-allowlist.ts": 1,
   "supabase/functions/_shared/fuzzSeed.ts": 2,
   "supabase/functions/_shared/fuzzer.ts": 2,

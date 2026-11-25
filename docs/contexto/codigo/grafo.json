@@ -133,6 +133,10 @@
    "importado_por": 13
   },
   {
+   "arquivo": "supabase/functions/_shared/contracts.ts",
+   "importado_por": 13
+  },
+  {
    "arquivo": "src/components/ui/checkbox.tsx",
    "importado_por": 12
   },
@@ -154,10 +158,6 @@
   },
   {
    "arquivo": "src/hooks/useRealtimeSubscription.ts",
-   "importado_por": 11
-  },
-  {
-   "arquivo": "supabase/functions/_shared/contracts.ts",
    "importado_por": 11
   },
   {

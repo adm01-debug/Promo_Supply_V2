@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `52746df9cd40a5dee220564469e9721c42790254` (2026-11-25T12:04:59-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ac3487c3a7b28d32eba8cdb837e68ed9e2d5bb5e` (2026-11-25T12:56:51-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1452 |
 | arquivos_codigo | 929 |
-| linhas_codigo | 186173 |
+| linhas_codigo | 186185 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (107)
+- docs/qa/05-PROGRESSO.md (108)
 - docs/pendencias/_indice.md (44)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (15)
 - bun.lock (9)
@@ -352,7 +352,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/pages/cotacao/Cotacao.tsx (7)
 - src/pages/solicitacoes/Solicitacoes.tsx (7)
 - supabase/functions/xbz-proxy/index.ts (7)
-- .github/workflows/main.yml (6)
+- src/features/auth/hooks/useAuth.tsx (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `ac3487c` fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)
 - 2026-11-25 `52746df` docs(pendencias): registra o estado real das views de compra no PIM (#464)
 - 2026-11-25 `415c0e6` feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)
 - 2026-11-25 `c770dfc` docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `dddc66e` chore: corrige o estado real do ledger de migrations na doc de agentes (#449)
 - 2026-11-24 `7c837da` chore(ci): preserva a sonda de fumaca das edges de negocio como script avulso (#447)
 - 2026-11-24 `8477e9a` fix(ci): fallback do aplicar-migration-prod cobre "must be owner of function" (#446)
-- 2026-11-24 `a2f2741` chore(deps)(deps): bump tailwind-merge from 2.6.1 to 3.7.1 (#312)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

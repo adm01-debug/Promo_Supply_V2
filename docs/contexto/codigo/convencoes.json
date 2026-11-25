@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)",
    "docs(pendencias): registra o estado real das views de compra no PIM (#464)",
    "feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)",
    "docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)",
-   "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)",
-   "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)"
+   "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)"
   ]
  },
  "pr_template": null,
