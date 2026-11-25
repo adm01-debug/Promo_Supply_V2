@@ -377,6 +377,37 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-a3f4fa34f0d3bfc2",
+      "kind": "legacy",
+      "files": [
+        "scripts/ci/check-orfaos-componentes.mjs"
+      ],
+      "manual": [
+        "node",
+        "scripts/ci/check-orfaos-componentes.mjs"
+      ],
+      "triggers": [
+        "manual"
+      ],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/guards.yml. O dispatcher não executa esta operação."
+    },
+    {
+      "id": "legacy-be6664aa79170ebf",
+      "kind": "legacy",
+      "files": [
+        "scripts/ci/check-orfaos-componentes.unit.mjs"
+      ],
+      "manual": [
+        "node",
+        "--test",
+        "scripts/ci/check-orfaos-componentes.unit.mjs"
+      ],
+      "triggers": [
+        "manual"
+      ],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/guards.yml (glob scripts/ci/*.unit.mjs). O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-374bd741646e0881",
       "kind": "legacy",
       "files": [

@@ -23,10 +23,15 @@ test.describe('Dashboard & Compras Interface', () => {
       // Check for theme class or attribute change
       const html = page.locator('html');
       await expect(html).toHaveAttribute('class', /dark|light/);
+        } else {
+          // Sem sessao de teste o cabecalho (dono do toggle) nao renderiza: o gate de auth e o invariante.
+          await expect(page.getByText(/Dashboard|Entrar|Login/i).first()).toBeVisible();
     }
   });
 
   test('Mobile Responsiveness Check', async ({ page, viewport }) => {
+      // Sem projeto mobile no playwright.config.ts o body nunca executava: verde vazio.
+      test.skip(!viewport || viewport.width >= 768, 'sem viewport mobile configurado (TST-02)');
     if (viewport && viewport.width < 768) {
       // Check mobile menu
       const menuBtn = page.getByRole('button', { name: /menu/i });

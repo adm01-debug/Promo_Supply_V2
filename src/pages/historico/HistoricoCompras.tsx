@@ -38,6 +38,7 @@ import { HistoricoRegistrosTab } from "./HistoricoRegistrosTab";
 import { HistoricoSourcingTab } from "./HistoricoSourcingTab";
 import { HistoricoDrilldownModal } from "./HistoricoDrilldownModal";
 import { SupplierIntelligenceConsole } from "@/components/compras/SupplierIntelligenceConsole";
+import { SourcingHistoryConsole } from "@/components/compras/SourcingHistoryConsole";
 
 interface DrilldownData {
   name?: string; month?: string; category?: string; supplier?: string;
@@ -306,7 +307,7 @@ const HistoricoCompras = () => {
       </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8 bg-muted/20 p-1">
+        <TabsList className="grid w-full grid-cols-6 mb-8 bg-muted/20 p-1">
           <TabsTrigger value="sourcing" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Link2 className="w-4 h-4 mr-2" /> Sourcing
           </TabsTrigger>
@@ -321,6 +322,9 @@ const HistoricoCompras = () => {
           </TabsTrigger>
           <TabsTrigger value="analytics" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <BarChart3 className="w-4 h-4 mr-2" /> Analytics
+          </TabsTrigger>
+          <TabsTrigger value="console" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <Sparkles className="w-4 h-4 mr-2" /> Console de Sourcing
           </TabsTrigger>
         </TabsList>
 
@@ -366,6 +370,9 @@ const HistoricoCompras = () => {
               <Button variant="link" onClick={() => setActiveTab("produtos")}>Ver evolução detalhada por produto</Button>
             </div>
           </Card>
+        </TabsContent>
+        <TabsContent value="console" className="mt-0">
+          <SourcingHistoryConsole />
         </TabsContent>
       </Tabs>
       

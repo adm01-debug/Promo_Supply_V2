@@ -43,8 +43,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      // Redirect Deno-style HTTPS zod import used in edge function shared contracts
-      "https://esm.sh/zod@3.22.4": path.resolve(__dirname, "node_modules/zod/lib/index.mjs"),
+      // Redirect Deno-style HTTPS zod import used in edge function shared contracts.
+      // zod 4.6.7 nao tem lib/index.mjs: o compat v3 fica em zod/v3/index.js.
+      // Sem isso o contrato real de supabase/functions nao e importavel no vitest.
+      "https://esm.sh/zod@3.22.4": path.resolve(__dirname, "node_modules/zod/v3/index.js"),
     },
   },
 });

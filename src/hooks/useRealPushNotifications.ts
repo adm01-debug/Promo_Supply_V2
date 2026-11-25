@@ -66,16 +66,19 @@ export function useRealPushNotifications() {
     }
   }, []);
 
-  // Register push subscription with service worker
-  const registerPushSubscription = useCallback(async () => {
-    if (!user || !('serviceWorker' in navigator)) return;
+  // Register push subscription with service worker.
+  // Devolve true SOMENTE quando ha subscription no navegador E ela foi
+  // persistida em push_subscriptions; quem chama usa esse retorno para nao
+  // anunciar sucesso que o proprio codigo acabou de recusar (etapa 288).
+  const registerPushSubscription = useCallback(async (): Promise<boolean> => {
+    if (!user || !('serviceWorker' in navigator)) return false;
 
     try {
       const registration = await navigator.serviceWorker.ready;
 
       // Check if push is supported
       if (!registration.pushManager) {
-        return;
+        return false;
       }
 
       // Get existing subscription or create new one
@@ -88,7 +91,7 @@ export function useRealPushNotifications() {
         // existe no runtime. Push real exige a MESMA keypair do
         // VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY das env da edge send-push-notification.
         const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-        if (!vapidPublicKey) return;
+        if (!vapidPublicKey) return false;
 
         try {
           const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
@@ -97,7 +100,7 @@ export function useRealPushNotifications() {
             applicationServerKey: applicationServerKey as BufferSource,
           });
         } catch {
-          return;
+          return false;
         }
       }
 
@@ -116,10 +119,16 @@ export function useRealPushNotifications() {
 
         if (error) {
           logger.error('Error saving push subscription', { error });
+          return false;
         }
+
+        return true;
       }
+
+      return false;
     } catch (error) {
       logger.error('Error registering push subscription', { error });
+      return false;
     }
   }, [user]);
 
@@ -138,13 +147,24 @@ export function useRealPushNotifications() {
     setPermissionStatus(permission);
 
     if (permission === 'granted') {
-      toastRef.current({
-        title: 'Notificações ativadas',
-        description: 'Você receberá notificações push do sistema.',
-      });
+      // O toast de sucesso so aparece depois de a inscricao existir de fato:
+      // sem VITE_VAPID_PUBLIC_KEY no build, registerPushSubscription recusa o
+      // registro em silencio e o usuario precisa saber disso.
+      const subscribed = await registerPushSubscription();
 
-      // Register service worker subscription if needed
-      await registerPushSubscription();
+      if (subscribed) {
+        toastRef.current({
+          title: 'Notificações ativadas',
+          description: 'Você receberá notificações push do sistema.',
+        });
+      } else {
+        toastRef.current({
+          title: 'Push indisponível neste ambiente',
+          description:
+            'A permissão do navegador foi concedida, mas a inscrição de push não foi registrada (falta a chave pública de push no build). Nenhuma notificação push será enviada até isso ser corrigido.',
+          variant: 'destructive',
+        });
+      }
     }
 
     return permission;

@@ -99,6 +99,18 @@ jobs:
           [ "$falhas" -eq 0 ]
 
       - name: Run Deno Tests (Edge Functions)
+        env:
+          # Credenciais de QA das edges. Hoje ausentes: os testes que exigem usuario autenticado
+          # se auto-pulam emitindo ::warning:: (CI-02 em docs/qa/03-ACHADOS.md). Vem de secret de
+          # proposito: cadastrar o secret basta, nao existe passo de codigo a fazer depois.
+          QA_USER_EMAIL: ${{ secrets.QA_USER_EMAIL }}
+          QA_USER_PASSWORD: ${{ secrets.QA_USER_PASSWORD }}
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          # Modo estrito: com a variable de repositorio QA_TESTS_STRICT=true, qualquer teste pulado
+          # reprova o job. Ligar so depois de cadastrar as 4 credenciais acima e resolver o
+          # run-audit/rls_test.ts, que escreve em producao (ver o achado CI-02).
+          QA_TESTS_STRICT: ${{ vars.QA_TESTS_STRICT || 'false' }}
         run: |
           # Deno integration tests skip gracefully when Supabase is unavailable.
           # Set VITE_SUPABASE_URL to a real project URL via CI secrets to run them.
@@ -115,7 +127,45 @@ jobs:
           # fuzzing_suite.ts e integration_suite.ts, nomes que o Deno nao reconhece como teste
           # (*_test.ts / *.test.ts), entao o passo morria com "No test modules found" e os 9
           # arquivos de teste reais sob supabase/functions/ nunca rodaram.
-          deno test --allow-net --allow-env --allow-read supabase/functions/
+          #
+          # Teste pulado era invisivel: o job ficava verde com zero assercao de seguranca. Agora o
+          # passo lista os pulados no resumo do job, emite ::warning:: e reprova quando
+          # QA_TESTS_STRICT=true. O `|| falha=$?` preserva o exit code do deno, que o `tee` sozinho
+          # engoliria.
+          set -o pipefail
+          export NO_COLOR=1
+          falha=0
+          deno test --allow-net --allow-env --allow-read supabase/functions/ 2>&1 | tee "$RUNNER_TEMP/deno-edge.log" || falha=$?
+          # O deno colore a saida mesmo em pipe (medido: `... ESC[0mESC[33m ignored`), e o
+          # escape entre os tres pontos e a palavra cegaria o grep: o contador diria 0 pulados
+          # com pulados na tela. Remove ANSI antes de contar.
+          sed -E 's/\x1B\[[0-9;]*[A-Za-z]//g' "$RUNNER_TEMP/deno-edge.log" > "$RUNNER_TEMP/deno-edge.txt"
+          pulados=$(grep -c '\.\.\. ignored' "$RUNNER_TEMP/deno-edge.txt" || true)
+          pulados=${pulados:-0}
+          {
+            echo "### Testes de edge (Deno)"
+            echo ""
+            echo "- pulados: $pulados"
+            if [ "$pulados" -gt 0 ]; then
+              echo ""
+              echo "<details><summary>Testes pulados nesta execucao</summary>"
+              echo ""
+              grep '\.\.\. ignored' "$RUNNER_TEMP/deno-edge.txt" | sed 's/^/  - /'
+              echo ""
+              echo "</details>"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$pulados" -gt 0 ]; then
+            echo "::warning::$pulados teste(s) de edge pulados nesta execucao (credenciais de QA ausentes ou insuficientes); detalhe no resumo do job"
+          fi
+          if [ "$falha" -ne 0 ]; then
+            echo "::error::deno test terminou com codigo $falha"
+            exit "$falha"
+          fi
+          if [ "$QA_TESTS_STRICT" = "true" ] && [ "$pulados" -gt 0 ]; then
+            echo "::error::$pulados teste(s) de edge pulados com QA_TESTS_STRICT=true"
+            exit 1
+          fi
 
   e2e-tests:
     name: End-to-End Tests (Playwright)
