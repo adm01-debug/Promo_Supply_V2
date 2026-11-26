@@ -35,6 +35,11 @@ export async function getIdempotentResponse(
     .select("status, response_payload, error_message")
     .eq("source", source)
     .eq("idempotency_key", key)
+    // INT-08: so replay de operacao concluida. Linha `failed` nao pode ser
+    // definitiva — antes, um erro transitorio (ex.: carrinho reenviado com o
+    // BuyerCookie de outra sessao) ficava gravado para sempre e a reentrega
+    // correta era recusada com 409 em vez de reprocessada.
+    .eq("status", "processed")
     .maybeSingle();
   if (error || !data) return null;
 
@@ -93,7 +98,8 @@ export async function deriveIdempotencyKey(req: Request, bodyText: string): Prom
  * - Verifica `x-idempotency-key` (ou deriva SHA-256 do body).
  * - Reproduz resposta cacheada em replays (X-Idempotent-Replay: true).
  * - Executa `handler(bodyText, key)` e persiste o resultado.
- * - Em erro, marca a chave como `failed` para permitir análise sem loop infinito.
+ * - Em erro, marca a chave como `failed` para análise; a próxima tentativa com
+ *   o mesmo corpo é reprocessada (só `processed` é replay), sem loop infinito.
  *
  * Uso:
  * ```ts

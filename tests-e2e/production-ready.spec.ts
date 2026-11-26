@@ -29,13 +29,19 @@ test.describe('Freight Quest Production Readiness', () => {
 
   test('Navigation to Support/Documentation if available', async ({ page }) => {
     await page.goto('/auth');
-    // Check if there's a footer or help link
+    // Invariante que sempre vale: a tela de /auth monta com o formulario.
+    await expect(page.locator('input[type="email"]')).toBeVisible();
+
+    // O link de ajuda e opcional; o teste registra o que encontrou em vez de
+    // pular o corpo inteiro num if (await ... isVisible()).
     const helpLink = page.getByRole('link', { name: /Ajuda/i }).or(page.getByRole('link', { name: /Suporte/i }));
-    if (await helpLink.isVisible()) {
-      await expect(helpLink).toBeEnabled();
-        } else {
-          // Sem link de ajuda, a tela de /auth tem que estar de pé (mesmo invariante do teste anterior).
-          await expect(page.locator('input[type="email"]')).toBeVisible();
+    const encontrados = await helpLink.count();
+    test.info().annotations.push({
+      type: 'ajuda',
+      description: encontrados > 0 ? `${encontrados} link(s) de ajuda na tela de /auth` : 'sem link de ajuda na tela de /auth',
+    });
+    if (encontrados > 0) {
+      await expect(helpLink.first()).toBeEnabled();
     }
   });
 
@@ -47,16 +53,14 @@ test.describe('Freight Quest Production Readiness', () => {
   });
 
   test('System Health & Performance Monitoring (Public Signals)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+
     const response = await page.goto('/');
     expect(response?.status()).toBeLessThan(400);
-    
-    // Check if initial load doesn't throw errors in console
-    const logs: string[] = [];
-    page.on('console', msg => logs.push(msg.text()));
-    await page.goto('/');
-    
-    // We expect no major errors on public landing
-    const errors = logs.filter(log => log.toLowerCase().includes('error') && !log.includes('401'));
-    // expect(errors.length).toBe(0); // This might be too strict if some external assets fail, but good for production check
+
+    // A raiz tem que montar de verdade (não só devolver 200) sem exceção não tratada.
+    await page.getByText(/Dashboard/i).first().waitFor({ timeout: 15_000 });
+    expect(pageErrors, `erros não tratados na raiz: ${pageErrors.join(' | ')}`).toHaveLength(0);
   });
 });

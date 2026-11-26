@@ -38,15 +38,10 @@ test.describe('Freight Quest - Fluxos de Negócio', () => {
       await expect(page.locator('form').first()).toBeVisible();
       return;
     }
-    // Deve mostrar um estado de erro amigável ou tentar reconectar
-    // O sistema usa react-query, então verificamos se há algum feedback de erro
+    // Deve mostrar um estado de erro amigável ou tentar reconectar. O invariante é o
+    // mesmo nos dois casos: feedback de erro visível OU a tela de pé — nunca em branco.
     const errorFeedback = page.locator('text=Erro').or(page.locator('text=error'));
-    // Não falha o teste se não houver erro imediato (cache), mas verifica visibilidade se aparecer
-    if (await errorFeedback.isVisible()) {
-      await expect(errorFeedback).toBeVisible();
-        } else {
-          // Sem feedback o app tem que manter a tela de pé: nada de pagina em branco.
-          await expect(page.locator('.card, main, [role="main"], form').first()).toBeVisible();
-    }
+    const telaDePe = page.locator('.card, main, [role="main"], form');
+    await expect(errorFeedback.or(telaDePe).first()).toBeVisible();
   });
 });

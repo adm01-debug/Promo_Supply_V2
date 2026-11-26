@@ -2,6 +2,11 @@
 
 Auditoria executada em **2026-08-16** sobre o repositório `promo-supply-v2`, branch `claude/system-status-roadmap-ei4jyi`.
 
+> **LEITURA DATADA — commit-base `f49b29c0`.** Os lotes abaixo são a **prova da medição de agosto**, não a
+> lista de pendências atuais: vários itens já foram fechados (ver `docs/pendencias/_indice.md` e
+> `docs/contexto/`). Use-os para conferir como o número foi medido, nunca como estado corrente sem confirmar
+> no código.
+
 **Leia primeiro:** [`../ESTADO_ATUAL.md`](../ESTADO_ATUAL.md) — documento executivo, 10 minutos.
 
 Os arquivos abaixo são os **lotes de evidência**. Cada linha de cada tabela cita `arquivo:linha`, nome de objeto de banco ou `jobid` de cron. Consulte-os quando precisar da prova de um achado específico.

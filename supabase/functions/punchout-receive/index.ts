@@ -118,10 +118,6 @@ serve(async (req) => {
   const bodyText = await req.text();
   const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
 
-  // M-05: se já processamos este evento, retorna a resposta anterior.
-  const cached = await getIdempotentResponse(SOURCE, idempotencyKey);
-  if (cached) return cached.response(cors);
-
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -169,6 +165,13 @@ serve(async (req) => {
         throw new Error("SharedSecret mismatch");
       }
     }
+
+    // M-05/INT-08: o cache de idempotencia so responde DEPOIS de a sessao existir
+    // e o shared secret do fornecedor ser conferido. Antes a consulta vinha antes
+    // do try, entao um replay devolvia o `solicitation_id` e o 303 com o
+    // `Location` da solicitacao sem nenhuma prova de origem.
+    const cached = await getIdempotentResponse(SOURCE, idempotencyKey);
+    if (cached) return cached.response(cors);
 
     // Reject stale cookies so a stolen one can't be replayed days later to inject
     // solicitations. The query above already guarantees status === "opened" and
