@@ -516,7 +516,18 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
   - Evidencia: (5) `node scripts/ci/check-agents-md-integrity.mjs` OK (AGENTS.md 369 -> 370 migrations), `node --test scripts/ci/agents-docs-baseline.unit.mjs` = 15 passed | 0 failed, `node scripts/ci/check-test-inventory.mjs` OK.
 
 
-- [ ] 051 — Aplicação: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+- [x] 051 — Aplicação: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+
+  - Evidencia: (1) `supabase/functions/spot-api/index.ts`: `Caller` passou a carregar `tenantId`; `authorize` resolve a empresa em `user_tenants` para humano (`resolveUserTenantId`, erro de banco = 500, vinculo ausente = null) e na empresa unica do projeto para cron/service role (`resolveIntegrationTenantId` ? resolve so com exatamente uma empresa cadastrada, porque a conta SPOT e' unica e nao existe credencial por empresa como na XBZ).
+
+  - Evidencia: (2) `createOrder` exige empresa (403 "Usu?rio sem empresa vinculada" antes de falar com a SPOT, fail-closed) e grava `tenant_id` no upsert de `spot_pedidos`; `getOrders` inclui `tenant_id` no lote somente quando resolvido, e a chave e' omitida quando nao ha empresa ? emitir `tenant_id: null` apagaria o dono de um pedido ja atribuido, porque o PostgREST so atualiza as colunas enviadas.
+
+  - Evidencia: (3) `supabase/functions/spot-proxy/index.ts`: `verifyAuth` devolve `{ userId, tenantId }` (empresa lida de `user_tenants`, nunca do cliente) e a acao registra `tenantId` no log ? o proxy opera o portal SPOT em conta compartilhada e tem acoes de escrita (`addToCart`, `checkout`), entao a empresa do operador fica rastreada. O unico call site foi atualizado.
+
+  - Evidencia: (4) verificado: `deno check --no-lock` nas duas edges sem erros; `deno test supabase/functions/spot-api/ supabase/functions/spot-proxy/` = 10 passed | 0 failed; `vitest run src/tests/spot/` = 39 passed. Nenhum arquivo de `src/` chama `createOrder` (o front so dispara `action` de sync em `useSpotCatalog.ts:156`), entao o 403 novo nao atinge tela nenhuma; o cron segue no caminho `isCron`.
+
+  - Evidencia: (5) NAO VERIFICADO em execucao real: nenhuma chamada de ponta a ponta a `createOrder`/`getOrders` foi disparada depois do deploy (seria preciso um pedido real na SPOT). A prova e' o `deno check` + os testes acima, rodados antes do merge.
+
 
 - [ ] 052 — Migration: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
 
