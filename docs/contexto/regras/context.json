@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "8c87ad1563aa206b94dee26532a0826e77d66afe",
+  "sha": "88efac2090a5ab03bc6d05878467f6a4f4c510c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 04:38 UTC",
-  "files_total": 1480,
-  "code_files": 1306,
-  "code_lines": 220041,
+  "generated_at": "2026-11-26 04:45 UTC",
+  "files_total": 1482,
+  "code_files": 1308,
+  "code_lines": 220416,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "462d9ee35ca0ebbe",
+ "facts_hash": "528ad1cd0419c0b2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 441,
    ".tsx": 433,
-   ".sql": 355,
+   ".sql": 357,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20999,7 +20999,7 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+    "src": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
@@ -27230,11 +27230,13 @@
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+   "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
+   "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -36489,8 +36491,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 341,
-   "lines": 28668,
+   "files": 342,
+   "lines": 28882,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36581,8 +36583,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 5,
-   "lines": 407,
+   "files": 6,
+   "lines": 568,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36593,7 +36595,8 @@
     "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
-    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql"
+    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
+    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql"
    ]
   },
   {
@@ -78628,7 +78631,7 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
+    "src": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
@@ -122726,6 +122729,10 @@
     "-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')"
    ]
   },
+  "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql": {
+   "path": "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+   "lines": 214
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -122745,6 +122752,10 @@
   "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql": {
    "path": "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "lines": 34
+  },
+  "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql": {
+   "path": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+   "lines": 161
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -122981,10 +122992,22 @@
   }
  },
  "git": {
-  "sha": "8c87ad1563aa206b94dee26532a0826e77d66afe",
+  "sha": "88efac2090a5ab03bc6d05878467f6a4f4c510c1",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "88efac2",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql"
+    ]
+   },
    {
     "sha": "8c87ad1",
     "date": "2026-11-26",
@@ -123322,23 +123345,16 @@
      "docs/qa/05-PROGRESSO.md",
      "vite.config.ts"
     ]
-   },
-   {
-    "sha": "b4ba729",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    27
    ],
    [
     "AGENTS.md",
-    2
+    3
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
@@ -123363,6 +123379,14 @@
    [
     "tests-e2e/production-ready.spec.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+    1
    ],
    [
     "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
@@ -123402,14 +123426,6 @@
    ],
    [
     "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useFornecedores.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "8c87ad1563aa206b94dee26532a0826e77d66afe",
+  "commit": "88efac2090a5ab03bc6d05878467f6a4f4c510c1",
   "branch": "main",
-  "data_commit": "2026-11-26T01:32:10-03:00",
+  "data_commit": "2026-11-26T01:45:09-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "88efac2",
+    "data": "2026-11-26",
+    "assunto": "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)"
+   },
    {
     "sha": "8c87ad1",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "7736405",
     "data": "2026-11-25",
     "assunto": "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)"
-   },
-   {
-    "sha": "802cbb7",
-    "data": "2026-11-25",
-    "assunto": "chore(deps-dev): bump autoprefixer (#478)"
    }
   ],
-  "arquivos_mudados_7d": 1500,
+  "arquivos_mudados_7d": 1502,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 145
+    "mudancas": 146
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 32
+    "mudancas": 31
    },
    {
     "pasta": "src/features/auth",
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "pasta": "src/features/pedidos",
@@ -199,27 +199,23 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 145
+    "mudancas": 146
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 32
+    "mudancas": 31
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/ci/README.md",
     "mudancas": 10
    },
    {
-    "arquivo": "AGENTS.md",
-    "mudancas": 9
-   },
-   {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
     "mudancas": 9
-   },
-   {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 8
    },
    {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
@@ -235,6 +231,10 @@
    },
    {
     "arquivo": ".github/workflows/main.yml",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 7
    },
    {
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1479,
+  "arquivos_total": 1481,
   "arquivos_codigo": 949,
   "linhas_codigo": 189842,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 94,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 341,
+  "migrations": 342,
   "cron_jobs": 74,
   "testes": 310,
   "workflows": 15,
