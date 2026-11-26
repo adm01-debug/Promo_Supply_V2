@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `63ca16ffae05dad2d14bc8e9c6b236df52c01988` (2026-11-25T22:23:10-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `802cbb70fc0a5bcad10de7498d7c975706a83d46` (2026-11-25T22:49:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `802cbb7` chore(deps-dev): bump autoprefixer (#478)
 - 2026-11-25 `63ca16f` chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)
 - 2026-11-25 `20e28a7` chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)
 - 2026-11-25 `fa8d817` fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `73078a0` fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)
 - 2026-11-25 `81d308c` fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)
 - 2026-11-25 `949c3d5` docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)
-- 2026-11-25 `df2f22e` fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

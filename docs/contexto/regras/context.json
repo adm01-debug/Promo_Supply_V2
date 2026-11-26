@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "63ca16ffae05dad2d14bc8e9c6b236df52c01988",
+  "sha": "802cbb70fc0a5bcad10de7498d7c975706a83d46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 01:46 UTC",
+  "generated_at": "2026-11-26 02:10 UTC",
   "files_total": 1468,
   "code_files": 1294,
   "code_lines": 219033,
@@ -122785,10 +122785,20 @@
   }
  },
  "git": {
-  "sha": "63ca16ffae05dad2d14bc8e9c6b236df52c01988",
+  "sha": "802cbb70fc0a5bcad10de7498d7c975706a83d46",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "802cbb7",
+    "date": "2026-11-25",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump autoprefixer (#478)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
    {
     "sha": "63ca16f",
     "date": "2026-11-25",
@@ -123118,24 +123128,12 @@
      "src/tests/integration/contract-validation.test.ts",
      "src/tests/integration/shared-schemas.ts"
     ]
-   },
-   {
-    "sha": "ac3487c",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(testes): contratos importam o schema real das edges em vez de espelhos (#466)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/tests/contracts-elite.test.ts",
-     "src/tests/contracts.test.ts",
-     "vitest.config.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    16
+    15
    ],
    [
     ".github/workflows/main.yml",
@@ -123152,6 +123150,14 @@
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     3
+   ],
+   [
+    "bun.lock",
+    2
+   ],
+   [
+    "package.json",
+    2
    ],
    [
     "docs/agentes/github-ci.md",
@@ -123203,14 +123209,6 @@
    ],
    [
     ".github/workflows/paridade-banco.yml",
-    1
-   ],
-   [
-    "eslint.config.js",
-    1
-   ],
-   [
-    "src/components/compras/ContractDetailsModal.tsx",
     1
    ]
   ]
