@@ -515,3 +515,33 @@ Deno.test("context circular nao quebra a construcao da linha", () => {
   assertEquals(row.context?._dropped, true);
   assertEquals(row.context?._reason, "not-serializable");
 });
+
+Deno.test("buildTelemetryRow: redige PII no context, inclusive aninhada (SEC-07)", () => {
+  const row = buildTelemetryRow({
+    raw: {
+      message: "teste",
+      context: {
+        email: "alice@example.com",
+        telefone: "11999998888",
+        input: { cnpj: "12345678000190", razaoSocial: "ACME" },
+        items: [{ cpf: "12345678901" }],
+      },
+    },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assert(row !== null);
+  const ctx = row.context as Record<string, unknown>;
+  assertEquals(ctx.email, "[REDACTED]");
+  assertEquals(ctx.telefone, "[REDACTED]");
+  assertEquals((ctx.input as Record<string, unknown>).cnpj, "[REDACTED]");
+  assertEquals((ctx.input as Record<string, unknown>).razaoSocial, "ACME");
+  assertEquals(
+    ((ctx.items as Array<Record<string, unknown>>)[0]).cpf,
+    "[REDACTED]",
+  );
+
+  const json = JSON.stringify(row);
+  assert(!json.includes("alice@example.com"), "email vazou para o payload");
+  assert(!json.includes("12345678000190"), "cnpj vazou para o payload");
+});

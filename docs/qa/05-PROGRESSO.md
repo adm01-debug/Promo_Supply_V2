@@ -504,11 +504,17 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 053 — Aplicação: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
 
-- [ ] 054 — (parte 1/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+- [x] 054 — (parte 1/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
 
-- [ ] 055 — (parte 2/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+  - Evidencia (054): `src/lib/logger.ts` ganhou `SENSITIVE_KEY_FRAGMENTS` com dados pessoais (`email`, `cpf`, `cnpj`, `telefone`, `phone`, `celular`, `endereco`, `address`) e `sanitizeContextDeep`, que varre o contexto em PROFUNDIDADE (limite 5, objetos simples e arrays, preservando Error/Date) — antes `sanitizeContext` olhava so as chaves de topo, entao `{ input: { cnpj } }` chegava cru em `telemetry_logs`. O login deixou de gravar o e-mail em claro: `useAuth.tsx:305-306` grava `emailHash` (`hashIdentifier`, djb2 estavel, apenas para correlacionar eventos). 7 casos novos em `src/lib/__tests__/logger.test.ts` (dados pessoais, aninhado, array, limite de profundidade, nao-mutacao do original, Date/Error intactos). Prova: `npx vitest run src/lib/__tests__/logger.test.ts src/lib/__tests__/logger.fuzz.test.ts` = 42/42; `npm run typecheck` exit 0; `npx eslint` nos 4 arquivos exit 0 (1 warning herdado de `output` nao usado).
 
-- [ ] 056 — (parte 3/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+- [x] 055 — (parte 2/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+
+  - Evidencia (055): redacao repetida NO SERVIDOR, porque a edge function aceita POST direto e o cliente nao e' confiavel — `redactSensitiveContext` em `supabase/functions/_shared/logLevel.ts` roda dentro de `buildTelemetryRow` (depois do `clampContext`, para nao perder o marcador de contexto circular) e cobre chaves aninhadas e dentro de arrays. No front, `useFornecedores.ts:152` trocou o CNPJ cru por `cnpjMascarado` (`**.***.***/****-12`, via `maskCnpj`); os logs de erro que passam o `input` inteiro (`:187`, `:205`) passam a sair redigidos pela recursao da 054. Teste novo em `supabase/functions/_shared/logLevel.test.ts` (PII aninhada + payload final sem o e-mail e sem o CNPJ em claro). Prova: `deno test --allow-env --allow-net supabase/functions/_shared/logLevel.test.ts` = 17 passed 0 failed; `deno check supabase/functions/_shared/logLevel.ts` exit 0.
+
+- [x] 056 — (parte 3/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
+
+  - Evidencia (056): `src/components/admin/telemetry/AppLogsView.tsx` passou a filtrar a consulta por empresa — `.eq('tenant_id', tenantId)` com `tenantId` do `useAuth()`, `enabled: !!tenantId` e `tenantId` na `queryKey` (antes era `select('*')` sem filtro, e a UI admin do console de telemetria listava log de todas as empresas). NAO VERIFICADO: a policy `Admins can view telemetry logs` e' DDL em producao e continua como estava — esta etapa fecha a camada de aplicacao, a policy segue pendente de apply.
 
 - [ ] 057 — Migration: Bloqueio de conta por tentativas existe apenas no cliente: nenhum ponto do servidor consulta `is_account_locked`, e `clear_login_lockout` a — onda 1 — Média — SEC-08
 
