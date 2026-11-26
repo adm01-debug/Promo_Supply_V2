@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c3e5f960915e57b6d47ec85b997cbdebf48d208c",
+  "sha": "fed20c286dbf297ad16eaf62fba2c6d07e1e17a6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 03:08 UTC",
+  "generated_at": "2026-11-26 03:12 UTC",
   "files_total": 1468,
   "code_files": 1294,
-  "code_lines": 219099,
+  "code_lines": 219059,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d0ca7df4333367c9",
+ "facts_hash": "d91482d41f60ec82",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35147,7 +35147,7 @@
   {
    "module": "src/features/auth",
    "files": 12,
-   "lines": 1280,
+   "lines": 1240,
    "tables": [
     "active_sessions",
     "profiles",
@@ -38036,9 +38036,6 @@
      "supabase/functions/punchout-setup/index.ts",
      "supabase/functions/receive-os-sync/index.ts",
      "tests-rls/rls-isolation.test.ts"
-    ],
-    "update": [
-     "src/features/auth/hooks/useAuth.tsx"
     ],
     "ref": [
      "supabase/functions/punchout-setup/seguranca.test.ts"
@@ -41414,10 +41411,6 @@
    {
     "file": "src/features/auth/components/ProtectedRoute.tsx",
     "msg": "Acesso restrito. Você não tem permissão para acessar esta área."
-   },
-   {
-    "file": "src/features/auth/hooks/useAuth.tsx",
-    "msg": "Erro ao alterar organização"
    },
    {
     "file": "src/features/auth/hooks/useAuth.tsx",
@@ -84945,13 +84938,6 @@
      "src/hooks/useSupplierQualification.ts",
      "src/pages/portal-fornecedor/portalFornecedorData.ts"
     ]
-   },
-   {
-    "table": "user_tenants",
-    "issue": "front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários",
-    "files": [
-     "src/features/auth/hooks/useAuth.tsx"
-    ]
    }
   ],
   "service_role_files": [
@@ -91585,13 +91571,6 @@
      "src/components/compras/scorecard/supplierScorecardData.ts",
      "src/hooks/useSupplierQualification.ts",
      "src/pages/portal-fornecedor/portalFornecedorData.ts"
-    ]
-   },
-   {
-    "kind": "rls",
-    "msg": "`user_tenants`: front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários",
-    "where": [
-     "src/features/auth/hooks/useAuth.tsx"
     ]
    },
    {
@@ -101672,7 +101651,7 @@
   },
   "src/features/auth/hooks/AuthContext.ts": {
    "path": "src/features/auth/hooks/AuthContext.ts",
-   "lines": 35,
+   "lines": 33,
    "exports": [
     "interface AuthContextType",
     "const AuthContext"
@@ -101680,7 +101659,7 @@
   },
   "src/features/auth/hooks/useAuth.tsx": {
    "path": "src/features/auth/hooks/useAuth.tsx",
-   "lines": 444,
+   "lines": 406,
    "exports": [
     "const ACTIVE_SESSION_STORAGE_KEY",
     "function registerActiveSession",
@@ -101715,14 +101694,6 @@
     {
      "table": "user_tenants",
      "op": "select"
-    },
-    {
-     "table": "user_tenants",
-     "op": "update"
-    },
-    {
-     "table": "user_tenants",
-     "op": "update"
     }
    ],
    "table_cols": {
@@ -101739,7 +101710,6 @@
      "user_id"
     ],
     "user_tenants": [
-     "tenant_id",
      "user_id"
     ]
    },
@@ -101747,7 +101717,6 @@
     "current_tenant_id"
    ],
    "errors": [
-    "Erro ao alterar organização",
     "Sua sessao expirou. Entre novamente para continuar.",
     "Sua sessao foi encerrada em outra aba."
    ],
@@ -122728,10 +122697,21 @@
   }
  },
  "git": {
-  "sha": "c3e5f960915e57b6d47ec85b997cbdebf48d208c",
+  "sha": "fed20c286dbf297ad16eaf62fba2c6d07e1e17a6",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "fed20c2",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/auth/hooks/AuthContext.ts",
+     "src/features/auth/hooks/useAuth.tsx"
+    ]
+   },
    {
     "sha": "c3e5f96",
     "date": "2026-11-26",
@@ -123058,21 +123038,12 @@
     "files": [
      "scripts/ci/paridade-migrations-banco.allowlist.json"
     ]
-   },
-   {
-    "sha": "0964197",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)",
-    "files": [
-     "scripts/ci/paridade-migrations-banco.allowlist.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    17
+    18
    ],
    [
     "bun.lock",
@@ -123119,8 +123090,12 @@
     2
    ],
    [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
-    2
+    "src/features/auth/hooks/AuthContext.ts",
+    1
+   ],
+   [
+    "src/features/auth/hooks/useAuth.tsx",
+    1
    ],
    [
     "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
@@ -123144,10 +123119,6 @@
    ],
    [
     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/erp-sync/index.ts",
     1
    ]
   ]

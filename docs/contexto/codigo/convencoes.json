@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)",
    "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)",
    "chore(deps): bump dompurify (#477)",
    "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)",
-   "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)",
-   "fix(edge): escopa a idempotencia por chamador e nao memoriza falha (etapas 179 e 180) (#505)"
+   "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)"
   ]
  },
  "pr_template": null,

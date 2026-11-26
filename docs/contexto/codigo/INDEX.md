@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c3e5f960915e57b6d47ec85b997cbdebf48d208c` (2026-11-26T00:05:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fed20c286dbf297ad16eaf62fba2c6d07e1e17a6` (2026-11-26T00:09:09-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1467 |
 | arquivos_codigo | 939 |
-| linhas_codigo | 188998 |
+| linhas_codigo | 188958 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,7 +338,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (132)
+- docs/qa/05-PROGRESSO.md (133)
 - docs/pendencias/_indice.md (38)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -347,12 +347,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - .github/workflows/main.yml (7)
+- src/features/auth/hooks/useAuth.tsx (7)
 - src/hooks/usePagamentos.ts (7)
 - src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
 - src/pages/solicitacoes/Solicitacoes.tsx (7)
 - supabase/functions/xbz-proxy/index.ts (7)
-- bun.lock (6)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `fed20c2` fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)
 - 2026-11-26 `c3e5f96` fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)
 - 2026-11-25 `a4b5fd2` chore(deps): bump dompurify (#477)
 - 2026-11-25 `a44ac6f` fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `802cbb7` chore(deps-dev): bump autoprefixer (#478)
 - 2026-11-25 `63ca16f` chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)
 - 2026-11-25 `20e28a7` chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)
-- 2026-11-25 `fa8d817` fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c3e5f96091` · branch `main` · 2026-11-26 03:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fed20c286d` · branch `main` · 2026-11-26 03:12 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2334,7 +2334,6 @@ _nenhum item encontrado_
 | useSidebar must be used within a SidebarProvider. | `src/components/ui/sidebar.tsx` |
 |        aria-live= | `src/components/ui/undo-toast.tsx` |
 | Acesso restrito. Você não tem permissão para acessar esta área. | `src/features/auth/components/ProtectedRoute.tsx` |
-| Erro ao alterar organização | `src/features/auth/hooks/useAuth.tsx` |
 | Sua sessao expirou. Entre novamente para continuar. | `src/features/auth/hooks/useAuth.tsx` |
 | Sua sessao foi encerrada em outra aba. | `src/features/auth/hooks/useAuth.tsx` |
 | useAuth must be used within an AuthProvider | `src/features/auth/hooks/useAuthContext.ts` |
@@ -2438,7 +2437,8 @@ _nenhum item encontrado_
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| … +291 linhas — lista completa em `context.json` | |
+| Erro ao excluir:  | `src/hooks/usePagamentos.ts` |
+| … +290 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 

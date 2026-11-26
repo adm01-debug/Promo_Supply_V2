@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c3e5f96091` · branch `main` · 2026-11-26 03:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fed20c286d` · branch `main` · 2026-11-26 03:12 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -520,7 +520,6 @@ Middleware matcher (Next.js): nenhum
 | `qualification_requirements` | acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
 | `supplier_documents` | acessada do front (1 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/hooks/useSupplierQualification.ts` |
 | `supplier_qualification_scores` | acessada do front (3 arquivo(s)) e nenhuma migration do repo liga RLS nela — NÃO VERIFICADO, confirme no banco real | `src/components/compras/scorecard/supplierScorecardData.ts`<br>`src/hooks/useSupplierQualification.ts`<br>`src/pages/portal-fornecedor/portalFornecedorData.ts` |
-| `user_tenants` | front faz UPDATE mas nenhuma política RLS permite UPDATE → vai falhar/retornar vazio para usuários | `src/features/auth/hooks/useAuth.tsx` |
 
 ## Multi-tenancy
 
