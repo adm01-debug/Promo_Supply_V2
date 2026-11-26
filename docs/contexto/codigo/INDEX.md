@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d74d61c476f4a5200dce10d215f9bda3b7c2fea9` (2026-11-26T02:09:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0a126b6b410c3048094849bd4cb34788093fe34a` (2026-11-26T02:30:32-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -340,7 +340,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (147)
 - docs/pendencias/_indice.md (31)
-- AGENTS.md (11)
+- AGENTS.md (12)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (8)
@@ -348,11 +348,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/usePagamentos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - .github/workflows/main.yml (7)
+- package.json (7)
 - src/features/auth/hooks/useAuth.tsx (7)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (7)
 - src/hooks/useDevolucoes.ts (7)
 - src/integrations/supabase/types.ts (7)
-- src/pages/cotacao/Cotacao.tsx (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -411,7 +411,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (161 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (166 linhas)
 - `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (270 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `0a126b6` fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)
 - 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
 - 2026-11-26 `88efac2` fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)
 - 2026-11-26 `8c87ad1` fix(retencao): cron de system_alerts passa a chamar a funcao oficial (etapa 201) (#522)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `7bc5670` ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)
 - 2026-11-26 `0856406` ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)
 - 2026-11-26 `e18b65d` fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)
-- 2026-11-26 `fed20c2` fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d74d61c476f4a5200dce10d215f9bda3b7c2fea9",
+  "commit": "0a126b6b410c3048094849bd4cb34788093fe34a",
   "branch": "main",
-  "data_commit": "2026-11-26T02:09:38-03:00",
+  "data_commit": "2026-11-26T02:30:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "0a126b6",
+    "data": "2026-11-26",
+    "assunto": "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)"
+   },
    {
     "sha": "d74d61c",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "6eb3b7a",
     "data": "2026-11-25",
     "assunto": "fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)"
-   },
-   {
-    "sha": "9ba061e",
-    "data": "2026-11-25",
-    "assunto": "chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)"
    }
   ],
   "arquivos_mudados_7d": 1505,
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -235,6 +235,10 @@
    },
    {
     "arquivo": ".github/workflows/main.yml",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "package.json",
     "mudancas": 7
    },
    {
@@ -267,10 +271,6 @@
    },
    {
     "arquivo": "bun.lock",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "package.json",
     "mudancas": 6
    },
    {

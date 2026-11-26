@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "d74d61c476f4a5200dce10d215f9bda3b7c2fea9",
+  "sha": "0a126b6b410c3048094849bd4cb34788093fe34a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 05:10 UTC",
+  "generated_at": "2026-11-26 05:31 UTC",
   "files_total": 1485,
   "code_files": 1310,
   "code_lines": 220530,
@@ -123038,10 +123038,21 @@
   }
  },
  "git": {
-  "sha": "d74d61c476f4a5200dce10d215f9bda3b7c2fea9",
+  "sha": "0a126b6b410c3048094849bd4cb34788093fe34a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0a126b6",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)",
+    "files": [
+     "AGENTS.md",
+     "package-lock.json",
+     "package.json"
+    ]
+   },
    {
     "sha": "d74d61c",
     "date": "2026-11-26",
@@ -123385,28 +123396,20 @@
      "docs/qa/05-PROGRESSO.md",
      "eslint.config.js"
     ]
-   },
-   {
-    "sha": "fa8d817",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/ContractDetailsModal.tsx",
-     "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
-     "src/pages/fornecedores/Fornecedores.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "AGENTS.md",
-    4
+    5
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "docs/pendencias/_indice.md",
@@ -123429,12 +123432,12 @@
     2
    ],
    [
-    "package.json",
+    "tests-e2e/production-ready.spec.ts",
     2
    ],
    [
-    "tests-e2e/production-ready.spec.ts",
-    2
+    "package-lock.json",
+    1
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -123474,10 +123477,6 @@
    ],
    [
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
     1
    ]
   ]

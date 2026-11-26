@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)",
    "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)",
    "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)",
    "fix(retencao): cron de system_alerts passa a chamar a funcao oficial (etapa 201) (#522)",
-   "fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)",
-   "fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)"
+   "fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)"
   ]
  },
  "pr_template": null,
