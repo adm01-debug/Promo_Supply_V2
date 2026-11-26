@@ -529,9 +529,28 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
   - Evidencia: (5) NAO VERIFICADO em execucao real: nenhuma chamada de ponta a ponta a `createOrder`/`getOrders` foi disparada depois do deploy (seria preciso um pedido real na SPOT). A prova e' o `deno check` + os testes acima, rodados antes do merge.
 
 
-- [ ] 052 — Migration: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
+- [x] 052 — Migration: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
 
-- [ ] 053 — Aplicação: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
+  - Evidencia: (1) causa raiz do achado era o gate negar tudo para quem nao e' admin. Outro agente ja resolveu isso por caminho mais restrito: a RPC `public.get_my_permissions()` (`supabase/migrations/20261123120000_get_my_permissions_rpc.sql`, SECURITY DEFINER, `SET search_path = public`, `GRANT EXECUTE TO authenticated`) devolve `(module, action)` do proprio usuario sem abrir as tabelas. Prova de que existe em producao: `src/integrations/supabase/types.ts:9678` declara `get_my_permissions` com `Returns: { action, module }`, e esse arquivo e' artefato gerado do banco pelo types-sync -- prova indireta, nao `SELECT` no catalogo.
+
+  - Evidencia: (2) nenhum consumidor nao-admin das tabelas sobrou: o unico uso direto de `permissions`/`role_permissions` e' `src/components/security/PermissionMatrix.tsx:19,158` (matriz de papeis, admin-only); o gate (`src/components/security/PermissionGate.tsx:22,50`) e a pagina (`src/pages/seguranca/Seguranca.tsx:129,151`) passam por `hasPermission`, que le `userPermissions` da RPC (`src/hooks/usePermissions.ts:49`).
+
+  - Evidencia: (3) DECISAO: nao criar a policy proposta (`permissions` com `USING (true)` para `authenticated`). Ela abriria a leitura do catalogo para todo autenticado sem ter consumidor e exigiria excecao nova em `scripts/rls-audit.allowlist.json`; as duas tabelas continuam fechadas para nao-admin, que e' o estado mais restrito que atende o negocio.
+
+  - Evidencia: (4) a leitura inutil que restava foi removida: `src/hooks/usePermissions.ts:26-39` passou a pedir o catalogo so para admin (`enabled: !!user && isAdmin`) -- antes a query rodava para qualquer usuario logado e voltava vazia pela RLS.
+
+  - Evidencia: (5) verificado: `tsc --noEmit -p tsconfig.app.json` exit 0; `vitest run src/hooks/__tests__/usePermissions.test.tsx` = 5 passed 0 failed (2 casos novos: nao-admin nao le `permissions`/`role_permissions` e chama a RPC; admin le as duas e nao chama a RPC); `eslint` nos 2 arquivos exit 0. NAO VERIFICADO em runtime: nenhum `SELECT` como usuario `coordinator` foi executado contra o banco (nao ha canal de leitura com credencial de owner no repositorio).
+
+
+- [x] 053 — Aplicação: `permissions` e `role_permissions` só são legíveis por admin, então as permissões continuam negadas para todos os outros papéis mesmo depoi — onda 1 — Média — RLS-05
+
+  - Evidencia: (1) a aplicacao (front) ja consome a RPC `get_my_permissions` no caminho nao-admin desde a etapa 010 de outro agente (`src/hooks/usePermissions.ts:42-70`, `enabled: !!user && !isAdmin`), e o retorno e' remontado no mesmo formato que os consumidores esperam (`RolePermission & { permission }`), entao `hasPermission`/`hasAnyPermission`/`hasAllPermissions` seguem funcionando sem mudanca de contrato.
+
+  - Evidencia: (2) o cast `as never` que existia na chamada da RPC (necessario quando `types.ts` ainda nao conhecia a funcao) foi removido nesta etapa: com a funcao ja tipada em `types.ts:9678`, `supabase.rpc('get_my_permissions')` compila com o retorno tipado. Prova: `tsc --noEmit` exit 0.
+
+  - Evidencia: (3) fluxo completo conferido: `PermissionGate` -> `usePermissions.hasPermission` -> `userPermissions` (RPC) para nao-admin e atalho `isAdmin` para admin; `PermissionMatrix` (admin) le as tabelas direto; escrita continua restrita a admin (`PermissionMatrix.tsx:62,71`) e nada foi liberado para nao-admin.
+
+  - Evidencia: (4) verificado: `vitest run src/hooks/__tests__/usePermissions.test.tsx` = 5 passed; `eslint src/hooks/usePermissions.ts src/hooks/__tests__/usePermissions.test.tsx` exit 0. NAO VERIFICADO em runtime: a tela de Seguranca nao foi aberta com um usuario `coordinator` real depois da mudanca.
 
 - [x] 054 — (parte 1/3) E-mail de login, CNPJ e IP vão sem redação para `telemetry_logs`, que qualquer admin lê sem filtro de empresa — onda 1 — Média — SEC-07
 
