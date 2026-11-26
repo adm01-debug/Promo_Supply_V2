@@ -42,8 +42,8 @@
 | `run-audit` | — |
 | `scim-v2` | `sso_configurations` |
 | `send-push-notification` | `profiles`, `push_subscriptions`, `user_roles`, `user_tenants` |
-| `spot-api` | `spot_api_sync_log`, `spot_estoque`, `spot_pedidos`, `spot_sessions`, `user_roles` |
-| `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles` |
+| `spot-api` | `spot_api_sync_log`, `spot_estoque`, `spot_pedidos`, `spot_sessions`, `tenants`, `user_roles`, `user_tenants` |
+| `spot-proxy` | `spot_pedidos`, `spot_sessions`, `user_roles`, `user_tenants` |
 | `system-simulation` | — |
 | `telemetry` | `telemetry_logs` |
 | `tests` | — |
@@ -92,9 +92,9 @@
 | `sso_configurations` | `scim-v2` |
 | `system_alerts` | `alert-dispatcher`, `health-dashboard`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
-| `tenants` | `receive-os-sync` |
+| `tenants` | `receive-os-sync`, `spot-api` |
 | `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `send-push-notification`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
-| `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup`, `receive-os-sync`, `send-push-notification` |
+| `user_tenants` | `erp-credential-encrypt`, `punchout-encrypt`, `punchout-setup`, `receive-os-sync`, `send-push-notification`, `spot-api`, `spot-proxy` |
 | `v_system_health_overview` | `health-dashboard` |
 | `webauthn_challenges` | `webauthn-authenticate`, `webauthn-register` |
 | `webauthn_credentials` | `webauthn-authenticate`, `webauthn-register` |
