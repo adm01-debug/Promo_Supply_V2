@@ -1,5 +1,7 @@
 # Edge Functions
 
+> ⚠️ Seção `api.edge_functions` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
+
 URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metadados por função em `edge-functions/<slug>/README.md`. A Management API devolve só o bundle compilado; o fonte canônico é `supabase/functions/<slug>/` no repo.
 
 | slug | nome | status | versão | verify_jwt | entrypoint |

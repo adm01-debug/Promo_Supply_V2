@@ -895,7 +895,16 @@
     },
     "url": "https://lmypcdfsrgfftzhxawao.supabase.co"
   },
-  "carried": [],
+  "carried": [
+    "api.project",
+    "api.edge_functions",
+    "api.secrets",
+    "api.postgres_config",
+    "api.network_restrictions",
+    "api.ssl_enforcement",
+    "api.branches",
+    "api.backups"
+  ],
   "db": {
     "columns": [
       {
@@ -39302,9 +39311,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -45735,9 +45748,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [
             "24:xbz-sync-watchdog-hourly"
           ],
@@ -62705,6 +62722,12 @@
         "statements": 6,
         "statements_sha": "879a029325e0734c",
         "version": "20261127150000"
+      },
+      {
+        "name": "versiona_jobs_manutencao_e_watchdog_xbz",
+        "statements": 5,
+        "statements_sha": "7881eed152617e10",
+        "version": "20261127160000"
       }
     ],
     "policies": [
@@ -72725,8 +72748,44 @@
   },
   "errors": [
     {
-      "error": "HTTP 400 em /projects/lmypcdfsrgfftzhxawao/custom-hostname",
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao",
+      "section": "api.project"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/functions",
+      "section": "api.edge_functions"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/secrets",
+      "section": "api.secrets"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/config/database/postgres",
+      "section": "api.postgres_config"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/network-restrictions",
+      "section": "api.network_restrictions"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/ssl-enforcement",
+      "section": "api.ssl_enforcement"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/custom-hostname",
       "section": "api.custom_hostname"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/branches",
+      "section": "api.branches"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/database/backups",
+      "section": "api.backups"
+    },
+    {
+      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/health?services=auth,db,pooler,realtime,rest,storage",
+      "section": "api.health"
     }
   ],
   "format_version": 2

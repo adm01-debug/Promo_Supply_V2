@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 06:21 UTC
+
+- **functions** alterado (2): `public.cleanup_health_scan_runs()`, `public.xbz_sync_watchdog()`
+- **migrations** adicionado (1): `20261127160000_versiona_jobs_manutencao_e_watchdog_xbz`
+
 ## 2026-11-26 05:13 UTC
 
 - **edge functions** alterado (1): `process-outbox`

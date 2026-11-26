@@ -347,3 +347,4 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261127130000 | [retencao_system_alerts_fonte_unica](migrations/20261127130000_retencao_system_alerts_fonte_unica.sql) | 2 |
 | 20261127140000 | [cron_watchdog_falha_por_janela_de_tempo](migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql) | 1 |
 | 20261127150000 | [outbox_claim_atomico_e_frequencia](migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql) | 6 |
+| 20261127160000 | [versiona_jobs_manutencao_e_watchdog_xbz](migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql) | 5 |
