@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
@@ -43,28 +43,37 @@ const Fornecedores = () => {
   const isMobile = useIsMobile();
   const [search, setSearch] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("todos");
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFornecedor, setSelectedFornecedor] = useState<LegacyFornecedor | null>(null);
 
-  const { fornecedores: dbFornecedores, loading, createFornecedor, updateFornecedor } = useFornecedores({ search: search || undefined });
+  // O rótulo legado da tela não é o valor da coluna: `adaptToLegacy` traduz
+  // internacional→IMPORTADORA, local→DISTRIBUIDORA, o resto→FABRICANTE.
+  const tipoServidor = tipoFilter === "IMPORTADORA" ? "internacional"
+    : tipoFilter === "DISTRIBUIDORA" ? "local"
+    : tipoFilter === "FABRICANTE" ? "nacional"
+    : undefined;
+
+  const { fornecedores: dbFornecedores, totalCount, loading, createFornecedor, updateFornecedor } = useFornecedores({
+    search: search || undefined,
+    tipo: tipoServidor,
+    page,
+    pageSize,
+  });
   const { kpis } = useFornecedoresKPIs();
+
+  useEffect(() => { setPage(1); }, [search, tipoFilter]);
 
   const fornecedores = useMemo(() => dbFornecedores.map(adaptToLegacy), [dbFornecedores]);
 
-  const filteredFornecedores = useMemo(() => {
-    let filtered = fornecedores;
-    if (search.trim()) {
-      filtered = (fornecedores as LegacyFornecedor[]).filter((f: LegacyFornecedor) =>
-        f.nome_fantasia.toLowerCase().includes(search.toLowerCase()) ||
-        f.razao_social.toLowerCase().includes(search.toLowerCase()) ||
-        f.cnpj.includes(search)
-      );
-    }
-    if (tipoFilter !== "todos") {
-      filtered = filtered.filter((f: LegacyFornecedor) => f.tipo === tipoFilter);
-    }
-    return filtered;
-  }, [fornecedores, search, tipoFilter]);
+  // Busca e tipo já vão no SQL (com a mesma cobertura de campos), então a lista
+  // recebida é a página final — filtrar de novo aqui mostraria só um subconjunto
+  // da página e deixaria registros inalcançáveis.
+  const filteredFornecedores = fornecedores;
+
+  const totalFornecedores = totalCount;
+  const totalPages = Math.max(1, Math.ceil(totalFornecedores / pageSize));
 
   const handleOpenModal = (fornecedor?: LegacyFornecedor) => {
     setSelectedFornecedor(fornecedor || null);
@@ -122,7 +131,7 @@ const Fornecedores = () => {
               <div>
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Rede de Parceiros</h1>
                 <div className="flex items-center gap-3 mt-3">
-                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-emerald-500/30 text-emerald-400 px-3 py-1">{filteredFornecedores.length} Parceiros Ativos</Badge>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-emerald-500/30 text-emerald-400 px-3 py-1">{totalFornecedores} Parceiros Ativos</Badge>
                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Ecossistema de Fornecedores</span>
                 </div>
               </div>
@@ -283,6 +292,33 @@ const Fornecedores = () => {
                     </AnimatePresence>
                   </TableBody>
                 </Table>
+              )}
+              {totalPages > 1 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-10 py-5 border-t border-white/5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                    Mostrando {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalFornecedores)} de {totalFornecedores}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPage(page - 1)}
+                      disabled={page <= 1}
+                      className="rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:bg-white/5 disabled:opacity-30"
+                    >
+                      Anterior
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPage(page + 1)}
+                      disabled={page >= totalPages}
+                      className="rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:bg-white/5 disabled:opacity-30"
+                    >
+                      Próximo
+                    </Button>
+                  </div>
+                </div>
               )}
             </CardContent>
           </Card>

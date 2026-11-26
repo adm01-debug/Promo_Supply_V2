@@ -55,6 +55,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   const pageSize = filters?.pageSize || 50;
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
+  // Opt-in: só pagina quando o chamador informa `page`. Sem isso a lista
+  // completa continua vindo, porque as abas e os painéis de Pagamentos.tsx
+  // derivam totais/contagens dela em memória.
+  const paginar = typeof filters?.page === 'number';
 
   let query = supabase
     .from('pagamentos')
@@ -79,6 +83,7 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
   if (filters?.empresaIds) query = query.in('tenant_id', filters.empresaIds);
+  if (paginar) query = query.range(from, to);
 
   const { data, error, count } = await query;
   if (error) throw error;

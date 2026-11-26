@@ -38,38 +38,59 @@ export interface FornecedorFilters {
   search?: string;
   tipo?: string;
   status?: string;
+  /**
+   * Opt-in. Quando `page` é informado, a consulta é paginada no servidor
+   * (`.range` + `count: 'exact'`) e `totalCount` passa a ser preenchido.
+   * Sem `page`, o hook devolve a lista inteira — comportamento esperado pelos
+   * seletores/sugestões que consomem `useFornecedores()` sem filtros.
+   */
+  page?: number;
+  pageSize?: number;
 }
 
 export function useFornecedores(filters?: FornecedorFilters) {
   const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
-  const queryKey = ['fornecedores', user?.id, tenantId, organizationId, filters?.tipo, filters?.status, filters?.search];
+  const queryKey = ['fornecedores', user?.id, tenantId, organizationId, filters?.tipo, filters?.status, filters?.search, filters?.page, filters?.pageSize];
 
-  const { data: fornecedores = [], isLoading: loading, error, refetch } = useQuery({
+  const { data, isLoading: loading, error, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
-          if (!organizationId) return [];
+      if (!organizationId) return { data: [] as Fornecedor[], totalCount: 0 };
+
+      const paginar = typeof filters?.page === 'number';
+      const pageSize = filters?.pageSize ?? 20;
+      const from = ((filters?.page ?? 1) - 1) * pageSize;
 
       let query = supabase
         .from('fornecedores')
-        .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
+        .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by', paginar ? { count: 'exact' } : {})
         .order('razao_social', { ascending: true })
         .eq('organization_id', organizationId);
 
-      if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
+      // `nacional` é o "resto" na tela: `adaptToLegacy` classifica como
+      // FABRICANTE tudo que não é internacional nem local. Usar `not in` mantém
+      // essa mesma semântica (a coluna é NOT NULL, então nenhuma linha se perde).
+      if (filters?.tipo === 'nacional') query = query.not('tipo', 'in', '(internacional,local)');
+      else if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
       if (filters?.search) {
         const s = escapeIlike(filters.search);
         query = query.or(`razao_social.ilike.%${s}%,nome_fantasia.ilike.%${s}%,cnpj.ilike.%${s}%`);
       }
 
-      const { data, error: fetchError } = await query;
+      if (paginar) query = query.range(from, from + pageSize - 1);
+
+      const { data: rows, count, error: fetchError } = await query;
       if (fetchError) throw fetchError;
-      return data as Fornecedor[];
+      return { data: (rows ?? []) as Fornecedor[], totalCount: count ?? (rows?.length ?? 0) };
     },
           enabled: !!user && !!organizationId,
     staleTime: 60_000,
   });
+
+  const fornecedores = data?.data ?? [];
+  const totalCount = data?.totalCount ?? 0;
 
   // CNPJ validation helper
   const validateCNPJ = useCallback((cnpj: string): boolean => {
@@ -279,6 +300,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
   return {
     fornecedores,
+    totalCount,
     loading,
     error,
     refetch,
