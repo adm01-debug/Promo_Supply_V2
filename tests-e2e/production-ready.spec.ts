@@ -53,16 +53,14 @@ test.describe('Freight Quest Production Readiness', () => {
   });
 
   test('System Health & Performance Monitoring (Public Signals)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+
     const response = await page.goto('/');
     expect(response?.status()).toBeLessThan(400);
-    
-    // Check if initial load doesn't throw errors in console
-    const logs: string[] = [];
-    page.on('console', msg => logs.push(msg.text()));
-    await page.goto('/');
-    
-    // We expect no major errors on public landing
-    const errors = logs.filter(log => log.toLowerCase().includes('error') && !log.includes('401'));
-    // expect(errors.length).toBe(0); // This might be too strict if some external assets fail, but good for production check
+
+    // A raiz tem que montar de verdade (não só devolver 200) sem exceção não tratada.
+    await page.getByText(/Dashboard/i).first().waitFor({ timeout: 15_000 });
+    expect(pageErrors, `erros não tratados na raiz: ${pageErrors.join(' | ')}`).toHaveLength(0);
   });
 });
