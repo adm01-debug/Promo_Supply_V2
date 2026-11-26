@@ -50,9 +50,9 @@
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
 | licitacoes_fornecedor_vencedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_vencedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
-| licitacoes_numero_key | UNIQUE | `UNIQUE (numero)` |  |  | sim |
 | licitacoes_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | licitacoes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
+| licitacoes_responsavel_id_fkey | FOREIGN KEY | `FOREIGN KEY (responsavel_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | licitacoes_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 
 
@@ -73,8 +73,8 @@
 | idx_licitacoes_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_licitacoes_organization_id ON public.licitacoes USING btree (organization_id)` |
 | idx_licitacoes_status | btree | status | não | sim |  | `CREATE INDEX idx_licitacoes_status ON public.licitacoes USING btree (status)` |
 | idx_licitacoes_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_licitacoes_tenant_id ON public.licitacoes USING btree (tenant_id)` |
-| licitacoes_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX licitacoes_numero_key ON public.licitacoes USING btree (numero)` |
 | licitacoes_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX licitacoes_pkey ON public.licitacoes USING btree (id)` |
+| uq_licitacoes_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_licitacoes_tenant_numero ON public.licitacoes USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)

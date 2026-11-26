@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.verificar_integridade_audit_logs()
 AS $function$
 DECLARE
   linha     public.audit_logs;
-  anterior  text := 'GENESIS';
+  anterior  text;
   esperado  text;
   total     bigint;
   contados  bigint := 0;
@@ -15,6 +15,13 @@ BEGIN
     RAISE EXCEPTION 'Apenas administradores podem verificar a integridade da auditoria'
       USING ERRCODE = '42501';
   END IF;
+
+  -- Sem ancora (nunca houve expurgo) a cadeia comeca em GENESIS; com expurgo, o
+  -- elo inicial e o hash do ultimo registro apagado - exatamente o que o primeiro
+  -- registro remanescente declara em hash_anterior.
+  SELECT a.registro_hash INTO anterior FROM public.audit_logs_ancora a WHERE a.id;
+
+  anterior := coalesce(anterior, 'GENESIS');
 
   SELECT count(*) INTO total FROM public.audit_logs;
 

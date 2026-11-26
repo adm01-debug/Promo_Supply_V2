@@ -22,7 +22,8 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.audit_logs_202607](tables/public/audit_logs_202607.md) | table | sim | 2 | 16 | não |  |
 | [public.audit_logs_202608](tables/public/audit_logs_202608.md) | table | sim | 2 | 16 | não |  |
 | [public.audit_logs_202609](tables/public/audit_logs_202609.md) | table | sim | 2 | 16 | não |  |
-| [public.audit_logs_legacy_20260712](tables/public/audit_logs_legacy_20260712.md) | table | sim | 1 | 16 | não |  |
+| [public.audit_logs_ancora](tables/public/audit_logs_ancora.md) | table | sim | 0 | 4 | não | Ancora da cadeia de hash de audit_logs: ultimo registro apagado pela retencao legal de 5 anos. ISO 27001 A.8.15. |
+| [public.audit_logs_legacy_20260712](tables/public/audit_logs_legacy_20260712.md) | table | sim | 3 | 16 | não |  |
 | [public.blocked_countries](tables/public/blocked_countries.md) | table | sim | 2 | 7 | não |  |
 | [public.blocked_ips](tables/public/blocked_ips.md) | table | sim | 2 | 8 | não |  |
 | [public.budget_audit_logs](tables/public/budget_audit_logs.md) | table | sim | 1 | 7 | não |  |
@@ -135,7 +136,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.telemetry_logs_202607](tables/public/telemetry_logs_202607.md) | table | sim | 2 | 11 | não |  |
 | [public.telemetry_logs_202608](tables/public/telemetry_logs_202608.md) | table | sim | 2 | 11 | não |  |
 | [public.telemetry_logs_202609](tables/public/telemetry_logs_202609.md) | table | sim | 2 | 11 | não |  |
-| [public.telemetry_logs_legacy_20260712](tables/public/telemetry_logs_legacy_20260712.md) | table | sim | 3 | 11 | não |  |
+| [public.telemetry_logs_legacy_20260712](tables/public/telemetry_logs_legacy_20260712.md) | table | sim | 5 | 11 | não |  |
 | [public.temp_file_snapshots](tables/public/temp_file_snapshots.md) | table | sim | 1 | 6 | não |  |
 | [public.tenants](tables/public/tenants.md) | table | sim | 1 | 21 | não |  |
 | [public.unspsc_codes](tables/public/unspsc_codes.md) | table | sim | 1 | 7 | não |  |

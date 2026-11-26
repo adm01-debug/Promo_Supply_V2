@@ -4059,6 +4059,58 @@
       },
       {
         "comment": null,
+        "default": "true",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "sequencia",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "bigint"
+      },
+      {
+        "comment": "registro_hash do ultimo registro expurgado; e o hash_anterior esperado do primeiro registro remanescente.",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "registro_hash",
+        "nullable": false,
+        "position": 3,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "atualizado_em",
+        "nullable": false,
+        "position": 4,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -26939,6 +26991,44 @@
       },
       {
         "columns": [
+          "delegado_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (delegado_id) REFERENCES auth.users(id)",
+        "name": "approval_delegations_delegado_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_delegations",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "delegante_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (delegante_id) REFERENCES auth.users(id)",
+        "name": "approval_delegations_delegante_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_delegations",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "delegante_id",
           "tenant_id"
         ],
@@ -27232,6 +27322,25 @@
       },
       {
         "columns": [
+          "usuario_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (usuario_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+        "name": "approval_history_usuario_id_fkey",
+        "on_delete": "SET NULL",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_history",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "workflow_id"
         ],
         "deferrable": false,
@@ -27289,6 +27398,25 @@
       },
       {
         "columns": [
+          "escalacao_para"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (escalacao_para) REFERENCES auth.users(id)",
+        "name": "approval_rules_escalacao_para_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_rules",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "organization_id"
         ],
         "deferrable": false,
@@ -27339,6 +27467,44 @@
         "ref_table": "tenants",
         "schema": "public",
         "table": "approval_rules",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "aprovador_efetivo_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (aprovador_efetivo_id) REFERENCES auth.users(id)",
+        "name": "approval_steps_aprovador_efetivo_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_steps",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "aprovador_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (aprovador_id) REFERENCES auth.users(id)",
+        "name": "approval_steps_aprovador_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "approval_steps",
         "type": "FOREIGN KEY",
         "validated": true
       },
@@ -28141,6 +28307,40 @@
         "schema": "public",
         "table": "audit_logs_202609",
         "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "CHECK (id)",
+        "name": "audit_logs_ancora_id_check",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "CHECK",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "audit_logs_ancora_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "audit_logs_ancora",
+        "type": "PRIMARY KEY",
         "validated": true
       },
       {
@@ -28962,23 +29162,6 @@
       },
       {
         "columns": [
-          "contract_number"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (contract_number)",
-        "name": "contracts_contract_number_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "contracts",
-        "type": "UNIQUE",
-        "validated": true
-      },
-      {
-        "columns": [
           "currency"
         ],
         "deferrable": false,
@@ -29049,23 +29232,6 @@
         "schema": "public",
         "table": "contracts",
         "type": "FOREIGN KEY",
-        "validated": true
-      },
-      {
-        "columns": [
-          "code"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (code)",
-        "name": "cost_centers_code_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "cost_centers",
-        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -29197,23 +29363,6 @@
         "schema": "public",
         "table": "cotacoes",
         "type": "FOREIGN KEY",
-        "validated": true
-      },
-      {
-        "columns": [
-          "numero"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (numero)",
-        "name": "cotacoes_numero_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "cotacoes",
-        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -29814,6 +29963,25 @@
       },
       {
         "columns": [
+          "aprovador_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (aprovador_id) REFERENCES auth.users(id)",
+        "name": "devolucoes_aprovador_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "devolucoes",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "fornecedor_id"
         ],
         "deferrable": false,
@@ -29865,6 +30033,25 @@
         "schema": "public",
         "table": "devolucoes",
         "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "solicitante_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (solicitante_id) REFERENCES auth.users(id)",
+        "name": "devolucoes_solicitante_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "devolucoes",
+        "type": "FOREIGN KEY",
         "validated": true
       },
       {
@@ -30631,40 +30818,6 @@
       },
       {
         "columns": [
-          "cnpj"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (cnpj)",
-        "name": "fornecedores_cnpj_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "fornecedores",
-        "type": "UNIQUE",
-        "validated": true
-      },
-      {
-        "columns": [
-          "codigo"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (codigo)",
-        "name": "fornecedores_codigo_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "fornecedores",
-        "type": "UNIQUE",
-        "validated": true
-      },
-      {
-        "columns": [
           "created_by"
         ],
         "deferrable": false,
@@ -31149,23 +31302,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (numero)",
-        "name": "licitacoes_numero_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "licitacoes",
-        "type": "UNIQUE",
-        "validated": true
-      },
-      {
-        "columns": [
           "organization_id"
         ],
         "deferrable": false,
@@ -31198,6 +31334,25 @@
         "schema": "public",
         "table": "licitacoes",
         "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "responsavel_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (responsavel_id) REFERENCES auth.users(id)",
+        "name": "licitacoes_responsavel_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "licitacoes",
+        "type": "FOREIGN KEY",
         "validated": true
       },
       {
@@ -31612,23 +31767,6 @@
         "schema": "public",
         "table": "pagamentos",
         "type": "FOREIGN KEY",
-        "validated": true
-      },
-      {
-        "columns": [
-          "numero"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (numero)",
-        "name": "pagamentos_numero_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "pagamentos",
-        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -32056,23 +32194,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (numero)",
-        "name": "pedidos_numero_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "pedidos",
-        "type": "UNIQUE",
-        "validated": true
-      },
-      {
-        "columns": [
           "organization_id"
         ],
         "deferrable": false,
@@ -32359,23 +32480,6 @@
         "schema": "public",
         "table": "produtos",
         "type": "FOREIGN KEY",
-        "validated": true
-      },
-      {
-        "columns": [
-          "codigo"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (codigo)",
-        "name": "produtos_codigo_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "produtos",
-        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -32952,6 +33056,25 @@
         ],
         "ref_schema": "public",
         "ref_table": "fornecedores",
+        "schema": "public",
+        "table": "receiving_checklists",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "inspector_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (inspector_id) REFERENCES auth.users(id)",
+        "name": "receiving_checklists_inspector_id_fkey",
+        "on_delete": "NO ACTION",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
         "schema": "public",
         "table": "receiving_checklists",
         "type": "FOREIGN KEY",
@@ -33538,23 +33661,6 @@
         "schema": "public",
         "table": "solicitacoes",
         "type": "FOREIGN KEY",
-        "validated": true
-      },
-      {
-        "columns": [
-          "numero"
-        ],
-        "deferrable": false,
-        "definition": "UNIQUE (numero)",
-        "name": "solicitacoes_numero_key",
-        "on_delete": null,
-        "on_update": null,
-        "ref_columns": [],
-        "ref_schema": null,
-        "ref_table": null,
-        "schema": "public",
-        "table": "solicitacoes",
-        "type": "UNIQUE",
         "validated": true
       },
       {
@@ -38020,7 +38126,7 @@
           "search_path=public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "986fe5e7350a259d",
+        "definition_sha": "5985e669e9fab2d3",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -38198,9 +38304,13 @@
             {
               "file": "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [
             "public.audit_logs_encadear_hash",
@@ -41821,7 +41931,7 @@
               "hits": 37
             }
           ],
-          "code_total_files": 80,
+          "code_total_files": 82,
           "cron": [],
           "db": [
             "public.count_legacy_storage_urls",
@@ -42224,9 +42334,13 @@
             {
               "file": "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -42238,7 +42352,7 @@
         ],
         "definition": null,
         "definition_sha": "8f94ac93212c3099",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -44590,6 +44704,10 @@
               "hits": 1
             },
             {
+              "file": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
               "hits": 1
             },
@@ -44598,7 +44716,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 17,
+          "code_total_files": 18,
           "cron": [],
           "db": [
             "public.find_approval_rule",
@@ -45549,9 +45667,13 @@
             {
               "file": "supabase/functions/_shared/cronHealth.ts",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -45563,7 +45685,7 @@
         ],
         "definition": null,
         "definition_sha": "44d59da6538797d2",
-        "execute_api_roles": "authenticated, service_role",
+        "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
@@ -45799,9 +45921,13 @@
             {
               "file": "supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -45812,7 +45938,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "bce3e1d51685736c",
+        "definition_sha": "9c232a0c58f4da0a",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -46550,13 +46676,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202605"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202605"
         },
@@ -46568,13 +46694,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202606"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202606"
         },
@@ -46586,13 +46712,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202607"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202607"
         },
@@ -46604,13 +46730,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202608"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202608"
         },
@@ -46622,13 +46748,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202609"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_202609"
         },
@@ -46639,14 +46765,20 @@
           "table": "audit_logs_202609"
         },
         {
-          "grantee": "anon",
+          "grantee": "service_role",
           "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "audit_logs_ancora"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_legacy_20260712"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "audit_logs_legacy_20260712"
         },
@@ -48584,13 +48716,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202605"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202605"
         },
@@ -48602,13 +48734,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202606"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202606"
         },
@@ -48620,13 +48752,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202607"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202607"
         },
@@ -48638,13 +48770,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202608"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202608"
         },
@@ -48656,13 +48788,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202609"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_202609"
         },
@@ -48674,13 +48806,13 @@
         },
         {
           "grantee": "anon",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_legacy_20260712"
         },
         {
           "grantee": "authenticated",
-          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "privileges": "INSERT, MAINTAIN, SELECT",
           "schema": "public",
           "table": "telemetry_logs_legacy_20260712"
         },
@@ -50873,6 +51005,20 @@
       },
       {
         "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX audit_logs_ancora_pkey ON public.audit_logs_ancora USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "audit_logs_ancora_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "audit_logs_ancora"
+      },
+      {
+        "columns": [
           "action_type"
         ],
         "definition": "CREATE INDEX audit_logs_legacy_20260712_action_type_idx ON public.audit_logs_legacy_20260712 USING btree (action_type)",
@@ -51591,20 +51737,6 @@
       },
       {
         "columns": [
-          "contract_number"
-        ],
-        "definition": "CREATE UNIQUE INDEX contracts_contract_number_key ON public.contracts USING btree (contract_number)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "contracts_contract_number_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "contracts"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX contracts_pkey ON public.contracts USING btree (id)",
@@ -51676,17 +51808,18 @@
       },
       {
         "columns": [
-          "code"
+          "tenant_id",
+          "contract_number"
         ],
-        "definition": "CREATE UNIQUE INDEX cost_centers_code_key ON public.cost_centers USING btree (code)",
+        "definition": "CREATE UNIQUE INDEX uq_contracts_tenant_contract_number ON public.contracts USING btree (tenant_id, contract_number)",
         "is_primary": false,
         "is_unique": true,
         "is_valid": true,
         "method": "btree",
-        "name": "cost_centers_code_key",
+        "name": "uq_contracts_tenant_contract_number",
         "predicate": null,
         "schema": "public",
-        "table": "cost_centers"
+        "table": "contracts"
       },
       {
         "columns": [
@@ -51746,17 +51879,18 @@
       },
       {
         "columns": [
-          "numero"
+          "tenant_id",
+          "code"
         ],
-        "definition": "CREATE UNIQUE INDEX cotacoes_numero_key ON public.cotacoes USING btree (numero)",
+        "definition": "CREATE UNIQUE INDEX uq_cost_centers_tenant_code ON public.cost_centers USING btree (tenant_id, code)",
         "is_primary": false,
         "is_unique": true,
         "is_valid": true,
         "method": "btree",
-        "name": "cotacoes_numero_key",
+        "name": "uq_cost_centers_tenant_code",
         "predicate": null,
         "schema": "public",
-        "table": "cotacoes"
+        "table": "cost_centers"
       },
       {
         "columns": [
@@ -51884,6 +52018,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_cotacoes_tenant",
+        "predicate": null,
+        "schema": "public",
+        "table": "cotacoes"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_cotacoes_tenant_numero ON public.cotacoes USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_cotacoes_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "cotacoes"
@@ -52362,6 +52511,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_devolucoes_tenant_id",
+        "predicate": null,
+        "schema": "public",
+        "table": "devolucoes"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_devolucoes_tenant_numero ON public.devolucoes USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_devolucoes_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "devolucoes"
@@ -52915,34 +53079,6 @@
       },
       {
         "columns": [
-          "cnpj"
-        ],
-        "definition": "CREATE UNIQUE INDEX fornecedores_cnpj_key ON public.fornecedores USING btree (cnpj)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "fornecedores_cnpj_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "fornecedores"
-      },
-      {
-        "columns": [
-          "codigo"
-        ],
-        "definition": "CREATE UNIQUE INDEX fornecedores_codigo_key ON public.fornecedores USING btree (codigo)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "fornecedores_codigo_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "fornecedores"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX fornecedores_pkey ON public.fornecedores USING btree (id)",
@@ -53091,6 +53227,21 @@
         "method": "btree",
         "name": "uq_fornecedores_tenant_cnpj",
         "predicate": "(cnpj IS NOT NULL)",
+        "schema": "public",
+        "table": "fornecedores"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "codigo"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_fornecedores_tenant_codigo ON public.fornecedores USING btree (tenant_id, codigo)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_fornecedores_tenant_codigo",
+        "predicate": null,
         "schema": "public",
         "table": "fornecedores"
       },
@@ -53506,20 +53657,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "definition": "CREATE UNIQUE INDEX licitacoes_numero_key ON public.licitacoes USING btree (numero)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "licitacoes_numero_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "licitacoes"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX licitacoes_pkey ON public.licitacoes USING btree (id)",
@@ -53528,6 +53665,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "licitacoes_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "licitacoes"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_licitacoes_tenant_numero ON public.licitacoes USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_licitacoes_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "licitacoes"
@@ -54045,20 +54197,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "definition": "CREATE UNIQUE INDEX pagamentos_numero_key ON public.pagamentos USING btree (numero)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "pagamentos_numero_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "pagamentos"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX pagamentos_pkey ON public.pagamentos USING btree (id)",
@@ -54067,6 +54205,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "pagamentos_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "pagamentos"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_pagamentos_tenant_numero ON public.pagamentos USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_pagamentos_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "pagamentos"
@@ -54468,20 +54621,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "definition": "CREATE UNIQUE INDEX pedidos_numero_key ON public.pedidos USING btree (numero)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "pedidos_numero_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "pedidos"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX pedidos_pkey ON public.pedidos USING btree (id)",
@@ -54490,6 +54629,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "pedidos_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "pedidos"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_pedidos_tenant_numero ON public.pedidos USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_pedidos_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "pedidos"
@@ -54710,20 +54864,6 @@
       },
       {
         "columns": [
-          "codigo"
-        ],
-        "definition": "CREATE UNIQUE INDEX produtos_codigo_key ON public.produtos USING btree (codigo)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "produtos_codigo_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "produtos"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX produtos_pkey ON public.produtos USING btree (id)",
@@ -54732,6 +54872,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "produtos_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "produtos"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "codigo"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_produtos_tenant_codigo ON public.produtos USING btree (tenant_id, codigo)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_produtos_tenant_codigo",
         "predicate": null,
         "schema": "public",
         "table": "produtos"
@@ -55843,20 +55998,6 @@
       },
       {
         "columns": [
-          "numero"
-        ],
-        "definition": "CREATE UNIQUE INDEX solicitacoes_numero_key ON public.solicitacoes USING btree (numero)",
-        "is_primary": false,
-        "is_unique": true,
-        "is_valid": true,
-        "method": "btree",
-        "name": "solicitacoes_numero_key",
-        "predicate": null,
-        "schema": "public",
-        "table": "solicitacoes"
-      },
-      {
-        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX solicitacoes_pkey ON public.solicitacoes USING btree (id)",
@@ -55865,6 +56006,21 @@
         "is_valid": true,
         "method": "btree",
         "name": "solicitacoes_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "solicitacoes"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "numero"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_solicitacoes_tenant_numero ON public.solicitacoes USING btree (tenant_id, numero)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_solicitacoes_tenant_numero",
         "predicate": null,
         "schema": "public",
         "table": "solicitacoes"
@@ -59060,6 +59216,12 @@
       {
         "code": "rls_no_policies",
         "detail": "RLS ligado sem policies: inacessível via API (só service_role).",
+        "object": "public.audit_logs_ancora",
+        "severity": "MÉDIA"
+      },
+      {
+        "code": "rls_no_policies",
+        "detail": "RLS ligado sem policies: inacessível via API (só service_role).",
         "object": "public.cron_watchdog_seen",
         "severity": "MÉDIA"
       },
@@ -59071,8 +59233,68 @@
       },
       {
         "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['delegado_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_delegations.approval_delegations_delegado_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['delegante_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_delegations.approval_delegations_delegante_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['usuario_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_history.approval_history_usuario_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['escalacao_para']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_rules.approval_rules_escalacao_para_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['aprovador_efetivo_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_steps.approval_steps_aprovador_efetivo_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['aprovador_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.approval_steps.approval_steps_aprovador_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['aprovador_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.devolucoes.devolucoes_aprovador_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['solicitante_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.devolucoes.devolucoes_solicitante_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
         "detail": "FK sem índice nas colunas ['changed_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
         "object": "public.entity_versions.entity_versions_changed_by_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['responsavel_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.licitacoes.licitacoes_responsavel_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['inspector_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.receiving_checklists.receiving_checklists_inspector_id_fkey",
         "severity": "BAIXA"
       },
       {
@@ -59331,6 +59553,12 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.audit_logs_202609.admin_read_partition",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.audit_logs_legacy_20260712.admin_read_partition",
         "severity": "BAIXA"
       },
       {
@@ -60489,6 +60717,12 @@
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
         "object": "public.telemetry_logs_legacy_20260712.Admins can view telemetry logs",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.telemetry_logs_legacy_20260712.admin_read_partition",
         "severity": "BAIXA"
       },
       {
@@ -63279,7 +63513,7 @@
         ],
         "schema": "public",
         "table": "audit_logs_202605",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -63303,7 +63537,7 @@
         ],
         "schema": "public",
         "table": "audit_logs_202606",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -63327,7 +63561,7 @@
         ],
         "schema": "public",
         "table": "audit_logs_202607",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -63351,7 +63585,7 @@
         ],
         "schema": "public",
         "table": "audit_logs_202608",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -63375,7 +63609,7 @@
         ],
         "schema": "public",
         "table": "audit_logs_202609",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -63392,6 +63626,18 @@
       },
       {
         "cmd": "SELECT",
+        "name": "admin_read_partition",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_legacy_20260712",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
         "name": "audit_logs_legacy_admin_read",
         "permissive": "PERMISSIVE",
         "roles": [
@@ -63401,6 +63647,18 @@
         "table": "audit_logs_legacy_20260712",
         "using": "has_role(auth.uid(), 'admin'::app_role)",
         "with_check": null
+      },
+      {
+        "cmd": "ALL",
+        "name": "service_role_all_partition",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "audit_logs_legacy_20260712",
+        "using": "true",
+        "with_check": "true"
       },
       {
         "cmd": "ALL",
@@ -66651,7 +66909,7 @@
         ],
         "schema": "public",
         "table": "telemetry_logs_202605",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66675,7 +66933,7 @@
         ],
         "schema": "public",
         "table": "telemetry_logs_202606",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66699,7 +66957,7 @@
         ],
         "schema": "public",
         "table": "telemetry_logs_202607",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66723,7 +66981,7 @@
         ],
         "schema": "public",
         "table": "telemetry_logs_202608",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66747,7 +67005,7 @@
         ],
         "schema": "public",
         "table": "telemetry_logs_202609",
-        "using": "has_role(auth.uid(), 'admin'::app_role)",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66776,6 +67034,18 @@
       },
       {
         "cmd": "SELECT",
+        "name": "admin_read_partition",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_legacy_20260712",
+        "using": "(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
         "name": "admins_read_legacy_telemetry",
         "permissive": "PERMISSIVE",
         "roles": [
@@ -66797,6 +67067,18 @@
         "table": "telemetry_logs_legacy_20260712",
         "using": null,
         "with_check": "(auth.uid() = user_id)"
+      },
+      {
+        "cmd": "ALL",
+        "name": "service_role_all_partition",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "service_role"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_legacy_20260712",
+        "using": "true",
+        "with_check": "true"
       },
       {
         "cmd": "SELECT",
@@ -68390,6 +68672,21 @@
         "is_partition": false,
         "kind": "table",
         "name": "audit_logs_202609",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
+        "comment": "Ancora da cadeia de hash de audit_logs: ultimo registro apagado pela retencao legal de 5 anos. ISO 27001 A.8.15.",
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "audit_logs_ancora",
         "owner": "postgres",
         "parent": null,
         "partition_bound": null,

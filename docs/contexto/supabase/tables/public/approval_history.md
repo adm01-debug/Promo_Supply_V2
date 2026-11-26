@@ -37,6 +37,7 @@
 | approval_history_solicitacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | approval_history_step_id_fkey | FOREIGN KEY | `FOREIGN KEY (step_id) REFERENCES approval_steps(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | approval_history_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
+| approval_history_usuario_id_fkey | FOREIGN KEY | `FOREIGN KEY (usuario_id) REFERENCES auth.users(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | approval_history_workflow_id_fkey | FOREIGN KEY | `FOREIGN KEY (workflow_id) REFERENCES approval_workflows(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 
 

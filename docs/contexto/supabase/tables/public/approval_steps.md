@@ -37,6 +37,8 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
+| approval_steps_aprovador_efetivo_id_fkey | FOREIGN KEY | `FOREIGN KEY (aprovador_efetivo_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
+| approval_steps_aprovador_id_fkey | FOREIGN KEY | `FOREIGN KEY (aprovador_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | approval_steps_delegacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (delegacao_id) REFERENCES approval_delegations(id)` | NO ACTION | NO ACTION | sim |
 | approval_steps_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | approval_steps_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |

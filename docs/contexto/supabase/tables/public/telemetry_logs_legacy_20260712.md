@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 3 |
+| policies | 5 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -60,6 +60,16 @@
 | USING | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = 'admin'::text))))` |
 | WITH CHECK |  |
 
+### `admin_read_partition`
+
+| campo | valor |
+|---|---|
+| comando | SELECT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |
+| WITH CHECK |  |
+
 ### `admins_read_legacy_telemetry`
 
 | campo | valor |
@@ -80,6 +90,16 @@
 | USING |  |
 | WITH CHECK | `(auth.uid() = user_id)` |
 
+### `service_role_all_partition`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | PERMISSIVE |
+| roles | service_role |
+| USING | `true` |
+| WITH CHECK | `true` |
+
 
 ## Triggers
 
@@ -90,6 +110,6 @@ _nenhum_
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| anon | INSERT, MAINTAIN, SELECT |
+| authenticated | INSERT, MAINTAIN, SELECT |
 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

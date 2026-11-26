@@ -46,23 +46,24 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.audit_logs | anon | INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER |
 | public.audit_logs | authenticated | INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER |
 | public.audit_logs | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, UPDATE |
-| public.audit_logs_202605 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202605 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_202605 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_202605 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_202605 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202606 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202606 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_202606 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_202606 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_202606 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202607 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202607 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_202607 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_202607 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_202607 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202608 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202608 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_202608 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_202608 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_202608 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202609 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_202609 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_202609 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_202609 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_202609 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_legacy_20260712 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.audit_logs_legacy_20260712 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_ancora | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.audit_logs_legacy_20260712 | anon | INSERT, MAINTAIN, SELECT |
+| public.audit_logs_legacy_20260712 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.audit_logs_legacy_20260712 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.blocked_countries | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.blocked_countries | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
@@ -385,23 +386,23 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.telemetry_logs | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.telemetry_logs | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.telemetry_logs | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202605 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202605 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_202605 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_202605 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_202605 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202606 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202606 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_202606 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_202606 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_202606 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202607 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202607 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_202607 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_202607 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_202607 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202608 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202608 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_202608 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_202608 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_202608 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202609 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_202609 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_202609 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_202609 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_202609 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_legacy_20260712 | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| public.telemetry_logs_legacy_20260712 | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.telemetry_logs_legacy_20260712 | anon | INSERT, MAINTAIN, SELECT |
+| public.telemetry_logs_legacy_20260712 | authenticated | INSERT, MAINTAIN, SELECT |
 | public.telemetry_logs_legacy_20260712 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.temp_file_snapshots | anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.temp_file_snapshots | authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

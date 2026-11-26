@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 1 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -58,6 +58,16 @@
 
 ## Policies (RLS)
 
+### `admin_read_partition`
+
+| campo | valor |
+|---|---|
+| comando | SELECT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |
+| WITH CHECK |  |
+
 ### `audit_logs_legacy_admin_read`
 
 | campo | valor |
@@ -67,6 +77,16 @@
 | roles | authenticated |
 | USING | `has_role(auth.uid(), 'admin'::app_role)` |
 | WITH CHECK |  |
+
+### `service_role_all_partition`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | PERMISSIVE |
+| roles | service_role |
+| USING | `true` |
+| WITH CHECK | `true` |
 
 
 ## Triggers
@@ -78,6 +98,6 @@ _nenhum_
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| anon | INSERT, MAINTAIN, SELECT |
+| authenticated | INSERT, MAINTAIN, SELECT |
 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

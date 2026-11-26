@@ -56,17 +56,19 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.audit_logs | Admins can view all audit logs | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.audit_logs | authenticated_insert_audit_logs | INSERT | PERMISSIVE | authenticated |  | `(tenant_in_my_group(tenant_id) AND (auth.uid() IS NOT NULL))` |
 | public.audit_logs | tenant_isolation_audit_logs | ALL | RESTRICTIVE | authenticated | `tenant_in_my_group(tenant_id)` | `tenant_in_my_group(tenant_id)` |
-| public.audit_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_202605 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.audit_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_202606 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.audit_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_202607 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.audit_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_202608 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.audit_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_202609 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
+| public.audit_logs_legacy_20260712 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.audit_logs_legacy_20260712 | audit_logs_legacy_admin_read | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.audit_logs_legacy_20260712 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.blocked_countries | Admins can manage blocked countries | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.blocked_countries | Admins can view blocked countries | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.blocked_ips | Admins can manage blocked IPs | ALL | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
@@ -337,19 +339,21 @@ Visão consolidada (inclui `storage.objects` e `realtime.messages`); detalhes po
 | public.table_size_snapshots | admins_read_table_size_snapshots | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.telemetry_logs | Admins can view telemetry logs | SELECT | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = 'admin'::text))))` |  |
 | public.telemetry_logs | authenticated_insert_telemetry_logs | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
-| public.telemetry_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202605 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_202605 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.telemetry_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202606 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_202606 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.telemetry_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202607 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_202607 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.telemetry_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202608 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_202608 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
-| public.telemetry_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
+| public.telemetry_logs_202609 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_202609 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.telemetry_logs_legacy_20260712 | Admins can view telemetry logs | SELECT | PERMISSIVE | public | `(EXISTS ( SELECT 1    FROM user_roles   WHERE ((user_roles.user_id = auth.uid()) AND ((user_roles.role)::text = 'admin'::text))))` |  |
+| public.telemetry_logs_legacy_20260712 | admin_read_partition | SELECT | PERMISSIVE | authenticated | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |  |
 | public.telemetry_logs_legacy_20260712 | admins_read_legacy_telemetry | SELECT | PERMISSIVE | public | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.telemetry_logs_legacy_20260712 | authenticated_insert_telemetry_logs | INSERT | PERMISSIVE | authenticated |  | `(auth.uid() = user_id)` |
+| public.telemetry_logs_legacy_20260712 | service_role_all_partition | ALL | PERMISSIVE | service_role | `true` | `true` |
 | public.temp_file_snapshots | admin_read_temp_file_snapshots | SELECT | PERMISSIVE | authenticated | `has_role(auth.uid(), 'admin'::app_role)` |  |
 | public.tenants | tenants visible to members | SELECT | PERMISSIVE | authenticated | `user_belongs_to_tenant(auth.uid(), id)` |  |
 | public.unspsc_codes | unspsc_codes_authenticated_read | SELECT | PERMISSIVE | authenticated | `(auth.uid() IS NOT NULL)` |  |

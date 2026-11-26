@@ -68,7 +68,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | authenticated |
-| USING | `has_role(auth.uid(), 'admin'::app_role)` |
+| USING | `(has_role(auth.uid(), 'admin'::app_role) AND tenant_in_my_group(tenant_id))` |
 | WITH CHECK |  |
 
 ### `service_role_all_partition`
@@ -91,6 +91,6 @@ _nenhum_
 
 | role | privilégios |
 |---|---|
-| anon | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
-| authenticated | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| anon | INSERT, MAINTAIN, SELECT |
+| authenticated | INSERT, MAINTAIN, SELECT |
 | service_role | DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

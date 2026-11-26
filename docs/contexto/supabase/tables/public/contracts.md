@@ -54,7 +54,6 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
-| contracts_contract_number_key | UNIQUE | `UNIQUE (contract_number)` |  |  | sim |
 | contracts_currency_fkey | FOREIGN KEY | `FOREIGN KEY (currency) REFERENCES currencies(code) NOT VALID` | NO ACTION | NO ACTION | não |
 | contracts_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | contracts_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
@@ -79,12 +78,12 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| contracts_contract_number_key | btree | contract_number | sim | sim |  | `CREATE UNIQUE INDEX contracts_contract_number_key ON public.contracts USING btree (contract_number)` |
 | contracts_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX contracts_pkey ON public.contracts USING btree (id)` |
 | idx_contracts_currency | btree | currency | não | sim |  | `CREATE INDEX idx_contracts_currency ON public.contracts USING btree (currency)` |
 | idx_contracts_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_contracts_organization_id ON public.contracts USING btree (organization_id)` |
 | idx_contracts_supplier_created | btree | supplier_id, created_at | não | sim |  | `CREATE INDEX idx_contracts_supplier_created ON public.contracts USING btree (supplier_id, created_at DESC)` |
 | idx_contracts_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_contracts_tenant_id ON public.contracts USING btree (tenant_id)` |
+| uq_contracts_tenant_contract_number | btree | tenant_id, contract_number | sim | sim |  | `CREATE UNIQUE INDEX uq_contracts_tenant_contract_number ON public.contracts USING btree (tenant_id, contract_number)` |
 
 
 ## Policies (RLS)

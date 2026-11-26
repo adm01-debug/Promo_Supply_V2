@@ -4,9 +4,20 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 
 | severidade | código | objeto | detalhe |
 |---|---|---|---|
+| MÉDIA | rls_no_policies | public.audit_logs_ancora | RLS ligado sem policies: inacessível via API (só service_role). |
 | MÉDIA | rls_no_policies | public.cron_watchdog_seen | RLS ligado sem policies: inacessível via API (só service_role). |
 | BAIXA | extension_in_public | btree_gist | Extensão instalada no schema public (recomendado: schema extensions). |
+| BAIXA | fk_without_index | public.approval_delegations.approval_delegations_delegado_id_fkey | FK sem índice nas colunas ['delegado_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.approval_delegations.approval_delegations_delegante_id_fkey | FK sem índice nas colunas ['delegante_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.approval_history.approval_history_usuario_id_fkey | FK sem índice nas colunas ['usuario_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.approval_rules.approval_rules_escalacao_para_fkey | FK sem índice nas colunas ['escalacao_para']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.approval_steps.approval_steps_aprovador_efetivo_id_fkey | FK sem índice nas colunas ['aprovador_efetivo_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.approval_steps.approval_steps_aprovador_id_fkey | FK sem índice nas colunas ['aprovador_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.devolucoes.devolucoes_aprovador_id_fkey | FK sem índice nas colunas ['aprovador_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.devolucoes.devolucoes_solicitante_id_fkey | FK sem índice nas colunas ['solicitante_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | fk_without_index | public.entity_versions.entity_versions_changed_by_fkey | FK sem índice nas colunas ['changed_by']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.licitacoes.licitacoes_responsavel_id_fkey | FK sem índice nas colunas ['responsavel_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.receiving_checklists.receiving_checklists_inspector_id_fkey | FK sem índice nas colunas ['inspector_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | fk_without_index | public.workflow_tasks.workflow_tasks_assigned_to_user_fkey | FK sem índice nas colunas ['assigned_to_user']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
 | BAIXA | policy_auth_fn_not_wrapped | public.account_lockouts.Admins can manage lockouts | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.account_lockouts.Users can check own lockout status | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
@@ -50,6 +61,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | BAIXA | policy_auth_fn_not_wrapped | public.audit_logs_202607.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.audit_logs_202608.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.audit_logs_202609.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.audit_logs_legacy_20260712.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.audit_logs_legacy_20260712.audit_logs_legacy_admin_read | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.blocked_countries.Admins can manage blocked countries | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.blocked_countries.Admins can view blocked countries | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
@@ -243,6 +255,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_202608.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_202609.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_legacy_20260712.Admins can view telemetry logs | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_legacy_20260712.admin_read_partition | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_legacy_20260712.admins_read_legacy_telemetry | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.telemetry_logs_legacy_20260712.authenticated_insert_telemetry_logs | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
 | BAIXA | policy_auth_fn_not_wrapped | public.temp_file_snapshots.admin_read_temp_file_snapshots | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |

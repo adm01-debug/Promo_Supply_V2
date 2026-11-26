@@ -52,8 +52,6 @@
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
 | fornecedores_avaliacao_check | CHECK | `CHECK (avaliacao >= 0::numeric AND avaliacao <= 5::numeric)` |  |  | sim |
-| fornecedores_cnpj_key | UNIQUE | `UNIQUE (cnpj)` |  |  | sim |
-| fornecedores_codigo_key | UNIQUE | `UNIQUE (codigo)` |  |  | sim |
 | fornecedores_created_by_fkey | FOREIGN KEY | `FOREIGN KEY (created_by) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | fornecedores_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | fornecedores_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
@@ -98,8 +96,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| fornecedores_cnpj_key | btree | cnpj | sim | sim |  | `CREATE UNIQUE INDEX fornecedores_cnpj_key ON public.fornecedores USING btree (cnpj)` |
-| fornecedores_codigo_key | btree | codigo | sim | sim |  | `CREATE UNIQUE INDEX fornecedores_codigo_key ON public.fornecedores USING btree (codigo)` |
 | fornecedores_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX fornecedores_pkey ON public.fornecedores USING btree (id)` |
 | idx_fornecedores_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_fornecedores_created_by ON public.fornecedores USING btree (created_by)` |
 | idx_fornecedores_email_lower | btree |  | não | sim | `(email IS NOT NULL)` | `CREATE INDEX idx_fornecedores_email_lower ON public.fornecedores USING btree (lower(email)) WHERE (email IS NOT NULL)` |
@@ -111,6 +107,7 @@
 | idx_fornecedores_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_fornecedores_tenant ON public.fornecedores USING btree (tenant_id)` |
 | idx_fornecedores_tipo | btree | tipo | não | sim |  | `CREATE INDEX idx_fornecedores_tipo ON public.fornecedores USING btree (tipo)` |
 | uq_fornecedores_tenant_cnpj | btree | tenant_id, cnpj | sim | sim | `(cnpj IS NOT NULL)` | `CREATE UNIQUE INDEX uq_fornecedores_tenant_cnpj ON public.fornecedores USING btree (tenant_id, cnpj) WHERE (cnpj IS NOT NULL)` |
+| uq_fornecedores_tenant_codigo | btree | tenant_id, codigo | sim | sim |  | `CREATE UNIQUE INDEX uq_fornecedores_tenant_codigo ON public.fornecedores USING btree (tenant_id, codigo)` |
 
 
 ## Policies (RLS)

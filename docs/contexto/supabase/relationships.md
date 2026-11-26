@@ -8,6 +8,8 @@
 | public.alert_subscriptions | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.aliquotas_tributarias | organization_id | public.organizations | id | CASCADE | NO ACTION |
 | public.allowed_countries | added_by | auth.users | id | NO ACTION | NO ACTION |
+| public.approval_delegations | delegado_id | auth.users | id | NO ACTION | NO ACTION |
+| public.approval_delegations | delegante_id | auth.users | id | NO ACTION | NO ACTION |
 | public.approval_delegations | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.approval_delegations | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.approval_hierarchy | cost_center_id | public.cost_centers | id | NO ACTION | NO ACTION |
@@ -17,11 +19,15 @@
 | public.approval_history | solicitacao_id | public.solicitacoes | id | SET NULL | NO ACTION |
 | public.approval_history | step_id | public.approval_steps | id | SET NULL | NO ACTION |
 | public.approval_history | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
+| public.approval_history | usuario_id | auth.users | id | SET NULL | NO ACTION |
 | public.approval_history | workflow_id | public.approval_workflows | id | SET NULL | NO ACTION |
 | public.approval_rules | categoria_id | public.categorias | id | NO ACTION | NO ACTION |
 | public.approval_rules | cost_center_id | public.cost_centers | id | NO ACTION | NO ACTION |
+| public.approval_rules | escalacao_para | auth.users | id | NO ACTION | NO ACTION |
 | public.approval_rules | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.approval_rules | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
+| public.approval_steps | aprovador_efetivo_id | auth.users | id | NO ACTION | NO ACTION |
+| public.approval_steps | aprovador_id | auth.users | id | NO ACTION | NO ACTION |
 | public.approval_steps | delegacao_id | public.approval_delegations | id | NO ACTION | NO ACTION |
 | public.approval_steps | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.approval_steps | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
@@ -106,8 +112,10 @@
 | public.devolucao_itens | devolucao_id | public.devolucoes | id | CASCADE | NO ACTION |
 | public.devolucao_itens | pedido_item_id | public.pedido_itens | id | SET NULL | NO ACTION |
 | public.devolucao_itens | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
+| public.devolucoes | aprovador_id | auth.users | id | NO ACTION | NO ACTION |
 | public.devolucoes | fornecedor_id | public.fornecedores | id | SET NULL | NO ACTION |
 | public.devolucoes | pedido_id | public.pedidos | id | SET NULL | NO ACTION |
+| public.devolucoes | solicitante_id | auth.users | id | NO ACTION | NO ACTION |
 | public.devolucoes | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.entity_versions | changed_by | auth.users | id | NO ACTION | NO ACTION |
 | public.erp_connections | tenant_id | public.tenants | id | CASCADE | NO ACTION |
@@ -140,6 +148,7 @@
 | public.licitacao_propostas | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.licitacoes | fornecedor_vencedor_id | public.fornecedores | id | NO ACTION | NO ACTION |
 | public.licitacoes | organization_id | public.organizations | id | NO ACTION | NO ACTION |
+| public.licitacoes | responsavel_id | auth.users | id | NO ACTION | NO ACTION |
 | public.licitacoes | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.mfa_settings | user_id | auth.users | id | CASCADE | NO ACTION |
 | public.negotiation_analyses | cotacao_id | public.cotacoes | id | NO ACTION | NO ACTION |
@@ -192,6 +201,7 @@
 | public.rate_limit_logs | user_id | auth.users | id | NO ACTION | NO ACTION |
 | public.receiving_checklists | contract_id | public.contracts | id | NO ACTION | NO ACTION |
 | public.receiving_checklists | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |
+| public.receiving_checklists | inspector_id | auth.users | id | NO ACTION | NO ACTION |
 | public.receiving_checklists | pedido_id | public.pedidos | id | CASCADE | NO ACTION |
 | public.receiving_checklists | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.repurchase_suggestions | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |

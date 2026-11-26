@@ -58,7 +58,6 @@
 | solicitacoes_categoria_id_fkey | FOREIGN KEY | `FOREIGN KEY (categoria_id) REFERENCES categorias(id)` | NO ACTION | NO ACTION | sim |
 | solicitacoes_cost_center_id_fkey | FOREIGN KEY | `FOREIGN KEY (cost_center_id) REFERENCES cost_centers(id)` | NO ACTION | NO ACTION | sim |
 | solicitacoes_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
-| solicitacoes_numero_key | UNIQUE | `UNIQUE (numero)` |  |  | sim |
 | solicitacoes_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | solicitacoes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | solicitacoes_prioridade_check | CHECK | `CHECK (prioridade = ANY (ARRAY['baixa'::text, 'media'::text, 'alta'::text, 'urgente'::text]))` |  |  | sim |
@@ -98,8 +97,8 @@
 | idx_solicitacoes_solicitante | btree | solicitante_id | não | sim |  | `CREATE INDEX idx_solicitacoes_solicitante ON public.solicitacoes USING btree (solicitante_id)` |
 | idx_solicitacoes_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_solicitacoes_tenant ON public.solicitacoes USING btree (tenant_id)` |
 | idx_solicitacoes_tenant_priority | btree | tenant_id, prioridade | não | sim |  | `CREATE INDEX idx_solicitacoes_tenant_priority ON public.solicitacoes USING btree (tenant_id, prioridade)` |
-| solicitacoes_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX solicitacoes_numero_key ON public.solicitacoes USING btree (numero)` |
 | solicitacoes_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX solicitacoes_pkey ON public.solicitacoes USING btree (id)` |
+| uq_solicitacoes_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_solicitacoes_tenant_numero ON public.solicitacoes USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)

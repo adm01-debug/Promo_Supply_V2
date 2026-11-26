@@ -57,7 +57,6 @@
 | cotacoes_avaliador_id_fkey | FOREIGN KEY | `FOREIGN KEY (avaliador_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | cotacoes_currency_fkey | FOREIGN KEY | `FOREIGN KEY (currency) REFERENCES currencies(code) NOT VALID` | NO ACTION | NO ACTION | não |
 | cotacoes_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
-| cotacoes_numero_key | UNIQUE | `UNIQUE (numero)` |  |  | sim |
 | cotacoes_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | cotacoes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | cotacoes_solicitacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
@@ -77,7 +76,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| cotacoes_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX cotacoes_numero_key ON public.cotacoes USING btree (numero)` |
 | cotacoes_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX cotacoes_pkey ON public.cotacoes USING btree (id)` |
 | idx_cotacoes_avaliador_id | btree | avaliador_id | não | sim |  | `CREATE INDEX idx_cotacoes_avaliador_id ON public.cotacoes USING btree (avaliador_id)` |
 | idx_cotacoes_currency | btree | currency | não | sim |  | `CREATE INDEX idx_cotacoes_currency ON public.cotacoes USING btree (currency)` |
@@ -87,6 +85,7 @@
 | idx_cotacoes_org_status | btree | organization_id, status | não | sim |  | `CREATE INDEX idx_cotacoes_org_status ON public.cotacoes USING btree (organization_id, status)` |
 | idx_cotacoes_solicitacao_fornecedor | btree | solicitacao_id, fornecedor_id | não | sim |  | `CREATE INDEX idx_cotacoes_solicitacao_fornecedor ON public.cotacoes USING btree (solicitacao_id, fornecedor_id)` |
 | idx_cotacoes_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_cotacoes_tenant ON public.cotacoes USING btree (tenant_id)` |
+| uq_cotacoes_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_cotacoes_tenant_numero ON public.cotacoes USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)

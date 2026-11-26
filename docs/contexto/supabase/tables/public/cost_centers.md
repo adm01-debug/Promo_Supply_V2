@@ -36,7 +36,6 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
-| cost_centers_code_key | UNIQUE | `UNIQUE (code)` |  |  | sim |
 | cost_centers_manager_id_fkey | FOREIGN KEY | `FOREIGN KEY (manager_id) REFERENCES profiles(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | cost_centers_parent_id_fkey | FOREIGN KEY | `FOREIGN KEY (parent_id) REFERENCES cost_centers(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | cost_centers_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
@@ -60,11 +59,11 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| cost_centers_code_key | btree | code | sim | sim |  | `CREATE UNIQUE INDEX cost_centers_code_key ON public.cost_centers USING btree (code)` |
 | cost_centers_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX cost_centers_pkey ON public.cost_centers USING btree (id)` |
 | idx_cost_centers_manager | btree | manager_id | não | sim |  | `CREATE INDEX idx_cost_centers_manager ON public.cost_centers USING btree (manager_id)` |
 | idx_cost_centers_parent | btree | parent_id | não | sim |  | `CREATE INDEX idx_cost_centers_parent ON public.cost_centers USING btree (parent_id)` |
 | idx_cost_centers_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_cost_centers_tenant_id ON public.cost_centers USING btree (tenant_id)` |
+| uq_cost_centers_tenant_code | btree | tenant_id, code | sim | sim |  | `CREATE UNIQUE INDEX uq_cost_centers_tenant_code ON public.cost_centers USING btree (tenant_id, code)` |
 
 
 ## Policies (RLS)

@@ -54,7 +54,6 @@
 | pedidos_cotacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (cotacao_id) REFERENCES cotacoes(id)` | NO ACTION | NO ACTION | sim |
 | pedidos_currency_fkey | FOREIGN KEY | `FOREIGN KEY (currency) REFERENCES currencies(code) NOT VALID` | NO ACTION | NO ACTION | não |
 | pedidos_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
-| pedidos_numero_key | UNIQUE | `UNIQUE (numero)` |  |  | sim |
 | pedidos_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | pedidos_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | pedidos_solicitacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id)` | NO ACTION | NO ACTION | sim |
@@ -91,8 +90,8 @@
 | idx_pedidos_solicitacao_id | btree | solicitacao_id | não | sim |  | `CREATE INDEX idx_pedidos_solicitacao_id ON public.pedidos USING btree (solicitacao_id)` |
 | idx_pedidos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_pedidos_tenant ON public.pedidos USING btree (tenant_id)` |
 | idx_pedidos_tenant_status | btree | tenant_id, status | não | sim |  | `CREATE INDEX idx_pedidos_tenant_status ON public.pedidos USING btree (tenant_id, status)` |
-| pedidos_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX pedidos_numero_key ON public.pedidos USING btree (numero)` |
 | pedidos_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX pedidos_pkey ON public.pedidos USING btree (id)` |
+| uq_pedidos_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_pedidos_tenant_numero ON public.pedidos USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)

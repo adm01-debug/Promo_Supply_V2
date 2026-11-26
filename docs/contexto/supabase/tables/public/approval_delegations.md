@@ -35,6 +35,8 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
+| approval_delegations_delegado_id_fkey | FOREIGN KEY | `FOREIGN KEY (delegado_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
+| approval_delegations_delegante_id_fkey | FOREIGN KEY | `FOREIGN KEY (delegante_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | approval_delegations_no_overlap | EXCLUDE | `EXCLUDE USING gist (delegante_id WITH =, tenant_id WITH =, tstzrange(data_inicio, data_fim, '[)'::text) WITH &&) WHERE (ativo = true)` |  |  | sim |
 | approval_delegations_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | approval_delegations_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |

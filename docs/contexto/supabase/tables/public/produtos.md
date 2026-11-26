@@ -48,7 +48,6 @@
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
 | produtos_categoria_id_fkey | FOREIGN KEY | `FOREIGN KEY (categoria_id) REFERENCES categorias(id)` | NO ACTION | NO ACTION | sim |
-| produtos_codigo_key | UNIQUE | `UNIQUE (codigo)` |  |  | sim |
 | produtos_fornecedor_preferencial_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_preferencial_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
 | produtos_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | produtos_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
@@ -76,8 +75,8 @@
 | idx_produtos_org_ativo_nome | btree | organization_id, ativo, nome | não | sim |  | `CREATE INDEX idx_produtos_org_ativo_nome ON public.produtos USING btree (organization_id, ativo, nome)` |
 | idx_produtos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_produtos_tenant ON public.produtos USING btree (tenant_id)` |
 | idx_produtos_unspsc | btree | codigo_unspsc | não | sim |  | `CREATE INDEX idx_produtos_unspsc ON public.produtos USING btree (codigo_unspsc)` |
-| produtos_codigo_key | btree | codigo | sim | sim |  | `CREATE UNIQUE INDEX produtos_codigo_key ON public.produtos USING btree (codigo)` |
 | produtos_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX produtos_pkey ON public.produtos USING btree (id)` |
+| uq_produtos_tenant_codigo | btree | tenant_id, codigo | sim | sim |  | `CREATE UNIQUE INDEX uq_produtos_tenant_codigo ON public.produtos USING btree (tenant_id, codigo)` |
 
 
 ## Policies (RLS)

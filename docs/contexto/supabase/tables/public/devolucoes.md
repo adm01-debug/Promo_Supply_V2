@@ -45,9 +45,11 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
+| devolucoes_aprovador_id_fkey | FOREIGN KEY | `FOREIGN KEY (aprovador_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | devolucoes_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | devolucoes_pedido_id_fkey | FOREIGN KEY | `FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
 | devolucoes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
+| devolucoes_solicitante_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitante_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | devolucoes_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 
 
@@ -68,6 +70,7 @@
 | idx_devolucoes_pedido | btree | pedido_id | não | sim |  | `CREATE INDEX idx_devolucoes_pedido ON public.devolucoes USING btree (pedido_id)` |
 | idx_devolucoes_status | btree | status | não | sim |  | `CREATE INDEX idx_devolucoes_status ON public.devolucoes USING btree (status)` |
 | idx_devolucoes_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_devolucoes_tenant_id ON public.devolucoes USING btree (tenant_id)` |
+| uq_devolucoes_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_devolucoes_tenant_numero ON public.devolucoes USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)

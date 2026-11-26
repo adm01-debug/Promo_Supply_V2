@@ -44,6 +44,7 @@
 |---|---|---|---|---|---|
 | approval_rules_categoria_id_fkey | FOREIGN KEY | `FOREIGN KEY (categoria_id) REFERENCES categorias(id)` | NO ACTION | NO ACTION | sim |
 | approval_rules_cost_center_id_fkey | FOREIGN KEY | `FOREIGN KEY (cost_center_id) REFERENCES cost_centers(id)` | NO ACTION | NO ACTION | sim |
+| approval_rules_escalacao_para_fkey | FOREIGN KEY | `FOREIGN KEY (escalacao_para) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | approval_rules_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | approval_rules_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | approval_rules_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |

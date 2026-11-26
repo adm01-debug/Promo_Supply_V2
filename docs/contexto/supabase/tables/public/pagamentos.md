@@ -51,7 +51,6 @@
 | pagamentos_created_by_fkey | FOREIGN KEY | `FOREIGN KEY (created_by) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
 | pagamentos_forma_pagamento_check | CHECK | `CHECK (forma_pagamento = ANY (ARRAY['boleto'::text, 'pix'::text, 'transferencia'::text, 'cartao'::text, 'cheque'::text]))` |  |  | sim |
 | pagamentos_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
-| pagamentos_numero_key | UNIQUE | `UNIQUE (numero)` |  |  | sim |
 | pagamentos_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | pagamentos_pedido_id_fkey | FOREIGN KEY | `FOREIGN KEY (pedido_id) REFERENCES pedidos(id)` | NO ACTION | NO ACTION | sim |
 | pagamentos_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
@@ -81,8 +80,8 @@
 | idx_pagamentos_pedido_id | btree | pedido_id | não | sim |  | `CREATE INDEX idx_pagamentos_pedido_id ON public.pagamentos USING btree (pedido_id)` |
 | idx_pagamentos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_pagamentos_tenant ON public.pagamentos USING btree (tenant_id)` |
 | idx_pagamentos_vencimento_status | btree | data_vencimento, status | não | sim |  | `CREATE INDEX idx_pagamentos_vencimento_status ON public.pagamentos USING btree (data_vencimento, status)` |
-| pagamentos_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX pagamentos_numero_key ON public.pagamentos USING btree (numero)` |
 | pagamentos_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX pagamentos_pkey ON public.pagamentos USING btree (id)` |
+| uq_pagamentos_tenant_numero | btree | tenant_id, numero | sim | sim |  | `CREATE UNIQUE INDEX uq_pagamentos_tenant_numero ON public.pagamentos USING btree (tenant_id, numero)` |
 
 
 ## Policies (RLS)
