@@ -1207,6 +1207,27 @@ export type Database = {
           },
         ]
       }
+      audit_logs_ancora: {
+        Row: {
+          atualizado_em: string
+          id: boolean
+          registro_hash: string
+          sequencia: number
+        }
+        Insert: {
+          atualizado_em?: string
+          id?: boolean
+          registro_hash: string
+          sequencia: number
+        }
+        Update: {
+          atualizado_em?: string
+          id?: boolean
+          registro_hash?: string
+          sequencia?: number
+        }
+        Relationships: []
+      }
       audit_logs_legacy_20260712: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
@@ -9427,6 +9448,17 @@ export type Database = {
         Args: { r: Database["public"]["Tables"]["audit_logs"]["Row"] }
         Returns: string
       }
+      audit_rls_policies: {
+        Args: never
+        Returns: {
+          check_expression: string
+          cmd: string
+          policyname: string
+          roles: string[]
+          tablename: string
+          using_expression: string
+        }[]
+      }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
@@ -9530,17 +9562,6 @@ export type Database = {
       ensure_telemetry_logs_partition: {
         Args: { _month: string }
         Returns: undefined
-      }
-      audit_rls_policies: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          tablename: string
-          policyname: string
-          roles: string[]
-          cmd: string
-          using_expression: string | null
-          check_expression: string | null
-        }[]
       }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
