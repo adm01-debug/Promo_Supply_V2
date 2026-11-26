@@ -12,6 +12,8 @@ import {
   MAX_UNCONFIGURED_ATTEMPTS,
   classifyDispatch,
   previousAttempts,
+  shouldRecordDeadLetter,
+  DEAD_LETTER_ALERT_TYPE,
   type DispatchInput,
 } from './dispatchStatus.ts';
 
@@ -108,4 +110,34 @@ Deno.test('previousAttempts le o contador do jsonb sem quebrar em formato inespe
   assertEquals(previousAttempts({ fanout: { attempts: 0 } }), 0);
   assertEquals(previousAttempts({ fanout: { attempts: 3 } }), 3);
   assert(previousAttempts({ fanout: { attempts: 2 }, outro: 1 }) === 2);
+});
+
+Deno.test('171/EDG-05: so a falha definitiva (exhausted) abre o alerta de segundo nivel', () => {
+  assertEquals(shouldRecordDeadLetter('exhausted', 'cron_watchdog.stale.x'), true);
+  // `failed` ainda volta na proxima rodada: nao e definitivo, nao abre dead letter.
+  assertEquals(shouldRecordDeadLetter('failed', 'cron_watchdog.stale.x'), false);
+  assertEquals(shouldRecordDeadLetter('no_subscribers', 'cron_watchdog.stale.x'), false);
+  assertEquals(shouldRecordDeadLetter('delivered', 'cron_watchdog.stale.x'), false);
+  assertEquals(shouldRecordDeadLetter('partial', 'cron_watchdog.stale.x'), false);
+});
+
+Deno.test('171/EDG-05: o proprio dead letter nunca gera outro dead letter', () => {
+  assertEquals(shouldRecordDeadLetter('exhausted', DEAD_LETTER_ALERT_TYPE), false);
+  // tipo diferente comeca com o nome do dead letter mas nao e ele: continua valendo.
+  assertEquals(shouldRecordDeadLetter('exhausted', `${DEAD_LETTER_ALERT_TYPE}_x`), true);
+});
+
+Deno.test('171/EDG-05: o limite de tentativas e o mesmo que produz `exhausted`', () => {
+  const penultima = classifyDispatch(
+    com({ subscriberRows: 1, slackFailed: 1, previousAttempts: MAX_DELIVERY_ATTEMPTS - 2 }),
+    NOW,
+  );
+  assertEquals(penultima.status, 'failed');
+  assertEquals(shouldRecordDeadLetter(penultima.status, 'x'), false);
+  const ultima = classifyDispatch(
+    com({ subscriberRows: 1, slackFailed: 1, previousAttempts: MAX_DELIVERY_ATTEMPTS - 1 }),
+    NOW,
+  );
+  assertEquals(ultima.status, 'exhausted');
+  assertEquals(shouldRecordDeadLetter(ultima.status, 'x'), true);
 });

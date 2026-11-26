@@ -88,6 +88,18 @@ export function classifyDispatch(input: DispatchInput, nowIso: string): Dispatch
   return { status: "failed", dispatchedAt: null, attempts, anyDelivered, overallOk };
 }
 
+/** 171/EDG-05: `alert_type` proprio do alerta de segundo nivel. */
+export const DEAD_LETTER_ALERT_TYPE = "alert_dispatch_dead_letter";
+
+/**
+ * 171/EDG-05: so a falha definitiva (`exhausted`, que carimba `dispatched_at`)
+ * vira alerta de segundo nivel -- `failed` ainda volta na proxima rodada. O
+ * proprio dead letter nunca gera outro, o que evita realimentar a fila.
+ */
+export function shouldRecordDeadLetter(status: DispatchStatus, alertType: string): boolean {
+  return status === "exhausted" && alertType !== DEAD_LETTER_ALERT_TYPE;
+}
+
 /** Le `metadata.fanout.attempts` sem confiar no formato do jsonb. */
 export function previousAttempts(metadata: Record<string, unknown> | null): number {
   const fanout = metadata?.["fanout"];
