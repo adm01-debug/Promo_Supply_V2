@@ -40,6 +40,7 @@ Deno.serve(async (req) => {
           status,
           valor,
           solicitacao_id,
+          tenant_id,
           rule:approval_rules!approval_workflows_rule_id_fkey(
             escalacao_automatica,
             escalacao_para
@@ -103,25 +104,44 @@ Deno.serve(async (req) => {
         }
 
         // Log the escalation in history
-        const { error: historyError } = await supabase
-          .from('approval_history')
-          .insert({
-            workflow_id: workflow.id,
-            solicitacao_id: workflow.solicitacao_id,
-            step_id: step.id,
-            acao: 'escalated',
-            usuario_id: null,
-            usuario_nome: 'Sistema',
-            detalhes: {
-              motivo: 'Prazo limite excedido',
-              prazo_original: step.prazo_limite,
-              escalado_para: rule.escalacao_para,
-              aprovador_original: step.aprovador_id
-            }
-          });
+        // `approval_history.tenant_id` e NOT NULL e sem default: sem tenant o insert falhava
+        // com 23503/23502 e a trilha do escalonamento automatico se perdia (so um
+        // console.error). O tenant vem do proprio workflow e, se faltar, da solicitacao
+        // vinculada. Sem tenant nao ha como gravar: registra a perda com severidade.
+        let tenantId: string | null = workflow.tenant_id ?? null;
+        if (!tenantId && workflow.solicitacao_id) {
+          const { data: solicitacao } = await supabase
+            .from('solicitacoes')
+            .select('tenant_id')
+            .eq('id', workflow.solicitacao_id)
+            .maybeSingle();
+          tenantId = (solicitacao as { tenant_id?: string | null } | null)?.tenant_id ?? null;
+        }
 
-        if (historyError) {
-          console.error(`Error logging escalation history:`, historyError);
+        if (!tenantId) {
+          logger.error(`Escalonamento sem tenant: historico nao registrado`, { workflowId: workflow.id });
+        } else {
+          const { error: historyError } = await supabase
+            .from('approval_history')
+            .insert({
+              workflow_id: workflow.id,
+              solicitacao_id: workflow.solicitacao_id,
+              step_id: step.id,
+              acao: 'escalated',
+              usuario_id: null,
+              usuario_nome: 'Sistema',
+              tenant_id: tenantId,
+              detalhes: {
+                motivo: 'Prazo limite excedido',
+                prazo_original: step.prazo_limite,
+                escalado_para: rule.escalacao_para,
+                aprovador_original: step.aprovador_id
+              }
+            });
+
+          if (historyError) {
+            logger.error(`Error logging escalation history:`, { workflowId: workflow.id, error: historyError });
+          }
         }
 
         // Create notification for the escalation target
