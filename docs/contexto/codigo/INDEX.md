@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c` (2026-11-26T09:12:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `ef532a21ef111e02edde895e95ebb2652b7f138e` (2026-11-26T09:24:40-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (891), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (892), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1503 |
-| arquivos_codigo | 966 |
-| linhas_codigo | 191998 |
+| arquivos_total | 1504 |
+| arquivos_codigo | 967 |
+| linhas_codigo | 192146 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 322 |
+| testes | 323 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (30), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (224), co-localizado (*.test) (44), outro (44)
+- testes: co-localizado (__tests__) (225), co-localizado (*.test) (44), outro (44)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -343,7 +343,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (171)
+- docs/qa/05-PROGRESSO.md (172)
 - docs/pendencias/_indice.md (21)
 - AGENTS.md (13)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
@@ -355,9 +355,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
 - src/integrations/supabase/types.ts (8)
+- src/pages/gerar-ordem/GerarOrdem.tsx (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - supabase/functions/send-push-notification/index.ts (8)
-- bun.lock (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `ef532a2` fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)
 - 2026-11-26 `e8b0d67` feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)
 - 2026-11-26 `e94d3a2` fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)
 - 2026-11-26 `5540d3e` fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `86bc33f` perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)
 - 2026-11-26 `cf9c067` fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)
 - 2026-11-26 `bb8724e` fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)
-- 2026-11-26 `c30880d` fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

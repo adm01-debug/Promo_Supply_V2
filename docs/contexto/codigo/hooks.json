@@ -962,7 +962,7 @@
    "hooks_exportados": [
     "useCatalogoPim"
    ],
-   "linhas": 232,
+   "linhas": 253,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -981,7 +981,7 @@
     "src/pages/gerar-ordem/GerarOrdem.tsx",
     "src/pages/recompra/RecompraInteligente.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useClearFiltersFlow.tsx",

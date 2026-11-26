@@ -4961,11 +4961,10 @@
     "GerarOrdem"
    ],
    "export_default": "GerarOrdem",
-   "linhas": 663,
+   "linhas": 702,
    "dominio": "pages/gerar-ordem",
    "hooks_locais": [
     "useAuth",
-    "useCatalogoPim",
     "useCotacoes",
     "usePedidos"
    ],

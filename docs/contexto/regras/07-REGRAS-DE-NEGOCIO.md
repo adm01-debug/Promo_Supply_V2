@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e8b0d67e86` · branch `main` · 2026-11-26 12:14 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ef532a21ef` · branch `main` · 2026-11-26 12:25 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2460,7 +2460,7 @@ _nenhum item encontrado_
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
 | ${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join( | `src/hooks/usePagamentos.ts` |
-| … +289 linhas — lista completa em `context.json` | |
+| … +290 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2478,7 +2478,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3566 testes em 270 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3571 testes em 271 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2662,6 +2662,7 @@ _nenhum item encontrado_
 | `src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx` | 5 | filtros de pedidos no servidor (etapa 213) · empurra status e fornecedor para a consulta · sem filtro nao acrescenta eq de status nem de fornecedor · a tela de pedidos manda os filtros para o hook … |
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/hooks/__tests__/useCatalogoPim.erro.test.ts` | 5 | buscarProdutoPorIdEstrito (etapa 169) · propaga o erro da bridge em vez de devolver null · devolve o produto e consulta a view de catalogo filtrada por pim_product_id · devolve null quando o produto nao existe na view, sem erro … |
 | `src/hooks/__tests__/useFornecedores.paginacao.test.tsx` | 5 | useFornecedores · paginacao (PERF-01 / etapa 211) · sem  · com  · tipo  … |
 | `src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx` | 5 | useLicitacoes - fallback de empresa (etapa 200 / HK-11) · carrega a lista pela empresa quando o claim tenant_id nao vem no JWT · cria licitacao sem acusar login ausente quando so a empresa esta disponivel · prefere o tenant do claim quando ele existe, mesmo com empresa definida … |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 5 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados · grava a data escolhida quando o agendamento tem data … |
@@ -2840,6 +2841,7 @@ _nenhum item encontrado_
 | Entregues no prazo | `src/hooks/useBuyerPerformanceData.ts` |
 | null = faixa aberta (sem limite superior) */ | `src/hooks/useCatalogoPim.ts` |
 | origem da regra, ex: 'spot_customization' */ | `src/hooks/useCatalogoPim.ts` |
+| Quem congela dado fiscal na OC (NCM, IPI, codigo do fornecedor) nao pode | `src/hooks/useCatalogoPim.ts` |
 | Baseado em deadline absoluto: imune a throttling de aba em background. | `src/hooks/useCooldown.ts` |
 | SLA vem de RPC propria (get_compras_sla_metrics). Falha aqui nao pode | `src/hooks/useDashboardKPIs.ts` |
 | Devolucao que ja gerou credito nao pode ser apagada: a FK de | `src/hooks/useDevolucoes.ts` |

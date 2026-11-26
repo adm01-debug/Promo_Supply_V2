@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c",
+  "commit": "ef532a21ef111e02edde895e95ebb2652b7f138e",
   "branch": "main",
-  "data_commit": "2026-11-26T09:12:17-03:00",
+  "data_commit": "2026-11-26T09:24:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "ef532a2",
+    "data": "2026-11-26",
+    "assunto": "fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)"
+   },
    {
     "sha": "e8b0d67",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "f2f21c8",
     "data": "2026-11-26",
     "assunto": "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)"
-   },
-   {
-    "sha": "6d9dddb",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)"
    }
   ],
-  "arquivos_mudados_7d": 1524,
+  "arquivos_mudados_7d": 1525,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 171
+    "mudancas": 172
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 51
+    "mudancas": 52
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 171
+    "mudancas": 172
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -246,6 +246,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
     "mudancas": 8
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "src/pages/cotacao/Cotacao.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
     "mudancas": 7
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1503,
-  "arquivos_codigo": 966,
-  "linhas_codigo": 191998,
+  "arquivos_total": 1504,
+  "arquivos_codigo": 967,
+  "linhas_codigo": 192146,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 344,
   "cron_jobs": 79,
-  "testes": 322,
+  "testes": 323,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 101
@@ -435,8 +435,8 @@
    "linhas": 11817
   },
   "src/hooks": {
-   "arquivos": 102,
-   "linhas": 17301
+   "arquivos": 103,
+   "linhas": 17410
   },
   "src/i18n": {
    "arquivos": 3,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 159,
-   "linhas": 35407
+   "linhas": 35446
   },
   "src/routes": {
    "arquivos": 1,
@@ -605,6 +605,10 @@
    "linhas": 745
   },
   {
+   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+   "linhas": 702
+  },
+  {
    "arquivo": "supabase/functions/spot-api/index.ts",
    "linhas": 700
   },
@@ -622,10 +626,6 @@
   },
   {
    "arquivo": "src/hooks/useXbzIntegration.ts",
-   "linhas": 663
-  },
-  {
-   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
    "linhas": 663
   },
   {
