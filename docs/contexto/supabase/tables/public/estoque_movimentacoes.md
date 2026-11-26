@@ -51,16 +51,6 @@
 
 ## Policies (RLS)
 
-### `Movimentações: inserir na própria organização`
-
-| campo | valor |
-|---|---|
-| comando | INSERT |
-| tipo | PERMISSIVE |
-| roles | authenticated |
-| USING |  |
-| WITH CHECK | `(organization_id = ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |
-
 ### `Movimentações: ver da própria organização`
 
 | campo | valor |
@@ -70,6 +60,16 @@
 | roles | authenticated |
 | USING | `(organization_id = ( SELECT profiles.current_organization_id    FROM profiles   WHERE (profiles.user_id = auth.uid())))` |
 | WITH CHECK |  |
+
+### `estoque_movimentacoes_insert_papeis`
+
+| campo | valor |
+|---|---|
+| comando | INSERT |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING |  |
+| WITH CHECK | `((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)) AND (EXISTS ( SELECT 1    FROM estoque e   WHERE ((e.id = estoque_movimentacoes.estoque_id) AND (e.organization_id = get_user_grupo_id())))))` |
 
 
 ## Triggers

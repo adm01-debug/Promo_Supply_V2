@@ -132,6 +132,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a1_guard_pedido_exige_solicitacao_aprovada | BEFORE | INSERT | ROW | enabled | public.guard_pedido_exige_solicitacao_aprovada |
 | a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_auto_create_pagamento_on_delivery | AFTER | UPDATE | ROW | enabled | public.auto_create_pagamento_on_delivery |
 | trg_auto_penalty_on_late_delivery | AFTER | UPDATE | ROW | enabled | public.auto_calculate_delivery_penalty |

@@ -38648,9 +38648,13 @@
             {
               "file": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126121047_guard_pedido_exige_solicitacao_aprovada.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [
@@ -40124,9 +40128,13 @@
             {
               "file": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 26,
+          "code_total_files": 27,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -40137,12 +40145,12 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "54c1c4b9a2d8b4d6",
+        "definition_sha": "6f1968e2c026d95f",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": false,
         "kind": "function",
-        "language": "sql",
+        "language": "plpgsql",
         "leakproof": false,
         "name": "current_tenant_id",
         "owner": "postgres",
@@ -41308,9 +41316,21 @@
             {
               "file": "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
               "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+              "hits": 4
+            },
+            {
+              "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 8,
+          "code_total_files": 11,
           "cron": [],
           "db": [
             "public.get_compras_dashboard_metrics",
@@ -41322,7 +41342,8 @@
             "public.get_solicitacoes_kpis",
             "public.guard_solicitacao_escrita",
             "public.tenant_in_my_group",
-            "public.tenants_in_my_group"
+            "public.tenants_in_my_group",
+            "public.update_estoque_saldo"
           ],
           "triggers": [],
           "views": []
@@ -41397,9 +41418,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [
@@ -41420,6 +41445,43 @@
         "language": "plpgsql",
         "leakproof": false,
         "name": "grant_tenant_access_on_insert",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261126121047_guard_pedido_exige_solicitacao_aprovada.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.pedidos.a1_guard_pedido_exige_solicitacao_aprovada"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "991f6aa4c1d4598e",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "guard_pedido_exige_solicitacao_aprovada",
         "owner": "postgres",
         "returns": "trigger",
         "schema": "public",
@@ -41516,9 +41578,17 @@
             {
               "file": "supabase/migrations/20261117150000_religa_cadastro_de_usuarios.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [
@@ -41531,7 +41601,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "d4da0d7d27a90228",
+        "definition_sha": "b1f65f72d91f7da6",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -41751,7 +41821,7 @@
               "hits": 37
             }
           ],
-          "code_total_files": 79,
+          "code_total_files": 80,
           "cron": [],
           "db": [
             "public.count_legacy_storage_urls",
@@ -44516,6 +44586,10 @@
               "hits": 152
             },
             {
+              "file": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
               "hits": 1
             },
@@ -44524,10 +44598,9 @@
               "hits": 1
             }
           ],
-          "code_total_files": 16,
+          "code_total_files": 17,
           "cron": [],
           "db": [
-            "public.current_tenant_id",
             "public.find_approval_rule",
             "public.get_cost_center_performance_report",
             "public.get_dashboard_kpis"
@@ -45152,9 +45225,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -45167,7 +45244,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "3a05768c10ea9f28",
+        "definition_sha": "755a725b54eca1d5",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -59643,13 +59720,13 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.estoque_movimentacoes.Movimentações: inserir na própria organização",
+        "object": "public.estoque_movimentacoes.Movimentações: ver da própria organização",
         "severity": "BAIXA"
       },
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.estoque_movimentacoes.Movimentações: ver da própria organização",
+        "object": "public.estoque_movimentacoes.estoque_movimentacoes_insert_papeis",
         "severity": "BAIXA"
       },
       {
@@ -62486,6 +62563,18 @@
         "version": "20261126120000"
       },
       {
+        "name": "guard_pedido_exige_solicitacao_aprovada",
+        "statements": 3,
+        "statements_sha": "8a82eb64c32cfc19",
+        "version": "20261126121047"
+      },
+      {
+        "name": "handle_new_user_papel_viewer",
+        "statements": 3,
+        "statements_sha": "6c8aee17611c8265",
+        "version": "20261126122905"
+      },
+      {
         "name": "pedido_cancelado_terminal",
         "statements": null,
         "version": "20261126130000"
@@ -64358,18 +64447,6 @@
         "with_check": "((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)))"
       },
       {
-        "cmd": "INSERT",
-        "name": "Movimentações: inserir na própria organização",
-        "permissive": "PERMISSIVE",
-        "roles": [
-          "authenticated"
-        ],
-        "schema": "public",
-        "table": "estoque_movimentacoes",
-        "using": null,
-        "with_check": "(organization_id = ( SELECT profiles.current_organization_id\n   FROM profiles\n  WHERE (profiles.user_id = auth.uid())))"
-      },
-      {
         "cmd": "SELECT",
         "name": "Movimentações: ver da própria organização",
         "permissive": "PERMISSIVE",
@@ -64380,6 +64457,18 @@
         "table": "estoque_movimentacoes",
         "using": "(organization_id = ( SELECT profiles.current_organization_id\n   FROM profiles\n  WHERE (profiles.user_id = auth.uid())))",
         "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "estoque_movimentacoes_insert_papeis",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "estoque_movimentacoes",
+        "using": null,
+        "with_check": "((organization_id = get_user_grupo_id()) AND (has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role)) AND (EXISTS ( SELECT 1\n   FROM estoque e\n  WHERE ((e.id = estoque_movimentacoes.estoque_id) AND (e.organization_id = get_user_grupo_id())))))"
       },
       {
         "cmd": "SELECT",
@@ -71364,6 +71453,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "pedido_itens",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a1_guard_pedido_exige_solicitacao_aprovada BEFORE INSERT ON pedidos FOR EACH ROW EXECUTE FUNCTION guard_pedido_exige_solicitacao_aprovada()",
+        "events": "INSERT",
+        "function": "public.guard_pedido_exige_solicitacao_aprovada",
+        "level": "ROW",
+        "name": "a1_guard_pedido_exige_solicitacao_aprovada",
+        "schema": "public",
+        "status": "enabled",
+        "table": "pedidos",
         "timing": "BEFORE"
       },
       {

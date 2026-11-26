@@ -29,7 +29,7 @@ BEGIN
   ON CONFLICT (user_id) DO NOTHING;
 
   INSERT INTO public.user_roles (user_id, role)
-  VALUES (NEW.id, 'buyer')
+  VALUES (NEW.id, 'viewer')
   ON CONFLICT DO NOTHING;
 
   RETURN NEW;

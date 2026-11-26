@@ -340,6 +340,8 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125170000 | [matriz_transicoes_alinhada](migrations/20261125170000_matriz_transicoes_alinhada.sql) | 0 |
 | 20261126115421 | [fix_cotacao_nao_aprova_solicitacao](migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql) | 2 |
 | 20261126120000 | [alinha_transicoes_pagamento_pedido](migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql) | 0 |
+| 20261126121047 | [guard_pedido_exige_solicitacao_aprovada](migrations/20261126121047_guard_pedido_exige_solicitacao_aprovada.sql) | 3 |
+| 20261126122905 | [handle_new_user_papel_viewer](migrations/20261126122905_handle_new_user_papel_viewer.sql) | 3 |
 | 20261126130000 | [pedido_cancelado_terminal](migrations/20261126130000_pedido_cancelado_terminal.sql) | 0 |
 | 20261126140000 | [rls_fase2_notifications_e_category_strategies](migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql) | 10 |
 | 20261126150000 | [remove_trigger_duplicado_solicitacoes_e_qualificacao](migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql) | 2 |

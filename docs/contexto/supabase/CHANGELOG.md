@@ -2,6 +2,17 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 16:26 UTC
+
+- **functions** adicionado (1): `public.guard_pedido_exige_solicitacao_aprovada()`
+- **functions** alterado (8): `public.auto_transition_solicitacao_on_pedido_created()`, `public.current_tenant_id()`, `public.get_user_grupo_id()`, `public.grant_tenant_access_on_insert()`, `public.handle_new_user()`, `public.has_role(_user_id uuid, _role app_role)`, `public.tenant_in_my_group(_tenant_id uuid)`, `public.update_estoque_saldo()`
+- **lints** adicionado (1): `policy_auth_fn_not_wrapped:public.estoque_movimentacoes.estoque_movimentacoes_insert_papeis`
+- **lints** removido (1): `policy_auth_fn_not_wrapped:public.estoque_movimentacoes.Movimentações: inserir na própria organização`
+- **migrations** adicionado (2): `20261126121047_guard_pedido_exige_solicitacao_aprovada`, `20261126122905_handle_new_user_papel_viewer`
+- **policies (RLS)** adicionado (1): `public.estoque_movimentacoes.estoque_movimentacoes_insert_papeis`
+- **policies (RLS)** removido (1): `public.estoque_movimentacoes.Movimentações: inserir na própria organização`
+- **triggers** adicionado (1): `public.pedidos.a1_guard_pedido_exige_solicitacao_aprovada`
+
 ## 2026-11-26 15:17 UTC
 
 - **edge functions** alterado (32): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `maintain-partitions`, `process-invoice-idp`, `process-solicitacao-neural`, `punchout-receive`, `receive-os-sync`, `scim-v2`, `send-push-notification`, `spot-api`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy`, `xbz-sync-pedidos`
