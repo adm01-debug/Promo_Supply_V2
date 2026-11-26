@@ -24,6 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllRows } from "@/lib/paginatedFetch";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface RiskData {
@@ -68,15 +69,19 @@ const getRiskLabel = (value: number) => {
 
 export const RiskHeatMap = () => {
   const [hoveredCell, setHoveredCell] = useState<{ supplier: string; category: string } | null>(null);
+  const { organizationId } = useAuth();
 
+  // organizationId na chave: sem ele o cache vaza entre tenants (a RLS filtra a
+  // consulta, nao o cache do react-query).
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
-    queryKey: ['risk-heatmap-fornecedores'],
-    queryFn: () => fetchAllRows<{ id: string; razao_social: string; avaliacao: number | null; status: string; categorias: { nome: string } }>('fornecedores', 'id, razao_social, avaliacao, status, categorias(nome)'),
+    queryKey: ['risk-heatmap-fornecedores', organizationId],
+    // status filtrado no SQL: o calculo abaixo so usa fornecedores ativos.
+    queryFn: () => fetchAllRows<{ id: string; razao_social: string; avaliacao: number | null; status: string; categorias: { nome: string } }>('fornecedores', 'id, razao_social, avaliacao, status, categorias(nome)', { filters: [{ column: 'status', operator: 'eq', value: 'ativo' }] }),
     staleTime: 60_000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
-    queryKey: ['risk-heatmap-pedidos'],
+    queryKey: ['risk-heatmap-pedidos', organizationId],
     queryFn: () => fetchAllRows<{ fornecedor_id: string; status: string; data_previsao: string; data_entrega: string; valor_total: number }>('pedidos', 'fornecedor_id, status, data_previsao, data_entrega, valor_total'),
     staleTime: 60_000,
   });

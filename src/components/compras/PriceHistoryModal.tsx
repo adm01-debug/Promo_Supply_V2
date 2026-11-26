@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllRows } from "@/lib/paginatedFetch";
+import { useAuth } from "@/features/auth";
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -31,11 +32,12 @@ interface PriceHistoryModalProps {
 }
 
 export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps) {
+  const { organizationId } = useAuth();
   const [selectedFornecedor, setSelectedFornecedor] = useState<string>("all");
   const [selectedSolicitacao, setSelectedSolicitacao] = useState<string>("all");
 
   const { data: cotacoes = [] } = useQuery({
-    queryKey: ["price-history-cotacoes"],
+    queryKey: ["price-history-cotacoes", organizationId],
     queryFn: () =>
       fetchAllRows<CotacaoRecord>(
         "cotacoes",
@@ -45,14 +47,14 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
   });
 
   const { data: fornecedores = [] } = useQuery({
-    queryKey: ["price-history-fornecedores"],
+    queryKey: ["price-history-fornecedores", organizationId],
     queryFn: () =>
       fetchAllRows<FornecedorRecord>("fornecedores", "id, razao_social, nome_fantasia"),
     enabled: open,
   });
 
   const { data: solicitacoes = [] } = useQuery({
-    queryKey: ["price-history-solicitacoes"],
+    queryKey: ["price-history-solicitacoes", organizationId],
     queryFn: () =>
       fetchAllRows<SolicitacaoRecord>("solicitacoes", "id, titulo"),
     enabled: open,
