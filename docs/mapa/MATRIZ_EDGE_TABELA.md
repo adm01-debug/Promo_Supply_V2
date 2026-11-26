@@ -117,7 +117,7 @@
 |---|---|
 | `_shared/idempotency.ts` | `webhook_events` |
 | `_shared/logger.ts` | `telemetry_logs` |
-| `_shared/notifications.ts` | `notifications`, `profiles` |
+| `_shared/notifications.ts` | `notification_preferences`, `notifications`, `profiles`, `push_subscriptions` |
 | `_shared/security.ts` | `user_tenants` |
 | `_shared/telemetry.ts` | `telemetry_logs` |
 | `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |

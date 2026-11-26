@@ -116,3 +116,11 @@ recebem registro quando gerada a decisao (evidencia de que ja funciona / escopo 
 | ID | Item | Estado | Fonte |
 |---|---|---|---|
 | hig-05 | `no-unused-vars` desligado no ESLint escondia fiacao abandonada: abas "Itens"/"Docs" e upload do contrato em branco, `isMobile`/`FornecedorMobileCard` orfaos, `linkedOrders`/`loading` nunca renderizados | CONCLUIDO (PR #494 + PR #495) | `ContractDetailsModal.tsx` (abas `items`/`docs` + upload por input de arquivo), `Fornecedores.tsx` (cartao mobile), `eslint.config.js` (`"@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }]`) |
+
+## Edges orfas restantes (EDG-07) -- decisao pendente do dono
+| ID | Item | Estado | Fonte |
+|---|---|---|---|
+| edg-07a | `workflow-engine` nao e chamada pelo front, por cron, por funcao SQL nem por outra edge. NAO foi apagada: `deploy_edge_functions_promo_supply.sh:111-118` a lista em `CRITICAL_FNS` e ha teste de fuzzing e de carga apontando para ela | PENDENTE (ligar ou remover, so com o dono) | `deploy_edge_functions_promo_supply.sh:111-118` |
+| edg-07b | `fiscal-orchestrator` nao e chamada por nenhuma das quatro vias de invocacao | PENDENTE (ligar ou remover, so com o dono) | `supabase/functions/fiscal-orchestrator/index.ts` |
+| edg-07c | `maintain-partitions` nao e chamada por nenhuma das quatro vias; a manutencao de particoes hoje roda por funcao SQL | PENDENTE (ligar ou remover, so com o dono) | `supabase/functions/maintain-partitions/index.ts` |
+| edg-07d | `send-push-notification` estava completa e sem chamador: o front gravava `push_subscriptions` e nada enviava | CONCLUIDO (etapa 174: `maybeSendPush` em `_shared/notifications.ts` + canal interno autenticado por `CRON_SECRET` na edge, sem duplicar o in-app) | `supabase/functions/_shared/notifications.ts`, `supabase/functions/send-push-notification/index.ts` |
