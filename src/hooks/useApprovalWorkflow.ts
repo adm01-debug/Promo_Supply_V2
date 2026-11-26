@@ -261,11 +261,35 @@ export const useApprovalWorkflow = () => {
       if (stepError) throw stepError;
 
       const workflow = step.approval_workflows;
-      let requiresUnanimity = false;
-      if (workflow?.rule_id) {
-        const { data: rule } = await supabase.from('approval_rules')
-          .select('requer_unanimidade').eq('id', workflow.rule_id).single();
-        requiresUnanimity = rule?.requer_unanimidade || false;
+
+      // A ordem das etapas e pre-condicao, nao ordenacao de exibicao: aprovar a
+      // ultima etapa primeiro fechava o workflow com as anteriores pendentes e o
+      // trigger liberava a solicitacao. Reaprovar etapa ja decidida tambem passa.
+      if (workflow?.status !== 'pending') {
+        toast.error('Este fluxo de aprovação já foi encerrado.');
+        return false;
+      }
+      if (step.status !== 'pending') {
+        toast.error('Esta etapa já foi decidida.');
+        return false;
+      }
+      if (step.etapa !== workflow.etapa_atual) {
+        toast.error(`Etapa fora de ordem: agora é a vez da etapa ${workflow.etapa_atual}.`);
+        logger.error('Aprovacao fora de ordem recusada', {
+          stepId, etapa: step.etapa, etapaAtual: workflow.etapa_atual,
+        });
+        return false;
+      }
+
+      // Segregacao de funcao: quem criou a solicitacao nao decide a propria aprovacao.
+      if (workflow.solicitacao_id) {
+        const { data: solicitacao } = await supabase.from('solicitacoes')
+          .select('solicitante_id').eq('id', workflow.solicitacao_id).single();
+        if (solicitacao?.solicitante_id && solicitacao.solicitante_id === user?.id) {
+          logger.error('Aprovacao recusada por segregacao de funcao', { stepId });
+          toast.error('Segregação de funções: a solicitação não pode ser aprovada por quem a criou.');
+          return false;
+        }
       }
 
       // O RLS filtra a linha em silencio: update de 0 linhas volta sem erro. Sem
@@ -274,7 +298,7 @@ export const useApprovalWorkflow = () => {
       const { data: stepAtualizado, error: updateError } = await supabase.from('approval_steps').update({
         status: 'approved', aprovador_efetivo_id: user?.id, comentario,
         decidido_em: new Date().toISOString(),
-      }).eq('id', stepId).select('id');
+      }).eq('id', stepId).eq('status', 'pending').eq('etapa', workflow.etapa_atual).select('id');
       if (updateError) throw updateError;
       if (!stepAtualizado?.length) {
         logger.error('Aprovacao nao gravada: 0 linhas afetadas (RLS)', { stepId });
@@ -284,7 +308,9 @@ export const useApprovalWorkflow = () => {
 
       const { data: allSteps } = await supabase.from('approval_steps').select('*').eq('workflow_id', step.workflow_id);
       const allOtherSteps = allSteps?.filter(s => s.id !== stepId) || [];
-      const allApproved = allOtherSteps.every(s => s.status === 'approved' || s.status === 'skipped');
+      const aindaPendentes = allOtherSteps.filter(s => s.status === 'pending');
+      const allApproved = aindaPendentes.length === 0
+        && allOtherSteps.every(s => s.status === 'approved' || s.status === 'skipped');
 
       if (allApproved) {
         const { data: current } = await supabase.from('approval_workflows').select('status').eq('id', step.workflow_id).single();
@@ -293,11 +319,13 @@ export const useApprovalWorkflow = () => {
           toast.success('Aprovação finalizada! Solicitação liberada.');
         }
       } else {
-        const nextStep = allOtherSteps.find(s => s.status === 'pending' && s.etapa > step.etapa);
+        // Concluir so quando nao sobrar nenhuma etapa pendente: a busca para frente
+        // escondia as pendentes anteriores e fechava o fluxo antes do fim.
+        const nextStep = aindaPendentes
+          .filter(s => s.etapa > step.etapa)
+          .sort((a, b) => a.etapa - b.etapa)[0];
         if (nextStep) {
           await supabase.from('approval_workflows').update({ etapa_atual: nextStep.etapa, updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
-        } else if (!requiresUnanimity) {
-          await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
         }
       }
 
