@@ -17,7 +17,7 @@
 | `ai-supplier-risk` | — |
 | `ai-supplier-suggestion` | — |
 | `alert-dispatcher` | `system_alerts` |
-| `check-approval-escalations` | `approval_history`, `approval_steps`, `approval_workflows` |
+| `check-approval-escalations` | `approval_history`, `approval_steps`, `approval_workflows`, `solicitacoes` |
 | `check-cotacao-followup` | `cotacoes`, `notifications`, `profiles` |
 | `check-expiry-alerts` | `contracts`, `cotacoes`, `pagamentos`, `user_roles` |
 | `check-sla-alerts` | `pagamentos`, `pedidos`, `solicitacoes`, `user_roles` |
@@ -84,7 +84,7 @@
 | `punchout_sessions` | `punchout-receive`, `punchout-setup` |
 | `push_subscriptions` | `send-push-notification` |
 | `query_telemetry` | `external-db-bridge` |
-| `solicitacoes` | `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `receive-os-sync`, `weekly-report`, `weekly-summary-report` |
+| `solicitacoes` | `check-approval-escalations`, `check-sla-alerts`, `escalate-solicitacao`, `punchout-receive`, `receive-os-sync`, `weekly-report`, `weekly-summary-report` |
 | `spot_api_sync_log` | `spot-api` |
 | `spot_estoque` | `spot-api` |
 | `spot_pedidos` | `spot-api`, `spot-proxy` |
