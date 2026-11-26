@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 10:13 UTC
+
+- **edge functions** alterado (6): `check-approval-escalations`, `check-cotacao-followup`, `punchout-receive`, `scim-v2`, `send-push-notification`, `spot-api`
+
 ## 2026-11-26 09:14 UTC
 
 - **cron jobs** adicionado (1): `124:cleanup-spot-api-sync-log`
