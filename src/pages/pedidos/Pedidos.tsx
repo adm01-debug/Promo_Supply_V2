@@ -63,10 +63,17 @@ const Pedidos = () => {
 
   const isMobile = useIsMobile();
   const { empresaIds } = useEmpresaFilter();
-  const { pedidos, totalCount, loading, error, refetch, bulkUpdateStatus, bulkDelete } = usePedidos({
+  // Status e fornecedor vao ao servidor: filtrados em JS eles so' recortavam a
+    // pagina ja' baixada, entao escolher "Entregue" com 3 paginas mostrava apenas
+    // os entregues que coubessem na pagina atual. `search` segue local porque o
+    // termo tambem casa com a razao social do fornecedor, que o `.or` do hook nao
+    // consulta (so' `numero`).
+    const { pedidos, totalCount, loading, error, refetch, bulkUpdateStatus, bulkDelete } = usePedidos({
     empresaIds,
     page,
     pageSize: PEDIDOS_PAGE_SIZE,
+      status: statusFilter !== 'all' ? statusFilter : undefined,
+      fornecedor_id: fornecedorFilter !== 'all' ? fornecedorFilter : undefined,
   });
 
   // Trocar de filtro com uma pagina adiante aberta levava a uma tela vazia: a
