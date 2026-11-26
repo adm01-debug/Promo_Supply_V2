@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "53abd53accdc5ea34821b273e80c885b1ad186ed",
+  "sha": "eeff86ea4dcffc4095edf5480ebc393cefc5cad9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 17:01 UTC",
-  "files_total": 1540,
-  "code_files": 1365,
-  "code_lines": 226267,
+  "generated_at": "2026-11-26 17:07 UTC",
+  "files_total": 1542,
+  "code_files": 1367,
+  "code_lines": 226404,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "dc6de282b3271092",
+ "facts_hash": "0028789614b9b8bf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 395,
+   ".sql": 397,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27361,6 +27361,7 @@
    "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
    "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
    "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+   "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27386,6 +27387,7 @@
    "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
    "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
    "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
+   "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -32040,8 +32042,16 @@
     "stmt": "IF tem_tenant THEN CREATE POLICY \"service_role_all_partition\" ON public.telemetry_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);"
    },
    {
+    "src": "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
+    "stmt": "EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT IF EXISTS %I', t, cglobal);"
+   },
+   {
     "src": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
     "stmt": "EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);"
+   },
+   {
+    "src": "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
+    "stmt": "EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I UNIQUE (%I)', alvos[i][1], alvos[i][3], alvos[i][2]);"
    }
   ]
  },
@@ -36923,8 +36933,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 365,
-   "lines": 30942,
+   "files": 366,
+   "lines": 31043,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37015,8 +37025,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 18,
-   "lines": 1196,
+   "files": 19,
+   "lines": 1232,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37035,6 +37045,7 @@
     "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
     "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
     "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
+    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -93692,9 +93703,23 @@
    },
    {
     "kind": "ddl dinâmico",
+    "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT IF EXISTS %I', t, cglobal);`",
+    "where": [
+     "supabase/migrations/20261126180000_unicidade_por_tenant.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
     "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);`",
     "where": [
      "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
+    "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I UNIQUE (%I)', alvos[i][1], alvos[i][3], alvos[i][2]);`",
+    "where": [
+     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql"
     ]
    },
    {
@@ -124894,6 +124919,10 @@
    "path": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
    "lines": 77
   },
+  "supabase/migrations/20261126180000_unicidade_por_tenant.sql": {
+   "path": "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
+   "lines": 101
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -125026,6 +125055,10 @@
   "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql": {
    "path": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
    "lines": 24
+  },
+  "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql": {
+   "path": "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
+   "lines": 36
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -125286,10 +125319,22 @@
   }
  },
  "git": {
-  "sha": "53abd53accdc5ea34821b273e80c885b1ad186ed",
+  "sha": "eeff86ea4dcffc4095edf5480ebc393cefc5cad9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "eeff86e",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
+     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql"
+    ]
+   },
    {
     "sha": "53abd53",
     "date": "2026-11-26",
@@ -125640,21 +125685,6 @@
      "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
      "src/hooks/useApprovalWorkflow.ts"
     ]
-   },
-   {
-    "sha": "10f9737",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
-     "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
-     "src/pages/catalogo-spot/useSpotCatalog.ts",
-     "src/tests/spot/spotApi.test.ts",
-     "supabase/functions/spot-api/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125664,7 +125694,7 @@
    ],
    [
     "AGENTS.md",
-    18
+    19
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -125679,8 +125709,12 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
+    "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
+    1
    ],
    [
     "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
@@ -125732,10 +125766,6 @@
    ],
    [
     "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     1
    ]
   ]

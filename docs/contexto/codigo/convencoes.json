@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)",
    "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)",
    "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)",
    "fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)",
-   "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)",
-   "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)"
+   "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)"
   ]
  },
  "pr_template": null,

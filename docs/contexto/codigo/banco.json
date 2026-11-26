@@ -6,10 +6,10 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 365,
+ "migrations": 366,
  "seeds": [],
  "avisos": [
-  "51 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "52 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "btree_gist",

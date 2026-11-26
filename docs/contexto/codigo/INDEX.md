@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `53abd53accdc5ea34821b273e80c885b1ad186ed` (2026-11-26T13:59:33-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `eeff86ea4dcffc4095edf5480ebc393cefc5cad9` (2026-11-26T14:07:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (395), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (397), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1539 |
+| arquivos_total | 1541 |
 | arquivos_codigo | 968 |
 | linhas_codigo | 192806 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 365 |
+| migrations | 366 |
 | cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (194)
-- AGENTS.md (30)
+- docs/qa/05-PROGRESSO.md (195)
+- AGENTS.md (31)
 - docs/pendencias/_indice.md (20)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `eeff86e` fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)
 - 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
 - 2026-11-26 `63f3816` fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)
 - 2026-11-26 `054f49e` fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `85e9897` fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)
 - 2026-11-26 `72c5408` fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)
 - 2026-11-26 `29e79cf` chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)
-- 2026-11-26 `d9059a1` perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
