@@ -503,7 +503,18 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
   - Evidencia: (4) `deno test --allow-net --allow-env --allow-read supabase/functions/` = 201 passed | 0 failed | 13 ignored.
 
-- [ ] 050 — Migration: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+- [x] 050 — Migration: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
+
+  - Evidencia: (1) migration `supabase/migrations/20261128140000_spot_pedidos_tenant.sql` (aplicada) + reverter `supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql`: adiciona `tenant_id uuid`, FK `spot_pedidos_tenant_id_fkey` -> `public.tenants(id)` ON DELETE RESTRICT, indice `idx_spot_pedidos_tenant`, backfill fail-closed da empresa unica e a policy `tenant_isolation_spot_pedidos` AS RESTRICTIVE FOR ALL TO authenticated com `tenant_in_my_group(tenant_id)`.
+
+  - Evidencia: (2) aplicada em producao pelo workflow `aplicar-migration-prod.yml` (run 45873552400, branch `claude/fix-spot-tenant-261126-1501`): o psql como `ci_snapshot` nao tem privilegio e o mesmo script foi aplicado pelo Management API -- log termina em `aplicado via Management API (HTTP 201)`. Nesse caminho o script inteiro roda numa transacao implicita do lado do servidor: HTTP 201 significa que nenhum comando levantou excecao e que a transacao commitou, incluindo o `RAISE EXCEPTION` fail-closed do backfill (se tivesse sobrado qualquer linha sem empresa, o STATUS seria 400 e nada teria sido aplicado).
+
+  - Evidencia: (3) NAO VERIFICADO numericamente: as contagens dos `SELECT` de prova e os `RAISE NOTICE` do bloco `DO` nao aparecem no log desse caminho de aplicacao (a resposta da Management API nao e' ecoada). A prova de que 0 linhas ficaram sem empresa e' indireta, pelo passo 4 do bloco (a excecao nao disparou). Para leitura direta seria preciso `psql` com credencial de owner, que nao esta no repositorio.
+
+  - Evidencia: (4) sem efeito observavel no app hoje: nenhuma migration concedeu GRANT de SELECT/INSERT/UPDATE/DELETE em `spot_pedidos` para `authenticated` e nenhum arquivo de `src/` le ou escreve a tabela (o unico match e' o proprio teste `src/tests/spot/spotApi.test.ts`); a edge usa `service_role` e nao passa por RLS. A policy entra como defesa em profundidade para quando um GRANT for concedido.
+
+  - Evidencia: (5) `node scripts/ci/check-agents-md-integrity.mjs` OK (AGENTS.md 369 -> 370 migrations), `node --test scripts/ci/agents-docs-baseline.unit.mjs` = 15 passed | 0 failed, `node scripts/ci/check-test-inventory.mjs` OK.
+
 
 - [ ] 051 — Aplicação: spot-api e spot-proxy autorizam por papel mas nunca resolvem a empresa do chamador: criar pedido real na SPOT e listar pedidos operam sobre — onda 1 — Média — EDGA-10
 
