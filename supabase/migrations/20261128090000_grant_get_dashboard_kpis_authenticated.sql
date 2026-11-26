@@ -1,0 +1,20 @@
+-- Etapa QA 214 (PERF-03 parte 1/3): o painel executivo ainda agrega no navegador.
+--
+-- A RPC pronta para substituir essa agregacao ja existe em producao:
+-- public.get_dashboard_kpis(_from date, _to date), SECURITY DEFINER, LANGUAGE sql,
+-- STABLE, SET search_path TO 'public', que le mv_dashboard_kpis e filtra por
+-- tenant_in_my_group(tenant_id). A MV tem refresh agendado
+-- (cron "refresh-mv-dashboard-kpis", */15) e indice unico (tenant_id, dia).
+--
+-- Medido em producao (leitura via aplicar-migration-prod.yml): a ACL da funcao e'
+-- "postgres=X/postgres, service_role=X/postgres". O app autentica como
+-- `authenticated`, que portanto nao tem EXECUTE e recebe
+-- 42501 permission denied for function. Esta migration concede apenas isso.
+--
+-- NAO conceder SELECT em public.mv_dashboard_kpis: materialized view nao suporta
+-- RLS, entao um SELECT direto entregaria pedidos de todos os tenants; o filtro
+-- por organizacao existe somente dentro da funcao (tenant_in_my_group).
+--
+-- Reversao (nao aplicar sem pedido): REVOKE EXECUTE ON FUNCTION
+-- public.get_dashboard_kpis(date, date) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.get_dashboard_kpis(date, date) TO authenticated;
