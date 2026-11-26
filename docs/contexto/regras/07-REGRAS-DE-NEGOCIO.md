@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `be8eb67184` · branch `main` · 2026-11-26 09:41 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `02f5c0e6c0` · branch `main` · 2026-11-26 09:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2777,6 +2777,7 @@ _nenhum item encontrado_
 | `sendEmail` | `supabase/functions/alert-dispatcher/index.ts` |
 | `notify` | `supabase/functions/send-push-notification/index.ts` |
 | `sendPush` | `supabase/functions/send-push-notification/index.ts` |
+| `sendPush` | `supabase/functions/send-push-notification/webpush.ts` |
 
 ## N. Regras citadas em comentários do código
 

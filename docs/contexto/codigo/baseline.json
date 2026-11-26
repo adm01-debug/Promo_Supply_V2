@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "be8eb671849b3178578b8b0a4d4e386164a4e816",
+  "commit": "02f5c0e6c025e2484704b54ceb2c975d9db9b248",
   "branch": "main",
-  "data_commit": "2026-11-26T06:40:47-03:00",
+  "data_commit": "2026-11-26T06:49:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "02f5c0e",
+    "data": "2026-11-26",
+    "assunto": "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)"
+   },
    {
     "sha": "be8eb67",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "dac477d",
     "data": "2026-11-26",
     "assunto": "fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)"
-   },
-   {
-    "sha": "1237e87",
-    "data": "2026-11-26",
-    "assunto": "fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)"
    }
   ],
   "arquivos_mudados_7d": 1521,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 164
+    "mudancas": 165
    },
    {
     "pasta": "src/components/ui",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 65
+    "mudancas": 64
    },
    {
     "pasta": "src/features/layout",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 164
+    "mudancas": 165
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -278,6 +278,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "supabase/functions/send-push-notification/index.ts",
+    "mudancas": 7
+   },
+   {
     "arquivo": "src/hooks/useFornecedores.ts",
     "mudancas": 6
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "supabase/functions/check-approval-escalations/index.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "supabase/functions/check-cotacao-followup/index.ts",
     "mudancas": 6
    }
   ],
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1500,
   "arquivos_codigo": 963,
-  "linhas_codigo": 191177,
+  "linhas_codigo": 191356,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 124,
-   "linhas": 19891
+   "linhas": 20070
   },
   "tailwind.config.ts": {
    "arquivos": 1,

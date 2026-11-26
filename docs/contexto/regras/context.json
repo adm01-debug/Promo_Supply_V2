@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "be8eb671849b3178578b8b0a4d4e386164a4e816",
+  "sha": "02f5c0e6c025e2484704b54ceb2c975d9db9b248",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 09:41 UTC",
+  "generated_at": "2026-11-26 09:49 UTC",
   "files_total": 1501,
   "code_files": 1326,
-  "code_lines": 221986,
+  "code_lines": 222165,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "304346941d828a80",
+ "facts_hash": "c78906beecd75d82",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36346,7 +36346,7 @@
   {
    "module": "supabase/functions",
    "files": 124,
-   "lines": 19891,
+   "lines": 20070,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36440,7 +36440,7 @@
     "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
     "active.ts: BAN_DURATION_DESATIVADO, estaAtivo, interpretarActive",
     "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex",
-    "webpush.ts: PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer, generateVapidAuth"
+    "webpush.ts: PushMessagePayload, PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer"
    ],
    "docs": [
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
@@ -73382,6 +73382,10 @@
    },
    {
     "file": "supabase/functions/send-push-notification/index.ts",
+    "call": "sendPush"
+   },
+   {
+    "file": "supabase/functions/send-push-notification/webpush.ts",
     "call": "sendPush"
    }
   ],
@@ -120477,7 +120481,7 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 300,
+   "lines": 280,
    "tables": [
     {
      "table": "user_roles",
@@ -120550,7 +120554,7 @@
   },
   "supabase/functions/send-push-notification/webpush.test.ts": {
    "path": "supabase/functions/send-push-notification/webpush.test.ts",
-   "lines": 153,
+   "lines": 280,
    "is_test": true,
    "errors": [
     "DER invalido",
@@ -120558,13 +120562,15 @@
    ],
    "doc": "Deno tests for the Web Push module (VAPID + RFC 8291 aes128gcm).",
    "side_effects": [
-    "fcm."
+    "fcm.",
+    "sendPush"
    ]
   },
   "supabase/functions/send-push-notification/webpush.ts": {
    "path": "supabase/functions/send-push-notification/webpush.ts",
-   "lines": 292,
+   "lines": 364,
    "exports": [
+    "interface PushMessagePayload",
     "interface PushSubscriptionKeys",
     "interface VapidKeys",
     "function b64UrlEncode",
@@ -120572,7 +120578,10 @@
     "function rawSignatureToDer",
     "function generateVapidAuth",
     "function encryptPayload",
-    "function sendWebPush"
+    "interface WebPushResult",
+    "function isSubscriptionGone",
+    "function sendWebPush",
+    "function sendPushToSubscription"
    ],
    "calc_fns": [
     {
@@ -120588,6 +120597,9 @@
    ],
    "temporal": [
     "exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,"
+   ],
+   "side_effects": [
+    "sendPush"
    ]
   },
   "supabase/functions/spot-api/index.ts": {
@@ -123594,10 +123606,22 @@
   }
  },
  "git": {
-  "sha": "be8eb671849b3178578b8b0a4d4e386164a4e816",
+  "sha": "02f5c0e6c025e2484704b54ceb2c975d9db9b248",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "02f5c0e",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/send-push-notification/webpush.test.ts",
+     "supabase/functions/send-push-notification/webpush.ts"
+    ]
+   },
    {
     "sha": "be8eb67",
     "date": "2026-11-26",
@@ -124005,17 +124029,6 @@
      "src/hooks/__tests__/useSidebarBadges.erro.test.tsx",
      "src/hooks/useSidebarBadges.ts"
     ]
-   },
-   {
-    "sha": "2ecea30",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124028,15 +124041,11 @@
     5
    ],
    [
-    "supabase/functions/check-cotacao-followup/index.ts",
-    2
-   ],
-   [
     "supabase/functions/send-push-notification/index.ts",
-    2
+    3
    ],
    [
-    "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "supabase/functions/check-cotacao-followup/index.ts",
     2
    ],
    [
@@ -124068,6 +124077,14 @@
     2
    ],
    [
+    "supabase/functions/send-push-notification/webpush.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/send-push-notification/webpush.ts",
+    1
+   ],
+   [
     "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
     1
    ],
@@ -124093,10 +124110,6 @@
    ],
    [
     "src/lib/__tests__/invokeEdge.test.ts",
-    1
-   ],
-   [
-    "src/lib/invokeEdge.ts",
     1
    ]
   ]

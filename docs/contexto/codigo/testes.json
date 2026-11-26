@@ -2781,11 +2781,11 @@
   {
    "arquivo": "supabase/functions/send-push-notification/webpush.test.ts",
    "tipo": "unit",
-   "linhas": 153,
+   "linhas": 280,
    "testa": [
     "supabase/functions/send-push-notification/webpush.ts"
    ],
-   "casos": 3
+   "casos": 9
   },
   {
    "arquivo": "supabase/functions/spot-proxy/sessions_test.ts",
