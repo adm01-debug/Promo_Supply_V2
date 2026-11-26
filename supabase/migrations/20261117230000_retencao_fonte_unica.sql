@@ -74,7 +74,7 @@ COMMENT ON FUNCTION public.cleanup_old_security_logs() IS
 COMMENT ON FUNCTION public.cleanup_old_login_attempts() IS
   'NAO AGENDADA. Retencao de login_attempts e feita por apply_lgpd_retention() (180 dias). Nao agendar.';
 COMMENT ON FUNCTION public.cleanup_old_system_alerts() IS
-  'NAO AGENDADA. O expurgo de system_alerts e o cron cleanup-system-alerts (30 dias, DELETE inline). Sem regra concorrente em apply_lgpd_retention().';
+  'AGENDADA em 20261127130000. O cron cleanup-system-alerts (job 2, 10 2 * * *) passou a chamar esta funcao: resolvido expurga em 60 dias, aberto em 180. Antes disso o job fazia DELETE inline por created_at (30 dias) e apagava alerta aberto. Sem regra concorrente em apply_lgpd_retention().';
 
 -- ============================================================================
 -- Particionamento: infraestrutura pronta e deliberadamente inativa
