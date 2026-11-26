@@ -22,6 +22,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { fetchWithTimeout, FetchTimeoutError } from "../_shared/http.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const MAX_RETRIES = 5;
 const BATCH_SIZE = 20;
@@ -41,7 +42,10 @@ serve(async (req) => {
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
 
-  const admin = createClient(
+  const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
+    const logger = new EdgeLogger("process-outbox", requestId);
+
+    const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
@@ -51,6 +55,7 @@ serve(async (req) => {
   });
 
   if (error) {
+      logger.error("outbox_claim_failed", { error: error.message });
     await recordCronHeartbeat(admin, "process-outbox", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
@@ -97,16 +102,15 @@ serve(async (req) => {
         .eq("id", row.id);
 
       if (dead) {
-        console.error(JSON.stringify({
-          level: "ERROR",
-          event: "outbox_item_dead",
+              // 187/JOB-01: passa por EdgeLogger para o erro chegar em
+              // telemetry_logs e alimentar check_telemetry_alerts (SYSTEM_ERROR).
+              // `endpoint` fica fora do contexto: pode carregar credencial na query.
+              logger.error("outbox_item_dead", {
           id: row.id,
           target: row.target,
-          endpoint: row.endpoint,
           retries,
           last_error: errMsg,
-          ts: new Date().toISOString(),
-        }));
+              });
       }
 
       results.push({ id: row.id, ok: false, error: errMsg, retries });

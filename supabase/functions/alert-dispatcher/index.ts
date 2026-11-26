@@ -21,6 +21,7 @@ import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import { EdgeLogger } from "../_shared/logger.ts";
 import {
   classifyDispatch,
   previousAttempts,
@@ -254,6 +255,7 @@ type AdminClient = SupabaseClient<any, "public", any>;
  */
 async function recordDeadLetter(
   admin: AdminClient,
+  logger: EdgeLogger,
   alert: Alert,
   attempts: number,
   errors: string[],
@@ -288,13 +290,10 @@ async function recordDeadLetter(
     if (error) throw new Error(error.message);
   } catch (e) {
     // Nao derruba a rodada: o alerta original ja foi persistido.
-    console.error(JSON.stringify({
-      level: "ERROR",
-      event: "alert_dispatch_dead_letter_failed",
+      logger.error("alert_dispatch_dead_letter_failed", {
       alert_id: alert.id,
       error: (e as Error).message,
-      ts: new Date().toISOString(),
-    }));
+      });
   }
 }
 
@@ -304,7 +303,10 @@ serve(async (req) => {
   const cronDenied = verifyCronSecret(req);
   if (cronDenied) return cronDenied;
 
-  const admin = createClient(
+  const requestId = req.headers.get("x-request-id") || crypto.randomUUID();
+    const logger = new EdgeLogger("alert-dispatcher", requestId);
+
+    const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
@@ -318,6 +320,7 @@ serve(async (req) => {
     .limit(50);
 
   if (error) {
+      logger.error("alert_dispatcher_query_failed", { error: error.message });
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...cors, "Content-Type": "application/json" },
@@ -428,6 +431,10 @@ serve(async (req) => {
     } catch (e) {
       fanoutError = true;
       slackErrors.push(`fanout_error:${(e as Error).message}`);
+          logger.error("alert_dispatcher_fanout_error", {
+            alert_id: alert.id,
+            error: (e as Error).message,
+          });
     }
 
     const nowIso = new Date().toISOString();
@@ -481,10 +488,21 @@ serve(async (req) => {
       })
       .eq("id", alert.id);
 
-          // 171/EDG-05: `exhausted` e a falha definitiva (carimbou `dispatched_at`).
+          // 187/JOB-01: falha definitiva tambem vai para telemetry_logs, nao so
+                    // para a coluna dispatch_status que nada le.
+                    if (dispatchStatus === "exhausted") {
+                      logger.error("alert_dispatch_exhausted", {
+                        alert_id: alert.id,
+                        alert_type: alert.alert_type,
+                        attempts,
+                        errors: allErrors.slice(0, 5),
+                      });
+                    }
+
+                    // 171/EDG-05: `exhausted` e a falha definitiva (carimbou `dispatched_at`).
           // Sem isso a falha fica so na coluna que ninguem le.
           if (shouldRecordDeadLetter(dispatchStatus, alert.alert_type)) {
-            await recordDeadLetter(admin, alert, attempts, allErrors);
+                      await recordDeadLetter(admin, logger, alert, attempts, allErrors);
           }
 
     results.push({

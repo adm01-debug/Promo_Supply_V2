@@ -878,7 +878,9 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 141 — Aplicação: record_failed_login e log_login_attempt estão abertos para anon com e-mail/IP escolhidos pelo chamador, e clear_login_lockout está aberta p — onda 3 — Alta — FN-06
 
-- [ ] 142 — Os 14 cron jobs que chamam edge functions disparam e esquecem: o resultado do net.http_post nunca é lido, cron_heartbeats não tem nenhum leitor e cron — onda 3 — Alta — FN-07
+- [x] 142 — Os 14 cron jobs que chamam edge functions disparam e esquecem: o resultado do net.http_post nunca é lido, cron_heartbeats não tem nenhum leitor e cron — onda 3 — Alta — FN-07
+
+  - Evidencia (142): mesma causa raiz da 172/186 (JOB-01/EDG-06) e resolvida pela mesma migration `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` (commit 72c54084, PR #559, mergeada): `cron_watchdog()` passou a varrer `public.cron_heartbeats` cruzando com `cron.job` ativo e abre `cron_heartbeat.error.<job>` / `cron_heartbeat.stale.<job>` (HIGH), fechando sozinho quando o heartbeat volta ao normal e ignorando os seeds `run_count = 0` (sem alerta fantasma). Nao criou job novo: e chamada de dentro do job 123 (`cron-watchdog-15min`), que ja faz `resolve_stale_system_error_alerts()` no inicio. Reversao em `supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql` (nao aplicada). NAO VERIFICADO nesta sessao: aplicacao da migration no banco de producao (o PR foi mergeado sem registro de run do `aplicar-migration-prod.yml` no corpo).
 
 - [ ] 143 — Migration: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
 
@@ -942,7 +944,11 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 159 — Migration: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
 
+  - Estado parcial (auditado em 2026-11-26): a metade da `integration_outbox` **ja foi feita** por outro agente na etapa 203/JOB-06 — `supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql` cria `public.claim_outbox_batch(p_batch_size)` com `FOR UPDATE SKIP LOCKED` + lease de 10 min (sem status novo, o CHECK continua `pending|retrying|delivered|dead`) e `process-outbox/index.ts:49` ja chama a RPC. **Falta a metade do `alert-dispatcher`**: `alert-dispatcher/index.ts:312-318` ainda faz `.is("dispatched_at", null).order(created_at).limit(50)` sem claim e so carimba `dispatched_at` no fim do fan-out (`:459-482`), entao duas rodadas sobrepostas entregam o mesmo alerta.
+
 - [ ] 160 — Aplicação: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
+
+  - Estado parcial (auditado em 2026-11-26): `process-outbox` ja usa o claim atomico (`admin.rpc("claim_outbox_batch")`, `index.ts:49`). O que falta e o `alert-dispatcher`: reservar a posse antes do fan-out (o fan-out pode levar minutos com Slack 3x5s + e-mail 3x8s + webhook 3x6s por alerta) e so entao entregar; hoje o unico dedupe e `dispatched_at IS NULL`, carimbado no fim.
 
 - [x] 161 — (parte 1/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
 
@@ -1035,9 +1041,13 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 185 — (parte 2/2) Quais edges são públicas só está escrito no shell de deploy, e o `corsHeaders` estático fica sem Access-Control-Allow-Origin quando ALLOWE — onda 4 — Média — INT-12
 
-- [ ] 186 — Migration: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
+- [x] 186 — Migration: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
 
-- [ ] 187 — Aplicação: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
+  - Evidencia (186): achado duplicado de 142/172 (mesma causa, mesma solucao), entregue em `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` (PR #559, commit 72c54084, mergeada). O `cron_watchdog()` le `cron_heartbeats` e abre `cron_heartbeat.error.<job>` / `cron_heartbeat.stale.<job>` com dedupe por `resolved_at IS NULL`; o ramo antigo continuava verde porque olhava so `cron.job_run_details`, que sempre diz `succeeded` para `net.http_post` (o pg_net so enfileira). Prova de comportamento: `docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql` rodada contra Postgres 16 descartavel com stubs de `cron.job`/`cron.job_run_details`/`cron_heartbeats`/`system_alerts` — 5 cenarios, 0 falhas / 22 assercoes, incluindo "heartbeat velho abre stale", "heartbeat saudavel nao abre nada" e "seed run_count = 0 nao gera alerta fantasma". Nao alterei `_invoke_edge_function`, `_invoke_spot_sync` nem `_invoke_xbz_sync` (o atalho proibido do plano: esperar `net._http_response` no invocador travaria os jobs de 1 min). A parte "complementar" do plano (EdgeLogger nas duas edges) ficou na 187. Reversao pronta e nao aplicada em `supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql`.
+
+- [x] 187 — Aplicação: Nada no sistema sabe se a edge do cron realmente rodou: a chamada é fire-and-forget e o único registro por edge (`cron_heartbeats`) não tem — onda 5 — Alta — JOB-01
+
+  - Evidencia (187): `process-outbox/index.ts` e `alert-dispatcher/index.ts` foram as duas unicas edges do ciclo de cron sem `EdgeLogger` (grep de `EdgeLogger` nos dois arquivos dava 0), entao erro de entrega morria em `console.error` — que nao grava em `telemetry_logs` e, portanto, nunca aciona `check_telemetry_alerts` nem abre `SYSTEM_ERROR`. Agora as duas criam `new EdgeLogger("<edge>", x-request-id || randomUUID())` e logam: `outbox_claim_failed` e `outbox_item_dead` (process-outbox; `endpoint` ficou FORA do contexto de proposito, porque carrega credencial na query string), `alert_dispatcher_query_failed`, `alert_dispatcher_fanout_error`, `alert_dispatch_exhausted` e `alert_dispatch_dead_letter_failed` (alert-dispatcher). `recordDeadLetter` passou a receber o logger por parametro em vez de usar `console.error`. Nenhum comportamento de fila mudou: status, backoff, lease de 10 min, dedupe e `dispatched_at` continuam iguais. Prova: `deno check --no-lock index.ts` limpo nos dois diretorios; `deno test --no-lock --allow-read --allow-env --allow-net process-outbox alert-dispatcher` = 12 passed | 0 failed; `deno lint` aponta 5 `no-import-prefix` pre-existentes (imports `https://esm.sh`/`deno.land` de antes), nenhum no diff.
 
 - [x] 188 — `alert-dispatcher` carimba todo alerta como `dispatch_status='delivered'` mesmo quando não existe nenhum destinatário — e `alert_subscriptions` está v — onda 5 — Alta — JOB-02
 
