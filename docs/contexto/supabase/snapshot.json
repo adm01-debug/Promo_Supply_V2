@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795674642107,
+        "updated_at": 1795690578550,
         "verify_jwt": true,
-        "version": 26
+        "version": 27
       },
       {
         "created_at": 1785935869432,
@@ -659,9 +659,9 @@
         "name": "spot-api",
         "slug": "spot-api",
         "status": "ACTIVE",
-        "updated_at": 1795687272306,
+        "updated_at": 1795688433913,
         "verify_jwt": false,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935930982,

@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 11:12 UTC
+
+- **edge functions** alterado (2): `alert-dispatcher`, `spot-api`
+
 ## 2026-11-26 10:13 UTC
 
 - **edge functions** alterado (6): `check-approval-escalations`, `check-cotacao-followup`, `punchout-receive`, `scim-v2`, `send-push-notification`, `spot-api`
