@@ -846,9 +846,13 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 160 — Aplicação: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
 
-- [ ] 161 — (parte 1/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
+- [x] 161 — (parte 1/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
 
-- [ ] 162 — (parte 2/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
+- Evidencia (161): PR #550 — `check-approval-escalations/index.ts` passou os 3 pontos (escalonamento, lembrete e aviso) a lerem `insertNotification(...).ok`/`skipped`, com `logger.warn` do motivo, e `warningsSent` conta só notificação inserida; `check-cotacao-followup/index.ts` só incrementa `followUpsSent` e só carimba `last_follow_up_at`/`follow_up_status = "notificado"` quando `notifRes.ok`. Provas: `deno check --no-lock` sem erros nos 3 arquivos; `deno test --allow-net --allow-env --allow-read supabase/functions/` = 243 passed / 0 failed / 21 ignored (idêntico ao main medido com `git stash`); `git grep "notifError" -- supabase/functions` = 0 linhas (eram 5).
+
+- [x] 162 — (parte 2/2) Notificação descartada é contada como enviada: escalonamento e cobrança de cotação somem, e a cotação é carimbada "notificado" sem notific — onda 4 — Alta — EDG-04
+
+- Evidencia (162): PR #550 — `send-push-notification/index.ts` lê `notifRes.ok` (antes `if (notifError)`, sempre falso no descarte) e registra `skipped`/`error` em `logger.warn` em vez de silenciar a perda.
 
 - [ ] 163 — (parte 1/4) Compras ingere e espelha catálogo de fornecedor: 3 crons ativos em produção enchem spot_produtos/spot_skus/spot_estoque/spot_customization — onda 4 — Alta — INT-01
 
