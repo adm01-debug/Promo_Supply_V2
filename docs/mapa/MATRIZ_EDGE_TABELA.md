@@ -33,7 +33,7 @@
 | `maintain-partitions` | — |
 | `migrate-storage-paths` | `profiles` |
 | `process-invoice-idp` | — |
-| `process-outbox` | `integration_outbox`, `system_alerts` |
+| `process-outbox` | `integration_outbox` |
 | `process-solicitacao-neural` | — |
 | `punchout-encrypt` | `user_tenants` |
 | `punchout-receive` | `profiles`, `punchout_catalogs`, `punchout_sessions`, `solicitacoes` |
@@ -89,7 +89,7 @@
 | `spot_pedidos` | `spot-api`, `spot-proxy` |
 | `spot_sessions` | `spot-api`, `spot-proxy` |
 | `sso_configurations` | `scim-v2` |
-| `system_alerts` | `alert-dispatcher`, `health-dashboard`, `process-outbox`, `xbz-sync-pedidos` |
+| `system_alerts` | `alert-dispatcher`, `health-dashboard`, `xbz-sync-pedidos` |
 | `telemetry_logs` | `telemetry` |
 | `tenants` | `receive-os-sync` |
 | `user_roles` | `check-expiry-alerts`, `check-sla-alerts`, `escalate-solicitacao`, `send-push-notification`, `spot-api`, `spot-proxy`, `weekly-report`, `weekly-summary-report` |
