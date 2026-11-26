@@ -261,7 +261,11 @@ serve(async (req) => {
   const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack_delivered?: number; slack_failed?: number }> = [];
   const seenWindow = new Map<string, string>();
 
-  for (const alert of (alerts ?? []) as Alert[]) {
+  // #209/#210: a severidade e canonica no banco a partir da migration 20261127170000;
+  // normalizar aqui cobre as linhas antigas em minusculas enquanto a migration nao roda.
+  const pendentes = ((alerts ?? []) as Alert[]).map((a) => ({ ...a, severity: a.severity.toUpperCase() }));
+
+  for (const alert of pendentes) {
     const dedupeKey = `${alert.tenant_id ?? "global"}::${alert.alert_type}`;
     if (seenWindow.has(dedupeKey)) {
       await admin
