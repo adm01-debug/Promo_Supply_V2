@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9ceca5ceb13a3904dff3f0060535bd8372650820",
+  "sha": "3e0edc9c11de0f4303a6d55a01cdeafafe7f0171",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 13:05 UTC",
-  "files_total": 1506,
-  "code_files": 1331,
-  "code_lines": 223236,
+  "generated_at": "2026-11-26 13:19 UTC",
+  "files_total": 1507,
+  "code_files": 1332,
+  "code_lines": 223269,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d879c59eb0f8e5cc",
+ "facts_hash": "3b23a54a212cd671",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 361,
+   ".sql": 362,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -26888,6 +26888,12 @@
     "src": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql"
    },
    {
+    "job": "spot-api-sync-stock",
+    "schedule": "*/30 * * * *",
+    "body": "SELECT public._invoke_spot_sync(",
+    "src": "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql"
+   },
+   {
     "job": "cleanup-system-alerts",
     "schedule": "10 2 * * *",
     "body": "DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'",
@@ -27255,6 +27261,7 @@
    "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
    "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
    "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+   "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
@@ -36571,8 +36578,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 344,
-   "lines": 29058,
+   "files": 345,
+   "lines": 29091,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -123975,6 +123982,10 @@
     "-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'"
    ]
   },
+  "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql": {
+   "path": "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql",
+   "lines": 33
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -124242,10 +124253,20 @@
   }
  },
  "git": {
-  "sha": "9ceca5ceb13a3904dff3f0060535bd8372650820",
+  "sha": "3e0edc9c11de0f4303a6d55a01cdeafafe7f0171",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3e0edc9",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)",
+    "files": [
+     "AGENTS.md",
+     "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql"
+    ]
+   },
    {
     "sha": "9ceca5c",
     "date": "2026-11-26",
@@ -124648,25 +124669,12 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/check-cotacao-followup/index.ts"
     ]
-   },
-   {
-    "sha": "28d02fb",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
-     "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
-     "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -124729,19 +124737,19 @@
     2
    ],
    [
+    "AGENTS.md",
+    1
+   ],
+   [
+    "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql",
+    1
+   ],
+   [
     "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
     1
    ],
    [
     "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useCatalogoPim.erro.test.ts",
-    1
-   ],
-   [
-    "docs/pendencias/_indice.md",
     1
    ]
   ]
