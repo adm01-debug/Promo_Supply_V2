@@ -125,7 +125,7 @@ Fatos que já custaram retrabalho:
   `aplicar-migration-prod.yml` (dispatch manual); ver `docs/agentes/deploy.md`.
 - **Custo:** o `contexto.yml` roda a cada hora e ocupa um runner (em repo público o minuto de Actions é
   grátis). Antes de propor outro agendamento,
-  confira se um dos sete workflows já cobre o que você quer. A issue `[kpi-actions]`, atualizada toda
+  confira se um dos quinze workflows já cobre o que você quer. A issue `[kpi-actions]`, atualizada toda
   segunda pelo `branch-hygiene-audit.yml`, diz quantos minutos cada workflow consumiu nos últimos 7 dias —
   consulte ela antes de discutir custo de chute.
 
