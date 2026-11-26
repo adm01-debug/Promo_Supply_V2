@@ -215,13 +215,23 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          # Chave publica VAPID: e o par do VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY das env da edge
+          # send-push-notification, portanto tambem publica (o private key nunca sai do servidor).
+          # Sem ela o build de producao nao cria a inscricao de push e o usuario so ve o aviso
+          # 'Push indisponivel neste ambiente' (etapa 288).
+          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
         run: |
           set -euo pipefail
           test -n "$VITE_SUPABASE_URL"
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY"
-          printf 'VITE_SUPABASE_URL=%s\n' "$VITE_SUPABASE_URL" > .env
-          printf 'VITE_SUPABASE_PUBLISHABLE_KEY=%s\n' "$VITE_SUPABASE_PUBLISHABLE_KEY" >> .env
-          printf 'VITE_SUPABASE_PROJECT_ID=%s\n' "$VITE_SUPABASE_PROJECT_ID" >> .env
+          test -n "$VITE_VAPID_PUBLIC_KEY"
+          {
+            printf 'VITE_SUPABASE_URL=%s\n' "$VITE_SUPABASE_URL"
+            printf 'VITE_SUPABASE_PUBLISHABLE_KEY=%s\n' "$VITE_SUPABASE_PUBLISHABLE_KEY"
+            printf 'VITE_SUPABASE_PROJECT_ID=%s\n' "$VITE_SUPABASE_PROJECT_ID"
+            printf 'VITE_VAPID_PUBLIC_KEY=%s\n' "$VITE_VAPID_PUBLIC_KEY"
+          } > .env
+          cat .env
 
       - name: Build
         # O `.env` de producao foi criado no passo anterior a partir dos secrets do repo.
