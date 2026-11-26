@@ -11,6 +11,7 @@ import { useAuth } from '@/features/auth';
 import { AppRole, roleLabels, roleColors } from '@/features/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { summarizePermissionChanges } from './permissionChanges';
 
 type RolePermissions = Record<string, Record<string, boolean>>;
 
@@ -53,27 +54,24 @@ export const PermissionMatrix = () => {
   const saveChanges = useMutation({
     mutationFn: async () => {
       setSaving(true);
-      
-      for (const [roleKey, perms] of Object.entries(changes)) {
-        const role = roleKey as AppRole;
-        for (const [permissionId, enabled] of Object.entries(perms)) {
-          if (enabled) {
-            // Add permission
-            await supabase.from('role_permissions').upsert({
-              role: role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer',
-              permission_id: permissionId,
-            } as never, {
-              onConflict: 'role,permission_id',
-            });
-          } else {
-            // Remove permission
-            await supabase
-              .from('role_permissions')
-              .delete()
-              .eq('role', role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer')
-              .eq('permission_id', permissionId);
-          }
-        }
+
+      // Uma escrita por grupo em vez de uma por celula: upsert unico e um delete por role.
+      const { upserts, removals } = summarizePermissionChanges(changes);
+
+      if (upserts.length > 0) {
+        const { error } = await supabase.from('role_permissions').upsert(upserts as never, {
+          onConflict: 'role,permission_id',
+        });
+        if (error) throw error;
+      }
+
+      for (const { role, permissionIds } of removals) {
+        const { error } = await supabase
+          .from('role_permissions')
+          .delete()
+          .eq('role', role)
+          .in('permission_id', permissionIds);
+        if (error) throw error;
       }
     },
     onSuccess: () => {
