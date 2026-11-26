@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c7e6d1cc857568c6998aad834d8474a4f89943a7",
+  "sha": "50f98111fdc55aaeb338116f440f144aa2163ad3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 06:31 UTC",
+  "generated_at": "2026-11-26 06:35 UTC",
   "files_total": 1489,
   "code_files": 1314,
-  "code_lines": 220794,
+  "code_lines": 220819,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "9b0e40035d79306e",
+ "facts_hash": "053f74557f7036ab",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22628,6 +22628,17 @@
     "raises": [],
     "tables": []
    },
+   "claim_outbox_batch": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "SetofOptions": {
     "args": "",
     "returns": "?",
@@ -35772,7 +35783,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10465,
+   "lines": 10490,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -80311,6 +80322,17 @@
     "raises": [],
     "tables": []
    },
+   "claim_outbox_batch": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "SetofOptions": {
     "args": "",
     "returns": "?",
@@ -92054,13 +92076,6 @@
     "kind": "tenant",
     "msg": "`qualification_requirements` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
     "where": []
-   },
-   {
-    "kind": "rpc",
-    "msg": "RPC `claim_outbox_batch` chamada mas não definida nas migrations/types",
-    "where": [
-     "supabase/functions/process-outbox/index.ts"
-    ]
    },
    {
     "kind": "dinâmico",
@@ -107720,7 +107735,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10406,
+   "lines": 10431,
    "exports": [
     "type Json",
     "type Database",
@@ -123120,10 +123135,28 @@
   }
  },
  "git": {
-  "sha": "c7e6d1cc857568c6998aad834d8474a4f89943a7",
+  "sha": "50f98111fdc55aaeb338116f440f144aa2163ad3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "50f9811",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#525)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
+   {
+    "sha": "10ab760",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)",
+    "files": [
+     "bun.lock"
+    ]
+   },
    {
     "sha": "c7e6d1c",
     "date": "2026-11-26",
@@ -123457,36 +123490,20 @@
      "tests-e2e/dashboard-ui.spec.ts",
      "tests-e2e/production-ready.spec.ts"
     ]
-   },
-   {
-    "sha": "5656edb",
-    "date": "2026-11-25",
-    "author": "dependabot[bot]",
-    "subject": "chore(ci): bump actions/dependency-review-action (#482)",
-    "files": [
-     ".github/workflows/dependency-review.yml"
-    ]
-   },
-   {
-    "sha": "6eb3b7a",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "playwright.config.ts",
-     "tests-e2e/production-ready.spec.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "AGENTS.md",
     5
+   ],
+   [
+    "bun.lock",
+    2
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -123509,8 +123526,8 @@
     2
    ],
    [
-    "tests-e2e/production-ready.spec.ts",
-    2
+    "src/integrations/supabase/types.ts",
+    1
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -123554,10 +123571,6 @@
    ],
    [
     "docs/pendencias/_indice.md",
-    1
-   ],
-   [
-    "docs/pendencias/job-outbox-worker.md",
     1
    ]
   ]
