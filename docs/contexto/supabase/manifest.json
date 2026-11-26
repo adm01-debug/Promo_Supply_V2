@@ -1,8 +1,13 @@
 {
   "carried": [],
   "entrada": "README.md",
-  "erros": [],
-  "gerado_em": "2026-11-26T03:17:42Z",
+  "erros": [
+    {
+      "error": "HTTP 400 em /projects/lmypcdfsrgfftzhxawao/custom-hostname",
+      "section": "api.custom_hostname"
+    }
+  ],
+  "gerado_em": "2026-11-26T04:15:19Z",
   "gerador": "scripts/supabase_snapshot/snapshot.py",
   "produtor": "supabase-snapshot"
 }

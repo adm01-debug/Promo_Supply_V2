@@ -32,7 +32,7 @@ Gerado automaticamente a cada hora pelo workflow `contexto` (job `banco`). **Nã
 | filas pgmq | 0 |
 | migrations | 340 |
 | buckets | 4 |
-| edge functions | n/d |
+| edge functions | 41 |
 | webhooks | 0 |
 | lints ALTA | 0 |
 | lints total | 303 |
@@ -60,9 +60,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | timezone | UTC |
 | max_connections | 60 |
 | statement_timeout (global) | 120000 |
-| projeto | n/d |
-| região | n/d |
-| URL | n/d |
+| projeto | Promo_Supply_V2 |
+| região | us-west-2 |
+| URL | https://lmypcdfsrgfftzhxawao.supabase.co |
 
 
 ## Arquivos
@@ -88,3 +88,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | `manifest.json` | data UTC da coleta concluída, erros e seções reaproveitadas; usado pelo índice de contexto |
 | `CHANGELOG.md` | diff semântico a cada mudança |
 | `errors.md` | seções que falharam na última coleta |
+
+## ⚠️ Problemas na última coleta
+
+| seção | erro |
+|---|---|
+| api.custom_hostname | HTTP 400 em /projects/lmypcdfsrgfftzhxawao/custom-hostname |

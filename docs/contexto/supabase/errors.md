@@ -1,3 +1,5 @@
 # Erros da última coleta
 
-_nenhum_
+| seção | erro |
+|---|---|
+| api.custom_hostname | HTTP 400 em /projects/lmypcdfsrgfftzhxawao/custom-hostname |

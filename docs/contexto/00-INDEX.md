@@ -1,6 +1,6 @@
 # CONTEXTO PARA AGENTES DE IA — ÍNDICE ÚNICO
 
-> Gerado automaticamente por indice.py · 2026-11-26 03:54 UTC · HEAD `1237e871e1` · Não edite à mão.
+> Gerado automaticamente por indice.py · 2026-11-26 04:15 UTC · HEAD `1237e871e1` · Não edite à mão.
 
 Um sistema, três fontes de verdade, três produtores independentes. **Leia este arquivo e vá direto à fonte certa.** Cada fato tem um dono: se duas fontes discordarem, vale o dono.
 
@@ -8,9 +8,9 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 
 | Preciso de… | Fonte (dona do fato) | Onde ler | Estado |
 |---|---|---|---|
-| Regras que não podem ser quebradas: RLS por operação, estados e transições, validações, fórmulas, prazos, erros de negócio, testes como especificação, inconsistências código×schema (NÃO VERIFICADO) e regras humanas (`manual/`) | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` | ok · 1 min atrás |
-| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/README.md` | ok · 37 min atrás |
-| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 0 min atrás |
+| Regras que não podem ser quebradas: RLS por operação, estados e transições, validações, fórmulas, prazos, erros de negócio, testes como especificação, inconsistências código×schema (NÃO VERIFICADO) e regras humanas (`manual/`) | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` | ok · 22 min atrás |
+| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/README.md` | parcial · 0 min atrás · ⚠️ 1 erro(s) de coleta no manifest (erros); 1 seção(ões) com erro em errors.md |
+| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 21 min atrás |
 
 ## Ordem de leitura antes de qualquer tarefa ou planejamento
 
@@ -34,6 +34,47 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 - `docs/contexto/supabase/cron-runs.md`
 - `docs/contexto/supabase/cron.md`
 - `docs/contexto/supabase/edge-functions.md`
+- `docs/contexto/supabase/edge-functions/ai-demand-prediction/README.md`
+- `docs/contexto/supabase/edge-functions/ai-negotiation/README.md`
+- `docs/contexto/supabase/edge-functions/ai-supplier-risk/README.md`
+- `docs/contexto/supabase/edge-functions/ai-supplier-suggestion/README.md`
+- `docs/contexto/supabase/edge-functions/alert-dispatcher/README.md`
+- `docs/contexto/supabase/edge-functions/check-approval-escalations/README.md`
+- `docs/contexto/supabase/edge-functions/check-cotacao-followup/README.md`
+- `docs/contexto/supabase/edge-functions/check-expiry-alerts/README.md`
+- `docs/contexto/supabase/edge-functions/check-sla-alerts/README.md`
+- `docs/contexto/supabase/edge-functions/dependency-health/README.md`
+- `docs/contexto/supabase/edge-functions/erp-credential-encrypt/README.md`
+- `docs/contexto/supabase/edge-functions/erp-sync/README.md`
+- `docs/contexto/supabase/edge-functions/escalate-solicitacao/README.md`
+- `docs/contexto/supabase/edge-functions/external-db-bridge/README.md`
+- `docs/contexto/supabase/edge-functions/fiscal-orchestrator/README.md`
+- `docs/contexto/supabase/edge-functions/generate-contract-pdf/README.md`
+- `docs/contexto/supabase/edge-functions/guided-buying-ai/README.md`
+- `docs/contexto/supabase/edge-functions/health-dashboard/README.md`
+- `docs/contexto/supabase/edge-functions/maintain-partitions/README.md`
+- `docs/contexto/supabase/edge-functions/migrate-storage-paths/README.md`
+- `docs/contexto/supabase/edge-functions/process-invoice-idp/README.md`
+- `docs/contexto/supabase/edge-functions/process-outbox/README.md`
+- `docs/contexto/supabase/edge-functions/process-solicitacao-neural/README.md`
+- `docs/contexto/supabase/edge-functions/punchout-encrypt/README.md`
+- `docs/contexto/supabase/edge-functions/punchout-receive/README.md`
+- `docs/contexto/supabase/edge-functions/punchout-setup/README.md`
+- `docs/contexto/supabase/edge-functions/receive-os-sync/README.md`
+- `docs/contexto/supabase/edge-functions/run-audit/README.md`
+- `docs/contexto/supabase/edge-functions/scim-v2/README.md`
+- `docs/contexto/supabase/edge-functions/send-push-notification/README.md`
+- `docs/contexto/supabase/edge-functions/spot-api/README.md`
+- `docs/contexto/supabase/edge-functions/spot-proxy/README.md`
+- `docs/contexto/supabase/edge-functions/system-simulation/README.md`
+- `docs/contexto/supabase/edge-functions/telemetry/README.md`
+- `docs/contexto/supabase/edge-functions/webauthn-authenticate/README.md`
+- `docs/contexto/supabase/edge-functions/webauthn-register/README.md`
+- `docs/contexto/supabase/edge-functions/weekly-report/README.md`
+- `docs/contexto/supabase/edge-functions/weekly-summary-report/README.md`
+- `docs/contexto/supabase/edge-functions/workflow-engine/README.md`
+- `docs/contexto/supabase/edge-functions/xbz-proxy/README.md`
+- `docs/contexto/supabase/edge-functions/xbz-sync-pedidos/README.md`
 - `docs/contexto/supabase/errors.md`
 - `docs/contexto/supabase/extensions.md`
 - `docs/contexto/supabase/foreign-servers.md`
@@ -67,48 +108,7 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 - `docs/contexto/supabase/tables/public/approval_history.md`
 - `docs/contexto/supabase/tables/public/approval_rules.md`
 - `docs/contexto/supabase/tables/public/approval_steps.md`
-- `docs/contexto/supabase/tables/public/approval_workflows.md`
-- `docs/contexto/supabase/tables/public/auction_bids.md`
-- `docs/contexto/supabase/tables/public/audit_logs.md`
-- `docs/contexto/supabase/tables/public/audit_logs_202605.md`
-- `docs/contexto/supabase/tables/public/audit_logs_202606.md`
-- `docs/contexto/supabase/tables/public/audit_logs_202607.md`
-- `docs/contexto/supabase/tables/public/audit_logs_202608.md`
-- `docs/contexto/supabase/tables/public/audit_logs_202609.md`
-- `docs/contexto/supabase/tables/public/audit_logs_legacy_20260712.md`
-- `docs/contexto/supabase/tables/public/blocked_countries.md`
-- `docs/contexto/supabase/tables/public/blocked_ips.md`
-- `docs/contexto/supabase/tables/public/budget_audit_logs.md`
-- `docs/contexto/supabase/tables/public/budget_transactions.md`
-- `docs/contexto/supabase/tables/public/categorias.md`
-- `docs/contexto/supabase/tables/public/category_strategies.md`
-- `docs/contexto/supabase/tables/public/checkpoint_snapshots.md`
-- `docs/contexto/supabase/tables/public/contact_notes.md`
-- `docs/contexto/supabase/tables/public/contract_documents.md`
-- `docs/contexto/supabase/tables/public/contract_history.md`
-- `docs/contexto/supabase/tables/public/contract_items.md`
-- `docs/contexto/supabase/tables/public/contract_penalties.md`
-- `docs/contexto/supabase/tables/public/contracts.md`
-- `docs/contexto/supabase/tables/public/cost_centers.md`
-- `docs/contexto/supabase/tables/public/cotacoes.md`
-- `docs/contexto/supabase/tables/public/creditos_fornecedor.md`
-- `docs/contexto/supabase/tables/public/cron_heartbeats.md`
-- `docs/contexto/supabase/tables/public/cron_watchdog_seen.md`
-- `docs/contexto/supabase/tables/public/currencies.md`
-- `docs/contexto/supabase/tables/public/dashboard_filter_favorites.md`
-- `docs/contexto/supabase/tables/public/dashboard_layouts.md`
-- `docs/contexto/supabase/tables/public/deadlock_snapshots.md`
-- `docs/contexto/supabase/tables/public/department_budgets.md`
-- `docs/contexto/supabase/tables/public/dependency_health.md`
-- `docs/contexto/supabase/tables/public/dependency_health_history.md`
-- `docs/contexto/supabase/tables/public/devolucao_itens.md`
-- `docs/contexto/supabase/tables/public/devolucoes.md`
-- `docs/contexto/supabase/tables/public/entity_versions.md`
-- `docs/contexto/supabase/tables/public/erp_connections.md`
-- `docs/contexto/supabase/tables/public/erp_field_mappings.md`
-- `docs/contexto/supabase/tables/public/erp_sync_log.md`
-- `docs/contexto/supabase/tables/public/estoque.md`
-- … +114
+- … +155
 
 </details>
 

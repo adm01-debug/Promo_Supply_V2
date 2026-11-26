@@ -2,6 +2,16 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 04:15 UTC
+
+- **config: auth_config** adicionado (1): `auth_config`
+- **config: network_restrictions** adicionado (1): `network_restrictions`
+- **config: pooler_config** adicionado (1): `pooler_config`
+- **config: postgres_config** adicionado (1): `postgres_config`
+- **config: postgrest_config** adicionado (1): `postgrest_config`
+- **config: storage_config** adicionado (1): `storage_config`
+- **edge functions** adicionado (41): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `alert-dispatcher`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-credential-encrypt`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `health-dashboard`, `maintain-partitions`, `migrate-storage-paths`, `process-invoice-idp`, `process-outbox`, `process-solicitacao-neural`, `punchout-encrypt`, `punchout-receive`, `punchout-setup`, `receive-os-sync`, `run-audit`, `scim-v2`, `send-push-notification`, `spot-api`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `webauthn-register`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy` … (+1)
+
 ## 2026-11-26 03:17 UTC
 
 - **functions** alterado (1): `public.resolve_alert(_alert_id uuid, _note text)`
