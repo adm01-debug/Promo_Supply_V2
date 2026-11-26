@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 343,
+ "migrations": 344,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -1150,6 +1150,11 @@
    "migration": "20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql"
   },
   {
+   "nome": "cleanup-checkpoint-snapshots",
+   "agenda": "30 3 * * 0",
+   "migration": "20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql"
+  },
+  {
    "nome": "cleanup-deadlock-snapshots-daily",
    "agenda": "15 4 * * *",
    "migration": "20260712193607_e90c84a9-d4eb-42b3-8564-899bacc01fa2.sql"
@@ -1158,6 +1163,11 @@
    "nome": "cleanup-geo-access-logs",
    "agenda": "05 4 * * *",
    "migration": "20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql"
+  },
+  {
+   "nome": "cleanup-health-scan-runs",
+   "agenda": "0 2 * * *",
+   "migration": "20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql"
   },
   {
    "nome": "cleanup-health-scan-runs-daily",
@@ -1281,6 +1291,11 @@
    "nome": "refresh-mv-dashboard-kpis",
    "agenda": "*/15 * * * *",
    "migration": "20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql"
+  },
+  {
+   "nome": "reset-pg-stat-statements",
+   "agenda": "0 5 * * 1",
+   "migration": "20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql"
   },
   {
    "nome": "run-all-health-scans-hourly",
@@ -1487,9 +1502,19 @@
    "chama_edge": "weekly-summary-report"
   },
   {
+   "nome": "weekly-vacuum-analyze",
+   "agenda": "0 4 * * 0",
+   "migration": "20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql"
+  },
+  {
    "nome": "xbz-sync-pedidos-30min",
    "agenda": "*/30 * * * *",
    "migration": "20261120165300_versiona_job_xbz_sync_30min.sql"
+  },
+  {
+   "nome": "xbz-sync-watchdog-hourly",
+   "agenda": "15 * * * *",
+   "migration": "20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql"
   }
  ],
  "buckets": [

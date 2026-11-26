@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0a126b6b410c3048094849bd4cb34788093fe34a",
+  "sha": "28d02fb04baf9342e4d138a166b9bc0aa1102feb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 05:31 UTC",
-  "files_total": 1485,
-  "code_files": 1310,
-  "code_lines": 220530,
+  "generated_at": "2026-11-26 05:44 UTC",
+  "files_total": 1487,
+  "code_files": 1312,
+  "code_lines": 220638,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5229e805d42e301b",
+ "facts_hash": "a06bb1cfc1d167a2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 441,
    ".tsx": 433,
-   ".sql": 359,
+   ".sql": 361,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27232,6 +27232,7 @@
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
    "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
    "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+   "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
@@ -27239,6 +27240,7 @@
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
+   "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -36516,8 +36518,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 343,
-   "lines": 28975,
+   "files": 344,
+   "lines": 29058,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36608,8 +36610,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 7,
-   "lines": 602,
+   "files": 8,
+   "lines": 627,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36622,7 +36624,8 @@
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
-    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql"
+    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
+    "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql"
    ]
   },
   {
@@ -58830,6 +58833,14 @@
    {
     "file": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
     "line": "v_lease interval := interval '10 minutes';"
+   },
+   {
+    "file": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+    "line": "-- id 1 cleanup-health-scan-runs 0 2 * * * DELETE ... interval '7 days'"
+   },
+   {
+    "file": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+    "line": "-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'"
    },
    {
     "file": "tests-e2e/global-setup.ts",
@@ -122656,7 +122667,7 @@
   },
   "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql": {
    "path": "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
-   "lines": 105
+   "lines": 112
   },
   "supabase/migrations/20261121160000_pim_refs_compras.sql": {
    "path": "supabase/migrations/20261121160000_pim_refs_compras.sql",
@@ -122775,6 +122786,14 @@
     "v_lease interval := interval '10 minutes';"
    ]
   },
+  "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql": {
+   "path": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+   "lines": 76,
+   "temporal": [
+    "-- id 1 cleanup-health-scan-runs 0 2 * * * DELETE ... interval '7 days'",
+    "-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'"
+   ]
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -122802,6 +122821,10 @@
   "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql": {
    "path": "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
    "lines": 34
+  },
+  "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql": {
+   "path": "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+   "lines": 25
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -123038,10 +123061,23 @@
   }
  },
  "git": {
-  "sha": "0a126b6b410c3048094849bd4cb34788093fe34a",
+  "sha": "28d02fb04baf9342e4d138a166b9bc0aa1102feb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "28d02fb",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+     "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+     "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql"
+    ]
+   },
    {
     "sha": "0a126b6",
     "date": "2026-11-26",
@@ -123385,17 +123421,6 @@
      "docs/agentes/github-ci.md",
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "20e28a7",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)",
-    "files": [
-     "docs/pendencias/_indice.md",
-     "docs/qa/05-PROGRESSO.md",
-     "eslint.config.js"
-    ]
    }
   ],
   "hot_files": [
@@ -123405,15 +123430,11 @@
    ],
    [
     "AGENTS.md",
-    5
+    6
    ],
    [
     "package.json",
     3
-   ],
-   [
-    "docs/pendencias/_indice.md",
-    2
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
@@ -123436,11 +123457,27 @@
     2
    ],
    [
+    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+    1
+   ],
+   [
     "package-lock.json",
     1
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    1
+   ],
+   [
+    "docs/pendencias/_indice.md",
     1
    ],
    [
@@ -123465,18 +123502,6 @@
    ],
    [
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     1
    ]
   ]

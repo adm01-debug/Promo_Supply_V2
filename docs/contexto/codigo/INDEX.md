@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0a126b6b410c3048094849bd4cb34788093fe34a` (2026-11-26T02:30:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28d02fb04baf9342e4d138a166b9bc0aa1102feb` (2026-11-26T02:43:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (874), SQL (359), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (874), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1484 |
+| arquivos_total | 1486 |
 | arquivos_codigo | 949 |
 | linhas_codigo | 189829 |
 | rotas | 56 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 94 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 343 |
-| cron_jobs | 74 |
+| migrations | 344 |
+| cron_jobs | 79 |
 | testes | 310 |
 | workflows | 15 |
 | scripts | 52 |
@@ -236,8 +236,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `check_secret_rotation_due_daily` 0 6 * * * (20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql)
 - `cleanup_expired_password_resets_daily` 35 3 * * * (20260712222142_a253a878-d059-471c-bcd0-7a8f1ce178b9.sql)
 - `cleanup-audit-logs-daily` 15 3 * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `cleanup-checkpoint-snapshots` 30 3 * * 0 (20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql)
 - `cleanup-deadlock-snapshots-daily` 15 4 * * * (20260712193607_e90c84a9-d4eb-42b3-8564-899bacc01fa2.sql)
 - `cleanup-geo-access-logs` 05 4 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
+- `cleanup-health-scan-runs` 0 2 * * * (20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql)
 - `cleanup-health-scan-runs-daily` 5 8 * * * (20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql)
 - `cleanup-integration-outbox-daily` 30 3 * * * (20260711183148_8694a780-0861-49f9-a337-d565e5e15ef4.sql)
 - `cleanup-login-attempts` 55 3 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
@@ -262,6 +264,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `outbox-worker-1min` * * * * * (20261121153000_religa_crons_negocio_vault.sql)
 - `pg-activity-watchdog` */2 * * * * (20260712110815_762ad29c-b3f7-4e44-a0ec-f6b624174ca3.sql)
 - `refresh-mv-dashboard-kpis` */15 * * * * (20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql)
+- `reset-pg-stat-statements` 0 5 * * 1 (20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql)
 - `run-all-health-scans-hourly` 17 * * * * (20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql)
 - `scan_duplicate_indexes_weekly` 47 4 * * 1 (20260713110159_94ff935c-b0ce-41ae-8d40-bda6ca91f908.sql)
 - `scan_table_growth_daily` 17 3 * * * (20260713105907_4b197a0e-74a0-4812-9175-87b9ca7c56ba.sql)
@@ -302,7 +305,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `spot-api-sync-stock` */20 * * * * (20261121232500_corrige_quota_cron_spot_stock.sql)
 - `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20261121153000_religa_crons_negocio_vault.sql)
 - `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20261121153000_religa_crons_negocio_vault.sql)
+- `weekly-vacuum-analyze` 0 4 * * 0 (20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql)
 - `xbz-sync-pedidos-30min` */30 * * * * (20261120165300_versiona_job_xbz_sync_30min.sql)
+- `xbz-sync-watchdog-hourly` 15 * * * * (20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql)
 
 ## Integrações externas
 - SDKs: Supabase, i18next, react-query, zod
@@ -338,9 +343,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (147)
-- docs/pendencias/_indice.md (31)
-- AGENTS.md (12)
+- docs/qa/05-PROGRESSO.md (148)
+- docs/pendencias/_indice.md (30)
+- AGENTS.md (13)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (8)
@@ -422,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `28d02fb` chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)
 - 2026-11-26 `0a126b6` fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)
 - 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
 - 2026-11-26 `88efac2` fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)
@@ -436,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `b7a644c` fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)
 - 2026-11-26 `7bc5670` ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)
 - 2026-11-26 `0856406` ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)
-- 2026-11-26 `e18b65d` fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

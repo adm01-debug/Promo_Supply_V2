@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0a126b6b41` · branch `main` · 2026-11-26 05:31 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `28d02fb04b` · branch `main` · 2026-11-26 05:44 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2064,6 +2064,8 @@ _nenhum item encontrado_
 | `-- (resolved_at IS NOT NULL AND resolved_at < now() - interval '60 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
 | `-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
 | `v_lease interval := interval '10 minutes';` | `supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql` |
+| `-- id 1 cleanup-health-scan-runs 0 2 * * * DELETE ... interval '7 days'` | `supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql` |
+| `-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'` | `supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 
