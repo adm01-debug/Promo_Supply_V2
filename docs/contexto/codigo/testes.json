@@ -856,11 +856,11 @@
   {
    "arquivo": "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
    "tipo": "unit",
-   "linhas": 210,
+   "linhas": 231,
    "testa": [
     "src/features/cotacoes/hooks/useCotacoes.ts"
    ],
-   "casos": 7
+   "casos": 8
   },
   {
    "arquivo": "src/features/layout/__tests__/AppSidebar.a11y.test.tsx",

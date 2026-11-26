@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `85e9897b9a699e569e987c4b4d341ae581eb8ed7` (2026-11-26T11:46:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a0dc8786dac70c9e62124bbde052a93dfc48cf0b` (2026-11-26T12:08:30-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (376), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (377), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1520 |
+| arquivos_total | 1521 |
 | arquivos_codigo | 968 |
-| linhas_codigo | 192765 |
+| linhas_codigo | 192806 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 355 |
+| migrations | 356 |
 | cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (183)
-- AGENTS.md (20)
+- docs/qa/05-PROGRESSO.md (185)
+- AGENTS.md (21)
 - docs/pendencias/_indice.md (20)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -428,6 +428,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `a0dc878` fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)
+- 2026-11-26 `b26661a` chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)
 - 2026-11-26 `85e9897` fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)
 - 2026-11-26 `72c5408` fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)
 - 2026-11-26 `29e79cf` chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)
@@ -441,8 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `9ceca5c` chore(db): sincronizar types.ts com o banco [auto] (#544)
 - 2026-11-26 `2e5f087` fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)
 - 2026-11-26 `5d9ba6d` fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)
-- 2026-11-26 `ef532a2` fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)
-- 2026-11-26 `e8b0d67` feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

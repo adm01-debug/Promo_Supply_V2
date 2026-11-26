@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
+  "commit": "a0dc8786dac70c9e62124bbde052a93dfc48cf0b",
   "branch": "main",
-  "data_commit": "2026-11-26T11:46:50-03:00",
+  "data_commit": "2026-11-26T12:08:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a0dc878",
+    "data": "2026-11-26",
+    "assunto": "fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)"
+   },
+   {
+    "sha": "b26661a",
+    "data": "2026-11-26",
+    "assunto": "chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)"
+   },
    {
     "sha": "85e9897",
     "data": "2026-11-26",
@@ -121,19 +131,9 @@
     "sha": "c018639",
     "data": "2026-11-26",
     "assunto": "fix(edge): trata notificacao descartada como descarte, nao como envio (#550)"
-   },
-   {
-    "sha": "f72f728",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)"
-   },
-   {
-    "sha": "6114624",
-    "data": "2026-11-26",
-    "assunto": "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)"
    }
   ],
-  "arquivos_mudados_7d": 1541,
+  "arquivos_mudados_7d": 1542,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 183
+    "mudancas": 185
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -184,26 +184,26 @@
     "mudancas": 23
    },
    {
+    "pasta": "AGENTS.md",
+    "mudancas": 21
+   },
+   {
     "pasta": "src/pages/catalogo-spot",
     "mudancas": 21
    },
    {
     "pasta": "src/pages/historico",
     "mudancas": 21
-   },
-   {
-    "pasta": "src/pages/pedidos",
-    "mudancas": 21
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 183
+    "mudancas": 185
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1520,
+  "arquivos_total": 1521,
   "arquivos_codigo": 968,
-  "linhas_codigo": 192765,
+  "linhas_codigo": 192806,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 355,
+  "migrations": 356,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,
@@ -432,7 +432,7 @@
   },
   "src/features": {
    "arquivos": 97,
-   "linhas": 11986
+   "linhas": 12027
   },
   "src/hooks": {
    "arquivos": 103,

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
+  "sha": "a0dc8786dac70c9e62124bbde052a93dfc48cf0b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 14:49 UTC",
-  "files_total": 1521,
-  "code_files": 1346,
-  "code_lines": 224922,
+  "generated_at": "2026-11-26 15:14 UTC",
+  "files_total": 1522,
+  "code_files": 1347,
+  "code_lines": 225037,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "1beade21c3f66d00",
+ "facts_hash": "03e6329016d3389e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 376,
+   ".sql": 377,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20197,12 +20197,13 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "src": "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes s SET status = 'aprovada', updated_at = now() WHERE s.id = NEW.solicitacao_id AND s.status IN ('pendente', 'em_cotacao') AND NOT EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.solicitacao_id = s.id AND w.status <> 'approved' ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
+     "approval_workflows",
      "solicitacoes"
     ]
    },
@@ -20366,13 +20367,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "src": "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes s SET status = 'aprovada', updated_at = now() WHERE s.id = NEW.solicitacao_id AND s.status IN ('pendente', 'em_cotacao') AND NOT EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.solicitacao_id = s.id AND w.status <> 'approved' ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
+     "approval_workflows",
      "solicitacoes"
     ]
    },
@@ -27301,6 +27303,7 @@
    "supabase/migrations/20261125160000_remove_trigger_duplicado_pedidos.sql",
    "supabase/migrations/20261125162000_rpc_orcamento_por_tenant.sql",
    "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
+   "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
@@ -35435,9 +35438,10 @@
   {
    "module": "src/features/cotacoes",
    "files": 3,
-   "lines": 467,
+   "lines": 508,
    "tables": [
-    "cotacoes"
+    "cotacoes",
+    "solicitacoes"
    ],
    "exports": [
     "useCotacoes.ts: Cotacao, CreateCotacaoInput, CotacaoFilters, useCotacoes"
@@ -36723,8 +36727,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 355,
-   "lines": 30004,
+   "files": 356,
+   "lines": 30078,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37974,6 +37978,7 @@
      "src/components/compras/SavingsGoalPanel.tsx",
      "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
      "src/components/mobile/BottomNavigation.tsx",
+     "src/features/cotacoes/hooks/useCotacoes.ts",
      "src/features/pedidos/hooks/usePedidos.ts",
      "src/features/solicitacoes/hooks/useSolicitacoes.ts",
      "src/hooks/useApprovalWorkflow.ts",
@@ -62875,6 +62880,10 @@
    },
    {
     "file": "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
+    "name": "selectCotacao com workflow de alcada pendente nao anuncia aprovacao da solicitacao"
+   },
+   {
+    "file": "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
     "name": "createCotacao grava o total calculado e o escopo da organizacao"
    },
    {
@@ -78701,12 +78710,13 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "src": "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.status = 'aprovada' AND OLD.status IS DISTINCT FROM 'aprovada' AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes s SET status = 'aprovada', updated_at = now() WHERE s.id = NEW.solicitacao_id AND s.status IN ('pendente', 'em_cotacao') AND NOT EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.solicitacao_id = s.id AND w.status <> 'approved' ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
+     "approval_workflows",
      "solicitacoes"
     ]
    },
@@ -78870,13 +78880,14 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122616_compra_completa_scores_e_status.sql",
+    "src": "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes SET status = 'aprovada', updated_at = now() WHERE id = NEW.solicitacao_id AND status IN ('pendente', 'em_cotacao'); END IF; RETURN NEW; END;",
+    "body": "BEGIN IF NEW.selecionada = true AND (OLD.selecionada IS DISTINCT FROM NEW.selecionada) AND NEW.solicitacao_id IS NOT NULL THEN UPDATE public.solicitacoes s SET status = 'aprovada', updated_at = now() WHERE s.id = NEW.solicitacao_id AND s.status IN ('pendente', 'em_cotacao') AND NOT EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.solicitacao_id = s.id AND w.status <> 'approved' ); END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
      "NEW",
+     "approval_workflows",
      "solicitacoes"
     ]
    },
@@ -103165,7 +103176,7 @@
   },
   "src/features/cotacoes/hooks/useCotacoes.ts": {
    "path": "src/features/cotacoes/hooks/useCotacoes.ts",
-   "lines": 255,
+   "lines": 275,
    "exports": [
     "type Cotacao",
     "interface CreateCotacaoInput",
@@ -103192,6 +103203,10 @@
     {
      "table": "cotacoes",
      "op": "select,update"
+    },
+    {
+     "table": "solicitacoes",
+     "op": "select"
     },
     {
      "table": "cotacoes",
@@ -103226,6 +103241,10 @@
      "valor_frete",
      "valor_total",
      "valor_unitario"
+    ],
+    "solicitacoes": [
+     "id",
+     "status"
     ]
    },
    "rpc": [
@@ -103258,7 +103277,7 @@
   },
   "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx": {
    "path": "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
-   "lines": 210,
+   "lines": 231,
    "is_test": true,
    "doc": "TST-06 (etapa 282): o caminho de ESCRITA de useCotacoes nunca era exercitado. O RLS filtra a linha em silencio (0 linhas, sem erro), entao updateCotacao, selectCotacao e deleteCotacao comemoravam sucesso sem gravar nada - e no caso da selecao a solicitacao ficava com a vencedora antiga desmarcada e …",
    "tests": [
@@ -103268,6 +103287,7 @@
     "deleteCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso",
     "selectCotacao recusada pelo RLS retorna false, nao anuncia vencedor e nao grava auditoria",
     "selectCotacao grava a vencedora com status aprovada e desmarca as outras da solicitacao",
+    "selectCotacao com workflow de alcada pendente nao anuncia aprovacao da solicitacao",
     "createCotacao grava o total calculado e o escopo da organizacao",
     "createCotacao com erro do banco retorna null e nao anuncia sucesso"
    ]
@@ -124290,6 +124310,10 @@
    "path": "supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql",
    "lines": 124
   },
+  "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql": {
+   "path": "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
+   "lines": 74
+  },
   "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "lines": 80
@@ -124664,10 +124688,32 @@
   }
  },
  "git": {
-  "sha": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
+  "sha": "a0dc8786dac70c9e62124bbde052a93dfc48cf0b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a0dc878",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
+     "src/features/cotacoes/hooks/useCotacoes.ts",
+     "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql"
+    ]
+   },
+   {
+    "sha": "b26661a",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "85e9897",
     "date": "2026-11-26",
@@ -125071,32 +125117,6 @@
      "src/pages/catalogo-spot/SpotCatalogTab.tsx",
      "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx"
     ]
-   },
-   {
-    "sha": "c30880d",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/DemandPredictionPanel.tsx",
-     "src/components/compras/PriceHistoryModal.tsx",
-     "src/components/compras/RiskHeatMap.tsx",
-     "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
-     "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
-    ]
-   },
-   {
-    "sha": "a55e816",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/PurchaseClimateWidget.tsx",
-     "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
-     "src/hooks/useExecutiveDashboardData.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125106,7 +125126,7 @@
    ],
    [
     "AGENTS.md",
-    8
+    9
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -125153,12 +125173,16 @@
     2
    ],
    [
-    "src/components/compras/DemandPredictionPanel.tsx",
-    2
+    "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
+    1
    ],
    [
-    "src/components/compras/PriceHistoryModal.tsx",
-    2
+    "src/features/cotacoes/hooks/useCotacoes.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
+    1
    ],
    [
     "src/components/admin/telemetry/AppLogsView.tsx",
@@ -125174,10 +125198,6 @@
    ],
    [
     "src/lib/__tests__/logger.test.ts",
-    1
-   ],
-   [
-    "src/lib/logger.ts",
     1
    ]
   ]

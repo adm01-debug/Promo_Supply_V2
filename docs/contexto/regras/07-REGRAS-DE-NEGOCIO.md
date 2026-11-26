@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `85e9897b9a` · branch `main` · 2026-11-26 14:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a0dc8786da` · branch `main` · 2026-11-26 15:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2491,7 +2491,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3585 testes em 272 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3586 testes em 272 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2609,6 +2609,7 @@ _nenhum item encontrado_
 | `src/components/accessibility/__tests__/skipLinks.test.tsx` | 9 | os links de pular levam a alvos que existem · so oferece conteudo principal e navegacao, sem link morto de busca · todo href de pular aponta para um id que alguma tela declara · cada breakpoint tem exatamente uma navegacao alcancavel … |
 | `src/components/compras/__tests__/cotacaoManualCampos.test.tsx` | 9 | CotacaoManualModal entrega os campos que coleta · grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em  · leva validade e observacoes no payload, com o fornecedor do cadastro · nao manda string vazia de validade nem de observacoes … |
 | `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |
+| `src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx` | 9 | useCotacoes - escrita negada pelo RLS nao vira sucesso · updateCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso · updateCotacao com a linha gravada continua retornando true · deleteCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso … |
 | `src/hooks/__tests__/useDashboardKPIs.test.tsx` | 9 | useDashboardKPIs — parâmetro da organização · envia organizationId (grupo) como p_organization_id, nunca o tenantId · não chama a RPC sem organização no perfil · useDashboardKPIs — SLA vem da RPC, não de literal … |
 | `src/hooks/__tests__/usePagamentos.escrita.test.tsx` | 9 | usePagamentos - escrita negada pelo RLS nao vira sucesso · updatePagamento com 0 linhas afetadas retorna false e nao anuncia sucesso · updatePagamento com a linha gravada continua retornando true · updatePagamento recusa transicao invalida sem tocar o banco … |
 | `src/lib/__tests__/exportData.csv.test.ts` | 9 | exportToCSV — números sem formatter · inteiro sai sem casas decimais · inteiro grande usa separador de milhar pt-BR · decimal sai com vírgula e no máximo 2 casas (caso real 67.46268656716418) … |
@@ -2621,7 +2622,6 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
-| `src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx` | 8 | useCotacoes - escrita negada pelo RLS nao vira sucesso · updateCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso · updateCotacao com a linha gravada continua retornando true · deleteCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso … |
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |

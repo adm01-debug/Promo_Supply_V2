@@ -370,10 +370,11 @@
    "hooks_exportados": [
     "useCotacoes"
    ],
-   "linhas": 255,
+   "linhas": 275,
    "dominio": "features/cotacoes",
    "tabelas": [
-    "cotacoes"
+    "cotacoes",
+    "solicitacoes"
    ],
    "rpcs": [
     "generate_sequential_number"

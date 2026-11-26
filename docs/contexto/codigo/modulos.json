@@ -1862,7 +1862,7 @@
    "modulo": "features/cotacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 257,
+   "linhas": 277,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1885,6 +1885,7 @@
     "audit_logs",
     "cotacoes",
     "profiles",
+    "solicitacoes",
     "user_roles",
     "user_tenants"
    ],
@@ -1905,7 +1906,8 @@
    "diretos": {
     "edges": [],
     "tabelas": [
-     "cotacoes"
+     "cotacoes",
+     "solicitacoes"
     ],
     "rpcs": [
      "generate_sequential_number"
