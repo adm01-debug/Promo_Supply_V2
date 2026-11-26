@@ -39,8 +39,8 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 - Funcionalidade pronta = integrada ponta a ponta (rota em `src/routes/AppRoutes.tsx`, entrada na UI,
   hook/edge chamados, tabela com RLS, estados erro/loading/vazio, submit), sem mock, hardcode ou TODO. Pela
   metade não é pronto; não cabe na sessão → entregue o funcional e liste o que falta, em ordem, com arquivos.
-  Nunca deixe código morto ou feature "quase" sem dizer — aqui 99 das 162 tabelas de produção estão vazias e
-  três fluxos têm o fio cortado (`docs/agentes/regras-dominio.md`).
+  Nunca deixe código morto ou feature "quase" sem dizer — o snapshot de 22/11 tem 160 tabelas em `public` e
+    código existir não prova fluxo em uso (`docs/agentes/regras-dominio.md`).
 
 ## Comunicação
 - Resultado primeiro, só o que muda decisão do dono. Sem introdução, recapitulação, narração, hedging,
@@ -147,8 +147,10 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   guards: `npm run guards` (suítes de `scripts/` + inventário de testes + `--check` das docs geradas) e
   `node scripts/ci/check-agents-md-integrity.mjs`.
 - Automação em `scripts/<nome>/` com README (leia antes de alterar); nunca em `supabase/` nem `src/`.
-- `inventario/estado/*.json` (gerado) antes de grep. `ESTADO_ATUAL.md` + `DOCS/ESTADO/` = o que está quebrado
-  e onde fica cada prova.
+- `inventario/estado/*.json` (gerado) antes de grep. O que está quebrado **hoje**: `docs/pendencias/_indice.md`
+  (decisões do dono) e `docs/contexto/` (fatos regerados de hora em hora, branch `contexto`).
+  `ESTADO_ATUAL.md` + `DOCS/ESTADO/` são gerador de **hipótese**, datados de 16/08/2026 (commit-base
+  `f49b29c0`) — confirme no código antes de agir.
 
 ## Contexto gerado
 Antes de qualquer tarefa ou planejamento: `git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md`

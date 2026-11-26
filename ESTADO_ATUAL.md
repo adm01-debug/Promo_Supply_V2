@@ -3,6 +3,12 @@
 **Auditoria de estado · 16 de agosto de 2026**
 Documento executivo. Leitura: ~10 minutos. As provas estão em [`DOCS/ESTADO/`](DOCS/ESTADO/00_INDICE.md) — 14 documentos, toda linha com `arquivo:linha`.
 
+> **LEITURA DATADA — 16/08/2026, commit-base `f49b29c0`.** Este é um retrato histórico, não o estado
+> corrente do sistema: parte do que ele afirma já foi corrigida (os "três fios cortados", por exemplo, estão
+> ligados hoje). O que está quebrado agora vive em `docs/pendencias/_indice.md` (decisões do dono) e em
+> `docs/contexto/` (fatos regerados de hora em hora pela branch `contexto`). Trate cada afirmação daqui como
+> hipótese a confirmar no código antes de agir.
+
 ---
 
 ## Veredito em uma tela
