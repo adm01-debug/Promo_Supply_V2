@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "054f49e5cdf1da95f354528644b31f897c42c159",
+  "commit": "63f3816c15cc6327c462587dff9e16872965d044",
   "branch": "main",
-  "data_commit": "2026-11-26T13:41:10-03:00",
+  "data_commit": "2026-11-26T13:52:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "63f3816",
+    "data": "2026-11-26",
+    "assunto": "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)"
+   },
    {
     "sha": "054f49e",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "e8b0d67",
     "data": "2026-11-26",
     "assunto": "feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)"
-   },
-   {
-    "sha": "e94d3a2",
-    "data": "2026-11-26",
-    "assunto": "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)"
    }
   ],
-  "arquivos_mudados_7d": 1556,
+  "arquivos_mudados_7d": 1558,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 192
+    "mudancas": 193
    },
    {
     "pasta": "src/components/ui",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 192
+    "mudancas": 193
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 28
+    "mudancas": 29
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1535,
+  "arquivos_total": 1537,
   "arquivos_codigo": 968,
   "linhas_codigo": 192806,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 165,
-  "migrations": 363,
+  "migrations": 364,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,

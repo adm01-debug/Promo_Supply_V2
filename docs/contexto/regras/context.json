@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "054f49e5cdf1da95f354528644b31f897c42c159",
+  "sha": "63f3816c15cc6327c462587dff9e16872965d044",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 16:46 UTC",
-  "files_total": 1536,
-  "code_files": 1361,
-  "code_lines": 226120,
+  "generated_at": "2026-11-26 16:54 UTC",
+  "files_total": 1538,
+  "code_files": 1363,
+  "code_lines": 226166,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "aae8381560fc1f2b",
+ "facts_hash": "cc86939e4a0542b9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 391,
+   ".sql": 393,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27319,6 +27319,7 @@
    "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
    "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
    "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
+   "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27342,6 +27343,7 @@
    "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
    "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
    "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
+   "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -36811,8 +36813,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 363,
-   "lines": 30823,
+   "files": 364,
+   "lines": 30865,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36903,8 +36905,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 16,
-   "lines": 1168,
+   "files": 17,
+   "lines": 1172,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36921,6 +36923,7 @@
     "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
     "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
     "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
+    "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -124662,6 +124665,10 @@
     "WHERE created_at < now() - interval '90 days'"
    ]
   },
+  "supabase/migrations/20261126173000_devolucoes_numero_unique.sql": {
+   "path": "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
+   "lines": 42
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124786,6 +124793,10 @@
     "WHERE created_at < now() - interval '180 days'",
     "WHERE created_at < now() - interval '90 days'"
    ]
+  },
+  "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql": {
+   "path": "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
+   "lines": 4
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -125046,10 +125057,22 @@
   }
  },
  "git": {
-  "sha": "054f49e5cdf1da95f354528644b31f897c42c159",
+  "sha": "63f3816c15cc6327c462587dff9e16872965d044",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "63f3816",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
+     "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql"
+    ]
+   },
    {
     "sha": "054f49e",
     "date": "2026-11-26",
@@ -125402,18 +125425,6 @@
      "src/tests/spot/spotApi.test.ts",
      "supabase/functions/spot-api/index.ts"
     ]
-   },
-   {
-    "sha": "02f5c0e",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/send-push-notification/index.ts",
-     "supabase/functions/send-push-notification/webpush.test.ts",
-     "supabase/functions/send-push-notification/webpush.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125423,7 +125434,7 @@
    ],
    [
     "AGENTS.md",
-    16
+    17
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -125442,16 +125453,20 @@
     2
    ],
    [
-    "supabase/functions/send-push-notification/index.ts",
-    2
-   ],
-   [
     "src/tests/spot/spotApi.test.ts",
     2
    ],
    [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
+    1
    ],
    [
     "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
@@ -125491,10 +125506,6 @@
    ],
    [
     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
     1
    ]
   ]
