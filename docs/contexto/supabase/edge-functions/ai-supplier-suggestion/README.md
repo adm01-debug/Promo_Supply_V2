@@ -4,7 +4,7 @@
 |---|---|
 | nome | ai-supplier-suggestion |
 | status | ACTIVE |
-| versão | 34 |
+| versão | 35 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
 | import_map |  |

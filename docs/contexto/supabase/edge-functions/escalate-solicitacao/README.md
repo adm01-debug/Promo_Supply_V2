@@ -4,7 +4,7 @@
 |---|---|
 | nome | escalate-solicitacao |
 | status | ACTIVE |
-| versão | 11 |
+| versão | 12 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/escalate-solicitacao/index.ts |
 | import_map |  |

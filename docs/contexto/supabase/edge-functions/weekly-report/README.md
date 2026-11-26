@@ -4,7 +4,7 @@
 |---|---|
 | nome | weekly-report |
 | status | ACTIVE |
-| versão | 29 |
+| versão | 30 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/weekly-report/index.ts |
 | import_map |  |

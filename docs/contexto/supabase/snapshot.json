@@ -299,9 +299,9 @@
         "name": "ai-demand-prediction",
         "slug": "ai-demand-prediction",
         "status": "ACTIVE",
-        "updated_at": 1795660736668,
+        "updated_at": 1795695291141,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935824160,
@@ -311,9 +311,9 @@
         "name": "ai-negotiation",
         "slug": "ai-negotiation",
         "status": "ACTIVE",
-        "updated_at": 1795660739896,
+        "updated_at": 1795695294959,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935827299,
@@ -323,9 +323,9 @@
         "name": "ai-supplier-risk",
         "slug": "ai-supplier-risk",
         "status": "ACTIVE",
-        "updated_at": 1795660742877,
+        "updated_at": 1795695298371,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935830982,
@@ -335,9 +335,9 @@
         "name": "ai-supplier-suggestion",
         "slug": "ai-supplier-suggestion",
         "status": "ACTIVE",
-        "updated_at": 1795660745733,
+        "updated_at": 1795695301679,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935866015,
@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795690578550,
+        "updated_at": 1795695304699,
         "verify_jwt": true,
-        "version": 27
+        "version": 28
       },
       {
         "created_at": 1785935869432,
@@ -359,9 +359,9 @@
         "name": "check-approval-escalations",
         "slug": "check-approval-escalations",
         "status": "ACTIVE",
-        "updated_at": 1795685741333,
+        "updated_at": 1795695308031,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935872814,
@@ -371,9 +371,9 @@
         "name": "check-cotacao-followup",
         "slug": "check-cotacao-followup",
         "status": "ACTIVE",
-        "updated_at": 1795685743514,
+        "updated_at": 1795695311372,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935876556,
@@ -383,9 +383,9 @@
         "name": "check-expiry-alerts",
         "slug": "check-expiry-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795660756268,
+        "updated_at": 1795695314810,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935879464,
@@ -395,21 +395,21 @@
         "name": "check-sla-alerts",
         "slug": "check-sla-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795660758993,
+        "updated_at": 1795695318124,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935910356,
-        "entrypoint_path": "file:///app/supabase/functions/dependency-health/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/dependency-health/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "dependency-health",
         "slug": "dependency-health",
         "status": "ACTIVE",
-        "updated_at": 1795661315996,
+        "updated_at": 1795695320826,
         "verify_jwt": false,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1795210713630,
@@ -419,9 +419,9 @@
         "name": "erp-credential-encrypt",
         "slug": "erp-credential-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795660764879,
+        "updated_at": 1795695324431,
         "verify_jwt": true,
-        "version": 12
+        "version": 13
       },
       {
         "created_at": 1785935841869,
@@ -431,9 +431,9 @@
         "name": "erp-sync",
         "slug": "erp-sync",
         "status": "ACTIVE",
-        "updated_at": 1795660767995,
+        "updated_at": 1795695328182,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1795374141517,
@@ -443,9 +443,9 @@
         "name": "escalate-solicitacao",
         "slug": "escalate-solicitacao",
         "status": "ACTIVE",
-        "updated_at": 1795660771124,
+        "updated_at": 1795695331550,
         "verify_jwt": true,
-        "version": 11
+        "version": 12
       },
       {
         "created_at": 1785935927495,
@@ -455,9 +455,9 @@
         "name": "external-db-bridge",
         "slug": "external-db-bridge",
         "status": "ACTIVE",
-        "updated_at": 1795660774024,
+        "updated_at": 1795695334830,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935838150,
@@ -467,9 +467,9 @@
         "name": "fiscal-orchestrator",
         "slug": "fiscal-orchestrator",
         "status": "ACTIVE",
-        "updated_at": 1795660777350,
+        "updated_at": 1795695338325,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935858385,
@@ -479,9 +479,9 @@
         "name": "generate-contract-pdf",
         "slug": "generate-contract-pdf",
         "status": "ACTIVE",
-        "updated_at": 1795660780579,
+        "updated_at": 1795695341603,
         "verify_jwt": true,
-        "version": 28
+        "version": 29
       },
       {
         "created_at": 1785935862710,
@@ -491,9 +491,9 @@
         "name": "guided-buying-ai",
         "slug": "guided-buying-ai",
         "status": "ACTIVE",
-        "updated_at": 1795660784022,
+        "updated_at": 1795695345228,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1794580652434,
@@ -515,9 +515,9 @@
         "name": "maintain-partitions",
         "slug": "maintain-partitions",
         "status": "ACTIVE",
-        "updated_at": 1795660789273,
+        "updated_at": 1795695350652,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935923731,
@@ -527,9 +527,9 @@
         "name": "migrate-storage-paths",
         "slug": "migrate-storage-paths",
         "status": "ACTIVE",
-        "updated_at": 1795660792238,
+        "updated_at": 1795695353792,
         "verify_jwt": true,
-        "version": 25
+        "version": 26
       },
       {
         "created_at": 1785935855305,
@@ -539,9 +539,9 @@
         "name": "process-invoice-idp",
         "slug": "process-invoice-idp",
         "status": "ACTIVE",
-        "updated_at": 1795660795502,
+        "updated_at": 1795695356900,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935883056,
@@ -563,9 +563,9 @@
         "name": "process-solicitacao-neural",
         "slug": "process-solicitacao-neural",
         "status": "ACTIVE",
-        "updated_at": 1795660801334,
+        "updated_at": 1795695362512,
         "verify_jwt": true,
-        "version": 22
+        "version": 23
       },
       {
         "created_at": 1795005314879,
@@ -575,21 +575,21 @@
         "name": "punchout-encrypt",
         "slug": "punchout-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795660804221,
+        "updated_at": 1795695366081,
         "verify_jwt": true,
-        "version": 20
+        "version": 21
       },
       {
         "created_at": 1785935851193,
-        "entrypoint_path": "file:///app/supabase/functions/punchout-receive/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "punchout-receive",
         "slug": "punchout-receive",
         "status": "ACTIVE",
-        "updated_at": 1795686088199,
+        "updated_at": 1795695369653,
         "verify_jwt": false,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935848102,
@@ -599,21 +599,21 @@
         "name": "punchout-setup",
         "slug": "punchout-setup",
         "status": "ACTIVE",
-        "updated_at": 1795660810306,
+        "updated_at": 1795695372815,
         "verify_jwt": true,
-        "version": 25
+        "version": 26
       },
       {
         "created_at": 1795462093958,
-        "entrypoint_path": "file:///app/supabase/functions/receive-os-sync/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts",
         "import_map": null,
         "import_map_path": null,
         "name": "receive-os-sync",
         "slug": "receive-os-sync",
         "status": "ACTIVE",
-        "updated_at": 1795661315996,
+        "updated_at": 1795695376147,
         "verify_jwt": false,
-        "version": 17
+        "version": 18
       },
       {
         "created_at": 1785935914012,
@@ -623,21 +623,21 @@
         "name": "run-audit",
         "slug": "run-audit",
         "status": "ACTIVE",
-        "updated_at": 1795610853385,
+        "updated_at": 1795695379231,
         "verify_jwt": false,
-        "version": 26
+        "version": 27
       },
       {
         "created_at": 1785935900512,
-        "entrypoint_path": "file:///app/supabase/functions/scim-v2/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "scim-v2",
         "slug": "scim-v2",
         "status": "ACTIVE",
-        "updated_at": 1795687271823,
+        "updated_at": 1795695382250,
         "verify_jwt": false,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1785935903898,
@@ -647,9 +647,9 @@
         "name": "send-push-notification",
         "slug": "send-push-notification",
         "status": "ACTIVE",
-        "updated_at": 1795686599057,
+        "updated_at": 1795695385063,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1794580657952,
@@ -671,9 +671,9 @@
         "name": "spot-proxy",
         "slug": "spot-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795660827055,
+        "updated_at": 1795695390078,
         "verify_jwt": true,
-        "version": 28
+        "version": 29
       },
       {
         "created_at": 1785935919139,
@@ -683,9 +683,9 @@
         "name": "system-simulation",
         "slug": "system-simulation",
         "status": "ACTIVE",
-        "updated_at": 1795660830021,
+        "updated_at": 1795695393310,
         "verify_jwt": false,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935906684,
@@ -695,21 +695,21 @@
         "name": "telemetry",
         "slug": "telemetry",
         "status": "ACTIVE",
-        "updated_at": 1795660832738,
+        "updated_at": 1795695396417,
         "verify_jwt": false,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935896372,
-        "entrypoint_path": "file:///app/supabase/functions/webauthn-authenticate/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "webauthn-authenticate",
         "slug": "webauthn-authenticate",
         "status": "ACTIVE",
-        "updated_at": 1795661315996,
+        "updated_at": 1795695399065,
         "verify_jwt": false,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935893295,
@@ -719,9 +719,9 @@
         "name": "webauthn-register",
         "slug": "webauthn-register",
         "status": "ACTIVE",
-        "updated_at": 1795660838367,
+        "updated_at": 1795695402254,
         "verify_jwt": true,
-        "version": 24
+        "version": 25
       },
       {
         "created_at": 1785935886703,
@@ -731,9 +731,9 @@
         "name": "weekly-report",
         "slug": "weekly-report",
         "status": "ACTIVE",
-        "updated_at": 1795660841360,
+        "updated_at": 1795695404876,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935890032,
@@ -743,9 +743,9 @@
         "name": "weekly-summary-report",
         "slug": "weekly-summary-report",
         "status": "ACTIVE",
-        "updated_at": 1795660844916,
+        "updated_at": 1795695407872,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935834498,
@@ -755,9 +755,9 @@
         "name": "workflow-engine",
         "slug": "workflow-engine",
         "status": "ACTIVE",
-        "updated_at": 1795660847984,
+        "updated_at": 1795695411146,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1794580660511,
@@ -767,9 +767,9 @@
         "name": "xbz-proxy",
         "slug": "xbz-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795660850915,
+        "updated_at": 1795695414327,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1794580663042,
@@ -779,9 +779,9 @@
         "name": "xbz-sync-pedidos",
         "slug": "xbz-sync-pedidos",
         "status": "ACTIVE",
-        "updated_at": 1795660853938,
+        "updated_at": 1795695417500,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       }
     ],
     "enabled": true,

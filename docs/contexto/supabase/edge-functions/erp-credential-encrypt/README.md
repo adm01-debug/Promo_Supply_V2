@@ -4,7 +4,7 @@
 |---|---|
 | nome | erp-credential-encrypt |
 | status | ACTIVE |
-| versão | 12 |
+| versão | 13 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/erp-credential-encrypt/index.ts |
 | import_map |  |

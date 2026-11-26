@@ -4,7 +4,7 @@
 |---|---|
 | nome | maintain-partitions |
 | status | ACTIVE |
-| versão | 29 |
+| versão | 30 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/maintain-partitions/index.ts |
 | import_map |  |

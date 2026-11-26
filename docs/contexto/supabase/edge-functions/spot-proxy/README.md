@@ -4,7 +4,7 @@
 |---|---|
 | nome | spot-proxy |
 | status | ACTIVE |
-| versão | 28 |
+| versão | 29 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-proxy/index.ts |
 | import_map |  |

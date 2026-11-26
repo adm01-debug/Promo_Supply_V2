@@ -4,7 +4,7 @@
 |---|---|
 | nome | punchout-setup |
 | status | ACTIVE |
-| versão | 25 |
+| versão | 26 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-setup/index.ts |
 | import_map |  |

@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 12:18 UTC
+
+- **edge functions** alterado (38): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `alert-dispatcher`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-credential-encrypt`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `maintain-partitions`, `migrate-storage-paths`, `process-invoice-idp`, `process-solicitacao-neural`, `punchout-encrypt`, `punchout-receive`, `punchout-setup`, `receive-os-sync`, `run-audit`, `scim-v2`, `send-push-notification`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `webauthn-register`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy`, `xbz-sync-pedidos`
+
 ## 2026-11-26 11:12 UTC
 
 - **edge functions** alterado (2): `alert-dispatcher`, `spot-api`

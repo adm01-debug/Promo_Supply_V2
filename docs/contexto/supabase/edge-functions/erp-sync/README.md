@@ -4,7 +4,7 @@
 |---|---|
 | nome | erp-sync |
 | status | ACTIVE |
-| versão | 32 |
+| versão | 33 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/erp-sync/index.ts |
 | import_map |  |

@@ -4,7 +4,7 @@
 |---|---|
 | nome | ai-demand-prediction |
 | status | ACTIVE |
-| versão | 34 |
+| versão | 35 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-demand-prediction/index.ts |
 | import_map |  |

@@ -4,9 +4,9 @@
 |---|---|
 | nome | scim-v2 |
 | status | ACTIVE |
-| versão | 37 |
+| versão | 38 |
 | verify_jwt | não |
-| entrypoint | file:///app/supabase/functions/scim-v2/index.ts |
+| entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts |
 | import_map |  |
 | URL | https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/scim-v2 |
 | fonte no repo | `supabase/functions/scim-v2/` |
