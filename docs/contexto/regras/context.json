@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5656edb5af01c0cc43f138f3d3ebae88e9049987",
+  "sha": "a70dc33e1291227077d8b40766a731fd5df339f8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 02:15 UTC",
-  "files_total": 1468,
-  "code_files": 1294,
-  "code_lines": 219044,
+  "generated_at": "2026-11-26 02:26 UTC",
+  "files_total": 1465,
+  "code_files": 1291,
+  "code_lines": 218944,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4fc80d6b031553ae",
+ "facts_hash": "69bfbcc01db0cbb7",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 441,
+   ".ts": 438,
    ".tsx": 423,
    ".sql": 353,
    ".mjs": 69,
@@ -36221,8 +36221,8 @@
   },
   {
    "module": "src/tests",
-   "files": 10,
-   "lines": 1005,
+   "files": 7,
+   "lines": 912,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36245,11 +36245,8 @@
    "file_list": [
     "src/tests/contracts-elite.test.ts",
     "src/tests/contracts.test.ts",
-    "src/tests/fuzzing/edge-functions.test.ts",
-    "src/tests/fuzzing/payload-integrity.test.ts",
     "src/tests/integration/contract-testing.test.ts",
     "src/tests/integration/contract-validation.test.ts",
-    "src/tests/integration/core-integrity.test.ts",
     "src/tests/integration/supabase-db.test.ts",
     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
     "src/tests/spot/spotApi.test.ts"
@@ -36281,7 +36278,7 @@
   {
    "module": "supabase/functions",
    "files": 118,
-   "lines": 19520,
+   "lines": 19509,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36583,7 +36580,7 @@
   {
    "module": "tests-e2e",
    "files": 9,
-   "lines": 596,
+   "lines": 600,
    "tables": [],
    "exports": [
     "fixtures.ts: test",
@@ -71504,34 +71501,6 @@
     "name": "NegotiationContract should reject payload without solicitacao"
    },
    {
-    "file": "src/tests/fuzzing/edge-functions.test.ts",
-    "name": "Edge Function Fuzzing"
-   },
-   {
-    "file": "src/tests/fuzzing/edge-functions.test.ts",
-    "name": "Endpoint: ${endpoint}"
-   },
-   {
-    "file": "src/tests/fuzzing/edge-functions.test.ts",
-    "name": "should fail gracefully for malformed payload #${idx}"
-   },
-   {
-    "file": "src/tests/fuzzing/payload-integrity.test.ts",
-    "name": "Fuzzing & Payload Validation"
-   },
-   {
-    "file": "src/tests/fuzzing/payload-integrity.test.ts",
-    "name": "should reject malformed payloads"
-   },
-   {
-    "file": "src/tests/fuzzing/payload-integrity.test.ts",
-    "name": "should reject payloads with missing critical fields"
-   },
-   {
-    "file": "src/tests/fuzzing/payload-integrity.test.ts",
-    "name": "should accept valid payloads"
-   },
-   {
     "file": "src/tests/integration/contract-testing.test.ts",
     "name": "Edge Function Contract Validation"
    },
@@ -71590,18 +71559,6 @@
    {
     "file": "src/tests/integration/contract-validation.test.ts",
     "name": "should reject unsupported actions"
-   },
-   {
-    "file": "src/tests/integration/core-integrity.test.ts",
-    "name": "System Core Integrity"
-   },
-   {
-    "file": "src/tests/integration/core-integrity.test.ts",
-    "name": "should validate core modules initialization"
-   },
-   {
-    "file": "src/tests/integration/core-integrity.test.ts",
-    "name": "should handle external API failures gracefully"
    },
    {
     "file": "src/tests/integration/supabase-db.test.ts",
@@ -72625,7 +72582,7 @@
    },
    {
     "file": "tests-e2e/auth-navigation.spec.ts",
-    "name": "Fluxo de Login e Logout"
+    "name": "Fluxo de Login: formulário e submissão"
    },
    {
     "file": "tests-e2e/auth-navigation.spec.ts",
@@ -72633,7 +72590,7 @@
    },
    {
     "file": "tests-e2e/auth-navigation.spec.ts",
-    "name": "Integridade dos Payloads (Mock API Interception)"
+    "name": "Integridade dos Payloads (Bridge contratual)"
    },
    {
     "file": "tests-e2e/critical-flows.spec.ts",
@@ -72657,7 +72614,7 @@
    },
    {
     "file": "tests-e2e/dashboard-ui.spec.ts",
-    "name": "Dashboard Widgets Accessibility"
+    "name": "Dashboard e widgets renderizam na rota raiz"
    },
    {
     "file": "tests-e2e/dashboard-ui.spec.ts",
@@ -115382,45 +115339,6 @@
     "NegotiationContract should reject payload without solicitacao"
    ]
   },
-  "src/tests/fuzzing/edge-functions.test.ts": {
-   "path": "src/tests/fuzzing/edge-functions.test.ts",
-   "lines": 44,
-   "is_test": true,
-   "calc_fns": [
-    {
-     "name": "mockValidator",
-     "params": "p: unknown",
-     "body": "if (p === null || typeof p !== 'object') return false; const obj = p as Record<string, unknown>; if (obj['id'] !== undefined && typeof obj['id'] !== 'string') return false; if (obj['action'] === \"\") return false; const str = JSON.stringify(p); if (str.length > 50000) return false; if (str.includes(\"DROP TABLE\") || str.includes(\"--\")) return false; const nested = obj['nested']; if (Array.isArray(nested) && nested.length > 100) return false; return true;"
-    }
-   ],
-   "tests": [
-    "Edge Function Fuzzing",
-    "Endpoint: ${endpoint}",
-    "should fail gracefully for malformed payload #${idx}"
-   ]
-  },
-  "src/tests/fuzzing/payload-integrity.test.ts": {
-   "path": "src/tests/fuzzing/payload-integrity.test.ts",
-   "lines": 24,
-   "is_test": true,
-   "errors": [
-    "Invalid payload",
-    "Missing identification fields"
-   ],
-   "calc_fns": [
-    {
-     "name": "validatePayload",
-     "params": "payload: unknown",
-     "body": "if (!payload || typeof payload !== 'object') throw new Error('Invalid payload'); const obj = payload as Record<string, unknown>; if (!obj['id'] && !obj['action']) throw new Error('Missing identification fields'); return true;"
-    }
-   ],
-   "tests": [
-    "Fuzzing & Payload Validation",
-    "should reject malformed payloads",
-    "should reject payloads with missing critical fields",
-    "should accept valid payloads"
-   ]
-  },
   "src/tests/integration/contract-testing.test.ts": {
    "path": "src/tests/integration/contract-testing.test.ts",
    "lines": 57,
@@ -115470,16 +115388,6 @@
     "should accept a complete start_workflow action",
     "should require template_id, entity_type and entity_id on start_workflow",
     "should reject unsupported actions"
-   ]
-  },
-  "src/tests/integration/core-integrity.test.ts": {
-   "path": "src/tests/integration/core-integrity.test.ts",
-   "lines": 25,
-   "is_test": true,
-   "tests": [
-    "System Core Integrity",
-    "should validate core modules initialization",
-    "should handle external API failures gracefully"
    ]
   },
   "src/tests/integration/supabase-db.test.ts": {
@@ -119590,7 +119498,7 @@
   },
   "supabase/functions/scim-v2/conformance.test.ts": {
    "path": "supabase/functions/scim-v2/conformance.test.ts",
-   "lines": 219,
+   "lines": 208,
    "is_test": true,
    "env": [
     "SCIM_TEST_BASE_URL",
@@ -122488,27 +122396,31 @@
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
-   "lines": 74,
+   "lines": 83,
    "is_test": true,
    "env": [
     "E2E_TEST_EMAIL",
     "E2E_TEST_PASSWORD"
    ],
+   "temporal": [
+    ".waitForURL(url => !url.pathname.startsWith('/auth'), { timeout: 10_000 })",
+    "{ timeout: 15_000 },"
+   ],
    "tests": [
     "Fluxos Críticos de Autenticação e Navegação",
     "Deve redirecionar para /auth ao tentar acessar rota protegida sem login",
-    "Fluxo de Login e Logout",
+    "Fluxo de Login: formulário e submissão",
     "Navegação entre páginas principais (Protegidas)",
-    "Integridade dos Payloads (Mock API Interception)"
+    "Integridade dos Payloads (Bridge contratual)"
    ]
   },
   "tests-e2e/critical-flows.spec.ts": {
    "path": "tests-e2e/critical-flows.spec.ts",
-   "lines": 53,
+   "lines": 48,
    "is_test": true,
    "rule_comments": [
     "* Auditoria Técnica: Testes de Fluxo Crítico de Negócio",
-    "Deve mostrar um estado de erro amigável ou tentar reconectar"
+    "Deve mostrar um estado de erro amigável ou tentar reconectar. O invariante é o"
    ],
    "tests": [
     "Freight Quest - Fluxos de Negócio",
@@ -122519,11 +122431,15 @@
   },
   "tests-e2e/dashboard-ui.spec.ts": {
    "path": "tests-e2e/dashboard-ui.spec.ts",
-   "lines": 42,
+   "lines": 44,
    "is_test": true,
+   "rule_comments": [
+    "com sessão serve o dashboard. Nos dois casos ela não pode vir em branco.",
+    "não apenas um esqueleto vazio com o texto do menu."
+   ],
    "tests": [
     "Dashboard & Compras Interface",
-    "Dashboard Widgets Accessibility",
+    "Dashboard e widgets renderizam na rota raiz",
     "System Theme Toggle",
     "Mobile Responsiveness Check"
    ]
@@ -122579,8 +122495,11 @@
   },
   "tests-e2e/production-ready.spec.ts": {
    "path": "tests-e2e/production-ready.spec.ts",
-   "lines": 69,
+   "lines": 67,
    "is_test": true,
+   "temporal": [
+    "await page.getByText(/Dashboard/i).first().waitFor({ timeout: 15_000 });"
+   ],
    "tests": [
     "Freight Quest Production Readiness",
     "Public Access - Auth Redirection",
@@ -122710,10 +122629,28 @@
   }
  },
  "git": {
-  "sha": "5656edb5af01c0cc43f138f3d3ebae88e9049987",
+  "sha": "a70dc33e1291227077d8b40766a731fd5df339f8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a70dc33",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(testes): remove testes-placebo e asserts que nao verificavam nada (etapas 296-299, PR #501) (#501)",
+    "files": [
+     "DOCS/CODEBASE_ATLAS/10_TESTES_CI.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/tests/fuzzing/edge-functions.test.ts",
+     "src/tests/fuzzing/payload-integrity.test.ts",
+     "src/tests/integration/core-integrity.test.ts",
+     "supabase/functions/scim-v2/conformance.test.ts",
+     "tests-e2e/auth-navigation.spec.ts",
+     "tests-e2e/critical-flows.spec.ts",
+     "tests-e2e/dashboard-ui.spec.ts",
+     "tests-e2e/production-ready.spec.ts"
+    ]
+   },
    {
     "sha": "5656edb",
     "date": "2026-11-25",
@@ -123039,22 +122976,12 @@
      "src/pages/dashboard/ComprasDashboard.tsx",
      "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
     ]
-   },
-   {
-    "sha": "81bd8c5",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)",
-    "files": [
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    15
+    16
    ],
    [
     ".github/workflows/main.yml",
@@ -123067,6 +122994,10 @@
    [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
     3
+   ],
+   [
+    "tests-e2e/production-ready.spec.ts",
+    2
    ],
    [
     "bun.lock",
@@ -123117,19 +123048,15 @@
     2
    ],
    [
-    "src/pages/dashboard/ComprasDashboard.tsx",
-    2
-   ],
-   [
-    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
-    2
-   ],
-   [
-    ".github/workflows/dependency-review.yml",
+    "DOCS/CODEBASE_ATLAS/10_TESTES_CI.md",
     1
    ],
    [
-    "playwright.config.ts",
+    "src/tests/fuzzing/edge-functions.test.ts",
+    1
+   ],
+   [
+    "src/tests/fuzzing/payload-integrity.test.ts",
     1
    ]
   ]

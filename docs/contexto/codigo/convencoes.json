@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (204)",
    "outro (43)",
-   "co-localizado (*.test) (42)"
+   "co-localizado (*.test) (39)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(testes): remove testes-placebo e asserts que nao verificavam nada (etapas 296-299, PR #501) (#501)",
    "chore(ci): bump actions/dependency-review-action (#482)",
    "fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)",
    "chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)",
-   "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)",
-   "chore(deps-dev): bump autoprefixer (#478)"
+   "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)"
   ]
  },
  "pr_template": null,

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 299,
+ "total": 296,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 281
+  "unit": 278
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 42
+   "arquivos": 39
   },
   {
    "padrao": "tests-e2e/",
@@ -2241,20 +2241,6 @@
    "casos": 4
   },
   {
-   "arquivo": "src/tests/fuzzing/edge-functions.test.ts",
-   "tipo": "unit",
-   "linhas": 44,
-   "testa": [],
-   "casos": 1
-  },
-  {
-   "arquivo": "src/tests/fuzzing/payload-integrity.test.ts",
-   "tipo": "unit",
-   "linhas": 24,
-   "testa": [],
-   "casos": 3
-  },
-  {
    "arquivo": "src/tests/integration/contract-testing.test.ts",
    "tipo": "contrato",
    "linhas": 57,
@@ -2271,13 +2257,6 @@
     "supabase/functions/_shared/contracts.ts"
    ],
    "casos": 7
-  },
-  {
-   "arquivo": "src/tests/integration/core-integrity.test.ts",
-   "tipo": "unit",
-   "linhas": 25,
-   "testa": [],
-   "casos": 2
   },
   {
    "arquivo": "src/tests/integration/supabase-db.test.ts",
@@ -2585,9 +2564,9 @@
   {
    "arquivo": "supabase/functions/scim-v2/conformance.test.ts",
    "tipo": "unit",
-   "linhas": 219,
+   "linhas": 208,
    "testa": [],
-   "casos": 8
+   "casos": 10
   },
   {
    "arquivo": "supabase/functions/send-push-notification/webpush.test.ts",
@@ -2644,21 +2623,21 @@
   {
    "arquivo": "tests-e2e/auth-navigation.spec.ts",
    "tipo": "e2e",
-   "linhas": 74,
+   "linhas": 83,
    "testa": [],
-   "casos": 4
+   "casos": 5
   },
   {
    "arquivo": "tests-e2e/critical-flows.spec.ts",
    "tipo": "e2e",
-   "linhas": 53,
+   "linhas": 48,
    "testa": [],
    "casos": 3
   },
   {
    "arquivo": "tests-e2e/dashboard-ui.spec.ts",
    "tipo": "e2e",
-   "linhas": 42,
+   "linhas": 44,
    "testa": [],
    "casos": 4
   },
@@ -2686,7 +2665,7 @@
   {
    "arquivo": "tests-e2e/production-ready.spec.ts",
    "tipo": "e2e",
-   "linhas": 69,
+   "linhas": 67,
    "testa": [],
    "casos": 5
   },

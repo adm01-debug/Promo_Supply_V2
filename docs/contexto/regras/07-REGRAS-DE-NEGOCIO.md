@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5656edb5af` · branch `main` · 2026-11-26 02:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a70dc33e12` · branch `main` · 2026-11-26 02:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3448 testes em 248 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3438 testes em 245 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2647,7 +2647,7 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/xbz_fiscal_cache.test.ts` | 5 | fiscal: mapeia os campos reais do getSt · fiscal: aceita camelCase e numero em string pt-BR · fiscal: nao grava linha sem conteudo fiscal nem sem produto/tenant · cores: normaliza, deduplica por id e descarta invalidas … |
 | `supabase/functions/_shared/xbz_portador.test.ts` | 5 | cpfValido: dígito verificador e sequências repetidas · placaValida: antiga (ABC1234) e Mercosul (ABC1D23), normalizada · montarPortador: normaliza para o formato da XBZ · montarPortador: rejeita nome curto, CPF e placa inválidos … |
 | `supabase/functions/check-approval-escalations/index.test.ts` | 5 | nenhum status em portugues e usado como filtro ou como valor gravado · o filtro de passos vencidos usa pending · o guarda do workflow usa pending · todo status gravado pertence aos CHECK de approval_steps/approval_workflows … |
-| `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login e Logout · Navegação entre páginas principais (Protegidas) … |
+| `tests-e2e/auth-navigation.spec.ts` | 5 | Fluxos Críticos de Autenticação e Navegação · Deve redirecionar para /auth ao tentar acessar rota protegida sem login · Fluxo de Login: formulário e submissão · Navegação entre páginas principais (Protegidas) … |
 | `src/components/compras/__tests__/PipelineChart.test.tsx` | 4 | PipelineChart · should render correct values for each stage · should calculate conversion rates correctly · should display narrative summary |
 | `src/components/compras/__tests__/TrendAnalysisCharts.test.tsx` | 4 | TrendAnalysisCharts — título acompanha o período · usa o rótulo do período recebido · sem período:  · Card de volume — textos batem com o período |
 | `src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx` | 4 | EnhancedBulkActionsBar - nome acess\u00edvel das a\u00e7\u00f5es · nomeia o gatilho s\u00f3-\u00edcone do menu de a\u00e7\u00f5es da sele\u00e7\u00e3o · nomeia o gatilho s\u00f3-\u00edcone que expande e recolhe a pr\u00e9via · n\u00e3o deixa nenhum bot\u00e3o da barra sem nome acess\u00edvel |
@@ -2670,12 +2670,11 @@ _nenhum item encontrado_
 | `src/pages/pedidos/__tests__/pedidosA11y.test.tsx` | 4 | Pedidos - a\u00e7\u00e3o de linha acess\u00edvel por teclado · nomeia o bot\u00e3o s\u00f3-\u00edcone da linha com o pedido que ele abre · abre o detalhe do pedido ao clicar no bot\u00e3o da linha · preserva o clique na linha inteira para quem usa mouse |
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
 | `src/tests/contracts.test.ts` | 4 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes · NegotiationContract should reject payload without solicitacao |
-| `src/tests/fuzzing/payload-integrity.test.ts` | 4 | Fuzzing & Payload Validation · should reject malformed payloads · should reject payloads with missing critical fields · should accept valid payloads |
 | `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
 | `supabase/functions/_shared/validation.error_response.test.ts` | 4 | errorResponse:  · errorResponse:  · errorResponse: unauthorized e sessao invalida virem 401 · errorResponse: demais categorias seguem iguais |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
-| `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard Widgets Accessibility · System Theme Toggle · Mobile Responsiveness Check |
+| `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard e widgets renderizam na rota raiz · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
 | `src/components/compras/__tests__/pendingApprovalsA11y.test.tsx` | 3 | PendingApprovalsList acessibilidade (UX-04 1/4) · o menu de acoes de cada aprovacao tem nome acessivel · nao sobra botao so-icone sem nome no cartao da aprovacao |
 | `src/components/security/__tests__/PasskeyManager.pendente.test.tsx` | 3 | PasskeyManager / anuncio honesto (SEC-11) · nao promete login por biometria enquanto o servidor recusa · botao Adicionar Passkey fica desabilitado |
@@ -2697,8 +2696,6 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
 | `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
-| `src/tests/fuzzing/edge-functions.test.ts` | 3 | Edge Function Fuzzing · Endpoint: ${endpoint} · should fail gracefully for malformed payload #${idx} |
-| `src/tests/integration/core-integrity.test.ts` | 3 | System Core Integrity · should validate core modules initialization · should handle external API failures gracefully |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
