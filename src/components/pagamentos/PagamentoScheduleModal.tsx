@@ -31,7 +31,8 @@ export const PagamentoScheduleModal = ({ pagamentos, open, onOpenChange, onSched
     }
     setScheduling(true);
     try {
-      const dateStr = selectedDate.toISOString().split('T')[0];
+      // format com o calendario local: toISOString desloca o dia em fusos negativos.
+      const dateStr = format(selectedDate, 'yyyy-MM-dd');
       const success = await onSchedule(pagamentos.map(p => p.id), dateStr);
       if (success) {
         toast({ title: "Agendamento realizado!", description: `${pagamentos.length} pagamento(s) agendado(s) para ${format(selectedDate, 'dd/MM/yyyy')}` });
