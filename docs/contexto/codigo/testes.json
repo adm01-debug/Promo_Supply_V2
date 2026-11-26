@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 320,
+ "total": 321,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 302
+  "unit": 303
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 223
+   "arquivos": 224
   },
   {
    "padrao": "outro",
@@ -1930,6 +1930,15 @@
    "casos": 2
   },
   {
+   "arquivo": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+   "tipo": "unit",
+   "linhas": 75,
+   "testa": [
+    "src/pages/catalogo-spot/SpotCatalogTab.tsx"
+   ],
+   "casos": 3
+  },
+  {
    "arquivo": "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
    "tipo": "unit",
    "linhas": 149,
@@ -2448,11 +2457,11 @@
   {
    "arquivo": "src/tests/spot/spotApi.test.ts",
    "tipo": "unit",
-   "linhas": 245,
+   "linhas": 283,
    "testa": [
     "supabase/functions/_shared/spot_api.ts"
    ],
-   "casos": 36
+   "casos": 39
   },
   {
    "arquivo": "src/types/__tests__/legacyTypes.test.ts",
@@ -3072,7 +3081,7 @@
   "src/pages/aprovacoes/aprovacoesData.ts": 1,
   "src/pages/auth/Auth.tsx": 2,
   "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
-  "src/pages/catalogo-spot/SpotCatalogTab.tsx": 1,
+  "src/pages/catalogo-spot/SpotCatalogTab.tsx": 2,
   "src/pages/catalogo-spot/spotHelpers.ts": 1,
   "src/pages/catalogo-spot/useSpotCatalog.ts": 2,
   "src/pages/catalogo-xbz/xbzHelpers.ts": 4,

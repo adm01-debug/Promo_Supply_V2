@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "28715cdbef5caf24fdccc2ee76ce55b32986fefa",
+  "sha": "10f97375cb15b7741713443e32bc71f27d5cd945",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 10:01 UTC",
-  "files_total": 1501,
-  "code_files": 1326,
-  "code_lines": 222237,
+  "generated_at": "2026-11-26 10:20 UTC",
+  "files_total": 1502,
+  "code_files": 1327,
+  "code_lines": 222427,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0f5be8e2ab6e08bb",
+ "facts_hash": "050a2fa029ef7c55",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 450,
-   ".tsx": 438,
+   ".tsx": 439,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -32599,6 +32599,7 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "spot_api_sync_log",
+     "spot_estoque",
      "spot_pedidos",
      "spot_sessions",
      "telemetry_logs",
@@ -35948,8 +35949,8 @@
   },
   {
    "module": "src/pages",
-   "files": 158,
-   "lines": 35409,
+   "files": 159,
+   "lines": 35542,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36130,6 +36131,7 @@
     "src/pages/catalogo-spot/spotHelpers.ts",
     "src/pages/catalogo-spot/useSpotCatalog.ts",
     "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
@@ -36160,8 +36162,7 @@
     "src/pages/cotacao/__tests__/cotacaoComparadores.test.ts",
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
     "src/pages/dashboard/ComprasDashboard.tsx",
-    "src/pages/dashboard/DashboardExecutivo.tsx",
-    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
+    "src/pages/dashboard/DashboardExecutivo.tsx"
    ]
   },
   {
@@ -36290,7 +36291,7 @@
   {
    "module": "src/tests",
    "files": 7,
-   "lines": 946,
+   "lines": 984,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36346,7 +36347,7 @@
   {
    "module": "supabase/functions",
    "files": 124,
-   "lines": 20108,
+   "lines": 20127,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36375,6 +36376,7 @@
     "query_telemetry",
     "solicitacoes",
     "spot_api_sync_log",
+    "spot_estoque",
     "spot_pedidos",
     "spot_sessions",
     "sso_configurations",
@@ -37896,7 +37898,11 @@
    },
    "spot_estoque": {
     "select": [
-     "src/pages/catalogo-spot/useSpotCatalog.ts"
+     "src/pages/catalogo-spot/useSpotCatalog.ts",
+     "supabase/functions/spot-api/index.ts"
+    ],
+    "update": [
+     "supabase/functions/spot-api/index.ts"
     ]
    },
    "spot_pedidos": {
@@ -38823,7 +38829,8 @@
     "incoming_date",
     "product_reference",
     "quantity",
-    "sku"
+    "sku",
+    "synced_at"
    ],
    "spot_produtos": [
     "brand",
@@ -43899,6 +43906,10 @@
    {
     "file": "supabase/functions/send-push-notification/index.ts",
     "text": "caso esta em `user_tenants` (mesma regra do helper getTenantId)."
+   },
+   {
+    "file": "supabase/functions/spot-api/index.ts",
+    "text": "vazio não zera nada: resposta anômala não pode apagar o cache inteiro."
    },
    {
     "file": "supabase/functions/spot-proxy/index.ts",
@@ -51099,6 +51110,11 @@
     "file": "src/pages/aprovacoes/aprovacoesData.ts",
     "name": "ROXO",
     "value": "\"#8b5cf6\""
+   },
+   {
+    "file": "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+    "name": "STOCK_STALE_MINUTES",
+    "value": "45"
    },
    {
     "file": "src/pages/catalogo-spot/useSpotCatalog.ts",
@@ -68494,6 +68510,22 @@
     "name": "digitar e apagar tudo nao chega a buscar o termo intermediario"
    },
    {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+    "name": "SpotCatalogTab / idade do estoque (INT-11)"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+    "name": "estoque recem-sincronizado mostra a data e nao avisa de defasagem"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+    "name": "estoque parado ha mais de 45 min avisa que as quantidades podem estar velhas"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+    "name": "sem estoque em cache nao inventa data nem aviso"
+   },
+   {
     "file": "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "name": "STATUS_CONFIG"
    },
@@ -72300,6 +72332,22 @@
    {
     "file": "src/tests/spot/spotApi.test.ts",
     "name": "nao grava linha extra por chamada logica — contaria a cota duas vezes"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "spot-api: reconciliacao do estoque (INT-11)"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "syncStock zera quem ficou de fora do payload em vez de manter a quantidade antiga"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "payload vazio nao apaga o cache: o zeramento exige ter gravado alguma linha"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "falha na reconciliacao nao passa em silencio"
    },
    {
     "file": "src/types/__tests__/legacyTypes.test.ts",
@@ -111493,10 +111541,16 @@
   },
   "src/pages/catalogo-spot/SpotCatalogTab.tsx": {
    "path": "src/pages/catalogo-spot/SpotCatalogTab.tsx",
-   "lines": 231,
+   "lines": 288,
    "exports": [
     "interface SpotCatalogTabProps",
     "const SpotCatalogTab"
+   ],
+   "params": [
+    {
+     "name": "STOCK_STALE_MINUTES",
+     "value": "45"
+    }
    ]
   },
   "src/pages/catalogo-spot/SpotFinancialTab.tsx": {
@@ -111535,7 +111589,7 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 188,
+   "lines": 189,
    "exports": [
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
@@ -111597,7 +111651,8 @@
      "incoming_date",
      "product_reference",
      "quantity",
-     "sku"
+     "sku",
+     "synced_at"
     ],
     "spot_api_sync_log": [
      "called_at",
@@ -111661,6 +111716,20 @@
     "SpotCatalogTab / espera antes de buscar (PERF-06)",
     "digitar seis letras gera uma unica busca efetiva",
     "digitar e apagar tudo nao chega a buscar o termo intermediario"
+   ]
+  },
+  "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx": {
+   "path": "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+   "lines": 75,
+   "is_test": true,
+   "temporal": [
+    "const tresHorasAtras = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();"
+   ],
+   "tests": [
+    "SpotCatalogTab / idade do estoque (INT-11)",
+    "estoque recem-sincronizado mostra a data e nao avisa de defasagem",
+    "estoque parado ha mais de 45 min avisa que as quantidades podem estar velhas",
+    "sem estoque em cache nao inventa data nem aviso"
    ]
   },
   "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts": {
@@ -116392,10 +116461,12 @@
   },
   "src/tests/spot/spotApi.test.ts": {
    "path": "src/tests/spot/spotApi.test.ts",
-   "lines": 245,
+   "lines": 283,
    "is_test": true,
    "errors": [
+    "corpo de ${nome} nao fecha",
     "nao achei ",
+    "nao achei a funcao ${nome}",
     "nao achei o fim de "
    ],
    "tests": [
@@ -116444,7 +116515,11 @@
     "usedToday ignora a recusa por quota — ela nao chega ao fornecedor",
     "cada tentativa HTTP abre a propria linha de log, antes do fetch",
     "a resposta fecha a linha da tentativa com sucesso ou erro",
-    "nao grava linha extra por chamada logica — contaria a cota duas vezes"
+    "nao grava linha extra por chamada logica — contaria a cota duas vezes",
+    "spot-api: reconciliacao do estoque (INT-11)",
+    "syncStock zera quem ficou de fora do payload em vez de manter a quantidade antiga",
+    "payload vazio nao apaga o cache: o zeramento exige ter gravado alguma linha",
+    "falha na reconciliacao nao passa em silencio"
    ]
   },
   "src/types/contract.ts": {
@@ -120663,7 +120738,7 @@
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
-   "lines": 681,
+   "lines": 700,
    "tables": [
     {
      "table": "user_roles",
@@ -120698,6 +120773,10 @@
      "op": "update"
     },
     {
+     "table": "spot_estoque",
+     "op": "select,update"
+    },
+    {
      "table": "spot_pedidos",
      "op": "upsert"
     }
@@ -120716,6 +120795,10 @@
     "spot_api_sync_log": [
      "endpoint",
      "id"
+    ],
+    "spot_estoque": [
+     "sku",
+     "synced_at"
     ]
    },
    "dyn_from": 1,
@@ -120797,6 +120880,9 @@
      "value": "quota_blocked",
      "kind": "filtra"
     }
+   ],
+   "rule_comments": [
+    "vazio não zera nada: resposta anômala não pode apagar o cache inteiro."
    ],
    "doc": "spot-api — integração com a API oficial SPOT / Stricker. Substitui gradualmente o scraping de `spot-proxy`. Toda leitura do app vem do cache no banco (spot_produtos / spot_skus / spot_customization_options / spot_estoque); esta função é o ÚNICO ponto que fala com ws.spotgifts.com.br. Restrições resp …",
    "calc_fns": [
@@ -123687,10 +123773,25 @@
   }
  },
  "git": {
-  "sha": "28715cdbef5caf24fdccc2ee76ce55b32986fefa",
+  "sha": "10f97375cb15b7741713443e32bc71f27d5cd945",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "10f9737",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+     "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts",
+     "src/tests/spot/spotApi.test.ts",
+     "supabase/functions/spot-api/index.ts"
+    ]
+   },
    {
     "sha": "28715cd",
     "date": "2026-11-26",
@@ -124099,15 +124200,6 @@
      "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
      "src/hooks/usePagamentos.ts"
     ]
-   },
-   {
-    "sha": "13a252c",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -124120,8 +124212,28 @@
     5
    ],
    [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    3
+   ],
+   [
     "supabase/functions/send-push-notification/index.ts",
     3
+   ],
+   [
+    "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+    2
+   ],
+   [
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
+    2
+   ],
+   [
+    "src/tests/spot/spotApi.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/spot-api/index.ts",
+    2
    ],
    [
     "supabase/functions/check-cotacao-followup/index.ts",
@@ -124152,15 +124264,7 @@
     2
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "src/tests/spot/spotApi.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/spot-api/index.ts",
+    "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
     1
    ],
    [
@@ -124177,18 +124281,6 @@
    ],
    [
     "supabase/functions/punchout-receive/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-approval-escalations/index.ts",
-    1
-   ],
-   [
-    "src/components/compras/NovaSolicitacaoModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
     1
    ]
   ]

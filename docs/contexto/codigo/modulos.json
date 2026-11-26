@@ -4070,8 +4070,8 @@
   {
    "modulo": "pages/catalogo-spot",
    "arquivos": 6,
-   "testes": 4,
-   "linhas": 1162,
+   "testes": 5,
+   "linhas": 1220,
    "itens_menu": [
     "SPOT / Stricker"
    ],

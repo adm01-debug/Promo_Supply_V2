@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `28715cdbef` · branch `main` · 2026-11-26 10:01 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `10f97375cb` · branch `main` · 2026-11-26 10:20 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1780,6 +1780,7 @@ _nenhum item encontrado_
 | `VERMELHO` | `"#ef4444"` | `src/pages/aprovacoes/aprovacoesData.ts` |
 | `AMBAR` | `"#f59e0b"` | `src/pages/aprovacoes/aprovacoesData.ts` |
 | `ROXO` | `"#8b5cf6"` | `src/pages/aprovacoes/aprovacoesData.ts` |
+| `STOCK_STALE_MINUTES` | `45` | `src/pages/catalogo-spot/SpotCatalogTab.tsx` |
 | `SPOT_CATALOG_PAGE_SIZE` | `60` | `src/pages/catalogo-spot/useSpotCatalog.ts` |
 | `REFRESH_MS` | `5_000` | `src/pages/catalogo-xbz/XbzNetworkPanel.tsx` |
 | `XBZ_BUSCA_MIN` | `3` | `src/pages/catalogo-xbz/xbzHelpers.ts` |
@@ -2472,7 +2473,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3540 testes em 268 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3548 testes em 269 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2484,9 +2485,9 @@ _nenhum item encontrado_
 | `src/lib/__tests__/clearFiltersShortcut.test.ts` | 55 | DEFAULT_CLEAR_FILTERS_SHORTCUT · uses key  · requires ctrl · requires shift … |
 | `src/stores/__tests__/kpiTargetsStore.test.ts` | 53 | kpiTargetsStore · initial state · has 8 default targets · all default targets are enabled … |
 | `src/hooks/__tests__/hookConstants.test.ts` | 52 | solicitacoesStatusOptions · has 7 status options · covers all expected status values · every option has value, label, color … |
+| `src/tests/spot/spotApi.test.ts` | 50 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/stores/__tests__/buyerAlertsStore.test.ts` | 49 | buyerAlertsStore · initial state · starts with empty targets · starts with empty alerts … |
 | `src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts` | 47 | mapDbStatusToLegacy · maps %s → %s · mapLegacyStatusToDb · maps %s → %s … |
-| `src/tests/spot/spotApi.test.ts` | 46 | parseSpotDecimal · converte vírgula decimal (HandlingCosts  · aceita número e string com espaços · devolve null para vazio ou inválido … |
 | `src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts` | 45 | getTipoLabel · maps %s → %s · returns the raw value for unknown tipo · buildWhatsAppMessage … |
 | `src/lib/__tests__/exportData.test.ts` | 44 | formatCurrency · formats a positive number with R$ · formats zero · returns empty string for NaN … |
 | `src/components/animations/__tests__/motionVariants.test.ts` | 39 | fadeInVariants · has hidden state with opacity 0 and y offset · has visible state with opacity 1 and y 0 · scaleVariants … |
@@ -2688,6 +2689,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useFornecedores.exclusao.test.tsx` | 4 | guarda de exclusao de fornecedor · recusa excluir fornecedor que tem credito de fornecedor · recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia · exclui quando nao ha nenhum dependente |
 | `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
 | `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
+| `src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx` | 4 | SpotCatalogTab / idade do estoque (INT-11) · estoque recem-sincronizado mostra a data e nao avisa de defasagem · estoque parado ha mais de 45 min avisa que as quantidades podem estar velhas · sem estoque em cache nao inventa data nem aviso |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
 | `src/pages/configuracoes/__tests__/centroCustoUnicidade.test.tsx` | 4 | ConfiguracoesCentroCusto · codigo unico (VAL-09) · barra o codigo ja usado e diz qual centro de custo o usa · traduz o 23505 quando o codigo existe em outra empresa · cria o centro de custo quando o codigo esta livre |
@@ -2983,6 +2985,7 @@ _nenhum item encontrado_
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
 | caso esta em `user_tenants` (mesma regra do helper getTenantId). | `supabase/functions/send-push-notification/index.ts` |
+| vazio não zera nada: resposta anômala não pode apagar o cache inteiro. | `supabase/functions/spot-api/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |
 | M-05: rate limit uniforme por usuário (60 req/min). | `supabase/functions/spot-proxy/index.ts` |
 | Linha que deve ter `last_used_at` renovado. */ | `supabase/functions/spot-proxy/sessions.ts` |

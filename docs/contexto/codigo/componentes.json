@@ -4568,7 +4568,7 @@
     "SpotCatalogTabProps"
    ],
    "export_default": null,
-   "linhas": 231,
+   "linhas": 288,
    "dominio": "pages/catalogo-spot",
    "hooks_locais": [
     "useDebouncedValue",

@@ -2328,7 +2328,7 @@
     "useSpotSyncStatus",
     "useTriggerSpotSync"
    ],
-   "linhas": 188,
+   "linhas": 189,
    "dominio": "pages/catalogo-spot",
    "tabelas": [
     "spot_api_sync_log",

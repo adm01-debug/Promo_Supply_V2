@@ -1181,7 +1181,7 @@
    "nome": "spot-api",
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
-   "linhas": 681,
+   "linhas": 700,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1189,6 +1189,7 @@
    ],
    "tabelas": [
     "spot_api_sync_log",
+    "spot_estoque",
     "spot_pedidos",
     "spot_sessions",
     "user_roles"

@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (223)",
+   "co-localizado (__tests__) (224)",
    "outro (44)",
    "co-localizado (*.test) (43)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)",
    "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)",
    "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)",
    "fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)",
-   "fix(edge): trata notificacao descartada como descarte, nao como envio (#550)",
-   "fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)"
+   "fix(edge): trata notificacao descartada como descarte, nao como envio (#550)"
   ]
  },
  "pr_template": null,
