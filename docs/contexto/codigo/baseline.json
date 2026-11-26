@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "c3cb7d74d42339cebb125431731b8beb97613282",
+  "commit": "e2041a1add9081b6a7a124c90de892149d98a706",
   "branch": "main",
-  "data_commit": "2026-11-26T10:41:53-03:00",
+  "data_commit": "2026-11-26T10:46:29-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e2041a1",
+    "data": "2026-11-26",
+    "assunto": "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)"
+   },
    {
     "sha": "c3cb7d7",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "a55e816",
     "data": "2026-11-26",
     "assunto": "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)"
-   },
-   {
-    "sha": "a49b400",
-    "data": "2026-11-26",
-    "assunto": "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)"
    }
   ],
-  "arquivos_mudados_7d": 1532,
+  "arquivos_mudados_7d": 1534,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 177
+    "mudancas": 178
    },
    {
     "pasta": "src/components/ui",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 177
+    "mudancas": 178
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -207,7 +207,7 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -228,10 +228,6 @@
    {
     "arquivo": "src/pages/pedidos/Pedidos.tsx",
     "mudancas": 9
-   },
-   {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 8
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -259,6 +255,10 @@
    },
    {
     "arquivo": "bun.lock",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "docs/ci/README.md",
     "mudancas": 7
    },
    {
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1511,
+  "arquivos_total": 1513,
   "arquivos_codigo": 968,
   "linhas_codigo": 192578,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 349,
+  "migrations": 351,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,

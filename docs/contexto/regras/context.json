@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c3cb7d74d42339cebb125431731b8beb97613282",
+  "sha": "e2041a1add9081b6a7a124c90de892149d98a706",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 13:44 UTC",
-  "files_total": 1512,
-  "code_files": 1337,
-  "code_lines": 223813,
+  "generated_at": "2026-11-26 13:55 UTC",
+  "files_total": 1514,
+  "code_files": 1339,
+  "code_lines": 223857,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0642f25112117d05",
+ "facts_hash": "3aade4bd57673956",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 367,
+   ".sql": 369,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -19076,28 +19076,10 @@
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
    },
    {
-    "name": "trg_validate_solicitacao_status",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "validate_solicitacao_status_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
     "name": "trg_validate_pagamento_status",
     "when": "BEFORE UPDATE",
     "table": "pagamentos",
     "function": "validate_pagamento_status_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
-    "name": "trg_recalculate_qualification_score",
-    "when": "AFTER INSERT OR UPDATE",
-    "table": "supplier_documents",
-    "function": "trigger_recalculate_qualification_score",
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
@@ -19839,6 +19821,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
+   },
+   {
+    "name": "trg_validate_solicitacao_status",
+    "when": "BEFORE UPDATE",
+    "table": "solicitacoes",
+    "function": "validate_solicitacao_status_transition",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
+   },
+   {
+    "name": "trg_recalculate_qualification_score",
+    "when": "AFTER INSERT OR UPDATE",
+    "table": "supplier_documents",
+    "function": "trigger_recalculate_qualification_score",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
    }
   ],
   "functions": {
@@ -27282,6 +27282,8 @@
    "supabase/migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql",
    "supabase/migrations/20261126130000_pedido_cancelado_terminal.sql",
    "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
+   "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+   "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
    "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
@@ -36684,8 +36686,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 349,
-   "lines": 29441,
+   "files": 351,
+   "lines": 29485,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -77488,28 +77490,10 @@
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
    },
    {
-    "name": "trg_validate_solicitacao_status",
-    "when": "BEFORE UPDATE",
-    "table": "solicitacoes",
-    "function": "validate_solicitacao_status_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
     "name": "trg_validate_pagamento_status",
     "when": "BEFORE UPDATE",
     "table": "pagamentos",
     "function": "validate_pagamento_status_transition",
-    "condition": "",
-    "each": "row",
-    "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
-   },
-   {
-    "name": "trg_recalculate_qualification_score",
-    "when": "AFTER INSERT OR UPDATE",
-    "table": "supplier_documents",
-    "function": "trigger_recalculate_qualification_score",
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql"
@@ -78251,6 +78235,24 @@
     "condition": "",
     "each": "row",
     "src": "supabase/migrations/20261124144000_numero_solicitacao_atomico.sql"
+   },
+   {
+    "name": "trg_validate_solicitacao_status",
+    "when": "BEFORE UPDATE",
+    "table": "solicitacoes",
+    "function": "validate_solicitacao_status_transition",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
+   },
+   {
+    "name": "trg_recalculate_qualification_score",
+    "when": "AFTER INSERT OR UPDATE",
+    "table": "supplier_documents",
+    "function": "trigger_recalculate_qualification_score",
+    "condition": "",
+    "each": "row",
+    "src": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
    }
   ],
   "db_functions": {
@@ -124133,6 +124135,14 @@
    "path": "supabase/migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql",
    "lines": 81
   },
+  "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql": {
+   "path": "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+   "lines": 27
+  },
+  "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql": {
+   "path": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+   "lines": 17
+  },
   "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql": {
    "path": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
    "lines": 74
@@ -124463,10 +124473,22 @@
   }
  },
  "git": {
-  "sha": "c3cb7d74d42339cebb125431731b8beb97613282",
+  "sha": "e2041a1add9081b6a7a124c90de892149d98a706",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e2041a1",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+     "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
+    ]
+   },
    {
     "sha": "c3cb7d7",
     "date": "2026-11-26",
@@ -124878,17 +124900,6 @@
     "files": [
      "bun.lock"
     ]
-   },
-   {
-    "sha": "c7e6d1c",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)",
-    "files": [
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/send-push-notification/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124897,15 +124908,11 @@
     26
    ],
    [
-    "supabase/functions/send-push-notification/index.ts",
+    "AGENTS.md",
     4
    ],
    [
-    "AGENTS.md",
-    3
-   ],
-   [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "supabase/functions/send-push-notification/index.ts",
     3
    ],
    [
@@ -124933,6 +124940,10 @@
     2
    ],
    [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
+   ],
+   [
     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
     2
    ],
@@ -124957,19 +124968,19 @@
     2
    ],
    [
+    "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
     1
    ],
    [
     "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
-    1
-   ],
-   [
-    ".github/workflows/paridade-banco.yml",
-    1
-   ],
-   [
-    "docs/ci/README.md",
     1
    ]
   ]

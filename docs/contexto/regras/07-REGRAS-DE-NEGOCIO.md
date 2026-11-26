@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c3cb7d74d4` · branch `main` · 2026-11-26 13:44 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e2041a1add` · branch `main` · 2026-11-26 13:55 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -691,9 +691,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_auto_update_supplier_score | AFTER UPDATE | `pedidos` | `auto_update_supplier_score_on_delivery` |  |
 | trg_update_saldo_on_pedido | AFTER INSERT OR UPDATE OR DELETE | `pedidos` | `trigger_update_saldo_on_pedido` |  |
 | trg_update_saldo_on_pagamento | AFTER INSERT OR UPDATE OR DELETE | `pagamentos` | `trigger_update_saldo_on_pagamento` |  |
-| trg_validate_solicitacao_status | BEFORE UPDATE | `solicitacoes` | `validate_solicitacao_status_transition` |  |
 | trg_validate_pagamento_status | BEFORE UPDATE | `pagamentos` | `validate_pagamento_status_transition` |  |
-| trg_recalculate_qualification_score | AFTER INSERT OR UPDATE | `supplier_documents` | `trigger_recalculate_qualification_score` |  |
 | trg_update_solicitacoes_updated_at | BEFORE UPDATE | `solicitacoes` | `update_updated_at_column` |  |
 | trg_update_pedidos_updated_at | BEFORE UPDATE | `pedidos` | `update_updated_at_column` |  |
 | trg_update_pagamentos_updated_at | BEFORE UPDATE | `pagamentos` | `update_updated_at_column` |  |
@@ -776,6 +774,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | z_audit_logs_no_truncate | BEFORE TRUNCATE | `audit_logs` | `audit_logs_bloquear_truncate` |  |
 | trg_workflow_approved_promotes_solicitacao | AFTER UPDATE OF STATUS | `approval_workflows` | `auto_transition_solicitacao_on_workflow_approved` | `NEW.status = 'approved'` |
 | trg_assign_numero_solicitacao | BEFORE INSERT | `solicitacoes` | `assign_numero_solicitacao` |  |
+| trg_validate_solicitacao_status | BEFORE UPDATE | `solicitacoes` | `validate_solicitacao_status_transition` |  |
+| trg_recalculate_qualification_score | AFTER INSERT OR UPDATE | `supplier_documents` | `trigger_recalculate_qualification_score` |  |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 

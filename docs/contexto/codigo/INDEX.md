@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c3cb7d74d42339cebb125431731b8beb97613282` (2026-11-26T10:41:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e2041a1add9081b6a7a124c90de892149d98a706` (2026-11-26T10:46:29-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (367), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (369), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1511 |
+| arquivos_total | 1513 |
 | arquivos_codigo | 968 |
 | linhas_codigo | 192578 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 349 |
+| migrations | 351 |
 | cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
@@ -344,21 +344,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (177)
+- docs/qa/05-PROGRESSO.md (178)
 - docs/pendencias/_indice.md (20)
-- AGENTS.md (15)
+- AGENTS.md (16)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (10)
 - src/hooks/usePagamentos.ts (9)
 - src/integrations/supabase/types.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
-- docs/ci/README.md (8)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
 - src/pages/gerar-ordem/GerarOrdem.tsx (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - supabase/functions/send-push-notification/index.ts (8)
+- bun.lock (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `e2041a1` chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)
 - 2026-11-26 `c3cb7d7` fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)
 - 2026-11-26 `1aeb89b` chore(ci): confere jobs vivos de cron.job contra as migrations (#528)
 - 2026-11-26 `7e2123a` perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `7804bb2` fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)
 - 2026-11-26 `10f9737` fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)
 - 2026-11-26 `28715cd` fix(spot): conta a cota da SPOT por requisicao HTTP (#553)
-- 2026-11-26 `02f5c0e` fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
