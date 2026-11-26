@@ -3629,7 +3629,8 @@
    "supabase/functions/_shared/http.ts",
    "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/retry.ts",
-   "supabase/functions/_shared/security.ts"
+   "supabase/functions/_shared/security.ts",
+   "supabase/functions/alert-dispatcher/dispatchStatus.ts"
   ],
   "supabase/functions/check-approval-escalations/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",

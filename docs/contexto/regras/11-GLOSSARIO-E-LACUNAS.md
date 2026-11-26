@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7804bb2a1e` · branch `main` · 2026-11-26 10:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5540d3ed6e` · branch `main` · 2026-11-26 10:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -220,6 +220,7 @@
 | `LogLevel` (TS) | info \| warn \| error \| debug |  | `supabase/functions/_shared/logger.ts` |
 | `Role` (TS) | admin \| coordinator \| buyer \| approver \| viewer |  | `supabase/functions/_shared/xbz_auth.ts` |
 | `XBZ_PERMISSION_FLAGS` (TS) | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", |  | `supabase/functions/_shared/xbz_client.ts` |
+| `DispatchStatus` (TS) | delivered \| partial \| failed \| exhausted \| no_subscribers |  | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `ContractRenewalType` (TS) | automatic \| manual |  | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | `EscalationTarget` (TS) | gerencia \| comprador |  | `supabase/functions/escalate-solicitacao/recipients.ts` |
 | `ACOES_APROVACAO_VALIDAS` (TS) | "created", "approved", "rejected", "escalated", "delegated", "reminder_sent", "cancelled", |  | `supabase/functions/escalate-solicitacao/recipients.ts` |
@@ -296,6 +297,8 @@
 | status | valor `queued` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/DependencyHealth.tsx`<br>`escreve:supabase/functions/dependency-health/index.ts` |
 | status | valor `authorized` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
 | status | valor `denied` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/FiscalDashboard.tsx` |
+| status | valor `suppressed_dedup` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/HealthDashboard.tsx`<br>`escreve:supabase/functions/alert-dispatcher/index.ts` |
+| status | valor `auto_resolved` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/admin/HealthDashboard.tsx` |
 | status | valor `recebida_fornecedor` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `reposicao_enviada` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/devolucoes/DevolucoesModals.tsx` |
 | status | valor `validada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/DocumentosFiscais.tsx` |

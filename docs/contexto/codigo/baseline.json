@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7804bb2a1e675eb390ba97529b2b8a4a58b79ed8",
+  "commit": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
   "branch": "main",
-  "data_commit": "2026-11-26T07:48:54-03:00",
+  "data_commit": "2026-11-26T07:55:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5540d3e",
+    "data": "2026-11-26",
+    "assunto": "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)"
+   },
    {
     "sha": "7804bb2",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "0a126b6",
     "data": "2026-11-26",
     "assunto": "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)"
-   },
-   {
-    "sha": "d74d61c",
-    "data": "2026-11-26",
-    "assunto": "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)"
    }
   ],
-  "arquivos_mudados_7d": 1522,
+  "arquivos_mudados_7d": 1524,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 168
+    "mudancas": 169
    },
    {
     "pasta": "src/components/ui",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "pasta": "src/features/solicitacoes",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 168
+    "mudancas": 169
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -210,12 +210,12 @@
     "mudancas": 13
    },
    {
-    "arquivo": "docs/ci/README.md",
+    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 10
+    "arquivo": "docs/ci/README.md",
+    "mudancas": 9
    },
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
@@ -250,10 +250,6 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/main.yml",
-    "mudancas": 7
-   },
-   {
     "arquivo": "bun.lock",
     "mudancas": 7
    },
@@ -280,6 +276,10 @@
    {
     "arquivo": "supabase/functions/send-push-notification/index.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "src/hooks/useFornecedores.ts",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1501,
-  "arquivos_codigo": 964,
-  "linhas_codigo": 191711,
+  "arquivos_total": 1503,
+  "arquivos_codigo": 966,
+  "linhas_codigo": 191986,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 344,
   "cron_jobs": 79,
-  "testes": 321,
+  "testes": 322,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 101
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 159,
-   "linhas": 35542
+   "linhas": 35569
   },
   "src/routes": {
    "arquivos": 1,
@@ -487,8 +487,8 @@
    "linhas": 344
   },
   "supabase/functions": {
-   "arquivos": 124,
-   "linhas": 20127
+   "arquivos": 126,
+   "linhas": 20375
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -589,12 +589,12 @@
    "linhas": 899
   },
   {
-   "arquivo": "supabase/functions/spot-proxy/index.ts",
+   "arquivo": "src/pages/admin/HealthDashboard.tsx",
    "linhas": 889
   },
   {
-   "arquivo": "src/pages/admin/HealthDashboard.tsx",
-   "linhas": 862
+   "arquivo": "supabase/functions/spot-proxy/index.ts",
+   "linhas": 889
   },
   {
    "arquivo": "supabase/functions/dependency-health/index.ts",

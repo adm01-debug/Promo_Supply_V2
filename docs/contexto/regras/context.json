@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7804bb2a1e675eb390ba97529b2b8a4a58b79ed8",
+  "sha": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 10:49 UTC",
-  "files_total": 1502,
-  "code_files": 1327,
-  "code_lines": 222520,
+  "generated_at": "2026-11-26 10:56 UTC",
+  "files_total": 1504,
+  "code_files": 1329,
+  "code_lines": 222795,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3e39e3edb6d6495b",
+ "facts_hash": "8c1c1ceb8746b859",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 450,
+   ".ts": 452,
    ".tsx": 439,
    ".sql": 361,
    ".mjs": 69,
@@ -35950,7 +35950,7 @@
   {
    "module": "src/pages",
    "files": 159,
-   "lines": 35542,
+   "lines": 35569,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36346,8 +36346,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 124,
-   "lines": 20127,
+   "files": 126,
+   "lines": 20375,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36431,6 +36431,7 @@
     "xbz_fiscal_cache.ts: XbzFiscalRow, XbzCorRow, mapFiscal, normalizeCores, mirrorFiscal, mirrorCores",
     "xbz_pedido_map.ts: XbzPedidoRow, mapPedido, normalizePedidos",
     "xbz_portador.ts: somenteDigitos, cpfValido, normalizarPlaca, placaValida, mascararPortador, montarPortador",
+    "dispatchStatus.ts: MAX_DELIVERY_ATTEMPTS, MAX_UNCONFIGURED_ATTEMPTS, DispatchStatus, DispatchInput, DispatchOutcome, classifyDispatch",
     "cotacaoFollowUp.ts: FOLLOW_UP_AFTER_HOURS, FOLLOW_UP_DEDUPE_HOURS, StaleCotacaoRow, cutoffIso, dedupeSinceIso, quoteMarker",
     "contractExpiry.ts: ContractRenewalType, ContractRow, ContractAlert, DEFAULT_NOTICE_DAYS, RELEVANT_CONTRACT_STATUSES, startOfUtcDay",
     "failures.ts: FailureRow, ConsecutiveFailure, countConsecutiveFailures, detectConsecutiveFailures",
@@ -36441,8 +36442,7 @@
     "create-solicitacao.ts: createSolicitacao",
     "mapping.ts: OsPayload, OsEventBody, SolicitacaoDraft, OsPayloadError, validateOsPayload, buildSolicitacaoDraft",
     "active.ts: BAN_DURATION_DESATIVADO, estaAtivo, interpretarActive",
-    "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex",
-    "webpush.ts: PushMessagePayload, PushSubscriptionKeys, VapidKeys, b64UrlEncode, b64UrlDecode, rawSignatureToDer"
+    "auth.ts: ScimGateDecision, evaluateScimGate, sha256Hex"
    ],
    "docs": [
     "ai_gateway.ts: INT-01 extended: chamada unificada ao OpenRouter (OpenAI-compatible) com circuit breaker + retry (5xx/429/timeout) + timeout de 30s. Sob falha sustentada (5 erros seguidos) abre o breaker por 30s, retornando 503 imediato e preservando quota/latency.",
@@ -36506,6 +36506,8 @@
     "supabase/functions/ai-negotiation/index.ts",
     "supabase/functions/ai-supplier-risk/index.ts",
     "supabase/functions/ai-supplier-suggestion/index.ts",
+    "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "supabase/functions/alert-dispatcher/dispatchStatus.ts",
     "supabase/functions/alert-dispatcher/index.ts",
     "supabase/functions/check-approval-escalations/index.test.ts",
     "supabase/functions/check-approval-escalations/index.ts",
@@ -36534,9 +36536,7 @@
     "supabase/functions/maintain-partitions/index.ts",
     "supabase/functions/migrate-storage-paths/index.ts",
     "supabase/functions/process-invoice-idp/extraction.test.ts",
-    "supabase/functions/process-invoice-idp/extraction.ts",
-    "supabase/functions/process-invoice-idp/index.ts",
-    "supabase/functions/process-outbox/index.ts"
+    "supabase/functions/process-invoice-idp/extraction.ts"
    ]
   },
   {
@@ -38879,6 +38879,7 @@
    "system_alerts": [
     "alert_type",
     "created_at",
+    "dispatch_status",
     "dispatched_at",
     "id",
     "message",
@@ -40687,6 +40688,11 @@
     "file": "supabase/functions/_shared/xbz_client.ts",
     "name": "XBZ_PERMISSION_FLAGS",
     "values": "\"WebHabilitarAcessoPortal\", \"WebExibePreco\", \"WebExibeQuantidade\", \"WebIgnoraRestricoes\", \"WebConsultaProdutos\", \"WebConsultaPedidos\", \"WebExibePrecosPedidos\", \"WebCarrinhoInserir\", \"WebCarrinhoVisualizar\", \"WebPedidoEnviar\","
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "name": "DispatchStatus",
+    "values": "delivered | partial | failed | exhausted | no_subscribers"
    },
    {
     "file": "supabase/functions/check-expiry-alerts/contractExpiry.ts",
@@ -43760,6 +43766,10 @@
    {
     "file": "supabase/functions/ai-supplier-suggestion/index.ts",
     "text": "Rule-based fallback: rank existing suppliers by name (alphabetical) as neutral suggestion"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "text": "* Regra agora:"
    },
    {
     "file": "supabase/functions/alert-dispatcher/index.ts",
@@ -51311,6 +51321,16 @@
     "value": "\"v1\""
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "name": "MAX_DELIVERY_ATTEMPTS",
+    "value": "5"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "name": "MAX_UNCONFIGURED_ATTEMPTS",
+    "value": "30"
+   },
+   {
     "file": "supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts",
     "name": "FOLLOW_UP_AFTER_HOURS",
     "value": "48"
@@ -54956,6 +54976,30 @@
     "kind": "compara"
    },
    {
+    "file": "src/pages/admin/HealthDashboard.tsx",
+    "field": "status",
+    "value": "delivered",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/HealthDashboard.tsx",
+    "field": "status",
+    "value": "partial",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/HealthDashboard.tsx",
+    "field": "status",
+    "value": "suppressed_dedup",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/admin/HealthDashboard.tsx",
+    "field": "status",
+    "value": "auto_resolved",
+    "kind": "compara"
+   },
+   {
     "file": "src/pages/admin/ScanRunsSlaCard.tsx",
     "field": "status",
     "value": "ok",
@@ -56576,6 +56620,24 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "field": "status",
+    "value": "no_subscribers",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "field": "status",
+    "value": "exhausted",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "field": "status",
+    "value": "failed",
+    "kind": "escreve"
+   },
+   {
     "file": "supabase/functions/alert-dispatcher/index.ts",
     "field": "type",
     "value": "section",
@@ -56602,6 +56664,12 @@
    {
     "file": "supabase/functions/alert-dispatcher/index.ts",
     "field": "dispatch_status",
+    "value": "suppressed_dedup",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/index.ts",
+    "field": "status",
     "value": "suppressed_dedup",
     "kind": "escreve"
    },
@@ -72868,6 +72936,42 @@
     "name": "mascararPortador: oculta CPF/RG para a auditoria"
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "188: nenhum assinante e nenhum webhook global nao pode ser "
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "188: zero assinantes para de reprocessar depois do teto"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "182: falha total com canal configurado nao carimba dispatched_at"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "182: excecao no fan-out conta como falha, nao como sucesso"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "188: entregou para alguem mas um canal falhou = partial, carimbado"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "188: entrega em todos os canais = delivered, carimbado"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "182: apenas o webhook global entregando ja conta como entregue"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "previousAttempts le o contador do jsonb sem quebrar em formato inesperado"
+   },
+   {
     "file": "supabase/functions/check-approval-escalations/index.test.ts",
     "name": "nenhum status em portugues e usado como filtro ou como valor gravado"
    },
@@ -82552,6 +82656,7 @@
       "compara:src/components/compras/SourcingHistoryConsole.tsx",
       "compara:src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
       "compara:src/hooks/usePurchaseHistory.ts",
+      "compara:src/pages/admin/HealthDashboard.tsx",
       "compara:src/pages/historico/HistoricoCompras.tsx",
       "compara:src/pages/historico/HistoricoFornecedoresTab.tsx",
       "compara:src/pages/historico/HistoricoProdutosTab.tsx",
@@ -82797,10 +82902,21 @@
      "denied": [
       "compara:src/pages/admin/FiscalDashboard.tsx"
      ],
+     "partial": [
+      "compara:src/pages/admin/HealthDashboard.tsx"
+     ],
+     "suppressed_dedup": [
+      "compara:src/pages/admin/HealthDashboard.tsx",
+      "escreve:supabase/functions/alert-dispatcher/index.ts"
+     ],
+     "auto_resolved": [
+      "compara:src/pages/admin/HealthDashboard.tsx"
+     ],
      "failed": [
       "compara:src/pages/admin/ScanRunsSlaCard.tsx",
       "compara:supabase/functions/_shared/idempotency.ts",
       "escreve:supabase/functions/_shared/idempotency.ts",
+      "escreve:supabase/functions/alert-dispatcher/dispatchStatus.ts",
       "escreve:supabase/functions/punchout-receive/index.ts"
      ],
      "cancelled": [
@@ -82887,6 +83003,12 @@
       "compara:supabase/functions/receive-os-sync/index.ts",
       "escreve:supabase/functions/_shared/idempotency.ts",
       "filtra:supabase/functions/_shared/idempotency.ts"
+     ],
+     "no_subscribers": [
+      "escreve:supabase/functions/alert-dispatcher/dispatchStatus.ts"
+     ],
+     "exhausted": [
+      "escreve:supabase/functions/alert-dispatcher/dispatchStatus.ts"
      ],
      "expirada": [
       "escreve:supabase/functions/check-expiry-alerts/index.ts"
@@ -91931,6 +92053,21 @@
     "msg": "valor `denied` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "compara:src/pages/admin/FiscalDashboard.tsx"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `suppressed_dedup` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/admin/HealthDashboard.tsx",
+     "escreve:supabase/functions/alert-dispatcher/index.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `auto_resolved` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/admin/HealthDashboard.tsx"
     ]
    },
    {
@@ -110641,7 +110778,7 @@
   },
   "src/pages/admin/HealthDashboard.tsx": {
    "path": "src/pages/admin/HealthDashboard.tsx",
-   "lines": 862,
+   "lines": 889,
    "exports": [
     "function HealthDashboard"
    ],
@@ -110685,6 +110822,7 @@
     "system_alerts": [
      "alert_type",
      "created_at",
+     "dispatch_status",
      "id",
      "message",
      "metadata",
@@ -110701,6 +110839,28 @@
    "errors": [
     "Falha ao resolver alerta",
     "🚨 ${sev}: ${row.alert_type ?? "
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "delivered",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "partial",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "suppressed_dedup",
+     "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "auto_resolved",
+     "kind": "compara"
+    }
    ],
    "temporal": [
     ".gte(\"created_at\", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())"
@@ -118210,9 +118370,81 @@
     "Rule-based fallback: rank existing suppliers by name (alphabetical) as neutral suggestion"
    ]
   },
+  "supabase/functions/alert-dispatcher/dispatchStatus.test.ts": {
+   "path": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+   "lines": 111,
+   "is_test": true,
+   "params": [
+    {
+     "name": "NOW",
+     "value": "'2026-11-26T12:00:00.000Z'"
+    }
+   ],
+   "doc": "Etapa 182/188 do plano (INT-10 + JOB-02). Antes desta correcao: `dispatch_status` era `overallOk ? \"delivered\" : ...`, entao zero canal = zero falha = \"delivered\", e `dispatched_at` era SEMPRE carimbado -- inclusive em `failed`. Como o seletor so pega `dispatched_at IS NULL`, o alerta saia da fila p …",
+   "tests": [
+    "188: nenhum assinante e nenhum webhook global nao pode ser ",
+    "188: zero assinantes para de reprocessar depois do teto",
+    "182: falha total com canal configurado nao carimba dispatched_at",
+    "182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS",
+    "182: excecao no fan-out conta como falha, nao como sucesso",
+    "188: entregou para alguem mas um canal falhou = partial, carimbado",
+    "188: entrega em todos os canais = delivered, carimbado",
+    "182: apenas o webhook global entregando ja conta como entregue",
+    "previousAttempts le o contador do jsonb sem quebrar em formato inesperado"
+   ]
+  },
+  "supabase/functions/alert-dispatcher/dispatchStatus.ts": {
+   "path": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+   "lines": 97,
+   "exports": [
+    "const MAX_DELIVERY_ATTEMPTS",
+    "const MAX_UNCONFIGURED_ATTEMPTS",
+    "type DispatchStatus",
+    "interface DispatchInput",
+    "interface DispatchOutcome",
+    "function classifyDispatch",
+    "function previousAttempts"
+   ],
+   "enums": [
+    {
+     "name": "DispatchStatus",
+     "values": "delivered | partial | failed | exhausted | no_subscribers"
+    }
+   ],
+   "params": [
+    {
+     "name": "MAX_DELIVERY_ATTEMPTS",
+     "value": "5"
+    },
+    {
+     "name": "MAX_UNCONFIGURED_ATTEMPTS",
+     "value": "30"
+    }
+   ],
+   "status_values": [
+    {
+     "field": "status",
+     "value": "no_subscribers",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "exhausted",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "failed",
+     "kind": "escreve"
+    }
+   ],
+   "rule_comments": [
+    "* Regra agora:"
+   ]
+  },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 400,
+   "lines": 440,
    "tables": [
     {
      "table": "system_alerts",
@@ -118276,6 +118508,11 @@
     },
     {
      "field": "dispatch_status",
+     "value": "suppressed_dedup",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
      "value": "suppressed_dedup",
      "kind": "escreve"
     },
@@ -123827,10 +124064,23 @@
   }
  },
  "git": {
-  "sha": "7804bb2a1e675eb390ba97529b2b8a4a58b79ed8",
+  "sha": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5540d3e",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/admin/HealthDashboard.tsx",
+     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+     "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+     "supabase/functions/alert-dispatcher/index.ts"
+    ]
+   },
    {
     "sha": "7804bb2",
     "date": "2026-11-26",
@@ -124239,19 +124489,6 @@
      "src/hooks/__tests__/useDevolucoes.test.tsx",
      "src/hooks/useDevolucoes.ts"
     ]
-   },
-   {
-    "sha": "7cc4d94",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(kpis): cartoes de solicitacoes e fornecedores invalidam junto com a entidade (etapa 191) (#518)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
-     "src/hooks/useFornecedores.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124270,6 +124507,10 @@
    [
     "supabase/functions/send-push-notification/index.ts",
     3
+   ],
+   [
+    "supabase/functions/alert-dispatcher/index.ts",
+    2
    ],
    [
     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
@@ -124300,16 +124541,20 @@
     2
    ],
    [
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    2
-   ],
-   [
     "src/hooks/useDevolucoes.ts",
     2
    ],
    [
-    "src/hooks/useFornecedores.ts",
-    2
+    "src/pages/admin/HealthDashboard.tsx",
+    1
+   ],
+   [
+    "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    1
    ],
    [
     "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
@@ -124325,14 +124570,6 @@
    ],
    [
     "supabase/functions/send-push-notification/webpush.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/webpush.ts",
-    1
-   ],
-   [
-    "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
     1
    ]
   ]

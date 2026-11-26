@@ -203,8 +203,8 @@
   {
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
-   "arquivos": 1,
-   "linhas": 400,
+   "arquivos": 2,
+   "linhas": 537,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -240,7 +240,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": true,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "check-approval-escalations",

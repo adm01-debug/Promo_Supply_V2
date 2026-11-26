@@ -22,8 +22,8 @@
   ],
   "testes": [
    "co-localizado (__tests__) (224)",
-   "outro (44)",
-   "co-localizado (*.test) (43)"
+   "co-localizado (*.test) (44)",
+   "outro (44)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)",
    "fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)",
    "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)",
    "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)",
-   "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)",
-   "fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)"
+   "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)"
   ]
  },
  "pr_template": null,

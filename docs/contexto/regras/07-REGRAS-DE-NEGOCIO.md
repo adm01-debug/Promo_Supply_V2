@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7804bb2a1e` · branch `main` · 2026-11-26 10:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5540d3ed6e` · branch `main` · 2026-11-26 10:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1020,6 +1020,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `attempt` | escreve | `supabase/functions/spot-api/index.ts` |
 | `status` | `atual` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx` |
 | `status` | `authorized` | compara | `src/pages/admin/FiscalDashboard.tsx` |
+| `status` | `auto_resolved` | compara | `src/pages/admin/HealthDashboard.tsx` |
 | `status` | `awarded` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `backlog` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `cancelada` | compara, escreve | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/pages/kanban/KanbanWorkflow.tsx`<br>`src/pages/licitacoes/LicitacaoDetailDialog.tsx`<br>`supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
@@ -1035,7 +1036,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `current` | compara | `src/components/compras/StatusTimeline.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `degraded` | compara | `src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `delayed` | compara | `src/components/compras/DeliveryCalendar.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts` |
-| `status` | `delivered` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>`src/hooks/usePurchaseHistory.ts`<br>`src/pages/historico/HistoricoCompras.tsx`<br>`src/pages/historico/HistoricoFornecedoresTab.tsx`<br>… +4 |
+| `status` | `delivered` | compara, escreve | `src/components/compras/SourcingHistoryConsole.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>`src/hooks/usePurchaseHistory.ts`<br>`src/pages/admin/HealthDashboard.tsx`<br>`src/pages/historico/HistoricoCompras.tsx`<br>… +5 |
 | `status` | `denied` | compara | `src/pages/admin/FiscalDashboard.tsx` |
 | `status` | `descartado` | escreve | `src/pages/recompra/RecompraInteligente.tsx` |
 | `status` | `down` | compara | `src/components/ui/indicators/StepAndHealth.tsx` |
@@ -1053,9 +1054,10 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `escalated` | escreve | `src/hooks/useApprovalWorkflow.ts`<br>`supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `evaluation` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `execution` | compara | `src/pages/admin/SourcingPipeline.tsx` |
+| `status` | `exhausted` | escreve | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `status` | `expirada` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `status` | `expired` | compara | `src/pages/portal-fornecedor/PortalFornecedor.tsx` |
-| `status` | `failed` | compara, escreve | `src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/punchout-receive/index.ts` |
+| `status` | `failed` | compara, escreve | `src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/alert-dispatcher/dispatchStatus.ts`<br>`supabase/functions/punchout-receive/index.ts` |
 | `status` | `finalizada` | compara | `supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |
 | `status` | `healthy` | compara, escreve | `src/components/compras/SupplierRiskAnalysis.tsx`<br>`src/components/ui/indicators/StepAndHealth.tsx` |
 | `status` | `homologada` | compara, escreve | `src/hooks/useLicitacoes.ts`<br>`src/pages/licitacoes/Licitacoes.tsx` |
@@ -1065,6 +1067,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `matched` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/documentos/conciliacaoFiscal.ts` |
 | `status` | `negotiation` | compara | `src/pages/admin/SourcingPipeline.tsx` |
 | `status` | `no_prazo` | compara, escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/acompanhamento/AcompanhamentoHelpers.ts` |
+| `status` | `no_subscribers` | escreve | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `status` | `normal` | escreve | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `number` | compara | `src/hooks/useXbzIntegration.ts` |
 | `status` | `ok` | compara, escreve | `src/components/compras/SLADistributionChart.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/dependency-health/index.ts`<br>`supabase/functions/external-db-bridge/index.ts` |
@@ -1073,6 +1076,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `overdue` | compara, escreve | `src/components/compras/PendingApprovalsList.tsx`<br>`src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `status` | `pago` | compara | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/components/pagamentos/PagamentoAdvancedKPIs.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>`src/pages/catalogo-xbz/XbzPedidosTab.tsx`<br>… +4 |
 | `status` | `parcial` | compara | `src/pages/recebimento/RecebimentoOffline.tsx` |
+| `status` | `partial` | compara | `src/pages/admin/HealthDashboard.tsx` |
 | `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +12 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +13 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
@@ -1106,6 +1110,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `sucess` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `status` | `sucesso` | compara | `src/pages/acompanhamento/Acompanhamento.tsx` |
 | `status` | `sugerido` | escreve, filtra | `src/pages/recompra/RecompraInteligente.tsx` |
+| `status` | `suppressed_dedup` | compara, escreve | `src/pages/admin/HealthDashboard.tsx`<br>`supabase/functions/alert-dispatcher/index.ts` |
 | `status` | `todas` | compara | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | `status` | `todos` | compara, escreve | `src/components/pagamentos/PagamentoAdvancedFilters.tsx`<br>`src/features/cotacoes/hooks/useCotacoes.ts`<br>`src/features/pedidos/hooks/usePedidos.ts`<br>`src/hooks/useDevolucoes.ts`<br>`src/hooks/useFornecedores.ts`<br>… +2 |
 | `status` | `unknown` | compara | `src/pages/admin/DependencyHealth.tsx` |
@@ -1220,6 +1225,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | LogLevel | info \| warn \| error \| debug | `supabase/functions/_shared/logger.ts` |
 | Role | admin \| coordinator \| buyer \| approver \| viewer | `supabase/functions/_shared/xbz_auth.ts` |
 | XBZ_PERMISSION_FLAGS | "WebHabilitarAcessoPortal", "WebExibePreco", "WebExibeQuantidade", "WebIgnoraRestricoes", "WebConsultaProdutos", "WebConsultaPedidos", "WebExibePrecosPedidos", "WebCarrinhoInserir", "WebCarrinhoVisualizar", "WebPedidoEnviar", | `supabase/functions/_shared/xbz_client.ts` |
+| DispatchStatus | delivered \| partial \| failed \| exhausted \| no_subscribers | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | ContractRenewalType | automatic \| manual | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
 | EscalationTarget | gerencia \| comprador | `supabase/functions/escalate-solicitacao/recipients.ts` |
 | ACOES_APROVACAO_VALIDAS | "created", "approved", "rejected", "escalated", "delegated", "reminder_sent", "cancelled", | `supabase/functions/escalate-solicitacao/recipients.ts` |
@@ -1817,6 +1823,8 @@ _nenhum item encontrado_
 | `XBZ_NULL_DATE` | `"2000-01-01T00:00:00"` | `supabase/functions/_shared/xbz_client.ts` |
 | `XBZ_BUSCA_MIN` | `3` | `supabase/functions/_shared/xbz_client.ts` |
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
+| `MAX_DELIVERY_ATTEMPTS` | `5` | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
+| `MAX_UNCONFIGURED_ATTEMPTS` | `30` | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `FOLLOW_UP_AFTER_HOURS` | `48` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `FOLLOW_UP_DEDUPE_HOURS` | `24` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `DEFAULT_NOTICE_DAYS` | `30` | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
@@ -2473,7 +2481,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3552 testes em 269 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3561 testes em 270 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2598,6 +2606,7 @@ _nenhum item encontrado_
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 9 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
+| `supabase/functions/alert-dispatcher/dispatchStatus.test.ts` | 9 | 188: nenhum assinante e nenhum webhook global nao pode ser  · 188: zero assinantes para de reprocessar depois do teto · 182: falha total com canal configurado nao carimba dispatched_at · 182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS … |
 | `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |
@@ -2945,6 +2954,7 @@ _nenhum item encontrado_
 | M-05: rate-limit por usuário (AI = custo de token elevado). | `supabase/functions/ai-supplier-risk/index.ts` |
 | Rule-based fallback: conservatively flag as medium risk with manual review required | `supabase/functions/ai-supplier-risk/index.ts` |
 | Rule-based fallback: rank existing suppliers by name (alphabetical) as neutral suggestion | `supabase/functions/ai-supplier-suggestion/index.ts` |
+| * Regra agora: | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | 4xx (exceto 429) não deve gerar retry — trata como erro terminal. | `supabase/functions/alert-dispatcher/index.ts` |
 | Get pending steps that have exceeded their deadline | `supabase/functions/check-approval-escalations/index.ts` |
 | Check for steps approaching deadline (send warning) | `supabase/functions/check-approval-escalations/index.ts` |
