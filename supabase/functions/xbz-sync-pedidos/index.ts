@@ -79,7 +79,9 @@ async function syncTenant(
       alerts.push({
         tenant_id: tenantId,
         alert_type: "xbz_pagamento_confirmado",
-        severity: "high",
+        // Severidade canonica em MAIUSCULA: o despachante de alertas e o indice parcial
+    // idx_system_alerts_pending_dispatch filtram por esse conjunto (etapa 218).
+    severity: "HIGH",
         title: `Pagamento confirmado — pedido ${row.pedido_numero}`,
         message: row.lote_debito_status_cliente ?? "Pagamento confirmado na XBZ",
         description: `Pedido ${row.pedido_numero} passou de PENDENTE para PAGO na XBZ.`,
