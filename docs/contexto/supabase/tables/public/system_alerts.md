@@ -32,6 +32,7 @@
 | 13 | `title` | `text` | sim |  |  |  |
 | 14 | `description` | `text` | sim |  |  |  |
 | 15 | `source` | `text` | sim |  |  |  |
+| 16 | `dispatch_lease_until` | `timestamp with time zone` | sim |  |  | Posse temporaria do alert-dispatcher (claim_alerts_batch). NULL = livre. rollback:dispatch_lease:20261128198000 |
 
 
 ## Constraints
@@ -46,6 +47,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_system_alerts_created_desc | btree | created_at | não | sim |  | `CREATE INDEX idx_system_alerts_created_desc ON public.system_alerts USING btree (created_at DESC)` |
+| idx_system_alerts_fila_dispatch | btree | created_at | não | sim | `(dispatched_at IS NULL)` | `CREATE INDEX idx_system_alerts_fila_dispatch ON public.system_alerts USING btree (created_at) WHERE (dispatched_at IS NULL)` |
 | idx_system_alerts_pending_dispatch | btree | created_at | não | sim | `((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))` | `CREATE INDEX idx_system_alerts_pending_dispatch ON public.system_alerts USING btree (created_at) WHERE ((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))` |
 | idx_system_alerts_type_created | btree | alert_type, created_at | não | sim |  | `CREATE INDEX idx_system_alerts_type_created ON public.system_alerts USING btree (alert_type, created_at DESC)` |
 | system_alerts_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX system_alerts_pkey ON public.system_alerts USING btree (id)` |

@@ -8,7 +8,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | ai-negotiation | ai-negotiation | ACTIVE | 36 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-negotiation/index.ts |
 | ai-supplier-risk | ai-supplier-risk | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-risk/index.ts |
 | ai-supplier-suggestion | ai-supplier-suggestion | ACTIVE | 36 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
-| alert-dispatcher | alert-dispatcher | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
+| alert-dispatcher | alert-dispatcher | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
 | check-approval-escalations | check-approval-escalations | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
 | check-cotacao-followup | check-cotacao-followup | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | check-expiry-alerts | check-expiry-alerts | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-expiry-alerts/index.ts |
@@ -25,7 +25,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | maintain-partitions | maintain-partitions | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/maintain-partitions/index.ts |
 | migrate-storage-paths | migrate-storage-paths | ACTIVE | 26 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/migrate-storage-paths/index.ts |
 | process-invoice-idp | process-invoice-idp | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-invoice-idp/index.ts |
-| process-outbox | process-outbox | ACTIVE | 23 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
+| process-outbox | process-outbox | ACTIVE | 24 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
 | process-solicitacao-neural | process-solicitacao-neural | ACTIVE | 24 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-solicitacao-neural/index.ts |
 | punchout-encrypt | punchout-encrypt | ACTIVE | 21 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-encrypt/index.ts |
 | punchout-receive | punchout-receive | ACTIVE | 37 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts |

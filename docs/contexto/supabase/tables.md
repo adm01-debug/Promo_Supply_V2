@@ -128,7 +128,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.supplier_bonifications](tables/public/supplier_bonifications.md) | table | sim | 3 | 16 | não |  |
 | [public.supplier_documents](tables/public/supplier_documents.md) | table | sim | 3 | 17 | não |  |
 | [public.supplier_qualification_scores](tables/public/supplier_qualification_scores.md) | table | sim | 3 | 19 | não |  |
-| [public.system_alerts](tables/public/system_alerts.md) | table | sim | 1 | 15 | sim |  |
+| [public.system_alerts](tables/public/system_alerts.md) | table | sim | 1 | 16 | sim |  |
 | [public.table_size_snapshots](tables/public/table_size_snapshots.md) | table | sim | 1 | 9 | não |  |
 | [public.telemetry_logs](tables/public/telemetry_logs.md) | table | sim | 3 | 11 | não |  |
 | [public.telemetry_logs_202605](tables/public/telemetry_logs_202605.md) | table | sim | 3 | 11 | não |  |

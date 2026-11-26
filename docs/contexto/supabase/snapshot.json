@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795696852806,
+        "updated_at": 1795724135354,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935869432,
@@ -551,9 +551,9 @@
         "name": "process-outbox",
         "slug": "process-outbox",
         "status": "ACTIVE",
-        "updated_at": 1795669807749,
+        "updated_at": 1795724138629,
         "verify_jwt": false,
-        "version": 23
+        "version": 24
       },
       {
         "created_at": 1795183975258,
@@ -21699,6 +21699,19 @@
         "type": "text"
       },
       {
+        "comment": "Posse temporaria do alert-dispatcher (claim_alerts_batch). NULL = livre. rollback:dispatch_lease:20261128198000",
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "dispatch_lease_until",
+        "nullable": true,
+        "position": 16,
+        "schema": "public",
+        "table": "system_alerts",
+        "type": "timestamp with time zone"
+      },
+      {
         "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
@@ -39340,6 +39353,36 @@
       {
         "args": "p_batch_size integer",
         "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Reserva atomica de lote de system_alerts (FOR UPDATE SKIP LOCKED + lease de 10 min). Uso exclusivo do worker alert-dispatcher.",
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "99d33827d20c2fb1",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "claim_alerts_batch",
+        "owner": "postgres",
+        "returns": "SETOF system_alerts",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "p_batch_size integer",
+        "callers": {
           "code": [
             {
               "file": "supabase/functions/process-outbox/index.ts",
@@ -42085,9 +42128,9 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "b44629aa1e55fd23",
+        "definition_sha": "b0fd1511fb595f84",
         "execute_api_roles": "anon, authenticated, service_role",
-        "execute_public": true,
+        "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
         "language": "plpgsql",
@@ -42362,9 +42405,9 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "5b3d738fdfc2f95a",
+        "definition_sha": "9876bf5fefc61403",
         "execute_api_roles": "anon, authenticated, service_role",
-        "execute_public": true,
+        "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
         "language": "plpgsql",
@@ -42771,9 +42814,9 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "09897727bb006f69",
+        "definition_sha": "f02bf516bc959302",
         "execute_api_roles": "anon, authenticated, service_role",
-        "execute_public": true,
+        "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",
         "language": "plpgsql",
@@ -57489,6 +57532,20 @@
         "method": "btree",
         "name": "idx_system_alerts_created_desc",
         "predicate": null,
+        "schema": "public",
+        "table": "system_alerts"
+      },
+      {
+        "columns": [
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_system_alerts_fila_dispatch ON public.system_alerts USING btree (created_at) WHERE (dispatched_at IS NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_system_alerts_fila_dispatch",
+        "predicate": "(dispatched_at IS NULL)",
         "schema": "public",
         "table": "system_alerts"
       },

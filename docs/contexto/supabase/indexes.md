@@ -562,6 +562,7 @@ Uso e tamanho em `stats.md`.
 | public.supplier_qualification_scores | supplier_qualification_scores_fornecedor_id_key | btree | fornecedor_id | sim | sim |  |
 | public.supplier_qualification_scores | supplier_qualification_scores_pkey | btree | id | sim | sim |  |
 | public.system_alerts | idx_system_alerts_created_desc | btree | created_at | não | sim |  |
+| public.system_alerts | idx_system_alerts_fila_dispatch | btree | created_at | não | sim | `(dispatched_at IS NULL)` |
 | public.system_alerts | idx_system_alerts_pending_dispatch | btree | created_at | não | sim | `((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))` |
 | public.system_alerts | idx_system_alerts_type_created | btree | alert_type, created_at | não | sim |  |
 | public.system_alerts | system_alerts_pkey | btree | id | sim | sim |  |

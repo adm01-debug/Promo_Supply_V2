@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 20:29 UTC
+
+- **colunas** adicionado (1): `public.system_alerts.dispatch_lease_until`
+- **edge functions** alterado (2): `alert-dispatcher`, `process-outbox`
+- **functions** adicionado (1): `public.claim_alerts_batch(p_batch_size integer)`
+- **functions** alterado (3): `public.is_account_locked(_email text)`, `public.log_login_attempt(_email text, _ip_address text, _user_agent text, _success boolean, _failure_reason text)`, `public.record_failed_login(_email text)`
+- **indexes** adicionado (1): `public.idx_system_alerts_fila_dispatch`
+
 ## 2026-11-26 19:16 UTC
 
 - **colunas** alterado (43): `public.approval_delegations.tenant_id`, `public.approval_hierarchy.tenant_id`, `public.approval_history.tenant_id`, `public.approval_rules.tenant_id`, `public.approval_steps.tenant_id`, `public.approval_workflows.tenant_id`, `public.auction_bids.tenant_id`, `public.budget_transactions.tenant_id`, `public.category_strategies.tenant_id`, `public.contact_notes.tenant_id`, `public.contract_documents.tenant_id`, `public.contract_history.tenant_id`, `public.contract_items.tenant_id`, `public.contract_penalties.tenant_id`, `public.contracts.tenant_id`, `public.cost_centers.tenant_id`, `public.creditos_fornecedor.tenant_id`, `public.department_budgets.tenant_id`, `public.devolucao_itens.tenant_id`, `public.devolucoes.tenant_id`, `public.fornecedor_categorias.tenant_id`, `public.licitacao_lances.tenant_id`, `public.licitacao_propostas.tenant_id`, `public.licitacoes.tenant_id`, `public.order_contracts.tenant_id`, `public.payment_history.tenant_id`, `public.penalty_escalation_config.tenant_id`, `public.receiving_checklists.tenant_id`, `public.sourcing_awards.tenant_id`, `public.sourcing_event_criteria.tenant_id`, `public.sourcing_event_lots.tenant_id`, `public.sourcing_event_questions.tenant_id`, `public.sourcing_events.tenant_id`, `public.sourcing_invitations.tenant_id`, `public.sourcing_pipeline.tenant_id`, `public.sourcing_response_answers.tenant_id`, `public.sourcing_response_items.tenant_id`, `public.sourcing_responses.tenant_id`, `public.spend_forecasts.tenant_id`, `public.supplier_bonifications.tenant_id` … (+3)
