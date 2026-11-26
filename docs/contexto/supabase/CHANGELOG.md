@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 08:17 UTC
+
+- **functions** alterado (1): `public.get_dashboard_kpis(_from date, _to date)`
+
 ## 2026-11-26 07:14 UTC
 
 - **edge functions** alterado (4): `alert-dispatcher`, `check-cotacao-followup`, `scim-v2`, `send-push-notification`

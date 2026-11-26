@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "cf9c067d8e59f660819ff5b45188385319277b9a",
+  "sha": "86bc33fb30553aa6681e1d92af96d9bb303164af",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 08:09 UTC",
+  "generated_at": "2026-11-26 08:17 UTC",
   "files_total": 1498,
   "code_files": 1323,
-  "code_lines": 221718,
+  "code_lines": 221736,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ebada183146a9226",
+ "facts_hash": "0220dab50148b8cf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34616,7 +34616,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 880,
+   "lines": 898,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -43111,6 +43111,10 @@
    {
     "file": "eslint.config.js",
     "text": "Quality Gate nao pode ficar vermelho em toda PR. `^_` marca descarte intencional."
+   },
+   {
+    "file": "vite.config.ts",
+    "text": "__vitePreload e as libs de compressao. Sem regra propria esses modulos caem"
    },
    {
     "file": "vite.config.ts",
@@ -92533,11 +92537,12 @@
   },
   "vite.config.ts": {
    "path": "vite.config.ts",
-   "lines": 326,
+   "lines": 344,
    "exports": [
     "default defineConfig"
    ],
    "rule_comments": [
+    "__vitePreload e as libs de compressao. Sem regra propria esses modulos caem",
     "Forms & validation"
    ]
   },
@@ -123462,10 +123467,20 @@
   }
  },
  "git": {
-  "sha": "cf9c067d8e59f660819ff5b45188385319277b9a",
+  "sha": "86bc33fb30553aa6681e1d92af96d9bb303164af",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "86bc33f",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "vite.config.ts"
+    ]
+   },
    {
     "sha": "cf9c067",
     "date": "2026-11-26",
@@ -123813,17 +123828,6 @@
      "src/pages/historico/HistoricoCompras.tsx",
      "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx"
     ]
-   },
-   {
-    "sha": "fed20c2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/auth/hooks/AuthContext.ts",
-     "src/features/auth/hooks/useAuth.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -123858,6 +123862,10 @@
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
     2
+   ],
+   [
+    "vite.config.ts",
+    1
    ],
    [
     "src/components/compras/ProductionRoutingEngine.tsx",
@@ -123901,10 +123909,6 @@
    ],
    [
     "src/components/compras/RiskHeatMap.tsx",
-    1
-   ],
-   [
-    "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
     1
    ]
   ]

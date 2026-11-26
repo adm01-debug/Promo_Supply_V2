@@ -40822,7 +40822,7 @@
         ],
         "definition": null,
         "definition_sha": "a6d73684a635cd09",
-        "execute_api_roles": "service_role",
+        "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
         "kind": "function",

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)",
    "fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)",
    "fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)",
    "fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)",
-   "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)",
-   "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)"
+   "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)"
   ]
  },
  "pr_template": null,
