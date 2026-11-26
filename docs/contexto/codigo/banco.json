@@ -20919,7 +20919,8 @@
     "erp-credential-encrypt",
     "punchout-encrypt",
     "punchout-setup",
-    "receive-os-sync"
+    "receive-os-sync",
+    "send-push-notification"
    ],
    "triggers": [],
    "sem_rls": false,

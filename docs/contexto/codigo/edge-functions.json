@@ -1142,7 +1142,7 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 546,
+   "linhas": 588,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1150,7 +1150,8 @@
    "tabelas": [
     "profiles",
     "push_subscriptions",
-    "user_roles"
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [],
    "env": [

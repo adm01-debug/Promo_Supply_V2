@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `24512f46f0` · branch `main` · 2026-11-26 06:30 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c7e6d1cc85` · branch `main` · 2026-11-26 06:31 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1137,7 +1137,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `qualification_status` | `pending` | compara | `src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `qualification_status` | `qualified` | compara | `src/pages/qualificacao/QualificacaoFornecedores.tsx` |
 | `step` | `enroll` | compara | `src/components/security/MFASettings.tsx` |
-| `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>`supabase/functions/weekly-report/index.ts`<br>… +1 |
+| `role` | `admin` | compara, filtra | `src/components/security/PermissionMatrix.tsx`<br>`src/features/auth/hooks/useAuth.tsx`<br>`supabase/functions/check-expiry-alerts/index.ts`<br>`supabase/functions/check-sla-alerts/index.ts`<br>`supabase/functions/send-push-notification/index.ts`<br>… +2 |
 | `role` | `assistant` | escreve | `src/hooks/useGuidedBuying.ts` |
 | `role` | `system` | escreve | `supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>`supabase/functions/ai-supplier-suggestion/index.ts`<br>`supabase/functions/guided-buying-ai/index.ts`<br>… +2 |
 | `role` | `user` | compara, escreve | `src/features/layout/components/GuidedBuyingAssistant.tsx`<br>`src/hooks/useGuidedBuying.ts`<br>`supabase/functions/ai-demand-prediction/index.ts`<br>`supabase/functions/ai-negotiation/index.ts`<br>`supabase/functions/ai-supplier-risk/index.ts`<br>… +4 |
@@ -2959,6 +2959,7 @@ _nenhum item encontrado_
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |
+| caso esta em `user_tenants` (mesma regra do helper getTenantId). | `supabase/functions/send-push-notification/index.ts` |
 | SECURITY: Explicit token validation required when verify_jwt=false | `supabase/functions/spot-proxy/index.ts` |
 | M-05: rate limit uniforme por usuário (60 req/min). | `supabase/functions/spot-proxy/index.ts` |
 | Linha que deve ter `last_used_at` renovado. */ | `supabase/functions/spot-proxy/sessions.ts` |

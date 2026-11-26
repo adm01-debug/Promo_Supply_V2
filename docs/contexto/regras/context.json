@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "24512f46f0b0b3655da696e329305497cf42eb47",
+  "sha": "c7e6d1cc857568c6998aad834d8474a4f89943a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 06:30 UTC",
+  "generated_at": "2026-11-26 06:31 UTC",
   "files_total": 1489,
   "code_files": 1314,
-  "code_lines": 220752,
+  "code_lines": 220794,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4fe412b8895db321",
+ "facts_hash": "9b0e40035d79306e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36325,7 +36325,7 @@
   {
    "module": "supabase/functions",
    "files": 123,
-   "lines": 19753,
+   "lines": 19795,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -38082,6 +38082,7 @@
      "supabase/functions/punchout-encrypt/index.ts",
      "supabase/functions/punchout-setup/index.ts",
      "supabase/functions/receive-os-sync/index.ts",
+     "supabase/functions/send-push-notification/index.ts",
      "tests-rls/rls-isolation.test.ts"
     ],
     "ref": [
@@ -43862,6 +43863,10 @@
    {
     "file": "supabase/functions/scim-v2/index.ts",
     "text": "RFC 7644 §3.12: all errors must use the SCIM Error schema"
+   },
+   {
+    "file": "supabase/functions/send-push-notification/index.ts",
+    "text": "caso esta em `user_tenants` (mesma regra do helper getTenantId)."
    },
    {
     "file": "supabase/functions/spot-proxy/index.ts",
@@ -57144,6 +57149,12 @@
     "field": "status",
     "value": "pendente",
     "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/send-push-notification/index.ts",
+    "field": "role",
+    "value": "admin",
+    "kind": "filtra"
    },
    {
     "file": "supabase/functions/spot-api/index.ts",
@@ -82587,6 +82598,7 @@
       "compara:src/features/auth/hooks/useAuth.tsx",
       "filtra:supabase/functions/check-expiry-alerts/index.ts",
       "filtra:supabase/functions/check-sla-alerts/index.ts",
+      "filtra:supabase/functions/send-push-notification/index.ts",
       "filtra:supabase/functions/weekly-report/index.ts",
       "filtra:supabase/functions/weekly-summary-report/index.ts"
      ],
@@ -119991,7 +120003,7 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 254,
+   "lines": 296,
    "tables": [
     {
      "table": "user_roles",
@@ -120006,11 +120018,11 @@
      "op": "select"
     },
     {
-     "table": "push_subscriptions",
+     "table": "user_tenants",
      "op": "select"
     },
     {
-     "table": "profiles",
+     "table": "push_subscriptions",
      "op": "select"
     },
     {
@@ -120027,6 +120039,10 @@
      "current_organization_id",
      "user_id"
     ],
+    "user_tenants": [
+     "tenant_id",
+     "user_id"
+    ],
     "push_subscriptions": [
      "id"
     ]
@@ -120041,6 +120057,16 @@
    "errors": [
     "Não autorizado: token ausente",
     "Não autorizado: token inválido"
+   ],
+   "status_values": [
+    {
+     "field": "role",
+     "value": "admin",
+     "kind": "filtra"
+    }
+   ],
+   "rule_comments": [
+    "caso esta em `user_tenants` (mesma regra do helper getTenantId)."
    ],
    "side_effects": [
     "notify",
@@ -123094,10 +123120,21 @@
   }
  },
  "git": {
-  "sha": "24512f46f0b0b3655da696e329305497cf42eb47",
+  "sha": "c7e6d1cc857568c6998aad834d8474a4f89943a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c7e6d1c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/send-push-notification/index.ts"
+    ]
+   },
    {
     "sha": "24512f4",
     "date": "2026-11-26",
@@ -123440,16 +123477,6 @@
      "playwright.config.ts",
      "tests-e2e/production-ready.spec.ts"
     ]
-   },
-   {
-    "sha": "9ba061e",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/tests/integration/supabase-db.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -123460,6 +123487,10 @@
    [
     "AGENTS.md",
     5
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
    ],
    [
     "package.json",
@@ -123480,6 +123511,10 @@
    [
     "tests-e2e/production-ready.spec.ts",
     2
+   ],
+   [
+    "supabase/functions/send-push-notification/index.ts",
+    1
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
@@ -123518,19 +123553,11 @@
     1
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    1
-   ],
-   [
     "docs/pendencias/_indice.md",
     1
    ],
    [
     "docs/pendencias/job-outbox-worker.md",
-    1
-   ],
-   [
-    "supabase/functions/process-outbox/index.ts",
     1
    ]
   ]

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `24512f46f0b0b3655da696e329305497cf42eb47` (2026-11-26T03:30:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c7e6d1cc857568c6998aad834d8474a4f89943a7` (2026-11-26T03:30:27-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1488 |
 | arquivos_codigo | 951 |
-| linhas_codigo | 189943 |
+| linhas_codigo | 189985 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -215,7 +215,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `receive-os-sync` (verify_jwt=false) — tabelas: profiles, solicitacoes, tenants, user_tenants; chamada por 0 arquivo(s) do front
 - `run-audit` — tabelas: -; chamada por 1 arquivo(s) do front
 - `scim-v2` (verify_jwt=false) — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
-- `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `send-push-notification` — tabelas: profiles, push_subscriptions, user_roles, user_tenants; chamada por 0 arquivo(s) do front — **ÓRFÃ**
 - `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
 - `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
 - `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
@@ -343,12 +343,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (151)
-- docs/pendencias/_indice.md (29)
+- docs/qa/05-PROGRESSO.md (152)
+- docs/pendencias/_indice.md (28)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/usePagamentos.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `c7e6d1c` fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)
 - 2026-11-26 `24512f4` fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)
 - 2026-11-26 `f2f21c8` fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)
 - 2026-11-26 `6d9dddb` fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `236e96d` fix(kpis): cartoes de indicadores passam a invalidar junto com a entidade (etapa 190) (#517)
 - 2026-11-26 `13a252c` chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)
 - 2026-11-26 `36e96de` fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)
-- 2026-11-26 `2ecea30` fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
