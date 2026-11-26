@@ -844,11 +844,10 @@
    "hooks_exportados": [
     "useApprovalWorkflow"
    ],
-   "linhas": 532,
+   "linhas": 560,
    "dominio": "hooks",
    "tabelas": [
     "approval_history",
-    "approval_rules",
     "approval_steps",
     "approval_workflows",
     "solicitacoes"

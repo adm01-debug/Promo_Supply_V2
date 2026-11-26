@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "10f97375cb15b7741713443e32bc71f27d5cd945",
+  "commit": "7804bb2a1e675eb390ba97529b2b8a4a58b79ed8",
   "branch": "main",
-  "data_commit": "2026-11-26T07:20:01-03:00",
+  "data_commit": "2026-11-26T07:48:54-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7804bb2",
+    "data": "2026-11-26",
+    "assunto": "fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)"
+   },
    {
     "sha": "10f9737",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "d74d61c",
     "data": "2026-11-26",
     "assunto": "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)"
-   },
-   {
-    "sha": "88efac2",
-    "data": "2026-11-26",
-    "assunto": "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)"
    }
   ],
   "arquivos_mudados_7d": 1522,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 167
+    "mudancas": 168
    },
    {
     "pasta": "src/components/ui",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 50
+    "mudancas": 51
    },
    {
     "pasta": "src/lib/__tests__",
@@ -188,22 +188,22 @@
     "mudancas": 22
    },
    {
-    "pasta": "docs/pendencias/_indice.md",
+    "pasta": "src/pages/catalogo-spot",
     "mudancas": 21
    },
    {
-    "pasta": "src/pages/catalogo-spot",
+    "pasta": "src/pages/historico",
     "mudancas": 21
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 167
+    "mudancas": 168
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "AGENTS.md",
@@ -234,6 +234,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/hooks/useDevolucoes.ts",
     "mudancas": 8
    },
@@ -259,10 +263,6 @@
    },
    {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 7
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1501,
   "arquivos_codigo": 964,
-  "linhas_codigo": 191618,
+  "linhas_codigo": 191711,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 102,
-   "linhas": 17244
+   "linhas": 17337
   },
   "src/i18n": {
    "arquivos": 3,
@@ -645,8 +645,8 @@
    "linhas": 568
   },
   {
-   "arquivo": "src/components/compras/PendingApprovalsList.tsx",
-   "linhas": 559
+   "arquivo": "src/hooks/useApprovalWorkflow.ts",
+   "linhas": 560
   }
  ],
  "qualidade": {

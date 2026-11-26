@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `10f97375cb` · branch `main` · 2026-11-26 10:20 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7804bb2a1e` · branch `main` · 2026-11-26 10:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2395,9 +2395,13 @@ _nenhum item encontrado_
 | Erro ao salvar delegação | `src/hooks/useApprovalRules.ts` |
 | Erro ao salvar regra | `src/hooks/useApprovalRules.ts` |
 | Aprovação não gravada: você não tem permissão para aprovar esta etapa. | `src/hooks/useApprovalWorkflow.ts` |
+| Esta etapa já foi decidida. | `src/hooks/useApprovalWorkflow.ts` |
+| Este fluxo de aprovação já foi encerrado. | `src/hooks/useApprovalWorkflow.ts` |
+| Etapa fora de ordem: agora é a vez da etapa ${workflow.etapa_atual}. | `src/hooks/useApprovalWorkflow.ts` |
 | Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação. | `src/hooks/useApprovalWorkflow.ts` |
 | Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado | `src/hooks/useApprovalWorkflow.ts` |
 | Rejeição não gravada: você não tem permissão para rejeitar esta etapa. | `src/hooks/useApprovalWorkflow.ts` |
+| Segregação de funções: a solicitação não pode ser aprovada por quem a criou. | `src/hooks/useApprovalWorkflow.ts` |
 | Erro ao atualizar orçamento | `src/hooks/useBudgetManagement.ts` |
 | Erro ao criar orçamento | `src/hooks/useBudgetManagement.ts` |
 | Erro ao remover orçamento | `src/hooks/useBudgetManagement.ts` |
@@ -2451,11 +2455,7 @@ _nenhum item encontrado_
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
 | ${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join( | `src/hooks/usePagamentos.ts` |
-| ${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO} | `src/hooks/usePagamentos.ts` |
-| Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
-| Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
-| Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| … +289 linhas — lista completa em `context.json` | |
+| … +293 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2473,7 +2473,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3548 testes em 269 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3552 testes em 269 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2576,6 +2576,7 @@ _nenhum item encontrado_
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `src/components/accessibility/__tests__/reducaoMovimento.test.tsx` | 11 | o interruptor Reduzir movimento chega no framer-motion · com o app recem-aberto o framer-motion usa o padrao (sem forcar reducao) · ligar o switch no painel muda o app inteiro na hora, sem recarregar · desligar o switch devolve a animacao do sistema … |
+| `src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx` | 11 | useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso · approveStep com 0 linhas afetadas retorna false e nao comemora · approveStep com linha afetada registra a aprovacao · aprovar etapa fora de ordem e recusado e nao fecha o workflow … |
 | `src/tests/contracts-elite.test.ts` | 11 | NegotiationContract: deve validar payloads reais · NegotiationContract: deve rejeitar cotacoes vazia · WorkflowContract: deve validar ação start_workflow · WorkflowContract: deve exigir entity_type em start_workflow … |
 | `supabase/functions/punchout-receive/solicitation.test.ts` | 11 | usa apenas colunas reais de solicitacoes · organization_id vem do perfil, nunca do tenant_id · status respeita solicitacoes_status_check e o guard de escrita · preenche os NOT NULL sem default … |
 | `src/components/accessibility/__tests__/painelAcessibilidade.test.tsx` | 10 | o corpo do painel de acessibilidade funciona fora do Sheet · mostra os controles e o botao de restaurar padroes · o switch de fonte para dislexia muda o documento pelo provider · restaurar padroes desliga o que foi ligado no documento … |
@@ -2614,7 +2615,6 @@ _nenhum item encontrado_
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts` | 7 | busca de solicitacoes no servidor (etapa 213) · procura por titulo, numero, descricao e departamento · sem termo de busca nao monta o or · escapa curingas do termo para nao virar coringa do ilike … |
-| `src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx` | 7 | useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso · approveStep com 0 linhas afetadas retorna false e nao comemora · approveStep com linha afetada registra a aprovacao · rejectStep com 0 linhas afetadas retorna false e nao comemora … |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 7 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade · useRealtimeSubscription - fallback de empresa (HK-11) … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |

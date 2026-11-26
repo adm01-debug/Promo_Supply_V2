@@ -1185,11 +1185,11 @@
   {
    "arquivo": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
    "tipo": "unit",
-   "linhas": 195,
+   "linhas": 260,
    "testa": [
     "src/hooks/useApprovalWorkflow.ts"
    ],
-   "casos": 6
+   "casos": 10
   },
   {
    "arquivo": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",

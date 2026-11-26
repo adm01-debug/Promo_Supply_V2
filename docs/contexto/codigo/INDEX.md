@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `10f97375cb15b7741713443e32bc71f27d5cd945` (2026-11-26T07:20:01-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7804bb2a1e675eb390ba97529b2b8a4a58b79ed8` (2026-11-26T07:48:54-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1501 |
 | arquivos_codigo | 964 |
-| linhas_codigo | 191618 |
+| linhas_codigo | 191711 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (167)
-- docs/pendencias/_indice.md (21)
+- docs/qa/05-PROGRESSO.md (168)
+- docs/pendencias/_indice.md (20)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
@@ -352,12 +352,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
+- src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
 - src/integrations/supabase/types.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - .github/workflows/main.yml (7)
 - bun.lock (7)
-- package.json (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `7804bb2` fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)
 - 2026-11-26 `10f9737` fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)
 - 2026-11-26 `28715cd` fix(spot): conta a cota da SPOT por requisicao HTTP (#553)
 - 2026-11-26 `02f5c0e` fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `a55e816` fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)
 - 2026-11-26 `a49b400` fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)
 - 2026-11-26 `990f6c3` fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)
-- 2026-11-26 `647ddb4` fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
