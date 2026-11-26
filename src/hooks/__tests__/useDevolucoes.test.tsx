@@ -421,7 +421,32 @@ describe('useDevolucoesKPIs · indicadores', () => {
         const { result } = renderHook(() => useDevolucoesKPIs(), { wrapper: wrapperLocal });
         await waitFor(() => expect(result.current.kpis.total).toBe(1));
 
-        expect(qc.getQueryData(['devolucoes-kpis', 'u1', 'org1'])).toBeTruthy();
-        expect(qc.getQueryData(['devolucoes-kpis', 'u1'])).toBeUndefined();
+        expect(qc.getQueryData(['devolucoes', 'kpis', 'u1', 'org1'])).toBeTruthy();
+        expect(qc.getQueryData(['devolucoes', 'kpis', 'u1'])).toBeUndefined();
+      });
+
+      // HK-05 (etapa 192): a chave era ['devolucoes-kpis', ...], namespace irmao do
+      // ['devolucoes'] que as mutacoes e o realtime invalidam -- o invalidate por prefixo
+      // nao alcancava os cartoes. Aqui a prova e a consulta refeita.
+      it('invalidar o prefixo [devolucoes] refaz a consulta dos cartoes', async () => {
+        banco.devolucoes = [{ ...devolucaoBase(), id: 'a', status: 'rascunho', valor_total: 10 }];
+        const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        const wrapperLocal = ({ children }: { children: React.ReactNode }) => (
+          <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+        );
+
+        const { result } = renderHook(() => useDevolucoesKPIs(), { wrapper: wrapperLocal });
+        await waitFor(() => expect(result.current.kpis.total).toBe(1));
+
+        const consultasIniciais = operacoes.filter(o => o === 'select:devolucoes').length;
+        expect(consultasIniciais).toBeGreaterThan(0);
+
+        await act(async () => {
+          await qc.invalidateQueries({ queryKey: ['devolucoes'] });
+        });
+
+        await waitFor(() =>
+          expect(operacoes.filter(o => o === 'select:devolucoes').length).toBe(consultasIniciais + 1),
+        );
       });
 });
