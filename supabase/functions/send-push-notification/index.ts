@@ -4,7 +4,7 @@ import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { insertNotification } from "../_shared/notifications.ts";
 
-import { sendWebPush } from "./webpush.ts";
+import { sendPushToSubscription, isSubscriptionGone, type WebPushResult } from "./webpush.ts";
 interface PushPayload {
   title: string;
   message: string;
@@ -32,36 +32,6 @@ async function verifyAuthUser(req: Request): Promise<string> {
   const { data: { user }, error } = await supabase.auth.getUser(token);
   if (error || !user) throw new Error("Não autorizado: token inválido");
   return user.id;
-}
-
-async function sendPushToSubscription(
-  subscription: { endpoint: string; p256dh: string; auth: string },
-  payload: { title: string; body: string; icon?: string; tag?: string; data?: Record<string, unknown> },
-  vapidPublicKey: string,
-  vapidPrivateKey: string
-): Promise<boolean> {
-  try {
-    const payloadString = JSON.stringify(payload);
-
-    // VAPID (JWT ES256) + cifragem aes128gcm (RFC 8291). Sem esses headers o
-    // push nao chega ao dispositivo — antes era um POST JSON sem Authorization.
-    const success = await sendWebPush(
-      { endpoint: subscription.endpoint, p256dh: subscription.p256dh, auth: subscription.auth },
-      payloadString,
-      { publicKey: vapidPublicKey, privateKey: vapidPrivateKey }
-    );
-
-    if (!success) {
-      console.error(`Push failed for ${subscription.endpoint}`);
-      return false;
-    }
-
-    console.log(`Push sent successfully to ${subscription.endpoint}`);
-    return true;
-  } catch (error) {
-    console.error(`Error sending push to ${subscription.endpoint}:`, error);
-    return false;
-  }
 }
 
 Deno.serve(async (req) => {
@@ -245,30 +215,40 @@ Deno.serve(async (req) => {
 
     // HIGH-C7: track failures per-subscription. The previous global counter
     // deleted the wrong endpoint whenever any 3 sends failed anywhere in the
-    // loop. Now we remove a subscription immediately when its own send fails
-    // — push endpoints don't recover mid-batch and Web Push spec says 404/410
-    // means "gone" so it's safe to purge on first failure.
+    // loop. INT-04: o `false` do envio também colapsava "endpoint morto" com
+    // "provedor instável", e a purga rodava nas duas situações — uma
+    // indisponibilidade de terceiro apagava a inscrição de vez. Agora só 404/410
+    // (RFC 8030 §5: a inscrição não existe mais) purgam; o resto preserva.
     for (const sub of subscriptions || []) {
-      const success = await sendPushToSubscription(
+      const resultado = await sendPushToSubscription(
         { endpoint: sub.endpoint, p256dh: sub.p256dh, auth: sub.auth },
         pushPayload,
-        vapidPublicKey,
-        vapidPrivateKey
+        { publicKey: vapidPublicKey, privateKey: vapidPrivateKey }
       );
 
-      if (success) {
+      if (resultado.ok) {
         sentCount++;
+        continue;
+      }
+
+      failedCount++;
+
+      if (!isSubscriptionGone(resultado.status)) {
+        logger.warn('Push indisponivel; inscricao preservada', {
+          id: sub.id,
+          status: resultado.status,
+        });
+        continue;
+      }
+
+      const { error: delErr } = await supabase
+        .from('push_subscriptions')
+        .delete()
+        .eq('id', sub.id);
+      if (delErr) {
+        logger.warn('Failed to purge invalid subscription', { id: sub.id, error: delErr });
       } else {
-        failedCount++;
-        const { error: delErr } = await supabase
-          .from('push_subscriptions')
-          .delete()
-          .eq('id', sub.id);
-        if (delErr) {
-          logger.warn('Failed to purge invalid subscription', { id: sub.id, error: delErr });
-        } else {
-          logger.info('Removed invalid subscription', { id: sub.id });
-        }
+        logger.info('Removed invalid subscription', { id: sub.id, status: resultado.status });
       }
     }
 
