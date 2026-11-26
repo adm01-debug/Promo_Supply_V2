@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "86bc33fb30553aa6681e1d92af96d9bb303164af",
+  "sha": "61146242a41e355614ecffe37e782649fb774cba",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 08:17 UTC",
+  "generated_at": "2026-11-26 09:17 UTC",
   "files_total": 1498,
   "code_files": 1323,
-  "code_lines": 221736,
+  "code_lines": 221776,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0220dab50148b8cf",
+ "facts_hash": "5a72e4211ba3115c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34970,7 +34970,7 @@
   {
    "module": "src/components",
    "files": 287,
-   "lines": 52522,
+   "lines": 52528,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35543,7 +35543,7 @@
   {
    "module": "src/hooks",
    "files": 102,
-   "lines": 17242,
+   "lines": 17243,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35816,7 +35816,7 @@
   {
    "module": "src/lib",
    "files": 62,
-   "lines": 7332,
+   "lines": 7351,
    "tables": [
     "profiles"
    ],
@@ -35849,7 +35849,7 @@
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
     "unicidadeCadastro.ts: somenteDigitos, MENSAGEM_CHAVE_DUPLICADA, mensagemCnpjJaCadastrado, mensagemCodigoFornecedorJaCadastrado, mensagemCodigoCentroCustoJaCadastrado, mensagemDuplicidadeFornecedor",
-    "utils.ts: cn, generateUniqueKey, formatCurrency, parseDateValue, formatDate, formatDateTime",
+    "utils.ts: cn, generateUniqueKey, formatCurrency, formatCurrencyCompact, parseDateValue, formatDate",
     "fuzzSeed.ts: mulberry32, FuzzRng, createFuzzRng"
    ],
    "docs": [
@@ -35948,7 +35948,7 @@
   {
    "module": "src/pages",
    "files": 158,
-   "lines": 35391,
+   "lines": 35404,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36236,7 +36236,7 @@
   {
    "module": "src/stores",
    "files": 10,
-   "lines": 2344,
+   "lines": 2345,
    "tables": [
     "dashboard_layouts",
     "profiles"
@@ -41254,7 +41254,7 @@
    },
    {
     "file": "src/components/compras/SavingsGoalPanel.tsx",
-    "msg": ";\nimport { cn } from "
+    "msg": ";\nimport { cn, formatCurrency } from "
    },
    {
     "file": "src/components/compras/SolicitacaoCard.tsx",
@@ -57803,6 +57803,12 @@
     "body": "if (value === null || value === undefined) return 'R$ 0,00'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);"
    },
    {
+    "file": "src/lib/utils.ts",
+    "name": "formatCurrencyCompact",
+    "params": "value: number | null | undefined",
+    "body": ""
+   },
+   {
     "file": "src/pages/acompanhamento/AcompanhamentoHelpers.ts",
     "name": "calcularSLA",
     "params": "prazoEntrega: string, statusPedido: string",
@@ -67699,6 +67705,22 @@
    {
     "file": "src/lib/__tests__/utils.test.ts",
     "name": "formats large numbers"
+   },
+   {
+    "file": "src/lib/__tests__/utils.test.ts",
+    "name": "formatCurrencyCompact"
+   },
+   {
+    "file": "src/lib/__tests__/utils.test.ts",
+    "name": "abrevia milhares"
+   },
+   {
+    "file": "src/lib/__tests__/utils.test.ts",
+    "name": "abrevia milhoes"
+   },
+   {
+    "file": "src/lib/__tests__/utils.test.ts",
+    "name": "trata null/undefined como zero, sem NaN"
    },
    {
     "file": "src/lib/__tests__/utils.test.ts",
@@ -96130,7 +96152,7 @@
   },
   "src/components/compras/BuyerDrilldownModal.tsx": {
    "path": "src/components/compras/BuyerDrilldownModal.tsx",
-   "lines": 227,
+   "lines": 228,
    "exports": [
     "const BuyerDrilldownModal"
    ]
@@ -96186,7 +96208,7 @@
   },
   "src/components/compras/BuyerPerformancePanel.tsx": {
    "path": "src/components/compras/BuyerPerformancePanel.tsx",
-   "lines": 177,
+   "lines": 178,
    "exports": [
     "const BuyerPerformancePanel"
    ],
@@ -96567,7 +96589,7 @@
   },
   "src/components/compras/DemandPredictionPanel.tsx": {
    "path": "src/components/compras/DemandPredictionPanel.tsx",
-   "lines": 423,
+   "lines": 424,
    "exports": [
     "function DemandPredictionPanel"
    ],
@@ -97686,7 +97708,7 @@
     ]
    },
    "errors": [
-    ";\nimport { cn } from "
+    ";\nimport { cn, formatCurrency } from "
    ],
    "html_constraints": [
     {
@@ -97861,7 +97883,7 @@
   },
   "src/components/compras/SpendAnalytics.tsx": {
    "path": "src/components/compras/SpendAnalytics.tsx",
-   "lines": 124,
+   "lines": 125,
    "exports": [
     "const SpendAnalytics"
    ],
@@ -98117,7 +98139,7 @@
   },
   "src/components/compras/SupplierIntelligenceConsole.tsx": {
    "path": "src/components/compras/SupplierIntelligenceConsole.tsx",
-   "lines": 184,
+   "lines": 185,
    "exports": [
     "const SupplierIntelligenceConsole"
    ],
@@ -99517,7 +99539,7 @@
   },
   "src/components/compras/price-comparator/priceComparatorHelpers.ts": {
    "path": "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-   "lines": 208,
+   "lines": 209,
    "exports": [
     "interface PriceQuote",
     "interface ComparisonResult",
@@ -104308,7 +104330,7 @@
   },
   "src/hooks/useApprovalNotifications.ts": {
    "path": "src/hooks/useApprovalNotifications.ts",
-   "lines": 267,
+   "lines": 268,
    "exports": [
     "interface ApprovalNotification",
     "const useApprovalNotifications"
@@ -108655,11 +108677,12 @@
   },
   "src/lib/utils.ts": {
    "path": "src/lib/utils.ts",
-   "lines": 48,
+   "lines": 52,
    "exports": [
     "function cn",
     "function generateUniqueKey",
     "const formatCurrency",
+    "const formatCurrencyCompact",
     "const parseDateValue",
     "const formatDate",
     "const formatDateTime"
@@ -108677,6 +108700,11 @@
      "name": "formatCurrency",
      "params": "value: number | null | undefined",
      "body": "if (value === null || value === undefined) return 'R$ 0,00'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);"
+    },
+    {
+     "name": "formatCurrencyCompact",
+     "params": "value: number | null | undefined",
+     "body": ""
     }
    ]
   },
@@ -109599,7 +109627,7 @@
   },
   "src/lib/__tests__/utils.test.ts": {
    "path": "src/lib/__tests__/utils.test.ts",
-   "lines": 114,
+   "lines": 129,
    "is_test": true,
    "tests": [
     "returns empty string for no arguments",
@@ -109618,6 +109646,10 @@
     "formats zero with R$ prefix and 0,00",
     "includes cents separator",
     "formats large numbers",
+    "formatCurrencyCompact",
+    "abrevia milhares",
+    "abrevia milhoes",
+    "trata null/undefined como zero, sem NaN",
     "formatDate",
     "formats a date string as dd/MM/yyyy",
     "formats a Date object as dd/MM/yyyy",
@@ -110578,7 +110610,7 @@
   },
   "src/pages/admin/SourcingPipeline.tsx": {
    "path": "src/pages/admin/SourcingPipeline.tsx",
-   "lines": 239,
+   "lines": 240,
    "exports": [
     "default SourcingPipeline"
    ],
@@ -110895,7 +110927,7 @@
   },
   "src/pages/aprovacoes/Aprovacoes.tsx": {
    "path": "src/pages/aprovacoes/Aprovacoes.tsx",
-   "lines": 256,
+   "lines": 257,
    "exports": [
     "default Aprovacoes"
    ]
@@ -111143,14 +111175,14 @@
   },
   "src/pages/buyer/BuyerComparisonView.tsx": {
    "path": "src/pages/buyer/BuyerComparisonView.tsx",
-   "lines": 152,
+   "lines": 153,
    "exports": [
     "const BuyerComparisonView"
    ]
   },
   "src/pages/buyer/BuyerPerformanceDashboard.tsx": {
    "path": "src/pages/buyer/BuyerPerformanceDashboard.tsx",
-   "lines": 511,
+   "lines": 512,
    "exports": [
     "default BuyerPerformanceDashboard"
    ],
@@ -111194,7 +111226,7 @@
   },
   "src/pages/buyer/buyerDashboardHelpers.tsx": {
    "path": "src/pages/buyer/buyerDashboardHelpers.tsx",
-   "lines": 82,
+   "lines": 83,
    "exports": [
     "const COLORS",
     "const PERIOD_MAP",
@@ -112050,7 +112082,7 @@
   },
   "src/pages/cotacao/cotacaoHelpers.ts": {
    "path": "src/pages/cotacao/cotacaoHelpers.ts",
-   "lines": 247,
+   "lines": 248,
    "exports": [
     "interface QuoteAnalysis",
     "function buildQuoteAnalysis",
@@ -112143,7 +112175,7 @@
   },
   "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts": {
    "path": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
-   "lines": 324,
+   "lines": 325,
    "is_test": true,
    "tests": [
     "adaptFornecedoresToLegacy",
@@ -113061,14 +113093,14 @@
   },
   "src/pages/historico/HistoricoDrilldownModal.tsx": {
    "path": "src/pages/historico/HistoricoDrilldownModal.tsx",
-   "lines": 66,
+   "lines": 67,
    "exports": [
     "const HistoricoDrilldownModal"
    ]
   },
   "src/pages/historico/HistoricoFornecedoresTab.tsx": {
    "path": "src/pages/historico/HistoricoFornecedoresTab.tsx",
-   "lines": 139,
+   "lines": 140,
    "exports": [
     "const HistoricoFornecedoresTab"
    ],
@@ -113092,7 +113124,7 @@
   },
   "src/pages/historico/HistoricoProdutosTab.tsx": {
    "path": "src/pages/historico/HistoricoProdutosTab.tsx",
-   "lines": 146,
+   "lines": 147,
    "exports": [
     "const HistoricoProdutosTab"
    ],
@@ -113106,7 +113138,7 @@
   },
   "src/pages/historico/HistoricoRegistrosTab.tsx": {
    "path": "src/pages/historico/HistoricoRegistrosTab.tsx",
-   "lines": 66,
+   "lines": 67,
    "exports": [
     "const HistoricoRegistrosTab"
    ],
@@ -113209,7 +113241,7 @@
   },
   "src/pages/kanban/KanbanWorkflow.tsx": {
    "path": "src/pages/kanban/KanbanWorkflow.tsx",
-   "lines": 194,
+   "lines": 195,
    "exports": [
     "default KanbanWorkflow"
    ],
@@ -114300,7 +114332,7 @@
   },
   "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx": {
    "path": "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-   "lines": 412,
+   "lines": 413,
    "exports": [
     "default RelatorioNegociacoes"
    ],
@@ -115490,7 +115522,7 @@
   },
   "src/stores/buyerAlertsStore.ts": {
    "path": "src/stores/buyerAlertsStore.ts",
-   "lines": 202,
+   "lines": 203,
    "exports": [
     "interface BuyerTarget",
     "interface BuyerAlert",
@@ -123467,10 +123499,76 @@
   }
  },
  "git": {
-  "sha": "86bc33fb30553aa6681e1d92af96d9bb303164af",
+  "sha": "61146242a41e355614ecffe37e782649fb774cba",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6114624",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/AdvancedProcurementKPIs.tsx",
+     "src/components/compras/BulkOperationsPreview.tsx",
+     "src/components/compras/BulkPlanningConsole.tsx",
+     "src/components/compras/BuscaAutomatica.tsx",
+     "src/components/compras/BuyerDrilldownModal.tsx",
+     "src/components/compras/BuyerPerformancePanel.tsx",
+     "src/components/compras/ComparadorCotacoes.tsx",
+     "src/components/compras/DashboardInsights.tsx",
+     "src/components/compras/DemandPredictionPanel.tsx",
+     "src/components/compras/FiltrosAvancados.tsx",
+     "src/components/compras/PriceComparator.tsx",
+     "src/components/compras/PriceHistoryModal.tsx",
+     "src/components/compras/RankingCotacoes.tsx",
+     "src/components/compras/SavingsGoalPanel.tsx",
+     "src/components/compras/SolicitacaoCard.tsx",
+     "src/components/compras/SpendAnalytics.tsx",
+     "src/components/compras/SupplierAlertsPanel.tsx",
+     "src/components/compras/SupplierIntelligenceConsole.tsx",
+     "src/components/compras/TrendAnalysisCharts.tsx",
+     "src/components/compras/executive/KraljicMatrix.tsx",
+     "src/components/compras/price-comparator/priceComparatorHelpers.ts",
+     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
+     "src/components/compras/visual-comparador/ComparadorCharts.tsx",
+     "src/components/pagamentos/PagamentoFinancialDashboard.tsx",
+     "src/features/layout/components/AdvancedSearch.tsx",
+     "src/hooks/useApprovalNotifications.ts",
+     "src/lib/__tests__/utils.test.ts",
+     "src/lib/utils.ts",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/admin/SourcingPipeline.tsx",
+     "src/pages/aprovacoes/Aprovacoes.tsx",
+     "src/pages/buyer/BuyerComparisonView.tsx",
+     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
+     "src/pages/buyer/buyerDashboardHelpers.tsx",
+     "src/pages/catalogo-spot/CatalogoSpot.tsx",
+     "src/pages/contratos/Contratos.tsx",
+     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
+     "src/pages/cotacao/cotacaoHelpers.ts",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/gerar-ordem/GerarOrdem.tsx",
+     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+     "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
+     "src/pages/historico/HistoricoCompras.tsx",
+     "src/pages/historico/HistoricoDrilldownModal.tsx",
+     "src/pages/historico/HistoricoFornecedoresTab.tsx",
+     "src/pages/historico/HistoricoProdutosTab.tsx",
+     "src/pages/historico/HistoricoRegistrosTab.tsx",
+     "src/pages/historico/HistoricoSourcingTab.tsx",
+     "src/pages/kanban/KanbanWorkflow.tsx",
+     "src/pages/negociacao-ia/NegociacaoIA.tsx",
+     "src/pages/orcamentos/Orcamentos.tsx",
+     "src/pages/recebimento/ReceivingFormView.tsx",
+     "src/pages/recompra/RecompraInteligente.tsx",
+     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
+     "src/pages/relatorios/RelatoriosCharts.tsx",
+     "src/pages/sourcing/AuctionRoom.tsx",
+     "src/stores/buyerAlertsStore.ts"
+    ]
+   },
    {
     "sha": "86bc33f",
     "date": "2026-11-26",
@@ -123817,17 +123915,6 @@
      ".github/workflows/guards.yml",
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "e18b65d",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/historico/HistoricoCompras.tsx",
-     "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -123842,6 +123929,14 @@
    [
     "src/hooks/useDevolucoes.ts",
     3
+   ],
+   [
+    "src/components/compras/DemandPredictionPanel.tsx",
+    2
+   ],
+   [
+    "src/components/compras/PriceHistoryModal.tsx",
+    2
    ],
    [
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -123864,51 +123959,43 @@
     2
    ],
    [
-    "vite.config.ts",
+    "src/components/compras/AdvancedProcurementKPIs.tsx",
     1
    ],
    [
-    "src/components/compras/ProductionRoutingEngine.tsx",
+    "src/components/compras/BulkOperationsPreview.tsx",
     1
    ],
    [
-    "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "src/components/compras/BulkPlanningConsole.tsx",
     1
    ],
    [
-    "src/components/security/PermissionMatrix.tsx",
+    "src/components/compras/BuscaAutomatica.tsx",
     1
    ],
    [
-    "src/components/security/__tests__/permissionChanges.test.ts",
+    "src/components/compras/BuyerDrilldownModal.tsx",
     1
    ],
    [
-    "src/components/security/permissionChanges.ts",
+    "src/components/compras/BuyerPerformancePanel.tsx",
     1
    ],
    [
-    "src/hooks/useDebouncedValue.ts",
+    "src/components/compras/ComparadorCotacoes.tsx",
     1
    ],
    [
-    "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+    "src/components/compras/DashboardInsights.tsx",
     1
    ],
    [
-    "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    "src/components/compras/FiltrosAvancados.tsx",
     1
    ],
    [
-    "src/components/compras/DemandPredictionPanel.tsx",
-    1
-   ],
-   [
-    "src/components/compras/PriceHistoryModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/RiskHeatMap.tsx",
+    "src/components/compras/PriceComparator.tsx",
     1
    ]
   ]

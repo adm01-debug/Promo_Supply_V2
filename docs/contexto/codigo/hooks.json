@@ -793,7 +793,7 @@
    "hooks_exportados": [
     "useApprovalNotifications"
    ],
-   "linhas": 267,
+   "linhas": 268,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -2414,7 +2414,7 @@
    "hooks_exportados": [
     "useBuyerAlertsStore"
    ],
-   "linhas": 202,
+   "linhas": 203,
    "dominio": "stores",
    "tabelas": [
     "profiles"

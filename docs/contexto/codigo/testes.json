@@ -1786,11 +1786,11 @@
   {
    "arquivo": "src/lib/__tests__/utils.test.ts",
    "tipo": "unit",
-   "linhas": 114,
+   "linhas": 129,
    "testa": [
     "src/lib/utils.ts"
    ],
-   "casos": 21
+   "casos": 24
   },
   {
    "arquivo": "src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx",
@@ -2033,7 +2033,7 @@
   {
    "arquivo": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 324,
+   "linhas": 325,
    "testa": [
     "src/pages/cotacao/cotacaoHelpers.ts"
    ],

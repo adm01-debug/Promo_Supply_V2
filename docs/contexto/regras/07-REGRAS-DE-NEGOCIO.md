@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `86bc33fb30` · branch `main` · 2026-11-26 08:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `61146242a4` · branch `main` · 2026-11-26 09:17 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1510,6 +1510,10 @@ _nenhum item encontrado_
   ```
   if (value === null || value === undefined) return 'R$ 0,00'; return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   ```
+- **formatCurrencyCompact(value: number | null | undefined)** — `src/lib/utils.ts`
+  ```
+  
+  ```
 - **calcularSLA(prazoEntrega: string, statusPedido: string)** — `src/pages/acompanhamento/AcompanhamentoHelpers.ts`
   ```
   if (statusPedido === 'ENTREGUE') { return { status: 'entregue', diasRestantes: 0, label: 'Entregue', color: 'text-success', bgColor: 'bg-success/10', icon: CheckCircle2 }; } const prazo = parseISO(prazoEntrega); const hoje = new Date(); const diasRestantes = differenceInDays(prazo, hoje); const horasRestantes = differenceInHours(prazo, hoje); if (isPast(prazo) && !isToday(prazo)) { return { status: 'atrasado', diasRestantes, label: `${Math.abs(diasRestantes)} dia${Math.abs(diasRestantes) !== 1 ? …
@@ -2287,7 +2291,7 @@ _nenhum item encontrado_
 | Erro na comparação | `src/components/compras/PriceComparator.tsx` |
 | Produto necessário | `src/components/compras/PriceComparator.tsx` |
 | Quantidade inválida | `src/components/compras/PriceComparator.tsx` |
-| ; import { cn } from  | `src/components/compras/SavingsGoalPanel.tsx` |
+| ; import { cn, formatCurrency } from  | `src/components/compras/SavingsGoalPanel.tsx` |
 | Request #${solicitacao.id} rejected | `src/components/compras/SolicitacaoCard.tsx` |
 | Nada para exportar | `src/components/compras/SourcingHistoryConsole.tsx` |
 | Sem base para análise | `src/components/compras/SourcingHistoryConsole.tsx` |
@@ -2466,7 +2470,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3520 testes em 266 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3524 testes em 266 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2502,6 +2506,7 @@ _nenhum item encontrado_
 | `src/components/ui/__tests__/enhanced-search-helpers.test.ts` | 28 | typeLabels · covers all 5 result types · solicitacao →  · pedido →  … |
 | `src/hooks/__tests__/keyboardShortcutsData.test.ts` | 28 | getShortcutsList · is a function · returns an array · returns 4 categories … |
 | `src/lib/__tests__/feedbackToast.test.ts` | 28 | toast · is defined · exposes success, error, warning, info, dismiss, promise, loading, custom · toast.success … |
+| `src/lib/__tests__/utils.test.ts` | 28 | returns empty string for no arguments · joins class names · ignores falsy values · handles conditional object syntax … |
 | `src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts` | 28 | formatDuration · returns ms for durations below 1000 · returns seconds with one decimal for 1000ms · returns seconds with one decimal for values above 1000 … |
 | `src/components/onboarding/__tests__/tourStepDefinitions.test.ts` | 27 | dashboardTourSteps · has 5 steps · cotacaoTourSteps · has 3 steps … |
 | `src/lib/__tests__/performance.test.ts` | 27 | performanceMonitor · is defined and is an object · exposes mark, measure, trackLCP, trackCLS, trackFID, trackFCP, initAll · has exactly 7 methods (structural completeness) … |
@@ -2517,7 +2522,6 @@ _nenhum item encontrado_
 | `src/components/compras/timeline/__tests__/timelineConfig.test.ts` | 24 | iconesPorEtapa · has 10 entries · includes solicitacao key · includes aprovacao key … |
 | `src/components/ui/__tests__/chartColors.test.ts` | 24 | chartPalette · has 8 color entries · covers all expected palette keys · every entry has light and dark variants … |
 | `src/hooks/__tests__/useToastReducer.test.ts` | 24 | reducer — ADD_TOAST · adds a toast to empty state · places new toast at the beginning · respects TOAST_LIMIT of 1 — oldest toast is dropped … |
-| `src/lib/__tests__/utils.test.ts` | 24 | returns empty string for no arguments · joins class names · ignores falsy values · handles conditional object syntax … |
 | `src/pages/portal-fornecedor/__tests__/portalFornecedorData.test.ts` | 24 | statusPedido · has 5 status keys · covers all expected status keys · every entry has a non-empty label … |
 | `src/components/compras/__tests__/kanbanTypeGuards.test.ts` | 23 | isKanbanStatus · returns true for all valid statuses · returns false for unknown string · returns false for null … |
 | `src/hooks/__tests__/permissionsConstants.test.ts` | 23 | moduleLabels · has 11 module entries · covers all expected module keys · every label is a non-empty string … |

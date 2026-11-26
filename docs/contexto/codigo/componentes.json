@@ -494,7 +494,7 @@
     "BuyerDrilldownModal"
    ],
    "export_default": null,
-   "linhas": 227,
+   "linhas": 228,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -525,7 +525,7 @@
     "BuyerPerformancePanel"
    ],
    "export_default": null,
-   "linhas": 177,
+   "linhas": 178,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -748,7 +748,7 @@
     "DemandPredictionPanel"
    ],
    "export_default": null,
-   "linhas": 423,
+   "linhas": 424,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",
@@ -1551,7 +1551,7 @@
     "SpendAnalytics"
    ],
    "export_default": null,
-   "linhas": 124,
+   "linhas": 125,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -1649,7 +1649,7 @@
     "SupplierIntelligenceConsole"
    ],
    "export_default": null,
-   "linhas": 184,
+   "linhas": 185,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -4347,7 +4347,7 @@
     "SourcingPipeline"
    ],
    "export_default": "SourcingPipeline",
-   "linhas": 239,
+   "linhas": 240,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [
@@ -4419,7 +4419,7 @@
     "Aprovacoes"
    ],
    "export_default": "Aprovacoes",
-   "linhas": 256,
+   "linhas": 257,
    "dominio": "pages/aprovacoes",
    "hooks_locais": [
     "useApprovalWorkflow"
@@ -4485,7 +4485,7 @@
     "BuyerComparisonView"
    ],
    "export_default": null,
-   "linhas": 152,
+   "linhas": 153,
    "dominio": "pages/buyer",
    "hooks_locais": [],
    "tabelas": [],
@@ -4503,7 +4503,7 @@
     "PERIOD_MAP"
    ],
    "export_default": null,
-   "linhas": 82,
+   "linhas": 83,
    "dominio": "pages/buyer",
    "hooks_locais": [],
    "tabelas": [],
@@ -4517,7 +4517,7 @@
     "BuyerPerformanceDashboard"
    ],
    "export_default": "BuyerPerformanceDashboard",
-   "linhas": 511,
+   "linhas": 512,
    "dominio": "pages/buyer",
    "hooks_locais": [
     "useBuyerAlertsStore",
@@ -5004,7 +5004,7 @@
     "HistoricoDrilldownModal"
    ],
    "export_default": null,
-   "linhas": 66,
+   "linhas": 67,
    "dominio": "pages/historico",
    "hooks_locais": [],
    "tabelas": [],
@@ -5018,7 +5018,7 @@
     "HistoricoFornecedoresTab"
    ],
    "export_default": null,
-   "linhas": 139,
+   "linhas": 140,
    "dominio": "pages/historico",
    "hooks_locais": [],
    "tabelas": [],
@@ -5049,7 +5049,7 @@
     "HistoricoProdutosTab"
    ],
    "export_default": null,
-   "linhas": 146,
+   "linhas": 147,
    "dominio": "pages/historico",
    "hooks_locais": [],
    "tabelas": [],
@@ -5063,7 +5063,7 @@
     "HistoricoRegistrosTab"
    ],
    "export_default": null,
-   "linhas": 66,
+   "linhas": 67,
    "dominio": "pages/historico",
    "hooks_locais": [],
    "tabelas": [],
@@ -5091,7 +5091,7 @@
     "KanbanWorkflow"
    ],
    "export_default": "KanbanWorkflow",
-   "linhas": 194,
+   "linhas": 195,
    "dominio": "pages/kanban",
    "hooks_locais": [],
    "tabelas": [
@@ -5358,7 +5358,7 @@
     "RelatorioNegociacoes"
    ],
    "export_default": "RelatorioNegociacoes",
-   "linhas": 412,
+   "linhas": 413,
    "dominio": "pages/relatorio-negociacoes",
    "hooks_locais": [
     "useRelatorioNegociacoes"

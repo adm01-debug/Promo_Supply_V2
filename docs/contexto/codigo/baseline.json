@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "86bc33fb30553aa6681e1d92af96d9bb303164af",
+  "commit": "61146242a41e355614ecffe37e782649fb774cba",
   "branch": "main",
-  "data_commit": "2026-11-26T05:12:54-03:00",
+  "data_commit": "2026-11-26T06:16:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6114624",
+    "data": "2026-11-26",
+    "assunto": "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)"
+   },
    {
     "sha": "86bc33f",
     "data": "2026-11-26",
@@ -126,22 +131,17 @@
     "sha": "13a252c",
     "data": "2026-11-26",
     "assunto": "chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)"
-   },
-   {
-    "sha": "36e96de",
-    "data": "2026-11-26",
-    "assunto": "fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)"
    }
   ],
   "arquivos_mudados_7d": 1518,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 196
+    "mudancas": 219
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 160
+    "mudancas": 161
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 60
+    "mudancas": 61
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -161,7 +161,7 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "pasta": "src/features/solicitacoes",
@@ -172,8 +172,8 @@
     "mudancas": 25
    },
    {
-    "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 23
+    "pasta": "src/pages/admin",
+    "mudancas": 24
    },
    {
     "pasta": "src/components/security",
@@ -184,26 +184,26 @@
     "mudancas": 23
    },
    {
-    "pasta": "src/pages/admin",
-    "mudancas": 23
-   },
-   {
     "pasta": "src/pages/catalogo-xbz",
     "mudancas": 23
    },
    {
-    "pasta": "src/pages/pedidos",
-    "mudancas": 21
+    "pasta": "docs/pendencias/_indice.md",
+    "mudancas": 22
+   },
+   {
+    "pasta": "src/pages/recebimento",
+    "mudancas": 22
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 160
+    "mudancas": 161
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 23
+    "mudancas": 22
    },
    {
     "arquivo": "AGENTS.md",
@@ -266,19 +266,19 @@
     "mudancas": 7
    },
    {
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+    "mudancas": 7
+   },
+   {
     "arquivo": "src/pages/cotacao/Cotacao.tsx",
     "mudancas": 7
    },
    {
-    "arquivo": "src/hooks/useFornecedores.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "src/hooks/useFornecedores.ts",
     "mudancas": 6
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1497,
   "arquivos_codigo": 960,
-  "linhas_codigo": 190927,
+  "linhas_codigo": 190967,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 287,
-   "linhas": 52522
+   "linhas": 52528
   },
   "src/features": {
    "arquivos": 96,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 102,
-   "linhas": 17242
+   "linhas": 17243
   },
   "src/i18n": {
    "arquivos": 3,
@@ -448,7 +448,7 @@
   },
   "src/lib": {
    "arquivos": 61,
-   "linhas": 7312
+   "linhas": 7331
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 158,
-   "linhas": 35391
+   "linhas": 35404
   },
   "src/routes": {
    "arquivos": 1,
@@ -472,7 +472,7 @@
   },
   "src/stores": {
    "arquivos": 10,
-   "linhas": 2344
+   "linhas": 2345
   },
   "src/test": {
    "arquivos": 1,

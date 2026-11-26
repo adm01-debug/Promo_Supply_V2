@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `86bc33fb30553aa6681e1d92af96d9bb303164af` (2026-11-26T05:12:54-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `61146242a41e355614ecffe37e782649fb774cba` (2026-11-26T06:16:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1497 |
 | arquivos_codigo | 960 |
-| linhas_codigo | 190927 |
+| linhas_codigo | 190967 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (160)
-- docs/pendencias/_indice.md (23)
+- docs/qa/05-PROGRESSO.md (161)
+- docs/pendencias/_indice.md (22)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `6114624` fix(moeda): formata todo valor em reais com Intl pt-BR (#548)
 - 2026-11-26 `86bc33f` perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)
 - 2026-11-26 `cf9c067` fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)
 - 2026-11-26 `bb8724e` fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `24512f4` fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)
 - 2026-11-26 `f2f21c8` fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)
 - 2026-11-26 `6d9dddb` fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)
-- 2026-11-26 `28d02fb` chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

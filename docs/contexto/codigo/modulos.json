@@ -423,7 +423,7 @@
    "modulo": "components/compras",
    "arquivos": 105,
    "testes": 34,
-   "linhas": 26201,
+   "linhas": 26207,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2417,7 +2417,7 @@
    "modulo": "hooks",
    "arquivos": 63,
    "testes": 0,
-   "linhas": 12083,
+   "linhas": 12084,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3026,7 +3026,7 @@
    "modulo": "lib",
    "arquivos": 29,
    "testes": 0,
-   "linhas": 2872,
+   "linhas": 2876,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3255,6 +3255,7 @@
     "pages/acompanhamento",
     "pages/admin",
     "pages/admin-telemetria",
+    "pages/aprovacoes",
     "pages/auditoria",
     "pages/auth",
     "pages/buyer",
@@ -3475,7 +3476,7 @@
    "modulo": "pages/admin",
    "arquivos": 14,
    "testes": 4,
-   "linhas": 6058,
+   "linhas": 6059,
    "itens_menu": [
     "Dep. Health",
     "Documentação",
@@ -3706,7 +3707,7 @@
    "modulo": "pages/aprovacoes",
    "arquivos": 2,
    "testes": 1,
-   "linhas": 462,
+   "linhas": 463,
    "itens_menu": [
     "Aprovações"
    ],
@@ -3781,7 +3782,8 @@
     "components/ui",
     "features/aprovacoes",
     "features/layout",
-    "hooks"
+    "hooks",
+    "lib"
    ],
    "pacotes_externos": [
     "lucide-react"
@@ -3929,7 +3931,7 @@
    "modulo": "pages/buyer",
    "arquivos": 3,
    "testes": 1,
-   "linhas": 745,
+   "linhas": 748,
    "itens_menu": [
     "Compradores"
    ],
@@ -4895,7 +4897,7 @@
    "modulo": "pages/cotacao",
    "arquivos": 2,
    "testes": 2,
-   "linhas": 656,
+   "linhas": 657,
    "itens_menu": [
     "Cotações"
    ],
@@ -5561,7 +5563,7 @@
    "modulo": "pages/historico",
    "arquivos": 7,
    "testes": 4,
-   "linhas": 1340,
+   "linhas": 1344,
    "itens_menu": [
     "Histórico"
    ],
@@ -5640,7 +5642,7 @@
    "modulo": "pages/kanban",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 194,
+   "linhas": 195,
    "itens_menu": [
     "Kanban"
    ],
@@ -6981,7 +6983,7 @@
    "modulo": "pages/relatorio-negociacoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 763,
+   "linhas": 764,
    "itens_menu": [
     "Negociações"
    ],
@@ -8069,7 +8071,7 @@
    "modulo": "stores",
    "arquivos": 5,
    "testes": 0,
-   "linhas": 792,
+   "linhas": 793,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

@@ -1255,13 +1255,14 @@
    "exports": [
     "cn",
     "formatCurrency",
+    "formatCurrencyCompact",
     "formatDate",
     "formatDateTime",
     "generateUniqueKey",
     "parseDateValue"
    ],
    "export_default": null,
-   "linhas": 48,
+   "linhas": 52,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -1274,7 +1275,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 220,
+   "usado_por": 240,
    "usado_por_modulos": [
     "components/accessibility",
     "components/admin",
@@ -1295,11 +1296,14 @@
     "components/ui",
     "features/empresas",
     "features/layout",
+    "hooks",
     "lib",
     "pages/acompanhamento",
     "pages/admin",
+    "pages/aprovacoes",
     "pages/auditoria",
     "pages/auth",
+    "pages/buyer",
     "pages/catalogo-produtos",
     "pages/catalogo-spot",
     "pages/catalogo-xbz",
@@ -1314,6 +1318,7 @@
     "pages/fornecedores",
     "pages/gerar-ordem",
     "pages/historico",
+    "pages/kanban",
     "pages/licitacoes",
     "pages/negociacao-ia",
     "pages/orcamentos",
@@ -1322,10 +1327,12 @@
     "pages/portal-fornecedor",
     "pages/recebimento",
     "pages/recompra",
+    "pages/relatorio-negociacoes",
     "pages/relatorios",
     "pages/solicitacoes",
     "pages/sourcing",
-    "schemas"
+    "schemas",
+    "stores"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -1458,7 +1465,7 @@
     "useBuyerAlertsStore"
    ],
    "export_default": null,
-   "linhas": 202,
+   "linhas": 203,
    "tabelas": [
     "profiles"
    ],

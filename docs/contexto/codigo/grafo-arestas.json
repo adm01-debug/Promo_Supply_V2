@@ -208,7 +208,8 @@
    "src/components/ui/skeleton.tsx",
    "src/components/ui/tabs.tsx",
    "src/hooks/useBuyerPerformanceData.ts",
-   "src/lib/dateUtils.ts"
+   "src/lib/dateUtils.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/compras/BuyerPerformanceAlerts.tsx": [
    "src/components/ui/badge.tsx",
@@ -224,7 +225,8 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/skeleton.tsx",
    "src/features/auth/index.ts",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/compras/ComparadorCotacoes.tsx": [
    "src/components/ui/badge.tsx",
@@ -332,7 +334,8 @@
    "src/hooks/use-toast.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/logger.ts",
-   "src/lib/paginatedFetch.ts"
+   "src/lib/paginatedFetch.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/compras/DigitalSignature.tsx": [
    "src/components/compras/digital-signature/signatureHelpers.ts",
@@ -739,7 +742,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/skeleton.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/compras/StatusTimeline.tsx": [
    "src/lib/utils.ts"
@@ -786,7 +790,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",
-   "src/hooks/usePurchaseHistory.ts"
+   "src/hooks/usePurchaseHistory.ts",
+   "src/lib/utils.ts"
   ],
   "src/components/compras/SupplierInteractionLog.tsx": [
    "src/components/ui/badge.tsx",
@@ -988,6 +993,9 @@
    "src/components/ui/button.tsx",
    "src/components/ui/dialog.tsx",
    "src/components/ui/textarea.tsx",
+   "src/lib/utils.ts"
+  ],
+  "src/components/compras/price-comparator/priceComparatorHelpers.ts": [
    "src/lib/utils.ts"
   ],
   "src/components/compras/scorecard/supplierScorecardData.ts": [
@@ -1988,7 +1996,8 @@
    "src/integrations/supabase/client.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/realtime.ts",
-   "src/lib/safeTruncate.ts"
+   "src/lib/safeTruncate.ts",
+   "src/lib/utils.ts"
   ],
   "src/hooks/useApprovalRules.ts": [
    "src/features/auth/index.ts",
@@ -2475,7 +2484,8 @@
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
    "src/components/ui/table.tsx",
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/admin/StorageMigration.tsx": [
    "src/components/ui/badge.tsx",
@@ -2511,6 +2521,7 @@
    "src/features/aprovacoes/index.ts",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
    "src/hooks/useApprovalWorkflow.ts",
+   "src/lib/utils.ts",
    "src/pages/aprovacoes/aprovacoesData.ts"
   ],
   "src/pages/aprovacoes/aprovacoesData.ts": [
@@ -2554,7 +2565,8 @@
   "src/pages/buyer/BuyerComparisonView.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
-   "src/hooks/useBuyerPerformanceData.ts"
+   "src/hooks/useBuyerPerformanceData.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/buyer/BuyerPerformanceDashboard.tsx": [
    "src/components/compras/BuyerPerformanceAlerts.tsx",
@@ -2565,6 +2577,7 @@
    "src/components/ui/select.tsx",
    "src/components/ui/switch.tsx",
    "src/hooks/useBuyerPerformanceData.ts",
+   "src/lib/utils.ts",
    "src/pages/buyer/BuyerComparisonView.tsx",
    "src/pages/buyer/buyerDashboardHelpers.tsx",
    "src/stores/buyerAlertsStore.ts"
@@ -2573,7 +2586,8 @@
    "src/components/ui/card.tsx",
    "src/components/ui/skeleton.tsx",
    "src/hooks/useBuyerPerformanceData.ts",
-   "src/lib/feedbackToast.ts"
+   "src/lib/feedbackToast.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/catalogo-produtos/CatalogoProdutos.tsx": [
    "src/components/compras/ProductSupplierManager.tsx",
@@ -2809,7 +2823,8 @@
   ],
   "src/pages/cotacao/cotacaoHelpers.ts": [
    "src/integrations/supabase/client.ts",
-   "src/lib/dbMapping.ts"
+   "src/lib/dbMapping.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/dashboard/ComprasDashboard.tsx": [
    "src/components/atoms/EliteButton.tsx",
@@ -3009,6 +3024,7 @@
    "src/components/ui/dialog.tsx",
    "src/components/ui/table.tsx",
    "src/hooks/usePurchaseHistory.ts",
+   "src/lib/utils.ts",
    "src/pages/historico/HistoricoHelpers.tsx"
   ],
   "src/pages/historico/HistoricoFornecedoresTab.tsx": [
@@ -3017,6 +3033,7 @@
    "src/components/ui/scroll-area.tsx",
    "src/components/ui/table.tsx",
    "src/hooks/usePurchaseHistory.ts",
+   "src/lib/utils.ts",
    "src/pages/historico/HistoricoHelpers.tsx"
   ],
   "src/pages/historico/HistoricoHelpers.tsx": [
@@ -3029,12 +3046,14 @@
    "src/components/ui/scroll-area.tsx",
    "src/components/ui/table.tsx",
    "src/hooks/usePurchaseHistory.ts",
+   "src/lib/utils.ts",
    "src/pages/historico/HistoricoHelpers.tsx"
   ],
   "src/pages/historico/HistoricoRegistrosTab.tsx": [
    "src/components/ui/card.tsx",
    "src/components/ui/table.tsx",
    "src/hooks/usePurchaseHistory.ts",
+   "src/lib/utils.ts",
    "src/pages/historico/HistoricoHelpers.tsx"
   ],
   "src/pages/historico/HistoricoSourcingTab.tsx": [
@@ -3056,7 +3075,8 @@
    "src/components/ui/card.tsx",
    "src/components/ui/select.tsx",
    "src/integrations/supabase/client.ts",
-   "src/lib/feedbackToast.ts"
+   "src/lib/feedbackToast.ts",
+   "src/lib/utils.ts"
   ],
   "src/pages/licitacoes/LicitacaoDetailDialog.tsx": [
    "src/components/ui/badge.tsx",
@@ -3296,6 +3316,7 @@
    "src/components/ui/skeleton.tsx",
    "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
+   "src/lib/utils.ts",
    "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
   ],
   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts": [
@@ -3514,7 +3535,8 @@
    "src/integrations/supabase/client.ts"
   ],
   "src/stores/buyerAlertsStore.ts": [
-   "src/integrations/supabase/client.ts"
+   "src/integrations/supabase/client.ts",
+   "src/lib/utils.ts"
   ],
   "src/stores/dashboardLayoutStore.ts": [
    "src/integrations/supabase/client.ts",
