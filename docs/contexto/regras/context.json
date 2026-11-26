@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a70dc33e1291227077d8b40766a731fd5df339f8",
+  "sha": "2398b93ee2a13a66efa0a029834984e724601f8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 02:26 UTC",
-  "files_total": 1465,
-  "code_files": 1291,
-  "code_lines": 218944,
+  "generated_at": "2026-11-26 02:39 UTC",
+  "files_total": 1468,
+  "code_files": 1294,
+  "code_lines": 219087,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "69bfbcc01db0cbb7",
+ "facts_hash": "848c259c3aef2e2b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 438,
+   ".ts": 441,
    ".tsx": 423,
    ".sql": 353,
    ".mjs": 69,
@@ -36277,8 +36277,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 118,
-   "lines": 19509,
+   "files": 121,
+   "lines": 19652,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36398,6 +36398,7 @@
     "supabase/functions/_shared/fuzzSeed.ts",
     "supabase/functions/_shared/fuzzer.ts",
     "supabase/functions/_shared/http.ts",
+    "supabase/functions/_shared/idempotency.test.ts",
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/integrity_test.ts",
     "supabase/functions/_shared/logLevel.test.ts",
@@ -36450,6 +36451,7 @@
     "supabase/functions/dependency-health/index.test.ts",
     "supabase/functions/dependency-health/index.ts",
     "supabase/functions/erp-credential-encrypt/index.ts",
+    "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
     "supabase/functions/erp-sync/index.ts",
     "supabase/functions/escalate-solicitacao/index.ts",
     "supabase/functions/escalate-solicitacao/recipients.test.ts",
@@ -36464,9 +36466,7 @@
     "supabase/functions/process-invoice-idp/extraction.test.ts",
     "supabase/functions/process-invoice-idp/extraction.ts",
     "supabase/functions/process-invoice-idp/index.ts",
-    "supabase/functions/process-outbox/index.ts",
-    "supabase/functions/process-solicitacao-neural/index.ts",
-    "supabase/functions/punchout-encrypt/index.ts"
+    "supabase/functions/process-outbox/index.ts"
    ]
   },
   {
@@ -43540,6 +43540,10 @@
    {
     "file": "supabase/functions/_shared/fuzzer.ts",
     "text": "1. Missing required fields"
+   },
+   {
+    "file": "supabase/functions/_shared/idempotency.ts",
+    "text": "INT-08: so replay de operacao concluida. Linha `failed` nao pode ser"
    },
    {
     "file": "supabase/functions/_shared/logLevel.ts",
@@ -56201,6 +56205,12 @@
     "field": "status",
     "value": "failed",
     "kind": "compara"
+   },
+   {
+    "file": "supabase/functions/_shared/idempotency.ts",
+    "field": "status",
+    "value": "processed",
+    "kind": "filtra"
    },
    {
     "file": "supabase/functions/_shared/integrity_test.ts",
@@ -71981,6 +71991,14 @@
     "name": "index do bridge envia selectColumns para a allowlist"
    },
    {
+    "file": "supabase/functions/_shared/idempotency.test.ts",
+    "name": "getIdempotentResponse so faz replay de operacao processada"
+   },
+   {
+    "file": "supabase/functions/_shared/idempotency.test.ts",
+    "name": "withIdempotency continua registrando a falha para analise"
+   },
+   {
     "file": "supabase/functions/_shared/logLevel.test.ts",
     "name": "normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL"
    },
@@ -72261,6 +72279,18 @@
     "name": "toda acao do historico pertence ao CHECK de approval_history"
    },
    {
+    "file": "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+    "name": "erp-sync escopa a chave de idempotencia por usuario"
+   },
+   {
+    "file": "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+    "name": "erp-sync le e grava o cache sempre com o source escopado"
+   },
+   {
+    "file": "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+    "name": "erp-sync autentica antes de consultar o cache"
+   },
+   {
     "file": "supabase/functions/escalate-solicitacao/recipients.test.ts",
     "name": "gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant"
    },
@@ -72315,6 +72345,14 @@
    {
     "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
     "name": "parseGatewayContent falha quando nao ha JSON"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
+    "name": "punchout-receive consulta o cache depois de validar sessao e shared secret"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
+    "name": "punchout-receive mantem o proprio source de idempotencia"
    },
    {
     "file": "supabase/functions/punchout-receive/session.test.ts",
@@ -82212,7 +82250,8 @@
      ],
      "processed": [
       "compara:supabase/functions/receive-os-sync/index.ts",
-      "escreve:supabase/functions/_shared/idempotency.ts"
+      "escreve:supabase/functions/_shared/idempotency.ts",
+      "filtra:supabase/functions/_shared/idempotency.ts"
      ],
      "expirada": [
       "escreve:supabase/functions/check-expiry-alerts/index.ts"
@@ -115911,9 +115950,22 @@
    ],
    "doc": "B-05: fetch com AbortController e timeout uniforme para APIs externas. Uso: const res = await fetchWithTimeout(url, { method: \"POST\", body }, 10_000);"
   },
+  "supabase/functions/_shared/idempotency.test.ts": {
+   "path": "supabase/functions/_shared/idempotency.test.ts",
+   "lines": 45,
+   "is_test": true,
+   "rule_comments": [
+    "* INT-08 (etapas 179 e 180): o cache de idempotencia nao pode memorizar falha"
+   ],
+   "doc": "INT-08 (etapas 179 e 180): o cache de idempotencia nao pode memorizar falha como resultado definitivo. Antes desta etapa, `getIdempotentResponse` devolvia a linha mesmo com `status = 'failed'` e o wrapper respondia 409 \"previously failed\". Como quem grava `failed` e qualquer erro — inclusive transit …",
+   "tests": [
+    "getIdempotentResponse so faz replay de operacao processada",
+    "withIdempotency continua registrando a falha para analise"
+   ]
+  },
   "supabase/functions/_shared/idempotency.ts": {
    "path": "supabase/functions/_shared/idempotency.ts",
-   "lines": 136,
+   "lines": 142,
    "exports": [
     "interface CachedResponse",
     "function getIdempotentResponse",
@@ -115969,7 +116021,15 @@
      "field": "status",
      "value": "failed",
      "kind": "compara"
+    },
+    {
+     "field": "status",
+     "value": "processed",
+     "kind": "filtra"
     }
+   ],
+   "rule_comments": [
+    "INT-08: so replay de operacao concluida. Linha `failed` nao pode ser"
    ],
    "doc": "Idempotência para webhooks: garante que o mesmo evento (source + idempotency_key) seja processado uma única vez, retornando o payload cacheado nas próximas chamadas. Uso típico: const key = extractKeyFromWebhook(req); // e.g. header X-Idempotency-Key ou hash do body const cached = await getIdempoten …",
    "uses_service_role": true
@@ -118169,9 +118229,20 @@
    ],
    "doc": "Cifra credenciais de conexao ERP com a chave mestra do servidor. Mesmo contrato do punchout-encrypt (rota autenticada, AES-GCM com PSV2_ENCRYPTION_KEY, iv 12 bytes, payload base64(iv||cipher+tag)); rotulo proprio `erpcred::v1::aesgcm::` para as credenciais ERP nao se misturarem com segredos PunchOut …"
   },
+  "supabase/functions/erp-sync/idempotencia-escopo.test.ts": {
+   "path": "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+   "lines": 51,
+   "is_test": true,
+   "doc": "INT-08 (etapa 180): a chave de idempotencia do erp-sync precisa ser escopada pelo chamador. A autenticacao ja rodava antes do cache, mas o `source` era so \"erp-sync\": dois usuarios diferentes enviando o mesmo corpo compartilhavam a mesma linha de `webhook_events` e o segundo recebia a resposta do pr …",
+   "tests": [
+    "erp-sync escopa a chave de idempotencia por usuario",
+    "erp-sync le e grava o cache sempre com o source escopado",
+    "erp-sync autentica antes de consultar o cache"
+   ]
+  },
   "supabase/functions/erp-sync/index.ts": {
    "path": "supabase/functions/erp-sync/index.ts",
-   "lines": 112,
+   "lines": 115,
    "tables": [
     {
      "table": "erp_connections",
@@ -118964,9 +119035,22 @@
    ],
    "doc": "Cifra o shared_secret do PunchOut com a chave mestra do servidor. O segredo nunca transita em texto claro no banco nem sai cifrado para o browser em formato legivel. O front envia o plaintext (HTTPS) apenas no instante do cadastro/ediÃ§Ã£o; a edge devolve `enc::v1::aesgcm:<payload>` que Ã© o que rea …"
   },
+  "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts": {
+   "path": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
+   "lines": 35,
+   "is_test": true,
+   "rule_comments": [
+    "* Falha se a consulta ao cache voltar para antes da validacao."
+   ],
+   "doc": "INT-08 (etapa 180): no punchout-receive o cache de idempotencia era consultado antes do try, isto e, antes de a sessao existir e de o shared secret do fornecedor ser conferido. Um replay devolvia o `solicitation_id` e o 303 com o `Location` da solicitacao para quem so repetisse o mesmo corpo. Falha …",
+   "tests": [
+    "punchout-receive consulta o cache depois de validar sessao e shared secret",
+    "punchout-receive mantem o proprio source de idempotencia"
+   ]
+  },
   "supabase/functions/punchout-receive/index.ts": {
    "path": "supabase/functions/punchout-receive/index.ts",
-   "lines": 246,
+   "lines": 249,
    "tables": [
     {
      "table": "punchout_sessions",
@@ -122629,10 +122713,34 @@
   }
  },
  "git": {
-  "sha": "a70dc33e1291227077d8b40766a731fd5df339f8",
+  "sha": "2398b93ee2a13a66efa0a029834984e724601f8a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2398b93",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(edge): escopa a idempotencia por chamador e nao memoriza falha (etapas 179 e 180) (#505)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/idempotency.test.ts",
+     "supabase/functions/_shared/idempotency.ts",
+     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+     "supabase/functions/erp-sync/index.ts",
+     "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
+     "supabase/functions/punchout-receive/index.ts"
+    ]
+   },
+   {
+    "sha": "49dbb82",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "a70dc33",
     "date": "2026-11-25",
@@ -122956,32 +123064,12 @@
      "scripts/ci/check-orfaos-componentes.mjs",
      "scripts/ci/check-orfaos-componentes.unit.mjs"
     ]
-   },
-   {
-    "sha": "91c7aac",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)",
-    "files": [
-     "supabase/migrations/20261113180001_storage_policies_por_bucket.sql",
-     "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql"
-    ]
-   },
-   {
-    "sha": "9a655d1",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)",
-    "files": [
-     "src/pages/dashboard/ComprasDashboard.tsx",
-     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    16
+    18
    ],
    [
     ".github/workflows/main.yml",
@@ -123048,15 +123136,15 @@
     2
    ],
    [
-    "DOCS/CODEBASE_ATLAS/10_TESTES_CI.md",
+    "supabase/functions/_shared/idempotency.test.ts",
     1
    ],
    [
-    "src/tests/fuzzing/edge-functions.test.ts",
+    "supabase/functions/_shared/idempotency.ts",
     1
    ],
    [
-    "src/tests/fuzzing/payload-integrity.test.ts",
+    "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
     1
    ]
   ]

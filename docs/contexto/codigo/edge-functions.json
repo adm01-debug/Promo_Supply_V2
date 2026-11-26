@@ -22,6 +22,7 @@
   "supabase/functions/_shared/fuzzSeed.ts",
   "supabase/functions/_shared/fuzzer.ts",
   "supabase/functions/_shared/http.ts",
+  "supabase/functions/_shared/idempotency.test.ts",
   "supabase/functions/_shared/idempotency.ts",
   "supabase/functions/_shared/integrity_test.ts",
   "supabase/functions/_shared/logLevel.test.ts",
@@ -466,7 +467,7 @@
    "nome": "erp-sync",
    "entrada": "supabase/functions/erp-sync/index.ts",
    "arquivos": 1,
-   "linhas": 112,
+   "linhas": 115,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -497,7 +498,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 0
+   "testes": 1
   },
   {
    "nome": "escalate-solicitacao",
@@ -947,7 +948,7 @@
    "nome": "punchout-receive",
    "entrada": "supabase/functions/punchout-receive/index.ts",
    "arquivos": 3,
-   "linhas": 372,
+   "linhas": 375,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -984,7 +985,7 @@
    ],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 2
+   "testes": 3
   },
   {
    "nome": "punchout-setup",

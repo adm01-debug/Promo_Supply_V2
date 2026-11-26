@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a70dc33e12` · branch `main` · 2026-11-26 02:26 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2398b93ee2` · branch `main` · 2026-11-26 02:39 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1075,7 +1075,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `pendente` | compara, escreve, filtra | `src/components/compras/EnhancedPedidoTimeline.tsx`<br>`src/components/compras/PedidoTimeline.tsx`<br>`src/components/mobile/BottomNavigation.tsx`<br>`src/components/pagamentos/PagamentoDetailModal.tsx`<br>`src/components/pagamentos/PagamentoMobileCard.tsx`<br>… +12 |
 | `status` | `pending` | compara, escreve, filtra | `src/components/compras/CriticalAlertsBar.tsx`<br>`src/components/compras/DigitalSignature.tsx`<br>`src/components/compras/ProductionRoutingEngine.tsx`<br>`src/components/compras/digital-signature/signatureHelpers.ts`<br>`src/components/security/PasswordResetRequestsPanel.tsx`<br>… +14 |
 | `status` | `planning` | compara | `src/pages/admin/SourcingPipeline.tsx` |
-| `status` | `processed` | compara, escreve | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
+| `status` | `processed` | compara, escreve, filtra | `supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/receive-os-sync/index.ts` |
 | `status` | `processing` | compara | `src/components/ui/indicators/StatusIndicator.tsx` |
 | `status` | `publicada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `published` | compara, escreve | `src/components/compras/ActiveSourcingWidget.tsx`<br>`src/pages/sourcing/RFxCreate.tsx`<br>`src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3438 testes em 245 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3445 testes em 248 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2697,12 +2697,15 @@ _nenhum item encontrado_
 | `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
+| `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
 | `src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx` | 2 | HistoricoCompras - aba Console de Sourcing · monta o SourcingHistoryConsole quando a aba e selecionada |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
+| `supabase/functions/_shared/idempotency.test.ts` | 2 | getIdempotentResponse so faz replay de operacao processada · withIdempotency continua registrando a falha para analise |
 | `supabase/functions/_shared/logger-escopo.test.ts` | 2 | QA 069 ${edge} declara o logger antes do try · QA 069 ${edge} nao esconde o logger atras de typeof |
 | `supabase/functions/_shared/validation.log_body.test.ts` | 2 | validateBody: corpo invalido nao vaza os valores para o log · validateBody: JSON malformado loga a causa e mantem a mensagem |
+| `supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts` | 2 | punchout-receive consulta o cache depois de validar sessao e shared secret · punchout-receive mantem o proprio source de idempotencia |
 | `supabase/functions/punchout-setup/seguranca.test.ts` | 2 | punchout-setup autentica antes de consultar o cache de idempotencia · punchout-setup escopa a chave de idempotencia por usuario |
 | `supabase/functions/tests/fuzzing_suite.ts` | 1 | Fuzzing Suite: Global Edge Function Integrity |
 
@@ -2868,6 +2871,7 @@ _nenhum item encontrado_
 | Limite máximo por chamada — evita dump silencioso. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | Resultado da validação; se `ok=false`, `reason` explica o motivo. */ | `supabase/functions/_shared/external-bridge-allowlist.ts` |
 | 1. Missing required fields | `supabase/functions/_shared/fuzzer.ts` |
+| INT-08: so replay de operacao concluida. Linha `failed` nao pode ser | `supabase/functions/_shared/idempotency.ts` |
 | Tamanho máximo do `context` serializado em JSON (bytes UTF-8). */ | `supabase/functions/_shared/logLevel.ts` |
 | Tamanho máximo de `url` (UTF-16 code units). */ | `supabase/functions/_shared/logLevel.ts` |
 | Tamanho máximo de `user_agent` (UTF-16 code units). */ | `supabase/functions/_shared/logLevel.ts` |
