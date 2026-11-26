@@ -209,3 +209,37 @@ describe('spot-api: acoes do cron', () => {
     for (const a of extraiSet('CRON_ACTIONS')) expect(validas).toContain(a);
   });
 });
+
+describe('spot-api: cota contada por requisicao HTTP', () => {
+  const fonte = readFileSync(resolve(process.cwd(), 'supabase/functions/spot-api/index.ts'), 'utf8');
+
+  const bloco = (assinatura: string, fim = '\n}'): string => {
+    const inicio = fonte.indexOf(assinatura);
+    if (inicio < 0) throw new Error('nao achei ' + assinatura);
+    const termino = fonte.indexOf(fim, inicio);
+    if (termino < 0) throw new Error('nao achei o fim de ' + assinatura);
+    return fonte.slice(inicio, termino);
+  };
+
+  it('usedToday ignora a recusa por quota — ela nao chega ao fornecedor', () => {
+    expect(bloco('async function usedToday(')).toContain('.neq("status", "quota_blocked")');
+  });
+
+  it('cada tentativa HTTP abre a propria linha de log, antes do fetch', () => {
+    const exec = bloco('const execute = async (', '\n  };');
+    expect(exec).toContain('openAttempt(db, endpoint, action)');
+    expect(exec.indexOf('openAttempt')).toBeLessThan(exec.indexOf('await fetch('));
+  });
+
+  it('a resposta fecha a linha da tentativa com sucesso ou erro', () => {
+    const exec = bloco('const execute = async (', '\n  };');
+    expect(exec).toContain('closeAttempt(db, attemptId, { status: "success"');
+    expect(exec).toContain('status: "error"');
+  });
+
+  it('nao grava linha extra por chamada logica — contaria a cota duas vezes', () => {
+    const chamada = bloco('async function callSpot<');
+    expect(chamada.match(/logCall\(/g) ?? []).toHaveLength(1);
+    expect(chamada).toContain('status: "quota_blocked"');
+  });
+});
