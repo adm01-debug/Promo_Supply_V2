@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       const message = `A cotação #${numeroRef} para "${titulo}" está pendente há mais de 48 horas. Considere contatar o fornecedor.`;
 
       // Send in-app notification
-      const { error: notifError } = await insertNotification(supabase, {
+      const notifRes = await insertNotification(supabase, {
         user_id: solicitanteId,
         tenant_id: (cotacao.solicitacao as any)?.tenant_id,
         title: "Cotação sem resposta há 48h",
@@ -100,19 +100,25 @@ Deno.serve(async (req) => {
         action_label: "Ver Cotação",
         action_url: `/cotacao?id=${cotacao.id}`,
       });
-      if (notifError) {
-        logger.warn("follow-up: notificacao nao criada", { error: String(notifError) });
-      }
-      followUpsSent++;
+      if (!notifRes.ok) {
+        // Descarte (sem destinatario/tenant ou duplicada) nao conta como envio: antes
+        // o follow-up era contado e carimbado mesmo sem nenhuma notificacao criada.
+        logger.warn("follow-up: notificacao nao criada", {
+          skipped: notifRes.skipped,
+          error: notifRes.error ? String(notifRes.error) : undefined,
+        });
+      } else {
+        followUpsSent++;
 
-      // Registra o envio: alimenta o dedupe da proxima execucao e as colunas
-      // que a UI de cotacoes ja exibe (`last_follow_up_at`, `follow_up_status`).
-      const { error: stampError } = await supabase
-        .from("cotacoes")
-        .update({ last_follow_up_at: now.toISOString(), follow_up_status: "notificado" })
-        .eq("id", cotacao.id);
-      if (stampError) {
-        logger.warn("follow-up: carimbo de envio falhou", { error: String(stampError) });
+        // Registra o envio: alimenta o dedupe da proxima execucao e as colunas
+        // que a UI de cotacoes ja exibe (`last_follow_up_at`, `follow_up_status`).
+        const { error: stampError } = await supabase
+          .from("cotacoes")
+          .update({ last_follow_up_at: now.toISOString(), follow_up_status: "notificado" })
+          .eq("id", cotacao.id);
+        if (stampError) {
+          logger.warn("follow-up: carimbo de envio falhou", { error: String(stampError) });
+        }
       }
 
       // Send email via Resend if configured

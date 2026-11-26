@@ -205,7 +205,7 @@ Deno.serve(async (req) => {
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
     for (const userId of uniqueUserIds) {
-      const { error: notifError } = await insertNotification(supabase, {
+      const notifRes = await insertNotification(supabase, {
         user_id: userId,
         type,
         title,
@@ -217,8 +217,12 @@ Deno.serve(async (req) => {
         sent_push: true,
       });
 
-      if (notifError) {
-        logger.error(`Error creating notification`, { userId, error: notifError });
+      if (!notifRes.ok) {
+        logger.warn(`Notification not created`, {
+          userId,
+          skipped: notifRes.skipped,
+          error: notifRes.error,
+        });
       }
     }
 
