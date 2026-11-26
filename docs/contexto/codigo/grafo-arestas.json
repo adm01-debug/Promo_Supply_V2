@@ -2619,6 +2619,7 @@
    "src/components/ui/card.tsx",
    "src/components/ui/input.tsx",
    "src/components/ui/skeleton.tsx",
+   "src/hooks/useDebouncedValue.ts",
    "src/lib/utils.ts",
    "src/pages/catalogo-spot/spotHelpers.ts",
    "src/pages/catalogo-spot/useSpotCatalog.ts"

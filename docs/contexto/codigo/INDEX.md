@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `c30880dd8d8b99d6bd63ead090bd652479468c89` (2026-11-26T04:45:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bb8724edcbe45c11b02d8bc8049a0f37a5fe5744` (2026-11-26T05:03:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (881), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (883), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,21 +34,21 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1493 |
-| arquivos_codigo | 956 |
-| linhas_codigo | 190721 |
+| arquivos_total | 1495 |
+| arquivos_codigo | 958 |
+| linhas_codigo | 190804 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
 | itens_menu | 47 |
 | modulos | 88 |
 | componentes | 329 |
-| hooks | 94 |
+| hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 316 |
+| testes | 317 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -56,9 +56,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Onde ficam as coisas
 - telas: src/pages (53)
 - componentes: src/components (214), src/pages (79), src/features (33)
-- hooks: src/hooks (61), src/features (14), src/components (11)
+- hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (220), outro (44), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (221), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -79,7 +79,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/auth | 0 | 0 | 7 | 3 | 1 | 4 |
 | features/layout | 0 | 0 | 32 | 81 | 9 | 55 |
 | features/solicitacoes | 0 | 0 | 8 | 12 | 1 | 13 |
-| hooks | 0 | 0 | 62 | 61 | 7 | 60 |
+| hooks | 0 | 0 | 63 | 61 | 7 | 60 |
 | lib | 0 | 0 | 29 | 61 | 8 | 51 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
@@ -90,7 +90,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 8 |
-| pages/catalogo-spot | 1 | 1 | 6 | 87 | 11 | 59 |
+| pages/catalogo-spot | 1 | 1 | 6 | 88 | 11 | 59 |
 | pages/catalogo-xbz | 1 | 1 | 10 | 83 | 10 | 55 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
 | pages/configuracoes | 1 | 1 | 1 | 81 | 9 | 55 |
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (157)
-- docs/pendencias/_indice.md (26)
+- docs/qa/05-PROGRESSO.md (158)
+- docs/pendencias/_indice.md (25)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
@@ -352,12 +352,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
-- src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
 - src/integrations/supabase/types.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - .github/workflows/main.yml (7)
 - bun.lock (7)
+- package.json (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `bb8724e` fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)
 - 2026-11-26 `c30880d` fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)
 - 2026-11-26 `a55e816` fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)
 - 2026-11-26 `a49b400` fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `28d02fb` chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)
 - 2026-11-26 `0a126b6` fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)
 - 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
-- 2026-11-26 `88efac2` fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

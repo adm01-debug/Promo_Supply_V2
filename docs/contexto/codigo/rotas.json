@@ -1168,6 +1168,7 @@
     "useDashboardKPIs",
     "useDashboardLayoutStore",
     "useDebounceValue",
+    "useDebouncedValue",
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
@@ -1280,6 +1281,7 @@
     "useDashboardFilters",
     "useDashboardKPIs",
     "useDashboardLayoutStore",
+    "useDebouncedValue",
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
@@ -1444,7 +1446,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 354
+   "arquivos_puxados": 355
   },
   {
    "protegida": true,

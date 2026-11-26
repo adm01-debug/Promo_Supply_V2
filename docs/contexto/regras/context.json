@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c30880dd8d8b99d6bd63ead090bd652479468c89",
+  "sha": "bb8724edcbe45c11b02d8bc8049a0f37a5fe5744",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 07:46 UTC",
-  "files_total": 1494,
-  "code_files": 1319,
-  "code_lines": 221530,
+  "generated_at": "2026-11-26 08:04 UTC",
+  "files_total": 1496,
+  "code_files": 1321,
+  "code_lines": 221613,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "46ea094c332d9ea7",
+ "facts_hash": "2e5db0e23273841e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,8 +277,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 444,
-   ".tsx": 437,
+   ".ts": 445,
+   ".tsx": 438,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -34060,6 +34060,10 @@
     "file": "src/hooks/useDashboardKPIs.ts"
    },
    {
+    "name": "useDebouncedValue",
+    "file": "src/hooks/useDebouncedValue.ts"
+   },
+   {
     "name": "useDevolucoes",
     "file": "src/hooks/useDevolucoes.ts"
    },
@@ -35538,8 +35542,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 101,
-   "lines": 17225,
+   "files": 102,
+   "lines": 17242,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35619,6 +35623,7 @@
     "useCriticalAlertsBadge.ts: useCriticalAlertsBadge",
     "useDashboardFilters.ts: DashboardFilter, FilterValues, useDashboardFilters",
     "useDashboardKPIs.ts: KPIComparison, PipelineData, DashboardKPIsExtended, useDashboardKPIs",
+    "useDebouncedValue.ts: useDebouncedValue",
     "useDevolucoes.ts: Devolucao, DevolucaoItem, CreditoFornecedor, CreateDevolucaoInput, DevolucaoFilters, useDevolucoes",
     "useEstoque.ts: EstoqueItem, Movimentacao, useEstoque",
     "useExecutiveDashboardData.ts: ExecutiveMetrics, MonthlyPoint, ComparisonPoint, CategorySpendItem, SupplierItem, BuyerItem",
@@ -35638,8 +35643,7 @@
     "useMobileGestures.ts: useSwipeGesture, usePullToRefresh, useLongPress, useHapticFeedback",
     "useNProgress.ts: useNProgress",
     "useNavigation.tsx: NavigationProvider, useNavigation",
-    "useOfflineSync.ts: useOfflineSync",
-    "usePagamentos.ts: Pagamento, CreatePagamentoInput, PagamentoFilters, usePagamentos, usePagamentosKPIs"
+    "useOfflineSync.ts: useOfflineSync"
    ],
    "docs": [
     "useCatalogoPim.ts: useCatalogoPim Hook para leitura do catálogo de produtos e faixas de preço de personalização diretamente do PIM (Promo Gifts V4) via edge function external-db-bridge. Nenhum dado de catálogo é armazenado no Promo Supply V2 — a fonte canônica é o banco do Promo Gifts V4, acessado via views públicas: …",
@@ -35696,6 +35700,7 @@
     "src/hooks/useCriticalAlertsBadge.ts",
     "src/hooks/useDashboardFilters.ts",
     "src/hooks/useDashboardKPIs.ts",
+    "src/hooks/useDebouncedValue.ts",
     "src/hooks/useDevolucoes.ts",
     "src/hooks/useEstoque.ts",
     "src/hooks/useExecutiveDashboardData.ts",
@@ -35755,8 +35760,7 @@
     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
     "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
-    "src/hooks/__tests__/useFornecedores.paginacao.test.tsx",
-    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx"
+    "src/hooks/__tests__/useFornecedores.paginacao.test.tsx"
    ]
   },
   {
@@ -35943,8 +35947,8 @@
   },
   {
    "module": "src/pages",
-   "files": 157,
-   "lines": 35325,
+   "files": 158,
+   "lines": 35391,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36124,6 +36128,7 @@
     "src/pages/catalogo-spot/SpotSyncPanel.tsx",
     "src/pages/catalogo-spot/spotHelpers.ts",
     "src/pages/catalogo-spot/useSpotCatalog.ts",
+    "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
     "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
     "src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx",
@@ -36155,8 +36160,7 @@
     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
     "src/pages/dashboard/ComprasDashboard.tsx",
     "src/pages/dashboard/DashboardExecutivo.tsx",
-    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
-    "src/pages/dev/XbzNetworkPanelHarness.tsx"
+    "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx"
    ]
   },
   {
@@ -68379,6 +68383,18 @@
    {
     "file": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
     "name": "boundary: 99.9 is warning, 100.0 is success"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    "name": "SpotCatalogTab / espera antes de buscar (PERF-06)"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    "name": "digitar seis letras gera uma unica busca efetiva"
+   },
+   {
+    "file": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    "name": "digitar e apagar tudo nao chega a buscar o termo intermediario"
    },
    {
     "file": "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
@@ -105030,6 +105046,16 @@
     }
    ]
   },
+  "src/hooks/useDebouncedValue.ts": {
+   "path": "src/hooks/useDebouncedValue.ts",
+   "lines": 17,
+   "exports": [
+    "function useDebouncedValue"
+   ],
+   "hooks": [
+    "useDebouncedValue"
+   ]
+  },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
    "lines": 418,
@@ -111258,7 +111284,7 @@
   },
   "src/pages/catalogo-spot/SpotCatalogTab.tsx": {
    "path": "src/pages/catalogo-spot/SpotCatalogTab.tsx",
-   "lines": 226,
+   "lines": 231,
    "exports": [
     "interface SpotCatalogTabProps",
     "const SpotCatalogTab"
@@ -111416,6 +111442,16 @@
    ],
    "pagination": [
     "40"
+   ]
+  },
+  "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx": {
+   "path": "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+   "lines": 61,
+   "is_test": true,
+   "tests": [
+    "SpotCatalogTab / espera antes de buscar (PERF-06)",
+    "digitar seis letras gera uma unica busca efetiva",
+    "digitar e apagar tudo nao chega a buscar o termo intermediario"
    ]
   },
   "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts": {
@@ -123397,10 +123433,22 @@
   }
  },
  "git": {
-  "sha": "c30880dd8d8b99d6bd63ead090bd652479468c89",
+  "sha": "bb8724edcbe45c11b02d8bc8049a0f37a5fe5744",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "bb8724e",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/useDebouncedValue.ts",
+     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+     "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx"
+    ]
+   },
    {
     "sha": "c30880d",
     "date": "2026-11-26",
@@ -123744,22 +123792,12 @@
      "src/components/admin/telemetry/SystemAlertsView.tsx",
      "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx"
     ]
-   },
-   {
-    "sha": "a4b5fd2",
-    "date": "2026-11-25",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps): bump dompurify (#477)",
-    "files": [
-     "bun.lock",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    27
    ],
    [
     "AGENTS.md",
@@ -123782,20 +123820,24 @@
     2
    ],
    [
-    "bun.lock",
-    2
-   ],
-   [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
     2
+   ],
+   [
+    "src/hooks/useDebouncedValue.ts",
+    1
+   ],
+   [
+    "src/pages/catalogo-spot/SpotCatalogTab.tsx",
+    1
+   ],
+   [
+    "src/pages/catalogo-spot/__tests__/spotCatalogTab.debounce.test.tsx",
+    1
    ],
    [
     "src/components/compras/DemandPredictionPanel.tsx",
@@ -123831,10 +123873,6 @@
    ],
    [
     "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
-    1
-   ],
-   [
-    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
     1
    ]
   ]

@@ -2415,9 +2415,9 @@
   },
   {
    "modulo": "hooks",
-   "arquivos": 62,
+   "arquivos": 63,
    "testes": 0,
-   "linhas": 12066,
+   "linhas": 12083,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2504,6 +2504,7 @@
     "useCriticalAlertsBadge",
     "useDashboardFilters",
     "useDashboardKPIs",
+    "useDebouncedValue",
     "useCreditosFornecedor",
     "useDevolucoes",
     "useDevolucoesKPIs",
@@ -4067,8 +4068,8 @@
   {
    "modulo": "pages/catalogo-spot",
    "arquivos": 6,
-   "testes": 3,
-   "linhas": 1156,
+   "testes": 4,
+   "linhas": 1161,
    "itens_menu": [
     "SPOT / Stricker"
    ],
@@ -4097,6 +4098,7 @@
     "useDashboardFilters",
     "useDashboardKPIs",
     "useDashboardLayoutStore",
+    "useDebouncedValue",
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
@@ -7614,6 +7616,7 @@
     "useDashboardFilters",
     "useDashboardKPIs",
     "useDashboardLayoutStore",
+    "useDebouncedValue",
     "useDeliveryEvents",
     "useDevolucoes",
     "useDevolucoesKPIs",
