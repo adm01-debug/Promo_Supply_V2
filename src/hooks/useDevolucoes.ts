@@ -370,7 +370,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
 export function useDevolucoesKPIs() {
   const { user, tenantId, organizationId } = useAuth();
   const { data: kpis = { total: 0, abertas: 0, emTransito: 0, concluidas: 0, valorTotal: 0, taxaDevolucao: 0 }, isLoading } = useQuery({
-    queryKey: ['devolucoes-kpis', user?.id],
+    queryKey: ['devolucoes-kpis', user?.id, tenantId ?? organizationId],
     queryFn: async () => {
       const { data, error } = await supabase.from('devolucoes').select('status, valor_total').eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000');
       if (error) throw error;

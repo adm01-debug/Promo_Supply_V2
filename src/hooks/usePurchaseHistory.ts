@@ -98,8 +98,15 @@ export function usePurchaseHistory() {
     staleTime: 120_000,
   });
 
-  const { data: rawItens } = useQuery({
-    queryKey: ["purchase-history-itens", organizationId, rawPedidos?.length ?? 0],
+  // A chave carregava so o tamanho da lista: trocar um pedido por outro (um cancelado, outro
+    // criado) mantinha a chave e os itens antigos ficavam servidos por 120 s. Resumo estavel dos ids.
+    const pedidoIdsKey = useMemo(
+      () => (rawPedidos ?? []).map((p) => p.id).sort().join(","),
+      [rawPedidos],
+    );
+
+    const { data: rawItens } = useQuery({
+      queryKey: ["purchase-history-itens", organizationId, pedidoIdsKey],
     queryFn: async () => {
       const pedidoIds = (rawPedidos ?? []).map((p) => p.id);
       if (pedidoIds.length === 0) return [];

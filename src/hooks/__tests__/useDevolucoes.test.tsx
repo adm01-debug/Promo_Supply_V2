@@ -408,4 +408,20 @@ describe('useDevolucoesKPIs · indicadores', () => {
       taxaDevolucao: 50,
     });
   });
+
+      // HK-10 (etapa 199): a chave era ['devolucoes-kpis', user?.id] enquanto a consulta filtrava
+      // por tenant_id -- o resultado de uma empresa era servido para outra.
+      it('a chave do cache inclui a empresa que a consulta filtra', async () => {
+        banco.devolucoes = [{ ...devolucaoBase(), id: 'a', status: 'rascunho', valor_total: 10 }];
+        const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        const wrapperLocal = ({ children }: { children: React.ReactNode }) => (
+          <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+        );
+
+        const { result } = renderHook(() => useDevolucoesKPIs(), { wrapper: wrapperLocal });
+        await waitFor(() => expect(result.current.kpis.total).toBe(1));
+
+        expect(qc.getQueryData(['devolucoes-kpis', 'u1', 'org1'])).toBeTruthy();
+        expect(qc.getQueryData(['devolucoes-kpis', 'u1'])).toBeUndefined();
+      });
 });
