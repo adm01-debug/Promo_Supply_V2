@@ -29,13 +29,19 @@ test.describe('Freight Quest Production Readiness', () => {
 
   test('Navigation to Support/Documentation if available', async ({ page }) => {
     await page.goto('/auth');
-    // Check if there's a footer or help link
+    // Invariante que sempre vale: a tela de /auth monta com o formulario.
+    await expect(page.locator('input[type="email"]')).toBeVisible();
+
+    // O link de ajuda e opcional; o teste registra o que encontrou em vez de
+    // pular o corpo inteiro num if (await ... isVisible()).
     const helpLink = page.getByRole('link', { name: /Ajuda/i }).or(page.getByRole('link', { name: /Suporte/i }));
-    if (await helpLink.isVisible()) {
-      await expect(helpLink).toBeEnabled();
-        } else {
-          // Sem link de ajuda, a tela de /auth tem que estar de pé (mesmo invariante do teste anterior).
-          await expect(page.locator('input[type="email"]')).toBeVisible();
+    const encontrados = await helpLink.count();
+    test.info().annotations.push({
+      type: 'ajuda',
+      description: encontrados > 0 ? `${encontrados} link(s) de ajuda na tela de /auth` : 'sem link de ajuda na tela de /auth',
+    });
+    if (encontrados > 0) {
+      await expect(helpLink.first()).toBeEnabled();
     }
   });
 
