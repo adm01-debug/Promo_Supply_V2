@@ -246,7 +246,7 @@
    "nome": "check-approval-escalations",
    "entrada": "supabase/functions/check-approval-escalations/index.ts",
    "arquivos": 1,
-   "linhas": 266,
+   "linhas": 286,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -254,7 +254,8 @@
    "tabelas": [
     "approval_history",
     "approval_steps",
-    "approval_workflows"
+    "approval_workflows",
+    "solicitacoes"
    ],
    "rpcs": [],
    "env": [

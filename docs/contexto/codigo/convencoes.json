@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)",
    "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)",
    "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)",
    "fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#583)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#577)"
+   "chore(db): sincronizar types.ts com o banco [auto] (#583)"
   ]
  },
  "pr_template": null,

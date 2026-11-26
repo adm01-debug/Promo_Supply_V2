@@ -16095,6 +16095,7 @@
    },
    "usada_no_front": 24,
    "usada_em_edges": [
+    "check-approval-escalations",
     "check-sla-alerts",
     "escalate-solicitacao",
     "punchout-receive",
