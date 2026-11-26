@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `990f6c3cef` · branch `main` · 2026-11-26 07:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a49b4005a4` · branch `main` · 2026-11-26 07:16 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1714,6 +1714,7 @@ _nenhum item encontrado_
 | `const indice = round1(qualidade * 0.4 + s.onTimeRate * 0.35 + preco * 0.25);` | `src/lib/sourcingAnalytics.ts` |
 | `* cada terceiro pedido a barra virava 40% ambar com o rotulo ATENCAO, sem` | `src/pages/pedidos/pedidosHelpers.ts` |
 | `<span>Meta: 12%</span>` | `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx` |
+| `// ao SQL com `gte/lte` apagaria 97% da lista.` | `src/pages/solicitacoes/Solicitacoes.tsx` |
 | `/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | `const delay = Math.min(max, base * 2 ** attempt) * (0.5 + Math.random() * 0.5);` | `supabase/functions/_shared/retry.ts` |
 | `* `%#COT-1 %` N?O casa `#COT-12 `. Os curingas do usu?rio s?o escapados para` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
@@ -2463,7 +2464,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3491 testes em 261 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3503 testes em 263 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2601,6 +2602,7 @@ _nenhum item encontrado_
 | `tests-rls/rls-isolation.test.ts` | 8 | RLS · anon isolation (tabelas críticas) · anon não consegue ler linhas de public.%s · anon não consegue inserir em audit_logs · anon não consegue chamar RPC administrativa count_legacy_storage_urls … |
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
+| `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts` | 7 | busca de solicitacoes no servidor (etapa 213) · procura por titulo, numero, descricao e departamento · sem termo de busca nao monta o or · escapa curingas do termo para nao virar coringa do ilike … |
 | `src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx` | 7 | useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso · approveStep com 0 linhas afetadas retorna false e nao comemora · approveStep com linha afetada registra a aprovacao · rejectStep com 0 linhas afetadas retorna false e nao comemora … |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 7 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade · useRealtimeSubscription - fallback de empresa (HK-11) … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
@@ -2638,6 +2640,7 @@ _nenhum item encontrado_
 | `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
+| `src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx` | 5 | filtros de pedidos no servidor (etapa 213) · empurra status e fornecedor para a consulta · sem filtro nao acrescenta eq de status nem de fornecedor · a tela de pedidos manda os filtros para o hook … |
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
 | `src/hooks/__tests__/useFornecedores.paginacao.test.tsx` | 5 | useFornecedores · paginacao (PERF-01 / etapa 211) · sem  · com  · tipo  … |
@@ -2871,6 +2874,7 @@ _nenhum item encontrado_
 | Desconto Editável */} | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/pages/kanban/KanbanWorkflow.tsx` |
 | * Monta o historico apenas com o que esta gravado: o follow-up do agendador na | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
+| pagina ja' baixada, entao escolher "Entregue" com 3 paginas mostrava apenas | `src/pages/pedidos/Pedidos.tsx` |
 | * Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06). | `src/pages/pedidos/pedidosHelpers.ts` |
 | olhar prazo, status ou data. Aqui o estado vem do dado: a mesma `calcularSLA` | `src/pages/pedidos/pedidosHelpers.ts` |
 | prazo (emissao -> previsao) ja foi consumido. Sem previsao nao ha medida - | `src/pages/pedidos/pedidosHelpers.ts` |
@@ -2878,6 +2882,7 @@ _nenhum item encontrado_
 | % do prazo consumido entre a emissao e a previsao; 0 quando nao da para medir. */ | `src/pages/pedidos/pedidosHelpers.ts` |
 | * A regra foi escrita em `src/components/compras/ReceivingModal.tsx`, um | `src/pages/recebimento/pedidoComplementar.ts` |
 | Rate Limit Tab */} | `src/pages/seguranca/Seguranca.tsx` |
+| com id, e `produto` e' o titulo. Os demais recortes (status, tipo, prazo, | `src/pages/solicitacoes/Solicitacoes.tsx` |
 | Posicao no eixo Y (urgencia pelo prazo), em %. */ | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | dias ou mais no rodape). Item sem prazo fica numa faixa neutra, no meio. | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
 | Validate: thresholds must be positive | `src/stores/slaSettingsStore.ts` |

@@ -538,7 +538,7 @@
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
@@ -615,7 +615,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 461,
+   "linhas": 464,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "approval_history",
@@ -644,7 +644,7 @@
     "src/features/solicitacoes/index.ts",
     "src/hooks/usePrefetch.ts"
    ],
-   "coberto_por_testes": 6
+   "coberto_por_testes": 7
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",

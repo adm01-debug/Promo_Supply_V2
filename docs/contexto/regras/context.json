@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "990f6c3cef858c4adf720ec5c33b475b8f10f25a",
+  "sha": "a49b4005a41e6d34acfc39a958740834d49e0e2c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 07:04 UTC",
-  "files_total": 1491,
-  "code_files": 1316,
-  "code_lines": 221160,
+  "generated_at": "2026-11-26 07:16 UTC",
+  "files_total": 1493,
+  "code_files": 1318,
+  "code_lines": 221336,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "547921f07b717dd8",
+ "facts_hash": "c57cf5410014f4d6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,8 +277,8 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 443,
-   ".tsx": 435,
+   ".ts": 444,
+   ".tsx": 436,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -35424,8 +35424,8 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 11,
-   "lines": 1122,
+   "files": 12,
+   "lines": 1206,
    "tables": [
     "pedido_itens",
     "pedidos",
@@ -35445,6 +35445,8 @@
    "deps": [
     "@tanstack/react-query",
     "@testing-library/react",
+    "node:fs",
+    "node:path",
     "react",
     "vitest"
    ],
@@ -35465,14 +35467,15 @@
     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
+    "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
   },
   {
    "module": "src/features/solicitacoes",
-   "files": 18,
-   "lines": 1947,
+   "files": 19,
+   "lines": 2030,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -35523,6 +35526,7 @@
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx",
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
@@ -35940,7 +35944,7 @@
   {
    "module": "src/pages",
    "files": 157,
-   "lines": 35295,
+   "lines": 35304,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -43513,6 +43517,10 @@
     "text": "* Monta o historico apenas com o que esta gravado: o follow-up do agendador na"
    },
    {
+    "file": "src/pages/pedidos/Pedidos.tsx",
+    "text": "pagina ja' baixada, entao escolher \"Entregue\" com 3 paginas mostrava apenas"
+   },
+   {
     "file": "src/pages/pedidos/pedidosHelpers.ts",
     "text": "* Saude do prazo de um pedido para a coluna da lista (QA 103, UI-06)."
    },
@@ -43539,6 +43547,10 @@
    {
     "file": "src/pages/seguranca/Seguranca.tsx",
     "text": "Rate Limit Tab */}"
+   },
+   {
+    "file": "src/pages/solicitacoes/Solicitacoes.tsx",
+    "text": "com id, e `produto` e' o titulo. Os demais recortes (status, tipo, prazo,"
    },
    {
     "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
@@ -59083,6 +59095,10 @@
     "line": "<span>Meta: 12%</span>"
    },
    {
+    "file": "src/pages/solicitacoes/Solicitacoes.tsx",
+    "line": "// ao SQL com `gte/lte` apagaria 97% da lista."
+   },
+   {
     "file": "src/pages/solicitacoes/solicitacoesHelpers.ts",
     "line": "/** Janela de urgencia: ate 90 dias de folga cai de 100% para 0% do eixo. */"
    },
@@ -63233,6 +63249,26 @@
     "name": "deletePedido de pedido descartavel continua funcionando"
    },
    {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "name": "filtros de pedidos no servidor (etapa 213)"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "name": "empurra status e fornecedor para a consulta"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "name": "sem filtro nao acrescenta eq de status nem de fornecedor"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "name": "a tela de pedidos manda os filtros para o hook"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "name": "passa status e fornecedor na chamada de usePedidos"
+   },
+   {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
     "name": "usePedidosKPIs - alcance do invalidate (etapa 190)"
    },
@@ -63407,6 +63443,34 @@
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx",
     "name": "cria o workflow quando o banco devolve a solicitacao pendente"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "busca de solicitacoes no servidor (etapa 213)"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "procura por titulo, numero, descricao e departamento"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "sem termo de busca nao monta o or"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "escapa curingas do termo para nao virar coringa do ilike"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "a tela nao refiltra a busca sobre a pagina"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "nao tem mais o filtro local de busca"
+   },
+   {
+    "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    "name": "mantem a busca no hook"
    },
    {
     "file": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx",
@@ -103322,6 +103386,18 @@
     "deletePedido de pedido descartavel continua funcionando"
    ]
   },
+  "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+   "lines": 84,
+   "is_test": true,
+   "tests": [
+    "filtros de pedidos no servidor (etapa 213)",
+    "empurra status e fornecedor para a consulta",
+    "sem filtro nao acrescenta eq de status nem de fornecedor",
+    "a tela de pedidos manda os filtros para o hook",
+    "passa status e fornecedor na chamada de usePedidos"
+   ]
+  },
   "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx": {
    "path": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
    "lines": 51,
@@ -103609,7 +103685,7 @@
   },
   "src/features/solicitacoes/hooks/useSolicitacoes.ts": {
    "path": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-   "lines": 461,
+   "lines": 464,
    "exports": [
     "type CostCenter",
     "type Solicitacao",
@@ -103788,6 +103864,24 @@
     "createSolicitacao com auto aprovacao do banco",
     "nao cria workflow quando o banco devolve a solicitacao ja aprovada",
     "cria o workflow quando o banco devolve a solicitacao pendente"
+   ]
+  },
+  "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts": {
+   "path": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+   "lines": 80,
+   "is_test": true,
+   "rule_comments": [
+    "`matchesSearch` local casava apenas id/empresa/produto, procurar por numero",
+    "A tela nao pode voltar a refiltrar a busca em JS: era isso que zerava o"
+   ],
+   "tests": [
+    "busca de solicitacoes no servidor (etapa 213)",
+    "procura por titulo, numero, descricao e departamento",
+    "sem termo de busca nao monta o or",
+    "escapa curingas do termo para nao virar coringa do ilike",
+    "a tela nao refiltra a busca sobre a pagina",
+    "nao tem mais o filtro local de busca",
+    "mantem a busca no hook"
    ]
   },
   "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx": {
@@ -113360,7 +113454,7 @@
   },
   "src/pages/pedidos/Pedidos.tsx": {
    "path": "src/pages/pedidos/Pedidos.tsx",
-   "lines": 443,
+   "lines": 450,
    "exports": [
     "default Pedidos"
    ],
@@ -113369,6 +113463,9 @@
      "name": "PEDIDOS_PAGE_SIZE",
      "value": "50"
     }
+   ],
+   "rule_comments": [
+    "pagina ja' baixada, entao escolher \"Entregue\" com 3 paginas mostrava apenas"
    ]
   },
   "src/pages/pedidos/PedidosKPIs.tsx": {
@@ -114305,7 +114402,7 @@
   },
   "src/pages/solicitacoes/Solicitacoes.tsx": {
    "path": "src/pages/solicitacoes/Solicitacoes.tsx",
-   "lines": 542,
+   "lines": 544,
    "exports": [
     "default Solicitacoes"
    ],
@@ -114314,6 +114411,12 @@
      "name": "SOLICITACOES_PAGE_SIZE",
      "value": "100"
     }
+   ],
+   "rule_comments": [
+    "com id, e `produto` e' o titulo. Os demais recortes (status, tipo, prazo,"
+   ],
+   "percents": [
+    "// ao SQL com `gte/lte` apagaria 97% da lista."
    ]
   },
   "src/pages/solicitacoes/solicitacoesHelpers.ts": {
@@ -123230,10 +123333,24 @@
   }
  },
  "git": {
-  "sha": "990f6c3cef858c4adf720ec5c33b475b8f10f25a",
+  "sha": "a49b4005a41e6d34acfc39a958740834d49e0e2c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a49b400",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/pages/pedidos/Pedidos.tsx",
+     "src/pages/solicitacoes/Solicitacoes.tsx"
+    ]
+   },
    {
     "sha": "990f6c3",
     "date": "2026-11-26",
@@ -123568,21 +123685,6 @@
      "src/components/admin/TenantSwitcher.tsx",
      "src/features/layout/components/HeaderActions.tsx"
     ]
-   },
-   {
-    "sha": "2398b93",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(edge): escopa a idempotencia por chamador e nao memoriza falha (etapas 179 e 180) (#505)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/_shared/idempotency.test.ts",
-     "supabase/functions/_shared/idempotency.ts",
-     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
-     "supabase/functions/erp-sync/index.ts",
-     "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
-     "supabase/functions/punchout-receive/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -123597,6 +123699,10 @@
    [
     "src/hooks/useDevolucoes.ts",
     3
+   ],
+   [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    2
    ],
    [
     "src/hooks/useFornecedores.ts",
@@ -123627,6 +123733,22 @@
     2
    ],
    [
+    "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    1
+   ],
+   [
+    "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
+    1
+   ],
+   [
+    "src/pages/pedidos/Pedidos.tsx",
+    1
+   ],
+   [
+    "src/pages/solicitacoes/Solicitacoes.tsx",
+    1
+   ],
+   [
     "src/features/cotacoes/hooks/useCotacoes.ts",
     1
    ],
@@ -123644,26 +123766,6 @@
    ],
    [
     "src/integrations/supabase/types.ts",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/alert-dispatcher/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/scim-v2/active.ts",
-    1
-   ],
-   [
-    "supabase/functions/scim-v2/active_test.ts",
-    1
-   ],
-   [
-    "supabase/functions/scim-v2/index.ts",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "990f6c3cef858c4adf720ec5c33b475b8f10f25a",
+  "commit": "a49b4005a41e6d34acfc39a958740834d49e0e2c",
   "branch": "main",
-  "data_commit": "2026-11-26T04:04:18-03:00",
+  "data_commit": "2026-11-26T04:15:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a49b400",
+    "data": "2026-11-26",
+    "assunto": "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)"
+   },
    {
     "sha": "990f6c3",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "e18b65d",
     "data": "2026-11-26",
     "assunto": "fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)"
-   },
-   {
-    "sha": "fed20c2",
-    "data": "2026-11-26",
-    "assunto": "fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)"
    }
   ],
-  "arquivos_mudados_7d": 1511,
+  "arquivos_mudados_7d": 1513,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,11 +141,11 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 154
+    "mudancas": 155
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 71
+    "mudancas": 69
    },
    {
     "pasta": "src/components/ui",
@@ -168,38 +168,38 @@
     "mudancas": 27
    },
    {
+    "pasta": "src/features/solicitacoes",
+    "mudancas": 26
+   },
+   {
     "pasta": "src/features/auth",
     "mudancas": 25
    },
    {
-    "pasta": "src/pages/catalogo-xbz",
-    "mudancas": 25
-   },
-   {
-    "pasta": "src/features/solicitacoes",
-    "mudancas": 24
+    "pasta": "src/features/pedidos",
+    "mudancas": 23
    },
    {
     "pasta": "src/pages/admin",
     "mudancas": 23
    },
    {
-    "pasta": "src/features/pedidos",
-    "mudancas": 22
+    "pasta": "src/pages/catalogo-xbz",
+    "mudancas": 23
+   },
+   {
+    "pasta": "src/pages/pedidos",
+    "mudancas": 21
    },
    {
     "pasta": "src/pages/recebimento",
     "mudancas": 21
-   },
-   {
-    "pasta": "src/components/security",
-    "mudancas": 20
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 154
+    "mudancas": 155
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -226,6 +226,14 @@
     "mudancas": 9
    },
    {
+    "arquivo": "src/pages/pedidos/Pedidos.tsx",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 8
    },
@@ -238,7 +246,7 @@
     "mudancas": 8
    },
    {
-    "arquivo": "src/pages/pedidos/Pedidos.tsx",
+    "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
     "mudancas": 8
    },
    {
@@ -258,19 +266,7 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 7
-   },
-   {
     "arquivo": "src/pages/cotacao/Cotacao.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/functions/xbz-proxy/index.ts",
     "mudancas": 7
    },
    {
@@ -294,8 +290,12 @@
     "mudancas": 6
    },
    {
-    "arquivo": "supabase/functions/_shared/xbz_client.ts",
+    "arquivo": "supabase/functions/xbz-proxy/index.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/aplicar-migration-prod.yml",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1490,
-  "arquivos_codigo": 953,
-  "linhas_codigo": 190351,
+  "arquivos_total": 1492,
+  "arquivos_codigo": 955,
+  "linhas_codigo": 190527,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 344,
   "cron_jobs": 79,
-  "testes": 313,
+  "testes": 315,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 101
@@ -431,8 +431,8 @@
    "linhas": 52392
   },
   "src/features": {
-   "arquivos": 94,
-   "linhas": 11650
+   "arquivos": 96,
+   "linhas": 11817
   },
   "src/hooks": {
    "arquivos": 100,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 157,
-   "linhas": 35295
+   "linhas": 35304
   },
   "src/routes": {
    "arquivos": 1,

@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (217)",
+   "co-localizado (__tests__) (219)",
    "outro (44)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)",
    "fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)",
    "fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)",
    "chore(db): sincronizar types.ts com o banco [auto] (#525)",
-   "fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)",
-   "fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)"
+   "fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)"
   ]
  },
  "pr_template": null,
