@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 04:24 UTC
+
+- **cron jobs** alterado (1): `2:cleanup-system-alerts`
+- **functions** alterado (1): `public.cleanup_old_system_alerts()`
+
 ## 2026-11-26 04:15 UTC
 
 - **config: auth_config** adicionado (1): `auth_config`

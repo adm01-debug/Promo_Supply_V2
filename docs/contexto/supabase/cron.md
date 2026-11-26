@@ -5,7 +5,7 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | id | nome | schedule | ativo | database | usuário | comando |
 |---|---|---|---|---|---|---|
 | 1 | cleanup-health-scan-runs | `0 2 * * *` | sim | postgres | postgres | `DELETE FROM public.health_scan_runs WHERE started_at < NOW() - INTERVAL '7 days'` |
-| 2 | cleanup-system-alerts | `10 2 * * *` | sim | postgres | postgres | `DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'` |
+| 2 | cleanup-system-alerts | `10 2 * * *` | sim | postgres | postgres | `SELECT public.cleanup_old_system_alerts();` |
 | 5 | cleanup-rate-limit-logs | `45 * * * *` | sim | postgres | postgres | `DELETE FROM public.rate_limit_logs WHERE window_start < NOW() - INTERVAL '24 hours'` |
 | 10 | weekly-vacuum-analyze | `0 4 * * 0` | sim | postgres | postgres | `ANALYZE public.health_scan_runs; ANALYZE public.system_alerts; ANALYZE public.telemetry_logs; ANALYZE public.fornecedores; ANALYZE public.pedidos; ANALYZE public.cotacoes` |
 | 11 | reset-pg-stat-statements | `0 5 * * 1` | sim | postgres | postgres | `SELECT pg_stat_statements_reset()` |

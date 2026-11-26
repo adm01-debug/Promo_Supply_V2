@@ -37233,7 +37233,7 @@
         },
         {
           "active": true,
-          "command": "DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'",
+          "command": "SELECT public.cleanup_old_system_alerts();",
           "database": "postgres",
           "jobid": 2,
           "jobname": "cleanup-system-alerts",
@@ -39533,12 +39533,14 @@
             }
           ],
           "code_total_files": 2,
-          "cron": [],
+          "cron": [
+            "2:cleanup-system-alerts"
+          ],
           "db": [],
           "triggers": [],
           "views": []
         },
-        "comment": "NAO AGENDADA. O expurgo de system_alerts e o cron cleanup-system-alerts (30 dias, DELETE inline). Sem regra concorrente em apply_lgpd_retention().",
+        "comment": "AGENDADA. O cron cleanup-system-alerts (job 2, 10 2 * * *) chama esta funcao: resolvido expurga em 60 dias, aberto em 180. Sem regra concorrente em apply_lgpd_retention().",
         "config": [
           "search_path=public"
         ],

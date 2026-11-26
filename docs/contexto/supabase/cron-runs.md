@@ -73,9 +73,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 04:15:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 04:14:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 04:13:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 04:24:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 04:23:00 | succeeded | 0.03 | 1 row |
+| 2026-11-26 04:22:00 | succeeded | 0.02 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
@@ -139,9 +139,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 04:15:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 04:14:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 04:13:00 | succeeded | 0.03 | 1 row |
+| 2026-11-26 04:24:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 04:23:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 04:22:00 | succeeded | 0.02 | 1 row |
 
 
 ## 114 · approval-escalation-check
@@ -216,9 +216,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 04:20:00 | succeeded | 0.02 | 1 row |
 | 2026-11-26 04:00:00 | succeeded | 0.04 | 1 row |
 | 2026-11-26 03:40:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 03:20:00 | succeeded | 0.02 | 1 row |
 
 
 ## 123 · cron-watchdog-15min
