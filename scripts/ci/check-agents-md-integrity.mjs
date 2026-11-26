@@ -102,6 +102,7 @@ export function problemasDeVisibilidade({ agents, docVisibilidade, gitignore }) 
 export const WORKFLOWS_DIR = '.github/workflows';
 export const MIGRATIONS_DIR = 'supabase/migrations';
 export const DOC_CI = 'docs/agentes/github-ci.md';
+export const TOOLCHAIN = '.github/toolchain.json';
 export const WORKFLOWS_CITADOS_NO_AGENTS = ['deploy-edge-functions.yml', 'aplicar-migration-prod.yml'];
 
 /** Nomes dos workflows (`.yml`/`.yaml`) do diretorio, ordenados; [] quando o diretorio nao existe. */
@@ -134,7 +135,7 @@ export function linhaQueNegaProtecao(texto) {
 }
 
 /** Problemas entre o que os docs afirmam e o que este checkout tem; vazio quando bate. */
-export function problemasDeFatos({ agents, docCi, workflows, migrations, conteudosDeWorkflow = {} }) {
+export function problemasDeFatos({ agents, docCi, workflows, migrations, conteudosDeWorkflow = {}, toolchain = null }) {
   const problemas = [];
   const declarado = workflowsAfirmados(agents);
   if (declarado === null) {
@@ -169,6 +170,23 @@ export function problemasDeFatos({ agents, docCi, workflows, migrations, conteud
     problemas.push(`${AGENTS}: nao declara o numero de migrations (esperado: "${migrations.length} migrations hoje").`);
   } else if (migracoes !== migrations.length) {
     problemas.push(`${AGENTS}: afirma ${migracoes} migrations, mas ${MIGRATIONS_DIR} tem ${migrations.length} arquivos .sql.`);
+  }
+  // A contagem tambem aparece na prosa do doc de CI, e foi la que apodreceu por ultimo
+  // ("um dos sete workflows" com 15 no diretorio). So a forma em digitos e checavel aqui.
+  const noDocCi = docCi.match(/`workflows\/`\s*\((\d+)\s+arquivos\)/);
+  if (noDocCi && Number.parseInt(noDocCi[1], 10) !== workflows.length) {
+    problemas.push(
+      `${DOC_CI}: afirma ${noDocCi[1]} arquivos em ${WORKFLOWS_DIR}, mas ${WORKFLOWS_DIR} tem ${workflows.length}.`,
+    );
+  }
+  // A nota do toolchain sobre o deno citou 'v1.x' por meses, depois de o main.yml virar v2.x
+  // (o runtime das edges exige tipagem que o Deno 1.x rejeita). Comentario de versao tambem e fato.
+  // A crase sai da classe: o cabecalho do main.yml cita a mesma linha entre crases.
+  const deno = /deno-version:\s*['"]?([^\s'"`]+)/.exec(conteudosDeWorkflow['main.yml'] ?? '');
+  if (toolchain !== null && deno && !toolchain.includes(`'${deno[1]}'`)) {
+    problemas.push(
+      `${TOOLCHAIN}: a nota sobre o deno nao cita a faixa de ${WORKFLOWS_DIR}/main.yml ('${deno[1]}').`,
+    );
   }
   for (const [nome, texto] of [
     [AGENTS, agents],
@@ -227,6 +245,7 @@ if (process.env.AGENTS_MD_SKIP_FATOS !== '1') {
         ? readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith('.sql'))
         : [],
       conteudosDeWorkflow,
+      toolchain: existsSync(TOOLCHAIN) ? readFileSync(TOOLCHAIN, 'utf8') : null,
     });
     for (const p of problemas) console.error(`::error::${p}`);
     if (problemas.length > 0) {

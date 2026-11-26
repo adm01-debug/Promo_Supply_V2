@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
+import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
@@ -204,71 +205,85 @@ const Fornecedores = () => {
 
           <Card className="rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-3xl overflow-hidden shadow-2xl">
             <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-white/[0.02]">
-                  <TableRow className="hover:bg-transparent border-white/5">
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6 pl-10">Entidade / Razão Social</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Tipo de Operação</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Rating de Confiança</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Integrações</TableHead>
-                    <TableHead className="w-20 pr-10"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <AnimatePresence mode="popLayout">
-                    {filteredFornecedores.map((fornecedor, index) => (
-                      <motion.tr 
-                        key={fornecedor.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                        className="group border-white/5 hover:bg-white/[0.02] transition-all cursor-pointer"
-                        onClick={() => handleOpenModal(fornecedor)}
-                      >
-                        <TableCell className="pl-10">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center font-black text-emerald-400 text-xs shadow-inner border border-emerald-500/10 transition-transform group-hover:scale-110">
-                              {fornecedor.nome_fantasia.slice(0, 2).toUpperCase()}
+              {isMobile ? (
+                <div className="p-5 space-y-5">
+                  {filteredFornecedores.length === 0 ? (
+                    <p className="text-center text-sm text-zinc-500 py-8">Nenhum fornecedor encontrado</p>
+                  ) : filteredFornecedores.map((fornecedor) => (
+                    <FornecedorMobileCard
+                      key={fornecedor.id}
+                      fornecedor={fornecedor}
+                      onEdit={() => handleOpenModal(fornecedor)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="hover:bg-transparent border-white/5">
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6 pl-10">Entidade / Razão Social</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Tipo de Operação</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Rating de Confiança</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Integrações</TableHead>
+                      <TableHead className="w-20 pr-10"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <AnimatePresence mode="popLayout">
+                      {filteredFornecedores.map((fornecedor, index) => (
+                        <motion.tr
+                          key={fornecedor.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.03 }}
+                          className="group border-white/5 hover:bg-white/[0.02] transition-all cursor-pointer"
+                          onClick={() => handleOpenModal(fornecedor)}
+                        >
+                          <TableCell className="pl-10">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center font-black text-emerald-400 text-xs shadow-inner border border-emerald-500/10 transition-transform group-hover:scale-110">
+                                {fornecedor.nome_fantasia.slice(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor.nome_fantasia}</p>
+                                <p className="text-[10px] text-zinc-500 mt-1.5 font-black uppercase tracking-widest">{fornecedor.cnpj || 'ENTIDADE INDIVIDUAL'}</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor.nome_fantasia}</p>
-                              <p className="text-[10px] text-zinc-500 mt-1.5 font-black uppercase tracking-widest">{fornecedor.cnpj || 'ENTIDADE INDIVIDUAL'}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={cn("rounded-full px-4 py-1.5 border-none font-black text-[10px] uppercase tracking-widest gap-2 shadow-lg", getTipoBadgeColor(fornecedor.tipo))}>
-                            {getTipoLabel(fornecedor.tipo)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center">
-                           <div className="flex items-center justify-center gap-1">
-                             {[...Array(5)].map((_, i) => (
-                               <Star key={i} className={cn("w-3.5 h-3.5 transition-all", i < fornecedor.rating ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]" : "text-white/5")} />
-                             ))}
-                           </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                           {fornecedor.apiIntegrada ? (
-                             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">
-                               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" /> CLOUD ACTIVE
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={cn("rounded-full px-4 py-1.5 border-none font-black text-[10px] uppercase tracking-widest gap-2 shadow-lg", getTipoBadgeColor(fornecedor.tipo))}>
+                              {getTipoLabel(fornecedor.tipo)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">
+                             <div className="flex items-center justify-center gap-1">
+                               {[...Array(5)].map((_, i) => (
+                                 <Star key={i} className={cn("w-3.5 h-3.5 transition-all", i < fornecedor.rating ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]" : "text-white/5")} />
+                               ))}
                              </div>
-                           ) : (
-                             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] opacity-60">Legado / Manual</span>
-                           )}
-                        </TableCell>
-                        <TableCell className="pr-10">
-                           <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all">
-                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
-                               <MoreHorizontal className="w-4 h-4" />
-                             </Button>
-                           </div>
-                        </TableCell>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
-                </TableBody>
-              </Table>
+                          </TableCell>
+                          <TableCell className="text-center">
+                             {fornecedor.apiIntegrada ? (
+                               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">
+                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" /> CLOUD ACTIVE
+                               </div>
+                             ) : (
+                               <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] opacity-60">Legado / Manual</span>
+                             )}
+                          </TableCell>
+                          <TableCell className="pr-10">
+                             <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all">
+                               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
+                                 <MoreHorizontal className="w-4 h-4" />
+                               </Button>
+                             </div>
+                          </TableCell>
+                        </motion.tr>
+                      ))}
+                    </AnimatePresence>
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </div>

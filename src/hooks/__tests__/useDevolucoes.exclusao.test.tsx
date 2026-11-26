@@ -61,7 +61,9 @@ vi.mock('@/integrations/supabase/client', () => ({
           delete: () => ({
             eq: () => {
               deletesExecutados.push(tabela);
-              return Promise.resolve({ error: null });
+              const r = Promise.resolve({ error: null, data: [{ id: 'd1' }] }) as Promise<unknown> & { select: () => Promise<unknown> };
+              r.select = () => Promise.resolve({ error: null, data: [{ id: 'd1' }] });
+              return r;
             },
           }),
         };
