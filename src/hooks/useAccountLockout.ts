@@ -17,6 +17,11 @@ interface LockoutResult {
   remainingAttempts?: number;
 }
 
+// `account_lockouts.email` e' gravado normalizado por trigger (lower+btrim) e as
+// RPCs de lockout comparam igualdade exata: sem normalizar aqui, e-mail digitado
+// com maiuscula ou espaco nao encontra o registro e o bloqueio nao vale nada.
+const normalizarEmail = (email: string) => email.trim().toLowerCase();
+
 export const useAccountLockout = () => {
   const [lockoutStatus, setLockoutStatus] = useState<LockoutStatus>({
     locked: false,
@@ -44,7 +49,7 @@ export const useAccountLockout = () => {
   const checkLockout = useCallback(async (email: string): Promise<LockoutStatus> => {
     try {
       const { data, error } = await supabase.rpc('is_account_locked', {
-        _email: email,
+        _email: normalizarEmail(email),
       });
 
       if (error) {
@@ -74,7 +79,7 @@ export const useAccountLockout = () => {
   const recordFailedAttempt = useCallback(async (email: string): Promise<LockoutResult> => {
     try {
       const { data, error } = await supabase.rpc('record_failed_login', {
-        _email: email,
+        _email: normalizarEmail(email),
       });
 
       if (error) {
@@ -117,7 +122,17 @@ export const useAccountLockout = () => {
 
   const clearLockout = useCallback(async (email: string): Promise<void> => {
     try {
-      await supabase.rpc('clear_login_lockout', { _email: email });
+      // A RPC so aceita limpar o e-mail da propria sessao (etapa 057): usa o
+      // e-mail da sessao autenticada, nao o que ficou no formulario.
+      const { data } = await supabase.auth.getSession();
+      const alvo = normalizarEmail(data.session?.user?.email ?? email);
+      const { error } = await supabase.rpc('clear_login_lockout', { _email: alvo });
+
+      if (error) {
+        logger.error('Error clearing lockout:', { error: error, email: alvo });
+        return;
+      }
+
       setLockoutStatus({ locked: false, remainingSeconds: 0 });
       setCountdown(0);
     } catch (error) {
