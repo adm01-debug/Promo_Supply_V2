@@ -826,13 +826,21 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 154 — verificar_integridade_audit_logs vai acusar 'ADULTERADO' assim que a retenção LGPD apagar o primeiro bloco da trilha, porque exige que o registro mais — onda 3 — Baixa — FN-12
 
-- [ ] 155 — (parte 1/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [x] 155 — (parte 1/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
 
-- [ ] 156 — (parte 2/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- Evidencia (155): PR #549 — helper `src/lib/invokeEdge.ts:19` (`mensagemDeErroDaEdge` lê `error.context.json()` e devolve `body.error` → `body.message` → `error.message` → fallback PT-BR) e call site `src/components/compras/dashboard/UrgencyDetailsSheet.tsx:68`; teste `src/lib/__tests__/invokeEdge.test.ts` (7 casos). Provas: `npm run typecheck` rc=0 · `npx eslint` 0 erros · `npx vitest run` 229 arquivos / 2889 testes.
 
-- [ ] 157 — (parte 3/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- [x] 156 — (parte 2/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
 
-- [ ] 158 — (parte 4/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+- Evidencia (156): PR #549 — call sites `src/components/compras/NovaSolicitacaoModal.tsx:164` e `src/pages/catalogo-spot/useSpotCatalog.ts:156`.
+
+- [x] 157 — (parte 3/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+
+- Evidencia (157): PR #549 — call sites `src/hooks/useCatalogoPim.ts:110` (`PimBridgeError` preservado) e `src/pages/admin/ERPConnections.tsx:122` e `:271`.
+
+- [x] 158 — (parte 4/4) As mensagens em português das 39 edge functions são substituídas por "Edge Function returned a non-2xx status code" — onda 4 — Alta — EDG-02
+
+- Evidencia (158): PR #549 — call sites `src/pages/admin/PunchOutCatalogs.tsx:87` e `:155`; mesma causa raiz corrigida nos pontos em que a mensagem em inglês chegava ao usuário: `src/pages/admin/AlertDetail.tsx:74` (exibido em `:96`), `src/pages/admin/StorageMigration.tsx:55` (toast) e `src/services/rlsAuditService.ts:29` (exibido em `src/components/auditoria/RlsCompliancePanel.tsx:64`). Varredura `git grep -n "mensagemDeErroDaEdge(" -- src` = 17 ocorrências (1 definição, 7 no teste, 9 call sites de produção).
 
 - [ ] 159 — Migration: `process-outbox` e `alert-dispatcher` rodam a cada minuto sem travar as linhas em processamento: execuções sobrepostas reenviam o mesmo ped — onda 4 — Alta — EDG-03
 
