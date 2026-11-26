@@ -110,3 +110,8 @@ Nota: audit listou >150 itens NÃƒO IMPLEMENTADO e ~190 PARCIAL. Este cahier co
 impacto; detalhes completos estao em `auditoria-implementacao-261120.md` (Anexos A1-A7). Itens descartados so
 recebem registro quando gerada a decisao (evidencia de que ja funciona / escopo fora).
 
+
+## Higiene de codigo (HIG)
+| ID | Item | Estado | Fonte |
+|---|---|---|---|
+| hig-05 | `no-unused-vars` desligado no ESLint escondia fiacao abandonada: abas "Itens"/"Docs" e upload do contrato em branco, `isMobile`/`FornecedorMobileCard` orfaos, `linkedOrders`/`loading` nunca renderizados | CONCLUIDO (PR #494 + PR #495) | `ContractDetailsModal.tsx` (abas `items`/`docs` + upload por input de arquivo), `Fornecedores.tsx` (cartao mobile), `eslint.config.js` (`"@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }]`) |
