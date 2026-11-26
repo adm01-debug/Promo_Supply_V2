@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 312,
+ "total": 313,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 294
+  "unit": 295
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 216
+   "arquivos": 217
   },
   {
    "padrao": "outro",
@@ -1163,6 +1163,16 @@
     "src/hooks/useApprovalWorkflow.ts"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "src/features/cotacoes/hooks/useCotacoes.ts",
+    "src/hooks/useDevolucoes.ts"
+   ],
+   "casos": 4
   },
   {
    "arquivo": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -2911,7 +2921,7 @@
   "src/features/auth/index.ts": 3,
   "src/features/auth/schemas/auth.schemas.ts": 1,
   "src/features/auth/types/authRoles.ts": 1,
-  "src/features/cotacoes/hooks/useCotacoes.ts": 1,
+  "src/features/cotacoes/hooks/useCotacoes.ts": 2,
   "src/features/layout/components/AppSidebar.tsx": 3,
   "src/features/layout/components/CommandPalette.tsx": 1,
   "src/features/layout/components/chat/ChatArea.tsx": 1,
@@ -2934,7 +2944,7 @@
   "src/hooks/useApprovalWorkflow.ts": 5,
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
-  "src/hooks/useDevolucoes.ts": 3,
+  "src/hooks/useDevolucoes.ts": 4,
   "src/hooks/useFeedback.ts": 1,
   "src/hooks/useFornecedores.ts": 6,
   "src/hooks/useFuseSearch.ts": 1,

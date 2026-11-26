@@ -369,7 +369,7 @@
    "hooks_exportados": [
     "useCotacoes"
    ],
-   "linhas": 238,
+   "linhas": 255,
    "dominio": "features/cotacoes",
    "tabelas": [
     "cotacoes"
@@ -391,7 +391,7 @@
    "usado_por_arquivos": [
     "src/features/cotacoes/index.ts"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/features/empresas/hooks/useEmpresaFilter.ts",
@@ -1145,7 +1145,7 @@
     "useDevolucoes",
     "useDevolucoesKPIs"
    ],
-   "linhas": 398,
+   "linhas": 418,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1172,7 +1172,7 @@
     "src/pages/devolucoes/Devolucoes.tsx",
     "src/pages/devolucoes/DevolucoesModals.tsx"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/useEstoque.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `647ddb42f6` · branch `main` · 2026-11-26 06:51 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `990f6c3cef` · branch `main` · 2026-11-26 07:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2463,7 +2463,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3485 testes em 260 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3491 testes em 261 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2615,6 +2615,7 @@ _nenhum item encontrado_
 | `src/features/auth/__tests__/ProtectedRoute.test.tsx` | 6 | ProtectedRoute · renderiza o conteudo quando o papel tem permissao · mostra acesso restrito em vez de redirecionar silenciosamente · redireciona para o login quando nao ha sessao … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx` | 6 | usePedidos - escrita negada pelo RLS nao vira sucesso · updatePedido com 0 linhas afetadas retorna false e nao comemora · updatePedido com linha afetada continua atualizando · bulkUpdateStatus sem nenhuma linha afetada falha e explica … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx` | 6 | usePedidos - exclusao so em pedido pendente ou cancelado · bulkDelete manda o filtro de status junto com os ids · bulkDelete sem nenhuma linha removida falha e explica o motivo · bulkDelete parcial avisa quantos ficaram de fora e nao comemora … |
+| `src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx` | 6 | useDevolucoes · paginacao (PERF-01 / etapa 212) · sem  · com  · useCotacoes · paginacao (PERF-01 / etapa 212) … |
 | `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
 | `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |

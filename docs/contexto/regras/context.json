@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "647ddb42f65ab7edcb3832c57e978160cfa245e2",
+  "sha": "990f6c3cef858c4adf720ec5c33b475b8f10f25a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 06:51 UTC",
-  "files_total": 1490,
-  "code_files": 1315,
-  "code_lines": 220991,
+  "generated_at": "2026-11-26 07:04 UTC",
+  "files_total": 1491,
+  "code_files": 1316,
+  "code_lines": 221160,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "667ad4ae86ca93a6",
+ "facts_hash": "547921f07b717dd8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 443,
-   ".tsx": 434,
+   ".tsx": 435,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -35252,7 +35252,7 @@
   {
    "module": "src/features/cotacoes",
    "files": 3,
-   "lines": 450,
+   "lines": 467,
    "tables": [
     "cotacoes"
    ],
@@ -35534,8 +35534,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 99,
-   "lines": 16925,
+   "files": 100,
+   "lines": 17077,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35615,7 +35615,7 @@
     "useCriticalAlertsBadge.ts: useCriticalAlertsBadge",
     "useDashboardFilters.ts: DashboardFilter, FilterValues, useDashboardFilters",
     "useDashboardKPIs.ts: KPIComparison, PipelineData, DashboardKPIsExtended, useDashboardKPIs",
-    "useDevolucoes.ts: Devolucao, DevolucaoItem, CreditoFornecedor, CreateDevolucaoInput, useDevolucoes, useCreditosFornecedor",
+    "useDevolucoes.ts: Devolucao, DevolucaoItem, CreditoFornecedor, CreateDevolucaoInput, DevolucaoFilters, useDevolucoes",
     "useEstoque.ts: EstoqueItem, Movimentacao, useEstoque",
     "useExecutiveDashboardData.ts: ExecutiveMetrics, MonthlyPoint, ComparisonPoint, CategorySpendItem, SupplierItem, BuyerItem",
     "useFeedback.ts: FeedbackType, useFeedbackPreferences, hapticPatterns, SoundConfig, soundConfigs, useFeedback",
@@ -35663,6 +35663,7 @@
    "imports_modules": [
     "src/components",
     "src/features/auth",
+    "src/features/cotacoes",
     "src/features/empresas",
     "src/features/solicitacoes",
     "src/integrations",
@@ -35741,6 +35742,7 @@
     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
+    "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
@@ -35750,8 +35752,7 @@
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFornecedores.paginacao.test.tsx",
     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
-    "src/hooks/__tests__/useFuseSearch.test.ts",
-    "src/hooks/__tests__/useImageCompression.test.ts"
+    "src/hooks/__tests__/useFuseSearch.test.ts"
    ]
   },
   {
@@ -64142,6 +64143,30 @@
    {
     "file": "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
     "name": "rejectStep nao alarma quando a solicitacao ja estava rejeitada"
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "useDevolucoes · paginacao (PERF-01 / etapa 212)"
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "sem "
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "com "
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "useCotacoes · paginacao (PERF-01 / etapa 212)"
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "sem "
+   },
+   {
+    "file": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    "name": "com "
    },
    {
     "file": "src/hooks/__tests__/useDashboardKPIs.test.tsx",
@@ -102161,7 +102186,7 @@
   },
   "src/features/cotacoes/hooks/useCotacoes.ts": {
    "path": "src/features/cotacoes/hooks/useCotacoes.ts",
-   "lines": 238,
+   "lines": 255,
    "exports": [
     "type Cotacao",
     "interface CreateCotacaoInput",
@@ -104868,12 +104893,13 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 398,
+   "lines": 418,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
     "type CreditoFornecedor",
     "interface CreateDevolucaoInput",
+    "interface DevolucaoFilters",
     "function useDevolucoes",
     "function useCreditosFornecedor",
     "function useDevolucoesKPIs"
@@ -107289,6 +107315,19 @@
     "rejectStep com erro explicito do banco manda para a DLQ e nao escreve o resto do fluxo",
     "rejectStep avisa quando a etapa e rejeitada mas a solicitacao nao pode ser atualizada",
     "rejectStep nao alarma quando a solicitacao ja estava rejeitada"
+   ]
+  },
+  "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx": {
+   "path": "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+   "lines": 132,
+   "is_test": true,
+   "tests": [
+    "useDevolucoes · paginacao (PERF-01 / etapa 212)",
+    "sem ",
+    "com ",
+    "useCotacoes · paginacao (PERF-01 / etapa 212)",
+    "sem ",
+    "com "
    ]
   },
   "src/hooks/__tests__/useDashboardKPIs.test.tsx": {
@@ -123191,10 +123230,22 @@
   }
  },
  "git": {
-  "sha": "647ddb42f65ab7edcb3832c57e978160cfa245e2",
+  "sha": "990f6c3cef858c4adf720ec5c33b475b8f10f25a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "990f6c3",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/cotacoes/hooks/useCotacoes.ts",
+     "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+     "src/hooks/useDevolucoes.ts"
+    ]
+   },
    {
     "sha": "647ddb4",
     "date": "2026-11-26",
@@ -123532,15 +123583,6 @@
      "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
      "supabase/functions/punchout-receive/index.ts"
     ]
-   },
-   {
-    "sha": "49dbb82",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -123551,6 +123593,10 @@
    [
     "AGENTS.md",
     5
+   ],
+   [
+    "src/hooks/useDevolucoes.ts",
+    3
    ],
    [
     "src/hooks/useFornecedores.ts",
@@ -123577,12 +123623,16 @@
     2
    ],
    [
-    "src/hooks/useDevolucoes.ts",
+    "src/components/admin/telemetry/SystemAlertsView.tsx",
     2
    ],
    [
-    "src/components/admin/telemetry/SystemAlertsView.tsx",
-    2
+    "src/features/cotacoes/hooks/useCotacoes.ts",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
+    1
    ],
    [
     "src/hooks/__tests__/useFornecedores.paginacao.test.tsx",
@@ -123614,14 +123664,6 @@
    ],
    [
     "supabase/functions/scim-v2/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/check-cotacao-followup/index.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
     1
    ]
   ]
