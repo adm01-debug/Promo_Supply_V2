@@ -13,7 +13,7 @@
 // conta: passo desligado por comentário não executa), e o que não aparece em nenhum bloco
 // `run:` precisa estar na ALLOWLIST_NODE com justificativa.
 
-import { readFileSync, readdirSync, realpathSync, statSync } from 'fs';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'fs';
 import { spawnSync } from 'child_process';
 import { join, posix as pathPosix } from 'path';
 import { resolverExecutavel } from '../lib/seguranca-processo.mjs';
@@ -29,6 +29,10 @@ function read(rel) {
 
 function listarArquivosNoDisco(relDir) {
   const base = join(root, relDir);
+  // Pasta que nao existe (arvore sintetica de teste, ou pasta ainda nao criada) nao tem
+  // suite nenhuma: sem o guard o `readdirSync` lancava ENOENT e o inventario morria com
+  // stack trace em vez de inventariar.
+  if (!existsSync(base)) return [];
   const out = [];
   function visitar(abs, rel) {
     for (const nome of readdirSync(abs).sort()) {
@@ -233,6 +237,77 @@ export function suitesNodeOrfas() {
   return orfaosNode(suites, padroes, new Set([...ALLOWLIST_NODE, ...cobertas]));
 }
 
+// ── 3b. Suites de RLS (tests-rls/) e specs E2E (tests-e2e/) ───────────────────
+// As duas pastas ficavam fora de qualquer varredura: `tests-rls/rls-isolation.test.ts`
+// podia nascer, sumir do CI ou ser desligada sem que este inventario dissesse nada —
+// e era exatamente o caso (nenhum dos 13 workflows roda `npm run test:rls`).
+// `tests-e2e/` tem pasta declarada no `playwright.config.ts` e roda por pasta no
+// main.yml, entao conta como coberta do mesmo jeito que `deno test supabase/functions/`.
+
+const SUFIXO_SUITE_RLS = /[._]test\.ts$/;
+const SUFIXO_SPEC_E2E = /\.spec\.ts$/;
+
+/**
+ * Suites de RLS fora do CI de proposito. Nao e' atalho: e' a decisao registrada.
+ * A suite autentica dois usuarios no projeto OFICIAL e, com RLS_ALLOW_WRITES=true,
+ * escreve em producao — agendar isso no CI e' decisao do dono, nao efeito colateral
+ * de um guard. Uma suite NOVA em tests-rls/ continua sendo apontada.
+ */
+export const ALLOWLIST_RLS = new Set(['tests-rls/rls-isolation.test.ts']);
+export const ALLOWLIST_E2E = new Set();
+
+/** `vitest run --config ./vitest.rls.config.ts` (ou o script `test:rls`, mesmo comando). */
+const COMANDO_RLS = /(?:vitest\s+run[^\n]*vitest\.rls\.config|(?:npm|bun|pnpm|yarn)\s+run\s+test:rls)/;
+/** `playwright test` — o alvo e' o `testDir` do playwright.config.ts. */
+const COMANDO_PLAYWRIGHT = /playwright\s+test/;
+
+/** O que TODO workflow do repositorio executa (so os blocos `run:`, sem comentario). */
+export function codigoExecutavelDosWorkflows() {
+  const dir = join(root, '.github/workflows');
+  if (!existsSync(dir)) return '';
+  return readdirSync(dir)
+    .filter(f => /\.ya?ml$/.test(f))
+    .map(f => codigoExecutavelDeWorkflow(readFileSync(join(dir, f), 'utf8')))
+    .join('\n');
+}
+
+/** Pasta dos specs, lida do `playwright.config.ts` (null se o config nao existe). */
+export function pastaE2e() {
+  const config = join(root, 'playwright.config.ts');
+  if (!existsSync(config)) return null;
+  const bruto = /testDir:\s*['"]([^'"]+)['"]/.exec(readFileSync(config, 'utf8'))?.[1];
+  return bruto ? bruto.replace(/^\.\//, '').replace(/\/$/, '') : null;
+}
+
+export function suitesRlsNoDisco() {
+  return gitLsFilesOuDisco('tests-rls').filter(f => SUFIXO_SUITE_RLS.test(f));
+}
+
+export function specsE2eNoDisco() {
+  const pasta = pastaE2e();
+  return pasta ? gitLsFilesOuDisco(pasta).filter(f => SUFIXO_SPEC_E2E.test(f)) : [];
+}
+
+/** Suites de RLS sem nenhum bloco `run:` que rode o vitest.rls.config (fora da allowlist). */
+export function suitesRlsOrfas(
+  suites = suitesRlsNoDisco(),
+  codigo = codigoExecutavelDosWorkflows(),
+  allowlist = ALLOWLIST_RLS,
+) {
+  if (COMANDO_RLS.test(codigo)) return [];
+  return suites.filter(f => !allowlist.has(f));
+}
+
+/** Specs E2E sem nenhum bloco `run:` que rode o Playwright (fora da allowlist). */
+export function specsE2eOrfas(
+  specs = specsE2eNoDisco(),
+  codigo = codigoExecutavelDosWorkflows(),
+  allowlist = ALLOWLIST_E2E,
+) {
+  if (COMANDO_PLAYWRIGHT.test(codigo)) return [];
+  return specs.filter(f => !allowlist.has(f));
+}
+
 // ── 4. Detectar órfãos ────────────────────────────────────────────────────────
 
 /**
@@ -260,6 +335,14 @@ export function orfaosDoInventario() {
     orphans.push({ file: f, yaml: 'nenhum bloco run: de workflow' });
   }
 
+  for (const f of suitesRlsOrfas()) {
+    orphans.push({ file: f, yaml: 'nenhum bloco run: de workflow' });
+  }
+
+  for (const f of specsE2eOrfas()) {
+    orphans.push({ file: f, yaml: 'nenhum bloco run: de workflow' });
+  }
+
   return orphans;
 }
 
@@ -270,10 +353,12 @@ function principal() {
 
   if (orphans.length === 0) {
     const nodeMsg = `${suitesNodeNoDisco().length} suite(s) Node cobertas por bloco run: (${ALLOWLIST_NODE.size} na allowlist)`;
+    const rlsMsg = `${suitesRlsNoDisco().length} suite(s) de RLS (${ALLOWLIST_RLS.size} fora do CI por decisão)`;
+    const e2eMsg = `${specsE2eNoDisco().length} spec(s) E2E na pasta do playwright.config.ts`;
     if (ciUsesGlob) {
-      console.log(`check-test-inventory: OK — main.yml cobre as edges por pasta (${CI_TS_GLOB}); ${nodeMsg}`);
+      console.log(`check-test-inventory: OK — main.yml cobre as edges por pasta (${CI_TS_GLOB}); ${nodeMsg}; ${rlsMsg}; ${e2eMsg}`);
     } else {
-      console.log(`check-test-inventory: OK — todos os testes têm passo em workflow; ${nodeMsg}`);
+      console.log(`check-test-inventory: OK — todos os testes têm passo em workflow; ${nodeMsg}; ${rlsMsg}; ${e2eMsg}`);
     }
     return 0;
   }
@@ -283,7 +368,7 @@ function principal() {
     console.error(`  ${file}  (não encontrado em ${yaml})`);
   }
   console.error(`\nTotal: ${orphans.length} teste(s) órfão(s).`);
-  console.error('Registre a suite num bloco `run:` de workflow ou justifique-a na ALLOWLIST_NODE.');
+  console.error('Registre a suite num bloco `run:` de workflow ou justifique-a na allowlist correspondente.');
   return 1;
 }
 

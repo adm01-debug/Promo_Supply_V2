@@ -447,9 +447,16 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
   - Pendente: habilitar o convite exige papel `supplier` + fluxo de vinculo (etapas de papeis/RLS, regra 8); ate la o gate fica explicito em vez de criar usuario orfao sem `user_roles`/`user_tenants`.
 
-- [ ] 040 — (parte 1/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
+- [x] 040 — (parte 1/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
 
-- [ ] 041 — (parte 2/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
+  - Evidencia: `tests-rls/rls-isolation.test.ts` — os 5 `if (!tenantB) return;` (os 4 `it.each` cross-tenant + insert de pedido + insert de pagamento + update de contract) viraram `exigirTenantB()`, que lanca com a causa no relatorio em vez de pular o corpo; o `beforeAll` passou a exigir `toBeTruthy()` em `tenantA`/`tenantB` (antes so `expect(tenantA).not.toEqual(tenantB)`, e `null !== null` passava). Reproducao do defeito: sem credenciais a suite falha em `tests-rls/rls-isolation.test.ts:24` (antes o arquivo inteiro saia verde); com elas, usuario de teste sem vinculo em `user_tenants` passa a reprovar em vez de pular. `npx eslint tests-rls/rls-isolation.test.ts` exit 0.
+
+  - Pendente: agendar `npm run test:rls` em workflow e' decisao do dono — a suite autentica usuarios reais no projeto oficial e, com `RLS_ALLOW_WRITES=true`, escreve em producao; ate a decisao ela fica declarada na `ALLOWLIST_RLS` do inventario (etapa 041).
+
+- [x] 041 — (parte 2/2) A suíte de RLS não roda em nenhum workflow e o bloco cross-tenant se autodesativa em silêncio: 11 testes passam sem executar uma única ass — onda 1 — Alta — TST-05
+
+  - Evidencia: `scripts/ci/check-test-inventory.mjs` ganhou a secao 3b — varre `tests-rls/*[._]test.ts` e a pasta declarada em `testDir` do `playwright.config.ts` (lida do config, nao fixada: `pastaE2e()`), reconhece `vitest run --config ./vitest.rls.config.ts`, `npm/bun run test:rls` e `playwright test` nos blocos `run:` de qualquer workflow, e `pasta ausente` deixou de derrubar o script com ENOENT. Saida real no repo: `check-test-inventory: OK — main.yml cobre as edges por pasta (deno test ... supabase/functions/); 34 suite(s) Node cobertas por bloco run: (0 na allowlist); 1 suite(s) de RLS (1 fora do CI por decisão); 7 spec(s) E2E na pasta do playwright.config.ts`, exit 0.
+  - Evidencia (provas): `node --test scripts/ci/check-test-inventory.unit.mjs` = 29 pass / 2 fail; as 2 falhas sao `symlinkSync` com EPERM no Windows e sao identicas na main limpa (worktree em `bf324083`: 19 pass / 2 fail, mesmos dois nomes) — erro herdado do ambiente, nao do diff. 8 casos novos cobrem: suite de RLS orfa, comando que cobre, comando comentado que NAO cobre, spec E2E orfa, pasta lida do config, allowlist sem entrada morta, arvore real sem suite de RLS fora da allowlist, e CLI em arvore sintetica com/sem `tests-rls` e `tests-e2e`. `npm run typecheck` e `npx eslint` dos 3 arquivos: exit 0.
 
 - [x] 042 — Nenhuma tela distingue 'sem permissão' de 'sem dados': o papel viewer não tem SELECT em pedidos, cotações, fornecedores, contratos, pagamentos, docume — onda 1 — Média — AUT-07
 

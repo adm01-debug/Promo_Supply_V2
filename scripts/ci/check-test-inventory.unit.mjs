@@ -6,16 +6,23 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 import {
+  ALLOWLIST_E2E,
   ALLOWLIST_NODE,
+  ALLOWLIST_RLS,
   RAIZ,
   casaPadrao,
   codigoExecutavelDeWorkflow,
   comandoExecutadoNoWorkflow,
   orfaosNode,
   padroesNodeDeWorkflow,
+  pastaE2e,
   semComentarioDeShell,
+  specsE2eNoDisco,
+  specsE2eOrfas,
   suitesCobertasPorImport,
   suitesNodeOrfas,
+  suitesRlsNoDisco,
+  suitesRlsOrfas,
 } from './check-test-inventory.mjs';
 
 // Workflow sintetico com as tres formas de bloco `run:` do repositorio: escalar dobrado
@@ -208,6 +215,71 @@ test('workflow com fim de linha CRLF e lido igual ao LF', () => {
   );
 });
 
+// ── Regressao: suites de RLS e specs E2E fora de qualquer varredura ───────────
+// Medido: o inventario so olhava `supabase/functions` e `scripts/`. `tests-rls/` e
+// `tests-e2e/` podiam nascer, ser desligadas do CI ou perder o passo sem aviso — e era o
+// caso real: nenhum dos workflows rodava `npm run test:rls`.
+const RLS_SUITE = ['tests-rls', 'isolamento.test.ts'].join('/');
+// `suitesRlsOrfas` recebe o CODIGO dos blocos `run:` (ja sem comentario), como
+// `codigoExecutavelDeWorkflow` entrega ao CLI — nao o YAML cru.
+const codigoRun = (...linhas) => codigoExecutavelDeWorkflow(passoLiteral(linhas));
+
+test('RLS: suite sem nenhum bloco run: que rode o vitest.rls.config vira orfa', () => {
+  assert.deepEqual(suitesRlsOrfas([RLS_SUITE, 'tests-rls/outra.test.ts'], 'run: node --test scripts/ci/*.unit.mjs', new Set()), [
+    RLS_SUITE,
+    'tests-rls/outra.test.ts',
+  ]);
+});
+
+test('RLS: o comando do vitest.rls.config no workflow cobre as suites (e a allowlist absolve)', () => {
+  const cobre = codigoRun('npx vitest run --config ./vitest.rls.config.ts');
+  assert.deepEqual(suitesRlsOrfas([RLS_SUITE], cobre, new Set()), [], 'comando presente: nenhuma orfa');
+  const script = codigoRun('bun run test:rls');
+  assert.deepEqual(suitesRlsOrfas([RLS_SUITE], script, new Set()), [], 'o script `test:rls` e o mesmo comando');
+  assert.deepEqual(suitesRlsOrfas([RLS_SUITE], 'echo oi', new Set([RLS_SUITE])), [], 'allowlist absolve');
+});
+
+test('RLS: comando comentado no bloco run: NAO cobre a suite', () => {
+  // Desligar um passo comentando a linha e a forma usual de desligar no YAML; o guard tem
+  // de reprovar do mesmo jeito que reprova o passo apagado.
+  const comentado = codigoRun('# npx vitest run --config ./vitest.rls.config.ts');
+  assert.deepEqual(suitesRlsOrfas([RLS_SUITE], comentado, new Set()), [RLS_SUITE]);
+});
+
+test('E2E: spec fora do passo do Playwright vira orfa, e o passo por pasta cobre', () => {
+  const specs = ['tests-e2e/pedido.spec.ts'];
+  assert.deepEqual(specsE2eOrfas(specs, 'echo oi', new Set()), specs);
+  assert.deepEqual(specsE2eOrfas(specs, codigoRun('bunx playwright test --project=chromium'), new Set()), []);
+  assert.deepEqual(specsE2eOrfas(specs, 'echo oi', new Set(specs)), [], 'allowlist absolve');
+});
+
+test('E2E: a pasta dos specs vem do playwright.config.ts, nao esta fixada no guard', () => {
+  // Se o testDir mudar, os specs da pasta antiga voltam a ser orfaos: por isso a leitura do
+  // config em vez de uma constante — a constante mentiria em silencio.
+  const pasta = pastaE2e();
+  assert.ok(pasta, 'playwright.config.ts precisa declarar testDir');
+  for (const spec of specsE2eNoDisco()) {
+    assert.ok(spec.startsWith(pasta + '/'), `${spec} deveria estar em ${pasta}/`);
+    assert.match(spec, /\.spec\.ts$/u);
+  }
+  assert.ok(specsE2eNoDisco().length > 0, `${pasta}/ nao tem spec nenhum: o inventario estaria olhando a pasta errada`);
+});
+
+test('RLS e E2E: as allowlists nao guardam entrada morta', () => {
+  for (const entrada of [ALLOWLIST_RLS, ALLOWLIST_E2E]) {
+    for (const arquivo of entrada) {
+      assert.ok(existsSync(join(RAIZ, arquivo)), `${arquivo} esta na allowlist mas nao existe no repositorio`);
+    }
+  }
+});
+
+test('arvore atual: a suite de RLS nao roda no CI e esta declarada como tal', () => {
+  // Decisao registrada: a suite autentica usuarios reais no projeto oficial e, com
+  // RLS_ALLOW_WRITES=true, escreve em producao — agendar isso no CI e' decisao do dono.
+  assert.ok(suitesRlsNoDisco().length > 0, 'tests-rls/ deveria ter pelo menos uma suite');
+  assert.deepEqual(suitesRlsOrfas(), [], 'suite de RLS fora do CI e fora da allowlist: registre a decisao');
+});
+
 // ── Regressao: o CLI numa arvore sintetica ────────────────────────────────────
 // O verificador deriva a raiz da propria posicao; copiar o script (e a lib que ele importa)
 // para uma arvore em tmp exercita o CLI inteiro sem tocar no repositorio.
@@ -304,6 +376,61 @@ test('CLI: link simbolico pendurado em scripts/ nao derruba o inventario', () =>
     const r = rodarEm(raiz);
     assert.equal(r.status, 0, r.stdout + r.stderr);
     assert.match(r.stdout, /check-test-inventory: OK/u);
+  } finally {
+    rmSync(raiz, { recursive: true, force: true });
+  }
+});
+
+test('CLI: suite em tests-rls sem passo no workflow reprova; com o vitest.rls.config aprova', () => {
+  const orfa = arvore({ '.github/workflows/main.yml': MAIN_POR_PASTA, 'tests-rls/nova.test.ts': '' });
+  const coberta = arvore({
+    '.github/workflows/main.yml': MAIN_POR_PASTA,
+    '.github/workflows/rls.yml': MAIN_SEM_DENO(['      - run: npx vitest run --config ./vitest.rls.config.ts']),
+    'tests-rls/nova.test.ts': '',
+  });
+  try {
+    const r = rodarEm(orfa);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /tests-rls\/nova\.test\.ts/u);
+    const ok = rodarEm(coberta);
+    assert.equal(ok.status, 0, ok.stdout + ok.stderr);
+  } finally {
+    for (const raiz of [orfa, coberta]) rmSync(raiz, { recursive: true, force: true });
+  }
+});
+
+test('CLI: spec E2E sem o passo do Playwright reprova, e a pasta vem do playwright.config.ts', () => {
+  const config = ["export default defineConfig({", "  testDir: './tests-e2e',", '});', ''].join('\n');
+  const orfa = arvore({
+    '.github/workflows/main.yml': MAIN_POR_PASTA,
+    'playwright.config.ts': config,
+    'tests-e2e/pedido.spec.ts': '',
+  });
+  const coberta = arvore({
+    '.github/workflows/main.yml': MAIN_POR_PASTA,
+    '.github/workflows/e2e.yml': MAIN_SEM_DENO(['      - run: bunx playwright test --project=chromium']),
+    'playwright.config.ts': config,
+    'tests-e2e/pedido.spec.ts': '',
+  });
+  try {
+    const r = rodarEm(orfa);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /tests-e2e\/pedido\.spec\.ts/u);
+    const ok = rodarEm(coberta);
+    assert.equal(ok.status, 0, ok.stdout + ok.stderr);
+  } finally {
+    for (const raiz of [orfa, coberta]) rmSync(raiz, { recursive: true, force: true });
+  }
+});
+
+test('CLI: arvore sem tests-rls nem tests-e2e continua rodando (pasta ausente nao e erro)', () => {
+  // Medido: `readdirSync` numa pasta inexistente lancava ENOENT e o inventario morria com
+  // stack trace em qualquer arvore sintetica sem essas pastas.
+  const raiz = arvore({ '.github/workflows/main.yml': MAIN_POR_PASTA });
+  try {
+    const r = rodarEm(raiz);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.doesNotMatch(r.stderr, /ENOENT/u);
   } finally {
     rmSync(raiz, { recursive: true, force: true });
   }
