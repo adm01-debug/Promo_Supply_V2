@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e2041a1add` · branch `main` · 2026-11-26 13:55 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7633b9bb0f` · branch `main` · 2026-11-26 14:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -659,7 +659,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ip_whitelist` | `ip_address` | obrigatório; único |
 | `ip_whitelist` | `created_by` | FK → users.id |
 | `ip_whitelist` | `created_at` | default now() |
-| … +1082 linhas — lista completa em `context.json` | | |
+| … +1083 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
@@ -776,6 +776,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | trg_assign_numero_solicitacao | BEFORE INSERT | `solicitacoes` | `assign_numero_solicitacao` |  |
 | trg_validate_solicitacao_status | BEFORE UPDATE | `solicitacoes` | `validate_solicitacao_status_transition` |  |
 | trg_recalculate_qualification_score | AFTER INSERT OR UPDATE | `supplier_documents` | `trigger_recalculate_qualification_score` |  |
+| trg_system_alerts_severity_canonica | BEFORE INSERT OR UPDATE OF SEVERITY | `system_alerts` | `system_alerts_severity_canonica` |  |
 
 Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banco):
 

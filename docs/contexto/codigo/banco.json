@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 351,
+ "migrations": 352,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -313,6 +313,7 @@
   "simulate_scan_sla_loop",
   "suggest_unspsc_code",
   "sync_budget_on_payment",
+  "system_alerts_severity_canonica",
   "tenant_in_my_group",
   "tenants_in_my_group",
   "tg_fornecedores_validate_cnpj",
@@ -992,6 +993,13 @@
    "evento": "insert or update",
    "tabela": "supplier_documents",
    "funcao": "trigger_recalculate_qualification_score"
+  },
+  {
+   "nome": "trg_system_alerts_severity_canonica",
+   "quando": "before",
+   "evento": "insert or update of severity",
+   "tabela": "system_alerts",
+   "funcao": "system_alerts_severity_canonica"
   },
   {
    "nome": "trigger_check_telemetry_alerts",
@@ -19534,7 +19542,9 @@
     "health-dashboard",
     "xbz-sync-pedidos"
    ],
-   "triggers": [],
+   "triggers": [
+    "trg_system_alerts_severity_canonica"
+   ],
    "sem_rls": false,
    "nao_usada": false
   },

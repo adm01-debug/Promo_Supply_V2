@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore: ajusta a contagem de migrations do AGENTS.md para 352 (etapa 209) (#533)",
    "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)",
    "fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)",
    "chore(ci): confere jobs vivos de cron.job contra as migrations (#528)",
-   "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)",
-   "chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)"
+   "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)"
   ]
  },
  "pr_template": null,
