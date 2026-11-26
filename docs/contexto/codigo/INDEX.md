@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bf324083bf5d9cdca8e0ce52ecf81d1d7626540a` (2026-11-26T17:08:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0943a883e29bee488079ffb370771dee48aeb231` (2026-11-26T17:47:09-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1551 |
 | arquivos_codigo | 970 |
-| linhas_codigo | 193227 |
+| linhas_codigo | 193456 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -344,7 +344,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (203)
+- docs/qa/05-PROGRESSO.md (204)
 - AGENTS.md (35)
 - docs/pendencias/_indice.md (15)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `0943a88` fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)
 - 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
 - 2026-11-26 `4a068aa` fix(ci): regenera a matriz edge-tabela apos a #592 (#595)
 - 2026-11-26 `803a3a2` fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `eeff86e` fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)
 - 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
 - 2026-11-26 `63f3816` fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)
-- 2026-11-26 `054f49e` fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

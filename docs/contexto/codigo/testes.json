@@ -115,11 +115,11 @@
   {
    "arquivo": "scripts/ci/check-test-inventory.unit.mjs",
    "tipo": "unit",
-   "linhas": 311,
+   "linhas": 438,
    "testa": [
     "scripts/ci/check-test-inventory.mjs"
    ],
-   "casos": 18
+   "casos": 28
   },
   {
    "arquivo": "scripts/ci/commit-msg-lint.unit.mjs",
@@ -2941,7 +2941,7 @@
   {
    "arquivo": "tests-rls/rls-isolation.test.ts",
    "tipo": "unit",
-   "linhas": 257,
+   "linhas": 274,
    "testa": [],
    "casos": 10
   }

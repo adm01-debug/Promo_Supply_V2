@@ -158,7 +158,7 @@
   {
    "arquivo": "scripts/ci/check-test-inventory.mjs",
    "descricao": "Portado do Zapp_Web_V2 (E48/E49/R2-INF-013) e adaptado a este repo: verifica que todo teste no disco tem um passo que o execute em ALGUM workflow — os .test.ts das edges",
-   "linhas": 304,
+   "linhas": 389,
    "env": [],
    "npm_scripts": [
     "guards"

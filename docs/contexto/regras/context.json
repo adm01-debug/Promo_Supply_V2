@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "bf324083bf5d9cdca8e0ce52ecf81d1d7626540a",
+  "sha": "0943a883e29bee488079ffb370771dee48aeb231",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 20:24 UTC",
+  "generated_at": "2026-11-26 21:15 UTC",
   "files_total": 1552,
   "code_files": 1377,
-  "code_lines": 227409,
+  "code_lines": 227638,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "40833ebffc64e3f9",
+ "facts_hash": "5eddedc1523bc1d4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35246,7 +35246,7 @@
   {
    "module": "scripts",
    "files": 82,
-   "lines": 30165,
+   "lines": 30377,
    "tables": [
     "a",
     "a_tabela",
@@ -37243,7 +37243,7 @@
   {
    "module": "tests-rls",
    "files": 1,
-   "lines": 257,
+   "lines": 274,
    "tables": [
     "audit_logs",
     "contracts",
@@ -95459,7 +95459,7 @@
   },
   "scripts/ci/check-test-inventory.mjs": {
    "path": "scripts/ci/check-test-inventory.mjs",
-   "lines": 304,
+   "lines": 389,
    "exports": [
     "const RAIZ",
     "const ALLOWLIST_NODE",
@@ -95473,6 +95473,14 @@
     "function suitesNodeNoDisco",
     "function padroesNodeDosWorkflows",
     "function suitesNodeOrfas",
+    "const ALLOWLIST_RLS",
+    "const ALLOWLIST_E2E",
+    "function codigoExecutavelDosWorkflows",
+    "function pastaE2e",
+    "function suitesRlsNoDisco",
+    "function specsE2eNoDisco",
+    "function suitesRlsOrfas",
+    "function specsE2eOrfas",
     "function orfaosDoInventario"
    ],
    "params": [
@@ -95491,7 +95499,7 @@
   },
   "scripts/ci/check-test-inventory.unit.mjs": {
    "path": "scripts/ci/check-test-inventory.unit.mjs",
-   "lines": 311
+   "lines": 438
   },
   "scripts/ci/commit-msg-lint.mjs": {
    "path": "scripts/ci/commit-msg-lint.mjs",
@@ -125836,7 +125844,7 @@
   },
   "tests-rls/rls-isolation.test.ts": {
    "path": "tests-rls/rls-isolation.test.ts",
-   "lines": 257,
+   "lines": 274,
    "is_test": true,
    "tables": [
     {
@@ -125885,7 +125893,8 @@
     "VITE_SUPABASE_URL"
    ],
    "errors": [
-    "RLS suite exige VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY do projeto oficial. "
+    "RLS suite exige VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY do projeto oficial. ",
+    "usuario B sem vinculo em user_tenants: a prova de isolamento nao roda (verifique RLS_TEST_USER_B)"
    ],
    "rule_comments": [
     "Aceito: erro de permissão OU lista vazia.",
@@ -125915,10 +125924,22 @@
   }
  },
  "git": {
-  "sha": "bf324083bf5d9cdca8e0ce52ecf81d1d7626540a",
+  "sha": "0943a883e29bee488079ffb370771dee48aeb231",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "0943a88",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/check-test-inventory.mjs",
+     "scripts/ci/check-test-inventory.unit.mjs",
+     "tests-rls/rls-isolation.test.ts"
+    ]
+   },
    {
     "sha": "bf32408",
     "date": "2026-11-26",
@@ -126261,18 +126282,6 @@
      "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
      "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
     ]
-   },
-   {
-    "sha": "c3cb7d7",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
-     "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -126282,7 +126291,7 @@
    ],
    [
     "AGENTS.md",
-    21
+    20
    ],
    [
     "src/integrations/supabase/types.ts",
@@ -126291,6 +126300,18 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "scripts/ci/check-test-inventory.mjs",
+    1
+   ],
+   [
+    "scripts/ci/check-test-inventory.unit.mjs",
+    1
+   ],
+   [
+    "tests-rls/rls-isolation.test.ts",
+    1
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
@@ -126342,18 +126363,6 @@
    ],
    [
     "src/pages/documentos/DocumentosFiscais.tsx",
-    1
-   ],
-   [
-    "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
-    1
-   ],
-   [
-    "src/pages/documentos/persistenciaFiscal.ts",
-    1
-   ],
-   [
-    "supabase/functions/run-audit/index.ts",
     1
    ]
   ]
