@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `63f3816c15` · branch `main` · 2026-11-26 16:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53abd53acc` · branch `main` · 2026-11-26 17:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -15,7 +15,7 @@
 
 ## Matriz tabela × operação → quem pode (derivada das políticas RLS)
 
-> ⚠️ **NÃO VERIFICADO:** 20 comando(s) em 5 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`. Confirme no banco real antes de assumir.
+> ⚠️ **NÃO VERIFICADO:** 25 comando(s) em 6 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `audit_logs_legacy_20260712`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`, `telemetry_logs_legacy_20260712`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`<br>`supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql`. Confirme no banco real antes de assumir.
 
 | Tabela | RLS | SELECT | INSERT | UPDATE | DELETE |
 |---|---|---|---|---|---|
@@ -37,7 +37,7 @@
 | `audit_logs_202607` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_202608` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_202609` | não encontrado | ? | ? | ? | ? |
-| `audit_logs_legacy_20260712` | enabled | authenticated: has_role(auth.uid(), 'admin'::app_role) | — | — | — |
+| `audit_logs_legacy_20260712` | enabled | authenticated: has_role(auth.uid(), 'admin'::app_role)<br>service_role: true<br>authenticated: public.has_role(auth.uid(), 'admin'::app_role) | service_role: true | service_role: true | service_role: true |
 | `blocked_countries` | não encontrado | authenticated: public.has_role(auth.uid(), 'admin'::app_role) | ? | ? | ? |
 | `blocked_ips` | enabled | public: has_role(auth.uid(), 'admin')<br>authenticated: has_role(auth.uid(), 'admin'::app_role) | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') |
 | `budget_audit_logs` | enabled | authenticated: public.has_role(auth.uid(), 'admin') | — | — | — |
@@ -151,7 +151,7 @@
 | `telemetry_logs_202607` | enabled | — | — | — | — |
 | `telemetry_logs_202608` | enabled | — | — | — | — |
 | `telemetry_logs_202609` | enabled | — | — | — | — |
-| `telemetry_logs_legacy_20260712` | enabled | public: EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )<br>public: public.has_role(auth.uid(), 'admin') | authenticated: auth.uid() = user_id | — | — |
+| `telemetry_logs_legacy_20260712` | enabled | public: EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )<br>public: public.has_role(auth.uid(), 'admin')<br>service_role: true<br>authenticated: public.has_role(auth.uid(), 'admin'::app_role) | authenticated: auth.uid() = user_id<br>service_role: true | service_role: true | service_role: true |
 | `temp_file_snapshots` | enabled | authenticated: public.has_role(auth.uid(), 'admin') | — | — | — |
 | `tenants` | enabled | authenticated: public.user_belongs_to_tenant(auth.uid(), id) | — | — | — |
 | `unspsc_codes` | enabled | authenticated: auth.uid() IS NOT NULL | — | — | — |
@@ -471,7 +471,9 @@ Middleware matcher (Next.js): nenhum
 
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
+| grant | anon, authenticated | delete, update, truncate | `audit_logs_legacy_20260712`, `telemetry_logs_legacy_20260712` |
 | grant | anon, authenticated | execute | `has_role`, `has_permission`, `get_user_role`, `is_ip_blocked`, `log_login_attempt` |
+| grant | anon, authenticated | select, insert | `audit_logs_legacy_20260712`, `telemetry_logs_legacy_20260712` |
 | grant | authenticated | execute | `generate_sequential_number`, `find_approval_rule`, `get_effective_approver`, `is_account_locked`, `record_failed_login`, `clear_login_lockout`, `check_budget_availability`, `log_login_attempt`, `has_role`, `has_permission`, `get_user_role`, `update_estoque_saldo`, `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics` … +53 |
 | grant | authenticated | insert | `telemetry_logs` |
 | grant | authenticated | select | `system_alerts`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `deadlock_snapshots`, `v_system_health_overview`, `health_scan_runs`, `security_definer_baseline`, `mv_dashboard_kpis`, `audit_logs_legacy_20260712`, `table_size_snapshots`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal` … +8 |
@@ -499,6 +501,7 @@ Middleware matcher (Next.js): nenhum
 | revoke | anon | insert | `audit_logs` |
 | revoke | anon | select | `supplier_compliance_summary`, `v_system_health_overview`, `mv_dashboard_kpis` |
 | revoke | anon, authenticated | all | `telemetry_logs_legacy_20260712`, `mv_dashboard_kpis`, `claim_outbox_batch` |
+| revoke | anon, authenticated | delete, update, truncate, references, trigger | `audit_logs_legacy_20260712`, `telemetry_logs_legacy_20260712` |
 | revoke | anon, authenticated | update, delete, truncate | `audit_logs` |
 | revoke | authenticated | all | `exec_sql` |
 | revoke | authenticated | update, delete | `audit_logs` |

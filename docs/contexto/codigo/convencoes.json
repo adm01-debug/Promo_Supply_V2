@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)",
    "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)",
    "fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)",
    "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)",
-   "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)",
-   "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)"
+   "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)"
   ]
  },
  "pr_template": null,

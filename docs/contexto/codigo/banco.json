@@ -6,10 +6,10 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 364,
+ "migrations": 365,
  "seeds": [],
  "avisos": [
-  "50 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
+  "51 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
  ],
  "extensoes": [
   "btree_gist",
@@ -13562,6 +13562,21 @@
    ],
    "sem_rls": false,
    "nao_usada": false
+  },
+  "public": {
+   "colunas": {},
+   "rls": false,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": null,
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [
+    "a_fill_tenant_id"
+   ],
+   "sem_rls": false,
+   "nao_usada": true
   },
   "punchout_catalogs": {
    "colunas": {

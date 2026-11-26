@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `63f3816c15` · branch `main` · 2026-11-26 16:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `53abd53acc` · branch `main` · 2026-11-26 17:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -9,7 +9,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 
 ## B. Quem pode ver/alterar o quê (RLS — conforme migrations do repo; schema real: `context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO))
 
-> ⚠️ **NÃO VERIFICADO:** 20 comando(s) em 5 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`. Confirme no banco real antes de assumir.
+> ⚠️ **NÃO VERIFICADO:** 25 comando(s) em 6 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `audit_logs_legacy_20260712`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`, `telemetry_logs_legacy_20260712`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`<br>`supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql`. Confirme no banco real antes de assumir.
 
 | Tabela | Política | Comando | Roles | Modo | USING | WITH CHECK |
 |---|---|---|---|---|---|---|
@@ -321,6 +321,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
 | `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
 | `entity_versions` | Authenticated can insert versions | INSERT | authenticated | permissive |  | `changed_by IS NULL OR auth.uid() = changed_by` |
+| `audit_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
+| `telemetry_logs_legacy_20260712` | service_role_all_partition | ALL | service_role | permissive | `true` | `true` |
 | `notifications` | tenant_isolation_notifications | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `category_strategies` | tenant_isolation | ALL | authenticated | permissive | `organization_id = public.get_my_organization()` |  |
 | `sso_configurations` | SSO configurations isolated by tenant | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
@@ -354,6 +356,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
+| `audit_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
+| `telemetry_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

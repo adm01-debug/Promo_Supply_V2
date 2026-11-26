@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "63f3816c15cc6327c462587dff9e16872965d044",
+  "sha": "53abd53accdc5ea34821b273e80c885b1ad186ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 16:54 UTC",
-  "files_total": 1538,
-  "code_files": 1363,
-  "code_lines": 226166,
+  "generated_at": "2026-11-26 17:01 UTC",
+  "files_total": 1540,
+  "code_files": 1365,
+  "code_lines": 226267,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "cc86939e4a0542b9",
+ "facts_hash": "dc6de282b3271092",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 393,
+   ".sql": 395,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -18512,6 +18512,26 @@
     "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
    },
    {
+    "name": "service_role_all_partition",
+    "table": "audit_logs_legacy_20260712",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "name": "service_role_all_partition",
+    "table": "telemetry_logs_legacy_20260712",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
     "name": "tenant_isolation_notifications",
     "table": "notifications",
     "cmd": "ALL",
@@ -18840,6 +18860,26 @@
     "using": "",
     "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
+   },
+   {
+    "name": "admin_read_partition",
+    "table": "audit_logs_legacy_20260712",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "name": "admin_read_partition",
+    "table": "telemetry_logs_legacy_20260712",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
    }
   ],
   "triggers": [
@@ -27320,6 +27360,7 @@
    "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
    "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
    "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
+   "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27344,6 +27385,7 @@
    "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
    "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
    "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
+   "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -31435,6 +31477,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "delete, update, truncate, references, trigger",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "delete, update, truncate, references, trigger",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
@@ -31496,6 +31570,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "delete, update, truncate",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "delete, update, truncate",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
    }
   ],
   "raises": [
@@ -31928,6 +32018,26 @@
    {
     "src": "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
     "stmt": "EXECUTE format('ALTER TABLE public.%I VALIDATE CONSTRAINT %I', r.tabela, v_nome);"
+   },
+   {
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    "stmt": "EXECUTE format( 'CREATE POLICY \"admin_read_partition\" ON public.%I FOR SELECT TO authenticated ' 'USING (public.has_role(auth.uid(), ''admin''::app_role) AND public.tenant_in_my_group(tenant_id))', t );"
+   },
+   {
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    "stmt": "IF tem_tenant THEN ALTER TABLE public.audit_logs_legacy_20260712 ENABLE ROW LEVEL SECURITY;"
+   },
+   {
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    "stmt": "IF tem_tenant THEN CREATE POLICY \"service_role_all_partition\" ON public.audit_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);"
+   },
+   {
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    "stmt": "IF tem_tenant THEN ALTER TABLE public.telemetry_logs_legacy_20260712 ENABLE ROW LEVEL SECURITY;"
+   },
+   {
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    "stmt": "IF tem_tenant THEN CREATE POLICY \"service_role_all_partition\" ON public.telemetry_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);"
    },
    {
     "src": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
@@ -36813,8 +36923,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 364,
-   "lines": 30865,
+   "files": 365,
+   "lines": 30942,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36905,8 +37015,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 17,
-   "lines": 1172,
+   "files": 18,
+   "lines": 1196,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36924,6 +37034,7 @@
     "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
     "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
     "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
+    "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -77223,6 +77334,26 @@
     "src": "supabase/migrations/20261119000000_entity_versions_politicas_authenticated.sql"
    },
    {
+    "name": "service_role_all_partition",
+    "table": "audit_logs_legacy_20260712",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "name": "service_role_all_partition",
+    "table": "telemetry_logs_legacy_20260712",
+    "cmd": "ALL",
+    "roles": "service_role",
+    "mode": "permissive",
+    "using": "true",
+    "check": "true",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
     "name": "tenant_isolation_notifications",
     "table": "notifications",
     "cmd": "ALL",
@@ -77551,6 +77682,26 @@
     "using": "",
     "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
     "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
+   },
+   {
+    "name": "admin_read_partition",
+    "table": "audit_logs_legacy_20260712",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "name": "admin_read_partition",
+    "table": "telemetry_logs_legacy_20260712",
+    "cmd": "SELECT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "public.has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
    }
   ],
   "db_triggers": [
@@ -84168,11 +84319,19 @@
    "audit_logs_legacy_20260712": {
     "rls": "enabled",
     "SELECT": [
-     "authenticated: has_role(auth.uid(), 'admin'::app_role)"
+     "authenticated: has_role(auth.uid(), 'admin'::app_role)",
+     "service_role: true",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role)"
     ],
-    "INSERT": [],
-    "UPDATE": [],
-    "DELETE": []
+    "INSERT": [
+     "service_role: true"
+    ],
+    "UPDATE": [
+     "service_role: true"
+    ],
+    "DELETE": [
+     "service_role: true"
+    ]
    },
    "blocked_countries": {
     "rls": "não encontrado",
@@ -85873,13 +86032,20 @@
     "rls": "enabled",
     "SELECT": [
      "public: EXISTS ( SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role::text = 'admin' )",
-     "public: public.has_role(auth.uid(), 'admin')"
+     "public: public.has_role(auth.uid(), 'admin')",
+     "service_role: true",
+     "authenticated: public.has_role(auth.uid(), 'admin'::app_role)"
     ],
     "INSERT": [
-     "authenticated: auth.uid() = user_id"
+     "authenticated: auth.uid() = user_id",
+     "service_role: true"
     ],
-    "UPDATE": [],
-    "DELETE": []
+    "UPDATE": [
+     "service_role: true"
+    ],
+    "DELETE": [
+     "service_role: true"
+    ]
    },
    "temp_file_snapshots": {
     "rls": "enabled",
@@ -90425,6 +90591,38 @@
    },
    {
     "kind": "revoke",
+    "privs": "delete, update, truncate, references, trigger",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "delete, update, truncate, references, trigger",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "select, insert",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
@@ -90486,6 +90684,22 @@
     "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "delete, update, truncate",
+    "object": "audit_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "delete, update, truncate",
+    "object": "telemetry_logs_legacy_20260712",
+    "objkind": "table",
+    "roles": "anon, authenticated",
+    "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
    }
   ],
   "guards": [
@@ -93467,6 +93681,13 @@
     "msg": "2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES auth.users(id) ON DELETE %s NOT VALID', r.tabela, v_nome, r.coluna, r.acao );` · `EXECUTE format('ALTER TABLE public.%I VALIDATE CONSTRAINT %I', r.tabela, v_nome);`",
     "where": [
      "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
+    "msg": "5 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'CREATE POLICY \"admin_read_partition\" ON public.%I FOR SELECT TO authenticated ' 'USING (public.has_role(auth.uid(), ''admin''::app_role) AND public.tenant_in_my_group(tenant_id))', t );` · `IF tem_tenant THEN CREATE POLICY \"service_role_all_partition\" ON public.audit_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);` · `IF tem_tenant THEN CREATE POLICY \"service_role_all_partition\" ON public.telemetry_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);`",
+    "where": [
+     "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql"
     ]
    },
    {
@@ -124669,6 +124890,10 @@
    "path": "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
    "lines": 42
   },
+  "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql": {
+   "path": "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+   "lines": 77
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124797,6 +125022,10 @@
   "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql": {
    "path": "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
    "lines": 4
+  },
+  "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql": {
+   "path": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
+   "lines": 24
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -125057,10 +125286,22 @@
   }
  },
  "git": {
-  "sha": "63f3816c15cc6327c462587dff9e16872965d044",
+  "sha": "53abd53accdc5ea34821b273e80c885b1ad186ed",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "53abd53",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+     "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+    ]
+   },
    {
     "sha": "63f3816",
     "date": "2026-11-26",
@@ -125414,17 +125655,6 @@
      "src/tests/spot/spotApi.test.ts",
      "supabase/functions/spot-api/index.ts"
     ]
-   },
-   {
-    "sha": "28715cd",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/tests/spot/spotApi.test.ts",
-     "supabase/functions/spot-api/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125434,7 +125664,7 @@
    ],
    [
     "AGENTS.md",
-    17
+    18
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -125453,12 +125683,12 @@
     2
    ],
    [
-    "src/tests/spot/spotApi.test.ts",
-    2
+    "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
+    1
    ],
    [
-    "supabase/functions/spot-api/index.ts",
-    2
+    "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
+    1
    ],
    [
     "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
