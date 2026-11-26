@@ -615,7 +615,7 @@
     "useSolicitacoes",
     "useSolicitacoesKPIs"
    ],
-   "linhas": 458,
+   "linhas": 461,
    "dominio": "features/solicitacoes",
    "tabelas": [
     "approval_history",
@@ -644,7 +644,7 @@
     "src/features/solicitacoes/index.ts",
     "src/hooks/usePrefetch.ts"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/hooks/use-mobile.tsx",
@@ -1314,7 +1314,7 @@
     "useFornecedores",
     "useFornecedoresKPIs"
    ],
-   "linhas": 322,
+   "linhas": 324,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1347,7 +1347,7 @@
     "src/pages/licitacoes/Licitacoes.tsx",
     "src/pages/pedidos/Pedidos.tsx"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/hooks/useFuseSearch.ts",

@@ -129,6 +129,10 @@
    "importado_por": 14
   },
   {
+   "arquivo": "src/hooks/useFornecedores.ts",
+   "importado_por": 14
+  },
+  {
    "arquivo": "src/hooks/usePagamentos.ts",
    "importado_por": 14
   },
@@ -138,10 +142,6 @@
   },
   {
    "arquivo": "src/hooks/useApprovalWorkflow.ts",
-   "importado_por": 13
-  },
-  {
-   "arquivo": "src/hooks/useFornecedores.ts",
    "importado_por": 13
   },
   {

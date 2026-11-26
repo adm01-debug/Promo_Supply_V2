@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 307,
+ "total": 309,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 289
+  "unit": 291
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 212
+   "arquivos": 214
   },
   {
    "padrao": "outro",
@@ -1054,6 +1054,15 @@
    "casos": 7
   },
   {
+   "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx",
+   "tipo": "unit",
+   "linhas": 54,
+   "testa": [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+   ],
+   "casos": 1
+  },
+  {
    "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx",
    "tipo": "unit",
    "linhas": 75,
@@ -1199,6 +1208,15 @@
     "src/hooks/useFornecedores.ts"
    ],
    "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
+   "tipo": "unit",
+   "linhas": 48,
+   "testa": [
+    "src/hooks/useFornecedores.ts"
+   ],
+   "casos": 1
   },
   {
    "arquivo": "src/hooks/__tests__/useFornecedores.organization.test.tsx",
@@ -2880,7 +2898,7 @@
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
   "src/features/solicitacoes/hooks/useNomesDeGestor.ts": 1,
-  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 5,
+  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 6,
   "src/features/solicitacoes/index.ts": 1,
   "src/features/solicitacoes/pessoasDaEmpresa.ts": 1,
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
@@ -2891,7 +2909,7 @@
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useDevolucoes.ts": 3,
   "src/hooks/useFeedback.ts": 1,
-  "src/hooks/useFornecedores.ts": 4,
+  "src/hooks/useFornecedores.ts": 5,
   "src/hooks/useFuseSearch.ts": 1,
   "src/hooks/useGeoRestriction.ts": 1,
   "src/hooks/useImageCompression.ts": 1,

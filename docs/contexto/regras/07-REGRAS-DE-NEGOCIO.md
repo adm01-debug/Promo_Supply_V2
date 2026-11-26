@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `236e96db05` · branch `main` · 2026-11-26 03:43 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7cc4d94cd4` · branch `main` · 2026-11-26 03:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3466 testes em 256 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3470 testes em 258 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2704,6 +2704,8 @@ _nenhum item encontrado_
 | `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx` | 2 | usePedidosKPIs - alcance do invalidate (etapa 190) · invalidar o prefixo [pedidos] refaz a consulta dos cartoes |
+| `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx` | 2 | useSolicitacoesKPIs - alcance do invalidate (etapa 191) · invalidar o prefixo [solicitacoes] refaz a consulta dos cartoes |
+| `src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx` | 2 | useFornecedoresKPIs - alcance do invalidate (etapa 191) · invalidar o prefixo [fornecedores] refaz a consulta dos cartoes |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
 | `src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx` | 2 | usePagamentosKPIs - alcance do invalidate (etapa 190) · invalidar o prefixo [pagamentos] refaz a consulta dos cartoes |
 | `src/hooks/__tests__/usePurchaseHistory.chaveItens.test.tsx` | 2 | usePurchaseHistory - chave dos itens (HK-10) · rebusca os itens quando o conjunto de pedidos muda sem mudar de tamanho |
