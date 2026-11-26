@@ -113,6 +113,27 @@ async function invokeBridge<T>(body: BridgeBody): Promise<BridgeResponse<T>> {
 }
 
 // ---------------------------------------------------------------------------
+// buscarProdutoPorIdEstrito
+// Mesma consulta de buscarProdutoPorId, mas deixa o PimBridgeError subir.
+// Quem congela dado fiscal na OC (NCM, IPI, codigo do fornecedor) nao pode
+// confundir "PIM fora do ar" com "produto sem dado fiscal" -- o hook devolve
+// null nos dois casos para nao quebrar telas de leitura.
+// ---------------------------------------------------------------------------
+export async function buscarProdutoPorIdEstrito(
+  pimProductId: string,
+): Promise<PimProdutoCatalogo | null> {
+  const resp = await invokeBridge<PimProdutoCatalogo>({
+    operation: 'select',
+    table: 'v_compras_catalogo',
+    selectColumns: '*',
+    limit: 1,
+    offset: 0,
+    filters: { pim_product_id: pimProductId },
+  });
+  return resp.data[0] ?? null;
+}
+
+// ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 

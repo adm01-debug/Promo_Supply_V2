@@ -32,7 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePedidos } from "@/features/pedidos";
 import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
-import { useCatalogoPim } from "@/hooks/useCatalogoPim";
+import { buscarProdutoPorIdEstrito } from "@/hooks/useCatalogoPim";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage, formatarEnderecoEntrega } from './gerarOrdemHelpers';
 import { formatCurrency } from "@/lib/utils";
@@ -58,7 +58,6 @@ const GerarOrdem = () => {
 
   const { createPedido } = usePedidos();
   const { cotacoes } = useCotacoes({ solicitacao_id: solicitacaoId || undefined });
-  const { buscarProdutoPorId } = useCatalogoPim();
 
   // Fetch solicitacao from Supabase
   const { data: solicitacaoData } = useQuery({
@@ -99,11 +98,30 @@ const GerarOrdem = () => {
   const pimProductId = (solicitacaoData as { pim_product_id?: string | null } | null)?.pim_product_id ?? null;
   const pimVariantId = (solicitacaoData as { pim_variant_id?: string | null } | null)?.pim_variant_id ?? null;
 
-  const { data: pimProduto } = useQuery({
+  const {
+    data: pimProduto,
+    isLoading: pimCarregando,
+    isError: pimErro,
+    error: pimErroDetalhe,
+  } = useQuery({
     queryKey: ['gerar-ordem-pim-produto', pimProductId],
-    queryFn: () => buscarProdutoPorId(pimProductId as string),
+    // Etapa 169: antes usava buscarProdutoPorId, que devolve null quando a bridge
+    // falha. A tela lia isso como "produto sem NCM/IPI" e gravava a OC em branco.
+    queryFn: () => buscarProdutoPorIdEstrito(pimProductId as string),
     enabled: !!pimProductId,
+    retry: false,
   });
+
+  const pimBloqueia = !!pimProductId && (pimCarregando || pimErro || !pimProduto);
+  const avisoCatalogo = !pimProductId
+    ? null
+    : pimCarregando
+      ? 'Consultando o catalogo PIM para travar NCM, IPI e codigo do fornecedor...'
+      : pimErro
+        ? `Catalogo PIM indisponivel: ${pimErroDetalhe instanceof Error ? pimErroDetalhe.message : String(pimErroDetalhe)}. A ordem de compra fica bloqueada para nao gravar NCM, IPI e codigo do fornecedor em branco.`
+        : !pimProduto
+          ? `O produto ${pimProductId} nao foi encontrado no catalogo PIM. Sem NCM, IPI e codigo do fornecedor a ordem nao e emitida.`
+          : null;
 
   // Fetch fornecedores
   const { data: fornecedoresData = [] } = useQuery({
@@ -251,6 +269,17 @@ const GerarOrdem = () => {
           });
           return;
         }
+
+    // Etapa 169: sem NCM/IPI/codigo do fornecedor a OC nasce incompleta e ainda
+    // exibia "Ordem Gerada!". Bloqueia quando o PIM falhou ou nao tem o produto.
+    if (pimBloqueia) {
+      toast({
+        title: "Catalogo PIM indisponivel",
+        description: avisoCatalogo ?? "Nao foi possivel congelar NCM, IPI e codigo do fornecedor.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -626,11 +655,21 @@ const GerarOrdem = () => {
               <Separator className="my-4" />
 
               <div className="space-y-3">
+                {avisoCatalogo && (
+                  <div
+                    role={pimBloqueia ? "alert" : "status"}
+                    className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+                  >
+                    {avisoCatalogo}
+                  </div>
+                )}
                 <Button 
                   onClick={finalizarOrdem} 
                   className="w-full gap-2 gradient-primary h-12 text-lg"
-                  disabled={isSubmitting || !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0) || solicitacaoData?.status !== 'aprovada'}
-                                    title={solicitacaoData && solicitacaoData.status !== 'aprovada'
+                  disabled={isSubmitting || !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0) || solicitacaoData?.status !== 'aprovada' || pimBloqueia}
+                                    title={pimBloqueia
+                                      ? 'Catalogo PIM indisponivel ou produto sem vinculo: sem NCM, IPI e codigo do fornecedor a OC nao e emitida'
+                                      : solicitacaoData && solicitacaoData.status !== 'aprovada'
                                       ? 'A solicitacao precisa estar aprovada para gerar a ordem de compra'
                                       : !fornecedor.id || !selectedCotacao || !(solicitacao.valorUnitario > 0)
                                         ? 'Selecione uma cotacao com fornecedor e preco definidos para gerar a OC'
