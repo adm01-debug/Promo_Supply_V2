@@ -148,22 +148,38 @@ serve(async (req) => {
 
     if (sessionError || !session) throw new Error("Session not found");
 
-    // SEC-PUNCHOUT: autentica o fornecedor antes de criar a solicitação.
-    // A sessão guarda catalog_id; se o catálogo tem shared_secret_encrypted,
-    // o XML precisa apresentar o shared secret correto (fail-closed).
+    // SEC-PUNCHOUT/INT-09: autentica o fornecedor antes de criar a solicitação.
+    // Esta edge é pública (sem JWT), então a conferência do shared secret é o
+    // único controle de origem. Catálogo inativo, inexistente ou sem segredo
+    // configurado é recusado (fail-closed) — antes o bloco era condicional, e um
+    // catálogo sem `shared_secret_encrypted` aceitava qualquer POST.
     const { data: catalog, error: catalogError } = await supabaseClient
       .from("punchout_catalogs")
       .select("id, shared_secret_encrypted, is_active")
       .eq("id", session.catalog_id)
-      .maybeSingle();
+      .eq("is_active", true)
+      .single();
 
-    if (catalogError) throw new Error("Error loading catalog: " + catalogError.message);
+    if (catalogError || !catalog) {
+      return new Response(JSON.stringify({ error: "Catalog not found" }), {
+        status: 403,
+        headers: buildResponseHeaders(cors),
+      });
+    }
 
-    if (catalog?.shared_secret_encrypted) {
-      const expected = await decryptPunchOutSecret(catalog.shared_secret_encrypted);
-      if (!expected || !sharedSecret || !timingSafeEqualStr(sharedSecret, expected)) {
-        throw new Error("SharedSecret mismatch");
-      }
+    if (!catalog.shared_secret_encrypted) {
+      return new Response(JSON.stringify({ error: "Catalog has no shared secret configured" }), {
+        status: 403,
+        headers: buildResponseHeaders(cors),
+      });
+    }
+
+    const expected = await decryptPunchOutSecret(catalog.shared_secret_encrypted);
+    if (!expected || !sharedSecret || !timingSafeEqualStr(sharedSecret, expected)) {
+      return new Response(JSON.stringify({ error: "SharedSecret mismatch" }), {
+        status: 403,
+        headers: buildResponseHeaders(cors),
+      });
     }
 
     // M-05/INT-08: o cache de idempotencia so responde DEPOIS de a sessao existir
