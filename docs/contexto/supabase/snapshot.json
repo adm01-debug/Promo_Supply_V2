@@ -37300,7 +37300,7 @@
           "database": "postgres",
           "jobid": 18,
           "jobname": "outbox-worker-1min",
-          "schedule": "* * * * *",
+          "schedule": "*/15 * * * *",
           "username": "postgres"
         },
         {
@@ -39136,6 +39136,36 @@
         "volatility": "volatile"
       },
       {
+        "args": "p_batch_size integer",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": "Reserva atomica de lote da integration_outbox (FOR UPDATE SKIP LOCKED + lease de 10 min). Uso exclusivo do worker process-outbox.",
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "e2c61caf2df12b46",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "claim_outbox_batch",
+        "owner": "postgres",
+        "returns": "SETOF integration_outbox",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
         "args": "",
         "callers": {
           "code": [
@@ -39878,9 +39908,13 @@
             {
               "file": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [
             "123:cron-watchdog-15min"
           ],
@@ -42487,9 +42521,13 @@
             {
               "file": "supabase/migrations/20261122150000_cron_watchdog_sla_granularidade_e_grace_period.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [
             "public.cron_watchdog"
@@ -62642,6 +62680,12 @@
         "statements": 2,
         "statements_sha": "5e7f37380069f6ac",
         "version": "20261127130000"
+      },
+      {
+        "name": "cron_watchdog_falha_por_janela_de_tempo",
+        "statements": 1,
+        "statements_sha": "148ff141228ffdd6",
+        "version": "20261127140000"
       }
     ],
     "policies": [

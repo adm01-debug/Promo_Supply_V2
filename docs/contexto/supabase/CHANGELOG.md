@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 04:51 UTC
+
+- **cron jobs** alterado (1): `18:outbox-worker-1min`
+- **functions** adicionado (1): `public.claim_outbox_batch(p_batch_size integer)`
+- **functions** alterado (2): `public.cron_watchdog()`, `public.resolve_stale_system_error_alerts()`
+- **migrations** adicionado (1): `20261127140000_cron_watchdog_falha_por_janela_de_tempo`
+
 ## 2026-11-26 04:39 UTC
 
 - **functions** alterado (4): `public.apply_lgpd_retention()`, `public.cleanup_old_integration_outbox()`, `public.cleanup_old_system_alerts()`, `public.cron_watchdog()`

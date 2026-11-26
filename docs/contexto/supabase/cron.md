@@ -12,7 +12,7 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 14 | cleanup-checkpoint-snapshots | `30 3 * * 0` | sim | postgres | postgres | `DELETE FROM public.checkpoint_snapshots WHERE captured_at < NOW() - INTERVAL '30 days'` |
 | 16 | cleanup-integration-outbox-daily | `30 3 * * *` | sim | postgres | postgres | `SELECT public.cleanup_old_integration_outbox();` |
 | 17 | lgpd_retention_daily | `15 3 * * *` | sim | postgres | postgres | ` SELECT public.apply_lgpd_retention(); ` |
-| 18 | outbox-worker-1min | `* * * * *` | sim | postgres | postgres | `SELECT public._invoke_edge_function('process-outbox');` |
+| 18 | outbox-worker-1min | `*/15 * * * *` | sim | postgres | postgres | `SELECT public._invoke_edge_function('process-outbox');` |
 | 19 | refresh-mv-dashboard-kpis | `*/15 * * * *` | sim | postgres | postgres | `SELECT public.refresh_mv_dashboard_kpis();` |
 | 24 | xbz-sync-watchdog-hourly | `15 * * * *` | sim | postgres | postgres | `select public.xbz_sync_watchdog()` |
 | 31 | spot-api-sync-catalog | `10 3 * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncCatalog');` |
