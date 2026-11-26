@@ -32,10 +32,21 @@ export interface CotacaoFilters {
   solicitacao_id?: string;
   fornecedor_id?: string;
   status?: string;
+  /**
+   * Opt-in. Com `page`, a consulta pagina no servidor (`.range` + `count`) e
+   * `totalCount` passa a valer; sem `page`, a lista completa continua vindo,
+   * como `Cotacao.tsx` e `GerarOrdem.tsx` esperam.
+   */
+  page?: number;
+  pageSize?: number;
 }
 
 async function fetchCotacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: CotacaoFilters) {
-  if (!userId || !organizationId) return [];
+  if (!userId || !organizationId) return { data: [] as Cotacao[], totalCount: 0 };
+
+  const paginar = typeof filters?.page === 'number';
+  const pageSize = filters?.pageSize ?? 20;
+  const from = ((filters?.page ?? 1) - 1) * pageSize;
 
   let query = supabase
     .from('cotacoes')
@@ -48,17 +59,19 @@ async function fetchCotacoesData(userId: string | undefined, organizationId: str
       last_follow_up_at, follow_up_status,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo, produto_id)
-    `)
+    `, paginar ? { count: 'exact' } : {})
     .order('score_total', { ascending: false })
     .eq('organization_id', organizationId);
 
   if (filters?.solicitacao_id) query = query.eq('solicitacao_id', filters.solicitacao_id);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
+  if (paginar) query = query.range(from, from + pageSize - 1);
 
-  const { data, error } = await query;
+  const { data, count, error } = await query;
   if (error) throw error;
-  return (data as Cotacao[]) || [];
+  const rows = (data as Cotacao[]) || [];
+  return { data: rows, totalCount: count ?? rows.length };
 }
 
 export function useCotacoes(filters?: CotacaoFilters) {
@@ -67,15 +80,19 @@ export function useCotacoes(filters?: CotacaoFilters) {
 
   const queryKey = useMemo(() => [
     'cotacoes', user?.id, organizationId, filters?.solicitacao_id, filters?.fornecedor_id, filters?.status,
+    filters?.page, filters?.pageSize,
   ], [user?.id, organizationId, filters]);
 
-  const { data: cotacoes = [], isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: () => fetchCotacoesData(user?.id, organizationId, filters),
     enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
+
+  const cotacoes = useMemo(() => data?.data ?? [], [data]);
+  const totalCount = data?.totalCount ?? 0;
 
   const invalidate = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['cotacoes'] });
@@ -231,7 +248,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
   });
 
   return {
-    cotacoes, loading: isLoading, error: error?.message || null,
+    cotacoes, totalCount, loading: isLoading, error: error?.message || null,
     refetch, createCotacao, updateCotacao, selectCotacao, deleteCotacao,
   };
 }
