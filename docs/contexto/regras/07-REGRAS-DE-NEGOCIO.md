@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `021a29aa85` · branch `main` · 2026-11-26 16:36 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `054f49e5cd` · branch `main` · 2026-11-26 16:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -807,12 +807,12 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `audit_logs_bloquear_alteracao` | audit_logs e append-only: UPDATE bloqueado (ISO 27001 A.8.15 / LGPD art.16) | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `audit_logs_bloquear_alteracao` | audit_logs e append-only: DELETE permitido apenas pela retencao legal de 5 anos (apply_lgpd_retention) | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `audit_logs_bloquear_truncate` | audit_logs e append-only: TRUNCATE bloqueado (ISO 27001 A.8.15) | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
-| `verificar_integridade_audit_logs` | Apenas administradores podem verificar a integridade da auditoria | `supabase/migrations/20261117210000_audit_logs_append_only_hash_encadeado.sql` |
 | `get_compras_sla_metrics` | not authenticated | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
 | `get_compras_sla_metrics` | forbidden | `supabase/migrations/20261123093000_sla_real_no_dashboard.sql` |
 | `validate_cotacao_status_transition` | Transição de status de cotação inválida: % → % | `supabase/migrations/20261125170000_matriz_transicoes_alinhada.sql` |
 | `validate_pagamento_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
 | `validate_pedido_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
+| `verificar_integridade_audit_logs` | Apenas administradores podem verificar a integridade da auditoria | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2086,6 +2086,20 @@ _nenhum item encontrado_
 | `AND created_at > now() - interval '30 days'` | `supabase/migrations/20261117170000_corrige_alertas_sistema_e_agenda_scan_particoes.sql` |
 | `OR v_last_data < now() - interval '2 hours';` | `supabase/migrations/20261122090000_corrige_watchdog_xbz_cego.sql` |
 | `AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'` | `supabase/migrations/20261122140000_dedupe_system_error_alerts.sql` |
+| `-- faz DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years'` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.geo_access_logs WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.login_attempts WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.query_telemetry WHERE created_at < now() - interval '90 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.rate_limit_logs WHERE created_at < now() - interval '180 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.telemetry_logs WHERE created_at < now() - interval '90 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.wal_rate_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `WHERE a.created_at < now() - interval '5 years'` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `WHERE created_at < now() - interval '180 days'` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
+| `WHERE created_at < now() - interval '90 days'` | `supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql` |
 | `-- (resolved_at IS NOT NULL AND resolved_at < now() - interval '60 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
 | `-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')` | `supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql` |
 | `v_lease interval := interval '10 minutes';` | `supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql` |
@@ -2093,6 +2107,18 @@ _nenhum item encontrado_
 | `-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'` | `supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql` |
 | `AND created_at < now() - interval '2 hours';` | `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` |
 | `AND v_hb.last_run > v_hb.last_run_at + interval '1 hour' THEN` | `supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql` |
+| `DELETE FROM public.audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.deadlock_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.financial_audit_logs WHERE created_at < now() - interval '5 years';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.geo_access_logs WHERE created_at < now() - interval '180 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.login_attempts WHERE created_at < now() - interval '180 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.query_telemetry WHERE created_at < now() - interval '90 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.rate_limit_logs WHERE created_at < now() - interval '180 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.security_logs WHERE created_at < now() - interval '5 years';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.telemetry_logs WHERE created_at < now() - interval '90 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `DELETE FROM public.wal_rate_snapshots WHERE captured_at < now() - interval '90 days';` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `WHERE created_at < now() - interval '180 days'` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `WHERE created_at < now() - interval '90 days'` | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
 | `await page.waitForSelector('input[type="email"]', { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 | `await page.waitForURL((url) => !url.pathname.startsWith('/auth'), { timeout: 15_000 });` | `tests-e2e/global-setup.ts` |
 

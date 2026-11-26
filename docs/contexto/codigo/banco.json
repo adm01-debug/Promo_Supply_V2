@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 362,
+ "migrations": 363,
  "seeds": [],
  "avisos": [
   "50 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -3819,6 +3819,48 @@
     "user_id": "string | null",
     "user_name": "string | null"
    },
+   "usada_no_front": 0,
+   "usada_em_edges": [],
+   "triggers": [],
+   "sem_rls": false,
+   "nao_usada": true
+  },
+  "audit_logs_ancora": {
+   "colunas": {
+    "atualizado_em": {
+     "tipo": "timestamptz",
+     "nn": true,
+     "pk": false,
+     "default": "now()",
+     "ref": null
+    },
+    "id": {
+     "tipo": "boolean",
+     "nn": false,
+     "pk": true,
+     "default": "true",
+     "ref": null
+    },
+    "registro_hash": {
+     "tipo": "text",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
+    "sequencia": {
+     "tipo": "bigint",
+     "nn": true,
+     "pk": false,
+     "default": null,
+     "ref": null
+    }
+   },
+   "rls": true,
+   "policies": [],
+   "indices": [],
+   "fks": [],
+   "criada_em": "20261126170000_ancora_cadeia_audit_logs.sql",
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],
