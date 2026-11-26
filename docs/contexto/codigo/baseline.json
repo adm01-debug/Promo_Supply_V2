@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d15d49f4d849e18c9d61f582bb056e0093978a36",
+  "commit": "4fb9075b40c6c61db2bc06fe2ec39ec485b7b928",
   "branch": "main",
-  "data_commit": "2026-11-26T14:46:14-03:00",
+  "data_commit": "2026-11-26T14:58:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "4fb9075",
+    "data": "2026-11-26",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#583)"
+   },
    {
     "sha": "d15d49f",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "1aeb89b",
     "data": "2026-11-26",
     "assunto": "chore(ci): confere jobs vivos de cron.job contra as migrations (#528)"
-   },
-   {
-    "sha": "7e2123a",
-    "data": "2026-11-26",
-    "assunto": "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)"
    }
   ],
   "arquivos_mudados_7d": 1568,
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 18
+    "mudancas": 17
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 289
+    "commits": 288
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 7
+    "commits": 8
    },
    {
     "autor": "dependabot[bot]",

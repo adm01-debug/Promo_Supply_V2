@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "d15d49f4d849e18c9d61f582bb056e0093978a36",
+  "sha": "4fb9075b40c6c61db2bc06fe2ec39ec485b7b928",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 17:47 UTC",
+  "generated_at": "2026-11-26 17:59 UTC",
   "files_total": 1548,
   "code_files": 1373,
   "code_lines": 226836,
@@ -22732,6 +22732,17 @@
     "raises": [],
     "tables": []
    },
+   "audit_rls_policies": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "calculate_supplier_qualification_score": {
     "args": "",
     "returns": "?",
@@ -22755,17 +22766,6 @@
     "tables": []
    },
    "SetofOptions": {
-    "args": "",
-    "returns": "?",
-    "lang": "",
-    "src": "src/integrations/supabase/types.ts",
-    "security_definer": false,
-    "search_path": false,
-    "body": "",
-    "raises": [],
-    "tables": []
-   },
-   "audit_rls_policies": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -81759,6 +81759,17 @@
     "raises": [],
     "tables": []
    },
+   "audit_rls_policies": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "calculate_supplier_qualification_score": {
     "args": "",
     "returns": "?",
@@ -81782,17 +81793,6 @@
     "tables": []
    },
    "SetofOptions": {
-    "args": "",
-    "returns": "?",
-    "lang": "",
-    "src": "src/integrations/supabase/types.ts",
-    "security_definer": false,
-    "search_path": false,
-    "body": "",
-    "raises": [],
-    "tables": []
-   },
-   "audit_rls_policies": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -125781,10 +125781,19 @@
   }
  },
  "git": {
-  "sha": "d15d49f4d849e18c9d61f582bb056e0093978a36",
+  "sha": "4fb9075b40c6c61db2bc06fe2ec39ec485b7b928",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "4fb9075",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#583)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "d15d49f",
     "date": "2026-11-26",
@@ -126134,24 +126143,12 @@
      "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
      "src/features/pedidos/hooks/usePedidos.ts"
     ]
-   },
-   {
-    "sha": "ef532a2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useCatalogoPim.erro.test.ts",
-     "src/hooks/useCatalogoPim.ts",
-     "src/pages/gerar-ordem/GerarOrdem.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "AGENTS.md",
@@ -126159,7 +126156,7 @@
    ],
    [
     "src/integrations/supabase/types.ts",
-    3
+    4
    ],
    [
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
