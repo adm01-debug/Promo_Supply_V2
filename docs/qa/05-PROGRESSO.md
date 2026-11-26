@@ -882,7 +882,9 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 143 — Migration: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
 
-- [ ] 144 — Aplicação: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
+- [x] 144 — Aplicação: 43 tabelas têm tenant_id com DEFAULT de um tenant que não existe, e o trigger que deveria preencher o campo não funciona em contexto de cro — onda 3 — Média — DB-06
+
+  - Evidencia: check-approval-escalations/index.ts inseria em approval_history sem tenant_id (o select do workflow nem trazia a coluna). approval_history.tenant_id e NOT NULL e no caminho service_role nao existe auth.uid(), entao fill_tenant_id_from_profile e no-op e o insert falhava com 23502/23503 - o erro ia so para console.error e a trilha do escalonamento automatico se perdia sem ninguem ver, porque o workflow seguia escalado. Agora tenant_id entra no select de approval_workflows, o tenant e resolvido na ordem approval_workflows.tenant_id -> solicitacoes.tenant_id (mesmo padrao de escalate-solicitacao/index.ts:119-127, que ja gravava approval_history com tenant) e, sem tenant, o insert nao e tentado: a perda vai para logger.error como "Escalonamento sem tenant: historico nao registrado". Verificado com deno check --no-lock (limpo), deno test --no-lock --allow-read --allow-env --allow-net index.test.ts (5 passed | 0 failed) e deno lint (os 3 no-explicit-any apontados sao pre-existentes, em :1, :267 e :276, fora do diff). PR #592.
 
 - [x] 145 — devolucoes.numero é a única numeração de documento sem UNIQUE, e o gerador de número libera o lock antes do insert: duas devoluções podem nascer com o — onda 3 — Média — DB-07
 
