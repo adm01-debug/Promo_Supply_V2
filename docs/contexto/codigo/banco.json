@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 369,
+ "migrations": 370,
  "seeds": [],
  "avisos": [
   "53 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -18425,6 +18425,13 @@
      "default": null,
      "ref": null
     },
+    "tenant_id": {
+     "tipo": "uuid",
+     "nn": false,
+     "pk": false,
+     "default": null,
+     "ref": null
+    },
     "transportadora": {
      "tipo": "text",
      "nn": false,
@@ -18460,6 +18467,12 @@
      "comando": "all",
      "para": "authenticated",
      "tipo": "permissive"
+    },
+    {
+     "nome": "tenant_isolation_spot_pedidos",
+     "comando": "all",
+     "para": "authenticated",
+     "tipo": "restrictive"
     }
    ],
    "indices": [
@@ -18467,9 +18480,16 @@
      "nome": "idx_spot_pedidos_internal_ref",
      "colunas": "internal_reference",
      "unico": true
+    },
+    {
+     "nome": "idx_spot_pedidos_tenant",
+     "colunas": "tenant_id",
+     "unico": false
     }
    ],
-   "fks": [],
+   "fks": [
+    "tenant_id->tenants"
+   ],
    "criada_em": "20260315173730_7339fd92-4c67-404b-8051-3157db7a50bc.sql",
    "colunas_types": {
     "codigo_rastreamento": "string | null",
@@ -18491,7 +18511,9 @@
     "valor_total": "number | null"
    },
    "drift": {
-    "so_na_migration": [],
+    "so_na_migration": [
+     "tenant_id"
+    ],
     "so_no_types": []
    },
    "usada_no_front": 0,

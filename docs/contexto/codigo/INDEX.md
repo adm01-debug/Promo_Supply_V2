@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f1133365b304a7392811dab53c71a6ef52e0d9ce` (2026-11-26T14:59:21-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cc209d321715b5b67d9da4adade33a2287b39f51` (2026-11-26T15:15:28-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (895), SQL (403), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (895), SQL (405), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1549 |
+| arquivos_total | 1551 |
 | arquivos_codigo | 970 |
 | linhas_codigo | 193069 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 369 |
+| migrations | 370 |
 | cron_jobs | 80 |
 | testes | 325 |
 | workflows | 15 |
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
-- tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
+- tabelas_com_drift_migration_vs_types: 51 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 11 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 9 — ex.: AnimatedCounter, COLORS, Confetti
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (199)
-- AGENTS.md (34)
+- docs/qa/05-PROGRESSO.md (200)
+- AGENTS.md (35)
 - docs/pendencias/_indice.md (16)
 - src/integrations/supabase/types.ts (11)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
@@ -358,7 +358,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useDevolucoes.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - bun.lock (7)
-- docs/ci/README.md (7)
+- package.json (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `cc209d3` fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)
 - 2026-11-26 `f113336` fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)
 - 2026-11-26 `4fb9075` chore(db): sincronizar types.ts com o banco [auto] (#583)
 - 2026-11-26 `d15d49f` chore(db): sincronizar types.ts com o banco [auto] (#577)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `087f827` fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)
 - 2026-11-26 `fc2bfbb` fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)
 - 2026-11-26 `061c773` fix(estoque): movimentacao passa a exigir papel e item da propria organizacao (#571)
-- 2026-11-26 `22852aa` fix(auth): autocadastro deixa de nascer com papel de comprador (#570)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

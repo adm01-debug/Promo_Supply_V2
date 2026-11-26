@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "f1133365b304a7392811dab53c71a6ef52e0d9ce",
+  "commit": "cc209d321715b5b67d9da4adade33a2287b39f51",
   "branch": "main",
-  "data_commit": "2026-11-26T14:59:21-03:00",
+  "data_commit": "2026-11-26T15:15:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "cc209d3",
+    "data": "2026-11-26",
+    "assunto": "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)"
+   },
    {
     "sha": "f113336",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "e2041a1",
     "data": "2026-11-26",
     "assunto": "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)"
-   },
-   {
-    "sha": "c3cb7d7",
-    "data": "2026-11-26",
-    "assunto": "fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)"
    }
   ],
-  "arquivos_mudados_7d": 1570,
+  "arquivos_mudados_7d": 1572,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 199
+    "mudancas": 200
    },
    {
     "pasta": "src/components/ui",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 199
+    "mudancas": 200
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 34
+    "mudancas": 35
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -254,10 +254,6 @@
     "mudancas": 7
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 7
-   },
-   {
     "arquivo": "package.json",
     "mudancas": 7
    },
@@ -283,6 +279,10 @@
    },
    {
     "arquivo": ".github/workflows/main.yml",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "docs/ci/README.md",
     "mudancas": 6
    },
    {
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1549,
+  "arquivos_total": 1551,
   "arquivos_codigo": 970,
   "linhas_codigo": 193069,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 369,
+  "migrations": 370,
   "cron_jobs": 80,
   "testes": 325,
   "workflows": 15,
@@ -756,6 +756,7 @@
    "sourcing_response_items",
    "sourcing_responses",
    "spend_forecasts",
+   "spot_pedidos",
    "supplier_bonifications",
    "tenants"
   ],

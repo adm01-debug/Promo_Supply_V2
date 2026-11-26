@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `f1133365b3` · branch `main` · 2026-11-26 18:00 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cc209d3217` · branch `main` · 2026-11-26 18:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -663,7 +663,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `ip_whitelist` | `ip_address` | obrigatório; único |
 | `ip_whitelist` | `created_by` | FK → users.id |
 | `ip_whitelist` | `created_at` | default now() |
-| … +1087 linhas — lista completa em `context.json` | | |
+| … +1088 linhas — lista completa em `context.json` | | |
 
 ## D. Automações no banco (triggers e funções — regras que rodam sozinhas)
 
