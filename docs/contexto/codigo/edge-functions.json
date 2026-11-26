@@ -1181,7 +1181,7 @@
    "nome": "spot-api",
    "entrada": "supabase/functions/spot-api/index.ts",
    "arquivos": 1,
-   "linhas": 700,
+   "linhas": 753,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1192,7 +1192,9 @@
     "spot_estoque",
     "spot_pedidos",
     "spot_sessions",
-    "user_roles"
+    "tenants",
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [],
    "env": [
@@ -1227,7 +1229,7 @@
    "nome": "spot-proxy",
    "entrada": "supabase/functions/spot-proxy/index.ts",
    "arquivos": 2,
-   "linhas": 961,
+   "linhas": 978,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",
@@ -1236,7 +1238,8 @@
    "tabelas": [
     "spot_pedidos",
     "spot_sessions",
-    "user_roles"
+    "user_roles",
+    "user_tenants"
    ],
    "rpcs": [],
    "env": [

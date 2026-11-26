@@ -1394,13 +1394,13 @@
   {
    "arquivo": "src/hooks/__tests__/usePermissions.test.tsx",
    "tipo": "unit",
-   "linhas": 121,
+   "linhas": 164,
    "testa": [
     "src/features/auth/index.ts",
     "src/hooks/usePermissions.ts",
     "src/integrations/supabase/client.ts"
    ],
-   "casos": 3
+   "casos": 5
   },
   {
    "arquivo": "src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx",

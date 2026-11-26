@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cc209d3217` · branch `main` · 2026-11-26 18:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `061c335610` · branch `main` · 2026-11-26 18:33 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2199,6 +2199,8 @@ _nenhum item encontrado_
 | 1 | `supabase/functions/receive-os-sync/index.ts` |
 | 2 | `supabase/functions/receive-os-sync/index.ts` |
 | 1 | `supabase/functions/spot-api/index.ts` |
+| 2 | `supabase/functions/spot-api/index.ts` |
+| 1 | `supabase/functions/spot-proxy/index.ts` |
 | 10 | `supabase/functions/spot-proxy/index.ts` |
 | 1 | `supabase/functions/webauthn-authenticate/index.ts` |
 | 1 | `supabase/functions/webauthn-register/index.ts` |
@@ -2528,7 +2530,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3592 testes em 273 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3594 testes em 273 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2688,6 +2690,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx` | 6 | useDevolucoes · paginacao (PERF-01 / etapa 212) · sem  · com  · useCotacoes · paginacao (PERF-01 / etapa 212) … |
 | `src/hooks/__tests__/useFornecedores.unicidade.test.tsx` | 6 | useFornecedores · createFornecedor (VAL-09) · consulta o CNPJ sem mascara e barra antes do insert quando ja existe · traduz o 23505 de CNPJ quando o conflito vem de outra empresa (RLS esconde) · mantem o cadastro funcionando quando nao ha duplicidade … |
 | `src/hooks/__tests__/usePagamentos.exclusao.test.tsx` | 6 | usePagamentos - exclusao guardada pelo historico · recusa excluir pagamento que tem historico de alteracao · bulkDelete exclui so os pagamentos sem historico e avisa · bulkDelete com todo o lote com historico nao apaga nada … |
+| `src/hooks/__tests__/usePermissions.test.tsx` | 6 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · nao le as tabelas de catalogo para quem nao e admin: usa so a RPC … |
 | `src/hooks/__tests__/useXbzIntegration.cache.test.tsx` | 6 | useXbzIntegration — coalescing e cache · coalesce chamadas idempotentes concorrentes em uma única requisição · serve tabelas estáticas do cache na segunda chamada · não cacheia nem coalesce ações de escrita … |
 | `src/pages/acompanhamento/__tests__/acompanhamentoA11y.test.tsx` | 6 | Acompanhamento - filtros de SLA acessiveis pelo teclado (etapa 234) · cartao filtravel expoe papel de botao, nome e estado inicial do filtro · Enter aplica o filtro e espaco limpa de volta · cartoes que nao filtram continuam sem papel de botao … |
 | `src/pages/acompanhamento/__tests__/acompanhamentoEstados.test.tsx` | 6 | Acompanhamento - falha de carga nao vira pipeline vazio nem KPI zerado (QA 252) · mostra o erro da consulta de pedidos e um botao de nova tentativa · o botao de nova tentativa refaz a busca · erro só nas tabelas de apoio (fornecedores) tambem nao passa por lista vazia … |
@@ -2748,7 +2751,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useDevolucoes.exclusao.test.tsx` | 4 | guarda de exclusao de devolucao · recusa excluir devolucao que ja gerou credito · recusa excluir devolucao marcada como credito_emitido mesmo sem contagem · exclui devolucao sem credito |
 | `src/hooks/__tests__/useFornecedores.exclusao.test.tsx` | 4 | guarda de exclusao de fornecedor · recusa excluir fornecedor que tem credito de fornecedor · recusa excluir fornecedor com pagamento ou pedido e lista tudo o que bloqueia · exclui quando nao ha nenhum dependente |
 | `src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx` | 4 | usePasswordResetRequests: link nativo no lugar do token morto (etapa 036 / SEC-04) · envia o link do Supabase e marca o pedido como atendido, sem gravar reset_token · quando o GoTrue recusa, o pedido nao e marcado como atendido · o hook nao volta a gerar credencial propria (reset_token / randomUUID) |
-| `src/hooks/__tests__/usePermissions.test.tsx` | 4 | usePermissions · should return default permissions for admin · should check user permissions correctly for non-admin · should return false if no role is present |
 | `src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx` | 4 | SpotCatalogTab / idade do estoque (INT-11) · estoque recem-sincronizado mostra a data e nao avisa de defasagem · estoque parado ha mais de 45 min avisa que as quantidades podem estar velhas · sem estoque em cache nao inventa data nem aviso |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.search.test.tsx` | 4 | useSpotProducts / filtro de busca (SEC-10) · busca comum sai com o termo literal nas duas colunas · nao deixa  · busca em branco nao acrescenta clausula |
 | `src/pages/catalogo-xbz/__tests__/xbzBusca.test.ts` | 4 | normalizeBusca / isBuscaValida · não substitui termo vazio pelo antigo hack  · apara espaços e limita a 100 caracteres · exige ao menos ${XBZ_BUSCA_MIN} caracteres após aparar |
@@ -2900,7 +2902,6 @@ _nenhum item encontrado_
 | CNPJ validation helper | `src/hooks/useFornecedores.ts` |
 | QA-034: geracao de backup codes removida. Era 8 caracteres com apenas 4 de | `src/hooks/useMFA.ts` |
 | Check if MFA is required for this session | `src/hooks/useMFA.ts` |
-| A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast | `src/hooks/usePermissions.ts` |
 | Check if user has specific permission | `src/hooks/usePermissions.ts` |
 | * Prefetch keys must match the live query keys used by feature hooks so that | `src/hooks/usePrefetch.ts` |
 | Leitura apenas: o cadastro/edição de produto vive no PIM (Promo Gifts V4). | `src/hooks/useProdutos.ts` |

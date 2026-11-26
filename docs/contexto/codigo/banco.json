@@ -20494,7 +20494,8 @@
    },
    "usada_no_front": 1,
    "usada_em_edges": [
-    "receive-os-sync"
+    "receive-os-sync",
+    "spot-api"
    ],
    "triggers": [
     "grant_tenant_access_on_insert_trigger",
@@ -20963,7 +20964,9 @@
     "punchout-encrypt",
     "punchout-setup",
     "receive-os-sync",
-    "send-push-notification"
+    "send-push-notification",
+    "spot-api",
+    "spot-proxy"
    ],
    "triggers": [],
    "sem_rls": false,

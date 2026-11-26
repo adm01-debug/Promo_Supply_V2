@@ -1784,7 +1784,7 @@
    "hooks_exportados": [
     "usePermissions"
    ],
-   "linhas": 167,
+   "linhas": 170,
    "dominio": "hooks",
    "tabelas": [
     "permissions",

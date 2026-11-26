@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "cc209d321715b5b67d9da4adade33a2287b39f51",
+  "sha": "061c335610f473028ed4493f0485a8f6f427efb3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 18:15 UTC",
+  "generated_at": "2026-11-26 18:33 UTC",
   "files_total": 1552,
   "code_files": 1377,
-  "code_lines": 227251,
+  "code_lines": 227367,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4209fe7f45badf5a",
+ "facts_hash": "030edde6a597dfc6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33109,6 +33109,7 @@
      "spot_pedidos",
      "spot_sessions",
      "telemetry_logs",
+     "tenants",
      "user_roles",
      "user_tenants"
     ],
@@ -36082,7 +36083,7 @@
   {
    "module": "src/hooks",
    "files": 103,
-   "lines": 17418,
+   "lines": 17464,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -36887,7 +36888,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20798,
+   "lines": 20868,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -38614,7 +38615,8 @@
    "tenants": {
     "select": [
      "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "supabase/functions/receive-os-sync/index.ts"
+     "supabase/functions/receive-os-sync/index.ts",
+     "supabase/functions/spot-api/index.ts"
     ]
    },
    "toString": {
@@ -38667,6 +38669,8 @@
      "supabase/functions/punchout-setup/index.ts",
      "supabase/functions/receive-os-sync/index.ts",
      "supabase/functions/send-push-notification/index.ts",
+     "supabase/functions/spot-api/index.ts",
+     "supabase/functions/spot-proxy/index.ts",
      "tests-rls/rls-isolation.test.ts"
     ],
     "ref": [
@@ -43898,10 +43902,6 @@
    {
     "file": "src/hooks/useMFA.ts",
     "text": "Check if MFA is required for this session"
-   },
-   {
-    "file": "src/hooks/usePermissions.ts",
-    "text": "A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast"
    },
    {
     "file": "src/hooks/usePermissions.ts",
@@ -65723,6 +65723,14 @@
    },
    {
     "file": "src/hooks/__tests__/usePermissions.test.tsx",
+    "name": "nao le as tabelas de catalogo para quem nao e admin: usa so a RPC"
+   },
+   {
+    "file": "src/hooks/__tests__/usePermissions.test.tsx",
+    "name": "continua lendo o catalogo para admin (matriz de papeis)"
+   },
+   {
+    "file": "src/hooks/__tests__/usePermissions.test.tsx",
     "name": "should return false if no role is present"
    },
    {
@@ -82448,6 +82456,14 @@
    },
    {
     "file": "supabase/functions/spot-api/index.ts",
+    "limit": "1"
+   },
+   {
+    "file": "supabase/functions/spot-api/index.ts",
+    "limit": "2"
+   },
+   {
+    "file": "supabase/functions/spot-proxy/index.ts",
     "limit": "1"
    },
    {
@@ -108119,7 +108135,7 @@
   },
   "src/hooks/usePermissions.ts": {
    "path": "src/hooks/usePermissions.ts",
-   "lines": 167,
+   "lines": 170,
    "exports": [
     "interface Permission",
     "interface RolePermission",
@@ -108141,7 +108157,6 @@
     "get_my_permissions"
    ],
    "rule_comments": [
-    "A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast",
     "Check if user has specific permission"
    ],
    "hooks": [
@@ -109609,7 +109624,7 @@
   },
   "src/hooks/__tests__/usePermissions.test.tsx": {
    "path": "src/hooks/__tests__/usePermissions.test.tsx",
-   "lines": 121,
+   "lines": 164,
    "is_test": true,
    "role_checks": [
     "any",
@@ -109625,6 +109640,8 @@
     "usePermissions",
     "should return default permissions for admin",
     "should check user permissions correctly for non-admin",
+    "nao le as tabelas de catalogo para quem nao e admin: usa so a RPC",
+    "continua lendo o catalogo para admin (matriz de papeis)",
     "should return false if no role is present"
    ]
   },
@@ -122622,8 +122639,16 @@
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
-   "lines": 700,
+   "lines": 753,
    "tables": [
+    {
+     "table": "tenants",
+     "op": "select"
+    },
+    {
+     "table": "user_tenants",
+     "op": "select"
+    },
     {
      "table": "user_roles",
      "op": "select"
@@ -122666,6 +122691,14 @@
     }
    ],
    "table_cols": {
+    "tenants": [
+     "id"
+    ],
+    "user_tenants": [
+     "is_default",
+     "tenant_id",
+     "user_id"
+    ],
     "user_roles": [
      "role",
      "user_id"
@@ -122780,16 +122813,21 @@
     "const SESSION_TTL_MS = 23 * 60 * 60 * 1000; // 24h com margem"
    ],
    "pagination": [
-    "1"
+    "1",
+    "2"
    ],
    "uses_service_role": true
   },
   "supabase/functions/spot-proxy/index.ts": {
    "path": "supabase/functions/spot-proxy/index.ts",
-   "lines": 889,
+   "lines": 906,
    "tables": [
     {
      "table": "user_roles",
+     "op": "select"
+    },
+    {
+     "table": "user_tenants",
      "op": "select"
     },
     {
@@ -122824,6 +122862,11 @@
    "table_cols": {
     "user_roles": [
      "role",
+     "user_id"
+    ],
+    "user_tenants": [
+     "is_default",
+     "tenant_id",
      "user_id"
     ],
     "spot_sessions": [
@@ -122881,6 +122924,7 @@
     }
    ],
    "pagination": [
+    "1",
     "10"
    ],
    "uses_service_role": true
@@ -125859,10 +125903,24 @@
   }
  },
  "git": {
-  "sha": "cc209d321715b5b67d9da4adade33a2287b39f51",
+  "sha": "061c335610f473028ed4493f0485a8f6f427efb3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "061c335",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/usePermissions.test.tsx",
+     "src/hooks/usePermissions.ts",
+     "supabase/functions/spot-api/index.ts",
+     "supabase/functions/spot-proxy/index.ts"
+    ]
+   },
    {
     "sha": "cc209d3",
     "date": "2026-11-26",
@@ -126213,21 +126271,12 @@
      "AGENTS.md",
      "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql"
     ]
-   },
-   {
-    "sha": "9ceca5c",
-    "date": "2026-11-26",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#544)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    26
+    27
    ],
    [
     "AGENTS.md",
@@ -126235,7 +126284,27 @@
    ],
    [
     "src/integrations/supabase/types.ts",
-    4
+    3
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    1
+   ],
+   [
+    "src/hooks/__tests__/usePermissions.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/usePermissions.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-api/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-proxy/index.ts",
+    1
    ],
    [
     "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
@@ -126283,26 +126352,6 @@
    ],
    [
     "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
     1
    ]
   ]
