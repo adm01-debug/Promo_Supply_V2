@@ -370,7 +370,10 @@ export function usePagamentosKPIs() {
   const { user, organizationId } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 }, isLoading } = useQuery({
-    queryKey: ['pagamentos-kpis', user?.id, organizationId],
+    // Chave dentro do namespace `pagamentos`: as mutações e o realtime invalidam o
+    // prefixo `['pagamentos']`, e o match do TanStack é posicional — um namespace irmão
+    // (`pagamentos-kpis`) ficaria fora do alcance e os cartões nunca atualizariam.
+    queryKey: ['pagamentos', 'kpis', user?.id, organizationId],
     queryFn: async () => {
       if (!organizationId) return { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 };
       

@@ -416,7 +416,9 @@ export function usePedidosKPIs() {
   const { user, organizationId } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, emTransito: 0, entregues: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['pedidos-kpis', user?.id, organizationId],
+    // Mesma razão da chave de `usePagamentosKPIs`: o prefixo `['pedidos']` (mutações e
+    // realtime) só alcança as chaves que começam por ele.
+    queryKey: ['pedidos', 'kpis', user?.id, organizationId],
     queryFn: async () => {
       if (!organizationId) return { total: 0, pendentes: 0, emTransito: 0, entregues: 0, valorTotal: 0 };
       
