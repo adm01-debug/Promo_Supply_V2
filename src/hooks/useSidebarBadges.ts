@@ -35,6 +35,12 @@ export function useSidebarBadges() {
       }
       const [solRes, cotRes, pagRes, apvRes] = await Promise.all([solQ, cotQ, pagQ, apvQ]);
 
+            // Com erro o supabase-js devolve `count: null`, e o `?? 0` transformava a falha em
+            // "nenhuma pendencia": o badge sumia e o menu afirmava zero. Lancar deixa o
+            // consumidor distinguir "zero" de "nao consegui contar".
+            const firstError = solRes.error ?? cotRes.error ?? pagRes.error ?? apvRes.error;
+            if (firstError) throw firstError;
+
       return {
         solicitacoes: solRes.count ?? 0,
         cotacoes: cotRes.count ?? 0,

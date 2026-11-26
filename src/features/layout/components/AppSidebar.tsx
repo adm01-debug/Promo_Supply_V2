@@ -178,6 +178,17 @@ const CountBadge = ({ count, critical = false }: { count: number; critical?: boo
   </motion.span>
 );
 
+/* Badge de contagem indisponivel: a consulta falhou, entao o numero e desconhecido -- nao zero. */
+const UnknownBadge = () => (
+  <span
+    className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1 text-[9px] font-bold text-muted-foreground shadow-sm"
+    title="Não foi possível contar as pendências"
+        aria-hidden="true"
+  >
+    !
+  </span>
+);
+
 /* ─── Single Nav Item ─── */
 const SidebarItem = ({
   item,
@@ -185,17 +196,20 @@ const SidebarItem = ({
   collapsed,
   criticalBadge = 0,
   liveBadge = 0,
+  liveBadgeUnavailable = false,
 }: {
   item: NavItemDef;
   active: boolean;
   collapsed: boolean;
   criticalBadge?: number;
   liveBadge?: number;
+  liveBadgeUnavailable?: boolean;
 }) => {
   const Icon = item.icon;
   const showCritical = criticalBadge > 0;
   const badgeValue = showCritical ? criticalBadge : (item.badgeKey ? liveBadge : undefined);
   const hasBadge = badgeValue != null && badgeValue > 0;
+  const showUnknown = !showCritical && !!item.badgeKey && liveBadgeUnavailable && !hasBadge;
 
   const content = (
     <PrefetchLink
@@ -230,11 +244,20 @@ const SidebarItem = ({
         <>
           <span className="truncate">{item.title}</span>
           {hasBadge && <CountBadge count={badgeValue!} critical={showCritical} />}
+                    {showUnknown && <UnknownBadge />}
         </>
       )}
 
       {/* Collapsed badge dot */}
-      {collapsed && hasBadge && (
+                {collapsed && showUnknown && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-muted-foreground/60 ring-2 ring-sidebar-background"
+                    title="Não foi possível contar as pendências"
+                  />
+                )}
+
+                {/* Collapsed badge dot */}
+                {hasBadge && collapsed && (
         <span
           className={cn(
             "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
@@ -273,6 +296,7 @@ const SidebarSection = ({
   badges,
   sectionBadge = 0,
   sectionBadgeCritical = false,
+    badgesUnavailable = false,
   hasRole,
 }: {
   section: NavSection;
@@ -282,6 +306,7 @@ const SidebarSection = ({
   badges: Record<string, number>;
   sectionBadge?: number;
   sectionBadgeCritical?: boolean;
+    badgesUnavailable?: boolean;
   hasRole: (role: AppRole | AppRole[]) => boolean;
 }) => {
   const visibleItems = section.items.filter(
@@ -325,6 +350,7 @@ const SidebarSection = ({
           collapsed={collapsed}
           criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
           liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
+                    liveBadgeUnavailable={badgesUnavailable}
         />
       ))}
     </div>
@@ -341,7 +367,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
   const { signOut, hasRole } = useAuth();
   const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
-  const { data: badgeData } = useSidebarBadges();
+  const { data: badgeData, isError: badgesUnavailable } = useSidebarBadges();
   const badges = badgeData ?? { solicitacoes: 0, cotacoes: 0, pagamentos: 0, aprovacoes: 0 };
 
   useEffect(() => {
@@ -414,6 +440,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             badges={badges as unknown as Record<string, number>}
             sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
             sectionBadgeCritical={section.id === "admin"}
+                        badgesUnavailable={badgesUnavailable}
             hasRole={hasRole}
           />
         ))}
