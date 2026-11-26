@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)",
    "fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)",
    "fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)",
    "feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)",
-   "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)",
-   "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)"
+   "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)"
   ]
  },
  "pr_template": null,

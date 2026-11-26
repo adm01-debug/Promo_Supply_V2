@@ -2652,11 +2652,11 @@
   {
    "arquivo": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
    "tipo": "unit",
-   "linhas": 111,
+   "linhas": 143,
    "testa": [
     "supabase/functions/alert-dispatcher/dispatchStatus.ts"
    ],
-   "casos": 9
+   "casos": 12
   },
   {
    "arquivo": "supabase/functions/check-approval-escalations/index.test.ts",

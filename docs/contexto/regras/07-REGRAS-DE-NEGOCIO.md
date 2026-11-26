@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5d9ba6d524` · branch `main` · 2026-11-26 12:26 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2e5f087ccb` · branch `main` · 2026-11-26 12:40 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1054,7 +1054,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `escalated` | escreve | `src/hooks/useApprovalWorkflow.ts`<br>`supabase/functions/check-approval-escalations/index.ts` |
 | `status` | `evaluation` | compara | `src/pages/sourcing/RFxDetails.tsx`<br>`src/pages/sourcing/Sourcing.tsx` |
 | `status` | `execution` | compara | `src/pages/admin/SourcingPipeline.tsx` |
-| `status` | `exhausted` | escreve | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
+| `status` | `exhausted` | compara, escreve | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `status` | `expirada` | escreve | `supabase/functions/check-expiry-alerts/index.ts` |
 | `status` | `expired` | compara | `src/pages/portal-fornecedor/PortalFornecedor.tsx` |
 | `status` | `failed` | compara, escreve | `src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/idempotency.ts`<br>`supabase/functions/alert-dispatcher/dispatchStatus.ts`<br>`supabase/functions/punchout-receive/index.ts` |
@@ -1630,6 +1630,10 @@ _nenhum item encontrado_
   ```
   return /^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(normalizarPlaca(valor));
   ```
+- **shouldRecordDeadLetter(status: DispatchStatus, alertType: string)** — `supabase/functions/alert-dispatcher/dispatchStatus.ts`
+  ```
+  return status === "exhausted" && alertType !== DEAD_LETTER_ALERT_TYPE;
+  ```
 - **shouldSendFollowUp(cotacao: StaleCotacaoRow, solicitanteId: string | null | undefined, ultimoFollowUpIso: string | null | undefined, now: D)** — `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts`
   ```
   if (!solicitanteId) return { shouldNotify: false, reason: "sem_destinatario" }; if (ultimoFollowUpIso) { const last = Date.parse(ultimoFollowUpIso); if (!Number.isNaN(last) && now.getTime() - last < dedupeHours * 60 * 60 * 1000) { return { shouldNotify: false, reason: "recente_duplicada" }; } } return { shouldNotify: true };
@@ -1822,6 +1826,7 @@ _nenhum item encontrado_
 | `ENC_VERSION` | `"v1"` | `supabase/functions/_shared/xbz_crypto.ts` |
 | `MAX_DELIVERY_ATTEMPTS` | `5` | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `MAX_UNCONFIGURED_ATTEMPTS` | `30` | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
+| `DEAD_LETTER_ALERT_TYPE` | `"alert_dispatch_dead_letter"` | `supabase/functions/alert-dispatcher/dispatchStatus.ts` |
 | `FOLLOW_UP_AFTER_HOURS` | `48` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `FOLLOW_UP_DEDUPE_HOURS` | `24` | `supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts` |
 | `DEFAULT_NOTICE_DAYS` | `30` | `supabase/functions/check-expiry-alerts/contractExpiry.ts` |
@@ -2137,6 +2142,7 @@ _nenhum item encontrado_
 | 500 | `src/pages/recompra/RecompraInteligente.tsx` |
 | 1 | `supabase/functions/_shared/notifications.ts` |
 | 1 | `supabase/functions/_shared/xbz_auth.ts` |
+| 1 | `supabase/functions/alert-dispatcher/index.ts` |
 | 50 | `supabase/functions/alert-dispatcher/index.ts` |
 | 1 | `supabase/functions/check-cotacao-followup/index.ts` |
 | 20 | `supabase/functions/check-sla-alerts/index.ts` |
@@ -2478,7 +2484,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3575 testes em 272 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3578 testes em 272 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2578,6 +2584,7 @@ _nenhum item encontrado_
 | `src/lib/__tests__/statusTransitionsBanco.test.ts` | 13 | matriz de pagamentos (src/lib/statusTransitionsBanco.ts) · bate com a ultima migration que define o trigger · cobre os caminhos de pagamento parcial que o banco passou a aceitar · matriz de pedidos (src/lib/statusTransitionsBanco.ts) … |
 | `src/pages/pedidos/__tests__/pedidosHelpers.test.ts` | 13 | prazoConsumido · mede o quanto da janela emissao -> previsao ja passou · devolve o piso de 5% quando o prazo acabou de comecar · nao mede nada sem as duas datas ou com janela invalida … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
+| `supabase/functions/alert-dispatcher/dispatchStatus.test.ts` | 12 | 188: nenhum assinante e nenhum webhook global nao pode ser  · 188: zero assinantes para de reprocessar depois do teto · 182: falha total com canal configurado nao carimba dispatched_at · 182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS … |
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
 | `src/components/accessibility/__tests__/reducaoMovimento.test.tsx` | 11 | o interruptor Reduzir movimento chega no framer-motion · com o app recem-aberto o framer-motion usa o padrao (sem forcar reducao) · ligar o switch no painel muda o app inteiro na hora, sem recarregar · desligar o switch devolve a animacao do sistema … |
@@ -2604,7 +2611,6 @@ _nenhum item encontrado_
 | `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
 | `supabase/functions/_shared/notifications.test.ts` | 9 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
-| `supabase/functions/alert-dispatcher/dispatchStatus.test.ts` | 9 | 188: nenhum assinante e nenhum webhook global nao pode ser  · 188: zero assinantes para de reprocessar depois do teto · 182: falha total com canal configurado nao carimba dispatched_at · 182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS … |
 | `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
 | `src/components/compras/__tests__/formulariosRotulos.test.tsx` | 8 | Campos de formulario com nome acessivel (etapa 237) · o modal de cotacao manual associa cada rotulo ao seu campo · nenhum rotulo do modal sobra sem destino · a etapa 1 nomeia os campos, o combobox de produto e o grupo de prioridade … |
 | `src/components/compras/__tests__/matrizAlcadaListasReais.test.tsx` | 8 | DynamicApprovalMatrix mostra pessoas e categorias reais · resolve aprovador, escalação e categoria pelos dados do banco · id sem perfil aparece como nao encontrado, nao como uuid cru · categoria ausente e dita removida; regra sem categoria vale para todas … |

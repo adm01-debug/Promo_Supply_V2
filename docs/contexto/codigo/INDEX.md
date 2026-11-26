@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5d9ba6d524920916fe3dbfde1cc477e38df94bf3` (2026-11-26T09:25:27-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2e5f087ccbd44a66acefba52ce7941dc518fee02` (2026-11-26T09:39:20-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1505 |
 | arquivos_codigo | 968 |
-| linhas_codigo | 192315 |
+| linhas_codigo | 192426 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,7 +343,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (173)
+- docs/qa/05-PROGRESSO.md (174)
 - docs/pendencias/_indice.md (21)
 - AGENTS.md (12)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `2e5f087` fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)
 - 2026-11-26 `5d9ba6d` fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)
 - 2026-11-26 `ef532a2` fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)
 - 2026-11-26 `e8b0d67` feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `f72f728` fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)
 - 2026-11-26 `6114624` fix(moeda): formata todo valor em reais com Intl pt-BR (#548)
 - 2026-11-26 `86bc33f` perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)
-- 2026-11-26 `cf9c067` fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

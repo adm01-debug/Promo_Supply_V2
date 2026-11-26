@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
+  "sha": "2e5f087ccbd44a66acefba52ce7941dc518fee02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 12:26 UTC",
+  "generated_at": "2026-11-26 12:40 UTC",
   "files_total": 1506,
   "code_files": 1331,
-  "code_lines": 223124,
+  "code_lines": 223235,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b764313ec463e3e8",
+ "facts_hash": "7c9f82ad022b4b5d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36365,7 +36365,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20585,
+   "lines": 20696,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37995,11 +37995,12 @@
      "supabase/functions/alert-dispatcher/index.ts",
      "supabase/functions/health-dashboard/index.ts"
     ],
+    "insert": [
+     "supabase/functions/alert-dispatcher/index.ts",
+     "supabase/functions/xbz-sync-pedidos/index.ts"
+    ],
     "update": [
      "supabase/functions/alert-dispatcher/index.ts"
-    ],
-    "insert": [
-     "supabase/functions/xbz-sync-pedidos/index.ts"
     ]
    },
    "t": {
@@ -51337,6 +51338,11 @@
     "value": "30"
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "name": "DEAD_LETTER_ALERT_TYPE",
+    "value": "\"alert_dispatch_dead_letter\""
+   },
+   {
     "file": "supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts",
     "name": "FOLLOW_UP_AFTER_HOURS",
     "value": "48"
@@ -56644,6 +56650,12 @@
     "kind": "escreve"
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "field": "status",
+    "value": "exhausted",
+    "kind": "compara"
+   },
+   {
     "file": "supabase/functions/alert-dispatcher/index.ts",
     "field": "type",
     "value": "section",
@@ -58114,6 +58126,12 @@
     "name": "placaValida",
     "params": "valor: unknown",
     "body": "return /^[A-Z]{3}\\d[A-Z0-9]\\d{2}$/.test(normalizarPlaca(valor));"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    "name": "shouldRecordDeadLetter",
+    "params": "status: DispatchStatus, alertType: string",
+    "body": "return status === \"exhausted\" && alertType !== DEAD_LETTER_ALERT_TYPE;"
    },
    {
     "file": "supabase/functions/check-cotacao-followup/cotacaoFollowUp.ts",
@@ -73034,6 +73052,18 @@
     "name": "previousAttempts le o contador do jsonb sem quebrar em formato inesperado"
    },
    {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "171/EDG-05: so a falha definitiva (exhausted) abre o alerta de segundo nivel"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "171/EDG-05: o proprio dead letter nunca gera outro dead letter"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "name": "171/EDG-05: o limite de tentativas e o mesmo que produz "
+   },
+   {
     "file": "supabase/functions/check-approval-escalations/index.test.ts",
     "name": "nenhum status em portugues e usado como filtro ou como valor gravado"
    },
@@ -81448,6 +81478,10 @@
    },
    {
     "file": "supabase/functions/alert-dispatcher/index.ts",
+    "limit": "1"
+   },
+   {
+    "file": "supabase/functions/alert-dispatcher/index.ts",
     "limit": "50"
    },
    {
@@ -83070,6 +83104,7 @@
       "escreve:supabase/functions/alert-dispatcher/dispatchStatus.ts"
      ],
      "exhausted": [
+      "compara:supabase/functions/alert-dispatcher/dispatchStatus.ts",
       "escreve:supabase/functions/alert-dispatcher/dispatchStatus.ts"
      ],
      "expirada": [
@@ -118462,7 +118497,7 @@
   },
   "supabase/functions/alert-dispatcher/dispatchStatus.test.ts": {
    "path": "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
-   "lines": 111,
+   "lines": 143,
    "is_test": true,
    "params": [
     {
@@ -118480,12 +118515,15 @@
     "188: entregou para alguem mas um canal falhou = partial, carimbado",
     "188: entrega em todos os canais = delivered, carimbado",
     "182: apenas o webhook global entregando ja conta como entregue",
-    "previousAttempts le o contador do jsonb sem quebrar em formato inesperado"
+    "previousAttempts le o contador do jsonb sem quebrar em formato inesperado",
+    "171/EDG-05: so a falha definitiva (exhausted) abre o alerta de segundo nivel",
+    "171/EDG-05: o proprio dead letter nunca gera outro dead letter",
+    "171/EDG-05: o limite de tentativas e o mesmo que produz "
    ]
   },
   "supabase/functions/alert-dispatcher/dispatchStatus.ts": {
    "path": "supabase/functions/alert-dispatcher/dispatchStatus.ts",
-   "lines": 97,
+   "lines": 109,
    "exports": [
     "const MAX_DELIVERY_ATTEMPTS",
     "const MAX_UNCONFIGURED_ATTEMPTS",
@@ -118493,6 +118531,8 @@
     "interface DispatchInput",
     "interface DispatchOutcome",
     "function classifyDispatch",
+    "const DEAD_LETTER_ALERT_TYPE",
+    "function shouldRecordDeadLetter",
     "function previousAttempts"
    ],
    "enums": [
@@ -118509,6 +118549,10 @@
     {
      "name": "MAX_UNCONFIGURED_ATTEMPTS",
      "value": "30"
+    },
+    {
+     "name": "DEAD_LETTER_ALERT_TYPE",
+     "value": "\"alert_dispatch_dead_letter\""
     }
    ],
    "status_values": [
@@ -118526,16 +118570,36 @@
      "field": "status",
      "value": "failed",
      "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "exhausted",
+     "kind": "compara"
     }
    ],
    "rule_comments": [
     "* Regra agora:"
+   ],
+   "calc_fns": [
+    {
+     "name": "shouldRecordDeadLetter",
+     "params": "status: DispatchStatus, alertType: string",
+     "body": "return status === \"exhausted\" && alertType !== DEAD_LETTER_ALERT_TYPE;"
+    }
    ]
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 440,
+   "lines": 507,
    "tables": [
+    {
+     "table": "system_alerts",
+     "op": "select"
+    },
+    {
+     "table": "system_alerts",
+     "op": "insert"
+    },
     {
      "table": "system_alerts",
      "op": "select"
@@ -118557,6 +118621,7 @@
      "id",
      "message",
      "metadata",
+     "resolved_at",
      "severity",
      "tenant_id"
     ]
@@ -118619,6 +118684,7 @@
     "sendEmail"
    ],
    "pagination": [
+    "1",
     "50"
    ],
    "uses_service_role": true
@@ -124154,10 +124220,22 @@
   }
  },
  "git": {
-  "sha": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
+  "sha": "2e5f087ccbd44a66acefba52ce7941dc518fee02",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2e5f087",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+     "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+     "supabase/functions/alert-dispatcher/index.ts"
+    ]
+   },
    {
     "sha": "5d9ba6d",
     "date": "2026-11-26",
@@ -124563,22 +124641,6 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "d74d61c",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)",
-    "files": [
-     "AGENTS.md",
-     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-     "docs/pendencias/_indice.md",
-     "docs/pendencias/job-outbox-worker.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/process-outbox/index.ts",
-     "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
-     "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -124587,16 +124649,24 @@
     27
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    4
-   ],
-   [
     "supabase/functions/send-push-notification/index.ts",
     4
    ],
    [
-    "AGENTS.md",
+    "supabase/functions/alert-dispatcher/index.ts",
     3
+   ],
+   [
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    3
+   ],
+   [
+    "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    2
+   ],
+   [
+    "supabase/functions/alert-dispatcher/dispatchStatus.ts",
+    2
    ],
    [
     "src/hooks/useCatalogoPim.ts",
@@ -124604,14 +124674,6 @@
    ],
    [
     "src/pages/gerar-ordem/GerarOrdem.tsx",
-    2
-   ],
-   [
-    "docs/pendencias/_indice.md",
-    2
-   ],
-   [
-    "supabase/functions/alert-dispatcher/index.ts",
     2
    ],
    [
@@ -124643,6 +124705,10 @@
     2
    ],
    [
+    "AGENTS.md",
+    2
+   ],
+   [
     "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
     1
    ],
@@ -124655,11 +124721,7 @@
     1
    ],
    [
-    "supabase/functions/_shared/notifications.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/notifications.ts",
+    "docs/pendencias/_indice.md",
     1
    ]
   ]

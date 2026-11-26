@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
+  "commit": "2e5f087ccbd44a66acefba52ce7941dc518fee02",
   "branch": "main",
-  "data_commit": "2026-11-26T09:25:27-03:00",
+  "data_commit": "2026-11-26T09:39:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "2e5f087",
+    "data": "2026-11-26",
+    "assunto": "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)"
+   },
    {
     "sha": "5d9ba6d",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "c7e6d1c",
     "data": "2026-11-26",
     "assunto": "fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)"
-   },
-   {
-    "sha": "24512f4",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)"
    }
   ],
   "arquivos_mudados_7d": 1526,
@@ -141,14 +141,14 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 173
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 66
+    "mudancas": 174
    },
    {
     "pasta": "src/components/ui",
+    "mudancas": 65
+   },
+   {
+    "pasta": "supabase/functions/_shared",
     "mudancas": 65
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 173
+    "mudancas": 174
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1505,
   "arquivos_codigo": 968,
-  "linhas_codigo": 192315,
+  "linhas_codigo": 192426,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20585
+   "linhas": 20696
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -655,7 +655,7 @@
   "ts_ignore": 0,
   "eslint_disable": 1,
   "todos": 5,
-  "arquivos_acima_500_linhas": 39
+  "arquivos_acima_500_linhas": 40
  },
  "todos": [
   {
