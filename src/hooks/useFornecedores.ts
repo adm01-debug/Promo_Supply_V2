@@ -15,6 +15,14 @@ import {
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
+// SEC-07 (etapa 055): o CNPJ cru nao vai para telemetria; so os 2 ultimos
+// digitos, o suficiente para o operador reconhecer o cadastro no log.
+const maskCnpj = (value: string | null | undefined): string => {
+  const digits = somenteDigitos(value ?? '');
+  if (digits.length !== 14) return '[REDACTED]';
+  return `**.***.***/****-${digits.slice(-2)}`;
+};
+
 export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
 
 export interface CreateFornecedorInput {
@@ -149,7 +157,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
         }
 
     try {
-      logger.info('Criando novo fornecedor', { razaoSocial: input.razao_social, cnpj: input.cnpj });
+      logger.info('Criando novo fornecedor', { razaoSocial: input.razao_social, cnpjMascarado: maskCnpj(input.cnpj) });
       // Generate codigo
       const { data: codeData } = await supabase.rpc('generate_sequential_number', {
         prefix: 'FOR',

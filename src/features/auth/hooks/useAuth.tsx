@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 're
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { queryClient } from '@/lib/query-client';
-import { logger } from '@/lib/logger';
+import { logger, hashIdentifier } from '@/lib/logger';
 import { toast } from 'sonner';
 import type { AppRole } from '../types/authRoles';
 import { UserProfileSchema, type UserProfile, type Tenant } from '../schemas/auth.schemas';
@@ -301,8 +301,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: normalizedEmail,
       password,
     });
-    if (error) logger.warn('Sign in failed', { email: normalizedEmail, error: error.message });
-    else logger.info('Sign in successful', { email: normalizedEmail });
+    if (error) logger.warn('Sign in failed', { emailHash: hashIdentifier(normalizedEmail), error: error.message });
+        else logger.info('Sign in successful', { emailHash: hashIdentifier(normalizedEmail) });
     return { error: error as Error | null };
   }, []);
 

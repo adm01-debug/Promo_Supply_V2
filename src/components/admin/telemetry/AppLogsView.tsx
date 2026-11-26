@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns/format";
 import { AlertCircle, Info, AlertTriangle, Terminal, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/hooks/useAuthContext";
 
 type TelemetryLogRow = Database["public"]["Tables"]["telemetry_logs"]["Row"];
 type LogLevel = "info" | "warn" | "error" | "debug";
@@ -30,13 +31,18 @@ const toLogLevel = (v: unknown): LogLevel => {
 
 export function AppLogsView() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+    // SEC-07 (etapa 056): a policy de `telemetry_logs` ainda deixa um admin ver
+    // linhas de outra empresa; o filtro explicito por tenant fecha isso na UI.
+    const { tenantId } = useAuth();
 
   const { data: logs = [], isLoading } = useQuery<AppLog[]>({
-    queryKey: ["app-logs"],
+      queryKey: ["app-logs", tenantId],
+      enabled: !!tenantId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("telemetry_logs")
         .select("*")
+          .eq("tenant_id", tenantId!)
         .order("created_at", { ascending: false })
         .limit(100);
 

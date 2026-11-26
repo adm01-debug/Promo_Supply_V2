@@ -84,6 +84,54 @@ export function clampContext(
   return { _dropped: true, _reason: "too-large", _bytes: bytes };
 }
 
+const SENSITIVE_KEY_FRAGMENTS = [
+  "password",
+  "token",
+  "secret",
+  "key",
+  "auth",
+  "cvv",
+  "email",
+  "cpf",
+  "cnpj",
+  "telefone",
+  "phone",
+  "celular",
+  "endereco",
+  "address",
+];
+
+const MAX_REDACT_DEPTH = 5;
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (typeof value !== "object" || value === null) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+};
+
+/**
+ * SEC-07 (etapas 054/055): segunda camada de redacao, no servidor.
+ * O cliente ja redige, mas a edge function aceita chamadas diretas — sem
+ * isto um POST cru grava PII em `telemetry_logs`, que a UI admin exibe.
+ */
+export function redactSensitiveContext(value: unknown, depth = 0): unknown {
+  if (Array.isArray(value)) {
+    if (depth >= MAX_REDACT_DEPTH) return "[DEPTH_LIMIT]";
+    return value.map((item) => redactSensitiveContext(item, depth + 1));
+  }
+  if (!isPlainObject(value)) return value;
+  if (depth >= MAX_REDACT_DEPTH) return "[DEPTH_LIMIT]";
+
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, val] of Object.entries(value)) {
+    const lower = key.toLowerCase();
+    sanitized[key] = SENSITIVE_KEY_FRAGMENTS.some((f) => lower.includes(f))
+      ? "[REDACTED]"
+      : redactSensitiveContext(val, depth + 1);
+  }
+  return sanitized;
+}
+
 export interface TelemetryRowInput {
   raw: Record<string, unknown>;
   fallbackRequestId: string;
@@ -128,7 +176,9 @@ export function buildTelemetryRow(
     message: safeTruncate(msg, MAX_MESSAGE_LENGTH),
     context:
       context && typeof context === "object" && !Array.isArray(context)
-        ? clampContext(context as Record<string, unknown>)
+              ? (redactSensitiveContext(
+                clampContext(context as Record<string, unknown>),
+              ) as Record<string, unknown>)
         : null,
     request_id: typeof requestId === "string" && requestId.length > 0
       ? requestId

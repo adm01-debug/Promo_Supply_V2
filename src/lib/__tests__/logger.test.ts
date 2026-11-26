@@ -151,5 +151,61 @@ describe('logger', () => {
       expect(result!.token).toBe('[REDACTED]');
       expect(result!.name).toBe('Alice');
     });
+
+        // SEC-07 (etapas 054/055): dados pessoais saem redigidos do contexto.
+        it('redacts personal data keys', () => {
+          const result = loggerAny.sanitizeContext({
+            email: 'alice@example.com',
+            cpf: '12345678901',
+            cnpj: '12345678000190',
+            telefone: '11999998888',
+            phone: '+5511999998888',
+            endereco: 'Rua X, 1',
+            address: 'Street Y, 2',
+            name: 'Alice',
+          });
+          for (const key of ['email', 'cpf', 'cnpj', 'telefone', 'phone', 'endereco', 'address']) {
+            expect(result![key]).toBe('[REDACTED]');
+          }
+          expect(result!.name).toBe('Alice');
+        });
+
+        it('redacts sensitive keys nested one level deep', () => {
+          const result = loggerAny.sanitizeContext({
+            input: { cnpj: '12345678000190', razaoSocial: 'ACME' },
+          });
+          expect((result!.input as Record<string, unknown>).cnpj).toBe('[REDACTED]');
+          expect((result!.input as Record<string, unknown>).razaoSocial).toBe('ACME');
+        });
+
+        it('redacts sensitive keys nested inside arrays', () => {
+          const result = loggerAny.sanitizeContext({
+            items: [{ email: 'a@b.com' }, { email: 'c@d.com' }],
+          });
+          const items = result!.items as Array<Record<string, unknown>>;
+          expect(items[0].email).toBe('[REDACTED]');
+          expect(items[1].email).toBe('[REDACTED]');
+        });
+
+        it('stops recursing at the depth limit', () => {
+          let deep: Record<string, unknown> = { email: 'deep@example.com' };
+          for (let i = 0; i < 8; i++) deep = { nested: deep };
+          const result = loggerAny.sanitizeContext(deep);
+          expect(JSON.stringify(result)).not.toContain('deep@example.com');
+        });
+
+        it('does not mutate nested originals', () => {
+          const nested = { cnpj: '12345678000190' };
+          loggerAny.sanitizeContext({ input: nested });
+          expect(nested.cnpj).toBe('12345678000190');
+        });
+
+        it('keeps non plain values (Date, Error) intact', () => {
+          const when = new Date('2026-01-01T00:00:00.000Z');
+          const err = new Error('boom');
+          const result = loggerAny.sanitizeContext({ when, err });
+          expect(result!.when).toBe(when);
+          expect(result!.err).toBe(err);
+        });
   });
 });

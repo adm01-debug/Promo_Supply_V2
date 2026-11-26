@@ -20,6 +20,53 @@ const TELEMETRY_MAX_BATCH = 20;
 const TELEMETRY_RATE_WINDOW_MS = 60_000;
 const TELEMETRY_RATE_LIMIT = 60;
 
+export const hashIdentifier = (value: string): string => {
+  let hash = 5381;
+  for (let i = 0; i < value.length; i++) {
+    hash = ((hash << 5) + hash + value.charCodeAt(i)) | 0;
+  }
+  return `h_${(hash >>> 0).toString(16).padStart(8, '0')}`;
+};
+
+const SENSITIVE_KEY_FRAGMENTS = [
+  'password', 'token', 'secret', 'key', 'auth', 'cvv',
+  'email', 'cpf', 'cnpj', 'telefone', 'phone', 'celular', 'endereco', 'address',
+];
+
+const MAX_SANITIZE_DEPTH = 5;
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (typeof value !== 'object' || value === null) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+};
+
+const isSensitiveKey = (key: string): boolean => {
+  const lower = key.toLowerCase();
+  return SENSITIVE_KEY_FRAGMENTS.some((fragment) => lower.includes(fragment));
+};
+
+/**
+ * Copia o contexto redigindo chaves sensiveis em qualquer nivel (SEC-07).
+ * Antes so a primeira camada era varrida, entao `{ input: { cnpj } }` chegava
+ * cru em `telemetry_logs`. Nao muta a entrada e preserva valores que nao sejam
+ * objetos simples (Error, Date, Map) para nao perder diagnostico.
+ */
+export const sanitizeContextDeep = (value: unknown, depth = 0): unknown => {
+  if (Array.isArray(value)) {
+    if (depth >= MAX_SANITIZE_DEPTH) return '[DEPTH_LIMIT]';
+    return value.map((item) => sanitizeContextDeep(item, depth + 1));
+  }
+  if (!isPlainObject(value)) return value;
+  if (depth >= MAX_SANITIZE_DEPTH) return '[DEPTH_LIMIT]';
+
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, val] of Object.entries(value)) {
+    sanitized[key] = isSensitiveKey(key) ? '[REDACTED]' : sanitizeContextDeep(val, depth + 1);
+  }
+  return sanitized;
+};
+
 class Logger {
   private static instance: Logger;
   private requestId: string;
@@ -134,17 +181,7 @@ class Logger {
 
   private sanitizeContext(context?: Record<string, unknown>): Record<string, unknown> | undefined {
     if (!context) return undefined;
-    
-    const sensitiveKeys = ['password', 'token', 'secret', 'key', 'auth', 'cvv'];
-    const sanitized = { ...context };
-
-    for (const key of Object.keys(sanitized)) {
-      if (sensitiveKeys.some(s => key.toLowerCase().includes(s))) {
-        sanitized[key] = '[REDACTED]';
-      }
-    }
-
-    return sanitized;
+        return sanitizeContextDeep(context) as Record<string, unknown>;
   }
 
   public info(message: string, context?: Record<string, unknown>) {
