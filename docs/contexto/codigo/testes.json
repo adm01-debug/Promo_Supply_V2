@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 300,
+ "total": 301,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 282
+  "unit": 283
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 205
+   "arquivos": 206
   },
   {
    "padrao": "outro",
@@ -1985,6 +1985,15 @@
    "casos": 1
   },
   {
+   "arquivo": "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+   "tipo": "unit",
+   "linhas": 76,
+   "testa": [
+    "src/pages/historico/HistoricoCompras.tsx"
+   ],
+   "casos": 2
+  },
+  {
    "arquivo": "src/pages/historico/__tests__/historicoHelpers.test.ts",
    "tipo": "unit",
    "linhas": 41,
@@ -2904,7 +2913,7 @@
   "src/pages/estoque/GestaoEstoque.tsx": 1,
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
-  "src/pages/historico/HistoricoCompras.tsx": 1,
+  "src/pages/historico/HistoricoCompras.tsx": 2,
   "src/pages/historico/HistoricoHelpers.tsx": 2,
   "src/pages/pagamentos/Pagamentos.tsx": 3,
   "src/pages/pedidos/PedidoDetailsDialog.tsx": 1,

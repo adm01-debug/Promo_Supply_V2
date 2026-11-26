@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fed20c286d` · branch `main` · 2026-11-26 03:12 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e18b65d5b5` · branch `main` · 2026-11-26 03:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3448 testes em 249 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3451 testes em 250 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2695,6 +2695,7 @@ _nenhum item encontrado_
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
 | `src/pages/admin/__tests__/SourcingPipeline.kpis.test.tsx` | 3 | KPIs do Sourcing Pipeline derivados do banco · nao exibe numeros fixos quando nao ha projeto · agrega estimated_spend dos projetos ativos ignorando concluidos |
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
+| `src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx` | 3 | HistoricoCompras - Limpar filtros · descreve o filtro de busca ativo (o botao deixa de responder  · nao inventa filtro ativo quando tudo esta no padrao |
 | `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |

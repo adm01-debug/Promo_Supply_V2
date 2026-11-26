@@ -4980,7 +4980,7 @@
     "HistoricoCompras"
    ],
    "export_default": "HistoricoCompras",
-   "linhas": 386,
+   "linhas": 404,
    "dominio": "pages/historico",
    "hooks_locais": [
     "useAccountFilters",

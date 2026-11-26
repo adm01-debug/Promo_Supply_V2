@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (205)",
+   "co-localizado (__tests__) (206)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)",
    "fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)",
    "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)",
    "chore(deps): bump dompurify (#477)",
-   "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)",
-   "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)"
+   "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)"
   ]
  },
  "pr_template": null,

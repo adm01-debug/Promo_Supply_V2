@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fed20c286dbf297ad16eaf62fba2c6d07e1e17a6",
+  "sha": "e18b65d5b5c49bb802ddfc97c370a6932d78262d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 03:12 UTC",
-  "files_total": 1468,
-  "code_files": 1294,
-  "code_lines": 219059,
+  "generated_at": "2026-11-26 03:30 UTC",
+  "files_total": 1469,
+  "code_files": 1295,
+  "code_lines": 219153,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "d91482d41f60ec82",
+ "facts_hash": "2b66f8537ea2dbd6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 423,
+   ".tsx": 424,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -35880,8 +35880,8 @@
   },
   {
    "module": "src/pages",
-   "files": 155,
-   "lines": 35120,
+   "files": 156,
+   "lines": 35214,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -69284,6 +69284,18 @@
    {
     "file": "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx",
     "name": "monta o SourcingHistoryConsole quando a aba e selecionada"
+   },
+   {
+    "file": "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+    "name": "HistoricoCompras - Limpar filtros"
+   },
+   {
+    "file": "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+    "name": "descreve o filtro de busca ativo (o botao deixa de responder "
+   },
+   {
+    "file": "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+    "name": "nao inventa filtro ativo quando tudo esta no padrao"
    },
    {
     "file": "src/pages/historico/__tests__/historicoColors.test.ts",
@@ -112342,7 +112354,7 @@
   },
   "src/pages/historico/HistoricoCompras.tsx": {
    "path": "src/pages/historico/HistoricoCompras.tsx",
-   "lines": 386,
+   "lines": 404,
    "exports": [
     "default HistoricoCompras"
    ],
@@ -112484,6 +112496,16 @@
    "tests": [
     "HistoricoCompras - aba Console de Sourcing",
     "monta o SourcingHistoryConsole quando a aba e selecionada"
+   ]
+  },
+  "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx": {
+   "path": "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+   "lines": 76,
+   "is_test": true,
+   "tests": [
+    "HistoricoCompras - Limpar filtros",
+    "descreve o filtro de busca ativo (o botao deixa de responder ",
+    "nao inventa filtro ativo quando tudo esta no padrao"
    ]
   },
   "src/pages/historico/__tests__/historicoColors.test.ts": {
@@ -122697,10 +122719,21 @@
   }
  },
  "git": {
-  "sha": "fed20c286dbf297ad16eaf62fba2c6d07e1e17a6",
+  "sha": "e18b65d5b5c49bb802ddfc97c370a6932d78262d",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e18b65d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/pages/historico/HistoricoCompras.tsx",
+     "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx"
+    ]
+   },
    {
     "sha": "fed20c2",
     "date": "2026-11-26",
@@ -123029,21 +123062,12 @@
      "bun.lock",
      "package.json"
     ]
-   },
-   {
-    "sha": "6463184",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)",
-    "files": [
-     "scripts/ci/paridade-migrations-banco.allowlist.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    19
    ],
    [
     "bun.lock",
@@ -123090,6 +123114,14 @@
     2
    ],
    [
+    "src/pages/historico/HistoricoCompras.tsx",
+    1
+   ],
+   [
+    "src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx",
+    1
+   ],
+   [
     "src/features/auth/hooks/AuthContext.ts",
     1
    ],
@@ -123111,14 +123143,6 @@
    ],
    [
     "supabase/functions/_shared/idempotency.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/_shared/idempotency.ts",
-    1
-   ],
-   [
-    "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
     1
    ]
   ]

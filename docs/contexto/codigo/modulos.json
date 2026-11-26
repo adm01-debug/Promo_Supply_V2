@@ -5557,8 +5557,8 @@
   {
    "modulo": "pages/historico",
    "arquivos": 7,
-   "testes": 3,
-   "linhas": 1322,
+   "testes": 4,
+   "linhas": 1340,
    "itens_menu": [
     "Histórico"
    ],
