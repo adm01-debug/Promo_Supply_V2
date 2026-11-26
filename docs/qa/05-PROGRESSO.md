@@ -390,7 +390,10 @@ Se algum desses já estiver vermelho quando você começar, é regressão poster
 
 - [ ] 027 — `current_tenant_id()` lê uma informação do token que nada preenche: devolve sempre nulo e cinco funcionalidades morrem em silêncio — onda 1 — Alta — RLS-02
 
-- [ ] 028 — Movimentar estoque não exige papel e a trigger privilegiada atualiza o saldo sem conferir a empresa do item — onda 1 — Alta — RLS-03
+- [x] 028 — Movimentar estoque não exige papel e a trigger privilegiada atualiza o saldo sem conferir a empresa do item — onda 1 — Alta — RLS-03
+
+
+  - Evidencia: a policy de INSERT de public.estoque_movimentacoes (criada em 20260619145543_83e16148 com nome 'Movimenta\u00e7\u00f5es: inserir na pr\u00f3pria organiza\u00e7\u00e3o') comparava so organization_id com profiles.current_organization_id - sem papel e sem relacao com estoque_id. Recriada como 'estoque_movimentacoes_insert_papeis' com o mesmo predicado de estoque_insert_papeis (organization_id = get_user_grupo_id() E admin/coordinator/buyer, 20261113123738_comprador_nao_altera_dados_de_outros.sql:156-161) mais EXISTS no estoque da organizacao do usuario; o nome antigo e dropado pelo nome exato, para nao sobrar policy permissiva em paralelo (policy em Postgres e OR). public.update_estoque_saldo() ganhou o guard que faltava: item de outra organizacao levanta 42501 no mesmo padrao de guard_solicitacao_escrita; o guard so vale com auth.uid() preenchido, entao service_role/cron seguem atualizando saldo. O SECURITY DEFINER foi mantido de proposito - sem ele o saldo deixaria de ser atualizado para quem nao tem UPDATE em public.estoque. Nao toquei nas policies de public.estoque nem em src/hooks/useEstoque.ts. Migration supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql; reversao pronta em supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql (nao aplicada). Pendente: aplicar em producao pelo workflow aplicar-migration-prod.yml e registrar o run aqui.
 
 - [x] 029 — Migration: Tabelas com RLS e sem policy de UPDATE fazem o front "salvar com sucesso" sem gravar nada — onda 1 — Alta — RLS-04
 
