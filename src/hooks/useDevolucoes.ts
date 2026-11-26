@@ -51,18 +51,34 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-export function useDevolucoes(filters?: { status?: string; search?: string; fornecedor_id?: string }) {
+export interface DevolucaoFilters {
+  status?: string;
+  search?: string;
+  fornecedor_id?: string;
+  /**
+   * Opt-in. Com `page`, a consulta pagina no servidor (`.range` + `count`) e
+   * `totalCount` passa a valer; sem `page`, a lista completa continua vindo.
+   */
+  page?: number;
+  pageSize?: number;
+}
+
+export function useDevolucoes(filters?: DevolucaoFilters) {
   const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
-  const queryKey = useMemo(() => ['devolucoes', user?.id, filters?.status, filters?.search, filters?.fornecedor_id], [user?.id, filters]);
+  const queryKey = useMemo(() => ['devolucoes', user?.id, filters?.status, filters?.search, filters?.fornecedor_id, filters?.page, filters?.pageSize], [user?.id, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
+      const paginar = typeof filters?.page === 'number';
+      const pageSize = filters?.pageSize ?? 20;
+      const from = ((filters?.page ?? 1) - 1) * pageSize;
+
       let query = supabase
         .from('devolucoes')
-        .select('*')
+        .select('*', paginar ? { count: 'exact' } : {})
         .eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000')
         .order('created_at', { ascending: false });
 
@@ -72,8 +88,9 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         const s = escapeIlike(filters.search);
         query = query.or(`numero.ilike.%${s}%,motivo_detalhe.ilike.%${s}%`);
       }
+      if (paginar) query = query.range(from, from + pageSize - 1);
 
-      const { data: devRows, error } = await query;
+      const { data: devRows, count, error } = await query;
       if (error) throw error;
       const rows = (devRows || []) as unknown as Database['public']['Tables']['devolucoes']['Row'][];
 
@@ -93,17 +110,20 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
       const pedidosMap = new Map((pedidosRes.data || []).map(p => [p.id, p]));
 
-      return rows.map(r => ({
+      const comRelacoes = rows.map(r => ({
         ...r,
         fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
         pedido: r.pedido_id ? pedidosMap.get(r.pedido_id) ?? null : null,
       })) as Devolucao[];
+
+      return { data: comRelacoes, totalCount: count ?? comRelacoes.length };
     },
     enabled: !!user,
     staleTime: 30_000,
   });
 
-  const devolucoes = useMemo(() => data ?? [], [data]);
+  const devolucoes = useMemo(() => data?.data ?? [], [data]);
+  const totalCount = data?.totalCount ?? 0;
 
   const createDevolucao = useCallback(async (input: CreateDevolucaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
@@ -279,7 +299,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     enabled: !!user,
   });
 
-  return { devolucoes, loading: isLoading, error: error?.message || null, refetch, createDevolucao, updateStatus, deleteDevolucao };
+  return { devolucoes, totalCount, loading: isLoading, error: error?.message || null, refetch, createDevolucao, updateStatus, deleteDevolucao };
 }
 
 export function useCreditosFornecedor(fornecedorId?: string) {
