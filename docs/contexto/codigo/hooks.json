@@ -329,7 +329,7 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 73,
+   "usado_por": 74,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
@@ -340,6 +340,7 @@
     "src/components/compras/NovaSolicitacaoModal.tsx",
     "src/components/compras/PenaltyEscalationConfigPanel.tsx",
     "src/components/compras/ProductSupplierManager.tsx",
+    "src/components/compras/PurchaseClimateWidget.tsx",
     "src/components/compras/SourcingIntelligenceWidget.tsx",
     "src/components/compras/SupplierBonificationsPanel.tsx",
     "src/components/compras/scorecard/supplierScorecardData.ts",
@@ -359,8 +360,7 @@
     "src/features/layout/components/SLASettingsPanel.tsx",
     "src/features/layout/components/SupplierChat.tsx",
     "src/features/layout/components/UserMenu.tsx",
-    "src/features/pedidos/hooks/usePedidos.ts",
-    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+    "src/features/pedidos/hooks/usePedidos.ts"
    ],
    "coberto_por_testes": 3
   },
@@ -1205,7 +1205,7 @@
    "hooks_exportados": [
     "useExecutiveDashboardData"
    ],
-   "linhas": 667,
+   "linhas": 676,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -1224,7 +1224,7 @@
     "src/components/compras/executive/ExecutiveChartsRow.tsx",
     "src/components/compras/executive/ExecutiveDrillDownModal.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useFeedback.ts",

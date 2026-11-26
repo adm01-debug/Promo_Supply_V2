@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 315,
+ "total": 316,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 297
+  "unit": 298
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 219
+   "arquivos": 220
   },
   {
    "padrao": "outro",
@@ -1227,6 +1227,15 @@
     "src/hooks/useDevolucoes.ts"
    ],
    "casos": 16
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+   "tipo": "unit",
+   "linhas": 139,
+   "testa": [
+    "src/hooks/useExecutiveDashboardData.ts"
+   ],
+   "casos": 6
   },
   {
    "arquivo": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
@@ -2963,6 +2972,7 @@
   "src/hooks/useBulkOperations.ts": 1,
   "src/hooks/useDashboardKPIs.ts": 1,
   "src/hooks/useDevolucoes.ts": 4,
+  "src/hooks/useExecutiveDashboardData.ts": 1,
   "src/hooks/useFeedback.ts": 1,
   "src/hooks/useFornecedores.ts": 6,
   "src/hooks/useFuseSearch.ts": 1,
@@ -3165,7 +3175,6 @@
    "src/hooks/useCriticalAlertsBadge.ts",
    "src/hooks/useDashboardFilters.ts",
    "src/hooks/useEstoque.ts",
-   "src/hooks/useExecutiveDashboardData.ts",
    "src/hooks/useFlashHighlight.ts",
    "src/hooks/useFormDataProtection.ts",
    "src/hooks/useFormDirty.ts",

@@ -627,6 +627,7 @@
    "src/components/ui/card.tsx",
    "src/components/ui/progress.tsx",
    "src/components/ui/tooltip.tsx",
+   "src/features/auth/index.ts",
    "src/integrations/supabase/client.ts",
    "src/lib/utils.ts"
   ],

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a49b4005a41e6d34acfc39a958740834d49e0e2c` (2026-11-26T04:15:53-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a55e816363a5547632024d28cd64ac78404e0975` (2026-11-26T04:28:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (880), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (881), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1492 |
-| arquivos_codigo | 955 |
-| linhas_codigo | 190527 |
+| arquivos_total | 1493 |
+| arquivos_codigo | 956 |
+| linhas_codigo | 190679 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 315 |
+| testes | 316 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (219), outro (44), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (220), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (155)
-- docs/pendencias/_indice.md (27)
+- docs/qa/05-PROGRESSO.md (156)
+- docs/pendencias/_indice.md (26)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `a55e816` fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)
 - 2026-11-26 `a49b400` fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)
 - 2026-11-26 `990f6c3` fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)
 - 2026-11-26 `647ddb4` fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
 - 2026-11-26 `88efac2` fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)
 - 2026-11-26 `8c87ad1` fix(retencao): cron de system_alerts passa a chamar a funcao oficial (etapa 201) (#522)
-- 2026-11-26 `dac477d` fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a49b4005a41e6d34acfc39a958740834d49e0e2c",
+  "sha": "a55e816363a5547632024d28cd64ac78404e0975",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 07:16 UTC",
-  "files_total": 1493,
-  "code_files": 1318,
-  "code_lines": 221336,
+  "generated_at": "2026-11-26 07:28 UTC",
+  "files_total": 1494,
+  "code_files": 1319,
+  "code_lines": 221488,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c57cf5410014f4d6",
+ "facts_hash": "ba987c94df5fd2d5",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 444,
-   ".tsx": 436,
+   ".tsx": 437,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -34966,7 +34966,7 @@
   {
    "module": "src/components",
    "files": 285,
-   "lines": 52392,
+   "lines": 52396,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35538,8 +35538,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 100,
-   "lines": 17077,
+   "files": 101,
+   "lines": 17225,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35751,12 +35751,12 @@
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
     "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
     "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFornecedores.paginacao.test.tsx",
-    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
-    "src/hooks/__tests__/useFuseSearch.test.ts"
+    "src/hooks/__tests__/useFornecedores.unicidade.test.tsx"
    ]
   },
   {
@@ -64379,6 +64379,38 @@
    {
     "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
     "name": "invalidar o prefixo [devolucoes] refaz a consulta dos cartoes"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "useExecutiveDashboardData - recorte de periodo no SQL (etapa 215)"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "empurra o corte de data de solicitacoes, fiscal_documents e savings_tracker para o SQL"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "nao filtra pedidos por created_at (o recorte local usa data_emissao com fallback)"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "sem periodo definido nenhuma tabela recebe corte de data"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "mantem organization_id (ou tenant_id) em toda tabela consultada"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "etapa 215 - chave de cache e carga do widget de clima"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "a chave das queries com corte no SQL inclui a data de corte (senao o cache do periodo antigo vaza)"
+   },
+   {
+    "file": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    "name": "o widget de clima usa a organizacao na chave e nao pede COUNT que ninguem le"
    },
    {
     "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
@@ -97408,7 +97440,7 @@
   },
   "src/components/compras/PurchaseClimateWidget.tsx": {
    "path": "src/components/compras/PurchaseClimateWidget.tsx",
-   "lines": 245,
+   "lines": 249,
    "exports": [
     "const PurchaseClimateWidget"
    ],
@@ -97428,16 +97460,13 @@
    ],
    "table_cols": {
     "solicitacoes": [
-     "status",
-     "valor_estimado"
+     "status"
     ],
     "pedidos": [
-     "data_entrega",
      "data_previsao",
      "status"
     ],
     "pagamentos": [
-     "status",
      "valor",
      "valor_pago"
     ]
@@ -105211,7 +105240,7 @@
   },
   "src/hooks/useExecutiveDashboardData.ts": {
    "path": "src/hooks/useExecutiveDashboardData.ts",
-   "lines": 667,
+   "lines": 676,
    "exports": [
     "interface ExecutiveMetrics",
     "interface MonthlyPoint",
@@ -107493,6 +107522,24 @@
     "separa abertas, em transito e concluidas e calcula a taxa sobre o total",
     "a chave do cache inclui a empresa que a consulta filtra",
     "invalidar o prefixo [devolucoes] refaz a consulta dos cartoes"
+   ]
+  },
+  "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx": {
+   "path": "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+   "lines": 139,
+   "is_test": true,
+   "rule_comments": [
+    "periodo nulo nao pode ser um item extra: o corte sempre aparece como 3o item"
+   ],
+   "tests": [
+    "useExecutiveDashboardData - recorte de periodo no SQL (etapa 215)",
+    "empurra o corte de data de solicitacoes, fiscal_documents e savings_tracker para o SQL",
+    "nao filtra pedidos por created_at (o recorte local usa data_emissao com fallback)",
+    "sem periodo definido nenhuma tabela recebe corte de data",
+    "mantem organization_id (ou tenant_id) em toda tabela consultada",
+    "etapa 215 - chave de cache e carga do widget de clima",
+    "a chave das queries com corte no SQL inclui a data de corte (senao o cache do periodo antigo vaza)",
+    "o widget de clima usa a organizacao na chave e nao pede COUNT que ninguem le"
    ]
   },
   "src/hooks/__tests__/useFornecedores.exclusao.test.tsx": {
@@ -123333,10 +123380,22 @@
   }
  },
  "git": {
-  "sha": "a49b4005a41e6d34acfc39a958740834d49e0e2c",
+  "sha": "a55e816363a5547632024d28cd64ac78404e0975",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a55e816",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/PurchaseClimateWidget.tsx",
+     "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+     "src/hooks/useExecutiveDashboardData.ts"
+    ]
+   },
    {
     "sha": "a49b400",
     "date": "2026-11-26",
@@ -123674,17 +123733,6 @@
      "docs/qa/05-PROGRESSO.md",
      "src/components/admin/telemetry/SystemAlertsView.tsx"
     ]
-   },
-   {
-    "sha": "650e384",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/admin/TenantSwitcher.tsx",
-     "src/features/layout/components/HeaderActions.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -123733,6 +123781,18 @@
     2
    ],
    [
+    "src/components/compras/PurchaseClimateWidget.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useExecutiveDashboardData.ts",
+    1
+   ],
+   [
     "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
     1
    ],
@@ -123754,18 +123814,6 @@
    ],
    [
     "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useFornecedores.paginacao.test.tsx",
-    1
-   ],
-   [
-    "src/pages/fornecedores/Fornecedores.tsx",
-    1
-   ],
-   [
-    "src/integrations/supabase/types.ts",
     1
    ]
   ]
