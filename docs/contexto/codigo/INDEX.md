@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3e0edc9c11de0f4303a6d55a01cdeafafe7f0171` (2026-11-26T09:56:25-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7e2123acbc3f71c7220d2017dc4e8bc433b0eb2d` (2026-11-26T10:10:48-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (362), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (365), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1506 |
+| arquivos_total | 1509 |
 | arquivos_codigo | 968 |
-| linhas_codigo | 192427 |
+| linhas_codigo | 192429 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,8 +46,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 345 |
-| cron_jobs | 79 |
+| migrations | 347 |
+| cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
 | scripts | 52 |
@@ -246,6 +246,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `cleanup-query-telemetry` 55 3 * * * (20260711191946_872a6814-ab1c-4596-b6d7-c3e5c8379396.sql)
 - `cleanup-rate-limit-logs` 00 4 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
 - `cleanup-security-logs-daily` 0 3 * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `cleanup-spot-api-sync-log` 40 3 * * * (20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql)
 - `cleanup-system-alerts` 45 3 * * * (20260711183647_cb1ddb07-f7db-40d3-bb0e-d42adfb914a0.sql)
 - `cleanup-telemetry-hourly` 30 * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
 - `cleanup-telemetry-logs` 50 3 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
@@ -343,9 +344,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (174)
-- docs/pendencias/_indice.md (21)
-- AGENTS.md (13)
+- docs/qa/05-PROGRESSO.md (175)
+- docs/pendencias/_indice.md (20)
+- AGENTS.md (14)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (10)
 - docs/ci/README.md (9)
@@ -427,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `7e2123a` perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)
 - 2026-11-26 `3e0edc9` chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)
 - 2026-11-26 `9ceca5c` chore(db): sincronizar types.ts com o banco [auto] (#544)
 - 2026-11-26 `2e5f087` fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)
@@ -441,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `02f5c0e` fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)
 - 2026-11-26 `be8eb67` fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)
 - 2026-11-26 `c018639` fix(edge): trata notificacao descartada como descarte, nao como envio (#550)
-- 2026-11-26 `f72f728` fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

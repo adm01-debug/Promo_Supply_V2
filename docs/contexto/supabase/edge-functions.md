@@ -8,12 +8,12 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | ai-negotiation | ai-negotiation | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-negotiation/index.ts |
 | ai-supplier-risk | ai-supplier-risk | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-risk/index.ts |
 | ai-supplier-suggestion | ai-supplier-suggestion | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
-| alert-dispatcher | alert-dispatcher | ACTIVE | 28 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
+| alert-dispatcher | alert-dispatcher | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
 | check-approval-escalations | check-approval-escalations | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
 | check-cotacao-followup | check-cotacao-followup | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | check-expiry-alerts | check-expiry-alerts | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-expiry-alerts/index.ts |
 | check-sla-alerts | check-sla-alerts | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-sla-alerts/index.ts |
-| dependency-health | dependency-health | ACTIVE | 38 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/dependency-health/index.ts |
+| dependency-health | dependency-health | ACTIVE | 39 | não | file:///app/supabase/functions/dependency-health/index.ts |
 | erp-credential-encrypt | erp-credential-encrypt | ACTIVE | 13 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/erp-credential-encrypt/index.ts |
 | erp-sync | erp-sync | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/erp-sync/index.ts |
 | escalate-solicitacao | escalate-solicitacao | ACTIVE | 12 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/escalate-solicitacao/index.ts |
@@ -28,23 +28,23 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | process-outbox | process-outbox | ACTIVE | 23 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
 | process-solicitacao-neural | process-solicitacao-neural | ACTIVE | 23 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-solicitacao-neural/index.ts |
 | punchout-encrypt | punchout-encrypt | ACTIVE | 21 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-encrypt/index.ts |
-| punchout-receive | punchout-receive | ACTIVE | 35 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts |
+| punchout-receive | punchout-receive | ACTIVE | 36 | não | file:///app/supabase/functions/punchout-receive/index.ts |
 | punchout-setup | punchout-setup | ACTIVE | 26 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-setup/index.ts |
-| receive-os-sync | receive-os-sync | ACTIVE | 18 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts |
+| receive-os-sync | receive-os-sync | ACTIVE | 19 | não | file:///app/supabase/functions/receive-os-sync/index.ts |
 | run-audit | run-audit | ACTIVE | 27 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
-| scim-v2 | scim-v2 | ACTIVE | 38 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts |
+| scim-v2 | scim-v2 | ACTIVE | 39 | não | file:///app/supabase/functions/scim-v2/index.ts |
 | send-push-notification | send-push-notification | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/send-push-notification/index.ts |
 | spot-api | spot-api | ACTIVE | 30 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |
 | spot-proxy | spot-proxy | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-proxy/index.ts |
 | system-simulation | system-simulation | ACTIVE | 32 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/system-simulation/index.ts |
 | telemetry | telemetry | ACTIVE | 33 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/telemetry/index.ts |
-| webauthn-authenticate | webauthn-authenticate | ACTIVE | 30 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts |
+| webauthn-authenticate | webauthn-authenticate | ACTIVE | 31 | não | file:///app/supabase/functions/webauthn-authenticate/index.ts |
 | webauthn-register | webauthn-register | ACTIVE | 25 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-register/index.ts |
 | weekly-report | weekly-report | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/weekly-report/index.ts |
 | weekly-summary-report | weekly-summary-report | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/weekly-summary-report/index.ts |
 | workflow-engine | workflow-engine | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/workflow-engine/index.ts |
 | xbz-proxy | xbz-proxy | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/xbz-proxy/index.ts |
-| xbz-sync-pedidos | xbz-sync-pedidos | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/xbz-sync-pedidos/index.ts |
+| xbz-sync-pedidos | xbz-sync-pedidos | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/xbz-sync-pedidos/index.ts |
 
 
 ## Secrets (apenas nomes)

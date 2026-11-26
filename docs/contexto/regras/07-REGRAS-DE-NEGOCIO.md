@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3e0edc9c11` · branch `main` · 2026-11-26 13:19 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7e2123acbc` · branch `main` · 2026-11-26 13:27 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2161,6 +2161,8 @@ _nenhum item encontrado_
 | 1 | `supabase/functions/webauthn-authenticate/index.ts` |
 | 1 | `supabase/functions/webauthn-register/index.ts` |
 | 1 | `supabase/functions/xbz-proxy/index.ts` |
+| 200 | `supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql` |
+| 50 | `supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql` |
 
 ## I. Regras implícitas em mensagens de erro/validação
 

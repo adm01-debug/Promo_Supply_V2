@@ -1564,7 +1564,7 @@
    "nome": "xbz-sync-pedidos",
    "entrada": "supabase/functions/xbz-sync-pedidos/index.ts",
    "arquivos": 1,
-   "linhas": 193,
+   "linhas": 195,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS",

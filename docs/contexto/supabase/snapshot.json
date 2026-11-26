@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795695304699,
+        "updated_at": 1795696852806,
         "verify_jwt": true,
-        "version": 28
+        "version": 29
       },
       {
         "created_at": 1785935869432,
@@ -401,15 +401,15 @@
       },
       {
         "created_at": 1785935910356,
-        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/dependency-health/index.ts",
+        "entrypoint_path": "file:///app/supabase/functions/dependency-health/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "dependency-health",
         "slug": "dependency-health",
         "status": "ACTIVE",
-        "updated_at": 1795695320826,
+        "updated_at": 1795695922208,
         "verify_jwt": false,
-        "version": 38
+        "version": 39
       },
       {
         "created_at": 1795210713630,
@@ -581,15 +581,15 @@
       },
       {
         "created_at": 1785935851193,
-        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts",
+        "entrypoint_path": "file:///app/supabase/functions/punchout-receive/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "punchout-receive",
         "slug": "punchout-receive",
         "status": "ACTIVE",
-        "updated_at": 1795695369653,
+        "updated_at": 1795695922208,
         "verify_jwt": false,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935848102,
@@ -605,15 +605,15 @@
       },
       {
         "created_at": 1795462093958,
-        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts",
+        "entrypoint_path": "file:///app/supabase/functions/receive-os-sync/index.ts",
         "import_map": null,
         "import_map_path": null,
         "name": "receive-os-sync",
         "slug": "receive-os-sync",
         "status": "ACTIVE",
-        "updated_at": 1795695376147,
+        "updated_at": 1795695922208,
         "verify_jwt": false,
-        "version": 18
+        "version": 19
       },
       {
         "created_at": 1785935914012,
@@ -629,15 +629,15 @@
       },
       {
         "created_at": 1785935900512,
-        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts",
+        "entrypoint_path": "file:///app/supabase/functions/scim-v2/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "scim-v2",
         "slug": "scim-v2",
         "status": "ACTIVE",
-        "updated_at": 1795695382250,
+        "updated_at": 1795695922208,
         "verify_jwt": false,
-        "version": 38
+        "version": 39
       },
       {
         "created_at": 1785935903898,
@@ -701,15 +701,15 @@
       },
       {
         "created_at": 1785935896372,
-        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts",
+        "entrypoint_path": "file:///app/supabase/functions/webauthn-authenticate/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "webauthn-authenticate",
         "slug": "webauthn-authenticate",
         "status": "ACTIVE",
-        "updated_at": 1795695399065,
+        "updated_at": 1795695922208,
         "verify_jwt": false,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935893295,
@@ -779,9 +779,9 @@
         "name": "xbz-sync-pedidos",
         "slug": "xbz-sync-pedidos",
         "status": "ACTIVE",
-        "updated_at": 1795695417500,
+        "updated_at": 1795698710295,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       }
     ],
     "enabled": true,
@@ -37449,15 +37449,6 @@
         },
         {
           "active": true,
-          "command": "SELECT public._invoke_spot_sync('syncStock');",
-          "database": "postgres",
-          "jobid": 122,
-          "jobname": "spot-api-sync-stock",
-          "schedule": "*/20 * * * *",
-          "username": "postgres"
-        },
-        {
-          "active": true,
           "command": "SELECT public.cron_watchdog();",
           "database": "postgres",
           "jobid": 123,
@@ -37472,6 +37463,15 @@
           "jobid": 124,
           "jobname": "cleanup-spot-api-sync-log",
           "schedule": "40 3 * * *",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public._invoke_spot_sync('syncStock');",
+          "database": "postgres",
+          "jobid": 125,
+          "jobname": "spot-api-sync-stock",
+          "schedule": "*/30 * * * *",
           "username": "postgres"
         }
       ]
@@ -37608,14 +37608,18 @@
             {
               "file": "supabase/migrations/20261121232500_corrige_quota_cron_spot_stock.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127170000_reduz_frequencia_cron_spot_stock.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [
             "31:spot-api-sync-catalog",
             "32:spot-api-sync-customization",
             "121:spot-api-sync-orders-30min",
-            "122:spot-api-sync-stock"
+            "125:spot-api-sync-stock"
           ],
           "db": [],
           "triggers": [],
@@ -39477,9 +39481,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -39586,8 +39594,13 @@
       {
         "args": "",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
           "cron": [
             "124:cleanup-spot-api-sync-log"
           ],
@@ -62479,6 +62492,24 @@
         "statements": 5,
         "statements_sha": "7881eed152617e10",
         "version": "20261127160000"
+      },
+      {
+        "name": "reduz_frequencia_cron_spot_stock",
+        "statements": 1,
+        "statements_sha": "a67507713b9968dc",
+        "version": "20261127170000"
+      },
+      {
+        "name": "perf05_indices_system_alerts_e_spot_sync_log",
+        "statements": 8,
+        "statements_sha": "5a08a82a6d9b4879",
+        "version": "20261127180000"
+      },
+      {
+        "name": "perf08_dropa_indices_redundantes",
+        "statements": 25,
+        "statements_sha": "35e102c5bd3aa21e",
+        "version": "20261127190000"
       }
     ],
     "policies": [

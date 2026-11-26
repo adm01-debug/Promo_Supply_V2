@@ -2,6 +2,14 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 13:27 UTC
+
+- **cron jobs** adicionado (1): `125:spot-api-sync-stock`
+- **cron jobs** removido (1): `122:spot-api-sync-stock`
+- **edge functions** alterado (7): `alert-dispatcher`, `dependency-health`, `punchout-receive`, `receive-os-sync`, `scim-v2`, `webauthn-authenticate`, `xbz-sync-pedidos`
+- **functions** alterado (3): `public._invoke_spot_sync(_action text)`, `public.cleanup_old_query_telemetry()`, `public.cleanup_old_spot_sync_log()`
+- **migrations** adicionado (3): `20261127170000_reduz_frequencia_cron_spot_stock`, `20261127180000_perf05_indices_system_alerts_e_spot_sync_log`, `20261127190000_perf08_dropa_indices_redundantes`
+
 ## 2026-11-26 12:18 UTC
 
 - **edge functions** alterado (38): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `alert-dispatcher`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-credential-encrypt`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `maintain-partitions`, `migrate-storage-paths`, `process-invoice-idp`, `process-solicitacao-neural`, `punchout-encrypt`, `punchout-receive`, `punchout-setup`, `receive-os-sync`, `run-audit`, `scim-v2`, `send-push-notification`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `webauthn-register`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy`, `xbz-sync-pedidos`

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)",
    "chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)",
    "chore(db): sincronizar types.ts com o banco [auto] (#544)",
    "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)",
-   "fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)",
-   "fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)"
+   "fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)"
   ]
  },
  "pr_template": null,

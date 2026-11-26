@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3e0edc9c11de0f4303a6d55a01cdeafafe7f0171",
+  "commit": "7e2123acbc3f71c7220d2017dc4e8bc433b0eb2d",
   "branch": "main",
-  "data_commit": "2026-11-26T09:56:25-03:00",
+  "data_commit": "2026-11-26T10:10:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "7e2123a",
+    "data": "2026-11-26",
+    "assunto": "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)"
+   },
    {
     "sha": "3e0edc9",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "647ddb4",
     "data": "2026-11-26",
     "assunto": "fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)"
-   },
-   {
-    "sha": "50f9811",
-    "data": "2026-11-26",
-    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#525)"
    }
   ],
-  "arquivos_mudados_7d": 1527,
+  "arquivos_mudados_7d": 1530,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 174
+    "mudancas": 175
    },
    {
     "pasta": "src/components/ui",
@@ -188,26 +188,26 @@
     "mudancas": 22
    },
    {
-    "pasta": "docs/pendencias/_indice.md",
+    "pasta": "src/pages/catalogo-spot",
     "mudancas": 21
    },
    {
-    "pasta": "src/pages/catalogo-spot",
+    "pasta": "src/pages/historico",
     "mudancas": 21
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 174
+    "mudancas": 175
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 13
+    "mudancas": 14
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -278,6 +278,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": ".github/workflows/aplicar-migration-prod.yml",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/main.yml",
     "mudancas": 6
    },
@@ -291,10 +295,6 @@
    },
    {
     "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
     "mudancas": 6
    }
   ],
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1506,
+  "arquivos_total": 1509,
   "arquivos_codigo": 968,
-  "linhas_codigo": 192427,
+  "linhas_codigo": 192429,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,8 +326,8 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 345,
-  "cron_jobs": 79,
+  "migrations": 347,
+  "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,
   "scripts": 52,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20696
+   "linhas": 20698
   },
   "tailwind.config.ts": {
    "arquivos": 1,

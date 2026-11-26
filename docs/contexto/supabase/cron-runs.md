@@ -25,9 +25,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 12:45:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-26 11:45:00 | succeeded | 0.02 | DELETE 0 |
 | 2026-11-26 10:45:00 | succeeded | 0.03 | DELETE 0 |
-| 2026-11-26 09:45:00 | succeeded | 0.03 | DELETE 0 |
 
 
 ## 10 · weekly-vacuum-analyze
@@ -73,9 +73,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 12:15:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 12:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:45:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 13:15:00 | succeeded | 0.03 | 1 row |
+| 2026-11-26 13:00:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 12:45:00 | succeeded | 0.03 | 1 row |
 
 
 ## 19 · refresh-mv-dashboard-kpis
@@ -91,9 +91,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 13:15:00 | succeeded | 0.03 | 1 row |
 | 2026-11-26 12:15:00 | succeeded | 0.04 | 1 row |
 | 2026-11-26 11:15:00 | succeeded | 0.03 | 1 row |
-| 2026-11-26 10:15:00 | succeeded | 0.05 | 1 row |
 
 
 ## 31 · spot-api-sync-catalog
@@ -130,27 +130,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 13:00:00 | succeeded | 0.01 | 1 row |
+| 2026-11-26 12:30:00 | succeeded | 0.02 | 1 row |
 | 2026-11-26 12:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:30:00 | succeeded | 0.03 | 1 row |
-| 2026-11-26 11:00:00 | succeeded | 0.03 | 1 row |
 
 
 ## 113 · alert-dispatcher-1min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 12:18:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 12:17:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 12:16:00 | succeeded | 0.01 | 1 row |
+| 2026-11-26 13:27:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 13:26:00 | succeeded | 0.01 | 1 row |
+| 2026-11-26 13:25:00 | succeeded | 0.02 | 1 row |
 
 
 ## 114 · approval-escalation-check
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 12:15:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 12:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:45:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 13:15:00 | succeeded | 0.03 | 1 row |
+| 2026-11-26 13:00:00 | succeeded | 0.03 | 1 row |
+| 2026-11-26 12:45:00 | succeeded | 0.05 | 1 row |
 
 
 ## 115 · contract-expiry-check
@@ -184,9 +184,9 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 13:00:00 | succeeded | 0.02 | 1 row |
+| 2026-11-26 12:30:00 | succeeded | 0.01 | 1 row |
 | 2026-11-26 12:00:00 | succeeded | 0.03 | 1 row |
-| 2026-11-26 11:30:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 11:00:00 | succeeded | 0.03 | 1 row |
 
 
 ## 119 · weekly-procurement-report
@@ -207,29 +207,27 @@
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
+| 2026-11-26 13:00:00 | succeeded | 0.01 | 1 row |
+| 2026-11-26 12:30:00 | succeeded | 0.02 | 1 row |
 | 2026-11-26 12:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:30:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:00:00 | succeeded | 0.01 | 1 row |
-
-
-## 122 · spot-api-sync-stock
-
-| início (UTC) | status | duração (s) | mensagem |
-|---|---|---|---|
-| 2026-11-26 12:00:00 | succeeded | 0.01 | 1 row |
-| 2026-11-26 11:40:00 | succeeded | 0.02 | 1 row |
-| 2026-11-26 11:20:00 | succeeded | 0.02 | 1 row |
 
 
 ## 123 · cron-watchdog-15min
 
 | início (UTC) | status | duração (s) | mensagem |
 |---|---|---|---|
-| 2026-11-26 12:15:00 | succeeded | 0.55 | 1 row |
-| 2026-11-26 12:00:00 | succeeded | 0.59 | 1 row |
-| 2026-11-26 11:45:00 | succeeded | 0.60 | 1 row |
+| 2026-11-26 13:15:00 | succeeded | 0.50 | 1 row |
+| 2026-11-26 13:00:00 | succeeded | 0.53 | 1 row |
+| 2026-11-26 12:45:00 | succeeded | 0.52 | 1 row |
 
 
 ## 124 · cleanup-spot-api-sync-log
 
 _nenhum_
+
+
+## 125 · spot-api-sync-stock
+
+| início (UTC) | status | duração (s) | mensagem |
+|---|---|---|---|
+| 2026-11-26 13:00:00 | succeeded | 0.02 | 1 row |

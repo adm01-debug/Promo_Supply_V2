@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 345,
+ "migrations": 347,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -207,6 +207,7 @@
   "cleanup_old_query_telemetry",
   "cleanup_old_rate_limit_logs",
   "cleanup_old_security_logs",
+  "cleanup_old_spot_sync_log",
   "cleanup_old_system_alerts",
   "cleanup_old_telemetry",
   "cleanup_old_telemetry_logs",
@@ -1198,6 +1199,11 @@
    "nome": "cleanup-security-logs-daily",
    "agenda": "0 3 * * *",
    "migration": "20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql"
+  },
+  {
+   "nome": "cleanup-spot-api-sync-log",
+   "agenda": "40 3 * * *",
+   "migration": "20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql"
   },
   {
    "nome": "cleanup-system-alerts",
@@ -3010,11 +3016,6 @@
      "unico": false
     },
     {
-     "nome": "idx_approval_steps_workflow_id",
-     "colunas": "workflow_id",
-     "unico": false
-    },
-    {
      "nome": "idx_approval_steps_workflow_status_prazo",
      "colunas": "workflow_id, status, prazo_limite",
      "unico": false
@@ -3201,11 +3202,6 @@
     {
      "nome": "idx_approval_workflows_categoria_id",
      "colunas": "categoria_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_approval_workflows_org",
-     "colunas": "organization_id",
      "unico": false
     },
     {
@@ -3589,11 +3585,6 @@
     {
      "nome": "idx_audit_logs_entity_id",
      "colunas": "entity_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_audit_logs_entity_type",
-     "colunas": "entity_type",
      "unico": false
     },
     {
@@ -4320,11 +4311,6 @@
     {
      "nome": "idx_categorias_codigo_unspsc",
      "colunas": "codigo_unspsc",
-     "unico": false
-    },
-    {
-     "nome": "idx_categorias_org",
-     "colunas": "organization_id",
      "unico": false
     },
     {
@@ -6064,11 +6050,6 @@
      "unico": false
     },
     {
-     "nome": "idx_cotacoes_fornecedor",
-     "colunas": "fornecedor_id",
-     "unico": false
-    },
-    {
      "nome": "idx_cotacoes_fornecedor_created",
      "colunas": "fornecedor_id, created_at DESC",
      "unico": false
@@ -6079,18 +6060,8 @@
      "unico": false
     },
     {
-     "nome": "idx_cotacoes_solicitacao",
-     "colunas": "solicitacao_id",
-     "unico": false
-    },
-    {
      "nome": "idx_cotacoes_solicitacao_fornecedor",
      "colunas": "solicitacao_id, fornecedor_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_cotacoes_status",
-     "colunas": "status",
      "unico": false
     }
    ],
@@ -9457,11 +9428,6 @@
      "unico": false
     },
     {
-     "nome": "idx_fornecedores_org",
-     "colunas": "organization_id",
-     "unico": false
-    },
-    {
      "nome": "idx_fornecedores_org_status_razao",
      "colunas": "organization_id, status, razao_social",
      "unico": false
@@ -11786,11 +11752,6 @@
      "unico": false
     },
     {
-     "nome": "idx_pagamentos_org",
-     "colunas": "organization_id",
-     "unico": false
-    },
-    {
      "nome": "idx_pagamentos_org_status_due",
      "colunas": "organization_id, status, data_vencimento",
      "unico": false
@@ -11798,16 +11759,6 @@
     {
      "nome": "idx_pagamentos_pedido_id",
      "colunas": "pedido_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_pagamentos_status",
-     "colunas": "status",
-     "unico": false
-    },
-    {
-     "nome": "idx_pagamentos_vencimento",
-     "colunas": "data_vencimento",
      "unico": false
     },
     {
@@ -12622,11 +12573,6 @@
      "unico": false
     },
     {
-     "nome": "idx_pedidos_fornecedor",
-     "colunas": "fornecedor_id",
-     "unico": false
-    },
-    {
      "nome": "idx_pedidos_fornecedor_created",
      "colunas": "fornecedor_id, created_at DESC",
      "unico": false
@@ -12637,18 +12583,8 @@
      "unico": false
     },
     {
-     "nome": "idx_pedidos_organization_id",
-     "colunas": "organization_id",
-     "unico": false
-    },
-    {
      "nome": "idx_pedidos_solicitacao_id",
      "colunas": "solicitacao_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_pedidos_status",
-     "colunas": "status",
      "unico": false
     },
     {
@@ -13300,11 +13236,6 @@
     {
      "nome": "idx_produtos_fornecedor_preferencial_id",
      "colunas": "fornecedor_preferencial_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_produtos_org",
-     "colunas": "organization_id",
      "unico": false
     },
     {
@@ -14323,11 +14254,6 @@
      "unico": false
     },
     {
-     "nome": "idx_rate_limit_logs_ip",
-     "colunas": "ip_address",
-     "unico": false
-    },
-    {
      "nome": "idx_rate_limit_logs_user_id",
      "colunas": "user_id",
      "unico": false
@@ -14935,11 +14861,6 @@
     {
      "nome": "idx_saved_filters_user_entity",
      "colunas": "user_id, entity_type",
-     "unico": false
-    },
-    {
-     "nome": "idx_saved_filters_user_id",
-     "colunas": "user_id",
      "unico": false
     }
    ],
@@ -15995,11 +15916,6 @@
      "unico": false
     },
     {
-     "nome": "idx_solicitacoes_organization_id",
-     "colunas": "organization_id",
-     "unico": false
-    },
-    {
      "nome": "idx_solicitacoes_pim_product_id",
      "colunas": "pim_product_id",
      "unico": false
@@ -16012,11 +15928,6 @@
     {
      "nome": "idx_solicitacoes_solicitante",
      "colunas": "solicitante_id",
-     "unico": false
-    },
-    {
-     "nome": "idx_solicitacoes_status",
-     "colunas": "status",
      "unico": false
     },
     {
@@ -17992,6 +17903,11 @@
    ],
    "indices": [
     {
+     "nome": "idx_spot_sync_log_created",
+     "colunas": "created_at DESC",
+     "unico": false
+    },
+    {
      "nome": "idx_spot_sync_log_endpoint_day",
      "colunas": "endpoint, called_at DESC",
      "unico": false
@@ -19569,8 +19485,13 @@
    ],
    "indices": [
     {
+     "nome": "idx_system_alerts_created_desc",
+     "colunas": "created_at DESC",
+     "unico": false
+    },
+    {
      "nome": "idx_system_alerts_pending_dispatch",
-     "colunas": "severity, dispatched_at",
+     "colunas": "created_at",
      "unico": false
     },
     {
@@ -21605,11 +21526,6 @@
      "unico": false
     },
     {
-     "nome": "idx_workflow_approvals_instance_id",
-     "colunas": "instance_id",
-     "unico": false
-    },
-    {
      "nome": "idx_workflow_approvals_instance_node_approver",
      "colunas": "instance_id, node_id, approver_id",
      "unico": false
@@ -21867,11 +21783,6 @@
     }
    ],
    "indices": [
-    {
-     "nome": "idx_workflow_edges_source_node_id",
-     "colunas": "source_node_id",
-     "unico": false
-    },
     {
      "nome": "idx_workflow_edges_source_target",
      "colunas": "source_node_id, target_node_id",
@@ -22156,11 +22067,6 @@
     }
    ],
    "indices": [
-    {
-     "nome": "idx_workflow_logs_instance_id",
-     "colunas": "instance_id",
-     "unico": false
-    },
     {
      "nome": "idx_workflow_logs_instance_node",
      "colunas": "instance_id, node_id",
@@ -23458,11 +23364,6 @@
      "nome": "idx_xbz_pedidos_pagamento",
      "colunas": "tenant_id, id_lote_debito_status",
      "unico": false
-    },
-    {
-     "nome": "idx_xbz_pedidos_tenant",
-     "colunas": "tenant_id",
-     "unico": false
     }
    ],
    "fks": [],
@@ -23838,11 +23739,6 @@
     {
      "nome": "idx_xbz_produtos_sku",
      "colunas": "tenant_id, sku",
-     "unico": false
-    },
-    {
-     "nome": "idx_xbz_produtos_tenant",
-     "colunas": "tenant_id",
      "unico": false
     }
    ],
