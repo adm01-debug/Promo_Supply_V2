@@ -32,6 +32,14 @@ vi.mock('@/lib/feedbackToast', () => ({
   toast: { error: vi.fn(), success: vi.fn(), warning: vi.fn() },
 }));
 
+vi.mock('@/features/auth', () => ({
+  useAuth: () => ({
+    user: { id: 'user-1', email: 'admin@empresa.com' },
+    tenantId: 'tenant-1',
+    organizationId: 'org-1',
+  }),
+}));
+
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: () => ({
@@ -116,5 +124,6 @@ describe('ConfiguracoesCentroCusto · codigo unico (VAL-09)', () => {
     expect(h.inseridos).toHaveLength(1);
     expect(h.inseridos[0].code).toBe('CC-009');
     expect(h.inseridos[0].name).toBe('Operacoes');
+    expect(h.inseridos[0].tenant_id).toBe('tenant-1');
   });
 });
