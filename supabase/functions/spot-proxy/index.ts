@@ -55,7 +55,10 @@ function getSupabaseAdmin() {
 }
 
 /** Verify the caller is an authenticated user with appropriate role */
-async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
+async function verifyAuth(
+  req: Request,
+  supabaseAdmin: ReturnType<typeof getSupabaseAdmin>,
+): Promise<{ userId: string; tenantId: string | null }> {
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new HttpError(401, "Não autorizado: token ausente");
@@ -92,7 +95,20 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
     throw new HttpError(403, "Sem permissão para acessar integração SPOT");
   }
 
-  return userId;
+  // EDGA-10: a empresa do chamador vem sempre de `user_tenants`, nunca do cliente.
+  // O portal SPOT usa uma conta unica para o projeto; o tenant aqui serve para
+  // rastrear quem operou o portal (log), inclusive nas acoes de escrita
+  // (`addToCart`, `checkout`). Nao bloqueamos quando o vinculo nao existe: o
+  // portal continua acessivel e o bloqueio de escrita fica em `spot-api`.
+  const { data: memberships } = await supabaseAdmin
+    .from("user_tenants")
+    .select("tenant_id, is_default")
+    .eq("user_id", userId)
+    .order("is_default", { ascending: false })
+    .limit(1);
+  const tenantId = ((memberships?.[0] as { tenant_id?: string } | undefined)?.tenant_id) ?? null;
+
+  return { userId, tenantId };
 }
 
 // A tabela `spot_sessions` é compartilhada com a edge `spot-api`, que guarda ali o
@@ -794,7 +810,8 @@ Deno.serve(async (req) => {
     const supabase = getSupabaseAdmin();
 
     // Verify authentication BEFORE processing
-    const userId = await verifyAuth(req, supabase);
+    const caller = await verifyAuth(req, supabase);
+    const { userId, tenantId } = caller;
 
     // M-05: rate limit uniforme por usuário (60 req/min).
     const { checkRateLimit, rateLimitedResponse } = await import("../_shared/rate_limit.ts");
@@ -807,7 +824,7 @@ Deno.serve(async (req) => {
     const body = await readJsonBody(req);
     action = readRequestAction(body);
 
-    logger.info("Executing SPOT action", { action, userId });
+    logger.info("Executing SPOT action", { action, userId, tenantId });
 
     let result: unknown;
 

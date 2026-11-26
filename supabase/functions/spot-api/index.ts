@@ -86,6 +86,43 @@ function admin(): SupabaseClient {
 interface Caller {
   userId: string | null;
   isCron: boolean;
+  /**
+   * Empresa do chamador (EDGA-10). Nunca vem do cliente: o humano e resolvido em
+   * `user_tenants` e o cron na empresa unica do projeto. `null` = nao resolvida —
+   * nesse caso nada e gravado em nome de empresa (ver `createOrder`).
+   */
+  tenantId: string | null;
+}
+
+/**
+ * Empresa do projeto no caminho sem usuario (cron / service role).
+ *
+ * Diferente da XBZ, a SPOT nao tem credencial por empresa: a conta e unica para o
+ * projeto. Por isso so resolvemos quando existe exatamente UMA empresa cadastrada
+ * (`null` com zero ou com varias) — nunca adivinhamos o dono de um pedido.
+ */
+async function resolveIntegrationTenantId(db: SupabaseClient): Promise<string | null> {
+  const { data, error } = await db.from("tenants").select("id").limit(2);
+  if (error || !data || data.length !== 1) return null;
+  return (data[0] as { id: string }).id;
+}
+
+/**
+ * Empresa do usuario autenticado, sempre lida de `user_tenants`.
+ *
+ * Nao usamos `getTenantId` de `_shared/security.ts` porque ele lanca quando o
+ * usuario nao tem vinculo: aqui a ausencia de vinculo so precisa barrar a acao de
+ * escrita (`createOrder`), nao as sincronizacoes de catalogo, que sao do projeto.
+ */
+async function resolveUserTenantId(db: SupabaseClient, userId: string): Promise<string | null> {
+  const { data, error } = await db
+    .from("user_tenants")
+    .select("tenant_id, is_default")
+    .eq("user_id", userId)
+    .order("is_default", { ascending: false })
+    .limit(1);
+  if (error) throw new HttpError(500, "Falha ao resolver a empresa do usuário");
+  return ((data?.[0] as { tenant_id?: string } | undefined)?.tenant_id) ?? null;
 }
 
 async function authorize(req: Request, db: SupabaseClient, action: string): Promise<Caller> {
@@ -94,7 +131,7 @@ async function authorize(req: Request, db: SupabaseClient, action: string): Prom
   const expectedCronKey = Deno.env.get("SPOT_CRON_KEY");
   if (cronKey && expectedCronKey && timingSafeEqualStr(cronKey, expectedCronKey)) {
     if (!CRON_ACTIONS.has(action)) throw new HttpError(403, "Ação não permitida para chamadas agendadas");
-    return { userId: null, isCron: true };
+    return { userId: null, isCron: true, tenantId: await resolveIntegrationTenantId(db) };
   }
 
   const header = req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
@@ -107,7 +144,7 @@ async function authorize(req: Request, db: SupabaseClient, action: string): Prom
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (serviceKey && timingSafeEqualStr(token, serviceKey)) {
     if (!CRON_ACTIONS.has(action)) throw new HttpError(403, "Ação não permitida para chamadas de serviço");
-    return { userId: null, isCron: true };
+    return { userId: null, isCron: true, tenantId: await resolveIntegrationTenantId(db) };
   }
 
   const { data, error } = await db.auth.getUser(token);
@@ -123,7 +160,7 @@ async function authorize(req: Request, db: SupabaseClient, action: string): Prom
   const allowed = (roles ?? []).some((r: { role: string }) => (ALLOWED_ROLES as readonly string[]).includes(r.role));
   if (!allowed) throw new HttpError(403, "Permissão insuficiente para a integração SPOT");
 
-  return { userId, isCron: false };
+  return { userId, isCron: false, tenantId: await resolveUserTenantId(db, userId) };
 }
 
 /* ------------------------------------------------------------------ *
@@ -539,7 +576,12 @@ interface CreateOrderInput {
   test?: boolean;
 }
 
-async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: CreateOrderInput) {
+async function createOrder(
+  db: SupabaseClient,
+  logger: EdgeLogger,
+  input: CreateOrderInput,
+  tenantId: string,
+) {
   const internalReference = buildInternalReference();
   const payload = {
     order: input.order,
@@ -568,6 +610,7 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
     const { error: upsertError } = await db.from("spot_pedidos").upsert(
       {
         spot_order_id: orderStamp,
+        tenant_id: tenantId,
         internal_reference: internalReference,
         status: "PROCESSING",
         valor_total: parseSpotDecimal(first.OrderTotal) ?? 0,
@@ -590,7 +633,7 @@ async function createOrder(db: SupabaseClient, logger: EdgeLogger, input: Create
   return { internalReference, details };
 }
 
-async function getOrders(db: SupabaseClient, logger: EdgeLogger) {
+async function getOrders(db: SupabaseClient, logger: EdgeLogger, tenantId: string | null) {
   // OrdersV1 exige o parametro `Status`; sem ele a API responde
   // {"ErrorCode":2,"ErrorMessage":"There was a problem with your request."}
   // (verificado contra ws.spotgifts.com.br em 2026-11-21). `ALL` traz todos
@@ -615,6 +658,11 @@ async function getOrders(db: SupabaseClient, logger: EdgeLogger) {
       estimated_ship_date: d.ShippingDate ? String(d.ShippingDate) : null,
       last_synced_at: now,
       status_synced_at: now,
+      // A chave entra so quando a empresa foi resolvida, e vale para TODAS as
+      // linhas do lote (o upsert exige forma unica). Omitir a chave preserva a
+      // atribuicao existente: o PostgREST so atualiza as colunas enviadas, e
+      // `tenant_id: null` apagaria o dono de um pedido ja atribuido.
+      ...(tenantId ? { tenant_id: tenantId } : {}),
     });
   }
   if (rows.length > 0) await upsertBatched(db, "spot_pedidos", rows, "spot_order_id", logger);
@@ -677,11 +725,16 @@ Deno.serve(async (req: Request) => {
         if (!input || !Array.isArray(input.order) || input.order.length === 0 || !input.destination) {
           throw new HttpError(400, "Payload de pedido inválido: 'order' e 'destination' são obrigatórios");
         }
-        result = await createOrder(db, logger, input);
+        // Fail-closed (EDGA-10): pedido real na SPOT tem que ter dono. Sem empresa
+        // resolvida nao criamos compromisso de compra em nome do grupo.
+        if (!caller.tenantId) {
+          throw new HttpError(403, "Usuário sem empresa vinculada: criar pedido na SPOT exige empresa");
+        }
+        result = await createOrder(db, logger, input, caller.tenantId);
         break;
       }
       case "getOrders":
-        result = await getOrders(db, logger);
+        result = await getOrders(db, logger, caller.tenantId);
         break;
       case "status":
         result = await status(db);
