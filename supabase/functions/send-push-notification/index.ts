@@ -1,4 +1,4 @@
-import { buildCorsHeaders } from "../_shared/security.ts";
+import { buildCorsHeaders, getTenantId } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -94,26 +94,68 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // QA-021: Verify caller has admin or coordinator role before sending push notifications
-    const { data: roleRow, error: roleErr } = await supabase
+    // QA-021 + INT-03: exige papel administrativo, mas tolerando mais de um papel.
+        // `maybeSingle()` falhava com PGRST116 quando o usuario tinha 2+ papeis e
+        // negava acesso legitimo de um admin que tambem e, por exemplo, comprador.
+        const { data: roleRows, error: roleErr } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', pushUserId)
-      .maybeSingle();
-    if (roleErr || !roleRow || !['admin', 'coordinator'].includes(roleRow.role)) {
+          .in('role', ['admin', 'coordinator']);
+        if (roleErr) {
+          logger.error('Role check failed', { error: roleErr });
+          return new Response(
+            JSON.stringify({ error: 'Role check failed' }),
+            { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }
+          );
+        }
+        if (!roleRows || roleRows.length === 0) {
       return new Response(
         JSON.stringify({ error: 'Forbidden: admin or coordinator role required to send push notifications' }),
         { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } }
       );
     }
 
-    // QA-021: Resolve caller's organization to restrict push targeting
+    // QA-021 / INT-03: o tenant do chamador e o unico escopo aceito. Antes,
+        // quando o profile nao tinha `current_organization_id`, o filtro era pulado
+        // e a consulta saia sem `user_id` nenhum - broadcast para TODOS os tenants.
     const { data: profileRow } = await supabase
       .from('profiles')
       .select('current_organization_id')
       .eq('user_id', pushUserId)
       .maybeSingle();
-    const callerOrgId = profileRow?.current_organization_id ?? null;
+        let callerOrgId = profileRow?.current_organization_id ?? null;
+        if (!callerOrgId) {
+          // Nem todo usuario tem a organizacao no profile; o vinculo canonico nesse
+          // caso esta em `user_tenants` (mesma regra do helper getTenantId).
+          try {
+            callerOrgId = await getTenantId(
+              supabase as unknown as Parameters<typeof getTenantId>[0],
+              { id: pushUserId } as unknown as Parameters<typeof getTenantId>[1],
+            );
+          } catch {
+            callerOrgId = null;
+          }
+        }
+        if (!callerOrgId) {
+          return new Response(
+            JSON.stringify({ error: 'Forbidden: caller has no organization scope' }),
+            { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Destinatarios possiveis: membros do tenant do chamador, pelas duas fontes
+        // de vinculo que o sistema usa (profiles.current_organization_id e user_tenants).
+        const [porProfile, porMembership] = await Promise.all([
+          supabase.from('profiles').select('user_id').eq('current_organization_id', callerOrgId),
+          supabase.from('user_tenants').select('user_id').eq('tenant_id', callerOrgId),
+        ]);
+        if (porProfile.error) throw porProfile.error;
+        if (porMembership.error) throw porMembership.error;
+        const membrosDoTenant = new Set<string>([
+          ...(porProfile.data ?? []).map((p) => p.user_id as string),
+          ...(porMembership.data ?? []).map((m) => m.user_id as string),
+        ]);
 
     const body: PushPayload = await req.json();
 
@@ -121,14 +163,9 @@ Deno.serve(async (req) => {
 
     const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
 
-    // QA-021: If targeting specific users, verify they all belong to the caller's organization
-    if (user_ids && user_ids.length > 0 && callerOrgId) {
-      const { data: targetProfiles, error: profilesErr } = await supabase
-        .from('profiles')
-        .select('user_id, current_organization_id')
-        .in('user_id', user_ids);
-      if (profilesErr) throw profilesErr;
-      const outsiders = (targetProfiles ?? []).filter(p => p.current_organization_id !== callerOrgId);
+        // QA-021: se o chamador escolheu destinatarios, todos tem de ser do seu tenant.
+        if (user_ids && user_ids.length > 0) {
+          const outsiders = user_ids.filter((id) => !membrosDoTenant.has(id));
       if (outsiders.length > 0) {
         return new Response(
           JSON.stringify({ error: 'Forbidden: cannot send push to users outside your organization' }),
@@ -137,18 +174,23 @@ Deno.serve(async (req) => {
       }
     }
 
+        if (membrosDoTenant.size === 0) {
+          // Tenant sem membro: nao ha destinatario. Sem este curto-circuito a
+          // consulta sairia sem filtro e voltaria a ser global.
+          logger.info('Tenant has no members to notify', { tenantId: callerOrgId });
+          return new Response(
+            JSON.stringify({ success: true, sent: 0, failed: 0, notifications_created: 0 }),
+            { headers: { ...cors, 'Content-Type': 'application/json' } }
+          );
+        }
+
     let query = supabase.from('push_subscriptions').select('*');
 
     if (user_ids && user_ids.length > 0) {
       query = query.in('user_id', user_ids);
-    } else if (callerOrgId) {
-      // QA-021: When no user_ids specified, restrict to caller's organization via profiles
-      const { data: orgUserIds } = await supabase
-        .from('profiles')
-        .select('user_id')
-        .eq('current_organization_id', callerOrgId);
-      const ids = (orgUserIds ?? []).map(p => p.user_id);
-      if (ids.length > 0) query = query.in('user_id', ids);
+        } else {
+          // QA-021: sem destinatarios explicitos, o alvo e o tenant do chamador.
+          query = query.in('user_id', [...membrosDoTenant]);
     }
 
     const { data: subscriptions, error: subError } = await query;
