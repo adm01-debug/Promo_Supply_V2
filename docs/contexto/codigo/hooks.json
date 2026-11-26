@@ -1505,7 +1505,7 @@
     "useSourcingEventDetails",
     "useSourcingEvents"
    ],
-   "linhas": 355,
+   "linhas": 363,
    "dominio": "hooks",
    "tabelas": [
     "categorias",
@@ -1543,7 +1543,7 @@
     "src/pages/sourcing/RFxDetails.tsx",
     "src/pages/sourcing/Sourcing.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/hooks/useMFA.ts",
@@ -1941,7 +1941,7 @@
    "hooks_exportados": [
     "useRealtimeSubscription"
    ],
-   "linhas": 172,
+   "linhas": 179,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],

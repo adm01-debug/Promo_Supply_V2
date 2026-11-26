@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1237e871e1` · branch `main` · 2026-11-26 03:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `dac477d4d1` · branch `main` · 2026-11-26 04:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2425,6 +2425,7 @@ _nenhum item encontrado_
 | Erro ao enviar lance:  | `src/hooks/useLicitacoes.ts` |
 | Erro:  | `src/hooks/useLicitacoes.ts` |
 | Login necessário | `src/hooks/useLicitacoes.ts` |
+| Sua sessão não está vinculada a nenhuma empresa | `src/hooks/useLicitacoes.ts` |
 | Código inválido:  | `src/hooks/useMFA.ts` |
 | Erro ao configurar MFA:  | `src/hooks/useMFA.ts` |
 | Erro ao desativar MFA:  | `src/hooks/useMFA.ts` |
@@ -2437,8 +2438,7 @@ _nenhum item encontrado_
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| Erro ao excluir:  | `src/hooks/usePagamentos.ts` |
-| … +290 linhas — lista completa em `context.json` | |
+| … +291 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3471 testes em 258 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3480 testes em 259 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2595,6 +2595,7 @@ _nenhum item encontrado_
 | `src/features/auth/__tests__/useAuth.test.tsx` | 7 | useAuth · should throw error when used outside AuthProvider · should provide initial loading state · should sign in successfully … |
 | `src/features/pedidos/hooks/__tests__/transicaoDeStatus.test.ts` | 7 | transicaoDeStatusPermitida · usa a matriz do banco, sem copia propria · recusa pular etapas do fluxo de compra · aceita o caminho normal do pedido … |
 | `src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx` | 7 | useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso · approveStep com 0 linhas afetadas retorna false e nao comemora · approveStep com linha afetada registra a aprovacao · rejectStep com 0 linhas afetadas retorna false e nao comemora … |
+| `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 7 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade · useRealtimeSubscription - fallback de empresa (HK-11) … |
 | `src/lib/__tests__/storageFiles.test.ts` | 7 | storageFiles · monta o caminho {tenant}/{usuário}/... exigido pelas policies · aceita o caminho salvo (formato atual) · extrai o caminho da URL pública antiga do mesmo bucket … |
 | `src/pages/historico/__tests__/historicoColors.test.ts` | 7 | COLORS · is an array · has 5 color entries · every entry is a non-empty string … |
 | `supabase/functions/_shared/security.timing.test.ts` | 7 | timingSafeEqualStr: iguais, diferentes e comprimentos distintos · verifyCronSecret aceita so o CRON_SECRET exato · verifyCronSecret sem CRON_SECRET aceita a service role key exata · verifyCronSecret sem nenhum segredo configurado e fail-closed … |
@@ -2631,6 +2632,7 @@ _nenhum item encontrado_
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx` | 5 | useLicitacoes - fallback de empresa (etapa 200 / HK-11) · carrega a lista pela empresa quando o claim tenant_id nao vem no JWT · cria licitacao sem acusar login ausente quando so a empresa esta disponivel · prefere o tenant do claim quando ele existe, mesmo com empresa definida … |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 5 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados · grava a data escolhida quando o agendamento tem data … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |
 | `src/i18n/__tests__/config.test.ts` | 5 | i18n mantem o atributo lang do documento igual ao idioma ativo · o atributo nao fica no pt-BR fixo do index.html: ele segue o idioma resolvido · cada idioma suportado vira a tag BCP-47 correspondente no documento · idioma fora da lista ou ausente cai no pt-BR, nunca em tag invalida … |
@@ -2689,7 +2691,6 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useLicitacoes.createEvent.test.tsx` | 3 | useSourcingEvents.createEvent (VAL-01) · grava numero sequencial e owner_id junto do evento · usa fallback com prefixo SRC quando o RPC nao devolve numero |
 | `src/hooks/__tests__/usePrefetch.solicitacoes.test.tsx` | 3 | usePrefetch · solicitacoes (HK-01) · preenche a chave que a listagem consome, com o formato { data, totalCount } · nao grava mais a chave curta de 13 posicoes |
 | `src/hooks/__tests__/useRealPushNotifications.test.tsx` | 3 | useRealPushNotifications — aviso honesto de push (etapa 288) · sem VITE_VAPID_PUBLIC_KEY nao anuncia sucesso · com a chave publica e inscricao existente anuncia sucesso |
-| `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
 | `src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx` | 3 | terminateOtherSessions (QA 037) · revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo · apaga todas as linhas do usuario quando este navegador nao tem registro |
 | `src/hooks/__tests__/useSidebarBadges.erro.test.tsx` | 3 | useSidebarBadges - falha de contagem (HK-09) · propaga o erro em vez de anunciar zero pendencia · sem erro continua devolvendo as contagens |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |

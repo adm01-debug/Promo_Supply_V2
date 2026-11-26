@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1237e871e116f730e333b2b91ab42eb1b93e05ff",
+  "sha": "dac477d4d1d482ee49cd308971702072df6bcf6c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 03:53 UTC",
-  "files_total": 1477,
-  "code_files": 1303,
-  "code_lines": 219726,
+  "generated_at": "2026-11-26 04:18 UTC",
+  "files_total": 1478,
+  "code_files": 1304,
+  "code_lines": 219943,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b450cc7d140d4421",
+ "facts_hash": "7c9cb945057a5341",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 432,
+   ".tsx": 433,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -35480,8 +35480,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 97,
-   "lines": 16572,
+   "files": 98,
+   "lines": 16789,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -41779,6 +41779,10 @@
    {
     "file": "src/hooks/useLicitacoes.ts",
     "msg": "Login necessário"
+   },
+   {
+    "file": "src/hooks/useLicitacoes.ts",
+    "msg": "Sua sessão não está vinculada a nenhuma empresa"
    },
    {
     "file": "src/hooks/useMFA.ts",
@@ -64334,6 +64338,26 @@
     "name": "usa fallback com prefixo SRC quando o RPC nao devolve numero"
    },
    {
+    "file": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    "name": "useLicitacoes - fallback de empresa (etapa 200 / HK-11)"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    "name": "carrega a lista pela empresa quando o claim tenant_id nao vem no JWT"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    "name": "cria licitacao sem acusar login ausente quando so a empresa esta disponivel"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    "name": "prefere o tenant do claim quando ele existe, mesmo com empresa definida"
+   },
+   {
+    "file": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    "name": "nao consulta nada quando nao ha claim nem empresa"
+   },
+   {
     "file": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
     "name": "usePagamentos · bulkUpdateStatus (UI-01)"
    },
@@ -64496,6 +64520,22 @@
    {
     "file": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
     "name": "reinscreve quando a lista de tabelas muda de verdade"
+   },
+   {
+    "file": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    "name": "useRealtimeSubscription - fallback de empresa (HK-11)"
+   },
+   {
+    "file": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    "name": "assina filtrando pela empresa quando o claim tenant_id nao vem no JWT"
+   },
+   {
+    "file": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    "name": "continua sem assinar quando nao ha claim nem empresa (isolamento preservado)"
+   },
+   {
+    "file": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    "name": "prefere o tenant do claim quando ele existe, mesmo com empresa definida"
    },
    {
     "file": "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx",
@@ -105388,7 +105428,7 @@
   },
   "src/hooks/useLicitacoes.ts": {
    "path": "src/hooks/useLicitacoes.ts",
-   "lines": 355,
+   "lines": 363,
    "exports": [
     "type Licitacao",
     "type LicitacaoProposta",
@@ -105545,7 +105585,8 @@
    "errors": [
     "Erro ao enviar lance: ",
     "Erro: ",
-    "Login necessário"
+    "Login necessário",
+    "Sua sessão não está vinculada a nenhuma empresa"
    ],
    "status_values": [
     {
@@ -106313,7 +106354,7 @@
   },
   "src/hooks/useRealtimeSubscription.ts": {
    "path": "src/hooks/useRealtimeSubscription.ts",
-   "lines": 172,
+   "lines": 179,
    "exports": [
     "function useRealtimeSubscription"
    ],
@@ -107259,6 +107300,19 @@
     "usa fallback com prefixo SRC quando o RPC nao devolve numero"
    ]
   },
+  "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx": {
+   "path": "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+   "lines": 144,
+   "is_test": true,
+   "doc": "Etapa 200 (HK-11): `tenantId` vem do RPC `current_tenant_id()`, cuja definicao em producao so devolve valor quando o JWT traz o claim `tenant_id` -- e nada no repositorio cria esse claim. Com ele ausente a lista de Licitacoes ficava muda (`return []` + `enabled: false`: sem loading, sem erro, sem av …",
+   "tests": [
+    "useLicitacoes - fallback de empresa (etapa 200 / HK-11)",
+    "carrega a lista pela empresa quando o claim tenant_id nao vem no JWT",
+    "cria licitacao sem acusar login ausente quando so a empresa esta disponivel",
+    "prefere o tenant do claim quando ele existe, mesmo com empresa definida",
+    "nao consulta nada quando nao ha claim nem empresa"
+   ]
+  },
   "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx": {
    "path": "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
    "lines": 131,
@@ -107373,12 +107427,16 @@
   },
   "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx": {
    "path": "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-   "lines": 79,
+   "lines": 137,
    "is_test": true,
    "tests": [
     "useRealtimeSubscription (HK-02)",
     "nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo",
-    "reinscreve quando a lista de tabelas muda de verdade"
+    "reinscreve quando a lista de tabelas muda de verdade",
+    "useRealtimeSubscription - fallback de empresa (HK-11)",
+    "assina filtrando pela empresa quando o claim tenant_id nao vem no JWT",
+    "continua sem assinar quando nao ha claim nem empresa (isolamento preservado)",
+    "prefere o tenant do claim quando ele existe, mesmo com empresa definida"
    ]
   },
   "src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx": {
@@ -122888,10 +122946,23 @@
   }
  },
  "git": {
-  "sha": "1237e871e116f730e333b2b91ab42eb1b93e05ff",
+  "sha": "dac477d4d1d482ee49cd308971702072df6bcf6c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "dac477d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+     "src/hooks/useLicitacoes.ts",
+     "src/hooks/useRealtimeSubscription.ts"
+    ]
+   },
    {
     "sha": "1237e87",
     "date": "2026-11-26",
@@ -123217,19 +123288,6 @@
     "author": "github-actions[bot]",
     "subject": "chore(db): sincronizar types.ts com o banco [auto] (#488)",
     "files": []
-   },
-   {
-    "sha": "a2586e2",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(docs): corrige contagem de workflows e faixa do deno, e passa a checar as duas (#492)",
-    "files": [
-     ".github/toolchain.json",
-     "docs/agentes/github-ci.md",
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/agents-docs-baseline.unit.mjs",
-     "scripts/ci/check-agents-md-integrity.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -123262,8 +123320,20 @@
     2
    ],
    [
-    "docs/agentes/github-ci.md",
-    2
+    "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useLicitacoes.ts",
+    1
+   ],
+   [
+    "src/hooks/useRealtimeSubscription.ts",
+    1
    ],
    [
     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx",
@@ -123299,18 +123369,6 @@
    ],
    [
     "src/features/layout/__tests__/AppSidebar.badgeErro.test.tsx",
-    1
-   ],
-   [
-    "src/features/layout/components/AppSidebar.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useSidebarBadges.erro.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useSidebarBadges.ts",
     1
    ]
   ]
