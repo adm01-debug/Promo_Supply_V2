@@ -42,9 +42,12 @@ serve(async (req) => {
     if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, cors);
 
     // M-06: idempotência (webhooks ERP podem reentregar em falha parcial).
+    // INT-08: o `source` leva o id do usuario para que a mesma chave de dois
+    // chamadores diferentes nunca compartilhe entrada em `webhook_events`.
     const bodyText = await req.text();
     const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
-    const cached = await getIdempotentResponse("erp-sync", idempotencyKey);
+    const idempotencySource = `erp-sync:${user.id}`;
+    const cached = await getIdempotentResponse(idempotencySource, idempotencyKey);
     if (cached) {
       logger.info("Idempotent replay", { key: idempotencyKey });
       return cached.response(cors);
@@ -100,7 +103,7 @@ serve(async (req) => {
       requestId,
       timestamp: new Date().toISOString(),
     };
-    await recordIdempotentResponse("erp-sync", idempotencyKey, responsePayload);
+    await recordIdempotentResponse(idempotencySource, idempotencyKey, responsePayload);
 
     return new Response(
       JSON.stringify(responsePayload),
