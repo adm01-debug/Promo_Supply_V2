@@ -22,6 +22,7 @@ import { toast } from "@/lib/feedbackToast";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";
+import { mensagemDeErroDaEdge } from "@/lib/invokeEdge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
@@ -118,7 +119,7 @@ const ERPConnections = () => {
     const { data, error } = await supabase.functions.invoke('erp-credential-encrypt', {
       body: { secret: plain },
     });
-    if (error) throw error;
+    if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao cifrar a credencial."));
     const encrypted = (data as { data?: { encrypted?: string } })?.data?.encrypted as string | undefined;
     if (!encrypted) throw new Error("Resposta vazia da edge de cifra");
     return encrypted;
@@ -267,7 +268,7 @@ const ERPConnections = () => {
       const { data, error } = await supabase.functions.invoke('erp-sync', {
         body: { action: 'pull', connectionId, entity },
       });
-      if (error) throw error;
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao iniciar a sincronização."));
       return data;
     },
     onSuccess: () => {

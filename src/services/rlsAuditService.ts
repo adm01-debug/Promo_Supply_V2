@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 
 export type RlsSeverity = "CRITICAL" | "INFO" | "OK";
 
@@ -25,6 +26,6 @@ export interface RlsAuditReport {
 
 export async function fetchRlsAuditReport(): Promise<RlsAuditReport> {
   const { data, error } = await supabase.functions.invoke("run-audit");
-  if (error) throw error;
+  if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao executar a auditoria de RLS."));
   return data as RlsAuditReport;
 }

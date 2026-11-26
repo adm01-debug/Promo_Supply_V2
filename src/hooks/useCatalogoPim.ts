@@ -11,6 +11,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 
 // ---------------------------------------------------------------------------
 // Tipos — colunas espelhadas das views no PIM
@@ -106,7 +107,7 @@ async function invokeBridge<T>(body: BridgeBody): Promise<BridgeResponse<T>> {
     'external-db-bridge',
     { body },
   );
-  if (error) throw new PimBridgeError(error.message);
+  if (error) throw new PimBridgeError(await mensagemDeErroDaEdge(error, 'Falha ao consultar o catálogo externo.'));
   if (!data) throw new PimBridgeError('Resposta vazia do external-db-bridge');
   return data;
 }

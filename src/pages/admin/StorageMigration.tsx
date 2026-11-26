@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { mensagemDeErroDaEdge } from "@/lib/invokeEdge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +52,7 @@ export default function StorageMigration() {
         "migrate-storage-paths",
         { body: { dryRun } },
       );
-      if (invokeErr) throw invokeErr;
+      if (invokeErr) throw new Error(await mensagemDeErroDaEdge(invokeErr, "Falha ao migrar os caminhos de storage."));
       setLastReport(result as { dryRun: boolean; results: MigrationStats[] });
       toast({
         title: dryRun ? "Simulação concluída" : "Migração concluída",
