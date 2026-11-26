@@ -1207,6 +1207,27 @@ export type Database = {
           },
         ]
       }
+      audit_logs_ancora: {
+        Row: {
+          atualizado_em: string
+          id: boolean
+          registro_hash: string
+          sequencia: number
+        }
+        Insert: {
+          atualizado_em?: string
+          id?: boolean
+          registro_hash: string
+          sequencia: number
+        }
+        Update: {
+          atualizado_em?: string
+          id?: boolean
+          registro_hash?: string
+          sequencia?: number
+        }
+        Relationships: []
+      }
       audit_logs_legacy_20260712: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
