@@ -428,7 +428,10 @@ export function useSolicitacoesKPIs() {
   const { user, organizationId } = useAuth();
   
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['solicitacoes-kpis', user?.id, organizationId],
+    // Chave dentro do namespace `solicitacoes`: as mutações e o realtime invalidam o
+    // prefixo `['solicitacoes']` e o match do TanStack é posicional — um namespace irmão
+    // (`solicitacoes-kpis`) ficaria fora do alcance e os cartões nunca atualizariam.
+    queryKey: ['solicitacoes', 'kpis', user?.id, organizationId],
     queryFn: async () => {
       if (!organizationId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
       
