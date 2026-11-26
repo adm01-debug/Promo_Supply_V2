@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
 
     const escalatedWorkflows: string[] = [];
     const reminders: string[] = [];
+    let warningsSent = 0;
 
     for (const step of expiredSteps || []) {
       const workflow = step.workflow;
@@ -124,7 +125,9 @@ Deno.serve(async (req) => {
         }
 
         // Create notification for the escalation target
-        const { error: notifError } = await insertNotification(supabase, {
+        // `insertNotification` nunca lança: sinaliza o descarte em `ok`/`skipped`,
+        // então ler só `error` fazia a notificação perdida passar como enviada.
+        const escalationNotif = await insertNotification(supabase, {
             user_id: rule.escalacao_para,
             type: 'escalation',
             priority: 'high',
@@ -134,8 +137,12 @@ Deno.serve(async (req) => {
             action_label: 'Ver Aprovação'
           });
 
-        if (notifError) {
-          logger.error(`Error creating notification`, { error: notifError });
+        if (!escalationNotif.ok) {
+          logger.warn(`Escalation notification not created`, {
+            workflowId: workflow.id,
+            skipped: escalationNotif.skipped,
+            error: escalationNotif.error,
+          });
         }
 
         escalatedWorkflows.push(workflow.id);
@@ -157,7 +164,7 @@ Deno.serve(async (req) => {
           }
 
           // Create reminder notification
-          const { error: notifError } = await insertNotification(supabase, {
+          const reminderNotif = await insertNotification(supabase, {
               user_id: step.aprovador_id,
               type: 'reminder',
               priority: 'medium',
@@ -167,8 +174,12 @@ Deno.serve(async (req) => {
               action_label: 'Ver Aprovação'
             });
 
-          if (notifError) {
-            console.error(`Error creating reminder notification:`, notifError);
+          if (!reminderNotif.ok) {
+            logger.warn(`Reminder notification not created`, {
+              stepId: step.id,
+              skipped: reminderNotif.skipped,
+              error: reminderNotif.error,
+            });
           }
 
           reminders.push(step.id);
@@ -195,7 +206,7 @@ Deno.serve(async (req) => {
 
       for (const step of approachingSteps || []) {
         // Create warning notification
-        const { error: notifError } = await insertNotification(supabase, {
+        const warningNotif = await insertNotification(supabase, {
             user_id: step.aprovador_id,
             type: 'warning',
             priority: 'medium',
@@ -205,8 +216,14 @@ Deno.serve(async (req) => {
             action_label: 'Ver Aprovação'
           });
 
-        if (notifError) {
-          console.error(`Error creating warning notification:`, notifError);
+        if (warningNotif.ok) {
+          warningsSent++;
+        } else {
+          logger.warn(`Warning notification not created`, {
+            stepId: step.id,
+            skipped: warningNotif.skipped,
+            error: warningNotif.error,
+          });
         }
 
         // Mark as warned
@@ -221,7 +238,7 @@ Deno.serve(async (req) => {
       success: true,
       escalatedWorkflows: escalatedWorkflows.length,
       remindersSent: reminders.length,
-      warningsSent: approachingSteps?.length || 0,
+      warningsSent,
       timestamp: now
     };
 
