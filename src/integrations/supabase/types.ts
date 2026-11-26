@@ -9531,8 +9531,17 @@ export type Database = {
         Args: { _month: string }
         Returns: undefined
       }
-      exec_sql: { Args: { sql_query: string }; Returns: Json }
-      execute_read_query: { Args: { p_sql: string }; Returns: Json }
+      audit_rls_policies: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          tablename: string
+          policyname: string
+          roles: string[]
+          cmd: string
+          using_expression: string | null
+          check_expression: string | null
+        }[]
+      }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
         Returns: string
