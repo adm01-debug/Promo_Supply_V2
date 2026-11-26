@@ -9503,6 +9503,7 @@ export type Database = {
       cleanup_old_query_telemetry: { Args: never; Returns: number }
       cleanup_old_rate_limit_logs: { Args: never; Returns: number }
       cleanup_old_security_logs: { Args: never; Returns: number }
+      cleanup_old_spot_sync_log: { Args: never; Returns: number }
       cleanup_old_system_alerts: { Args: never; Returns: undefined }
       cleanup_old_telemetry_logs: { Args: never; Returns: number }
       cleanup_old_temp_file_snapshots: { Args: never; Returns: undefined }
