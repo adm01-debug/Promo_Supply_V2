@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 645,
- "arestas": 2875,
+ "arestas": 2877,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -82,7 +82,7 @@
   },
   {
    "arquivo": "supabase/functions/_shared/logger.ts",
-   "importado_por": 29
+   "importado_por": 31
   },
   {
    "arquivo": "src/components/ui/scroll-area.tsx",

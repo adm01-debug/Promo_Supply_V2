@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)",
+   "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)",
    "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)",
    "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)",
-   "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)",
-   "fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#583)"
+   "fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)"
   ]
  },
  "pr_template": null,

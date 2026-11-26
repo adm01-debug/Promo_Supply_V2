@@ -3628,6 +3628,7 @@
   "supabase/functions/alert-dispatcher/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/retry.ts",
    "supabase/functions/_shared/security.ts",
@@ -3738,6 +3739,7 @@
   "supabase/functions/process-outbox/index.ts": [
    "supabase/functions/_shared/cronHealth.ts",
    "supabase/functions/_shared/http.ts",
+   "supabase/functions/_shared/logger.ts",
    "supabase/functions/_shared/security.ts"
   ],
   "supabase/functions/process-solicitacao-neural/index.ts": [

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "803a3a2b4fc84b7c5f348cf0eb826b9800dc2c35",
+  "sha": "bf324083bf5d9cdca8e0ce52ecf81d1d7626540a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 19:08 UTC",
+  "generated_at": "2026-11-26 20:24 UTC",
   "files_total": 1552,
   "code_files": 1377,
-  "code_lines": 227387,
+  "code_lines": 227409,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ffbafaf6e0ca7a2d",
+ "facts_hash": "40833ebffc64e3f9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -32350,6 +32350,7 @@
      "profiles",
      "push_subscriptions",
      "system_alerts",
+     "telemetry_logs",
      "user_tenants"
     ],
     "env": [
@@ -32849,6 +32850,7 @@
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "integration_outbox",
+     "telemetry_logs",
      "user_tenants"
     ],
     "env": [
@@ -36889,7 +36891,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20888,
+   "lines": 20910,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -120043,7 +120045,7 @@
   },
   "supabase/functions/alert-dispatcher/index.ts": {
    "path": "supabase/functions/alert-dispatcher/index.ts",
-   "lines": 507,
+   "lines": 525,
    "tables": [
     {
      "table": "system_alerts",
@@ -121734,7 +121736,7 @@
   },
   "supabase/functions/process-outbox/index.ts": {
    "path": "supabase/functions/process-outbox/index.ts",
-   "lines": 124,
+   "lines": 128,
    "tables": [
     {
      "table": "integration_outbox",
@@ -125913,10 +125915,30 @@
   }
  },
  "git": {
-  "sha": "803a3a2b4fc84b7c5f348cf0eb826b9800dc2c35",
+  "sha": "bf324083bf5d9cdca8e0ce52ecf81d1d7626540a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "bf32408",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/alert-dispatcher/index.ts",
+     "supabase/functions/process-outbox/index.ts"
+    ]
+   },
+   {
+    "sha": "4a068aa",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md"
+    ]
+   },
    {
     "sha": "803a3a2",
     "date": "2026-11-26",
@@ -126251,57 +126273,35 @@
      "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
      "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql"
     ]
-   },
-   {
-    "sha": "1aeb89b",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(ci): confere jobs vivos de cron.job contra as migrations (#528)",
-    "files": [
-     ".github/workflows/paridade-banco.yml",
-     "docs/ci/README.md",
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/paridade-migrations-banco.allowlist.json",
-     "scripts/ci/paridade-migrations-banco.mjs",
-     "scripts/ci/paridade-migrations-banco.sql",
-     "scripts/ci/paridade-migrations-banco.unit.mjs"
-    ]
-   },
-   {
-    "sha": "7e2123a",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)",
-    "files": [
-     ".github/workflows/aplicar-migration-prod.yml",
-     "AGENTS.md",
-     "DOCS/qa/reversao/20261127190000_perf08_dropa_indices_redundantes_revert.sql",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/xbz-sync-pedidos/index.ts",
-     "supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql",
-     "supabase/migrations/20261127190000_perf08_dropa_indices_redundantes.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    28
+    27
    ],
    [
     "AGENTS.md",
-    22
+    21
    ],
    [
     "src/integrations/supabase/types.ts",
     3
    ],
    [
-    "supabase/functions/check-approval-escalations/index.ts",
+    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    2
+   ],
+   [
+    "supabase/functions/alert-dispatcher/index.ts",
     1
    ],
    [
-    "docs/mapa/MATRIZ_EDGE_TABELA.md",
+    "supabase/functions/process-outbox/index.ts",
+    1
+   ],
+   [
+    "supabase/functions/check-approval-escalations/index.ts",
     1
    ],
    [
@@ -126354,14 +126354,6 @@
    ],
    [
     "supabase/functions/run-audit/index.ts",
-    1
-   ],
-   [
-    "supabase/functions/run-audit/rls_test.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
     1
    ]
   ]

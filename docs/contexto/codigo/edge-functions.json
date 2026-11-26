@@ -204,7 +204,7 @@
    "nome": "alert-dispatcher",
    "entrada": "supabase/functions/alert-dispatcher/index.ts",
    "arquivos": 2,
-   "linhas": 616,
+   "linhas": 634,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -232,6 +232,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "http.ts",
+    "logger.ts",
     "notifications.ts",
     "retry.ts",
     "security.ts"
@@ -845,7 +846,7 @@
    "nome": "process-outbox",
    "entrada": "supabase/functions/process-outbox/index.ts",
    "arquivos": 1,
-   "linhas": 124,
+   "linhas": 128,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -866,6 +867,7 @@
    "usa_shared": [
     "cronHealth.ts",
     "http.ts",
+    "logger.ts",
     "security.ts"
    ],
    "chamada_pelo_front": [],

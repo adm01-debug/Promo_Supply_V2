@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "803a3a2b4fc84b7c5f348cf0eb826b9800dc2c35",
+  "commit": "bf324083bf5d9cdca8e0ce52ecf81d1d7626540a",
   "branch": "main",
-  "data_commit": "2026-11-26T16:07:32-03:00",
+  "data_commit": "2026-11-26T17:08:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "bf32408",
+    "data": "2026-11-26",
+    "assunto": "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)"
+   },
+   {
+    "sha": "4a068aa",
+    "data": "2026-11-26",
+    "assunto": "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)"
+   },
    {
     "sha": "803a3a2",
     "data": "2026-11-26",
@@ -121,16 +131,6 @@
     "sha": "72c5408",
     "data": "2026-11-26",
     "assunto": "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)"
-   },
-   {
-    "sha": "29e79cf",
-    "data": "2026-11-26",
-    "assunto": "chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)"
-   },
-   {
-    "sha": "d9059a1",
-    "data": "2026-11-26",
-    "assunto": "perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)"
    }
   ],
   "arquivos_mudados_7d": 1572,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 202
+    "mudancas": 203
    },
    {
     "pasta": "src/components/ui",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "pasta": "src/features/layout",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 202
+    "mudancas": 203
    },
    {
     "arquivo": "AGENTS.md",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "src/integrations/supabase/types.ts",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1551,
   "arquivos_codigo": 970,
-  "linhas_codigo": 193205,
+  "linhas_codigo": 193227,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20888
+   "linhas": 20910
   },
   "tailwind.config.ts": {
    "arquivos": 1,

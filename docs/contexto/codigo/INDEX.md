@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `803a3a2b4fc84b7c5f348cf0eb826b9800dc2c35` (2026-11-26T16:07:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bf324083bf5d9cdca8e0ce52ecf81d1d7626540a` (2026-11-26T17:08:27-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1551 |
 | arquivos_codigo | 970 |
-| linhas_codigo | 193205 |
+| linhas_codigo | 193227 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -344,10 +344,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (202)
+- docs/qa/05-PROGRESSO.md (203)
 - AGENTS.md (35)
 - docs/pendencias/_indice.md (15)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - src/integrations/supabase/types.ts (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/hooks/usePagamentos.ts (9)
@@ -428,6 +428,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
+- 2026-11-26 `4a068aa` fix(ci): regenera a matriz edge-tabela apos a #592 (#595)
 - 2026-11-26 `803a3a2` fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)
 - 2026-11-26 `061c335` fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)
 - 2026-11-26 `cc209d3` fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)
@@ -441,8 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
 - 2026-11-26 `63f3816` fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)
 - 2026-11-26 `054f49e` fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)
-- 2026-11-26 `021a29a` fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)
-- 2026-11-26 `087f827` fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
