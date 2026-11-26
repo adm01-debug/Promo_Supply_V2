@@ -4,11 +4,18 @@
  * Chamado periodicamente por cron (pg_net) ou manualmente.
  *
  * Comportamento:
- *   - SELECT ... FOR UPDATE SKIP LOCKED (via RPC) para concorrência segura
+ *   - Claim atomico via RPC public.claim_outbox_batch (FOR UPDATE SKIP LOCKED + lease de 10 min)
  *   - Backoff exponencial em falha: retries=0..5, next_attempt = now + 2^retries * 30s
  *   - Marca como 'delivered' em sucesso, 'dead' após 5 tentativas
- *   - Quando um item atinge 'dead': loga structured error e emite alerta em
- *     system_alerts (se a tabela existir) para visibilidade operacional (DLQ).
+ *   - Quando um item atinge 'dead': loga structured error. O alerta em
+ *     system_alerts NAO e emitido aqui: quem emite e o gatilho transacional
+ *     trg_alert_on_outbox_dead (public.alert_on_outbox_dead), que roda no
+ *     mesmo UPDATE e nao pode se perder. O insert best-effort que existia
+ *     neste arquivo duplicava o alerta e engolia o proprio erro.
+ *
+ * Claim: a RPC public.claim_outbox_batch (migration 20261127150000) reserva
+ * o lote com FOR UPDATE SKIP LOCKED e um lease de 10 min, de modo que duas
+ * execucoes sobrepostas do cron nunca entregam a mesma mensagem.
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
@@ -39,14 +46,9 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const nowIso = new Date().toISOString();
-  const { data: rows, error } = await admin
-    .from("integration_outbox")
-    .select("id, target, endpoint, payload, retries, headers")
-    .in("status", ["pending", "retrying"])
-    .lte("next_attempt_at", nowIso)
-    .order("next_attempt_at", { ascending: true })
-    .limit(BATCH_SIZE);
+  const { data: rows, error } = await admin.rpc("claim_outbox_batch", {
+    p_batch_size: BATCH_SIZE,
+  });
 
   if (error) {
     await recordCronHeartbeat(admin, "process-outbox", error.message);
@@ -105,21 +107,6 @@ serve(async (req) => {
           last_error: errMsg,
           ts: new Date().toISOString(),
         }));
-        // Best-effort: insert system alert for DLQ visibility (non-blocking)
-        admin
-          .from("system_alerts")
-          .insert({
-            // `alert_type` e NOT NULL sem default e nao existe coluna `source`:
-            // sem isso o insert falhava sempre e o alerta de DLQ nunca era gravado.
-            alert_type: "outbox_dead_letter",
-            severity: "critical",
-            message: `Outbox item ${row.id} (target: ${row.target}) reached dead status after ${retries} retries. Last error: ${errMsg}`,
-            metadata: { source: "process-outbox", id: row.id, target: row.target, endpoint: row.endpoint, retries, last_error: errMsg },
-          })
-          .then(
-            () => {/* fire-and-forget */},
-            () => {/* system_alerts may not exist — silently ignore */},
-          );
       }
 
       results.push({ id: row.id, ok: false, error: errMsg, retries });

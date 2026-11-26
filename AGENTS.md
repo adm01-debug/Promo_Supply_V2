@@ -94,7 +94,7 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   registra no ledger as 322 versões já aplicadas; **NÃO VERIFICADO** se esse arquivo já rodou no banco oficial.
   O canal oficial de apply é o workflow `aplicar-migration-prod.yml` (dispatch manual, 1 arquivo, transação
   única), que **não grava no ledger**. Enquanto ledger e banco divergirem, `supabase db push` tentaria reexecutar
-  arquivos destrutivos (342 migrations hoje: 94 `CREATE TABLE` sem `IF NOT EXISTS`, 51 `DELETE FROM`, 8 `DROP
+  arquivos destrutivos (343 migrations hoje: 94 `CREATE TABLE` sem `IF NOT EXISTS`, 51 `DELETE FROM`, 8 `DROP
   TABLE`). Ordem obrigatória: arquivo → PR → merge → deploy do código → apply, e **pergunte ao dono qual é o
   caminho do apply** antes do primeiro DDL. Destrutivo, segredos e rotação: só com o dono.
 - `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.
