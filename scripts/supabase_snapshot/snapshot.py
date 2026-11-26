@@ -1015,7 +1015,14 @@ def api_section(name: str, path: str, transform=lambda x: x, optional: bool = Fa
 
 def introspect_api(previous_api: dict | None) -> tuple[dict[str, Any], dict[str, Any]]:
     if not (PROJECT_REF and ACCESS_TOKEN):
+        faltando = [nome for nome, valor in (("SUPABASE_PROJECT_REF", PROJECT_REF), ("SUPABASE_ACCESS_TOKEN", ACCESS_TOKEN)) if not valor]
         log("Management API: SUPABASE_PROJECT_REF/SUPABASE_ACCESS_TOKEN ausentes — pulando edge functions e configs")
+        # Anotação do GitHub Actions, não record_error(): credencial ausente não é falha de coleta
+        # (errors.md e a seção "Reportar seções com erro" registram falha de verdade). Sem o aviso,
+        # o job saía verde publicando edge-functions.md/project-config.md vazios por cima da
+        # versão anterior — indistinguível de uma coleta que funcionou.
+        print(f"::warning::Management API desabilitada — sem {', '.join(faltando)}: "
+              "edge functions e configs do projeto não foram coletadas", flush=True)
         return {"enabled": False}, {}
 
     ref = PROJECT_REF

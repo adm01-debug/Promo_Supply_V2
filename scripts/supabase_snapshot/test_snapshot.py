@@ -1248,6 +1248,18 @@ class SnapshotManagementApiTests(SnapshotFixture):
         with mock.patch.object(snapshot, "api", side_effect=api):
             return self.collect()
 
+    def test_api_sem_credencial_avisa_no_job_em_vez_de_silenciar(self):
+        """Sem as credenciais o coletor publica arquivos vazios: isso precisa de anotação no job."""
+        snapshot = self.snapshot
+        snapshot.PROJECT_REF, snapshot.ACCESS_TOKEN = "", ""
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(snapshot.introspect_api(None), ({"enabled": False}, {}))
+        texto = output.getvalue()
+        self.assertIn("::warning::", texto)
+        self.assertIn("SUPABASE_PROJECT_REF", texto)
+        self.assertIn("SUPABASE_ACCESS_TOKEN", texto)
+        self.assertEqual(snapshot.ERRORS, [], "credencial ausente não é falha de coleta")
+
     def test_transient_api_failure_keeps_previous_edge_functions_and_changelog(self):
         self.assertEqual(self.collect_api(), 0)
         first = self.metadata()
