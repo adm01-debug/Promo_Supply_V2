@@ -347,42 +347,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAvailableTenants([]);
   }, [user?.id, clearSwCaches]);
 
-  const switchTenant = useCallback(async (newTenantId: string) => {
-    if (!user) return;
-    try {
-      setLoading(true);
-      logger.info('Switching tenant', { userId: user.id, newTenantId });
-      
-      // Update default tenant for user
-      const { error } = await supabase
-        .from('user_tenants')
-        .update({ is_default: false })
-        .eq('user_id', user.id);
-        
-      if (error) throw error;
-      
-      const { error: updateError } = await supabase
-        .from('user_tenants')
-        .update({ is_default: true })
-        .eq('user_id', user.id)
-        .eq('tenant_id', newTenantId);
-        
-      if (updateError) throw updateError;
-
-      // Clear refs to force re-fetch
-      fetchedUserIdRef.current = null;
-      await clearSwCaches();
-      await fetchUserData(user.id);
-      
-      toast.success('Organização alterada com sucesso!');
-    } catch (error) {
-      logger.error('Error switching tenant', { error, newTenantId });
-      toast.error('Erro ao alterar organização');
-    } finally {
-      setLoading(false);
-    }
-  }, [user, fetchUserData, clearSwCaches]);
-
   const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
     
@@ -414,7 +378,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signIn,
       signUp,
       signOut,
-      switchTenant,
       setSelectedEmpresa,
       hasRole,
       isAdmin,
@@ -432,7 +395,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signIn,
       signUp,
       signOut,
-      switchTenant,
       setSelectedEmpresa,
       hasRole,
       isAdmin,
