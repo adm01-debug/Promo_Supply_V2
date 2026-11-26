@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5540d3ed6e` · branch `main` · 2026-11-26 10:56 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e94d3a2b7b` · branch `main` · 2026-11-26 11:32 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1350,9 +1350,6 @@ _nenhum item encontrado_
 | `warning` | type=number, min=1, max=30 | `src/features/layout/components/SLASettingsPanel.tsx` |
 | `critical` | type=number, min=1, max=30 | `src/features/layout/components/SLASettingsPanel.tsx` |
 | `interval` | type=number, min=1, max=60 | `src/features/layout/components/SLASettingsPanel.tsx` |
-| `image-upload` | accept=image/* | `src/pages/catalogo-produtos/CatalogoProdutos.tsx` |
-| `preco` | type=number, step=0.01 | `src/pages/catalogo-produtos/CatalogoProdutos.tsx` |
-| `estoque_min` | type=number | `src/pages/catalogo-produtos/CatalogoProdutos.tsx` |
 | `xbz-pass` | type=password | `src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx` |
 
 ## G. Fórmulas e derivações (como valores são calculados)
@@ -2463,7 +2460,7 @@ _nenhum item encontrado_
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
 | ${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join( | `src/hooks/usePagamentos.ts` |
-| … +293 linhas — lista completa em `context.json` | |
+| … +289 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2852,6 +2849,7 @@ _nenhum item encontrado_
 | A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast | `src/hooks/usePermissions.ts` |
 | Check if user has specific permission | `src/hooks/usePermissions.ts` |
 | * Prefetch keys must match the live query keys used by feature hooks so that | `src/hooks/usePrefetch.ts` |
+| Leitura apenas: o cadastro/edição de produto vive no PIM (Promo Gifts V4). | `src/hooks/useProdutos.ts` |
 | Check browser notification permission | `src/hooks/useRealPushNotifications.ts` |
 | Devolve true SOMENTE quando ha subscription no navegador E ela foi | `src/hooks/useRealPushNotifications.ts` |
 | Request browser notification permission | `src/hooks/useRealPushNotifications.ts` |

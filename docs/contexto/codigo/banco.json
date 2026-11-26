@@ -1536,7 +1536,7 @@
   {
    "nome": "product-images",
    "criado_em_sql": true,
-   "usado_em": 1
+   "usado_em": 0
   }
  ],
  "tabelas": {

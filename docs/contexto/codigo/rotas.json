@@ -758,7 +758,6 @@
     "useFeedback",
     "useFeedbackPreferences",
     "useMemo",
-    "useMutation",
     "useNavigate",
     "useProdutos",
     "useQuery",
@@ -1077,13 +1076,11 @@
    "redireciona": null,
    "hooks": [
     "useAuth",
-    "useAutoImageCompression",
     "useCallback",
     "useContext",
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
-    "useImageCompression",
     "useMemo",
     "useMotionValue",
     "useMutation",
@@ -1099,10 +1096,8 @@
    ],
    "hooks_locais": [
     "useAuth",
-    "useAutoImageCompression",
     "useFeedback",
     "useFeedbackPreferences",
-    "useImageCompression",
     "useProdutoFornecedores",
     "useProdutos"
    ],
@@ -1127,7 +1122,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 34
+   "arquivos_puxados": 31
   },
   {
    "protegida": true,
@@ -5095,7 +5090,6 @@
     "useLongPress",
     "useMemo",
     "useMotionValue",
-    "useMutation",
     "useNavigate",
     "useNomesDeGestor",
     "usePessoasDaEmpresa",

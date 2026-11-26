@@ -1485,10 +1485,9 @@
     "useCallback"
    ],
    "canais_realtime": [],
-   "usado_por": 2,
+   "usado_por": 1,
    "usado_por_arquivos": [
-    "src/components/compras/NovaSolicitacaoModal.tsx",
-    "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
+    "src/components/compras/NovaSolicitacaoModal.tsx"
    ],
    "coberto_por_testes": 1
   },
@@ -1864,7 +1863,7 @@
    "hooks_exportados": [
     "useProdutos"
    ],
-   "linhas": 112,
+   "linhas": 76,
    "dominio": "hooks",
    "tabelas": [
     "categorias",
@@ -1874,9 +1873,7 @@
    "edges": [],
    "hooks_internos": [
     "useAuth",
-    "useMutation",
-    "useQuery",
-    "useQueryClient"
+    "useQuery"
    ],
    "canais_realtime": [],
    "usado_por": 5,

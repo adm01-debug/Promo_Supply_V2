@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
+  "commit": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
   "branch": "main",
-  "data_commit": "2026-11-26T07:55:52-03:00",
+  "data_commit": "2026-11-26T08:31:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e94d3a2",
+    "data": "2026-11-26",
+    "assunto": "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)"
+   },
    {
     "sha": "5540d3e",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "28d02fb",
     "data": "2026-11-26",
     "assunto": "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)"
-   },
-   {
-    "sha": "0a126b6",
-    "data": "2026-11-26",
-    "assunto": "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)"
    }
   ],
   "arquivos_mudados_7d": 1524,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 169
+    "mudancas": 170
    },
    {
     "pasta": "src/components/ui",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/features/layout",
-    "mudancas": 61
+    "mudancas": 59
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 169
+    "mudancas": 170
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1503,
   "arquivos_codigo": 966,
-  "linhas_codigo": 191986,
+  "linhas_codigo": 191788,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 102,
-   "linhas": 17337
+   "linhas": 17301
   },
   "src/i18n": {
    "arquivos": 3,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 159,
-   "linhas": 35569
+   "linhas": 35407
   },
   "src/routes": {
    "arquivos": 1,

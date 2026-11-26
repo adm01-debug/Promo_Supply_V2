@@ -275,7 +275,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 134,
+   "usado_por": 133,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -295,7 +295,6 @@
     "pages/admin",
     "pages/admin-telemetria",
     "pages/auth",
-    "pages/catalogo-produtos",
     "pages/catalogo-spot",
     "pages/compliance",
     "pages/configuracoes",
@@ -540,7 +539,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 90,
+   "usado_por": 88,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -559,7 +558,6 @@
     "pages/auditoria",
     "pages/auth",
     "pages/buyer",
-    "pages/catalogo-produtos",
     "pages/catalogo-spot",
     "pages/compliance",
     "pages/configuracoes",

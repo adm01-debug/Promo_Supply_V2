@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5540d3ed6eb2fb43337add7f8670e170c63d4dbb` (2026-11-26T07:55:52-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090` (2026-11-26T08:31:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1503 |
 | arquivos_codigo | 966 |
-| linhas_codigo | 191986 |
+| linhas_codigo | 191788 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -89,7 +89,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/auditoria | 1 | 1 | 1 | 3 | 2 | 5 |
 | pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
 | pages/buyer | 1 | 1 | 3 | 5 | 1 | 9 |
-| pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 8 |
+| pages/catalogo-produtos | 1 | 1 | 1 | 5 | 1 | 8 |
 | pages/catalogo-spot | 1 | 1 | 6 | 88 | 11 | 59 |
 | pages/catalogo-xbz | 1 | 1 | 10 | 83 | 10 | 55 |
 | pages/compliance | 1 | 1 | 2 | 3 | 1 | 8 |
@@ -343,7 +343,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (169)
+- docs/qa/05-PROGRESSO.md (170)
 - docs/pendencias/_indice.md (20)
 - AGENTS.md (13)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `e94d3a2` fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)
 - 2026-11-26 `5540d3e` fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)
 - 2026-11-26 `7804bb2` fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)
 - 2026-11-26 `10f9737` fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `bb8724e` fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)
 - 2026-11-26 `c30880d` fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)
 - 2026-11-26 `a55e816` fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)
-- 2026-11-26 `a49b400` fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

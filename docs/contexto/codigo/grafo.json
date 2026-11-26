@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 644,
- "arestas": 2876,
+ "arestas": 2870,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,11 +22,11 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 140
+   "importado_por": 139
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
-   "importado_por": 97
+   "importado_por": 95
   },
   {
    "arquivo": "src/features/auth/index.ts",
@@ -46,7 +46,7 @@
   },
   {
    "arquivo": "src/components/ui/label.tsx",
-   "importado_por": 61
+   "importado_por": 60
   },
   {
    "arquivo": "src/components/ui/select.tsx",
@@ -94,7 +94,7 @@
   },
   {
    "arquivo": "src/components/ui/textarea.tsx",
-   "importado_por": 25
+   "importado_por": 24
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
@@ -229,14 +229,14 @@
    "importado_por": 0
   },
   {
-   "modulo": "integrations/supabase",
-   "depende_de": 0,
-   "importado_por": 38
-  },
-  {
    "modulo": "features/layout",
    "depende_de": 14,
    "importado_por": 23
+  },
+  {
+   "modulo": "integrations/supabase",
+   "depende_de": 0,
+   "importado_por": 37
   },
   {
    "modulo": "components/compras",

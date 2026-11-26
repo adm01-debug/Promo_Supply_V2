@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)",
    "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)",
    "fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)",
    "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)",
-   "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)",
-   "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)"
+   "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)"
   ]
  },
  "pr_template": null,

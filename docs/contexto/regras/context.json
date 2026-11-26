@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
+  "sha": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 10:56 UTC",
+  "generated_at": "2026-11-26 11:32 UTC",
   "files_total": 1504,
   "code_files": 1329,
-  "code_lines": 222795,
+  "code_lines": 222597,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "8c1c1ceb8746b859",
+ "facts_hash": "afb98607fb3da60d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35542,7 +35542,7 @@
   {
    "module": "src/hooks",
    "files": 102,
-   "lines": 17337,
+   "lines": 17301,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35950,7 +35950,7 @@
   {
    "module": "src/pages",
    "files": 159,
-   "lines": 35569,
+   "lines": 35407,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37602,12 +37602,6 @@
      "src/hooks/useProdutos.ts",
      "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
      "supabase/functions/guided-buying-ai/index.ts"
-    ],
-    "insert": [
-     "src/hooks/useProdutos.ts"
-    ],
-    "update": [
-     "src/hooks/useProdutos.ts"
     ]
    },
    "profiles": {
@@ -39838,9 +39832,6 @@
    "pedidos": [
     "scripts/ci/inventario-types/banco.unit.mjs"
    ],
-   "product-images": [
-    "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
-   ],
    "storage_bucket": [
     "scripts/ci/gerar-matriz-edge-tabela.unit.mjs"
    ]
@@ -40496,21 +40487,6 @@
     "file": "src/features/layout/components/SLASettingsPanel.tsx",
     "field": "interval",
     "rules": "type=number, min=1, max=60"
-   },
-   {
-    "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-    "field": "image-upload",
-    "rules": "accept=image/*"
-   },
-   {
-    "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-    "field": "preco",
-    "rules": "type=number, step=0.01"
-   },
-   {
-    "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-    "field": "estoque_min",
-    "rules": "type=number"
    },
    {
     "file": "src/pages/catalogo-xbz/XbzCredenciaisDialog.tsx",
@@ -41980,18 +41956,6 @@
     "msg": "Tenant ID missing"
    },
    {
-    "file": "src/hooks/useProdutos.ts",
-    "msg": "Erro ao atualizar: "
-   },
-   {
-    "file": "src/hooks/useProdutos.ts",
-    "msg": "Erro ao criar produto: "
-   },
-   {
-    "file": "src/hooks/useProdutos.ts",
-    "msg": "Organization ID missing"
-   },
-   {
     "file": "src/hooks/useRealPushNotifications.ts",
     "msg": "Não foi possível salvar as preferências."
    },
@@ -42278,10 +42242,6 @@
    {
     "file": "src/pages/auth/Auth.tsx",
     "msg": "Não foi possível enviar o link agora. Tente novamente em instantes."
-   },
-   {
-    "file": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-    "msg": "Erro ao enviar imagem: "
    },
    {
     "file": "src/pages/catalogo-spot/CatalogoSpot.tsx",
@@ -43358,6 +43318,10 @@
    {
     "file": "src/hooks/usePrefetch.ts",
     "text": "* Prefetch keys must match the live query keys used by feature hooks so that"
+   },
+   {
+    "file": "src/hooks/useProdutos.ts",
+    "text": "Leitura apenas: o cadastro/edição de produto vive no PIM (Promo Gifts V4)."
    },
    {
     "file": "src/hooks/useRealPushNotifications.ts",
@@ -106845,7 +106809,7 @@
   },
   "src/hooks/useProdutos.ts": {
    "path": "src/hooks/useProdutos.ts",
-   "lines": 112,
+   "lines": 76,
    "exports": [
     "interface Produto",
     "function useProdutos"
@@ -106858,14 +106822,6 @@
     {
      "table": "categorias",
      "op": "select"
-    },
-    {
-     "table": "produtos",
-     "op": "insert,select"
-    },
-    {
-     "table": "produtos",
-     "op": "select,update"
     }
    ],
    "table_cols": {
@@ -106898,10 +106854,8 @@
      "organization_id"
     ]
    },
-   "errors": [
-    "Erro ao atualizar: ",
-    "Erro ao criar produto: ",
-    "Organization ID missing"
+   "rule_comments": [
+    "Leitura apenas: o cadastro/edição de produto vive no PIM (Promo Gifts V4)."
    ],
    "hooks": [
     "useProdutos"
@@ -111705,29 +111659,9 @@
   },
   "src/pages/catalogo-produtos/CatalogoProdutos.tsx": {
    "path": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
-   "lines": 489,
+   "lines": 327,
    "exports": [
     "default CatalogoProdutos"
-   ],
-   "storage": [
-    "product-images"
-   ],
-   "errors": [
-    "Erro ao enviar imagem: "
-   ],
-   "html_constraints": [
-    {
-     "field": "image-upload",
-     "rules": "accept=image/*"
-    },
-    {
-     "field": "preco",
-     "rules": "type=number, step=0.01"
-    },
-    {
-     "field": "estoque_min",
-     "rules": "type=number"
-    }
    ],
    "calc_fns": [
     {
@@ -124064,10 +123998,22 @@
   }
  },
  "git": {
-  "sha": "5540d3ed6eb2fb43337add7f8670e170c63d4dbb",
+  "sha": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e94d3a2",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/useProdutos.ts",
+     "src/i18n/__tests__/locales.test.ts",
+     "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
+    ]
+   },
    {
     "sha": "5540d3e",
     "date": "2026-11-26",
@@ -124478,17 +124424,6 @@
      "src/hooks/useLicitacoes.ts",
      "src/hooks/useRealtimeSubscription.ts"
     ]
-   },
-   {
-    "sha": "1237e87",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useDevolucoes.test.tsx",
-     "src/hooks/useDevolucoes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124541,8 +124476,16 @@
     2
    ],
    [
-    "src/hooks/useDevolucoes.ts",
-    2
+    "src/hooks/useProdutos.ts",
+    1
+   ],
+   [
+    "src/i18n/__tests__/locales.test.ts",
+    1
+   ],
+   [
+    "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
+    1
    ],
    [
     "src/pages/admin/HealthDashboard.tsx",
@@ -124562,14 +124505,6 @@
    ],
    [
     "src/hooks/useApprovalWorkflow.ts",
-    1
-   ],
-   [
-    "src/pages/catalogo-spot/__tests__/spotCatalogTab.estoqueOrigem.test.tsx",
-    1
-   ],
-   [
-    "supabase/functions/send-push-notification/webpush.test.ts",
     1
    ]
   ]

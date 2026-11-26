@@ -156,8 +156,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -610,8 +609,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -2155,8 +2153,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -2417,7 +2414,7 @@
    "modulo": "hooks",
    "arquivos": 63,
    "testes": 0,
-   "linhas": 12113,
+   "linhas": 12077,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2996,7 +2993,6 @@
     "pages/admin",
     "pages/admin-telemetria",
     "pages/auth",
-    "pages/catalogo-produtos",
     "pages/catalogo-spot",
     "pages/compliance",
     "pages/configuracoes",
@@ -3182,8 +3178,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -3999,7 +3994,7 @@
    "modulo": "pages/catalogo-produtos",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 489,
+   "linhas": 327,
    "itens_menu": [
     "Catálogo"
    ],
@@ -4010,10 +4005,8 @@
    "componentes": 1,
    "hooks_locais": [
     "useAuth",
-    "useAutoImageCompression",
     "useFeedback",
     "useFeedbackPreferences",
-    "useImageCompression",
     "useProdutoFornecedores",
     "useProdutos"
    ],
@@ -4034,9 +4027,7 @@
    "rpcs": [
     "current_tenant_id"
    ],
-   "buckets": [
-    "product-images"
-   ],
+   "buckets": [],
    "canais_realtime": [],
    "env": [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -4059,7 +4050,6 @@
     "components/compras",
     "components/ui",
     "hooks",
-    "integrations/supabase",
     "lib"
    ],
    "pacotes_externos": [
@@ -4267,8 +4257,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -4493,8 +4482,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -4775,8 +4763,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -5874,8 +5861,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -6167,8 +6153,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -6578,8 +6563,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -6806,8 +6790,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -7346,8 +7329,7 @@
    ],
    "buckets": [
     "comprovantes",
-    "documentos",
-    "product-images"
+    "documentos"
    ],
    "canais_realtime": [],
    "env": [
@@ -7855,8 +7837,7 @@
    "buckets": [
     "comprovantes",
     "documentos",
-    "fiscal-documents",
-    "product-images"
+    "fiscal-documents"
    ],
    "canais_realtime": [],
    "env": [

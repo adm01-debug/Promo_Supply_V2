@@ -3164,7 +3164,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 61,
+   "usado_por": 60,
    "orfao": false
   },
   {
@@ -3531,7 +3531,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 25,
+   "usado_por": 24,
    "orfao": false
   },
   {
@@ -4534,10 +4534,9 @@
     "CatalogoProdutos"
    ],
    "export_default": "CatalogoProdutos",
-   "linhas": 489,
+   "linhas": 327,
    "dominio": "pages/catalogo-produtos",
    "hooks_locais": [
-    "useAutoImageCompression",
     "useProdutos"
    ],
    "tabelas": [],
