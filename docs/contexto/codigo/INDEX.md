@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9185b53528f20899cb72536792909a86bb0ef16f` (2026-11-26T19:39:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd` (2026-11-26T19:40:34-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (896), SQL (407), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (896), SQL (426), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1554 |
+| arquivos_total | 1573 |
 | arquivos_codigo | 971 |
-| linhas_codigo | 193608 |
+| linhas_codigo | 193634 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 371 |
+| migrations | 377 |
 | cron_jobs | 80 |
 | testes | 326 |
 | workflows | 15 |
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - edges_chamadas_sem_pasta: 0
 - tabelas_sem_rls: 0
 - tabelas_usadas_sem_definicao: 0
-- tabelas_com_drift_migration_vs_types: 51 — ex.: active_sessions, approval_delegations, approval_hierarchy
+- tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
 - componentes_orfaos: 11 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 9 — ex.: AnimatedCounter, COLORS, Confetti
@@ -344,11 +344,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (205)
+- docs/qa/05-PROGRESSO.md (212)
 - AGENTS.md (36)
-- docs/pendencias/_indice.md (15)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (11)
-- src/integrations/supabase/types.ts (10)
+- src/integrations/supabase/types.ts (11)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/pendencias/_indice.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
@@ -428,6 +428,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `a54eaf5` chore(db): sincronizar types.ts com o banco [auto] (#587)
+- 2026-11-26 `a498bae` fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)
+- 2026-11-26 `3220347` feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)
+- 2026-11-26 `2515513` fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)
+- 2026-11-26 `fea414f` fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)
+- 2026-11-26 `8383ee7` fix(banco): lockout normaliza e-mail e deriva o IP do request (etapa 140) (#597)
+- 2026-11-26 `2b1e27a` fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)
+- 2026-11-26 `7723079` fix(storage): bucket product-images passa a limitar tipo e tamanho de arquivo (etapa 062) (#589)
 - 2026-11-26 `9185b53` fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588
 - 2026-11-26 `0943a88` fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)
 - 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
@@ -435,14 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `803a3a2` fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)
 - 2026-11-26 `061c335` fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)
 - 2026-11-26 `cc209d3` fix(banco): spot_pedidos ganha empresa e isolamento por grupo (etapa 050) (#585)
-- 2026-11-26 `f113336` fix(banco): filhos de historico e de dinheiro deixam de ser apagados em cascata (etapa 131) (#584)
-- 2026-11-26 `4fb9075` chore(db): sincronizar types.ts com o banco [auto] (#583)
-- 2026-11-26 `d15d49f` chore(db): sincronizar types.ts com o banco [auto] (#577)
-- 2026-11-26 `2a8af5d` fix(documentos): importacao de NF-e idempotente e conferencia com fornecedor (#582)
-- 2026-11-26 `3f77fc7` fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)
-- 2026-11-26 `1de9078` fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)
-- 2026-11-26 `eeff86e` fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)
-- 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

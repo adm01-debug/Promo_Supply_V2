@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9185b53528` · branch `main` · 2026-11-26 22:56 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a54eaf5cf2` · branch `main` · 2026-11-26 23:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -124,7 +124,7 @@
 | `spot_api_sync_log` | _(sem COMMENT ON TABLE — significado não documentado)_ | 10 colunas | migration |
 | `spot_customization_options` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `spot_estoque` | _(sem COMMENT ON TABLE — significado não documentado)_ | 9 colunas | migration |
-| `spot_pedidos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 17 colunas | migration |
+| `spot_pedidos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 18 colunas | migration |
 | `spot_produtos` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `spot_sessions` | _(sem COMMENT ON TABLE — significado não documentado)_ | 6 colunas | migration |
 | `spot_skus` | _(sem COMMENT ON TABLE — significado não documentado)_ | 19 colunas | migration |
@@ -364,7 +364,6 @@
 | tenant | `account_lockouts` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `user_tour_preferences` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `spot_sessions` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
-| tenant | `spot_pedidos` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `negotiation_analyses` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `query_telemetry` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
 | tenant | `dependency_health` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto) |  |
@@ -423,6 +422,7 @@
 | ddl dinâmico | 5 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'CREATE POLICY "admin_read_partition" ON public.%I FOR SELECT TO authenticated ' 'USING (public.has_role(auth.uid(), ''admin''::app_role) AND public.tenant_in_my_group(tenant_id))', t );` · `IF tem_tenant THEN CREATE POLICY "service_role_all_partition" ON public.audit_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);` · `IF tem_tenant THEN CREATE POLICY "service_role_all_partition" ON public.telemetry_logs_legacy_20260712 FOR ALL TO service_role USING (true) WITH CHECK (true);` | `supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql` |
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT IF EXISTS %I', t, cglobal);` | `supabase/migrations/20261126180000_unicidade_por_tenant.sql` |
 | ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);` · `EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES public.%I(id) ON DELETE RESTRICT%s', r.tabela, v_nome, r.coluna, r.alvo, CASE WHEN v_validada THEN '' ELSE ' NOT VALID' END );` | `supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql` |
+| ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `IF v_fora = 0 THEN CREATE POLICY "storage_produtos_leitura_publica" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'product-images' AND name LIKE 'products/%');` · `IF v_fora = 0 THEN DROP POLICY IF EXISTS "storage_produtos_leitura_publica" ON storage.objects;` | `supabase/migrations/20261128170000_bucket_product_images_config.sql` |
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);` | `supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql` |
 | ddl dinâmico | 1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I ADD CONSTRAINT %I UNIQUE (%I)', alvos[i][1], alvos[i][3], alvos[i][2]);` | `supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql` |
 | ddl dinâmico | 2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);` · `EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES public.%I(id) ON DELETE CASCADE', r.tabela, v_nome, r.coluna, r.alvo );` | `supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql` |

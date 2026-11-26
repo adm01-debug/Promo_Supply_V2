@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9185b53528` · branch `main` · 2026-11-26 22:56 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a54eaf5cf2` · branch `main` · 2026-11-26 23:07 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -9,7 +9,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 
 ## B. Quem pode ver/alterar o quê (RLS — conforme migrations do repo; schema real: `context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO))
 
-> ⚠️ **NÃO VERIFICADO:** 25 comando(s) em 6 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `audit_logs_legacy_20260712`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`, `telemetry_logs_legacy_20260712`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`<br>`supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql`. Confirme no banco real antes de assumir.
+> ⚠️ **NÃO VERIFICADO:** 27 comando(s) em 7 migration(s) criam, removem ou reescrevem políticas com SQL que só existe em runtime (lê `pg_policies` ou depende de condição do banco). A lista abaixo pode trazer política já removida ou com a expressão antiga; tabelas citadas: `approval_rules`, `audit_logs`, `audit_logs_legacy_20260712`, `notifications`, `penalty_escalation_config`, `rate_limit_logs`, `receiving_checklists`, `security_logs`, `supplier_bonifications`, `supplier_qualification_scores`, `telemetry_logs_legacy_20260712`. Ex.: `EXECUTE format('DROP POLICY IF EXISTS %I ON public.audit_logs', pol.policyname);`. Arquivos: `supabase/migrations/20260317222336_b11455d7-3bed-421d-9f68-835d7ef26d66.sql`<br>`supabase/migrations/20260317225700_89f28570-4d8b-455a-8d44-8c36c454efd3.sql`<br>`supabase/migrations/20260317230002_e7619b9a-5a26-4d44-9023-1d986f965464.sql`<br>`supabase/migrations/20260619205841_08fc0043-6b1e-4ed9-9c1a-89440df3c816.sql`<br>`supabase/migrations/20260719000001_rls_using_true_cleanup.sql`<br>`supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql`<br>… +1. Confirme no banco real antes de assumir.
 
 | Tabela | Política | Comando | Roles | Modo | USING | WITH CHECK |
 |---|---|---|---|---|---|---|
@@ -80,7 +80,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `approval_delegations` | Users can create delegations from themselves | INSERT | public | permissive |  | `auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)` |
 | `approval_delegations` | Users can update their own delegations | UPDATE | public | permissive | `auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
 | `approval_delegations` | Users can delete their own delegations | DELETE | public | permissive | `auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
-| `approval_steps` | Approvers can update their steps | UPDATE | public | permissive | `auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
 | `profiles` | Users can view their own profile | SELECT | authenticated | permissive | `auth.uid() = user_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
 | `notifications` | Users can create own notifications | INSERT | authenticated | permissive |  | `auth.uid() = user_id` |
 | `blocked_ips` | Admins can view blocked IPs | SELECT | authenticated | permissive | `has_role(auth.uid(), 'admin'::app_role)` |  |
@@ -316,7 +315,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `storage.objects` | storage_fiscal_dono_insert | INSERT | authenticated | permissive |  | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text` |
 | `storage.objects` | storage_fiscal_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (storage.foldername(name))[2] = (auth.uid())::text` |  |
 | `storage.objects` | storage_fiscal_gestor_select | SELECT | authenticated | permissive | `bucket_id = 'fiscal-documents' AND (storage.foldername(name))[1] = 'uploads' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'finance'::public.app_role)) AND EXISTS ( SELECT 1 FROM public.profiles p WHERE (p.user_id)::text = (storage.foldername(objects.name) …` |  |
-| `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
 | `storage.objects` | storage_produtos_insert | INSERT | authenticated | permissive |  | `bucket_id = 'product-images' AND (storage.foldername(name))[1] = 'products' AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'coordinator'::public.app_role) OR public.has_role(auth.uid(), 'buyer'::public.app_role))` |
 | `storage.objects` | storage_produtos_dono_delete | DELETE | authenticated | permissive | `bucket_id = 'product-images' AND (owner = auth.uid() OR owner_id = (auth.uid())::text)` |  |
 | `entity_versions` | Authenticated can view versions | SELECT | authenticated | permissive | `true` |  |
@@ -358,6 +356,8 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 | `audit_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
 | `telemetry_logs_legacy_20260712` | admin_read_partition | SELECT | authenticated | permissive | `public.has_role(auth.uid(), 'admin'::app_role)` |  |
+| `approval_steps` | Approvers can update their steps | UPDATE | public | permissive | `auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)` |  |
+| `storage.objects` | storage_produtos_leitura_publica | SELECT | anon, authenticated | permissive | `bucket_id = 'product-images'` |  |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 
@@ -473,7 +473,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `contracts` | `id` | PK; default gen_random_uuid() |
 | `contracts` | `contract_number` | obrigatório; único |
 | `contracts` | `title` | obrigatório |
-| `contracts` | `supplier_id` | obrigatório |
+| `contracts` | `supplier_id` | obrigatório; FK → fornecedores.id on delete restrict |
 | `contracts` | `supplier_name` | obrigatório |
 | `contracts` | `contract_type` | default 'service' |
 | `contracts` | `status` | default 'draft' |
@@ -1052,7 +1052,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `status` | `empty` | compara, escreve | `src/pages/admin/DependencyHealth.tsx`<br>`supabase/functions/dependency-health/index.ts` |
 | `status` | `encerrada` | compara, escreve | `src/pages/licitacoes/LicitacaoDetailDialog.tsx` |
 | `status` | `encontrado` | compara, escreve | `src/components/compras/BuscaAutomatica.tsx`<br>`src/pages/cotacao/cotacaoHelpers.ts` |
-| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +13 |
+| `status` | `entregue` | compara, escreve, filtra | `src/components/compras/PurchaseClimateWidget.tsx`<br>`src/components/compras/RiskHeatMap.tsx`<br>`src/components/compras/SupplierAlertsPanel.tsx`<br>`src/components/compras/SupplierRankingPanel.tsx`<br>`src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts`<br>… +17 |
 | `status` | `enviado` | compara | `src/components/pedidos/PedidoMobileCard.tsx` |
 | `status` | `erro` | compara | `src/components/compras/EnhancedPedidoTimeline.tsx` |
 | `status` | `error` | compara, escreve | `src/components/ui/indicators/StepAndHealth.tsx`<br>`src/pages/admin/DependencyHealth.tsx`<br>`src/pages/admin/FiscalDashboard.tsx`<br>`src/pages/admin/ScanRunsSlaCard.tsx`<br>`supabase/functions/_shared/integrity_test.ts`<br>… +7 |
@@ -1373,9 +1373,9 @@ _nenhum item encontrado_
 
 | View | SELECT |
 |---|---|
-| `supplier_compliance_summary` | `SELECT f.id AS fornecedor_id, f.razao_social, f.status, f.avaliacao, COALESCE(cp_agg.penalty_count, 0) AS penalty_count, COALESCE(cp_agg.total_penalty_value, 0) AS total_penalty_value, COALESCE(rc_agg.avg_quality_score, 0) AS avg_quality_score, COALESCE(sb_agg.bonus_count, 0) AS bonus_count, COALESC …` |
 | `v_system_health_overview` | `SELECT alert_type, severity, count(*) AS total_open, count(*) FILTER (WHERE created_at > now() - interval '24h') AS last_24h, count(*) FILTER (WHERE created_at > now() - interval '1h') AS last_1h, min(created_at) AS oldest_open, max(created_at) AS most_recent FROM public.system_alerts WHERE resolved …` |
 | `mv_dashboard_kpis` | `SELECT p.tenant_id, date_trunc('day', p.created_at)::date AS dia, COUNT(*)::bigint AS total_pedidos, COALESCE(SUM(p.valor_total), 0)::numeric AS valor_total, COALESCE(AVG(p.valor_total), 0)::numeric AS ticket_medio, COUNT(DISTINCT p.fornecedor_id)::bigint AS fornecedores_unicos, COUNT(*) FILTER (WHE …` |
+| `supplier_compliance_summary` | `select f.id as fornecedor_id, f.razao_social, f.status, f.avaliacao, coalesce(cp_agg.penalty_count, 0) as penalty_count, coalesce(cp_agg.total_penalty_value, 0) as total_penalty_value, coalesce(rc_agg.avg_quality_score, 0) as avg_quality_score, coalesce(sb_agg.bonus_count, 0) as bonus_count, coalesc …` |
 
 ### G.3 Funções de cálculo/decisão no código
 
@@ -2530,9 +2530,11 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useApprovalNotifications.ts` |
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
+| `admin` | `supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql` |
+| `coordinator` | `supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql` |
 | `admin` | `supabase/migrations/20261128160000_lockout_servidor_guarda.sql` |
 
-## K. Testes como especificação (3602 testes em 274 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3604 testes em 274 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2705,6 +2707,7 @@ _nenhum item encontrado_
 | `src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx` | 6 | GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253) · o botao abre o dialogo de filtros · as localizacoes do filtro saem dos itens reais do estoque · filtrar por localizacao reduz a tabela ao item daquela localizacao … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx` | 6 | Solicitacoes - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta no lugar do  · o botao de nova tentativa chama o refetch do hook · pede a pagina ao hook, em vez de aceitar a fatia padrao … |
+| `supabase/functions/_shared/cors-allowlist.test.ts` | 6 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida … |
 | `supabase/functions/_shared/xbz_pedido_map.test.ts` | 6 | mapPedido: lê os nomes reais do consultaPedidos (80 campos) · mapPedido:  · mapPedido: sem pedidoNumero usa o prefixo de  · mapPedido: nota fiscal e transportadora quando preenchidas … |
 | `supabase/functions/process-invoice-idp/extraction.test.ts` | 6 | normaliza numeros e datas do formato brasileiro · nao inventa campo ausente e reporta no campos_ausentes · chave de acesso incompleta vira null em vez de zero-padded · identifica campos obrigatorios faltantes … |
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
@@ -2763,7 +2766,6 @@ _nenhum item encontrado_
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 4 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe · refaz a consulta quando a organizacao muda |
 | `src/tests/contracts.test.ts` | 4 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes · NegotiationContract should reject payload without solicitacao |
-| `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/validation.error_response.test.ts` | 4 | errorResponse:  · errorResponse:  · errorResponse: unauthorized e sessao invalida virem 401 · errorResponse: demais categorias seguem iguais |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard e widgets renderizam na rota raiz · System Theme Toggle · Mobile Responsiveness Check |
@@ -2995,8 +2997,6 @@ _nenhum item encontrado_
 | * Contrato estrutural mínimo do client Supabase usado pelas helpers de | `supabase/functions/_shared/security.ts` |
 | (`user_tenants`) — o header, se presente, é apenas logado como aviso e | `supabase/functions/_shared/security.ts` |
 | Fallback para `*` apenas em dev/preview quando o env não é definido. | `supabase/functions/_shared/security.ts` |
-| Em produção com ALLOWED_ORIGINS configurado, emite wildcard apenas se a | `supabase/functions/_shared/security.ts` |
-| Production: omit wildcard. callers that need origin-echo must use buildCorsHeaders(req). | `supabase/functions/_shared/security.ts` |
 | Mantido apenas para não quebrar callers legados durante a migração. | `supabase/functions/_shared/security.ts` |
 | minimo que usamos. O cast na fronteira evita casar tipos nominais (a classe | `supabase/functions/_shared/security.ts` |
 | alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId` | `supabase/functions/_shared/security.ts` |

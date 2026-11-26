@@ -2511,11 +2511,11 @@
   {
    "arquivo": "supabase/functions/_shared/cors-allowlist.test.ts",
    "tipo": "unit",
-   "linhas": 51,
+   "linhas": 81,
    "testa": [
     "supabase/functions/_shared/security.ts"
    ],
-   "casos": 4
+   "casos": 6
   },
   {
    "arquivo": "supabase/functions/_shared/cors-sem-constante.test.ts",

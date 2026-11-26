@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 371,
+ "migrations": 377,
  "seeds": [],
  "avisos": [
   "53 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -170,6 +170,7 @@
   "alerts_severity_timeseries",
   "apply_lgpd_retention",
   "apply_penalty_escalation",
+  "aprovador_pode_decidir_etapa",
   "archive_audit_logs_older_than",
   "archive_telemetry_logs_older_than",
   "assign_numero_solicitacao",
@@ -333,6 +334,7 @@
   "update_updated_at_column",
   "upsert_cron_heartbeat",
   "user_belongs_to_tenant",
+  "validar_decisao_approval_step",
   "validate_cotacao_status_transition",
   "validate_pagamento_status_transition",
   "validate_pedido_status_transition",
@@ -384,6 +386,13 @@
    "evento": "update",
    "tabela": "approval_rules",
    "funcao": "update_approval_updated_at"
+  },
+  {
+   "nome": "trg_approval_steps_decisao",
+   "quando": "before",
+   "evento": "update",
+   "tabela": "approval_steps",
+   "funcao": "validar_decisao_approval_step"
   },
   {
    "nome": "trg_workflow_approved_promotes_solicitacao",
@@ -2977,6 +2986,12 @@
      "tipo": "permissive"
     },
     {
+     "nome": "approval_steps_aprovador_decide_etapa",
+     "comando": "update",
+     "para": "authenticated",
+     "tipo": "permissive"
+    },
+    {
      "nome": "approval_steps_escrita_admin_coord",
      "comando": "all",
      "para": "authenticated",
@@ -2998,12 +3013,6 @@
      "nome": "approval_steps_skip_workflow_rejeitado",
      "comando": "update",
      "para": "authenticated",
-     "tipo": "permissive"
-    },
-    {
-     "nome": "Approvers can update their steps",
-     "comando": "update",
-     "para": "public",
      "tipo": "permissive"
     },
     {
@@ -3069,7 +3078,9 @@
    "usada_em_edges": [
     "check-approval-escalations"
    ],
-   "triggers": [],
+   "triggers": [
+    "trg_approval_steps_decisao"
+   ],
    "sem_rls": false,
    "nao_usada": false
   },
@@ -5540,7 +5551,7 @@
      "ref": null
     },
     "supplier_id": {
-     "tipo": "text",
+     "tipo": "uuid",
      "nn": true,
      "pk": false,
      "default": null,
@@ -5623,11 +5634,17 @@
      "nome": "idx_contracts_supplier_created",
      "colunas": "supplier_id, created_at DESC",
      "unico": false
+    },
+    {
+     "nome": "idx_contracts_supplier_id",
+     "colunas": "supplier_id",
+     "unico": false
     }
    ],
    "fks": [
     "currency->currencies",
-    "organization_id->organizations"
+    "organization_id->organizations",
+    "supplier_id->fornecedores"
    ],
    "criada_em": "20251220142204_16a9bb4a-ce42-4aaf-9de3-10f0ad0e2343.sql",
    "colunas_types": {
@@ -18507,14 +18524,13 @@
     "status": "string",
     "status_color": "string | null",
     "status_synced_at": "string | null",
+    "tenant_id": "string | null",
     "transportadora": "string | null",
     "updated_at": "string",
     "valor_total": "number | null"
    },
    "drift": {
-    "so_na_migration": [
-     "tenant_id"
-    ],
+    "so_na_migration": [],
     "so_no_types": []
    },
    "usada_no_front": 0,

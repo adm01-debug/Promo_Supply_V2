@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "9185b53528f20899cb72536792909a86bb0ef16f",
+  "sha": "a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 22:56 UTC",
-  "files_total": 1555,
-  "code_files": 1380,
-  "code_lines": 227932,
+  "generated_at": "2026-11-26 23:07 UTC",
+  "files_total": 1574,
+  "code_files": 1399,
+  "code_lines": 230208,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "3f147cb73606a8b3",
+ "facts_hash": "44d76d9e976617f3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 455,
    ".tsx": 441,
-   ".sql": 407,
+   ".sql": 426,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -1415,8 +1415,8 @@
      },
      {
       "name": "supplier_id",
-      "type": "TEXT NOT NULL",
-      "fk": "",
+      "type": "text using supplier_id::text using supplier_id::uuid NOT NULL",
+      "fk": "fornecedores.id on delete restrict",
       "generated": "",
       "src": "supabase/migrations/20251220142204_16a9bb4a-ce42-4aaf-9de3-10f0ad0e2343.sql"
      },
@@ -4730,6 +4730,13 @@
       "fk": "",
       "generated": "",
       "src": "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql"
+     },
+     {
+      "name": "tenant_id",
+      "type": "string | null",
+      "fk": "",
+      "generated": "",
+      "src": "src/integrations/supabase/types.ts"
      }
     ],
     "constraints": [
@@ -16140,16 +16147,6 @@
     "src": "supabase/migrations/20260111025047_ef19eb03-bc15-4917-87a8-f230df328ef2.sql"
    },
    {
-    "name": "Approvers can update their steps",
-    "table": "approval_steps",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20260111025047_ef19eb03-bc15-4917-87a8-f230df328ef2.sql"
-   },
-   {
     "name": "Users can view their own profile",
     "table": "profiles",
     "cmd": "SELECT",
@@ -18500,16 +18497,6 @@
     "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
-    "name": "storage_produtos_leitura_publica",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "anon, authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images'",
-    "check": "",
-    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
-   },
-   {
     "name": "storage_produtos_insert",
     "table": "storage.objects",
     "cmd": "INSERT",
@@ -18918,6 +18905,26 @@
     "using": "public.has_role(auth.uid(), 'admin'::app_role)",
     "check": "",
     "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "name": "Approvers can update their steps",
+    "table": "approval_steps",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "name": "storage_produtos_leitura_publica",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "anon, authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images'",
+    "check": "",
+    "src": "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
    }
   ],
   "triggers": [
@@ -20084,7 +20091,7 @@
     "args": "_email TEXT, _ip_address TEXT, _user_agent TEXT, _success BOOLEAN, _failure_reason TEXT DEFAULT NULL",
     "returns": "UUID",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231120356_3ae6d121-b315-421d-a18c-f2155c8f692f.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE _id UUID; BEGIN INSERT INTO public.login_attempts (email, ip_address, user_agent, success, failure_reason) VALUES (_email, _ip_address, _user_agent, _success, _failure_reason) RETURNING id INTO _id; IF NOT _success THEN DECLARE _failed_count INTEGER; BEGIN SELECT COUNT(*) INTO _failed_count FROM public.login_attempts WHERE ip_address = _ip_address AND success = false AND created_at > now() - INTERVAL '15 minutes'; IF _failed_count >= 5 AND NOT is_ip_whitelisted(_ip_address) THEN INSERT INTO public.blocked_ips (ip_address, reason, expires_at, attempts_count) VALUES (_ip_address, 'Auto-blocked: Too many failed login attempts', now() + INTERVAL '1 hour', _failed_count) ON CONFLICT (ip_a …",
@@ -20141,7 +20148,7 @@
     "args": "_email text",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE lockout_record RECORD; remaining_seconds INTEGER; BEGIN SELECT * INTO lockout_record FROM public.account_lockouts WHERE email = _email; IF NOT FOUND THEN RETURN jsonb_build_object('locked', false, 'remaining_seconds', 0); END IF; IF lockout_record.locked_until IS NOT NULL AND lockout_record.locked_until > now() THEN remaining_seconds := EXTRACT(EPOCH FROM (lockout_record.locked_until - now()))::INTEGER; RETURN jsonb_build_object( 'locked', true, 'remaining_seconds', remaining_seconds, 'locked_until', lockout_record.locked_until ); END IF; RETURN jsonb_build_object('locked', false, 'remaining_seconds', 0); END;",
@@ -20155,7 +20162,7 @@
     "args": "_email text",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE lockout_record RECORD; new_failed_attempts INTEGER; new_lockout_count INTEGER; lockout_duration INTEGER; lockout_until TIMESTAMP WITH TIME ZONE; BEGIN SELECT * INTO lockout_record FROM public.account_lockouts WHERE email = _email; IF NOT FOUND THEN INSERT INTO public.account_lockouts (email, failed_attempts, last_failed_attempt) VALUES (_email, 1, now()) RETURNING * INTO lockout_record; RETURN jsonb_build_object('locked', false, 'attempts', 1); END IF; IF lockout_record.last_failed_attempt < now() - INTERVAL '15 minutes' THEN new_failed_attempts := 1; ELSE new_failed_attempts := lockout_record.failed_attempts + 1; END IF; IF new_failed_attempts >= 5 THEN new_lockout_count := lockout_ …",
@@ -20356,7 +20363,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_tenant uuid; BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; v_tenant := COALESCE( (SELECT t.id FROM public.tenants t WHERE t.id = NEW.tenant_id), (SELECT t.id FROM public.tenants t WHERE t.organization_id = COALESCE(NEW.organization_id, NEW.tenant_id) ORDER BY t.created_at LIMIT 1) ); INSERT INTO public.notifications (user_id, title, message, type, priority, tenant_id) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal', v_tenant WHERE NEW.solicitante_id IS NOT NULL AND v_tenant IS NOT NULL; …",
@@ -20383,7 +20390,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; v_days_late integer; v_penalty_pct numeric; v_penalty_val numeric; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.data_entrega IS NOT NULL AND NEW.data_previsao IS NOT NULL AND NEW.data_entrega > NEW.data_previsao THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.fornecedor_id::text AND c.status = 'active' AND c.sla_delivery_days IS NOT NULL ORDER BY c.created_at DESC LIMIT 1 LOOP v_days_late := (NEW.data_entrega - NEW.data_previsao); v_penalty_pct := LEAST( v_days_late * COALESCE(v_contract.penalty_rate_per_day, 0.5), COALESCE(v_contract.penalty_cap_percent, 20) ); v_penalty_val := ROUND(NEW.valor_total * v_penalty …",
@@ -20399,7 +20406,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority, tenant_id) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mín …",
@@ -20424,9 +20431,9 @@
    },
    "apply_penalty_escalation": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317204905_c74bbedc-a522-4b3c-9bfd-afb6bba08004.sql",
+    "src": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
     "security_definer": false,
     "search_path": true,
     "body": "DECLARE infraction_count INTEGER; escalation_record RECORD; supplier_id_val TEXT; BEGIN SELECT supplier_id INTO supplier_id_val FROM contracts WHERE id = NEW.contract_id; SELECT COUNT(*) INTO infraction_count FROM contract_penalties cp JOIN contracts c ON c.id = cp.contract_id WHERE c.supplier_id = supplier_id_val AND cp.id != NEW.id; infraction_count := infraction_count + 1; SELECT * INTO escalation_record FROM penalty_escalation_config WHERE is_active = true AND (contract_id IS NULL OR contract_id = NEW.contract_id) AND infraction_count >= min_infractions AND (max_infractions IS NULL OR infraction_count <= max_infractions) ORDER BY contract_id NULLS LAST, level DESC LIMIT 1; IF FOUND THEN …",
@@ -20752,7 +20759,7 @@
     "args": "p_instance_id UUID, p_approver_id UUID, p_entity_id UUID",
     "returns": "BOOLEAN",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260521142029_security_hardening.sql",
+    "src": "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_creator_id UUID; v_previous_approver_id UUID; BEGIN SELECT created_by INTO v_creator_id FROM public.pedidos WHERE id = p_entity_id; IF v_creator_id = p_approver_id THEN RETURN FALSE; END IF; SELECT approver_id INTO v_previous_approver_id FROM public.workflow_approvals WHERE instance_id = p_instance_id AND approver_id = p_approver_id AND status = 'approved' LIMIT 1; IF v_previous_approver_id IS NOT NULL THEN RETURN FALSE; END IF; RETURN TRUE; END;",
@@ -26701,6 +26708,14 @@
     "unique": false,
     "where": "",
     "src": "supabase/migrations/20261128140000_spot_pedidos_tenant.sql"
+   },
+   {
+    "name": "idx_contracts_supplier_id",
+    "table": "contracts",
+    "columns": "supplier_id",
+    "unique": false,
+    "where": "",
+    "src": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql"
    }
   ],
   "cron_jobs": [
@@ -27066,10 +27081,6 @@
    }
   ],
   "views": {
-   "supplier_compliance_summary": {
-    "body": "SELECT f.id AS fornecedor_id, f.razao_social, f.status, f.avaliacao, COALESCE(cp_agg.penalty_count, 0) AS penalty_count, COALESCE(cp_agg.total_penalty_value, 0) AS total_penalty_value, COALESCE(rc_agg.avg_quality_score, 0) AS avg_quality_score, COALESCE(sb_agg.bonus_count, 0) AS bonus_count, COALESCE(sb_agg.total_bonus_value, 0) AS total_bonus_value FROM public.fornecedores f LEFT JOIN LATERAL ( SELECT COUNT(*) AS penalty_count, COALESCE(SUM(cp.penalty_value), 0) AS total_penalty_value FROM public.contract_penalties cp JOIN public.contracts c ON c.id = cp.contract_id WHERE c.supplier_id = f.id …",
-    "src": "supabase/migrations/20260317223217_2be30d4f-a4a1-4d3e-96b6-39c505b2d293.sql"
-   },
    "v_system_health_overview": {
     "body": "SELECT alert_type, severity, count(*) AS total_open, count(*) FILTER (WHERE created_at > now() - interval '24h') AS last_24h, count(*) FILTER (WHERE created_at > now() - interval '1h') AS last_1h, min(created_at) AS oldest_open, max(created_at) AS most_recent FROM public.system_alerts WHERE resolved_at IS NULL GROUP BY alert_type, severity ORDER BY CASE severity WHEN 'EMERGENCY' THEN 1 WHEN 'CRITICAL' THEN 2 WHEN 'HIGH' THEN 3 WHEN 'MEDIUM' THEN 4 WHEN 'INFO' THEN 5 ELSE 6 END, total_open DESC",
     "src": "supabase/migrations/20260712195408_36fb0763-69fd-42de-8270-201660eb8fe7.sql"
@@ -27077,6 +27088,10 @@
    "mv_dashboard_kpis": {
     "body": "SELECT p.tenant_id, date_trunc('day', p.created_at)::date AS dia, COUNT(*)::bigint AS total_pedidos, COALESCE(SUM(p.valor_total), 0)::numeric AS valor_total, COALESCE(AVG(p.valor_total), 0)::numeric AS ticket_medio, COUNT(DISTINCT p.fornecedor_id)::bigint AS fornecedores_unicos, COUNT(*) FILTER (WHERE p.status = 'entregue')::bigint AS pedidos_entregues, COUNT(*) FILTER (WHERE p.status = 'cancelado')::bigint AS pedidos_cancelados FROM public.pedidos p WHERE p.created_at >= (now() - interval '2 years') GROUP BY p.tenant_id, date_trunc('day', p.created_at)::date",
     "src": "supabase/migrations/20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql"
+   },
+   "supplier_compliance_summary": {
+    "body": "select f.id as fornecedor_id, f.razao_social, f.status, f.avaliacao, coalesce(cp_agg.penalty_count, 0) as penalty_count, coalesce(cp_agg.total_penalty_value, 0) as total_penalty_value, coalesce(rc_agg.avg_quality_score, 0) as avg_quality_score, coalesce(sb_agg.bonus_count, 0) as bonus_count, coalesce(sb_agg.total_bonus_value, 0) as total_bonus_value from public.fornecedores f left join lateral ( select count(*) as penalty_count, coalesce(sum(cp.penalty_value), 0) as total_penalty_value from public.contract_penalties cp join public.contracts c on c.id = cp.contract_id where c.supplier_id = f.id …",
+    "src": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql"
    }
   },
   "sources": [
@@ -27452,7 +27467,13 @@
    "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
    "supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql",
    "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
+   "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
    "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+   "supabase/migrations/20261128170000_bucket_product_images_config.sql",
+   "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+   "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+   "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
+   "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126121047_revert_guard_pedido_exige_solicitacao_aprovada.sql",
    "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql",
@@ -27476,7 +27497,13 @@
    "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
    "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql",
    "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
+   "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
+   "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
+   "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+   "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+   "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
+   "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31658,6 +31685,30 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "aprovador_pode_decidir_etapa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "aprovador_pode_decidir_etapa",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "validar_decisao_approval_step",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "clear_login_lockout",
     "objkind": "function",
@@ -31671,6 +31722,54 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "record_failed_login",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "record_failed_login",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "is_account_locked",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "is_account_locked",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "log_login_attempt",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
    },
    {
     "kind": "grant",
@@ -32016,7 +32115,8 @@
    "column:solicitacoes.external_ref": "Chave de idempotencia da origem externa (ex.: service_orders.id do Promo Design).",
    "table:audit_logs_ancora": "Ancora da cadeia de hash de audit_logs: ultimo registro apagado pela retencao legal de 5 anos. ISO 27001 A.8.15.",
    "column:audit_logs_ancora.registro_hash": "registro_hash do ultimo registro expurgado; e o hash_anterior esperado do primeiro registro remanescente.",
-   "column:pagamentos.data_agendamento": "Data escolhida pelo financeiro ao agendar o pagamento (status agendado). data_pagamento continua sendo a data efetiva do pagamento."
+   "column:pagamentos.data_agendamento": "Data escolhida pelo financeiro ao agendar o pagamento (status agendado). data_pagamento continua sendo a data efetiva do pagamento.",
+   "column:contracts.supplier_id": "FK para fornecedores(id). Era text sem FK ate a etapa 127 (DB-02)."
   },
   "types_file": "src/integrations/supabase/types.ts",
   "dynamic_ddl": [
@@ -32207,6 +32307,14 @@
    {
     "src": "supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql",
     "stmt": "EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES public.%I(id) ON DELETE RESTRICT%s', r.tabela, v_nome, r.coluna, r.alvo, CASE WHEN v_validada THEN '' ELSE ' NOT VALID' END );"
+   },
+   {
+    "src": "supabase/migrations/20261128170000_bucket_product_images_config.sql",
+    "stmt": "IF v_fora = 0 THEN DROP POLICY IF EXISTS \"storage_produtos_leitura_publica\" ON storage.objects;"
+   },
+   {
+    "src": "supabase/migrations/20261128170000_bucket_product_images_config.sql",
+    "stmt": "IF v_fora = 0 THEN CREATE POLICY \"storage_produtos_leitura_publica\" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'product-images' AND name LIKE 'products/%');"
    },
    {
     "src": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
@@ -35223,8 +35331,8 @@
   },
   {
    "module": "DOCS",
-   "files": 3,
-   "lines": 415,
+   "files": 4,
+   "lines": 736,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -35233,13 +35341,14 @@
    "file_list": [
     "DOCS/qa/reversao/20261127190000_perf08_dropa_indices_redundantes_revert.sql",
     "DOCS/qa/reversao/20261127193000_perf08_mv_dashboard_kpis_refresh_diario_revert.sql",
-    "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql"
+    "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
+    "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql"
    ]
   },
   {
    "module": "docs",
-   "files": 6,
-   "lines": 629,
+   "files": 12,
+   "lines": 785,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -35251,7 +35360,13 @@
     "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
     "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
-    "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql"
+    "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
+    "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql",
+    "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql",
+    "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql",
+    "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql",
+    "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql",
+    "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql"
    ]
   },
   {
@@ -36361,7 +36476,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10521,
+   "lines": 10532,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -36917,7 +37032,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20910,
+   "lines": 20925,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36990,7 +37105,7 @@
     "punchout_crypto.ts: decryptPunchOutSecret",
     "rate_limit.ts: RateLimitResult, RateLimitOptions, checkRateLimit, rateLimitedResponse",
     "retry.ts: RetryOptions, retry",
-    "security.ts: SupabaseClientLike, buildCorsHeaders, corsHeaders, validateAuth, responses, stripHtml",
+    "security.ts: SupabaseClientLike, buildCorsHeaders, validateAuth, responses, stripHtml, safeErrorMessage",
     "simulation-engine.ts: SimulationEngine",
     "spot_api.ts: SPOT_DAILY_LIMITS, SPOT_QUOTA_RESERVE, QuotaVerdict, evaluateQuota, SpotErrorInfo, describeSpotError",
     "telemetry.ts: supabaseAdmin, logTelemetry, withTelemetry",
@@ -37112,8 +37227,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 371,
-   "lines": 31571,
+   "files": 377,
+   "lines": 32756,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37204,8 +37319,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 24,
-   "lines": 1430,
+   "files": 30,
+   "lines": 2018,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37235,7 +37350,13 @@
     "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
     "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql",
     "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
-    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
+    "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
+    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
+    "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
+    "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+    "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
+    "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql"
    ]
   },
   {
@@ -43713,6 +43834,14 @@
     "value": "user"
    },
    {
+    "file": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+    "value": "admin"
+   },
+   {
+    "file": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+    "value": "coordinator"
+   },
+   {
     "file": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
     "value": "admin"
    }
@@ -44297,14 +44426,6 @@
    {
     "file": "supabase/functions/_shared/security.ts",
     "text": "Fallback para `*` apenas em dev/preview quando o env não é definido."
-   },
-   {
-    "file": "supabase/functions/_shared/security.ts",
-    "text": "Em produção com ALLOWED_ORIGINS configurado, emite wildcard apenas se a"
-   },
-   {
-    "file": "supabase/functions/_shared/security.ts",
-    "text": "Production: omit wildcard. callers that need origin-echo must use buildCorsHeaders(req)."
    },
    {
     "file": "supabase/functions/_shared/security.ts",
@@ -45157,7 +45278,7 @@
    {
     "table": "contracts",
     "column": "supplier_id",
-    "rule": "obrigatório"
+    "rule": "obrigatório; FK → fornecedores.id on delete restrict"
    },
    {
     "table": "contracts",
@@ -58435,6 +58556,30 @@
     "file": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
     "field": "v_new_status",
     "value": "finalizada",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+    "field": "status",
+    "value": "entregue",
+    "kind": "compara"
+   },
+   {
+    "file": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+    "field": "status",
+    "value": "entregue",
     "kind": "compara"
    }
   ],
@@ -73542,6 +73687,14 @@
     "name": "curinga nao casa o dominio raiz nem origem invalida"
    },
    {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "responses deriva o CORS da requisicao"
+   },
+   {
+    "file": "supabase/functions/_shared/cors-allowlist.test.ts",
+    "name": "security.ts nao exporta mais a constante corsHeaders"
+   },
+   {
     "file": "supabase/functions/_shared/cors-sem-constante.test.ts",
     "name": "nenhuma edge importa a constante corsHeaders"
    },
@@ -75294,16 +75447,6 @@
     "roles": "public",
     "mode": "permissive",
     "using": "auth.uid() = delegante_id OR has_role(auth.uid(), 'admin'::app_role)",
-    "check": "",
-    "src": "supabase/migrations/20260111025047_ef19eb03-bc15-4917-87a8-f230df328ef2.sql"
-   },
-   {
-    "name": "Approvers can update their steps",
-    "table": "approval_steps",
-    "cmd": "UPDATE",
-    "roles": "public",
-    "mode": "permissive",
-    "using": "auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
     "check": "",
     "src": "supabase/migrations/20260111025047_ef19eb03-bc15-4917-87a8-f230df328ef2.sql"
    },
@@ -77658,16 +77801,6 @@
     "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
    },
    {
-    "name": "storage_produtos_leitura_publica",
-    "table": "storage.objects",
-    "cmd": "SELECT",
-    "roles": "anon, authenticated",
-    "mode": "permissive",
-    "using": "bucket_id = 'product-images'",
-    "check": "",
-    "src": "supabase/migrations/20261113180001_storage_policies_por_bucket.sql"
-   },
-   {
     "name": "storage_produtos_insert",
     "table": "storage.objects",
     "cmd": "INSERT",
@@ -78076,6 +78209,26 @@
     "using": "public.has_role(auth.uid(), 'admin'::app_role)",
     "check": "",
     "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "name": "Approvers can update their steps",
+    "table": "approval_steps",
+    "cmd": "UPDATE",
+    "roles": "public",
+    "mode": "permissive",
+    "using": "auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
+    "check": "",
+    "src": "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "name": "storage_produtos_leitura_publica",
+    "table": "storage.objects",
+    "cmd": "SELECT",
+    "roles": "anon, authenticated",
+    "mode": "permissive",
+    "using": "bucket_id = 'product-images'",
+    "check": "",
+    "src": "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
    }
   ],
   "db_triggers": [
@@ -79242,7 +79395,7 @@
     "args": "_email TEXT, _ip_address TEXT, _user_agent TEXT, _success BOOLEAN, _failure_reason TEXT DEFAULT NULL",
     "returns": "UUID",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231120356_3ae6d121-b315-421d-a18c-f2155c8f692f.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE _id UUID; BEGIN INSERT INTO public.login_attempts (email, ip_address, user_agent, success, failure_reason) VALUES (_email, _ip_address, _user_agent, _success, _failure_reason) RETURNING id INTO _id; IF NOT _success THEN DECLARE _failed_count INTEGER; BEGIN SELECT COUNT(*) INTO _failed_count FROM public.login_attempts WHERE ip_address = _ip_address AND success = false AND created_at > now() - INTERVAL '15 minutes'; IF _failed_count >= 5 AND NOT is_ip_whitelisted(_ip_address) THEN INSERT INTO public.blocked_ips (ip_address, reason, expires_at, attempts_count) VALUES (_ip_address, 'Auto-blocked: Too many failed login attempts', now() + INTERVAL '1 hour', _failed_count) ON CONFLICT (ip_a …",
@@ -79299,7 +79452,7 @@
     "args": "_email text",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE lockout_record RECORD; remaining_seconds INTEGER; BEGIN SELECT * INTO lockout_record FROM public.account_lockouts WHERE email = _email; IF NOT FOUND THEN RETURN jsonb_build_object('locked', false, 'remaining_seconds', 0); END IF; IF lockout_record.locked_until IS NOT NULL AND lockout_record.locked_until > now() THEN remaining_seconds := EXTRACT(EPOCH FROM (lockout_record.locked_until - now()))::INTEGER; RETURN jsonb_build_object( 'locked', true, 'remaining_seconds', remaining_seconds, 'locked_until', lockout_record.locked_until ); END IF; RETURN jsonb_build_object('locked', false, 'remaining_seconds', 0); END;",
@@ -79313,7 +79466,7 @@
     "args": "_email text",
     "returns": "jsonb",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE lockout_record RECORD; new_failed_attempts INTEGER; new_lockout_count INTEGER; lockout_duration INTEGER; lockout_until TIMESTAMP WITH TIME ZONE; BEGIN SELECT * INTO lockout_record FROM public.account_lockouts WHERE email = _email; IF NOT FOUND THEN INSERT INTO public.account_lockouts (email, failed_attempts, last_failed_attempt) VALUES (_email, 1, now()) RETURNING * INTO lockout_record; RETURN jsonb_build_object('locked', false, 'attempts', 1); END IF; IF lockout_record.last_failed_attempt < now() - INTERVAL '15 minutes' THEN new_failed_attempts := 1; ELSE new_failed_attempts := lockout_record.failed_attempts + 1; END IF; IF new_failed_attempts >= 5 THEN new_lockout_count := lockout_ …",
@@ -79514,7 +79667,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_tenant uuid; BEGIN IF NEW.status = 'pendente' AND NEW.valor_estimado IS NOT NULL AND NEW.valor_estimado < 1000 THEN NEW.status := 'aprovada'; v_tenant := COALESCE( (SELECT t.id FROM public.tenants t WHERE t.id = NEW.tenant_id), (SELECT t.id FROM public.tenants t WHERE t.organization_id = COALESCE(NEW.organization_id, NEW.tenant_id) ORDER BY t.created_at LIMIT 1) ); INSERT INTO public.notifications (user_id, title, message, type, priority, tenant_id) SELECT NEW.solicitante_id, 'Solicitação auto-aprovada', 'A solicitação #' || NEW.numero || ' foi aprovada automaticamente (valor < R$ 1.000)', 'approval', 'normal', v_tenant WHERE NEW.solicitante_id IS NOT NULL AND v_tenant IS NOT NULL; …",
@@ -79541,7 +79694,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; v_days_late integer; v_penalty_pct numeric; v_penalty_val numeric; BEGIN IF NEW.status = 'entregue' AND OLD.status != 'entregue' AND NEW.data_entrega IS NOT NULL AND NEW.data_previsao IS NOT NULL AND NEW.data_entrega > NEW.data_previsao THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.fornecedor_id::text AND c.status = 'active' AND c.sla_delivery_days IS NOT NULL ORDER BY c.created_at DESC LIMIT 1 LOOP v_days_late := (NEW.data_entrega - NEW.data_previsao); v_penalty_pct := LEAST( v_days_late * COALESCE(v_contract.penalty_rate_per_day, 0.5), COALESCE(v_contract.penalty_cap_percent, 20) ); v_penalty_val := ROUND(NEW.valor_total * v_penalty …",
@@ -79557,7 +79710,7 @@
     "args": "",
     "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+    "src": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_contract RECORD; BEGIN IF NEW.avaliacao IS NOT NULL AND (OLD.avaliacao IS NULL OR NEW.avaliacao < OLD.avaliacao) THEN FOR v_contract IN SELECT c.* FROM contracts c WHERE c.supplier_id = NEW.id::text AND c.status = 'active' AND c.auto_block_below_score = true AND c.min_supplier_score IS NOT NULL LOOP IF NEW.avaliacao < v_contract.min_supplier_score THEN UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = NEW.id; INSERT INTO notifications (user_id, title, message, type, priority, tenant_id) SELECT ur.user_id, 'Fornecedor bloqueado: ' || NEW.razao_social, 'O fornecedor ' || NEW.razao_social || ' foi bloqueado automaticamente. Score: ' || NEW.avaliacao || ' (mín …",
@@ -79582,9 +79735,9 @@
    },
    "apply_penalty_escalation": {
     "args": "",
-    "returns": "TRIGGER",
+    "returns": "trigger",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260317204905_c74bbedc-a522-4b3c-9bfd-afb6bba08004.sql",
+    "src": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
     "security_definer": false,
     "search_path": true,
     "body": "DECLARE infraction_count INTEGER; escalation_record RECORD; supplier_id_val TEXT; BEGIN SELECT supplier_id INTO supplier_id_val FROM contracts WHERE id = NEW.contract_id; SELECT COUNT(*) INTO infraction_count FROM contract_penalties cp JOIN contracts c ON c.id = cp.contract_id WHERE c.supplier_id = supplier_id_val AND cp.id != NEW.id; infraction_count := infraction_count + 1; SELECT * INTO escalation_record FROM penalty_escalation_config WHERE is_active = true AND (contract_id IS NULL OR contract_id = NEW.contract_id) AND infraction_count >= min_infractions AND (max_infractions IS NULL OR infraction_count <= max_infractions) ORDER BY contract_id NULLS LAST, level DESC LIMIT 1; IF FOUND THEN …",
@@ -79910,7 +80063,7 @@
     "args": "p_instance_id UUID, p_approver_id UUID, p_entity_id UUID",
     "returns": "BOOLEAN",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260521142029_security_hardening.sql",
+    "src": "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_creator_id UUID; v_previous_approver_id UUID; BEGIN SELECT created_by INTO v_creator_id FROM public.pedidos WHERE id = p_entity_id; IF v_creator_id = p_approver_id THEN RETURN FALSE; END IF; SELECT approver_id INTO v_previous_approver_id FROM public.workflow_approvals WHERE instance_id = p_instance_id AND approver_id = p_approver_id AND status = 'approved' LIMIT 1; IF v_previous_approver_id IS NOT NULL THEN RETURN FALSE; END IF; RETURN TRUE; END;",
@@ -82272,10 +82425,6 @@
    }
   ],
   "db_views": {
-   "supplier_compliance_summary": {
-    "body": "SELECT f.id AS fornecedor_id, f.razao_social, f.status, f.avaliacao, COALESCE(cp_agg.penalty_count, 0) AS penalty_count, COALESCE(cp_agg.total_penalty_value, 0) AS total_penalty_value, COALESCE(rc_agg.avg_quality_score, 0) AS avg_quality_score, COALESCE(sb_agg.bonus_count, 0) AS bonus_count, COALESCE(sb_agg.total_bonus_value, 0) AS total_bonus_value FROM public.fornecedores f LEFT JOIN LATERAL ( SELECT COUNT(*) AS penalty_count, COALESCE(SUM(cp.penalty_value), 0) AS total_penalty_value FROM public.contract_penalties cp JOIN public.contracts c ON c.id = cp.contract_id WHERE c.supplier_id = f.id …",
-    "src": "supabase/migrations/20260317223217_2be30d4f-a4a1-4d3e-96b6-39c505b2d293.sql"
-   },
    "v_system_health_overview": {
     "body": "SELECT alert_type, severity, count(*) AS total_open, count(*) FILTER (WHERE created_at > now() - interval '24h') AS last_24h, count(*) FILTER (WHERE created_at > now() - interval '1h') AS last_1h, min(created_at) AS oldest_open, max(created_at) AS most_recent FROM public.system_alerts WHERE resolved_at IS NULL GROUP BY alert_type, severity ORDER BY CASE severity WHEN 'EMERGENCY' THEN 1 WHEN 'CRITICAL' THEN 2 WHEN 'HIGH' THEN 3 WHEN 'MEDIUM' THEN 4 WHEN 'INFO' THEN 5 ELSE 6 END, total_open DESC",
     "src": "supabase/migrations/20260712195408_36fb0763-69fd-42de-8270-201660eb8fe7.sql"
@@ -82283,6 +82432,10 @@
    "mv_dashboard_kpis": {
     "body": "SELECT p.tenant_id, date_trunc('day', p.created_at)::date AS dia, COUNT(*)::bigint AS total_pedidos, COALESCE(SUM(p.valor_total), 0)::numeric AS valor_total, COALESCE(AVG(p.valor_total), 0)::numeric AS ticket_medio, COUNT(DISTINCT p.fornecedor_id)::bigint AS fornecedores_unicos, COUNT(*) FILTER (WHERE p.status = 'entregue')::bigint AS pedidos_entregues, COUNT(*) FILTER (WHERE p.status = 'cancelado')::bigint AS pedidos_cancelados FROM public.pedidos p WHERE p.created_at >= (now() - interval '2 years') GROUP BY p.tenant_id, date_trunc('day', p.created_at)::date",
     "src": "supabase/migrations/20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql"
+   },
+   "supplier_compliance_summary": {
+    "body": "select f.id as fornecedor_id, f.razao_social, f.status, f.avaliacao, coalesce(cp_agg.penalty_count, 0) as penalty_count, coalesce(cp_agg.total_penalty_value, 0) as total_penalty_value, coalesce(rc_agg.avg_quality_score, 0) as avg_quality_score, coalesce(sb_agg.bonus_count, 0) as bonus_count, coalesce(sb_agg.total_bonus_value, 0) as total_bonus_value from public.fornecedores f left join lateral ( select count(*) as penalty_count, coalesce(sum(cp.penalty_value), 0) as total_penalty_value from public.contract_penalties cp join public.contracts c on c.id = cp.contract_id where c.supplier_id = f.id …",
+    "src": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql"
    }
   },
   "pagination": [
@@ -83740,6 +83893,10 @@
       "compara:supabase/migrations/20260315151408_8ffa629b-ebf8-41cd-a770-8b0d78746e04.sql",
       "compara:supabase/migrations/20260317202549_8a2518a2-563d-41b9-8f9b-dcd8fab34b7d.sql",
       "compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql",
+      "compara:supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+      "compara:supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+      "compara:supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+      "compara:supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
       "escreve:src/pages/acompanhamento/AcompanhamentoHelpers.ts",
       "filtra:supabase/functions/weekly-summary-report/index.ts"
      ],
@@ -84630,10 +84787,10 @@
      "authenticated: EXISTS ( SELECT 1 FROM public.approval_workflows w JOIN public.solicitacoes s ON s.id = w.solicitacao_id WHERE w.id = approva"
     ],
     "UPDATE": [
-     "public: auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)",
      "authenticated: public.tenant_in_my_group(tenant_id)",
      "authenticated: public.has_role(auth.uid(), 'admin'::app_role) OR public.has_role(auth.uid(), 'coordinator'::app_role)",
-     "authenticated: status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.statu"
+     "authenticated: status = 'pending' AND EXISTS ( SELECT 1 FROM public.approval_workflows w WHERE w.id = approval_steps.workflow_id AND w.statu",
+     "public: auth.uid() = aprovador_id OR auth.uid() = aprovador_efetivo_id OR has_role(auth.uid(), 'admin'::app_role)"
     ],
     "DELETE": [
      "authenticated: public.tenant_in_my_group(tenant_id)",
@@ -91108,6 +91265,30 @@
    },
    {
     "kind": "revoke",
+    "privs": "all",
+    "object": "aprovador_pode_decidir_etapa",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "aprovador_pode_decidir_etapa",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "validar_decisao_approval_step",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql"
+   },
+   {
+    "kind": "revoke",
     "privs": "execute",
     "object": "clear_login_lockout",
     "objkind": "function",
@@ -91121,6 +91302,54 @@
     "objkind": "function",
     "roles": "authenticated, service_role",
     "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "record_failed_login",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "record_failed_login",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "is_account_locked",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "is_account_locked",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "log_login_attempt",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "log_login_attempt",
+    "objkind": "function",
+    "roles": "anon, authenticated, service_role",
+    "src": "supabase/migrations/20261128201000_lockout_rpc_publica.sql"
    },
    {
     "kind": "grant",
@@ -91847,6 +92076,7 @@
    "approval_workflows",
    "approval_steps",
    "approval_history",
+   "spot_pedidos",
    "department_budgets",
    "fiscal_documents",
    "repurchase_suggestions",
@@ -91941,7 +92171,6 @@
    "account_lockouts",
    "user_tour_preferences",
    "spot_sessions",
-   "spot_pedidos",
    "negotiation_analyses",
    "query_telemetry",
    "dependency_health",
@@ -91975,7 +92204,7 @@
    "qualification_history",
    "qualification_requirements"
   ],
-  "tenant_cov": 0.6,
+  "tenant_cov": 0.61,
   "soft_delete": [
    [
     "categorias",
@@ -93878,11 +94107,6 @@
    },
    {
     "kind": "tenant",
-    "msg": "`spot_pedidos` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
-    "where": []
-   },
-   {
-    "kind": "tenant",
     "msg": "`negotiation_analyses` não tem coluna `tenant_id` (isolamento por tenant pode estar incompleto)",
     "where": []
    },
@@ -94225,6 +94449,13 @@
    },
    {
     "kind": "ddl dinâmico",
+    "msg": "2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `IF v_fora = 0 THEN CREATE POLICY \"storage_produtos_leitura_publica\" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'product-images' AND name LIKE 'products/%');` · `IF v_fora = 0 THEN DROP POLICY IF EXISTS \"storage_produtos_leitura_publica\" ON storage.objects;`",
+    "where": [
+     "supabase/migrations/20261128170000_bucket_product_images_config.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
     "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);`",
     "where": [
      "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
@@ -94408,6 +94639,10 @@
    "path": "DOCS/qa/reverts/20261127000000_reconcilia_ledger_migrations_revert.sql",
    "lines": 333
   },
+  "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql": {
+   "path": "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql",
+   "lines": 321
+  },
   "docs/pendencias/sql/pim-v_compras_views.sql": {
    "path": "docs/pendencias/sql/pim-v_compras_views.sql",
    "lines": 290
@@ -94447,6 +94682,30 @@
     "VALUES ('check-sla-alerts', now()-interval '20 min','error','boom',7,6,1);",
     "VALUES ('job-novo-sem-heartbeat', now()-interval '1 hour','error',3);"
    ]
+  },
+  "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql": {
+   "path": "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql",
+   "lines": 35
+  },
+  "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql": {
+   "path": "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql",
+   "lines": 18
+  },
+  "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql": {
+   "path": "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql",
+   "lines": 19
+  },
+  "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql": {
+   "path": "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql",
+   "lines": 24
+  },
+  "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql": {
+   "path": "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql",
+   "lines": 24
+  },
+  "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql": {
+   "path": "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql",
+   "lines": 36
   },
   "public/push-handler.js": {
    "path": "public/push-handler.js",
@@ -110006,7 +110265,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10462,
+   "lines": 10473,
    "exports": [
     "type Json",
     "type Database",
@@ -118641,7 +118900,7 @@
   },
   "supabase/functions/_shared/cors-allowlist.test.ts": {
    "path": "supabase/functions/_shared/cors-allowlist.test.ts",
-   "lines": 51,
+   "lines": 81,
    "is_test": true,
    "env": [
     "ALLOWED_ORIGINS"
@@ -118657,7 +118916,9 @@
     "sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem",
     "ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada",
     "curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto",
-    "curinga nao casa o dominio raiz nem origem invalida"
+    "curinga nao casa o dominio raiz nem origem invalida",
+    "responses deriva o CORS da requisicao",
+    "security.ts nao exporta mais a constante corsHeaders"
    ]
   },
   "supabase/functions/_shared/cors-sem-constante.test.ts": {
@@ -119278,11 +119539,10 @@
   },
   "supabase/functions/_shared/security.ts": {
    "path": "supabase/functions/_shared/security.ts",
-   "lines": 436,
+   "lines": 421,
    "exports": [
     "type SupabaseClientLike",
     "const buildCorsHeaders",
-    "const corsHeaders",
     "const validateAuth",
     "const responses",
     "function stripHtml",
@@ -119340,8 +119600,6 @@
     "* Contrato estrutural mínimo do client Supabase usado pelas helpers de",
     "(`user_tenants`) — o header, se presente, é apenas logado como aviso e",
     "Fallback para `*` apenas em dev/preview quando o env não é definido.",
-    "Em produção com ALLOWED_ORIGINS configurado, emite wildcard apenas se a",
-    "Production: omit wildcard. callers that need origin-echo must use buildCorsHeaders(req).",
     "Mantido apenas para não quebrar callers legados durante a migração.",
     "minimo que usamos. O cast na fronteira evita casar tipos nominais (a classe",
     "alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId`"
@@ -125715,12 +125973,54 @@
    "path": "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
    "lines": 127
   },
+  "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql": {
+   "path": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+   "lines": 186,
+   "role_checks": [
+    "admin",
+    "coordinator"
+   ]
+  },
   "supabase/migrations/20261128160000_lockout_servidor_guarda.sql": {
    "path": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
    "lines": 120,
    "role_checks": [
     "admin"
    ]
+  },
+  "supabase/migrations/20261128170000_bucket_product_images_config.sql": {
+   "path": "supabase/migrations/20261128170000_bucket_product_images_config.sql",
+   "lines": 88
+  },
+  "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql": {
+   "path": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+   "lines": 313,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ]
+  },
+  "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql": {
+   "path": "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+   "lines": 174,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ]
+  },
+  "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql": {
+   "path": "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
+   "lines": 91
+  },
+  "supabase/migrations/20261128201000_lockout_rpc_publica.sql": {
+   "path": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+   "lines": 333
   },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
@@ -125828,9 +126128,47 @@
    "path": "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
    "lines": 56
   },
+  "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql": {
+   "path": "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
+   "lines": 62
+  },
   "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql": {
    "path": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
    "lines": 22
+  },
+  "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql": {
+   "path": "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql",
+   "lines": 15
+  },
+  "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql": {
+   "path": "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
+   "lines": 216,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ]
+  },
+  "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql": {
+   "path": "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql",
+   "lines": 98,
+   "status_values": [
+    {
+     "field": "status",
+     "value": "entregue",
+     "kind": "compara"
+    }
+   ]
+  },
+  "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql": {
+   "path": "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
+   "lines": 41
+  },
+  "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql": {
+   "path": "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql",
+   "lines": 156
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -126068,10 +126406,103 @@
   }
  },
  "git": {
-  "sha": "9185b53528f20899cb72536792909a86bb0ef16f",
+  "sha": "a54eaf5cf209c58f4e2c3ae5992de7dc6d48e9cd",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a54eaf5",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#587)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
+   {
+    "sha": "a498bae",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/cors-allowlist.test.ts",
+     "supabase/functions/_shared/security.ts"
+    ]
+   },
+   {
+    "sha": "3220347",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql",
+     "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql",
+     "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
+     "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql"
+    ]
+   },
+   {
+    "sha": "2515513",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql",
+     "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql",
+     "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql",
+     "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql",
+     "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+     "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql"
+    ]
+   },
+   {
+    "sha": "fea414f",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+     "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql"
+    ]
+   },
+   {
+    "sha": "8383ee7",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): lockout normaliza e-mail e deriva o IP do request (etapa 140) (#597)",
+    "files": [
+     "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+     "supabase/rollbacks/20261128201000_revert_lockout_rpc_publica.sql"
+    ]
+   },
+   {
+    "sha": "2b1e27a",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): multa e bloqueio de fornecedor notificam so a empresa do evento (#139) (#591)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+     "supabase/rollbacks/20261128190000_revert_notificacoes_tenant.sql"
+    ]
+   },
+   {
+    "sha": "7723079",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(storage): bucket product-images passa a limitar tipo e tamanho de arquivo (etapa 062) (#589)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261128170000_bucket_product_images_config.sql",
+     "supabase/rollbacks/20261128170000_revert_bucket_product_images_config.sql"
+    ]
+   },
    {
     "sha": "9185b53",
     "date": "2026-11-26",
@@ -126331,184 +126762,87 @@
      "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
      "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql"
     ]
-   },
-   {
-    "sha": "df27f17",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126121047_guard_pedido_exige_solicitacao_aprovada.sql",
-     "supabase/rollbacks/20261126121047_revert_guard_pedido_exige_solicitacao_aprovada.sql"
-    ]
-   },
-   {
-    "sha": "a0dc878",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
-     "src/features/cotacoes/hooks/useCotacoes.ts",
-     "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql"
-    ]
-   },
-   {
-    "sha": "b26661a",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
-   },
-   {
-    "sha": "85e9897",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/admin/telemetry/AppLogsView.tsx",
-     "src/features/auth/hooks/useAuth.tsx",
-     "src/hooks/useFornecedores.ts",
-     "src/lib/__tests__/logger.test.ts",
-     "src/lib/logger.ts",
-     "supabase/functions/_shared/logLevel.test.ts",
-     "supabase/functions/_shared/logLevel.ts"
-    ]
-   },
-   {
-    "sha": "72c5408",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
-     "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
-     "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql"
-    ]
-   },
-   {
-    "sha": "29e79cf",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql"
-    ]
-   },
-   {
-    "sha": "d9059a1",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)",
-    "files": [
-     "AGENTS.md",
-     "DOCS/qa/reversao/20261127193000_perf08_mv_dashboard_kpis_refresh_diario_revert.sql",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql"
-    ]
-   },
-   {
-    "sha": "7633b9b",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore: ajusta a contagem de migrations do AGENTS.md para 352 (etapa 209) (#533)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261127200000_severity_canonica_system_alerts.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    27
+    26
    ],
    [
     "AGENTS.md",
-    20
+    14
    ],
    [
     "src/integrations/supabase/types.ts",
-    3
+    4
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
    ],
    [
-    "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "supabase/functions/_shared/cors-allowlist.test.ts",
     1
    ],
    [
-    "src/hooks/useAccountLockout.ts",
+    "supabase/functions/_shared/security.ts",
     1
    ],
    [
-    "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+    "docs/qa/verificacoes/20261128180000_diag_alcada_auto_aprovacao.sql",
     1
    ],
    [
-    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
+    "docs/qa/verificacoes/20261128180500_diag_alcada_fonte_configuravel.sql",
     1
    ],
    [
-    "scripts/ci/check-test-inventory.mjs",
+    "supabase/migrations/20261128200000_alcada_auto_aprovacao_configuravel.sql",
     1
    ],
    [
-    "scripts/ci/check-test-inventory.unit.mjs",
+    "supabase/rollbacks/20261128200000_revert_alcada_auto_aprovacao_configuravel.sql",
     1
    ],
    [
-    "tests-rls/rls-isolation.test.ts",
+    "docs/qa/verificacoes/20261128160000_diag_contracts_supplier_id.sql",
     1
    ],
    [
-    "supabase/functions/alert-dispatcher/index.ts",
+    "docs/qa/verificacoes/20261128160100_diag_contracts_funcoes.sql",
     1
    ],
    [
-    "supabase/functions/process-outbox/index.ts",
+    "docs/qa/verificacoes/20261128160200_diag_contracts_tipos.sql",
     1
    ],
    [
-    "supabase/functions/check-approval-escalations/index.ts",
+    "docs/qa/verificacoes/20261128160300_diag_contracts_funcoes_def.sql",
     1
    ],
    [
-    "src/hooks/__tests__/usePermissions.test.tsx",
+    "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
     1
    ],
    [
-    "src/hooks/usePermissions.ts",
+    "supabase/rollbacks/20261128170000_revert_contracts_supplier_id_uuid.sql",
     1
    ],
    [
-    "supabase/functions/spot-api/index.ts",
+    "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
     1
    ],
    [
-    "supabase/functions/spot-proxy/index.ts",
+    "supabase/rollbacks/20261128150000_revert_neg10_sod_e_policy_approval_steps.sql",
     1
    ],
    [
-    "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
+    "DOCS/qa/verificacoes/20261128201000_lockout_rpc_publica_validacao.sql",
     1
    ],
    [
-    "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
+    "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
     1
    ]
   ]

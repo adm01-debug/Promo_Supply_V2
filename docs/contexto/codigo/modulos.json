@@ -2953,7 +2953,7 @@
    "modulo": "integrations/supabase",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 10482,
+   "linhas": 10493,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588)",
-   "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)",
-   "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)",
-   "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)",
-   "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)"
+   "chore(db): sincronizar types.ts com o banco [auto] (#587)",
+   "fix(edge): responses deriva o CORS da requisicao e a constante estatica sai do _shared (#605)",
+   "feat(db): alcada de auto-aprovacao configuravel (etapa 114 - NEG-14) (#603)",
+   "fix(db): contratos ligam no fornecedor por uuid com FK e backfill (etapa 127 - DB-02) (#602)",
+   "fix(sod): conserta a checagem de segregacao e fecha a decisao de etapa (093) (#601)"
   ]
  },
  "pr_template": null,
