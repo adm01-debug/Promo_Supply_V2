@@ -20,21 +20,39 @@
 -- `20261117230000_retencao_fonte_unica.sql` existe para eliminar; e' o mesmo padrao
 -- do job 16, que chama `public.cleanup_old_integration_outbox()` em vez de DELETE inline.
 --
--- Horario preservado (`10 2 * * *`): a correcao nao muda a janela de execucao.
--- Idempotente: remove se existir e recria com a mesma acao.
+-- COMO O JOB E' ALTERADO (aprendido em producao, ver 20261121180000):
+--   `cron.unschedule(nome)` so enxerga job do proprio role e falha com
+--   "could not find valid entry for job" quando a conexao nao e' o dono -- o que
+--   aborta a aplicacao em vez de cair no Management API. `cron.alter_job(jobid, ...)`
+--   nao tem esse problema: le o jobid (leitura permitida a qualquer role) e altera
+--   preservando dono, horario e historico. Se a conexao nao puder alterar, o erro e'
+--   de permissao -- que e' o caso em que `aplicar-migration-prod.yml` reaplica o
+--   arquivo pelo Management API, onde a conexao e' postgres (dono do job).
+-- Idempotente: alterar duas vezes com o mesmo comando nao muda nada.
 DO $do$
 DECLARE
-  v_present boolean;
+  v_jobid bigint;
 BEGIN
-  SELECT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'cleanup-system-alerts') INTO v_present;
-  IF v_present THEN
-    PERFORM cron.unschedule('cleanup-system-alerts');
+  SELECT jobid INTO v_jobid
+  FROM cron.job
+  WHERE jobname = 'cleanup-system-alerts'
+  ORDER BY jobid
+  LIMIT 1;
+
+  IF v_jobid IS NULL THEN
+    PERFORM cron.schedule(
+      'cleanup-system-alerts',
+      '10 2 * * *',
+      'SELECT public.cleanup_old_system_alerts();'
+    );
+  ELSE
+    -- horario preservado: a correcao nao muda a janela de execucao
+    PERFORM cron.alter_job(
+      job_id := v_jobid,
+      schedule := '10 2 * * *',
+      command := 'SELECT public.cleanup_old_system_alerts();'
+    );
   END IF;
-  PERFORM cron.schedule(
-    'cleanup-system-alerts',
-    '10 2 * * *',
-    'SELECT public.cleanup_old_system_alerts();'
-  );
 END;
 $do$;
 

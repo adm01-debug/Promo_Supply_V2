@@ -6,17 +6,27 @@
 -- ATENCAO: reverter reintroduz a perda de alerta ABERTO aos 30 dias.
 DO $do$
 DECLARE
-  v_present boolean;
+  v_jobid bigint;
 BEGIN
-  SELECT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'cleanup-system-alerts') INTO v_present;
-  IF v_present THEN
-    PERFORM cron.unschedule('cleanup-system-alerts');
+  SELECT jobid INTO v_jobid
+  FROM cron.job
+  WHERE jobname = 'cleanup-system-alerts'
+  ORDER BY jobid
+  LIMIT 1;
+
+  IF v_jobid IS NULL THEN
+    PERFORM cron.schedule(
+      'cleanup-system-alerts',
+      '10 2 * * *',
+      $$DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'$$
+    );
+  ELSE
+    PERFORM cron.alter_job(
+      job_id := v_jobid,
+      schedule := '10 2 * * *',
+      command := $$DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'$$
+    );
   END IF;
-  PERFORM cron.schedule(
-    'cleanup-system-alerts',
-    '10 2 * * *',
-    $$DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'$$
-  );
 END;
 $do$;
 
