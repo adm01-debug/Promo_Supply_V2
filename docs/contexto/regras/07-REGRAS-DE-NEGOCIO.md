@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `7cc4d94cd4` · branch `main` · 2026-11-26 03:47 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1237e871e1` · branch `main` · 2026-11-26 03:53 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3470 testes em 258 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3471 testes em 258 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2520,11 +2520,11 @@ _nenhum item encontrado_
 | `src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts` | 22 | COLORS · has 4 color values · all values are non-empty strings · first color is the CSS variable primary … |
 | `src/components/compras/procurement-kpis/__tests__/deriveKpiSnapshot.test.ts` | 21 | deriveKpiSnapshot - sem dados · nao inventa valores quando o banco esta vazio · usa as metas do modulo, nao numeros fixos de tela · deriveKpiSnapshot - ROI … |
 | `src/features/auth/types/__tests__/authRoles.test.ts` | 21 | roleLabels · covers all 6 roles · has exactly 6 entries · all labels are non-empty strings … |
+| `src/hooks/__tests__/useDevolucoes.test.tsx` | 21 | useDevolucoes · regra de transicao de status · recusa transicao fora da maquina de estados e nao grava nada · carimba a data de aprovacao ao aprovar · nao anuncia status atualizado quando o RLS barra o UPDATE … |
 | `src/lib/__tests__/pdfGenerator.test.ts` | 21 | generateOrderPDF · is a function · returns a jsPDF document instance · does not throw with valid data … |
 | `src/pages/devolucoes/__tests__/devolucoesModals.test.ts` | 21 | MOTIVO_LABELS · has 7 motivo entries · covers all expected motivo keys · every label is a non-empty string … |
 | `src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts` | 20 | CHART_COLORS · has 6 color entries · all entries are non-empty strings · first color uses CSS variable syntax … |
 | `src/components/ui/indicators/__tests__/statusConfigs.test.ts` | 20 | statusConfigs · has 13 status entries · covers all expected StatusType values · every entry has a non-empty label string … |
-| `src/hooks/__tests__/useDevolucoes.test.tsx` | 20 | useDevolucoes · regra de transicao de status · recusa transicao fora da maquina de estados e nao grava nada · carimba a data de aprovacao ao aprovar · nao anuncia status atualizado quando o RLS barra o UPDATE … |
 | `src/lib/__tests__/security.test.ts` | 20 | security.isDangerous · detects <script tag · detects javascript: protocol · detects onerror= attribute … |
 | `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 20 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts` | 19 | entityConfig · has exactly 4 entity types · covers all required entity types · each entity has a non-empty label … |

@@ -1194,11 +1194,11 @@
   {
    "arquivo": "src/hooks/__tests__/useDevolucoes.test.tsx",
    "tipo": "unit",
-   "linhas": 427,
+   "linhas": 452,
    "testa": [
     "src/hooks/useDevolucoes.ts"
    ],
-   "casos": 15
+   "casos": 16
   },
   {
    "arquivo": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",

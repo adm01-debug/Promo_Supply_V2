@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7cc4d94cd443ef450489d87700180ea7fc2cafda",
+  "sha": "1237e871e116f730e333b2b91ab42eb1b93e05ff",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 03:47 UTC",
+  "generated_at": "2026-11-26 03:53 UTC",
   "files_total": 1477,
   "code_files": 1303,
-  "code_lines": 219698,
+  "code_lines": 219726,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "435f175a70b7c7a6",
+ "facts_hash": "b450cc7d140d4421",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35481,7 +35481,7 @@
   {
    "module": "src/hooks",
    "files": 97,
-   "lines": 16544,
+   "lines": 16572,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -64188,6 +64188,10 @@
    {
     "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
     "name": "a chave do cache inclui a empresa que a consulta filtra"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "invalidar o prefixo [devolucoes] refaz a consulta dos cartoes"
    },
    {
     "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
@@ -104672,7 +104676,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 395,
+   "lines": 398,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -107131,7 +107135,7 @@
   },
   "src/hooks/__tests__/useDevolucoes.test.tsx": {
    "path": "src/hooks/__tests__/useDevolucoes.test.tsx",
-   "lines": 427,
+   "lines": 452,
    "is_test": true,
    "rule_comments": [
     "teste de regra. Cada escrita passa por policy de RLS, e no PostgREST um"
@@ -107156,7 +107160,8 @@
     "soma no saldo total apenas os creditos ativos",
     "useDevolucoesKPIs · indicadores",
     "separa abertas, em transito e concluidas e calcula a taxa sobre o total",
-    "a chave do cache inclui a empresa que a consulta filtra"
+    "a chave do cache inclui a empresa que a consulta filtra",
+    "invalidar o prefixo [devolucoes] refaz a consulta dos cartoes"
    ]
   },
   "src/hooks/__tests__/useFornecedores.exclusao.test.tsx": {
@@ -122883,10 +122888,21 @@
   }
  },
  "git": {
-  "sha": "7cc4d94cd443ef450489d87700180ea7fc2cafda",
+  "sha": "1237e871e116f730e333b2b91ab42eb1b93e05ff",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1237e87",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useDevolucoes.test.tsx",
+     "src/hooks/useDevolucoes.ts"
+    ]
+   },
    {
     "sha": "7cc4d94",
     "date": "2026-11-26",
@@ -123213,20 +123229,6 @@
      "docs/qa/05-PROGRESSO.md",
      "scripts/ci/agents-docs-baseline.unit.mjs",
      "scripts/ci/check-agents-md-integrity.mjs"
-    ]
-   },
-   {
-    "sha": "dd07396",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(devolucoes): nao anuncia status, exclusao ou credito usado quando o RLS barra (etapa 283) (#491)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
-     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
-     "src/hooks/__tests__/useDevolucoes.test.tsx",
-     "src/hooks/useDevolucoes.ts",
-     "src/pages/devolucoes/DevolucoesModals.tsx"
     ]
    }
   ],

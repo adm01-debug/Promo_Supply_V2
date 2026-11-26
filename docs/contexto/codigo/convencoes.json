@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)",
    "fix(kpis): cartoes de solicitacoes e fornecedores invalidam junto com a entidade (etapa 191) (#518)",
    "fix(kpis): cartoes de indicadores passam a invalidar junto com a entidade (etapa 190) (#517)",
    "chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)",
-   "fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)",
-   "fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)"
+   "fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)"
   ]
  },
  "pr_template": null,
