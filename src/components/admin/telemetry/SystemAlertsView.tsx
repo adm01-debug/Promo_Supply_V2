@@ -38,16 +38,22 @@ export function SystemAlertsView() {
   });
 
   const handleResolve = async (id: string) => {
-    const { error } = await supabase
+    // `.select("id")` devolve so as linhas realmente alteradas. Sem policy de UPDATE
+    // a RLS filtra tudo: o UPDATE afeta 0 linhas e o PostgREST responde sem erro,
+    // entao o `if (error)` sozinho mostrava "Alerta resolvido" sem gravar nada.
+    const { data, error } = await supabase
       .from("system_alerts")
       .update({ 
         resolved_at: new Date().toISOString(),
         // resolved_by: (await supabase.auth.getUser()).data.user?.id 
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select("id");
 
     if (error) {
       toast.error("Erro ao resolver alerta");
+    } else if (!data || data.length === 0) {
+      toast.error("Alerta não alterado: sem permissão para este alerta");
     } else {
       toast.success("Alerta resolvido");
       refetch();
