@@ -5,6 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { evaluateScimGate, sha256Hex } from "./auth.ts";
+import { BAN_DURATION_DESATIVADO, estaAtivo, interpretarActive } from "./active.ts";
 
 // RFC 7643 §4.1 — SCIM User resource schemas
 const ScimUserPostSchema = z.object({
@@ -185,16 +186,36 @@ serve(async (req) => {
 
         // Map SCIM Operations to Supabase user_metadata fields
         const metaUpdates: Record<string, unknown> = {};
+        // INT-05: `active` e o atributo que o IdP usa para desprovisionar (RFC 7643
+        // §4.1.1). Antes ele caia no vazio: o PATCH respondia 200 com `active: true`
+        // e o usuario continuava logando.
+        let activeUpdate: boolean | undefined;
         for (const op of parsed.data.Operations) {
           const normalizedOp = op.op.toLowerCase();
-          if ((normalizedOp === "replace" || normalizedOp === "add") && op.path && op.value !== undefined) {
-            if (op.path === "displayName") metaUpdates["full_name"] = op.value;
-            // Additional SCIM attribute mappings can be added here
+          if (normalizedOp !== "replace" && normalizedOp !== "add") continue;
+          // RFC 7644 §3.5.2: `path` pode vir ausente e o atributo viajar na raiz do
+          // `value` -- e assim que o Azure AD manda a desativacao.
+          const fonte: Record<string, unknown> = op.path
+            ? { [op.path]: op.value }
+            : (op.value && typeof op.value === "object"
+              ? op.value as Record<string, unknown>
+              : {});
+
+          if ("displayName" in fonte) metaUpdates["full_name"] = fonte["displayName"];
+          if ("active" in fonte) {
+            const ativo = interpretarActive(fonte["active"]);
+            if (ativo === undefined) {
+              return scimErrorResponse("active: valor invalido (esperado true ou false)", 400, cors);
+            }
+            activeUpdate = ativo;
           }
         }
 
         const { data, error } = await supabaseAdmin.auth.admin.updateUserById(resourceId, {
           user_metadata: metaUpdates,
+          // INT-05: `active:false` revoga de verdade -- soft-ban do GoTrue bloqueia
+          // login e refresh de sessao; `active:true` desfaz o ban.
+          ...(activeUpdate === undefined ? {} : { ban_duration: activeUpdate ? "none" : BAN_DURATION_DESATIVADO }),
         });
         if (error) throw error;
 
@@ -232,7 +253,7 @@ function mapSupabaseUserToSCIM(user: any) {
     userName: user.email,
     displayName: user.user_metadata?.full_name || user.email,
     emails: [{ value: user.email, primary: true }],
-    active: true,
+    active: estaAtivo(user),
     meta: {
       resourceType: "User",
       created: user.created_at,
