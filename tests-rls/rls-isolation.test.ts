@@ -126,22 +126,39 @@ describe.runIf(!!USER_A && !!USER_B)(
       const tb = await clientB.from("user_tenants").select("tenant_id").limit(1).maybeSingle();
       tenantA = ta.data?.tenant_id ?? null;
       tenantB = tb.data?.tenant_id ?? null;
+      // Antes so havia `not.toEqual(tenantB)`: dois `null` diferentes de um UUID passavam,
+      // a suite saia verde e nenhuma prova de isolamento era executada.
+      expect(tenantA, "usuario A sem vinculo em user_tenants: a prova de isolamento nao roda").toBeTruthy();
+      expect(tenantB, "usuario B sem vinculo em user_tenants: a prova de isolamento nao roda").toBeTruthy();
       expect(tenantA).not.toEqual(tenantB);
     });
 
     // Escrita de teste so com autorizacao explicita: o banco alvo e producao.
     const ESCRITA_PERMITIDA = process.env.RLS_ALLOW_WRITES === "true";
 
+    /**
+     * Os testes de leitura cross-tenant comecavam com `if (!tenantB) return;`. Com os
+     * usuarios de teste sem vinculo em `user_tenants`, `tenantB` era null, TODOS os corpos
+     * eram pulados e a suite reportava sucesso sem executar uma unica consulta — verde
+     * falso. Agora a ausencia do tenant B e' falha explicita com a causa no relatorio.
+     */
+    function exigirTenantB(): string {
+      if (!tenantB) {
+        throw new Error("usuario B sem vinculo em user_tenants: a prova de isolamento nao roda (verifique RLS_TEST_USER_B)");
+      }
+      return tenantB;
+    }
+
     const CROSS_TABLES = ["fornecedores", "pedidos", "solicitacoes", "pagamentos"] as const;
 
     it.each(CROSS_TABLES)(
       "usuário A não vê linhas do tenant de B em %s",
       async (table) => {
-        if (!tenantB) return;
+        const alvo = exigirTenantB();
         const { data, error } = await clientA
           .from(table)
           .select("id, tenant_id")
-          .eq("tenant_id", tenantB)
+          .eq("tenant_id", alvo)
           .limit(5);
         expect(error).toBeNull();
         expect(data ?? []).toEqual([]);
@@ -183,9 +200,9 @@ describe.runIf(!!USER_A && !!USER_B)(
     });
 
     it.skipIf(!ESCRITA_PERMITIDA)("usuário A não consegue inserir pedido com tenant_id de B", async () => {
-      if (!tenantB) return;
+      const alvo = exigirTenantB();
       const { error } = await clientA.from("pedidos").insert({
-        tenant_id: tenantB,
+        tenant_id: alvo,
         numero: `RLS-TEST-${Date.now()}`,
         status: "pendente",
         valor_total: 1,
@@ -210,11 +227,11 @@ describe.runIf(!!USER_A && !!USER_B)(
     it.each(PRIVILEGED_CROSS_TABLES)(
       "finance/admin do tenant A não lê %s do tenant B (cross-tenant leak)",
       async (table) => {
-        if (!tenantB) return;
+        const alvo = exigirTenantB();
         const { data, error } = await clientA
           .from(table)
           .select("id, tenant_id")
-          .eq("tenant_id", tenantB)
+          .eq("tenant_id", alvo)
           .limit(10);
         expect(error).toBeNull();
         expect(data ?? []).toEqual([]);
@@ -222,9 +239,9 @@ describe.runIf(!!USER_A && !!USER_B)(
     );
 
     it.skipIf(!ESCRITA_PERMITIDA)("finance do tenant A não consegue inserir pagamento no tenant B", async () => {
-      if (!tenantB) return;
+      const alvo = exigirTenantB();
       const { error } = await clientA.from("pagamentos").insert({
-        tenant_id: tenantB,
+        tenant_id: alvo,
         valor: 1,
         status: "pendente",
       } as unknown as Parameters<ReturnType<typeof clientA.from<"pagamentos">>["insert"]>[0]);
@@ -238,13 +255,13 @@ describe.runIf(!!USER_A && !!USER_B)(
      * em si e provado pelo teste estatico de policies acima.
      */
     it("finance do tenant A não consegue atualizar contract do tenant B", async () => {
-      if (!tenantB) return;
+      const alvo = exigirTenantB();
       const { data, error } = await clientA
         .from("contracts")
         .update({ status: "cancelled" } as unknown as Parameters<
           ReturnType<typeof clientA.from<"contracts">>["update"]
         >[0])
-        .eq("tenant_id", tenantB)
+        .eq("tenant_id", alvo)
         .eq("id", "00000000-0000-0000-0000-000000000000")
         .select("id");
       // Aceito: erro RLS OU zero linhas afetadas (RLS filtra silenciosamente).
