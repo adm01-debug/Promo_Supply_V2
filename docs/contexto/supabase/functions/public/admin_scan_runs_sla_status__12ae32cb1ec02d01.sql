@@ -6,13 +6,8 @@ CREATE OR REPLACE FUNCTION public.admin_scan_runs_sla_status()
 AS $function$
   WITH sla(scan_name, sla_minutes) AS (
     VALUES
-      ('archive_audit_logs',      44640),  -- 31 dias (job mensal)
-      ('archive_telemetry_logs',  44640),  -- 31 dias (job mensal)
-      ('cleanup_health_scan_runs',1440),   -- 1 dia
-      ('secret_rotation_check',   1440),
-      ('ensure_partitions',       44640),
-      ('slack_watchdog',          60),
-      ('security_scan',           1440)
+      ('lgpd_retention',            1440),  -- 1 dia (retencao LGPD, 1x/dia)
+      ('refresh_mv_dashboard_kpis',   45)   -- 45 min (roda a cada 15 min)
   ),
   latest AS (
     SELECT DISTINCT ON (h.scan_name)

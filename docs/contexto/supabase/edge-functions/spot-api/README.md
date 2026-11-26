@@ -4,7 +4,7 @@
 |---|---|
 | nome | spot-api |
 | status | ACTIVE |
-| versão | 30 |
+| versão | 31 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |
 | import_map |  |

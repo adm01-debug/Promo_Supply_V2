@@ -338,9 +338,12 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261125160000 | [remove_trigger_duplicado_pedidos](migrations/20261125160000_remove_trigger_duplicado_pedidos.sql) | 0 |
 | 20261125162000 | [rpc_orcamento_por_tenant](migrations/20261125162000_rpc_orcamento_por_tenant.sql) | 0 |
 | 20261125170000 | [matriz_transicoes_alinhada](migrations/20261125170000_matriz_transicoes_alinhada.sql) | 0 |
+| 20261126115421 | [fix_cotacao_nao_aprova_solicitacao](migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql) | 2 |
 | 20261126120000 | [alinha_transicoes_pagamento_pedido](migrations/20261126120000_alinha_transicoes_pagamento_pedido.sql) | 0 |
 | 20261126130000 | [pedido_cancelado_terminal](migrations/20261126130000_pedido_cancelado_terminal.sql) | 0 |
 | 20261126140000 | [rls_fase2_notifications_e_category_strategies](migrations/20261126140000_rls_fase2_notifications_e_category_strategies.sql) | 10 |
+| 20261126150000 | [remove_trigger_duplicado_solicitacoes_e_qualificacao](migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql) | 2 |
+| 20261126151000 | [admin_scan_runs_sla_catalogo_real](migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql) | 4 |
 | 20261126153000 | [rls_fase2_30_tabelas_por_papel](migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql) | 211 |
 | 20261127000000 | [reconcilia_ledger_migrations](migrations/20261127000000_reconcilia_ledger_migrations.sql) | 0 |
 | 20261127120000 | [pagamentos_data_agendamento](migrations/20261127120000_pagamentos_data_agendamento.sql) | 2 |

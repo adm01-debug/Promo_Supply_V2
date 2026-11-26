@@ -2,6 +2,13 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 15:17 UTC
+
+- **edge functions** alterado (32): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `maintain-partitions`, `process-invoice-idp`, `process-solicitacao-neural`, `punchout-receive`, `receive-os-sync`, `scim-v2`, `send-push-notification`, `spot-api`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy`, `xbz-sync-pedidos`
+- **functions** alterado (11): `public.admin_scan_runs_sla_status()`, `public.auto_transition_solicitacao_on_cotacao_approval()`, `public.cleanup_health_scan_runs()`, `public.get_compras_dashboard_metrics(p_organization_id uuid, p_period text, p_category_id uuid, p_supplier_id uuid)`, `public.get_dashboard_kpis(_from date, _to date)`, `public.refresh_mv_dashboard_kpis()`, `public.resolve_stale_system_error_alerts()`, `public.tenant_in_my_group(_tenant_id uuid)`, `public.trg_cotacao_approved_transition()`, `public.trigger_recalculate_qualification_score()`, `public.validate_solicitacao_status_transition()`
+- **migrations** adicionado (3): `20261126115421_fix_cotacao_nao_aprova_solicitacao`, `20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao`, `20261126151000_admin_scan_runs_sla_catalogo_real`
+- **triggers** removido (2): `public.solicitacoes.trg_validate_solicitacao_status`, `public.supplier_documents.trg_recalculate_qualification_score`
+
 ## 2026-11-26 13:27 UTC
 
 - **cron jobs** adicionado (1): `125:spot-api-sync-stock`

@@ -94,7 +94,6 @@
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
 | recalculate_qualification_on_document_change | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.trigger_recalculate_qualification_score |
-| trg_recalculate_qualification_score | AFTER | INSERT OR UPDATE | ROW | enabled | public.trigger_recalculate_qualification_score |
 
 
 ## Grants

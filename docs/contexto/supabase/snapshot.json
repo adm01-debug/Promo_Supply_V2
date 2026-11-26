@@ -286,7 +286,7 @@
         "is_default": true,
         "name": "main",
         "persistent": false,
-        "status": "FUNCTIONS_DEPLOYED"
+        "status": "MIGRATIONS_FAILED"
       }
     ],
     "custom_hostname": null,
@@ -299,9 +299,9 @@
         "name": "ai-demand-prediction",
         "slug": "ai-demand-prediction",
         "status": "ACTIVE",
-        "updated_at": 1795695291141,
+        "updated_at": 1795704514045,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935824160,
@@ -311,9 +311,9 @@
         "name": "ai-negotiation",
         "slug": "ai-negotiation",
         "status": "ACTIVE",
-        "updated_at": 1795695294959,
+        "updated_at": 1795704517463,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935827299,
@@ -323,9 +323,9 @@
         "name": "ai-supplier-risk",
         "slug": "ai-supplier-risk",
         "status": "ACTIVE",
-        "updated_at": 1795695298371,
+        "updated_at": 1795704520470,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935830982,
@@ -335,9 +335,9 @@
         "name": "ai-supplier-suggestion",
         "slug": "ai-supplier-suggestion",
         "status": "ACTIVE",
-        "updated_at": 1795695301679,
+        "updated_at": 1795704523376,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935866015,
@@ -359,9 +359,9 @@
         "name": "check-approval-escalations",
         "slug": "check-approval-escalations",
         "status": "ACTIVE",
-        "updated_at": 1795695308031,
+        "updated_at": 1795704528612,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935872814,
@@ -371,9 +371,9 @@
         "name": "check-cotacao-followup",
         "slug": "check-cotacao-followup",
         "status": "ACTIVE",
-        "updated_at": 1795695311372,
+        "updated_at": 1795704531699,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935876556,
@@ -383,9 +383,9 @@
         "name": "check-expiry-alerts",
         "slug": "check-expiry-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795695314810,
+        "updated_at": 1795704534664,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935879464,
@@ -395,21 +395,21 @@
         "name": "check-sla-alerts",
         "slug": "check-sla-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795695318124,
+        "updated_at": 1795704537992,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935910356,
-        "entrypoint_path": "file:///app/supabase/functions/dependency-health/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/dependency-health/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "dependency-health",
         "slug": "dependency-health",
         "status": "ACTIVE",
-        "updated_at": 1795695922208,
+        "updated_at": 1795704541070,
         "verify_jwt": false,
-        "version": 39
+        "version": 40
       },
       {
         "created_at": 1795210713630,
@@ -431,9 +431,9 @@
         "name": "erp-sync",
         "slug": "erp-sync",
         "status": "ACTIVE",
-        "updated_at": 1795695328182,
+        "updated_at": 1795704546671,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1795374141517,
@@ -443,9 +443,9 @@
         "name": "escalate-solicitacao",
         "slug": "escalate-solicitacao",
         "status": "ACTIVE",
-        "updated_at": 1795695331550,
+        "updated_at": 1795704549953,
         "verify_jwt": true,
-        "version": 12
+        "version": 13
       },
       {
         "created_at": 1785935927495,
@@ -455,9 +455,9 @@
         "name": "external-db-bridge",
         "slug": "external-db-bridge",
         "status": "ACTIVE",
-        "updated_at": 1795695334830,
+        "updated_at": 1795704552858,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935838150,
@@ -467,9 +467,9 @@
         "name": "fiscal-orchestrator",
         "slug": "fiscal-orchestrator",
         "status": "ACTIVE",
-        "updated_at": 1795695338325,
+        "updated_at": 1795704556336,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935858385,
@@ -479,9 +479,9 @@
         "name": "generate-contract-pdf",
         "slug": "generate-contract-pdf",
         "status": "ACTIVE",
-        "updated_at": 1795695341603,
+        "updated_at": 1795704559306,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935862710,
@@ -491,9 +491,9 @@
         "name": "guided-buying-ai",
         "slug": "guided-buying-ai",
         "status": "ACTIVE",
-        "updated_at": 1795695345228,
+        "updated_at": 1795704562604,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1794580652434,
@@ -515,9 +515,9 @@
         "name": "maintain-partitions",
         "slug": "maintain-partitions",
         "status": "ACTIVE",
-        "updated_at": 1795695350652,
+        "updated_at": 1795704567938,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935923731,
@@ -539,9 +539,9 @@
         "name": "process-invoice-idp",
         "slug": "process-invoice-idp",
         "status": "ACTIVE",
-        "updated_at": 1795695356900,
+        "updated_at": 1795704573644,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935883056,
@@ -563,9 +563,9 @@
         "name": "process-solicitacao-neural",
         "slug": "process-solicitacao-neural",
         "status": "ACTIVE",
-        "updated_at": 1795695362512,
+        "updated_at": 1795704579493,
         "verify_jwt": true,
-        "version": 23
+        "version": 24
       },
       {
         "created_at": 1795005314879,
@@ -581,15 +581,15 @@
       },
       {
         "created_at": 1785935851193,
-        "entrypoint_path": "file:///app/supabase/functions/punchout-receive/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "punchout-receive",
         "slug": "punchout-receive",
         "status": "ACTIVE",
-        "updated_at": 1795695922208,
+        "updated_at": 1795704585217,
         "verify_jwt": false,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1785935848102,
@@ -605,15 +605,15 @@
       },
       {
         "created_at": 1795462093958,
-        "entrypoint_path": "file:///app/supabase/functions/receive-os-sync/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts",
         "import_map": null,
         "import_map_path": null,
         "name": "receive-os-sync",
         "slug": "receive-os-sync",
         "status": "ACTIVE",
-        "updated_at": 1795695922208,
+        "updated_at": 1795704591259,
         "verify_jwt": false,
-        "version": 19
+        "version": 20
       },
       {
         "created_at": 1785935914012,
@@ -629,15 +629,15 @@
       },
       {
         "created_at": 1785935900512,
-        "entrypoint_path": "file:///app/supabase/functions/scim-v2/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "scim-v2",
         "slug": "scim-v2",
         "status": "ACTIVE",
-        "updated_at": 1795695922208,
+        "updated_at": 1795704596790,
         "verify_jwt": false,
-        "version": 39
+        "version": 40
       },
       {
         "created_at": 1785935903898,
@@ -647,9 +647,9 @@
         "name": "send-push-notification",
         "slug": "send-push-notification",
         "status": "ACTIVE",
-        "updated_at": 1795695385063,
+        "updated_at": 1795704600189,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1794580657952,
@@ -659,9 +659,9 @@
         "name": "spot-api",
         "slug": "spot-api",
         "status": "ACTIVE",
-        "updated_at": 1795688433913,
+        "updated_at": 1795704603715,
         "verify_jwt": false,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935930982,
@@ -671,9 +671,9 @@
         "name": "spot-proxy",
         "slug": "spot-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795695390078,
+        "updated_at": 1795704607000,
         "verify_jwt": true,
-        "version": 29
+        "version": 30
       },
       {
         "created_at": 1785935919139,
@@ -683,9 +683,9 @@
         "name": "system-simulation",
         "slug": "system-simulation",
         "status": "ACTIVE",
-        "updated_at": 1795695393310,
+        "updated_at": 1795704670390,
         "verify_jwt": false,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935906684,
@@ -695,21 +695,21 @@
         "name": "telemetry",
         "slug": "telemetry",
         "status": "ACTIVE",
-        "updated_at": 1795695396417,
+        "updated_at": 1795704674063,
         "verify_jwt": false,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935896372,
-        "entrypoint_path": "file:///app/supabase/functions/webauthn-authenticate/index.ts",
+        "entrypoint_path": "file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts",
         "import_map": false,
         "import_map_path": null,
         "name": "webauthn-authenticate",
         "slug": "webauthn-authenticate",
         "status": "ACTIVE",
-        "updated_at": 1795695922208,
+        "updated_at": 1795704677327,
         "verify_jwt": false,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935893295,
@@ -731,9 +731,9 @@
         "name": "weekly-report",
         "slug": "weekly-report",
         "status": "ACTIVE",
-        "updated_at": 1795695404876,
+        "updated_at": 1795704682715,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935890032,
@@ -743,9 +743,9 @@
         "name": "weekly-summary-report",
         "slug": "weekly-summary-report",
         "status": "ACTIVE",
-        "updated_at": 1795695407872,
+        "updated_at": 1795704686207,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935834498,
@@ -755,9 +755,9 @@
         "name": "workflow-engine",
         "slug": "workflow-engine",
         "status": "ACTIVE",
-        "updated_at": 1795695411146,
+        "updated_at": 1795704689768,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1794580660511,
@@ -767,9 +767,9 @@
         "name": "xbz-proxy",
         "slug": "xbz-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795695414327,
+        "updated_at": 1795704693044,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1794580663042,
@@ -779,9 +779,9 @@
         "name": "xbz-sync-pedidos",
         "slug": "xbz-sync-pedidos",
         "status": "ACTIVE",
-        "updated_at": 1795698710295,
+        "updated_at": 1795704696605,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       }
     ],
     "enabled": true,
@@ -37735,12 +37735,12 @@
           "triggers": [],
           "views": []
         },
-        "comment": null,
+        "comment": "Onda 72 (R-12) + etapa 148 (FN-08): SLA por scan_name gravado de fato em health_scan_runs. Catalogo reduzido a lgpd_retention e refresh_mv_dashboard_kpis; nome fora do catalogo sai com sla_minutes nulo e health ok (nunca critical por ausencia de cadastro).",
         "config": [
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "4b2a7bd67b7548ae",
+        "definition_sha": "0c30784059938797",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -38626,7 +38626,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "a651288e946eea46",
+        "definition_sha": "c6121bb959153639",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -39317,11 +39317,15 @@
               "hits": 1
             },
             {
+              "file": "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
+              "hits": 1
+            },
+            {
               "file": "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
               "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -40647,9 +40651,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -40862,9 +40870,17 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -42504,9 +42520,13 @@
             {
               "file": "supabase/migrations/20261113180000_corrige_crons_lgpd_e_mv_kpis.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [
             "19:refresh-mv-dashboard-kpis"
           ],
@@ -42596,9 +42616,13 @@
             {
               "file": "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [
             "public.cron_watchdog"
@@ -44490,9 +44514,17 @@
             {
               "file": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
               "hits": 152
+            },
+            {
+              "file": "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 14,
+          "code_total_files": 16,
           "cron": [],
           "db": [
             "public.current_tenant_id",
@@ -44801,7 +44833,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "d40d5de21da78852",
+        "definition_sha": "838c81c04b88269b",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -44868,14 +44900,17 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
-            "public.supplier_documents.recalculate_qualification_on_document_change",
-            "public.supplier_documents.trg_recalculate_qualification_score"
+            "public.supplier_documents.recalculate_qualification_on_document_change"
           ],
           "views": []
         },
@@ -45646,13 +45681,16 @@
             {
               "file": "supabase/migrations/20260317200943_0aa56f87-1df6-402d-8e21-1621b37baeb0.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
-            "public.solicitacoes.trg_validate_solicitacao_status",
             "public.solicitacoes.validate_solicitacao_status"
           ],
           "views": []
@@ -62437,6 +62475,12 @@
         "version": "20261125170000"
       },
       {
+        "name": "fix_cotacao_nao_aprova_solicitacao",
+        "statements": 2,
+        "statements_sha": "b9721880dd49586e",
+        "version": "20261126115421"
+      },
+      {
         "name": "alinha_transicoes_pagamento_pedido",
         "statements": null,
         "version": "20261126120000"
@@ -62451,6 +62495,18 @@
         "statements": 10,
         "statements_sha": "be9f23473b8884fc",
         "version": "20261126140000"
+      },
+      {
+        "name": "remove_trigger_duplicado_solicitacoes_e_qualificacao",
+        "statements": 2,
+        "statements_sha": "f83a8bcfbbe9a893",
+        "version": "20261126150000"
+      },
+      {
+        "name": "admin_scan_runs_sla_catalogo_real",
+        "statements": 4,
+        "statements_sha": "01758fcfd9a46f7f",
+        "version": "20261126151000"
       },
       {
         "name": "rls_fase2_30_tabelas_por_papel",
@@ -71696,17 +71752,6 @@
         "timing": "BEFORE"
       },
       {
-        "definition": "CREATE TRIGGER trg_validate_solicitacao_status BEFORE UPDATE ON solicitacoes FOR EACH ROW EXECUTE FUNCTION validate_solicitacao_status_transition()",
-        "events": "UPDATE",
-        "function": "public.validate_solicitacao_status_transition",
-        "level": "ROW",
-        "name": "trg_validate_solicitacao_status",
-        "schema": "public",
-        "status": "enabled",
-        "table": "solicitacoes",
-        "timing": "BEFORE"
-      },
-      {
         "definition": "CREATE TRIGGER validate_solicitacao_status BEFORE UPDATE OF status ON solicitacoes FOR EACH ROW EXECUTE FUNCTION validate_solicitacao_status_transition()",
         "events": "UPDATE",
         "function": "public.validate_solicitacao_status_transition",
@@ -71855,17 +71900,6 @@
         "function": "public.trigger_recalculate_qualification_score",
         "level": "ROW",
         "name": "recalculate_qualification_on_document_change",
-        "schema": "public",
-        "status": "enabled",
-        "table": "supplier_documents",
-        "timing": "AFTER"
-      },
-      {
-        "definition": "CREATE TRIGGER trg_recalculate_qualification_score AFTER INSERT OR UPDATE ON supplier_documents FOR EACH ROW EXECUTE FUNCTION trigger_recalculate_qualification_score()",
-        "events": "INSERT OR UPDATE",
-        "function": "public.trigger_recalculate_qualification_score",
-        "level": "ROW",
-        "name": "trg_recalculate_qualification_score",
         "schema": "public",
         "status": "enabled",
         "table": "supplier_documents",
