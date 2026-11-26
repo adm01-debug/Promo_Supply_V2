@@ -20,19 +20,9 @@ serve(async (req) => {
     );
 
     // 1. Audit RLS Policies for insecure patterns
-    const { data: pgPolicies, error: pgError } = await supabaseAdmin.rpc('exec_sql', {
-      sql_query: `
-        SELECT 
-          tablename, 
-          policyname, 
-          roles, 
-          cmd, 
-          qual as using_expression, 
-          with_check as check_expression 
-        FROM pg_policies 
-        WHERE schemaname = 'public'
-      `
-    });
+    // Etapa 150: exec_sql(text) foi removida (SQL arbitrario em SECURITY DEFINER).
+    // audit_rls_policies() devolve as mesmas colunas com conjunto fixo, sem aceitar SQL.
+    const { data: pgPolicies, error: pgError } = await supabaseAdmin.rpc('audit_rls_policies');
 
     if (pgError) throw pgError;
 
