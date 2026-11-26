@@ -696,7 +696,7 @@
     "UrgencyDetailsSheet"
    ],
    "export_default": null,
-   "linhas": 351,
+   "linhas": 352,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -1150,7 +1150,7 @@
     "NovaSolicitacaoModal"
    ],
    "export_default": null,
-   "linhas": 531,
+   "linhas": 532,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth",
@@ -4181,7 +4181,7 @@
     "AlertDetail"
    ],
    "export_default": "AlertDetail",
-   "linhas": 265,
+   "linhas": 266,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],
@@ -4252,7 +4252,7 @@
     "ERPConnections"
    ],
    "export_default": "ERPConnections",
-   "linhas": 664,
+   "linhas": 665,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth"
@@ -4308,7 +4308,7 @@
     "PunchOutCatalogs"
    ],
    "export_default": "PunchOutCatalogs",
-   "linhas": 296,
+   "linhas": 297,
    "dominio": "pages/admin",
    "hooks_locais": [
     "useAuth",
@@ -4384,7 +4384,7 @@
     "StorageMigration"
    ],
    "export_default": "StorageMigration",
-   "linhas": 217,
+   "linhas": 218,
    "dominio": "pages/admin",
    "hooks_locais": [],
    "tabelas": [],

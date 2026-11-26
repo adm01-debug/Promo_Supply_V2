@@ -963,7 +963,7 @@
    "hooks_exportados": [
     "useCatalogoPim"
    ],
-   "linhas": 231,
+   "linhas": 232,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [],
@@ -2328,7 +2328,7 @@
     "useSpotSyncStatus",
     "useTriggerSpotSync"
    ],
-   "linhas": 187,
+   "linhas": 188,
    "dominio": "pages/catalogo-spot",
    "tabelas": [
     "spot_api_sync_log",

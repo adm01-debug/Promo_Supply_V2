@@ -311,7 +311,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 25
+   "arquivos_puxados": 26
   },
   {
    "protegida": true,
@@ -432,7 +432,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 8
+   "arquivos_puxados": 9
   },
   {
    "protegida": true,
@@ -501,7 +501,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 30
+   "arquivos_puxados": 31
   },
   {
    "protegida": true,
@@ -627,7 +627,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 9
+   "arquivos_puxados": 10
   },
   {
    "protegida": true,
@@ -869,7 +869,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 31
+   "arquivos_puxados": 32
   },
   {
    "protegida": false,
@@ -1446,7 +1446,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 355
+   "arquivos_puxados": 356
   },
   {
    "protegida": true,
@@ -1750,7 +1750,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 359
+   "arquivos_puxados": 360
   },
   {
    "protegida": true,
@@ -1920,7 +1920,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 75
+   "arquivos_puxados": 76
   },
   {
    "protegida": true,
@@ -2218,7 +2218,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 350
+   "arquivos_puxados": 351
   },
   {
    "protegida": true,
@@ -2912,7 +2912,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 41
+   "arquivos_puxados": 42
   },
   {
    "protegida": true,
@@ -3330,7 +3330,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 350
+   "arquivos_puxados": 351
   },
   {
    "protegida": true,
@@ -3691,7 +3691,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 351
+   "arquivos_puxados": 352
   },
   {
    "protegida": true,
@@ -4176,7 +4176,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 349
+   "arquivos_puxados": 350
   },
   {
    "protegida": true,
@@ -4481,7 +4481,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 352
+   "arquivos_puxados": 353
   },
   {
    "protegida": true,
@@ -4598,7 +4598,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 19
+   "arquivos_puxados": 20
   },
   {
    "protegida": true,
@@ -5058,7 +5058,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 372
+   "arquivos_puxados": 373
   },
   {
    "protegida": true,
@@ -5177,7 +5177,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 107
+   "arquivos_puxados": 108
   },
   {
    "protegida": true,

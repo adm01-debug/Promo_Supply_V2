@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "61146242a41e355614ecffe37e782649fb774cba",
+  "sha": "f72f728f89df8cfb0f09a0b4c3126c23ff51ec44",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 09:17 UTC",
-  "files_total": 1498,
-  "code_files": 1323,
-  "code_lines": 221776,
+  "generated_at": "2026-11-26 09:30 UTC",
+  "files_total": 1500,
+  "code_files": 1325,
+  "code_lines": 221890,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5a72e4211ba3115c",
+ "facts_hash": "892204703a0aef5b",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 447,
+   ".ts": 449,
    ".tsx": 438,
    ".sql": 361,
    ".mjs": 69,
@@ -34970,7 +34970,7 @@
   {
    "module": "src/components",
    "files": 287,
-   "lines": 52528,
+   "lines": 52530,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35543,7 +35543,7 @@
   {
    "module": "src/hooks",
    "files": 102,
-   "lines": 17243,
+   "lines": 17244,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35815,8 +35815,8 @@
   },
   {
    "module": "src/lib",
-   "files": 62,
-   "lines": 7351,
+   "files": 64,
+   "lines": 7456,
    "tables": [
     "profiles"
    ],
@@ -35831,6 +35831,7 @@
     "haptics.ts: haptics",
     "hubEvents.ts: HubEvent, emitHubEvent, onHubEvent",
     "imageCompression.ts: CompressionOptions, CompressedImage, supportsWebP, compressImage, compressImages, getCompressedPreviewUrl",
+    "invokeEdge.ts: MENSAGEM_EDGE_PADRAO, mensagemDeErroDaEdge",
     "logger.ts: logger",
     "negotiationOutreach.ts: SugestaoNegociacao, ContextoNegociacao, normalizarTelefone, buildWhatsAppText, buildEmailAssunto, buildEmailCorpo",
     "paginatedFetch.ts: fetchAllRows",
@@ -35891,6 +35892,7 @@
     "src/lib/haptics.ts",
     "src/lib/hubEvents.ts",
     "src/lib/imageCompression.ts",
+    "src/lib/invokeEdge.ts",
     "src/lib/logger.ts",
     "src/lib/negotiationOutreach.ts",
     "src/lib/paginatedFetch.ts",
@@ -35920,6 +35922,7 @@
     "src/lib/__tests__/fuzzSeed.ts",
     "src/lib/__tests__/haptics.test.ts",
     "src/lib/__tests__/imageCompression.test.ts",
+    "src/lib/__tests__/invokeEdge.test.ts",
     "src/lib/__tests__/logger.fuzz.test.ts",
     "src/lib/__tests__/logger.test.ts",
     "src/lib/__tests__/negotiationOutreach.test.ts",
@@ -35948,7 +35951,7 @@
   {
    "module": "src/pages",
    "files": 158,
-   "lines": 35404,
+   "lines": 35409,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -36209,7 +36212,7 @@
   {
    "module": "src/services",
    "files": 4,
-   "lines": 399,
+   "lines": 400,
    "tables": [
     "audit_logs"
    ],
@@ -43407,6 +43410,10 @@
    {
     "file": "src/lib/creditoFornecedor.ts",
     "text": "aprovacao, que e uma decisao de alcada e nao pode ser pulada aqui."
+   },
+   {
+    "file": "src/lib/invokeEdge.ts",
+    "text": "\"Edge Function returned a non-2xx status code\". A frase de negócio que a"
    },
    {
     "file": "src/lib/paginatedFetch.ts",
@@ -51019,6 +51026,11 @@
     "file": "src/lib/exportData.ts",
     "name": "BOM",
     "value": "'\\uFEFF'"
+   },
+   {
+    "file": "src/lib/invokeEdge.ts",
+    "name": "MENSAGEM_EDGE_PADRAO",
+    "value": "'Não foi possível concluir a operação.'"
    },
    {
     "file": "src/lib/logger.ts",
@@ -66209,6 +66221,38 @@
    {
     "file": "src/lib/__tests__/imageCompression.test.ts",
     "name": "calling multiple times returns consistent results"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "mensagemDeErroDaEdge"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "devolve o campo error do corpo da edge, nao a mensagem fixa em ingles"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "aceita corpo com a chave message quando nao ha error"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "cai na mensagem do proprio erro quando o corpo nao tem frase util"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "nao lanca quando o corpo nao e JSON"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "nao lanca quando o mesmo context ja foi consumido"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "usa o fallback quando nao ha erro"
+   },
+   {
+    "file": "src/lib/__tests__/invokeEdge.test.ts",
+    "name": "devolve a mensagem de erro comum sem tentar ler o corpo"
    },
    {
     "file": "src/lib/__tests__/logger.fuzz.test.ts",
@@ -97048,7 +97092,7 @@
   },
   "src/components/compras/NovaSolicitacaoModal.tsx": {
    "path": "src/components/compras/NovaSolicitacaoModal.tsx",
-   "lines": 531,
+   "lines": 532,
    "exports": [
     "interface AvisoAnexosNaoEnviados",
     "const resumoAnexosNaoEnviados",
@@ -98817,7 +98861,7 @@
   },
   "src/components/compras/dashboard/UrgencyDetailsSheet.tsx": {
    "path": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-   "lines": 351,
+   "lines": 352,
    "exports": [
     "const UrgencyDetailsSheet"
    ],
@@ -104905,7 +104949,7 @@
   },
   "src/hooks/useCatalogoPim.ts": {
    "path": "src/hooks/useCatalogoPim.ts",
-   "lines": 231,
+   "lines": 232,
    "exports": [
     "interface PimProdutoCatalogo",
     "interface PimPrecoFaixa",
@@ -108282,6 +108326,24 @@
     }
    ]
   },
+  "src/lib/invokeEdge.ts": {
+   "path": "src/lib/invokeEdge.ts",
+   "lines": 40,
+   "exports": [
+    "const MENSAGEM_EDGE_PADRAO",
+    "function mensagemDeErroDaEdge"
+   ],
+   "params": [
+    {
+     "name": "MENSAGEM_EDGE_PADRAO",
+     "value": "'Não foi possível concluir a operação.'"
+    }
+   ],
+   "rule_comments": [
+    "\"Edge Function returned a non-2xx status code\". A frase de negócio que a"
+   ],
+   "doc": "Mensagens de erro das edge functions (achado EDG-02). Em resposta não-2xx o `@supabase/functions-js` descarta o corpo JSON: o `invoke` devolve `data: null` e um erro com a mensagem fixa \"Edge Function returned a non-2xx status code\". A frase de negócio que a edge escreveu em português continua no co …"
+  },
   "src/lib/logger.ts": {
    "path": "src/lib/logger.ts",
    "lines": 176,
@@ -109079,6 +109141,28 @@
     "returns a boolean in all cases",
     "does not throw when toDataURL returns a valid string",
     "calling multiple times returns consistent results"
+   ]
+  },
+  "src/lib/__tests__/invokeEdge.test.ts": {
+   "path": "src/lib/__tests__/invokeEdge.test.ts",
+   "lines": 65,
+   "is_test": true,
+   "errors": [
+    "Body is unusable",
+    "Unexpected token < in JSON"
+   ],
+   "rule_comments": [
+    "negocio que a edge escreveu."
+   ],
+   "tests": [
+    "mensagemDeErroDaEdge",
+    "devolve o campo error do corpo da edge, nao a mensagem fixa em ingles",
+    "aceita corpo com a chave message quando nao ha error",
+    "cai na mensagem do proprio erro quando o corpo nao tem frase util",
+    "nao lanca quando o corpo nao e JSON",
+    "nao lanca quando o mesmo context ja foi consumido",
+    "usa o fallback quando nao ha erro",
+    "devolve a mensagem de erro comum sem tentar ler o corpo"
    ]
   },
   "src/lib/__tests__/logger.fuzz.test.ts": {
@@ -110057,7 +110141,7 @@
   },
   "src/pages/admin/AlertDetail.tsx": {
    "path": "src/pages/admin/AlertDetail.tsx",
-   "lines": 265,
+   "lines": 266,
    "exports": [
     "function AlertDetail"
    ],
@@ -110246,7 +110330,7 @@
   },
   "src/pages/admin/ERPConnections.tsx": {
    "path": "src/pages/admin/ERPConnections.tsx",
-   "lines": 664,
+   "lines": 665,
    "exports": [
     "default ERPConnections"
    ],
@@ -110467,7 +110551,7 @@
   },
   "src/pages/admin/PunchOutCatalogs.tsx": {
    "path": "src/pages/admin/PunchOutCatalogs.tsx",
-   "lines": 296,
+   "lines": 297,
    "exports": [
     "default PunchOutCatalogs"
    ],
@@ -110669,7 +110753,7 @@
   },
   "src/pages/admin/StorageMigration.tsx": {
    "path": "src/pages/admin/StorageMigration.tsx",
-   "lines": 217,
+   "lines": 218,
    "exports": [
     "function StorageMigration"
    ],
@@ -111392,7 +111476,7 @@
   },
   "src/pages/catalogo-spot/useSpotCatalog.ts": {
    "path": "src/pages/catalogo-spot/useSpotCatalog.ts",
-   "lines": 187,
+   "lines": 188,
    "exports": [
     "interface SpotCachedProduct",
     "interface SpotCachedSku",
@@ -115459,7 +115543,7 @@
   },
   "src/services/rlsAuditService.ts": {
    "path": "src/services/rlsAuditService.ts",
-   "lines": 31,
+   "lines": 32,
    "exports": [
     "type RlsSeverity",
     "interface RlsPolicyEntry",
@@ -123499,10 +123583,30 @@
   }
  },
  "git": {
-  "sha": "61146242a41e355614ecffe37e782649fb774cba",
+  "sha": "f72f728f89df8cfb0f09a0b4c3126c23ff51ec44",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "f72f728",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/NovaSolicitacaoModal.tsx",
+     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+     "src/hooks/useCatalogoPim.ts",
+     "src/lib/__tests__/invokeEdge.test.ts",
+     "src/lib/invokeEdge.ts",
+     "src/pages/admin/AlertDetail.tsx",
+     "src/pages/admin/ERPConnections.tsx",
+     "src/pages/admin/PunchOutCatalogs.tsx",
+     "src/pages/admin/StorageMigration.tsx",
+     "src/pages/catalogo-spot/useSpotCatalog.ts",
+     "src/services/rlsAuditService.ts"
+    ]
+   },
    {
     "sha": "6114624",
     "date": "2026-11-26",
@@ -123904,17 +124008,6 @@
      "scripts/supabase_snapshot/snapshot.py",
      "scripts/supabase_snapshot/test_snapshot.py"
     ]
-   },
-   {
-    "sha": "0856406",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)",
-    "files": [
-     ".env.example",
-     ".github/workflows/guards.yml",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -123929,6 +124022,10 @@
    [
     "src/hooks/useDevolucoes.ts",
     3
+   ],
+   [
+    "src/pages/catalogo-spot/useSpotCatalog.ts",
+    2
    ],
    [
     "src/components/compras/DemandPredictionPanel.tsx",
@@ -123959,43 +124056,39 @@
     2
    ],
    [
-    "src/components/compras/AdvancedProcurementKPIs.tsx",
+    "src/components/compras/NovaSolicitacaoModal.tsx",
     1
    ],
    [
-    "src/components/compras/BulkOperationsPreview.tsx",
+    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
     1
    ],
    [
-    "src/components/compras/BulkPlanningConsole.tsx",
+    "src/hooks/useCatalogoPim.ts",
     1
    ],
    [
-    "src/components/compras/BuscaAutomatica.tsx",
+    "src/lib/__tests__/invokeEdge.test.ts",
     1
    ],
    [
-    "src/components/compras/BuyerDrilldownModal.tsx",
+    "src/lib/invokeEdge.ts",
     1
    ],
    [
-    "src/components/compras/BuyerPerformancePanel.tsx",
+    "src/pages/admin/AlertDetail.tsx",
     1
    ],
    [
-    "src/components/compras/ComparadorCotacoes.tsx",
+    "src/pages/admin/ERPConnections.tsx",
     1
    ],
    [
-    "src/components/compras/DashboardInsights.tsx",
+    "src/pages/admin/PunchOutCatalogs.tsx",
     1
    ],
    [
-    "src/components/compras/FiltrosAvancados.tsx",
-    1
-   ],
-   [
-    "src/components/compras/PriceComparator.tsx",
+    "src/pages/admin/StorageMigration.tsx",
     1
    ]
   ]

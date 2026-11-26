@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `61146242a4` · branch `main` · 2026-11-26 09:17 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `f72f728f89` · branch `main` · 2026-11-26 09:30 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1763,6 +1763,7 @@ _nenhum item encontrado_
 | `XBZ_VERY_SLOW_MS` | `8_000` | `src/hooks/useXbzIntegration.ts` |
 | `CHANGE_EVENT` | `'clear-filters-shortcut-changed'` | `src/lib/clearFiltersShortcut.ts` |
 | `BOM` | `'\uFEFF'` | `src/lib/exportData.ts` |
+| `MENSAGEM_EDGE_PADRAO` | `'Não foi possível concluir a operação.'` | `src/lib/invokeEdge.ts` |
 | `TELEMETRY_BATCH_INTERVAL_MS` | `5_000` | `src/lib/logger.ts` |
 | `TELEMETRY_MAX_BATCH` | `20` | `src/lib/logger.ts` |
 | `TELEMETRY_RATE_WINDOW_MS` | `60_000` | `src/lib/logger.ts` |
@@ -2470,7 +2471,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3524 testes em 266 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3532 testes em 267 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2602,6 +2603,7 @@ _nenhum item encontrado_
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
 | `src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx` | 8 | useExecutiveDashboardData - recorte de periodo no SQL (etapa 215) · empurra o corte de data de solicitacoes, fiscal_documents e savings_tracker para o SQL · nao filtra pedidos por created_at (o recorte local usa data_emissao com fallback) · sem periodo definido nenhuma tabela recebe corte de data … |
+| `src/lib/__tests__/invokeEdge.test.ts` | 8 | mensagemDeErroDaEdge · devolve o campo error do corpo da edge, nao a mensagem fixa em ingles · aceita corpo com a chave message quando nao ha error · cai na mensagem do proprio erro quando o corpo nao tem frase util … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
 | `src/pages/documentos/__tests__/conciliacaoFiscal.test.ts` | 8 | conciliacao de NF-e com pedido · nao casa a nota com pedido de outro fornecedor so porque o valor e igual · deixa sem vinculo quando o valor so existe em pedido de outro fornecedor · nao escolhe quando dois pedidos do mesmo fornecedor tem o mesmo valor … |
 | `supabase/functions/escalate-solicitacao/recipients.test.ts` | 8 | gerencia: notifica admin e coordinator do tenant, sem vazar outro tenant · gerencia: o proprio autor da acao nao recebe a notificacao · comprador: usa o comprador do pedido quando existe · comprador: sem pedido cai nos buyers do tenant, ignorando outro tenant … |
@@ -2854,6 +2856,7 @@ _nenhum item encontrado_
 | caso em que o abatimento deve ser abortado ANTES de debitar o credito. | `src/lib/creditoFornecedor.ts` |
 | Somente transicoes diretas: quitar um pagamento `pendente` passa pela | `src/lib/creditoFornecedor.ts` |
 | aprovacao, que e uma decisao de alcada e nao pode ser pulada aqui. | `src/lib/creditoFornecedor.ts` |
+| "Edge Function returned a non-2xx status code". A frase de negócio que a | `src/lib/invokeEdge.ts` |
 | * Fetch all rows from a Supabase table, bypassing the 1000-row default limit. | `src/lib/paginatedFetch.ts` |
 | * Aqui o topico NAO pode mudar: ele e o endereco que une os participantes | `src/lib/realtime.ts` |
 | - Acrescenta `ellipsis` (default: "…") somente quando houve truncamento. | `src/lib/safeDisplay.ts` |

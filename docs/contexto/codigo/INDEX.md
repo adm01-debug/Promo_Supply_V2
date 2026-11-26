@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `61146242a41e355614ecffe37e782649fb774cba` (2026-11-26T06:16:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f72f728f89df8cfb0f09a0b4c3126c23ff51ec44` (2026-11-26T06:30:02-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (885), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (887), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1497 |
-| arquivos_codigo | 960 |
-| linhas_codigo | 190967 |
+| arquivos_total | 1499 |
+| arquivos_codigo | 962 |
+| linhas_codigo | 191081 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 318 |
+| testes | 319 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -57,13 +57,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - telas: src/pages (53)
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
-- servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (222), outro (44), co-localizado (*.test) (42)
+- servicos_logica: src/lib (30), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (223), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
 - docs: (raiz) (4), docs (3)
-- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (95%)","edge_functions":"kebab-case (98%)","tabelas":"snake_case (89%)"}
+- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (96%)","edge_functions":"kebab-case (98%)","tabelas":"snake_case (89%)"}
 - instruções para agentes no repo: AGENTS.md, CLAUDE.md
 
 ## Módulos (menu → domínio)
@@ -80,7 +80,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | features/layout | 0 | 0 | 32 | 81 | 9 | 55 |
 | features/solicitacoes | 0 | 0 | 8 | 12 | 1 | 13 |
 | hooks | 0 | 0 | 63 | 61 | 7 | 60 |
-| lib | 0 | 0 | 29 | 61 | 8 | 51 |
+| lib | 0 | 0 | 30 | 61 | 8 | 51 |
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (161)
-- docs/pendencias/_indice.md (22)
+- docs/qa/05-PROGRESSO.md (162)
+- docs/pendencias/_indice.md (21)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `f72f728` fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)
 - 2026-11-26 `6114624` fix(moeda): formata todo valor em reais com Intl pt-BR (#548)
 - 2026-11-26 `86bc33f` perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)
 - 2026-11-26 `cf9c067` fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `c7e6d1c` fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)
 - 2026-11-26 `24512f4` fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)
 - 2026-11-26 `f2f21c8` fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)
-- 2026-11-26 `6d9dddb` fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
