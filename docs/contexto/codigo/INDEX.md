@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090` (2026-11-26T08:31:35-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c` (2026-11-26T09:12:17-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1503 |
 | arquivos_codigo | 966 |
-| linhas_codigo | 191788 |
+| linhas_codigo | 191998 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (170)
-- docs/pendencias/_indice.md (20)
+- docs/qa/05-PROGRESSO.md (171)
+- docs/pendencias/_indice.md (21)
 - AGENTS.md (13)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - docs/ci/README.md (9)
@@ -356,8 +356,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/hooks/useDevolucoes.ts (8)
 - src/integrations/supabase/types.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
+- supabase/functions/send-push-notification/index.ts (8)
 - bun.lock (7)
-- package.json (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `e8b0d67` feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)
 - 2026-11-26 `e94d3a2` fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)
 - 2026-11-26 `5540d3e` fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)
 - 2026-11-26 `7804bb2` fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `cf9c067` fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)
 - 2026-11-26 `bb8724e` fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)
 - 2026-11-26 `c30880d` fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)
-- 2026-11-26 `a55e816` fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

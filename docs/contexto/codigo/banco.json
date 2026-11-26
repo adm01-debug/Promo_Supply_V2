@@ -11185,7 +11185,9 @@
     "so_no_types": []
    },
    "usada_no_front": 1,
-   "usada_em_edges": [],
+   "usada_em_edges": [
+    "_shared"
+   ],
    "triggers": [
     "update_notification_preferences_updated_at"
    ],
@@ -13964,6 +13966,7 @@
    },
    "usada_no_front": 1,
    "usada_em_edges": [
+    "_shared",
     "send-push-notification"
    ],
    "triggers": [

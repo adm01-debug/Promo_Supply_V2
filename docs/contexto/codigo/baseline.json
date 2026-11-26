@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
+  "commit": "e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c",
   "branch": "main",
-  "data_commit": "2026-11-26T08:31:35-03:00",
+  "data_commit": "2026-11-26T09:12:17-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "e8b0d67",
+    "data": "2026-11-26",
+    "assunto": "feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)"
+   },
    {
     "sha": "e94d3a2",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "6d9dddb",
     "data": "2026-11-26",
     "assunto": "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)"
-   },
-   {
-    "sha": "28d02fb",
-    "data": "2026-11-26",
-    "assunto": "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)"
    }
   ],
   "arquivos_mudados_7d": 1524,
@@ -141,15 +141,15 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 170
+    "mudancas": 171
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 66
    },
    {
     "pasta": "src/components/ui",
     "mudancas": 65
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 64
    },
    {
     "pasta": "src/features/layout",
@@ -188,22 +188,22 @@
     "mudancas": 22
    },
    {
-    "pasta": "src/pages/catalogo-spot",
+    "pasta": "docs/pendencias/_indice.md",
     "mudancas": 21
    },
    {
-    "pasta": "src/pages/historico",
+    "pasta": "src/pages/catalogo-spot",
     "mudancas": 21
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 170
+    "mudancas": 171
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 20
+    "mudancas": 21
    },
    {
     "arquivo": "AGENTS.md",
@@ -250,6 +250,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": "supabase/functions/send-push-notification/index.ts",
+    "mudancas": 8
+   },
+   {
     "arquivo": "bun.lock",
     "mudancas": 7
    },
@@ -271,10 +275,6 @@
    },
    {
     "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "supabase/functions/send-push-notification/index.ts",
     "mudancas": 7
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1503,
   "arquivos_codigo": 966,
-  "linhas_codigo": 191788,
+  "linhas_codigo": 191998,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20375
+   "linhas": 20585
   },
   "tailwind.config.ts": {
    "arquivos": 1,

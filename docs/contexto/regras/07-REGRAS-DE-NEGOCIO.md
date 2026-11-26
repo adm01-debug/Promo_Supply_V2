@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e94d3a2b7b` · branch `main` · 2026-11-26 11:32 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e8b0d67e86` · branch `main` · 2026-11-26 12:14 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2478,7 +2478,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3561 testes em 270 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3566 testes em 270 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2602,6 +2602,7 @@ _nenhum item encontrado_
 | `src/pages/cotacao/__tests__/cotacaoComparadores.test.ts` | 9 | fetchRegisteredQuotes · usa o mesmo recorte do hook: solicitacao + organizacao do usuario · sem organizacao nao consulta o banco, como o hook desabilitado · unirCotacoesPorId … |
 | `src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx` | 9 | ComprasDashboard — vencimento das urgências · roda no fuso do Brasil (pré-condição do teste) · data_necessidade  · ComprasDashboard — distribuição de SLA … |
 | `src/pages/pedidos/__tests__/pedidosEstadosDeCarga.test.tsx` | 9 | Pedidos - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta e o botao de nova tentativa no lugar da lista · o botao de nova tentativa chama o refetch do hook · sem erro a lista renderiza normalmente … |
+| `supabase/functions/_shared/notifications.test.ts` | 9 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id … |
 | `supabase/functions/_shared/xbz_catalog_cache.test.ts` | 9 | mapProduto: lê os nomes reais do consultaEstoque · mapProduto: estoque usa QtdDisponivelExibicao quando QtdDisponivel vem 0 · mapProduto: aceita camelCase bruto do mxbzConsultaEstoque e o PascalCase normalizado · mapProduto: aceita a API /clientes/GetListaDeProdutos (cor e quantidade com outros nomes) … |
 | `supabase/functions/alert-dispatcher/dispatchStatus.test.ts` | 9 | 188: nenhum assinante e nenhum webhook global nao pode ser  · 188: zero assinantes para de reprocessar depois do teto · 182: falha total com canal configurado nao carimba dispatched_at · 182: falha total desiste depois de MAX_DELIVERY_ATTEMPTS … |
 | `src/components/compras/__tests__/anexosNaoEnviados.test.ts` | 8 | resumoAnexosNaoEnviados · um anexo que falhou sai com nome, quantidade e sem plural · varios anexos somam a quantidade e listam os nomes · sem tenant de upload o motivo e o login, nao o storage … |
@@ -2705,7 +2706,6 @@ _nenhum item encontrado_
 | `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 4 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe · refaz a consulta quando a organizacao muda |
 | `src/tests/contracts.test.ts` | 4 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes · NegotiationContract should reject payload without solicitacao |
 | `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
-| `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
 | `supabase/functions/_shared/validation.error_response.test.ts` | 4 | errorResponse:  · errorResponse:  · errorResponse: unauthorized e sessao invalida virem 401 · errorResponse: demais categorias seguem iguais |
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard e widgets renderizam na rota raiz · System Theme Toggle · Mobile Responsiveness Check |
@@ -2928,6 +2928,7 @@ _nenhum item encontrado_
 | teto, descarta o conteúdo e grava apenas um marcador — preferimos perder o | `supabase/functions/_shared/logLevel.ts` |
 | inválida (sem mensagem string não-vazia) — o chamador deve filtrar. | `supabase/functions/_shared/logLevel.ts` |
 | M-02: o `tenantId` do corpo é apenas uma confirmação. Só é aceito se | `supabase/functions/_shared/logLevel.ts` |
+| * Nunca lanca. Push e um canal secundario: falhar aqui nao pode derrubar a | `supabase/functions/_shared/notifications.ts` |
 | * Rate limit helper compartilhado para edge functions. | `supabase/functions/_shared/rate_limit.ts` |
 | * Contrato estrutural mínimo do client Supabase usado pelas helpers de | `supabase/functions/_shared/security.ts` |
 | (`user_tenants`) — o header, se presente, é apenas logado como aviso e | `supabase/functions/_shared/security.ts` |

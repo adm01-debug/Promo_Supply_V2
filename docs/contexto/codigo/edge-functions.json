@@ -1142,7 +1142,7 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 644,
+   "linhas": 673,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"

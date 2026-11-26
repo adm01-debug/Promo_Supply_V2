@@ -2543,11 +2543,11 @@
   {
    "arquivo": "supabase/functions/_shared/notifications.test.ts",
    "tipo": "unit",
-   "linhas": 112,
+   "linhas": 219,
    "testa": [
     "supabase/functions/_shared/notifications.ts"
    ],
-   "casos": 4
+   "casos": 9
   },
   {
    "arquivo": "supabase/functions/_shared/punchout_crypto.test.ts",

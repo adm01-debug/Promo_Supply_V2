@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
+  "sha": "e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 11:32 UTC",
+  "generated_at": "2026-11-26 12:14 UTC",
   "files_total": 1504,
   "code_files": 1329,
-  "code_lines": 222597,
+  "code_lines": 222807,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "afb98607fb3da60d",
+ "facts_hash": "1f6c0385d049c001",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -31852,8 +31852,10 @@
     ],
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
+     "notification_preferences",
      "notifications",
      "profiles",
+     "push_subscriptions",
      "system_alerts",
      "user_tenants"
     ],
@@ -31888,8 +31890,10 @@
      "approval_history",
      "approval_steps",
      "approval_workflows",
+     "notification_preferences",
      "notifications",
      "profiles",
+     "push_subscriptions",
      "telemetry_logs",
      "user_tenants"
     ],
@@ -31914,8 +31918,10 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "cotacoes",
+     "notification_preferences",
      "notifications",
      "profiles",
+     "push_subscriptions",
      "telemetry_logs",
      "user_tenants"
     ],
@@ -31942,9 +31948,11 @@
     "tables": [
      "contracts",
      "cotacoes",
+     "notification_preferences",
      "notifications",
      "pagamentos",
      "profiles",
+     "push_subscriptions",
      "telemetry_logs",
      "user_roles",
      "user_tenants"
@@ -31969,10 +31977,12 @@
     ],
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
+     "notification_preferences",
      "notifications",
      "pagamentos",
      "pedidos",
      "profiles",
+     "push_subscriptions",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -32086,9 +32096,11 @@
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
      "approval_history",
+     "notification_preferences",
      "notifications",
      "pedidos",
      "profiles",
+     "push_subscriptions",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -32562,6 +32574,7 @@
     ],
     "auth": "service_role (ignora RLS) + valida JWT do usuário",
     "tables": [
+     "notification_preferences",
      "notifications",
      "profiles",
      "push_subscriptions",
@@ -32785,10 +32798,12 @@
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "cotacoes",
+     "notification_preferences",
      "notifications",
      "pagamentos",
      "pedidos",
      "profiles",
+     "push_subscriptions",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -32815,9 +32830,11 @@
     "auth": "service_role (ignora RLS) — NÃO valida usuário no código",
     "tables": [
      "cotacoes",
+     "notification_preferences",
      "notifications",
      "pedidos",
      "profiles",
+     "push_subscriptions",
      "solicitacoes",
      "telemetry_logs",
      "user_roles",
@@ -36347,7 +36364,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20375,
+   "lines": 20585,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36365,6 +36382,7 @@
     "fornecedores",
     "health_scan_runs",
     "integration_outbox",
+    "notification_preferences",
     "notifications",
     "pagamentos",
     "pedidos",
@@ -37401,7 +37419,8 @@
    },
    "notification_preferences": {
     "select": [
-     "src/hooks/useRealPushNotifications.ts"
+     "src/hooks/useRealPushNotifications.ts",
+     "supabase/functions/_shared/notifications.ts"
     ],
     "insert": [
      "src/hooks/useRealPushNotifications.ts"
@@ -37661,6 +37680,7 @@
      "src/hooks/useRealPushNotifications.ts"
     ],
     "select": [
+     "supabase/functions/_shared/notifications.ts",
      "supabase/functions/send-push-notification/index.ts"
     ],
     "delete": [
@@ -38594,6 +38614,7 @@
     "user_id"
    ],
    "notification_preferences": [
+    "push_notifications",
     "user_id"
    ],
    "notifications": [
@@ -38740,7 +38761,8 @@
     "user_id"
    ],
    "push_subscriptions": [
-    "id"
+    "id",
+    "user_id"
    ],
    "qualification_requirements": [
     "is_active"
@@ -39056,6 +39078,7 @@
     "scripts/supabase_snapshot/snapshot.py"
    ],
    "CRON_SECRET": [
+    "supabase/functions/_shared/notifications.ts",
     "supabase/functions/_shared/security.timing.test.ts",
     "supabase/functions/_shared/security.ts"
    ],
@@ -39355,6 +39378,7 @@
     "src/tests/integration/supabase-db.test.ts",
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/logger.ts",
+    "supabase/functions/_shared/notifications.ts",
     "supabase/functions/_shared/rate_limit.ts",
     "supabase/functions/_shared/security.timing.test.ts",
     "supabase/functions/_shared/security.ts",
@@ -39401,6 +39425,7 @@
     "scripts/ai-context/cenarios.mjs",
     "supabase/functions/_shared/idempotency.ts",
     "supabase/functions/_shared/logger.ts",
+    "supabase/functions/_shared/notifications.ts",
     "supabase/functions/_shared/rate_limit.ts",
     "supabase/functions/_shared/security.ts",
     "supabase/functions/_shared/telemetry.ts",
@@ -43634,6 +43659,10 @@
    {
     "file": "supabase/functions/_shared/logLevel.ts",
     "text": "M-02: o `tenantId` do corpo é apenas uma confirmação. Só é aceito se"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.ts",
+    "text": "* Nunca lanca. Push e um canal secundario: falhar aqui nao pode derrubar a"
    },
    {
     "file": "supabase/functions/_shared/rate_limit.ts",
@@ -72728,6 +72757,26 @@
     "name": "insertNotificationsBatch resolve tenants por user_id"
    },
    {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "EDG-07: notificacao high com inscricao dispara a edge sem duplicar o in-app"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "EDG-07: prioridade medium nao dispara push"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "EDG-07: preferencia push_notifications=false respeitada"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "EDG-07: usuario sem inscricao nao gera chamada HTTP"
+   },
+   {
+    "file": "supabase/functions/_shared/notifications.test.ts",
+    "name": "EDG-07: notificacao criada por push nao redispara (sem laco)"
+   },
+   {
     "file": "supabase/functions/_shared/security.timing.test.ts",
     "name": "timingSafeEqualStr: iguais, diferentes e comprimentos distintos"
    },
@@ -85684,6 +85733,7 @@
    "supabase/functions/_shared/logLevel.ts",
    "supabase/functions/_shared/logger.fuzz.test.ts",
    "supabase/functions/_shared/logger.ts",
+   "supabase/functions/_shared/notifications.ts",
    "supabase/functions/_shared/rate_limit.ts",
    "supabase/functions/_shared/security.timing.test.ts",
    "supabase/functions/_shared/security.ts",
@@ -117326,7 +117376,7 @@
   },
   "supabase/functions/_shared/notifications.test.ts": {
    "path": "supabase/functions/_shared/notifications.test.ts",
-   "lines": 112,
+   "lines": 219,
    "is_test": true,
    "errors": [
     ", title: "
@@ -117336,12 +117386,17 @@
     "insertNotification resolve tenant por user_id, nao pela PK",
     "insertNotification nao consulta profiles quando tenant_id vem na origem",
     "insertNotification devolve sem_tenant quando o perfil nao tem tenant",
-    "insertNotificationsBatch resolve tenants por user_id"
+    "insertNotificationsBatch resolve tenants por user_id",
+    "EDG-07: notificacao high com inscricao dispara a edge sem duplicar o in-app",
+    "EDG-07: prioridade medium nao dispara push",
+    "EDG-07: preferencia push_notifications=false respeitada",
+    "EDG-07: usuario sem inscricao nao gera chamada HTTP",
+    "EDG-07: notificacao criada por push nao redispara (sem laco)"
    ]
   },
   "supabase/functions/_shared/notifications.ts": {
    "path": "supabase/functions/_shared/notifications.ts",
-   "lines": 100,
+   "lines": 174,
    "exports": [
     "interface NotificationTarget",
     "interface NotificationResult",
@@ -117368,6 +117423,14 @@
     {
      "table": "notifications",
      "op": "insert"
+    },
+    {
+     "table": "notification_preferences",
+     "op": "select"
+    },
+    {
+     "table": "push_subscriptions",
+     "op": "select"
     }
    ],
    "table_cols": {
@@ -117380,12 +117443,29 @@
      "id",
      "title",
      "user_id"
+    ],
+    "notification_preferences": [
+     "push_notifications",
+     "user_id"
+    ],
+    "push_subscriptions": [
+     "id",
+     "user_id"
     ]
    },
+   "env": [
+    "CRON_SECRET",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "rule_comments": [
+    "* Nunca lanca. Push e um canal secundario: falhar aqui nao pode derrubar a"
+   ],
    "doc": "deno-lint-ignore no-explicit-any",
    "pagination": [
     "1"
-   ]
+   ],
+   "uses_service_role": true
   },
   "supabase/functions/_shared/punchout_crypto.test.ts": {
    "path": "supabase/functions/_shared/punchout_crypto.test.ts",
@@ -120840,7 +120920,7 @@
   },
   "supabase/functions/send-push-notification/index.ts": {
    "path": "supabase/functions/send-push-notification/index.ts",
-   "lines": 280,
+   "lines": 309,
    "tables": [
     {
      "table": "user_roles",
@@ -123998,10 +124078,24 @@
   }
  },
  "git": {
-  "sha": "e94d3a2b7b1326bee4932a1fcddfc6a73cfd9090",
+  "sha": "e8b0d67e86bb61deba00d2dbe1d6cc23175ea61c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "e8b0d67",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)",
+    "files": [
+     "docs/mapa/MATRIZ_EDGE_TABELA.md",
+     "docs/pendencias/_indice.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/_shared/notifications.test.ts",
+     "supabase/functions/_shared/notifications.ts",
+     "supabase/functions/send-push-notification/index.ts"
+    ]
+   },
    {
     "sha": "e94d3a2",
     "date": "2026-11-26",
@@ -124411,19 +124505,6 @@
      "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
      "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql"
     ]
-   },
-   {
-    "sha": "dac477d",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
-     "src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx",
-     "src/hooks/useLicitacoes.ts",
-     "src/hooks/useRealtimeSubscription.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124437,11 +124518,15 @@
    ],
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
-    3
+    4
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
-    3
+    4
+   ],
+   [
+    "docs/pendencias/_indice.md",
+    2
    ],
    [
     "supabase/functions/alert-dispatcher/index.ts",
@@ -124476,6 +124561,14 @@
     2
    ],
    [
+    "supabase/functions/_shared/notifications.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/_shared/notifications.ts",
+    1
+   ],
+   [
     "src/hooks/useProdutos.ts",
     1
    ],
@@ -124493,18 +124586,6 @@
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/alert-dispatcher/dispatchStatus.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
     1
    ]
   ]
