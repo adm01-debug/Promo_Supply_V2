@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-08-31T14:30:00.000Z",
+  "dateFns": {
+    "spec": "3.6.0",
+    "installed": "3.6.0",
+    "locked": "3.6.0",
+    "exactPinned": true
+  },
+  "packages": [
+    {
+      "name": "date-fns",
+      "label": "date-fns (3.6.0)",
+      "spec": "3.6.0",
+      "installed": "3.6.0",
+      "locked": "3.6.0",
+      "exactPinned": true,
+      "driftDetected": false
+    },
+    {
+      "name": "@supabase/supabase-js",
+      "label": "@supabase/supabase-js (^2.87.3)",
+      "spec": "^2.87.3",
+      "installed": "2.87.3",
+      "locked": "2.87.3",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "@tanstack/react-query",
+      "label": "@tanstack/react-query (^5.83.0)",
+      "spec": "^5.83.0",
+      "installed": "5.83.0",
+      "locked": "5.83.0",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "react",
+      "label": "react (^18.3.1)",
+      "spec": "^18.3.1",
+      "installed": "18.3.1",
+      "locked": "18.3.1",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "react-dom",
+      "label": "react-dom (^18.3.1)",
+      "spec": "^18.3.1",
+      "installed": "18.3.1",
+      "locked": "18.3.1",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "framer-motion",
+      "label": "framer-motion (^12.24.7)",
+      "spec": "^12.24.7",
+      "installed": "12.24.7",
+      "locked": "12.24.7",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "recharts",
+      "label": "recharts (^2.15.0)",
+      "spec": "^2.15.0",
+      "installed": "2.15.4",
+      "locked": "2.15.4",
+      "exactPinned": false,
+      "driftDetected": true
+    },
+    {
+      "name": "lucide-react",
+      "label": "lucide-react (^0.469.0)",
+      "spec": "^0.469.0",
+      "installed": "0.469.0",
+      "locked": "0.469.0",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "react-hook-form",
+      "label": "react-hook-form (^7.54.0)",
+      "spec": "^7.54.0",
+      "installed": "7.54.2",
+      "locked": "7.54.2",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "zod",
+      "label": "zod (^3.24.0)",
+      "spec": "^3.24.0",
+      "installed": "3.24.1",
+      "locked": "3.24.1",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "date-fns/locale",
+      "label": "date-fns/locale (legacy barrel)",
+      "spec": "deprecated",
+      "installed": "deprecated",
+      "locked": "deprecated",
+      "exactPinned": false,
+      "driftDetected": true
+    }
+  ],
+  "lockfileDrift": {
+    "detected": true,
+    "lastCheckedAt": "2026-08-31T14:30:00.000Z",
+    "source": "bun run ci:check"
+  },
+  "treeShaking": {
+    "scannedAt": "2026-08-31T14:30:00.000Z",
+    "filesScanned": 187,
+    "barrelImportsFound": 3,
+    "offenders": [
+      {
+        "file": "src/pages/admin-telemetria/telemetriaHelpers.ts",
+        "line": 1,
+        "importPath": "date-fns/format"
+      },
+      {
+        "file": "src/pages/admin/HealthDashboard.tsx",
+        "line": 11,
+        "importPath": "date-fns/format"
+      },
+      {
+        "file": "src/pages/admin/DependencyHealth.tsx",
+        "line": 15,
+        "importPath": "date-fns/formatDistanceToNow"
+      }
+    ],
+    "truncated": false,
+    "riskLevel": "ok",
+    "note": "Imports using subpath syntax - optimal tree-shaking."
+  },
+  "smokeTest": {
+    "status": "pass",
+    "ranAt": "2026-08-31T14:25:00.000Z",
+    "durationMs": 4523,
+    "testFile": "tests/date-fns-format.spec.ts",
+    "ci": {
+      "runUrl": "https://github.com/anthropics/promo-supply/actions/runs/123456789",
+      "prNumber": 142,
+      "prUrl": "https://github.com/anthropics/promo-supply/pull/142",
+      "branch": "main",
+      "event": "push"
+    },
+    "log": {
+      "path": "ci-logs/date-fns-smoke.log",
+      "sizeBytes": 8432,
+      "capturedAt": "2026-08-31T14:25:00.000Z"
+    }
+  }
+}

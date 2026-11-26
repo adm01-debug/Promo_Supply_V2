@@ -1,0 +1,191 @@
+# docs:
+#   gatilho: dispatch manual, exigindo o nome exato do arquivo em supabase/migrations/ e a confirmacao APLICAR
+#   prova: o arquivo versionado no git roda inteiro em UMA transacao no banco de producao; erro em qualquer ponto desfaz tudo
+#   falha: nada e' commitado no banco (rollback) e o job fica vermelho com a linha do erro do Postgres
+#   avisa: o resumo do run mostra o antes/depois de cron.job e a lista de jobs criados
+# nao-e-bug:
+#   - transacao-unica: migration nao roda em pedacos de proposito; meio aplicado seria pior que nao aplicado
+#   - arquivo-nao-versionado: arquivo fora de supabase/migrations/ ou com alteracao nao commitada e' recusado; o canal so aplica o que o git conhece
+#   - secret-ausente: sem SUPABASE_DB_URL o job falha fechado -- aplicar DDL "no escuro" nao e' opcao
+# ==================================================================
+# PROMO SUPPLY - Aplicar migration versionada no banco de producao
+# ==================================================================
+# Por que existe: `supabase db push` roda fora deste repositorio, entao uma
+# migration podia ficar no git sem nunca ter sido aplicada e ninguem notava.
+# O paridade-banco.yml DETECTA a divergencia toda semana, mas nao existia
+# nenhum caminho para CORRIGIR a partir do repositorio. Este workflow e' esse
+# caminho, e ele e' deliberadamente manual.
+#
+# ESCOPO MINIMO: aplica UM arquivo por vez, sempre o que esta commitado no git.
+# Nao aplica SQL colado como entrada, nao aplica pasta inteira, nao aceita
+# arquivo modificado no worktree -- se o texto aplicado nao for exatamente o
+# texto versionado, a paridade semanal passa a mentir.
+#
+# FALHA FECHADA: sem SUPABASE_DB_URL, sem o arquivo, ou com o arquivo fora de
+# supabase/migrations/ o job nao roda. Sair verde sem aplicar esconderia
+# exatamente o problema que este canal resolve.
+# ==================================================================
+
+name: Aplicar migration no banco de producao
+
+on:
+  workflow_dispatch:
+    inputs:
+      migration:
+        description: 'Arquivo em supabase/migrations/ (ex.: 20261121153000_religa_crons_negocio_vault.sql)'
+        required: true
+      confirmacao:
+        description: 'Digite APLICAR para confirmar que esta migration deve rodar em producao'
+        required: true
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+permissions:
+  contents: read
+
+concurrency:
+  # Duas aplicacoes simultaneas no mesmo banco nao podem se cruzar.
+  group: aplicar-migration-prod
+  cancel-in-progress: false
+
+jobs:
+  aplicar:
+    name: Rodar a migration em uma transacao
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Validar a entrada
+        env:
+          MIGRATION: ${{ inputs.migration }}
+          CONFIRMACAO: ${{ inputs.confirmacao }}
+        run: |
+          if [[ "${CONFIRMACAO}" != "APLICAR" ]]; then
+            echo "::error::confirmacao diferente de APLICAR. Nada foi executado no banco."
+            exit 1
+          fi
+          # Nome de arquivo, nao caminho: `../` e barra absoluta ficam de fora por construcao.
+          if [[ ! "${MIGRATION}" =~ ^[A-Za-z0-9_.-]+\.sql$ ]]; then
+            echo "::error::entrada invalida: informe apenas o nome de um arquivo .sql de supabase/migrations/."
+            exit 1
+          fi
+          if [[ ! -f "supabase/migrations/${MIGRATION}" ]]; then
+            echo "::error::supabase/migrations/${MIGRATION} nao existe neste commit."
+            exit 1
+          fi
+          # Arquivo com alteracao local aplicaria um texto que a paridade nao ve.
+          if ! git diff --quiet -- "supabase/migrations/${MIGRATION}"; then
+            echo "::error::supabase/migrations/${MIGRATION} tem alteracao nao commitada. Commite antes de aplicar."
+            exit 1
+          fi
+          echo "migration validada: supabase/migrations/${MIGRATION}"
+
+      - name: Fotografar o estado antes
+        env:
+          PGCONNECT_TIMEOUT: '20'
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [[ -z "${SUPABASE_DB_URL:-}" ]]; then
+            echo "::error::secret SUPABASE_DB_URL ausente -- sem ele nao da para aplicar DDL em producao."
+            exit 1
+          fi
+          psql "${SUPABASE_DB_URL}" -v ON_ERROR_STOP=1 -tAc \
+            "select count(*) from cron.job" > "${RUNNER_TEMP}/jobs-antes.txt"
+          echo "cron.job antes: $(cat "${RUNNER_TEMP}/jobs-antes.txt")"
+
+      - name: Aplicar em transacao unica
+        env:
+          PGCONNECT_TIMEOUT: '30'
+          PGOPTIONS: '-c statement_timeout=300000'
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          # psql sem --single-transaction deixaria o arquivo parcialmente aplicado
+          # se um comando no meio falhasse. ON_ERROR_STOP + single-transaction e'
+          # o que garante "tudo ou nada".
+          #
+          # SUPABASE_DB_URL conecta como ci_snapshot (role de leitura do
+          # paridade-banco.yml). Ela NAO tem privilegio no schema cron, entao
+          # migrations que chamam cron.schedule/alter_job falham com "permission
+          # denied". Nesse caso o MESMO arquivo e' aplicado pelo Management API,
+          # que executa como owner do projeto -- e o psql nao e' reexecutado
+          # depois, para nao aplicar duas vezes.
+          set +e
+          psql "${SUPABASE_DB_URL}" \
+            -v ON_ERROR_STOP=1 \
+            --single-transaction \
+            -f "supabase/migrations/${{ inputs.migration }}" \
+            2> "${RUNNER_TEMP}/psql.err"
+          codigo=$?
+          set -e
+
+          if [[ ${codigo} -eq 0 ]]; then
+            echo "aplicado via psql."
+            exit 0
+          fi
+
+          # Migrations que tocam o schema cron exigem a conexao como postgres.
+          # O canal psql e' ci_snapshot; quando a propria migration aborta por
+          # isso ("exige conexao como postgres"), ou quando falta privilegio de
+          # schema/objeto, o MESMO arquivo e' reaplicado pelo Management API -
+          # que roda como postgres. O psql nao e' reexecutado depois.
+          # "must be owner of table"/"... of function" entram na lista: ALTER/CREATE OR REPLACE
+          # ci_snapshot nao possui e' negado por ownership, nao por GRANT, e o
+          # Postgres devolve essa mensagem em vez de "permission denied". Sem
+          # este padrao a migration abortava sem cair no fallback (caso da
+          # 20261121160000_pim_refs_compras, que ficou inerte em producao).
+          if ! grep -qiE 'permission denied for (function|schema|table) |exige conexao como postgres|must be superuser|must be owner of (table|relation|sequence|view|database|function|routine|type|trigger) |sem permissao para conceder' "${RUNNER_TEMP}/psql.err"; then
+            cat "${RUNNER_TEMP}/psql.err"
+            echo "::error::psql falhou por motivo que nao e' privilegio. Nada aplicado."
+            exit "${codigo}"
+          fi
+
+          echo "psql sem o role necessario. Aplicando pelo Management API (conecta como postgres)."
+          # jq monta o JSON do arquivo, evitando escapar SQL a mao. O Management
+          # API roda o script inteiro em uma transacao implicita e devolve erro
+          # HTTP em qualquer falha, entao o "tudo ou nada" se mantem.
+          jq -Rs '{query: .}' "supabase/migrations/${{ inputs.migration }}" \
+            > "${RUNNER_TEMP}/corpo.json"
+          http=$(curl -sS -o "${RUNNER_TEMP}/resposta.json" -w '%{http_code}' \
+            -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data-binary @"${RUNNER_TEMP}/corpo.json")
+
+          if [[ "${http}" != "200" && "${http}" != "201" ]]; then
+            jq -r '.message // .' "${RUNNER_TEMP}/resposta.json" 2>/dev/null || cat "${RUNNER_TEMP}/resposta.json"
+            echo "::error::Management API respondeu HTTP ${http}. Nada foi aplicado."
+            exit 1
+          fi
+          echo "aplicado via Management API (HTTP ${http})."
+
+      - name: Fotografar o estado depois
+        env:
+          PGCONNECT_TIMEOUT: '20'
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          psql "${SUPABASE_DB_URL}" -v ON_ERROR_STOP=1 -tAc \
+            "select count(*) from cron.job" > "${RUNNER_TEMP}/jobs-depois.txt"
+          antes="$(cat "${RUNNER_TEMP}/jobs-antes.txt")"
+          depois="$(cat "${RUNNER_TEMP}/jobs-depois.txt")"
+          {
+            echo "### Migration aplicada"
+            echo ""
+            echo "- arquivo: \`supabase/migrations/${{ inputs.migration }}\`"
+            echo "- cron.job antes: ${antes}"
+            echo "- cron.job depois: ${depois}"
+            echo ""
+            echo "Jobs de cron ativos apos a aplicacao:"
+            echo ""
+            echo '```'
+            psql "${SUPABASE_DB_URL}" -v ON_ERROR_STOP=1 -tAc \
+              "select jobname || ' | ' || schedule || ' | ' || case when active then 'ativo' else 'INATIVO' end from cron.job order by jobname"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,165 @@
+import { describe, it, expect, vi } from 'vitest';
+import { act, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Regressão: `solicitacoes.data_necessidade` é coluna DATE ("2026-03-01"). O card de urgências
+// fazia `new Date("2026-03-01").toLocaleDateString('pt-BR')`, que lê a string como UTC meia-noite
+// e, no fuso do Brasil, exibia "28/02/2026" — o vencimento aparecia um dia antes.
+// O vitest.config.ts fixa TZ=America/Sao_Paulo, então este teste reproduz o fuso do usuário.
+
+const urgentItems = [
+  { id: 'aaaaaaaa-0000-0000-0000-000000000001', numero: 'SOL-1', titulo: 'Canetas', status: 'pendente', data_necessidade: '2026-03-01', urgencia: 'critico' },
+  { id: 'aaaaaaaa-0000-0000-0000-000000000002', numero: 'SOL-2', titulo: 'Sem data', status: 'pendente', data_necessidade: null, urgencia: 'alto' },
+];
+
+const comparacao = { current: 0, previous: 0, sparkline: [] as number[] };
+// Taxa de SLA real (RPC get_compras_sla_metrics) — etapa 290/291.
+const comparacaoSla = { current: 87.5, previous: 80, sparkline: [80, 87.5] };
+
+vi.mock('@/hooks/useDashboardKPIs', () => ({
+  useDashboardKPIs: () => ({
+    kpis: {
+      comparisons: { aguardando: comparacao, volume: comparacao, economia: comparacao, sla: comparacaoSla },
+      economiaPercentual: 0,
+      economiaGerada: 0,
+      avgSla: 0,
+      taxaSlaReal: 87.5,
+      charts: { monthlyTrends: [], cotacaoStatus: [], topCategories: [] },
+    },
+    pipeline: {},
+    urgentItems,
+    loading: false,
+  }),
+}));
+vi.mock('@/hooks/useAccountFilters', () => ({
+  useAccountFilters: (_k: string, defaults: Record<string, unknown>) => ({ filters: defaults, patchFilters: vi.fn(), loading: false }),
+}));
+// Layout minimo do store: o dashboard renderiza o que estiver aqui (DraggableDashboard).
+const layoutWidgets = [
+  { id: 'kpi-sla', type: 'kpi', title: 'Taxa SLA', visible: true, order: 0, size: 'small' },
+  { id: 'chart-sla', type: 'chart', title: 'Distribuicao SLA', visible: true, order: 1, size: 'large' },
+  { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 2, size: 'medium' },
+];
+vi.mock('@/stores/dashboardLayoutStore', () => ({
+  useDashboardLayoutStore: () => ({
+    widgets: layoutWidgets,
+    setWidgets: vi.fn(),
+    toggleWidgetVisibility: vi.fn(),
+    resizeWidget: vi.fn(),
+    resetLayout: vi.fn(),
+    loadFromDb: vi.fn(),
+    saveToDb: vi.fn(),
+    isLoading: false,
+  }),
+}));
+vi.mock('@/hooks/useRealtimeSubscription', () => ({ useRealtimeSubscription: vi.fn() }));
+vi.mock('@/integrations/supabase/client', () => {
+  const chain: Record<string, unknown> = {};
+  for (const m of ['select', 'order', 'eq']) chain[m] = () => chain;
+  chain.then = (resolve: (v: unknown) => unknown) => resolve({ data: [], error: null });
+  return { supabase: { from: () => chain } };
+});
+vi.mock('@/components/compras/CriticalAlertsBar', () => ({ CriticalAlertsBar: () => null }));
+vi.mock('@/components/compras/PurchaseClimateWidget', () => ({ PurchaseClimateWidget: () => null }));
+vi.mock('@/components/compras/EnhancedKpiCard', () => ({
+  EnhancedKpiCard: ({ title, value, format }: { title: string; value: number; format?: string }) => (
+    <div data-testid={`kpi-${title}`} data-value={String(value)} data-format={format} />
+  ),
+}));
+vi.mock('@/components/compras/PipelineChart', () => ({ PipelineChart: () => null }));
+vi.mock('@/components/compras/TrendAnalysisCharts', () => ({ TrendAnalysisCharts: () => null }));
+vi.mock('@/components/compras/SourcingIntelligenceWidget', () => ({ SourcingIntelligenceWidget: () => null }));
+vi.mock('@/components/compras/DashboardInsights', () => ({ DashboardInsights: () => null }));
+vi.mock('@/components/compras/SLADistributionChart', () => ({
+  SLADistributionChart: () => <div data-testid="sla-distribution" />,
+}));
+vi.mock('@/components/compras/UrgentItemsList', () => ({
+  UrgentItemsList: ({ items }: { items: { id: string; vencimento: string }[] }) => (
+    <ul>
+      {items.map((i) => (
+        <li key={i.id} data-testid={`venc-${i.id}`}>{i.vencimento}</li>
+      ))}
+    </ul>
+  ),
+}));
+
+import ComprasDashboard from '../ComprasDashboard';
+
+describe('ComprasDashboard — vencimento das urgências', () => {
+  it('roda no fuso do Brasil (pré-condição do teste)', () => {
+    expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe('America/Sao_Paulo');
+  });
+
+  it('data_necessidade "2026-03-01" aparece como 01/03/2026, não 28/02/2026', async () => {
+    // act assíncrono: deixa os painéis lazy resolverem antes das asserções.
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    expect(screen.getByTestId('venc-SOL-1').textContent).toBe('01/03/2026');
+    expect(screen.getByTestId('venc-SOL-2').textContent).toBe('TBD');
+  });
+});
+
+// Etapa 291: o widget `chart-sla` está no layout padrão (dashboardLayoutStore) e o
+// SLADistributionChart era importado sem nenhum `case` no switch — o gráfico existia e nunca
+// aparecia. Este teste falha se o widget voltar a ficar sem render.
+describe('ComprasDashboard — distribuição de SLA', () => {
+  it('monta o gráfico de distribuição de SLA no widget chart-sla', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    expect(await screen.findByTestId('sla-distribution')).toBeTruthy();
+  });
+});
+
+// Etapa 290/291: o widget `kpi-sla` esta no layout padrao (order 3) e o hook ja expoe
+// comparisons.sla da RPC get_compras_sla_metrics, mas o card nunca era renderizado.
+describe('ComprasDashboard — KPI de taxa de SLA', () => {
+  it('monta o card de Taxa SLA (kpi-sla) com o valor real em percentual', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    const card = await screen.findByTestId('kpi-dashboard.kpis.sla');
+    expect(card.getAttribute('data-value')).toBe('87.5');
+    expect(card.getAttribute('data-format')).toBe('percent');
+  });
+});
+
+// Trabalho parcial: a pagina chamava loadFromDb('compras') e depois renderizava um layout
+// curado, jogando fora o layout do usuario (18 widgets no store, 11 sem ponto de montagem).
+describe('ComprasDashboard — layout vindo do store', () => {
+  it('renderiza os widgets do store em vez do layout fixo anterior', async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+          <MemoryRouter>
+            <ComprasDashboard />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+    await screen.findByTestId('kpi-dashboard.kpis.sla');
+    expect(screen.getByRole('region', { name: 'Indicadores' })).toBeTruthy();
+    // kpi-volume existia apenas no layout curado e nao esta no store mockado.
+    expect(screen.queryByTestId('kpi-dashboard.kpis.volume')).toBeNull();
+  });
+});

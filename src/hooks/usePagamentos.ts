@@ -1,0 +1,400 @@
+import { useCallback, useMemo } from 'react';
+import { format } from 'date-fns';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/features/auth';
+import { logger } from '@/lib/logger';
+import { toast } from '@/lib/feedbackToast';
+import { auditHelpers } from '@/services/auditService';
+import { escapeIlike } from '@/lib/supabaseQuery';
+import { TRANSICOES_PAGAMENTO_BANCO, transicaoPermitidaNaTela } from '@/lib/statusTransitionsBanco';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import type { Json, Database } from '@/integrations/supabase/types';
+
+export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
+  fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
+  pedido?: { id: string; numero: string; } | null;
+  cost_center?: { id: string; name: string; code: string; } | null;
+};
+
+export interface CreatePagamentoInput {
+  pedido_id?: string;
+  fornecedor_id: string;
+  cost_center_id?: string;
+  valor: number;
+  data_vencimento: string;
+  forma_pagamento?: Pagamento['forma_pagamento'];
+  numero_nf?: string;
+  chave_nf?: string;
+  observacoes?: string;
+}
+
+export interface PagamentoFilters {
+  search?: string;
+  status?: string;
+  fornecedor_id?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: number;
+  pageSize?: number;
+  empresaIds?: string[] | null;
+}
+
+// Matriz unica do banco (src/lib/statusTransitionsBanco.ts): a copia local
+// divergia dela e a tela barrava transicao que o banco aceita.
+const VALID_PAGAMENTO_TRANSITIONS = TRANSICOES_PAGAMENTO_BANCO;
+
+function canTransition(from: string, to: string): boolean {
+  return transicaoPermitidaNaTela(VALID_PAGAMENTO_TRANSITIONS, from, to);
+}
+
+async function fetchPagamentosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PagamentoFilters) {
+  if (!userId || !organizationId) return { data: [], totalCount: 0 };
+
+  const page = filters?.page || 1;
+  const pageSize = filters?.pageSize || 50;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = supabase
+    .from('pagamentos')
+    .select(`
+      id, numero, status, fornecedor_id, pedido_id, cost_center_id,
+      valor, valor_pago, data_vencimento, data_pagamento, data_agendamento, data_aprovacao,
+      forma_pagamento, numero_nf, chave_nf, observacoes,
+      aprovador_id, created_by, organization_id, tenant_id, created_at, updated_at,
+      fornecedor:fornecedores(id, razao_social, nome_fantasia),
+      pedido:pedidos(id, numero),
+      cost_center:cost_centers(id, name, code)
+    `, { count: 'exact' })
+    .order('data_vencimento', { ascending: true })
+    .eq('organization_id', organizationId)
+
+  if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
+  if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
+  if (filters?.search) {
+    const s = escapeIlike(filters.search);
+    query = query.or(`numero.ilike.%${s}%,numero_nf.ilike.%${s}%`);
+  }
+  if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
+  if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
+  if (filters?.empresaIds) query = query.in('tenant_id', filters.empresaIds);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data: (data as Pagamento[]) || [], totalCount: count || 0 };
+}
+
+const MOTIVO_HISTORICO_PAGAMENTO =
+  'Pagamento com histórico de alteração não pode ser excluído: a trilha de auditoria do pagamento seria apagada junto.';
+
+/**
+ * payment_history.pagamento_id esta em ON DELETE CASCADE: o DELETE do pagamento
+ * apagava quem alterou, de qual status para qual e com que valor. A exclusao so
+ * passa quando o pagamento nao tem nenhuma linha de historico.
+ */
+async function pagamentosComHistorico(ids: string[]): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('payment_history')
+    .select('pagamento_id')
+    .in('pagamento_id', ids);
+  if (error) throw error;
+  return new Set(
+    ((data ?? []) as Array<{ pagamento_id: string | null }>)
+      .map((linha) => linha.pagamento_id)
+      .filter((id): id is string => Boolean(id)),
+  );
+}
+
+export function usePagamentos(filters?: PagamentoFilters) {
+  const { user, organizationId } = useAuth();
+  const queryClient = useQueryClient();
+
+  const queryKey = useMemo(() => [
+    'pagamentos', user?.id, organizationId,
+    filters?.status, filters?.fornecedor_id, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
+    filters?.empresaIds ?? 'all',
+  ], [user?.id, organizationId, filters]);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchPagamentosData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const pagamentos = useMemo(() => data?.data ?? [], [data]);
+  const totalCount = data?.totalCount || 0;
+
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
+  }, [queryClient]);
+
+  const createPagamento = useCallback(async (input: CreatePagamentoInput) => {
+    if (!user) { toast.error('Você precisa estar logado'); return null; }
+    try {
+      logger.info('Registrando novo pagamento', { pedidoId: input.pedido_id, fornecedorId: input.fornecedor_id, valor: input.valor });
+      const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'PAG', table_name: 'pagamentos' });
+      const numero = numData || `PAG-${format(new Date(), 'yyyyMMddHHmmss')}`;
+      const { data, error } = await supabase
+        .from('pagamentos')
+        .insert({
+          numero, pedido_id: input.pedido_id, fornecedor_id: input.fornecedor_id,
+          valor: input.valor, data_vencimento: input.data_vencimento,
+          cost_center_id: input.cost_center_id,
+          forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
+          chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
+          tenant_id: organizationId,
+          organization_id: organizationId,
+        } as never)
+        .select().single();
+      if (error) {
+        logger.error('Erro ao inserir pagamento no banco', { error, input });
+        throw error;
+      }
+      
+      // Audit Log
+      await auditHelpers.logCreate(
+        'pagamento', 
+        data.id, 
+        `Pagamento ${data.numero} registrado para fornecedor ${input.fornecedor_id}`,
+        data
+      );
+      logger.info('Pagamento registrado com sucesso', { id: data.id, numero: data.numero });
+      toast.success('Pagamento registrado com sucesso!');
+      invalidate();
+      return data;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao registrar pagamento', { error: msg, input });
+      toast.error('Erro ao registrar pagamento: ' + msg);
+      return null;
+    }
+  }, [user, organizationId, invalidate]);
+
+  const updatePagamento = useCallback(async (id: string, updates: Database['public']['Tables']['pagamentos']['Update']) => {
+    if (updates.status) {
+      const current = pagamentos.find(p => p.id === id);
+      logger.info('Atualizando pagamento', { id, currentStatus: current?.status, updates });
+      if (current) {
+        // Mesma transicao passa (o banco aceita no-op): sem isso 'parcial ->
+        // parcial' era recusado aqui e o valor pago nao podia ser corrigido.
+        if (!canTransition(current.status, updates.status)) {
+          toast.error(`Transição inválida: ${current.status} → ${updates.status}`);
+          return false;
+        }
+      }
+    }
+    try {
+      const { data: afetadas, error } = await supabase.from('pagamentos').update(updates).eq('id', id).select('id');
+      if (error) {
+        logger.error('Erro ao atualizar pagamento no banco', { error, id, updates });
+        throw error;
+      }
+      // RLS barra a linha em silencio: 0 linhas e nenhum erro. Sem esta
+      // conferencia o toast de sucesso aparecia com o banco intacto.
+      if (!afetadas || afetadas.length === 0) {
+        logger.error('Pagamento nao gravado: 0 linhas afetadas', { id, updates });
+        toast.error('Nada foi gravado: pagamento inexistente ou sem permissão.');
+        return false;
+      }
+      toast.success('Pagamento atualizado!');
+      invalidate();
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao atualizar pagamento', { error: msg, id });
+      toast.error('Erro ao atualizar: ' + msg);
+      return false;
+    }
+  }, [pagamentos, invalidate]);
+
+  const markAsPaid = useCallback(async (id: string, valor_pago?: number) => {
+    const pagamento = pagamentos.find(p => p.id === id);
+    if (!pagamento) return false;
+    const valorPago = valor_pago || pagamento.valor;
+    const isParcial = valorPago < pagamento.valor;
+    return updatePagamento(id, {
+      status: isParcial ? 'parcial' : 'pago',
+      valor_pago: valorPago,
+      data_pagamento: new Date().toISOString().split('T')[0],
+    });
+  }, [pagamentos, updatePagamento]);
+
+  const approvePagamento = useCallback(async (id: string) => {
+    if (!user) return false;
+    return updatePagamento(id, {
+      status: 'aprovado', aprovador_id: user.id,
+      data_aprovacao: new Date().toISOString(),
+    });
+  }, [user, updatePagamento]);
+
+  const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status'], dataAgendamento?: string) => {
+      const validIds: string[] = [];
+      const blocked: string[] = [];
+      for (const id of ids) {
+        const current = pagamentos.find(p => p.id === id);
+        if (current && !canTransition(current.status, newStatus)) {
+          blocked.push(`${current.numero} (${current.status})`);
+        } else {
+          validIds.push(id);
+        }
+      }
+      if (validIds.length === 0) {
+        toast.error(`Nenhum pagamento pode ir para ${newStatus}: ${blocked.join(', ')}`);
+        return false;
+      }
+    try {
+      const updates: Database['public']['Tables']['pagamentos']['Update'] = { status: newStatus };
+      if (newStatus === 'pago') updates.data_pagamento = new Date().toISOString().split('T')[0];
+            // Etapa 247 (UI-12): o agendamento grava a data escolhida no calendario.
+            if (newStatus === 'agendado' && dataAgendamento) updates.data_agendamento = dataAgendamento;
+      if (newStatus === 'aprovado' && user) {
+        updates.aprovador_id = user.id;
+        updates.data_aprovacao = new Date().toISOString();
+      }
+        const { data: atualizados, error } = await supabase.from('pagamentos').update(updates).in('id', validIds).select('id');
+      if (error) throw error;
+        const atualizadosCount = atualizados?.length ?? 0;
+        if (atualizadosCount === 0) {
+          invalidate();
+          toast.error('Nada foi gravado: nenhum dos pagamentos está acessível para alteração.');
+          return false;
+        }
+        if (blocked.length > 0) {
+          toast.error(`${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join(', ')}`);
+        }
+        if (atualizadosCount < validIds.length) {
+          toast.warning(`${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s).`);
+        } else {
+          toast.success(`${validIds.length} pagamento(s) atualizado(s)!`);
+        }
+      invalidate();
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar pagamentos: ' + msg);
+      return false;
+    }
+    }, [user, invalidate, pagamentos]);
+
+  const deletePagamento = useCallback(async (id: string) => {
+    let comHistorico: Set<string>;
+    try {
+      comHistorico = await pagamentosComHistorico([id]);
+    } catch {
+      toast.error('Não foi possível conferir o histórico do pagamento. Exclusão cancelada.');
+      return false;
+    }
+    if (comHistorico.has(id)) {
+      logger.warn('Exclusao de pagamento bloqueada por historico', { id });
+      toast.error(MOTIVO_HISTORICO_PAGAMENTO);
+      return false;
+    }
+    try {
+      logger.info('Excluindo registro de pagamento', { id });
+      const { data: excluidos, error } = await supabase.from('pagamentos').delete().eq('id', id).select('id');
+      if (error) {
+        logger.error('Erro ao excluir pagamento no banco', { error, id });
+        throw error;
+      }
+      if (!excluidos || excluidos.length === 0) {
+        logger.error('Pagamento nao excluido: 0 linhas afetadas', { id });
+        toast.error('Nada foi excluído: pagamento inexistente ou sem permissão.');
+        return false;
+      }
+      logger.info('Pagamento excluído com sucesso', { id });
+      toast.success('Pagamento excluído!');
+      invalidate();
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao excluir pagamento', { error: msg, id });
+      toast.error('Erro ao excluir: ' + msg);
+      return false;
+    }
+  }, [invalidate]);
+
+  const bulkDelete = useCallback(async (ids: string[]) => {
+    let comHistorico: Set<string>;
+    try {
+      comHistorico = await pagamentosComHistorico(ids);
+    } catch {
+      toast.error('Não foi possível conferir o histórico dos pagamentos. Exclusão cancelada.');
+      return false;
+    }
+    const liberados = ids.filter((id) => !comHistorico.has(id));
+    if (liberados.length === 0) {
+      toast.error(MOTIVO_HISTORICO_PAGAMENTO);
+      return false;
+    }
+    try {
+      const { data: apagados, error } = await supabase.from('pagamentos').delete().in('id', liberados).select('id');
+      if (error) throw error;
+      invalidate();
+      const apagadosCount = apagados?.length ?? 0;
+      if (apagadosCount < liberados.length) {
+        toast.warning(`${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão.`);
+        return false;
+      }
+      if (liberados.length < ids.length) {
+        toast.warning(`${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO}`);
+        return false;
+      }
+      toast.success(`${liberados.length} pagamento(s) excluído(s)!`);
+      return true;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir pagamentos: ' + msg);
+      return false;
+    }
+  }, [invalidate]);
+
+  useRealtimeSubscription({
+    tables: ['pagamentos'],
+    queryKeysToInvalidate: [['pagamentos']],
+    enabled: !!user,
+  });
+
+  return {
+    pagamentos, totalCount, loading: isLoading, error: error?.message || null,
+    refetch, createPagamento, updatePagamento, markAsPaid, approvePagamento,
+    bulkUpdateStatus, bulkDelete, deletePagamento,
+  };
+}
+
+// Hook for KPIs optimized with RPC
+export function usePagamentosKPIs() {
+  const { user, organizationId } = useAuth();
+
+  const { data: kpis = { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 }, isLoading } = useQuery({
+    queryKey: ['pagamentos-kpis', user?.id, organizationId],
+    queryFn: async () => {
+      if (!organizationId) return { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 };
+      
+      const { data, error } = await supabase.rpc('get_pagamentos_kpis', { 
+        p_organization_id: organizationId 
+      });
+
+      if (error) {
+        logger.error('Error fetching Pagamentos KPIs via RPC', { error });
+        throw error;
+      }
+
+      return data as { 
+        total: number; 
+        pendentes: number; 
+        atrasados: number; 
+        pagos: number; 
+        valorPendente: number; 
+        valorPago: number; 
+      };
+    },
+    enabled: !!user && !!organizationId,
+    staleTime: 60_000,
+  });
+
+  return { kpis, loading: isLoading };
+}

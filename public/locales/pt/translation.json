@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "search": "Buscar",
+    "actions": "Ações",
+    "confirm": "Confirmar",
+    "success": "Sucesso",
+    "error": "Erro",
+    "warning": "Aviso",
+    "info": "Informação",
+    "status": "Status",
+    "date": "Data",
+    "total": "Total",
+    "value": "Valor",
+    "quantity": "Quantidade",
+    "unit": "Unidade",
+    "description": "Descrição",
+    "observations": "Observações",
+    "attachments": "Anexos",
+    "history": "Histórico",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "login": "Entrar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "finish": "Finalizar",
+    "all": "Todos",
+    "none": "Nenhum",
+    "yes": "Sim",
+    "no": "Não",
+    "welcome": "Bem-vindo",
+    "dashboard": "Dashboard",
+    "procurement": "Compras",
+    "suppliers": "Fornecedores",
+    "products": "Produtos",
+    "contracts": "Contratos",
+    "reports": "Relatórios",
+    "audit": "Auditoria",
+    "security": "Segurança"
+  },
+  "dashboard": {
+    "title": "Painel de Compras",
+    "kpis": {
+      "total_requests": "Total de Solicitações",
+      "pending_approval": "Aguardando Cotação",
+      "active_quotes": "Cotações Ativas",
+      "completed_orders": "Pedidos Concluídos",
+      "total_spend": "Volume do Mês",
+      "saving": "Economia Gerada",
+      "sla": "SLA de Atendimento",
+      "subtitles": {
+        "pending": "Solicitações pendentes",
+        "volume": "Total faturado",
+        "economy": "do volume total",
+        "sla": "Nível de serviço"
+      }
+    }
+  },
+  "navigation": {
+    "overview": "Visão Geral",
+    "operations": "Operações",
+    "finance": "Financeiro",
+    "suppliers": "Fornecedores",
+    "analytics": "Analytics",
+    "admin": "Admin"
+  },
+  "status": {
+    "pending": "Pendente",
+    "approved": "Aprovado",
+    "rejected": "Rejeitado",
+    "in_progress": "Em Andamento",
+    "completed": "Concluído",
+    "cancelled": "Cancelado",
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro inesperado.",
+    "network": "Erro de conexão. Verifique sua internet.",
+    "unauthorized": "Sessão expirada. Faça login novamente.",
+    "not_found": "Registro não encontrado.",
+    "forbidden": "Você não tem permissão para esta ação."
+  }
+}

@@ -1,0 +1,19 @@
+/* Fonts loaded via <link preload> in index.html — no @import needed */
+
+@import './styles/tokens.css' layer(base);
+@import './styles/base.css' layer(base);
+@import './styles/components.css' layer(components);
+@import './styles/utilities.css' layer(utilities);
+@import './styles/animations.css' layer(utilities);
+
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+/* =================================================================
+   PROMO SUPPLY - DESIGN SYSTEM
+   Modular CSS Architecture
+   ================================================================= */
+
+
+
+

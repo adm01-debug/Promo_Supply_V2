@@ -1,0 +1,110 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { EdgeLogger } from "../_shared/logger.ts";
+import { validateBody, errorResponse } from "../_shared/validation.ts";
+import { buildCorsHeaders } from "../_shared/security.ts";
+import { TelemetryContract } from "../_shared/contracts.ts";
+import { buildTelemetryRow } from "../_shared/logLevel.ts";
+import { getTenantId, type SupabaseClientLike } from "../_shared/security.ts";
+
+serve(async (req) => {
+  const cors = buildCorsHeaders(req);
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: cors });
+  }
+
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("telemetry", requestId);
+
+  try {
+    const authHeader = req.headers.get("Authorization");
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: authHeader ? { Authorization: authHeader } : {},
+        },
+      }
+    );
+
+    // SECURITY: require valid user token to prevent log injection from unauthenticated callers.
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(cors),
+      });
+    }
+    const { data: authData } = await supabaseClient.auth.getUser();
+    const user = authData.user;
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(cors),
+      });
+    }
+
+    // Accept both single entry and { batch: [...] } from the frontend logger.
+    let rawBody: any;
+    try {
+      rawBody = await req.json();
+    } catch (_e) {
+      return errorResponse(new Error("Invalid JSON body"), logger, cors);
+    }
+
+    const entries: any[] = Array.isArray(rawBody?.batch) ? rawBody.batch : [rawBody];
+
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const clientIp = req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for");
+    // M-02: `user_metadata` é editável pelo próprio usuário; a fonte confiável
+    // do tenant são as memberships em `user_tenants`. Usuário sem membership
+    // grava telemetria sem tenant (null) em vez de herdar um valor forjado.
+    let fallbackTenantId: string | null = null;
+    try {
+      // Cast na fronteira: mesmo padrão de `security.ts` (as edges importam
+      // versões diferentes da lib; `SupabaseClientLike` é o mínimo usado).
+      fallbackTenantId = await getTenantId(
+        supabaseClient as unknown as SupabaseClientLike,
+        user,
+      );
+    } catch (_e) {
+      fallbackTenantId = null;
+    }
+    const rows = entries
+      .map((raw) =>
+        buildTelemetryRow({
+          raw,
+          fallbackRequestId: requestId,
+          userId: user?.id ?? null,
+          fallbackTenantId,
+          clientIp,
+        }),
+      )
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+
+    if (rows.length === 0) {
+      return new Response(JSON.stringify({ success: true, inserted: 0, requestId }), {
+        headers: buildResponseHeaders(cors),
+        status: 200,
+      });
+    }
+
+    const { error } = await supabaseAdmin.from("telemetry_logs").insert(rows);
+    if (error) {
+      logger.error("Falha ao salvar log de telemetria no banco", { dbError: error });
+      throw error;
+    }
+
+    return new Response(JSON.stringify({ success: true, inserted: rows.length, requestId }), {
+      headers: buildResponseHeaders(cors),
+      status: 200,
+    });
+  } catch (error) {
+    return errorResponse(error, logger, cors);
+  }
+});

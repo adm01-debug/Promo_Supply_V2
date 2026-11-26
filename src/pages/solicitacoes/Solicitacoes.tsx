@@ -1,0 +1,541 @@
+﻿import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
+import { 
+  ClipboardList,
+  LayoutGrid,
+  List,
+  Plus,
+  Filter,
+  BarChart3,
+  TrendingUp,
+  Package,
+  TrendingDown,
+  GitBranch,
+  AlertTriangle,
+  RefreshCw
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
+import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
+import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
+import { IAAdvisor } from "@/components/compras/IAAdvisor";
+import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
+import { PageHeaderStats } from "@/components/ui/page-header";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { EnhancedSearch } from "@/components/ui/enhanced-search";
+import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
+import { useAuth } from "@/features/auth";
+import { useSolicitacoes } from "@/features/solicitacoes";
+import { useFluxosAprovacao } from "@/features/solicitacoes/hooks/useFluxosAprovacao";
+import { useEmpresaFilter } from "@/features/empresas/hooks/useEmpresaFilter";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
+import { statusConfig as uiStatusConfig } from "./solicitacoesHelpers";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+import { mapLegacyStatusToDb, adaptToLegacyFormat, posicoesDaMatriz } from "./solicitacoesHelpers";
+import { useNomesDeGestor } from "@/features/solicitacoes/hooks/useNomesDeGestor";
+import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
+import { EliteButton } from "@/components/atoms/EliteButton";
+import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
+import { motion, AnimatePresence } from "framer-motion";
+import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
+import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
+import { 
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { BulkPlanningConsole } from "@/components/compras/BulkPlanningConsole";
+
+// Tamanho da pagina da listagem: mantem o default do hook (useSolicitacoes),
+// explicito aqui para o paginador saber quando ha uma proxima pagina.
+const SOLICITACOES_PAGE_SIZE = 100;
+
+const Solicitacoes = () => {
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("todas");
+  const [tipoFilter, setTipoFilter] = useState("todos");
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
+  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const accountDefaults = useMemo(() => ({
+    searchTerm: "", statusFilter: "todas", tipoFilter: "todos",
+    advancedFilters: initialFilters as AdvancedFilters,
+  }), []);
+  const acct = useAccountFilters("solicitacoes", accountDefaults);
+  const hydratedRef = useRef(false);
+  // Latest acct in a ref so E2 below doesn't re-run when the hook returns a new object literal.
+  const acctRef = useRef(acct);
+  acctRef.current = acct;
+
+  useEffect(() => {
+    if (acct.loading || hydratedRef.current) return;
+    hydratedRef.current = true;
+    setSearchTerm(acct.filters.searchTerm);
+    setStatusFilter(acct.filters.statusFilter);
+    setTipoFilter(acct.filters.tipoFilter);
+    setAdvancedFilters(acct.filters.advancedFilters);
+  }, [acct.loading, acct.filters]);
+
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    acctRef.current.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
+  }, [searchTerm, statusFilter, tipoFilter, advancedFilters]);
+
+  const { empresaIds } = useEmpresaFilter();
+  // Pagina atual, 0-indexada como em Auditoria.tsx.
+  const [page, setPage] = useState(0);
+  // "Meus Itens" e um recorte por solicitante, nao um status: mandar 'OWN' em
+  // `status` fazia a consulta virar status=pendente.
+  const apenasMeus = statusFilter === "OWN";
+  const { solicitacoes, totalCount, loading, error, updateStatus, bulkDelete, bulkUpdateStatus, refetch } = useSolicitacoes({
+    search: searchTerm || undefined,
+    status: statusFilter !== 'todas' && !apenasMeus ? mapLegacyStatusToDb(statusFilter) : undefined,
+    solicitanteId: apenasMeus ? user?.id : undefined,
+    empresaIds,
+    page,
+    pageSize: SOLICITACOES_PAGE_SIZE,
+  });
+
+  // Trocar de filtro com uma pagina adiante aberta levava a uma tela vazia: a
+  // fatia pedida ao banco nao existe mais depois do recorte.
+  useEffect(() => {
+    setPage(0);
+  }, [searchTerm, statusFilter, tipoFilter, advancedFilters, apenasMeus, empresaIds]);
+
+  const solicitantePorId = useMemo(
+    () => new Map(solicitacoes.map((s) => [s.id, s.solicitante_id])),
+    [solicitacoes],
+  );
+
+  useRealtimeSubscription({
+    tables: ['solicitacoes'],
+    queryKeysToInvalidate: [['solicitacoes']],
+    debounceMs: 1500,
+  });
+
+  // `aprovador_id` guarda `profiles.user_id`: o nome do gestor vem por id, nao
+  // por join (nao ha FK) e nao de `observacoes`.
+  const nomesDeGestor = useNomesDeGestor(solicitacoes.map((s) => s.aprovador_id));
+  const adaptedSolicitacoes = useMemo(
+    () => solicitacoes.map((s) => adaptToLegacyFormat(s, nomesDeGestor)),
+    [solicitacoes, nomesDeGestor],
+  );
+
+  const filteredSolicitacoes = useMemo(() => {
+    return adaptedSolicitacoes.filter(s => {
+      const matchesSearch = !searchTerm || 
+        s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.produto.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = apenasMeus
+        ? solicitantePorId.get(s.id) === user?.id
+        : statusFilter === "todas" || s.status === statusFilter;
+      const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
+
+      const solicitacaoDate = new Date(s.prazoEntrega);
+      const matchesDateFrom = !advancedFilters.dateRange.from || solicitacaoDate >= new Date(advancedFilters.dateRange.from);
+      const matchesDateTo = !advancedFilters.dateRange.to || solicitacaoDate <= new Date(advancedFilters.dateRange.to);
+
+      const solicitacaoValor = s.valorTotal || 0;
+      const matchesValorMin = solicitacaoValor >= advancedFilters.valorMin;
+      const matchesValorMax = solicitacaoValor <= advancedFilters.valorMax || advancedFilters.valorMax === 100000;
+
+      return matchesSearch && matchesStatus && matchesTipo && matchesDateFrom && matchesDateTo && matchesValorMin && matchesValorMax;
+    });
+  }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters, apenasMeus, solicitantePorId, user?.id]);
+
+  const pontosMatriz = useMemo(
+    () => posicoesDaMatriz(filteredSolicitacoes.slice(0, 15)),
+    [filteredSolicitacoes],
+  );
+
+  const idsVisiveis = useMemo(() => filteredSolicitacoes.map((s) => s.id), [filteredSolicitacoes]);
+  const {
+    fluxos: fluxosAprovacao,
+    historicos: historicosAprovacao,
+    loading: fluxosLoading,
+  } = useFluxosAprovacao(idsVisiveis);
+
+  const stats = useMemo(() => {
+    const pending = filteredSolicitacoes.filter(s => ['AGUARDANDO_COTACAO', 'EM_COTACAO'].includes(s.status)).length;
+    const totalValue = filteredSolicitacoes.reduce((acc, s) => acc + (s.valorTotal || 0), 0);
+
+    return {
+      total: filteredSolicitacoes.length,
+      pending: pending,
+      value: totalValue
+    };
+  }, [filteredSolicitacoes]);
+
+  const handleStatusChange = useCallback(async (id: string, newLegacyStatus: string) => {
+    const dbStatus = mapLegacyStatusToDb(newLegacyStatus);
+    await updateStatus(id, dbStatus);
+  }, [updateStatus]);
+
+  const handleSelectChange = useCallback((id: string, selected: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (selected) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds(new Set(filteredSolicitacoes.map(s => s.id)));
+  }, [filteredSolicitacoes]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
+  const handleBulkExecute = useCallback(async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
+    if (action.id === 'delete') {
+      return await bulkDelete(itemIds);
+    }
+    const targetStatusOption = options?.['targetStatus'] as string | undefined;
+    if (action.id === 'change-status' && targetStatusOption) {
+      const dbStatus = mapLegacyStatusToDb(targetStatusOption);
+      return await bulkUpdateStatus(itemIds, dbStatus);
+    }
+    if (action.targetStatus) {
+      const dbStatus = mapLegacyStatusToDb(action.targetStatus);
+      return await bulkUpdateStatus(itemIds, dbStatus);
+    }
+    return false;
+  }, [bulkDelete, bulkUpdateStatus]);
+
+  const bulkSelectedItems = useMemo((): BulkItem[] => {
+    return filteredSolicitacoes
+      .filter(s => selectedIds.has(s.id))
+      .map(s => ({
+        id: s.id,
+        title: s.produto,
+        subtitle: s.empresa,
+        status: s.status,
+        value: s.valorTotal,
+      }));
+  }, [filteredSolicitacoes, selectedIds]);
+
+  const bulkStatusOptions = useMemo(() => {
+    return Object.entries(uiStatusConfig).map(([value, config]) => ({
+      value,
+      label: config.label,
+      color: config.color,
+    }));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <KanbanSkeleton columns={6} />
+      </div>
+    );
+  }
+
+  // Falha de carga (RLS, rede, RPC) nao e lista vazia: sem isso a tela mostrava
+  // "Nenhum registro encontrado" e o usuario concluia que nao havia nada.
+  if (error) {
+    return (
+      <ModuleErrorBoundary module="solicitacoes">
+        <ElitePageWrapper>
+          <Card className="p-10 border-rose-500/20 bg-rose-500/5 rounded-[2.5rem]">
+            <div className="flex flex-col sm:flex-row items-start gap-5">
+              <div className="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-400 shrink-0">
+                <AlertTriangle className="w-7 h-7" />
+              </div>
+              <div className="space-y-3">
+                <h2 className="text-2xl font-black text-white tracking-tight uppercase">Não foi possível carregar as solicitações</h2>
+                <p className="text-sm text-zinc-400">
+                  A lista vazia não significa que não há solicitações: a consulta falhou. Nenhum registro foi alterado.
+                </p>
+                <p className="text-xs font-mono text-rose-300 bg-rose-500/10 rounded-xl p-3 break-all">{error}</p>
+                <Button variant="outline" className="gap-2" onClick={() => { void refetch(); }}>
+                  <RefreshCw className="w-4 h-4" /> Tentar de novo
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </ElitePageWrapper>
+      </ModuleErrorBoundary>
+    );
+  }
+
+  return (
+    <ModuleErrorBoundary module="solicitacoes">
+      <ElitePageWrapper>
+        <div className="space-y-10 pb-20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-violet-500/10 rounded-[2rem] flex items-center justify-center text-violet-400 shadow-inner">
+                <ClipboardList className="w-8 h-8" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Fluxo de Compras</h1>
+                <div className="flex items-center gap-3 mt-3">
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{totalCount > filteredSolicitacoes.length ? `${filteredSolicitacoes.length} de ${totalCount}` : filteredSolicitacoes.length} Registros Ativos</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Ciclo Total de Suprimentos</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="bg-white/[0.03] p-1 rounded-2xl border border-white/5 flex">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2 text-zinc-400 hover:text-white"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <GitBranch className="w-4 h-4" /> REGRAS
+                      </span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="sm:max-w-4xl bg-[#0a0a0f] border-white/10 overflow-y-auto">
+                    <SheetHeader className="mb-6">
+                      <SheetTitle className="text-2xl font-black text-white uppercase tracking-tight">Matriz de Aprovação</SheetTitle>
+                      <SheetDescription className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest">
+                        Configure as regras e delegações para o fluxo de aprovação
+                      </SheetDescription>
+                    </SheetHeader>
+                    <DynamicApprovalMatrix />
+                  </SheetContent>
+                </Sheet>
+
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setViewMode('kanban')}
+                  className={cn(
+                    "rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2",
+                    viewMode === 'kanban' ? "bg-violet-500 text-white" : "text-zinc-400 hover:text-white"
+                  )}
+                >
+                  <LayoutGrid className="w-4 h-4" /> KANBAN
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setViewMode('list')}
+                  className={cn(
+                    "rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2",
+                    viewMode === 'list' ? "bg-violet-500 text-white" : "text-zinc-400 hover:text-white"
+                  )}
+                >
+                  <List className="w-4 h-4" /> LIST
+                </Button>
+              </div>
+              <NovaSolicitacaoModal onSuccess={refetch} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <ExecutiveMetricCard
+              title="Total de Solicitações"
+              value={stats.total}
+              icon={Package}
+              delay={0}
+            />
+            <ExecutiveMetricCard
+              title="Aguardando Cotação"
+              value={stats.pending}
+              icon={BarChart3}
+              delay={1}
+              urgent={stats.pending > 5 ? stats.pending : 0}
+            />
+            <ExecutiveMetricCard
+              title="Volume Estimado"
+              value={stats.value}
+              icon={TrendingUp}
+              format="currency"
+              delay={2}
+            />
+          </div>
+
+          <IAAdvisor stats={stats} />
+
+          <BulkPlanningConsole />
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-2xl shadow-2xl"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="md:col-span-2">
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Busca Inteligente Global</Label>
+                <EnhancedSearch
+                  placeholder="ID, item ou nome da empresa..."
+                  onSearch={(q) => setSearchTerm(q)}
+                  className="bg-white/[0.03] border-white/10 h-12 rounded-xl text-white font-bold"
+                />
+              </div>
+              <div>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Filtro de Status</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-violet-400" />
+                      <SelectValue placeholder="Todos os Status" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
+                    <SelectItem value="todas" className="text-xs font-bold py-2.5">Todas as Solicitações</SelectItem>
+                    <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pendentes</SelectItem>
+                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">Em Cotação</SelectItem>
+                    <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Aprovadas</SelectItem>
+                    <SelectItem value="OWN" className="text-xs font-bold py-2.5 text-violet-400">Minhas Solicitações</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-end gap-3">
+                 <Button 
+                   variant="outline" 
+                   onClick={() => setStatusFilter("OWN")}
+                   className={cn(
+                     "h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest gap-2 transition-all",
+                     statusFilter === "OWN" ? "bg-violet-500 text-white border-none" : "bg-white/[0.03] border-white/10 text-zinc-400"
+                   )}
+                 >
+                   Meus Itens
+                 </Button>
+                 <FiltrosAvancados filters={advancedFilters} onFiltersChange={setAdvancedFilters} onApply={() => {}} />
+              </div>
+            </div>
+          </motion.div>
+
+          <AnimatePresence mode="sync">
+            {viewMode === 'kanban' ? (
+              <motion.div
+                key="kanban"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.4 }}
+              >
+                <SolicitacaoKanban 
+                  solicitacoes={filteredSolicitacoes} 
+                  onStatusChange={handleStatusChange} 
+                  selectable
+                  selectedIds={selectedIds}
+                  onSelectChange={handleSelectChange}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6"
+              >
+                {/* Step 9: Strategic Priority Matrix Visualization */}
+                <Card className="p-8 bg-white/[0.02] border-white/5 rounded-[2.5rem] overflow-hidden relative">
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h4 className="text-sm font-black text-white uppercase tracking-widest">Matriz de Prioridade Neural</h4>
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Crítico vs Impacto Financeiro</p>
+                    </div>
+                    <Badge className="bg-violet-500/10 text-violet-400 border-none font-black text-[10px]">IA Analysis</Badge>
+                  </div>
+                  <div className="h-64 w-full border-l-2 border-b-2 border-white/5 relative bg-gradient-to-tr from-rose-500/5 via-transparent to-emerald-500/5">
+                    <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-black uppercase text-zinc-600 tracking-widest">URGÊNCIA NEURAL</div>
+                    <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 text-[8px] font-black uppercase text-zinc-600 tracking-widest">IMPACTO FINANCEIRO</div>
+                    
+                    {/* Simplified Scatter Plot Dots */}
+                    {pontosMatriz.map((ponto, i) => (
+                      <motion.div
+                        key={ponto.id}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="absolute w-3 h-3 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.5)] cursor-pointer hover:scale-150 transition-transform"
+                        title={`${ponto.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} - ${ponto.diasRestantes === null ? 'sem prazo definido' : `${ponto.diasRestantes} dia(s) ate a data necessaria`}`}
+                        style={{ left: `${ponto.esquerda}%`, bottom: `${ponto.base}%` }}
+                      />
+                    ))}
+                  </div>
+                </Card>
+
+                <EliteCardGrid columns={1}>
+                  {filteredSolicitacoes.length > 0 ? (
+                    filteredSolicitacoes.map(s => (
+                      <SolicitacaoCard 
+                        key={s.id} 
+                        solicitacao={s} 
+                        selectable
+                        selected={selectedIds.has(s.id)}
+                        onSelectChange={(selected) => handleSelectChange(s.id, selected)}
+                        fluxo={fluxosAprovacao[s.id] ?? null}
+                        fluxoLoading={fluxosLoading}
+                        historicoAprovacao={historicosAprovacao[s.id] ?? []}
+                      />
+                    ))
+                  ) : (
+                    <IllustratedEmptyState type="orders" title="Nenhum registro encontrado" description="Ajuste seus filtros para refinar os resultados." />
+                  )}
+                </EliteCardGrid>
+
+                {(page > 0 || totalCount > SOLICITACOES_PAGE_SIZE) && (
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">
+                      Mostrando {filteredSolicitacoes.length} de {totalCount} solicitações
+                    </p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>
+                        Anterior
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={(page + 1) * SOLICITACOES_PAGE_SIZE >= totalCount}
+                        onClick={() => setPage(p => p + 1)}
+                      >
+                        Próxima
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+            <EnhancedBulkActionsBar
+              entityType="solicitacoes"
+              selectedItems={bulkSelectedItems}
+              totalCount={filteredSolicitacoes.length}
+              onSelectAll={handleSelectAll}
+              onDeselectAll={handleDeselectAll}
+              onExecute={handleBulkExecute}
+              isAllSelected={selectedIds.size === filteredSolicitacoes.length && filteredSolicitacoes.length > 0}
+              statusOptions={bulkStatusOptions}
+            />
+          </AnimatePresence>
+        </div>
+      </ElitePageWrapper>
+    </ModuleErrorBoundary>
+  );
+};
+
+export default Solicitacoes;

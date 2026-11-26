@@ -1,0 +1,471 @@
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import {
+  Package, Check, AlertCircle, Loader2, Search, Camera,
+  WifiOff, Wifi, RefreshCw, ChevronRight, CheckCircle2,
+  ClipboardCheck, X, Save, Truck, Calendar, Building2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PageHeader } from "@/components/ui/page-header";
+import { toast } from "@/lib/feedbackToast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { ptBR } from "date-fns/locale/pt-BR";
+import { ReceivingFormView } from "./ReceivingFormView";
+
+import {
+  type PendingOrder,
+  type OrderItem,
+  type ReceivingEntry,
+  OFFLINE_STORAGE_KEY,
+  getOfflineEntries,
+  saveOfflineEntries,
+  getCachedOrders,
+  saveCachedOrders,
+  statusFromReceived,
+  aplicarStatusRecebimento,
+  buildReceivingObservation,
+  gravarItensRecebidos,
+} from "./recebimentoHelpers";
+import type { CamposStatusPedido } from "./recebimentoHelpers";
+import { createComplementaryOrder } from "./pedidoComplementar";
+
+const atualizarPedido = async (pedidoId: string, campos: CamposStatusPedido) =>
+  await supabase.from("pedidos").update(campos).eq("id", pedidoId);
+
+/** `.select("id")` devolve as linhas afetadas: 0 linhas = a RLS filtrou em silencio. */
+const atualizarItem = async (itemId: string, quantidade: number) =>
+  await supabase
+    .from("pedido_itens")
+    .update({ quantidade_recebida: quantidade })
+    .eq("id", itemId)
+    .select("id");
+
+export default function RecebimentoOffline() {
+  const { user } = useAuth();
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const isOnlineRef = useRef(isOnline);
+  isOnlineRef.current = isOnline;
+  const [orders, setOrders] = useState<PendingOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState<PendingOrder | null>(null);
+  const [receivedQty, setReceivedQty] = useState<Record<string, number>>({});
+  const [itemNotes, setItemNotes] = useState<Record<string, string>>({});
+  const [generalNote, setGeneralNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [offlineEntries, setOfflineEntries] = useState<ReceivingEntry[]>(getOfflineEntries);
+  const [generateComplementary, setGenerateComplementary] = useState(true);
+
+  // Online/offline detection
+  useEffect(() => {
+    const handleOnline = () => { setIsOnline(true); toast.success("Conexão restaurada!"); };
+    const handleOffline = () => { setIsOnline(false); toast.warning("Sem conexão — modo offline ativo"); };
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  // Fetch pending orders
+  const fetchOrders = useCallback(async () => {
+    if (!isOnlineRef.current) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data: pedidos, error } = await supabase
+        .from("pedidos")
+        .select(`
+          id, numero, valor_total, status, observacoes, data_previsao,
+          fornecedor:fornecedores(razao_social),
+          pedido_itens(id, descricao, quantidade, quantidade_recebida, unidade, valor_unitario, pim_product_id, pim_variant_id, codigo_fornecedor, ncm, ipi_rate)
+        `)
+        .in("status", ["aprovado", "enviado", "em_transito", "parcial"])
+        .order("data_previsao", { ascending: true });
+
+      if (error) throw error;
+
+      const mapped: PendingOrder[] = (pedidos || []).map((p) => ({
+        id: p.id,
+        numero: p.numero,
+        fornecedor_nome: (p.fornecedor as { razao_social?: string } | null)?.razao_social || "Fornecedor",
+        data_previsao: p.data_previsao,
+        valor_total: p.valor_total || 0,
+        status: p.status,
+        observacoes: p.observacoes,
+        itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number; pim_product_id: string | null; pim_variant_id: string | null; codigo_fornecedor: string | null; ncm: string | null; ipi_rate: number | null }>).map((i) => ({
+          id: i.id,
+          descricao: i.descricao,
+          quantidade: i.quantidade,
+          quantidade_recebida: i.quantidade_recebida,
+          unidade: i.unidade,
+          valor_unitario: i.valor_unitario,
+          pim_product_id: i.pim_product_id,
+          pim_variant_id: i.pim_variant_id,
+          codigo_fornecedor: i.codigo_fornecedor,
+          ncm: i.ncm,
+          ipi_rate: i.ipi_rate,
+        })),
+      }));
+
+      setOrders(mapped);
+      // Cache for offline use
+      saveCachedOrders(mapped);
+    } catch (err: unknown) {
+      // Try cached data
+      const cached = getCachedOrders();
+      if (cached) {
+        setOrders(cached);
+        toast.info("Usando dados em cache");
+      } else {
+        toast.error("Erro ao buscar pedidos");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  // On mount, load cached orders if offline
+  useEffect(() => {
+    if (!isOnline) {
+      const cached = getCachedOrders();
+      if (cached) {
+        setOrders(cached);
+        setLoading(false);
+      }
+    }
+  }, [isOnline]);
+
+  const filteredOrders = useMemo(() => {
+    if (!search) return orders;
+    const q = search.toLowerCase();
+    return orders.filter(o =>
+      o.numero.toLowerCase().includes(q) || o.fornecedor_nome.toLowerCase().includes(q)
+    );
+  }, [orders, search]);
+
+  const selectOrder = (order: PendingOrder) => {
+    setSelectedOrder(order);
+    const initial: Record<string, number> = {};
+    const notes: Record<string, string> = {};
+    order.itens.forEach(item => {
+      initial[item.id] = item.quantidade_recebida || 0;
+      notes[item.id] = "";
+    });
+    setReceivedQty(initial);
+    setItemNotes(notes);
+    setGeneralNote("");
+  };
+
+  const totalOrdered = selectedOrder?.itens.reduce((s, i) => s + i.quantidade, 0) || 0;
+  const totalReceived = Object.values(receivedQty).reduce((s, q) => s + q, 0);
+  const progress = totalOrdered > 0 ? (totalReceived / totalOrdered) * 100 : 0;
+  const isComplete = selectedOrder?.itens.every(i => (receivedQty[i.id] || 0) >= i.quantidade) || false;
+
+  const handleSave = useCallback(async () => {
+    if (!selectedOrder) return;
+    setSaving(true);
+
+    const entry: ReceivingEntry = {
+      pedido_id: selectedOrder.id,
+      pedido_numero: selectedOrder.numero,
+      items: selectedOrder.itens.map(item => ({
+        item_id: item.id,
+        quantidade_recebida: receivedQty[item.id] || 0,
+        observacao: itemNotes[item.id] || "",
+      })),
+      observacao_geral: generalNote,
+      timestamp: new Date().toISOString(),
+      synced: false,
+    };
+
+    if (isOnline) {
+      try {
+        const erroItens = await gravarItensRecebidos(entry.items, atualizarItem);
+        if (erroItens) {
+          // A RLS filtra em silencio e o supabase-js nao lanca: guarda a entrada para
+          // o sync tentar de novo em vez de anunciar recebimento registrado.
+          const entries = [...offlineEntries, entry];
+          saveOfflineEntries(entries);
+          setOfflineEntries(entries);
+          toast.warning(`Recebimento nao registrado: ${erroItens}`);
+          setSaving(false);
+          return;
+        }
+
+        const newStatus = statusFromReceived(selectedOrder.itens, receivedQty);
+        if (newStatus) {
+          const erroStatus = await aplicarStatusRecebimento(
+            atualizarPedido,
+            selectedOrder.id,
+            selectedOrder.status,
+            newStatus,
+            buildReceivingObservation(itemNotes, generalNote, selectedOrder.observacoes ?? null),
+          );
+          if (erroStatus) {
+            // A quantidade foi gravada, mas o pedido nao avancou: guarda a entrada
+            // para o sync tentar de novo em vez de anunciar recebimento registrado.
+            const entries = [...offlineEntries, entry];
+            saveOfflineEntries(entries);
+            setOfflineEntries(entries);
+            toast.warning(`Quantidade salva, mas o status do pedido nao mudou: ${erroStatus}`);
+            setSaving(false);
+            return;
+          }
+        }
+
+        entry.synced = true;
+        toast.success(isComplete ? "Recebimento completo registrado!" : "Recebimento parcial registrado!");
+
+        if (!isComplete && totalReceived > 0 && generateComplementary) {
+          const result = await createComplementaryOrder(selectedOrder, receivedQty);
+          if (result.created) {
+            toast.info(`Pedido complementar ${result.numero} criado com ${result.itemCount} item(ns) pendente(s)`);
+          } else if (result.reason === "no-tenant") {
+            toast.warning("Pedido complementar nao gerado: pedido original sem empresa definida");
+          } else if (result.reason === "error") {
+            toast.warning("Recebimento salvo, mas o pedido complementar falhou: " + (result.error || "erro desconhecido"));
+          }
+        }
+
+        setSelectedOrder(null);
+        fetchOrders();
+      } catch (err: unknown) {
+        // Save offline if sync fails
+        const entries = [...offlineEntries, entry];
+        saveOfflineEntries(entries);
+        setOfflineEntries(entries);
+        toast.warning("Salvo localmente — sincronizará quando a conexão retornar");
+      }
+    } else {
+      const entries = [...offlineEntries, entry];
+      saveOfflineEntries(entries);
+      setOfflineEntries(entries);
+      toast.info("Recebimento salvo offline — sincronizará automaticamente");
+      setSelectedOrder(null);
+    }
+
+    setSaving(false);
+  }, [selectedOrder, receivedQty, itemNotes, generalNote, isOnline, isComplete, totalReceived, offlineEntries, fetchOrders, generateComplementary]);
+
+  // Auto-sync when coming back online
+  const syncOfflineEntries = useCallback(async () => {
+    const unsynced = offlineEntries.filter(e => !e.synced);
+    if (unsynced.length === 0 || !isOnline) return;
+
+    setSyncing(true);
+    let syncedCount = 0;
+
+    for (const entry of unsynced) {
+      try {
+        const erroItens = await gravarItensRecebidos(entry.items, atualizarItem);
+        if (erroItens) throw new Error(erroItens);
+
+        const order = orders.find(o => o.id === entry.pedido_id);
+        // Sem o pedido em memoria nao da para comparar quantidade pedida x recebida:
+        // nesse caso o status fica como esta em vez de arriscar um "entregue".
+        const newStatus = order
+          ? statusFromReceived(order.itens, Object.fromEntries(entry.items.map(i => [i.item_id, i.quantidade_recebida])))
+          : undefined;
+        if (newStatus) {
+          const erroStatus = await aplicarStatusRecebimento(
+            atualizarPedido,
+            entry.pedido_id,
+            (order as PendingOrder).status,
+            newStatus,
+            buildReceivingObservation(
+              Object.fromEntries(entry.items.map(i => [i.item_id, i.observacao])),
+              entry.observacao_geral,
+              order?.observacoes ?? null,
+            ),
+          );
+          if (erroStatus) throw new Error(erroStatus);
+        }
+
+        entry.synced = true;
+        syncedCount++;
+      } catch (err: unknown) {
+        // Will retry next time
+      }
+    }
+
+    // Sem nenhuma entrada sincronizada nada muda: reescrever o array aqui
+    // re-dispararia o efeito de sync em laco enquanto o status falhar.
+    if (syncedCount > 0) {
+      saveOfflineEntries(offlineEntries);
+      setOfflineEntries([...offlineEntries]);
+
+      toast.success(`${syncedCount} recebimento(s) sincronizado(s)!`);
+      fetchOrders();
+    }
+    setSyncing(false);
+  }, [offlineEntries, isOnline, fetchOrders, orders]);
+
+  useEffect(() => {
+    if (isOnline && offlineEntries.some(e => !e.synced)) {
+      syncOfflineEntries();
+    }
+  }, [isOnline, syncOfflineEntries, offlineEntries]);
+
+  const unsyncedCount = offlineEntries.filter(e => !e.synced).length;
+
+  return (
+    
+      <div className="space-y-6 p-4 md:p-6 max-w-4xl mx-auto">
+        {/* Offline Banner */}
+        <div className={cn(
+          "flex items-center justify-between p-3 rounded-lg border transition-colors",
+          isOnline ? "bg-success/5 border-success/20" : "bg-warning/10 border-warning/30"
+        )}>
+          <div className="flex items-center gap-2">
+            {isOnline ? <Wifi className="w-4 h-4 text-success" /> : <WifiOff className="w-4 h-4 text-warning" />}
+            <span className="text-sm font-medium">
+              {isOnline ? "Online — dados sincronizados" : "Offline — salvando localmente"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {unsyncedCount > 0 && (
+              <Badge variant="outline" className="text-warning border-warning/30">
+                {unsyncedCount} pendente{unsyncedCount > 1 ? "s" : ""}
+              </Badge>
+            )}
+            {isOnline && unsyncedCount > 0 && (
+              <Button size="sm" variant="outline" onClick={syncOfflineEntries} disabled={syncing}>
+                {syncing ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                <span className="ml-1">Sincronizar</span>
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <PageHeader
+          title="Recebimento de Materiais"
+          description="Conferência de entregas — funciona offline"
+          icon={ClipboardCheck}
+        />
+
+        {/* Order Selection View */}
+        {!selectedOrder ? (
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar pedido por número ou fornecedor..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 w-full" />)}
+              </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="font-medium">Nenhum pedido pendente de recebimento</p>
+                <p className="text-sm mt-1">Todos os pedidos foram recebidos</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filteredOrders.map(order => {
+                  const itemsTotal = order.itens.reduce((s, i) => s + i.quantidade, 0);
+                  const itemsReceived = order.itens.reduce((s, i) => s + (i.quantidade_recebida || 0), 0);
+                  const orderProgress = itemsTotal > 0 ? (itemsReceived / itemsTotal) * 100 : 0;
+
+                  return (
+                    <Card
+                      key={order.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Selecionar pedido ${order.numero}`}
+                      className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      onClick={() => selectOrder(order)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectOrder(order);
+                        }
+                      }}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-mono text-sm font-semibold">{order.numero}</span>
+                              <Badge variant="outline" className="text-xs">
+                                {order.status === "parcial" ? "Receb. Parcial" : "Aguardando"}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Building2 className="w-3 h-3" /> {order.fornecedor_nome}
+                              </span>
+                              {order.data_previsao && (
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  {format(parseISO(order.data_previsao), "dd/MM/yyyy")}
+                                </span>
+                              )}
+                            </div>
+                            {orderProgress > 0 && (
+                              <div className="mt-2 flex items-center gap-2">
+                                <Progress value={orderProgress} className="h-1.5 flex-1" />
+                                <span className="text-xs text-muted-foreground">{Math.round(orderProgress)}%</span>
+                              </div>
+                            )}
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ) : (
+          <ReceivingFormView
+            order={selectedOrder}
+            receivedQty={receivedQty}
+            itemNotes={itemNotes}
+            generalNote={generalNote}
+            saving={saving}
+            isOnline={isOnline}
+            onBack={() => setSelectedOrder(null)}
+            onSetReceivedQty={setReceivedQty}
+            onSetItemNotes={setItemNotes}
+            onSetGeneralNote={setGeneralNote}
+            onSave={handleSave}
+            totalOrdered={totalOrdered}
+            totalReceived={totalReceived}
+            progress={progress}
+            isComplete={isComplete}
+            generateComplementary={generateComplementary}
+            onSetGenerateComplementary={setGenerateComplementary}
+          />
+        )}
+      </div>
+    
+  );
+}

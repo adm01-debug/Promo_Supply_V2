@@ -1,0 +1,164 @@
+import { useState, useEffect, useCallback } from 'react';
+import { logger } from '@/lib/logger';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/features/auth';
+import { toast } from '@/lib/feedbackToast';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+
+export interface ContactNote {
+  id: string;
+  contact_id: string;
+  fornecedor_id: string | null;
+  author_id: string | null;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateContactNoteInput {
+  contact_id: string;
+  fornecedor_id?: string;
+  content: string;
+}
+
+export function useContactNotes(contactId?: string, fornecedorId?: string) {
+  const { user } = useAuth();
+  const [notes, setNotes] = useState<ContactNote[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchNotes = useCallback(async () => {
+    if (!user) {
+      setNotes([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      let query = supabase
+        .from('contact_notes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (contactId) {
+        query = query.eq('contact_id', contactId);
+      }
+
+      if (fornecedorId) {
+        query = query.eq('fornecedor_id', fornecedorId);
+      }
+
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) throw fetchError;
+
+      setNotes((data as ContactNote[]) || []);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Error fetching contact notes:', { error: err });
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, contactId, fornecedorId]);
+
+  // Create new note
+  const createNote = useCallback(async (input: CreateContactNoteInput) => {
+    if (!user) {
+      toast.error('Você precisa estar logado');
+      return null;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('contact_notes')
+        .insert({
+          contact_id: input.contact_id,
+          fornecedor_id: input.fornecedor_id,
+          author_id: user.id,
+          content: input.content,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast.success('Nota adicionada!');
+      fetchNotes();
+      return data as ContactNote;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Error creating note:', { error: err });
+      toast.error('Erro ao adicionar nota: ' + errorMessage);
+      return null;
+    }
+  }, [user, fetchNotes]);
+
+  // Update note
+  const updateNote = useCallback(async (id: string, content: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_notes')
+        .update({ content })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast.success('Nota atualizada!');
+      fetchNotes();
+      return true;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Error updating note:', { error: err });
+      toast.error('Erro ao atualizar nota: ' + errorMessage);
+      return false;
+    }
+  }, [fetchNotes]);
+
+  // Delete note
+  const deleteNote = useCallback(async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_notes')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast.success('Nota excluída!');
+      fetchNotes();
+      return true;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Error deleting note:', { error: err });
+      toast.error('Erro ao excluir nota: ' + errorMessage);
+      return false;
+    }
+  }, [fetchNotes]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchNotes();
+  }, [fetchNotes]);
+
+  useRealtimeSubscription({
+    tables: ['contact_notes'],
+    onInsert: () => fetchNotes(),
+    onUpdate: () => fetchNotes(),
+    onDelete: () => fetchNotes(),
+    enabled: !!user,
+  });
+
+  return {
+    notes,
+    loading,
+    error,
+    refetch: fetchNotes,
+    createNote,
+    updateNote,
+    deleteNote,
+  };
+}

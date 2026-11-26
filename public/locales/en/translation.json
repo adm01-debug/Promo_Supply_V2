@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "actions": "Actions",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "status": "Status",
+    "date": "Date",
+    "total": "Total",
+    "value": "Value",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "description": "Description",
+    "observations": "Observations",
+    "attachments": "Attachments",
+    "history": "History",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "welcome": "Welcome",
+    "dashboard": "Dashboard",
+    "procurement": "Procurement",
+    "suppliers": "Suppliers",
+    "products": "Products",
+    "contracts": "Contracts",
+    "reports": "Reports",
+    "audit": "Audit",
+    "security": "Security"
+  },
+  "dashboard": {
+    "title": "Procurement Dashboard",
+    "kpis": {
+      "total_requests": "Total Requests",
+      "pending_approval": "Pending Approval",
+      "active_quotes": "Active Quotes",
+      "completed_orders": "Completed Orders",
+      "total_spend": "Total Spend",
+      "saving": "Total Saving",
+      "sla": "SLA Rate",
+      "subtitles": {
+        "pending": "Pending requests",
+        "volume": "Total billed",
+        "economy": "of total volume",
+        "sla": "Service level"
+      }
+    }
+  },
+  "navigation": {
+    "overview": "Overview",
+    "operations": "Operations",
+    "finance": "Finance",
+    "suppliers": "Suppliers",
+    "analytics": "Analytics",
+    "admin": "Admin"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "errors": {
+    "generic": "An unexpected error occurred.",
+    "network": "Connection error. Check your internet.",
+    "unauthorized": "Session expired. Please login again.",
+    "not_found": "Record not found.",
+    "forbidden": "You don't have permission for this action."
+  }
+}

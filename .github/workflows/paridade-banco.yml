@@ -1,0 +1,102 @@
+# docs:
+#   gatilho: toda segunda 09:00 UTC (06:00 em Sao Paulo), dispatch manual e push em main que toque o verificador ou a allowlist
+#   prova: o job roda scripts/ci/paridade-migrations-banco.sql no banco de producao e compara a saida com o que supabase/migrations/ declara
+#   falha: o check fica vermelho quando sobra objeto declarado que nao existe no banco e nao esta na allowlist
+#   avisa: abre issue com o label `paridade-banco` (ou comenta na issue aberta) com o relatorio e o link do run, atribuida ao dono e com mencao a ele -- o GitHub converte isso em e-mail
+# nao-e-bug:
+#   - objeto-renomeado: politica/indice que mudou de nome nao esta "faltando"; registre a excecao na allowlist com o nome novo como motivo
+#   - secret-ausente: sem SUPABASE_DB_URL o job falha fechado de proposito -- relatar paridade sem ler o banco seria mentira
+# ==================================================================
+# Paridade entre supabase/migrations/ e o banco de producao.
+#
+# Por que existe: `supabase db push` roda fora deste repositorio, entao uma
+# migration podia ficar no git sem nunca ter sido aplicada e ninguem notava.
+# Em 17/11/2026 uma varredura manual achou 91 objetos nessa situacao (indices,
+# gatilhos de compliance, funcoes de cron). Este workflow faz aquela varredura
+# sozinho, toda semana, e abre issue quando encontra divergencia.
+#
+# Excecoes conhecidas ficam em scripts/ci/paridade-migrations-banco.allowlist.json
+# com motivo verificado — objeto ausente sem entrada la quebra o job de proposito.
+name: Paridade migrations x banco (semanal)
+
+on:
+  schedule:
+    # Segunda-feira, 09:00 UTC = 06:00 em Sao Paulo.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+  # Mudanca no proprio verificador ou na allowlist precisa ser conferida na hora,
+  # senao a allowlist so e validada na semana seguinte.
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/ci/paridade-migrations-banco.*'
+      - '.github/workflows/paridade-banco.yml'
+
+concurrency:
+  group: paridade-banco
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  paridade:
+    name: Comparar migrations com o banco real
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Conferir que o psql existe no runner
+        run: psql --version
+
+      - name: Coletar inventario do banco
+        env:
+          # Session pooler (porta 5432) com role somente-leitura. A conexao
+          # direta db.<ref>.supabase.co e' so IPv6 e o runner nao alcanca.
+          PGCONNECT_TIMEOUT: '20'
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_DB_URL}" ]; then
+            echo "::error::secret SUPABASE_DB_URL ausente — sem ele nao da para afirmar paridade."
+            exit 1
+          fi
+          psql "${SUPABASE_DB_URL}" -v ON_ERROR_STOP=1 -tAf scripts/ci/paridade-migrations-banco.sql > banco.json
+          test -s banco.json
+
+      - name: Comparar
+        id: comparar
+        run: |
+          set -uo pipefail
+          node scripts/ci/paridade-migrations-banco.mjs --banco banco.json | tee relatorio.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir ou atualizar issue de divergencia
+        if: steps.comparar.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create paridade-banco --color B60205 --description "Migration declarada que nao existe no banco" 2>/dev/null || true
+          # A mencao e o assignee sao o canal de aviso: o GitHub manda e-mail para o dono
+          # ao ser atribuido ou citado. Sem isso a issue fica so na aba Issues e ninguem ve.
+          corpo="$(printf '@%s\n\nObjetos declarados em \x60supabase/migrations/\x60 que NAO existem no banco de producao.\n\nOu a migration nunca foi aplicada, ou a excecao precisa entrar em \x60scripts/ci/paridade-migrations-banco.allowlist.json\x60 com motivo.\n\n\x60\x60\x60\n%s\n\x60\x60\x60\n\nRun: %s/%s/actions/runs/%s\n' "$GITHUB_REPOSITORY_OWNER" "$(cat relatorio.txt)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+          atual="$(gh issue list --label paridade-banco --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$atual" ]; then
+            gh issue comment "$atual" --body "$corpo"
+          else
+            # `--assignee` nao pode derrubar o job: perder o relatorio por causa do aviso
+            # seria pior que o aviso faltar. A mencao no corpo ja garante o e-mail.
+            gh issue create --title "Paridade migrations x banco: divergencia detectada" --label paridade-banco --assignee "$GITHUB_REPOSITORY_OWNER" --body "$corpo" \
+              || gh issue create --title "Paridade migrations x banco: divergencia detectada" --label paridade-banco --body "$corpo"
+          fi
+
+      - name: Falhar quando houver divergencia
+        if: steps.comparar.outputs.status != '0'
+        run: exit 1

@@ -1,0 +1,95 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "actions": "Acciones",
+    "confirm": "Confirmar",
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Aviso",
+    "info": "Información",
+    "status": "Estado",
+    "date": "Fecha",
+    "total": "Total",
+    "value": "Valor",
+    "quantity": "Cantidad",
+    "unit": "Unidad",
+    "description": "Descripción",
+    "observations": "Observaciones",
+    "attachments": "Adjuntos",
+    "history": "Historial",
+    "notifications": "Notificaciones",
+    "profile": "Perfil",
+    "settings": "Configuraciones",
+    "logout": "Salir",
+    "login": "Entrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "all": "Todos",
+    "none": "Ninguno",
+    "yes": "Sí",
+    "no": "No",
+    "welcome": "Bienvenido",
+    "dashboard": "Tablero",
+    "procurement": "Compras",
+    "suppliers": "Proveedores",
+    "products": "Productos",
+    "contracts": "Contratos",
+    "reports": "Informes",
+    "audit": "Auditoría",
+    "security": "Seguridad",
+    "new": "Nuevo"
+  },
+  "catalog": {
+    "title": "Catálogo de Productos",
+    "subtitle": "Gestione productos, precios y categorías"
+  },
+  "dashboard": {
+    "title": "Tablero de Compras",
+    "kpis": {
+      "total_requests": "Total Solicitudes",
+      "pending_approval": "Esperando Cotización",
+      "active_quotes": "Cotizaciones Activas",
+      "completed_orders": "Pedidos Completados",
+      "total_spend": "Volumen en el Período",
+      "saving": "Ahorro Total",
+      "sla": "Tasa SLA",
+      "subtitles": {
+        "pending": "Solicitudes pendientes",
+        "volume": "Pedidos emitidos en el período",
+        "economy": "del volumen total",
+        "sla": "Nivel de servicio"
+      }
+    }
+  },
+  "navigation": {
+    "overview": "Vista General",
+    "operations": "Operaciones",
+    "finance": "Finanzas",
+    "suppliers": "Proveedores",
+    "analytics": "Analíticas",
+    "admin": "Admin"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "cancelled": "Cancelado",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "errors": {
+    "generic": "Ocurrió un error inesperado.",
+    "network": "Error de conexión. Verifique su internet.",
+    "unauthorized": "Sesión expirada. Inicie sesión nuevamente.",
+    "not_found": "Registro no encontrado.",
+    "forbidden": "No tiene permiso para esta acción."
+  }
+}

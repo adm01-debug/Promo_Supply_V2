@@ -1,0 +1,18 @@
+{
+  "aviso": "Baseline de componentes orfaos de src/. Orfao novo reprova o guard (etapa 274).",
+  "total_componentes": 257,
+  "orfaos": [
+    "src/components/atoms/EliteImage.tsx",
+    "src/components/atoms/PreloadLink.tsx",
+    "src/components/compras/HistoricoComprasModal.tsx",
+    "src/components/compras/OrderPreviewModal.tsx",
+    "src/components/fornecedores/FornecedorMobileCard.tsx",
+    "src/components/molecules/EliteFormField.tsx",
+    "src/components/organisms/Organism.tsx",
+    "src/components/security/PasswordStrengthIndicator.tsx",
+    "src/components/ui/form.tsx",
+    "src/components/ui/kbd.tsx",
+    "src/components/ui/sidebar.tsx",
+    "src/components/ui/status-indicators.tsx"
+  ]
+}

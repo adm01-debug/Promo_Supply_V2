@@ -1,0 +1,220 @@
+# docs:
+#   gatilho: push em main/develop e pull_request para main
+#   prova: lint, typecheck, guard de integridade e de fatos do AGENTS.md (PR e push), Vitest do front, testes Deno das edges e E2E Playwright
+#   falha: o check fica vermelho. A `main` TEM branch protection: o check obrigatorio e "Contratos da automacao local"; os demais o mergeador le no PR
+#   avisa: ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml
+# nao-e-bug:
+#   - nome-do-arquivo: o `name:` ainda e "Freight Quest CI/CD", herdado de outro projeto; renomear quebraria a lista de `workflows:` do notifica-falha-main.yml, que casa por nome
+#   - deno-faixa-flutuante: `deno-version: v2.x` nao e versao fixa de proposito, e por isso deno NAO esta em .github/toolchain.json. A faixa precisa ser v2.x: o runtime das edge functions e Deno 2.x e o codigo usa tipagem de TS >= 5.7 (Uint8Array generico), que o Deno 1.x rejeita com TS2315
+#   - e2e-com-placeholder: sem os secrets VITE_*, o E2E sobe o dev server com valores de placeholder e falha nos fluxos logados
+name: Freight Quest CI/CD
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-gate:
+    name: Quality Gate (Lint, Typecheck, RLS Audit)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # depth 2: o guard de fatos compara AGENTS.md com HEAD~1 quando o gatilho e push
+          fetch-depth: 2
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      # As suites de scripts/ rodam no job `suites` do guards.yml, que cobre
+      # `scripts/ci/*.unit.mjs` E `scripts/lib/*.test.mjs` e ainda roda o
+      # check-test-inventory.mjs (que reprova suite sem passo em workflow). Rodar aqui
+      # tambem pagava o mesmo minuto de Actions duas vezes por PR, em repo privado.
+
+      - name: Integrity Guard AGENTS.md (integridade + fatos)
+        run: |
+                # PR: compara com a base da PR. Push: compara com HEAD~1, para que uma afirmacao falsa
+                # em AGENTS.md nao chegue na main sem ninguem ver.
+                if [ "${{ github.event_name }}" = "pull_request" ]; then
+                  git fetch origin ${{ github.base_ref }} --depth=1
+                  BASE="origin/${{ github.base_ref }}"
+                elif git rev-parse -q --verify HEAD~1 >/dev/null; then
+                  BASE="HEAD~1"
+                else
+                  BASE=""
+                fi
+                AGENTS_MD_BASE="$BASE" node scripts/ci/check-agents-md-integrity.mjs
+
+      - name: Linting
+        run: bun run lint
+
+      - name: Type Check
+        run: bun run typecheck
+
+      - name: Security RLS Audit
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        run: |
+          # Run disparado pelo Dependabot nao recebe secret do repositorio (o GitHub trata o
+          # PR do bot como PR de fork). Sem o secret o --strict reprovava TODO PR do Dependabot
+          # por um motivo que o bot nao pode corrigir: o Quality Gate ficava vermelho para
+          # sempre e nenhuma atualizacao de dependencia podia ser avaliada. A isencao e so
+          # deste caso e so quando o diff nao toca banco -- se o PR do Dependabot mexer em
+          # supabase/ ou em qualquer .sql, a auditoria continua obrigatoria.
+          # O gate segue intacto no push da main, onde o secret existe.
+          if [ -z "$SUPABASE_DB_URL" ] && [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+            base="${{ github.base_ref }}"
+            if [ -n "$base" ]; then
+              git fetch --no-tags --depth=1 origin "$base"
+              if git diff --name-only FETCH_HEAD | grep -qE '(^|/)supabase/|\.sql$'; then
+                echo "::error::PR do Dependabot toca banco/DDL, mas SUPABASE_DB_URL nao esta disponivel neste run -- auditoria de RLS nao pode ser pulada"
+                exit 1
+              fi
+            fi
+            echo "::warning::RLS Audit nao executada: run do Dependabot nao recebe SUPABASE_DB_URL e o diff nao toca banco/DDL. O gate roda no push da main."
+            exit 0
+          fi
+          # Run the audit script if it exists
+          if [ -f "scripts/rls-audit.ts" ]; then
+            bun run scripts/rls-audit.ts --strict
+          fi
+
+  unit-integration-tests:
+    name: Unit & Integration Tests (Frontend + Edge)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Vitest (Frontend)
+        run: bun run test
+
+      # Gate de tipos das edges. deno test nao faz type-check: sem este passo uma
+      # regressao de tipo em supabase/functions/ entra na main sem ninguem ver.
+      # Escopo: supabase/functions/*/index.ts (uma entrada por edge). Roda antes dos testes
+      # para o erro aparecer como tipo, e nao como falha de teste.
+      - name: Type-check Edge Functions (deno check)
+        run: |
+          total=0
+          falhas=0
+          for f in supabase/functions/*/index.ts; do
+            total=$((total+1))
+            if ! deno check --no-lock "$f"; then falhas=$((falhas+1)); fi
+          done
+          echo "deno check: total=$total falhas=$falhas"
+          [ "$falhas" -eq 0 ]
+
+      - name: Run Deno Tests (Edge Functions)
+        env:
+          # Credenciais de QA das edges. Hoje ausentes: os testes que exigem usuario autenticado
+          # se auto-pulam emitindo ::warning:: (CI-02 em docs/qa/03-ACHADOS.md). Vem de secret de
+          # proposito: cadastrar o secret basta, nao existe passo de codigo a fazer depois.
+          QA_USER_EMAIL: ${{ secrets.QA_USER_EMAIL }}
+          QA_USER_PASSWORD: ${{ secrets.QA_USER_PASSWORD }}
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          # Modo estrito: com a variable de repositorio QA_TESTS_STRICT=true, qualquer teste pulado
+          # reprova o job. Ligar so depois de cadastrar as 4 credenciais acima e resolver o
+          # run-audit/rls_test.ts, que escreve em producao (ver o achado CI-02).
+          QA_TESTS_STRICT: ${{ vars.QA_TESTS_STRICT || 'false' }}
+        run: |
+          # Deno integration tests skip gracefully when Supabase is unavailable.
+          # Set VITE_SUPABASE_URL to a real project URL via CI secrets to run them.
+          export VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}"
+          export VITE_SUPABASE_PUBLISHABLE_KEY="${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key' }}"
+          # supabase/functions/run-audit/rls_test.ts le SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY
+          # (nomes sem prefixo VITE_) para montar um client admin via service role.
+          # Sem isso o teste morre com "supabaseUrl is required". SUPABASE_SERVICE_ROLE_KEY
+          # ainda precisa ser cadastrado como secret pelo dono (nunca passa por este workflow
+          # como valor hardcoded).
+          export SUPABASE_URL="${{ secrets.SUPABASE_URL || secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}"
+          export SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}"
+          # Alvo: supabase/functions/ (nao supabase/functions/tests/). Aquela pasta so tem
+          # fuzzing_suite.ts e integration_suite.ts, nomes que o Deno nao reconhece como teste
+          # (*_test.ts / *.test.ts), entao o passo morria com "No test modules found" e os 9
+          # arquivos de teste reais sob supabase/functions/ nunca rodaram.
+          #
+          # Teste pulado era invisivel: o job ficava verde com zero assercao de seguranca. Agora o
+          # passo lista os pulados no resumo do job, emite ::warning:: e reprova quando
+          # QA_TESTS_STRICT=true. O `|| falha=$?` preserva o exit code do deno, que o `tee` sozinho
+          # engoliria.
+          set -o pipefail
+          export NO_COLOR=1
+          falha=0
+          deno test --allow-net --allow-env --allow-read supabase/functions/ 2>&1 | tee "$RUNNER_TEMP/deno-edge.log" || falha=$?
+          # O deno colore a saida mesmo em pipe (medido: `... ESC[0mESC[33m ignored`), e o
+          # escape entre os tres pontos e a palavra cegaria o grep: o contador diria 0 pulados
+          # com pulados na tela. Remove ANSI antes de contar.
+          sed -E 's/\x1B\[[0-9;]*[A-Za-z]//g' "$RUNNER_TEMP/deno-edge.log" > "$RUNNER_TEMP/deno-edge.txt"
+          pulados=$(grep -c '\.\.\. ignored' "$RUNNER_TEMP/deno-edge.txt" || true)
+          pulados=${pulados:-0}
+          {
+            echo "### Testes de edge (Deno)"
+            echo ""
+            echo "- pulados: $pulados"
+            if [ "$pulados" -gt 0 ]; then
+              echo ""
+              echo "<details><summary>Testes pulados nesta execucao</summary>"
+              echo ""
+              grep '\.\.\. ignored' "$RUNNER_TEMP/deno-edge.txt" | sed 's/^/  - /'
+              echo ""
+              echo "</details>"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$pulados" -gt 0 ]; then
+            echo "::warning::$pulados teste(s) de edge pulados nesta execucao (credenciais de QA ausentes ou insuficientes); detalhe no resumo do job"
+          fi
+          if [ "$falha" -ne 0 ]; then
+            echo "::error::deno test terminou com codigo $falha"
+            exit "$falha"
+          fi
+          if [ "$QA_TESTS_STRICT" = "true" ] && [ "$pulados" -gt 0 ]; then
+            echo "::error::$pulados teste(s) de edge pulados com QA_TESTS_STRICT=true"
+            exit 1
+          fi
+
+  e2e-tests:
+    name: End-to-End Tests (Playwright)
+    runs-on: ubuntu-24.04
+    needs: [quality-gate]
+    env:
+      # Minimal placeholder values so the Vite dev server can start.
+      # Set real values via CI secrets to run E2E tests against a live environment.
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install Playwright Browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: bunx playwright test --project=chromium
+        env:
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
