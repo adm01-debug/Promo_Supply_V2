@@ -949,7 +949,7 @@
    "nome": "punchout-receive",
    "entrada": "supabase/functions/punchout-receive/index.ts",
    "arquivos": 3,
-   "linhas": 375,
+   "linhas": 391,
    "verify_jwt": false,
    "metodos": [
     "OPTIONS",
@@ -986,7 +986,7 @@
    ],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 3
+   "testes": 4
   },
   {
    "nome": "punchout-setup",

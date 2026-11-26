@@ -23,7 +23,7 @@
   "testes": [
    "co-localizado (__tests__) (223)",
    "outro (44)",
-   "co-localizado (*.test) (42)"
+   "co-localizado (*.test) (43)"
   ],
   "edge_functions": "supabase/functions",
   "migrations": "supabase/migrations",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)",
    "fix(edge): trata notificacao descartada como descarte, nao como envio (#550)",
    "fix(edge): devolve ao usuario a mensagem em portugues das edge functions (#549)",
    "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)",
-   "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)",
-   "fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)"
+   "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)"
   ]
  },
  "pr_template": null,

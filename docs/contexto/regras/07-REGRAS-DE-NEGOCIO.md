@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c018639362` · branch `main` · 2026-11-26 09:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `be8eb67184` · branch `main` · 2026-11-26 09:41 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2453,7 +2453,7 @@ _nenhum item encontrado_
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| … +291 linhas — lista completa em `context.json` | |
+| … +289 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2471,7 +2471,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3532 testes em 267 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3535 testes em 268 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2726,6 +2726,7 @@ _nenhum item encontrado_
 | `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
+| `supabase/functions/punchout-receive/fail-closed-catalogo.test.ts` | 3 | punchout-receive exige catalogo ativo · punchout-receive recusa catalogo sem shared secret configurado · punchout-receive responde 403 nos tres caminhos de recusa |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx` | 2 | usePedidosKPIs - alcance do invalidate (etapa 190) · invalidar o prefixo [pedidos] refaz a consulta dos cartoes |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.kpisInvalidados.test.tsx` | 2 | useSolicitacoesKPIs - alcance do invalidate (etapa 191) · invalidar o prefixo [solicitacoes] refaz a consulta dos cartoes |

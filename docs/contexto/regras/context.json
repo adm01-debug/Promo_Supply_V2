@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "c018639362889a865550171f65c0aa58bb51354d",
+  "sha": "be8eb671849b3178578b8b0a4d4e386164a4e816",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 09:35 UTC",
-  "files_total": 1500,
-  "code_files": 1325,
-  "code_lines": 221917,
+  "generated_at": "2026-11-26 09:41 UTC",
+  "files_total": 1501,
+  "code_files": 1326,
+  "code_lines": 221986,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "bc8fa360edc25124",
+ "facts_hash": "304346941d828a80",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 449,
+   ".ts": 450,
    ".tsx": 438,
    ".sql": 361,
    ".mjs": 69,
@@ -32440,11 +32440,9 @@
      "BuyerCookie missing in response",
      "Error creating solicitation: ",
      "Error generating solicitation number: ",
-     "Error loading catalog: ",
      "Invalid PunchOut XML: ",
      "PunchOut cart has no items",
-     "Session not found",
-     "SharedSecret mismatch"
+     "Session not found"
     ],
     "side_effects": [],
     "webhook_events": [],
@@ -36347,8 +36345,8 @@
   },
   {
    "module": "supabase/functions",
-   "files": 123,
-   "lines": 19822,
+   "files": 124,
+   "lines": 19891,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -42701,10 +42699,6 @@
    },
    {
     "file": "supabase/functions/punchout-receive/index.ts",
-    "msg": "Error loading catalog: "
-   },
-   {
-    "file": "supabase/functions/punchout-receive/index.ts",
     "msg": "Invalid PunchOut XML: "
    },
    {
@@ -42714,10 +42708,6 @@
    {
     "file": "supabase/functions/punchout-receive/index.ts",
     "msg": "Session not found"
-   },
-   {
-    "file": "supabase/functions/punchout-receive/index.ts",
-    "msg": "SharedSecret mismatch"
    },
    {
     "file": "supabase/functions/punchout-receive/solicitation.ts",
@@ -72833,6 +72823,18 @@
    {
     "file": "supabase/functions/process-invoice-idp/extraction.test.ts",
     "name": "parseGatewayContent falha quando nao ha JSON"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+    "name": "punchout-receive exige catalogo ativo"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+    "name": "punchout-receive recusa catalogo sem shared secret configurado"
+   },
+   {
+    "file": "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+    "name": "punchout-receive responde 403 nos tres caminhos de recusa"
    },
    {
     "file": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
@@ -119825,6 +119827,17 @@
    ],
    "doc": "Cifra o shared_secret do PunchOut com a chave mestra do servidor. O segredo nunca transita em texto claro no banco nem sai cifrado para o browser em formato legivel. O front envia o plaintext (HTTPS) apenas no instante do cadastro/ediÃ§Ã£o; a edge devolve `enc::v1::aesgcm:<payload>` que Ã© o que rea …"
   },
+  "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts": {
+   "path": "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+   "lines": 53,
+   "is_test": true,
+   "doc": "INT-09 (etapa 181): a conferencia do shared secret era condicional (`if (catalog?.shared_secret_encrypted)`) e o catalogo era carregado com `maybeSingle()` sem filtrar `is_active`. Resultado: um catalogo inativo ou sem segredo configurado aceitava qualquer POST com buyer_cookie valido, porque a unic …",
+   "tests": [
+    "punchout-receive exige catalogo ativo",
+    "punchout-receive recusa catalogo sem shared secret configurado",
+    "punchout-receive responde 403 nos tres caminhos de recusa"
+   ]
+  },
   "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts": {
    "path": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
    "lines": 35,
@@ -119840,7 +119853,7 @@
   },
   "supabase/functions/punchout-receive/index.ts": {
    "path": "supabase/functions/punchout-receive/index.ts",
-   "lines": 249,
+   "lines": 265,
    "tables": [
     {
      "table": "punchout_sessions",
@@ -119896,11 +119909,9 @@
     "BuyerCookie missing in response",
     "Error creating solicitation: ",
     "Error generating solicitation number: ",
-    "Error loading catalog: ",
     "Invalid PunchOut XML: ",
     "PunchOut cart has no items",
-    "Session not found",
-    "SharedSecret mismatch"
+    "Session not found"
    ],
    "params": [
     {
@@ -123583,10 +123594,21 @@
   }
  },
  "git": {
-  "sha": "c018639362889a865550171f65c0aa58bb51354d",
+  "sha": "be8eb671849b3178578b8b0a4d4e386164a4e816",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "be8eb67",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+     "supabase/functions/punchout-receive/index.ts"
+    ]
+   },
    {
     "sha": "c018639",
     "date": "2026-11-26",
@@ -123994,19 +124016,6 @@
      "src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx",
      "src/pages/catalogo-spot/useSpotCatalog.ts"
     ]
-   },
-   {
-    "sha": "b7a644c",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useDevolucoes.test.tsx",
-     "src/hooks/__tests__/usePurchaseHistory.chaveItens.test.tsx",
-     "src/hooks/useDevolucoes.ts",
-     "src/hooks/usePurchaseHistory.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124017,10 +124026,6 @@
    [
     "AGENTS.md",
     5
-   ],
-   [
-    "src/hooks/useDevolucoes.ts",
-    3
    ],
    [
     "supabase/functions/check-cotacao-followup/index.ts",
@@ -124047,6 +124052,10 @@
     2
    ],
    [
+    "src/hooks/useDevolucoes.ts",
+    2
+   ],
+   [
     "src/hooks/useFornecedores.ts",
     2
    ],
@@ -124059,8 +124068,12 @@
     2
    ],
    [
-    "src/hooks/__tests__/useDevolucoes.test.tsx",
-    2
+    "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/punchout-receive/index.ts",
+    1
    ],
    [
     "supabase/functions/check-approval-escalations/index.ts",
@@ -124084,10 +124097,6 @@
    ],
    [
     "src/lib/invokeEdge.ts",
-    1
-   ],
-   [
-    "src/pages/admin/AlertDetail.tsx",
     1
    ]
   ]

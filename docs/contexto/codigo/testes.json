@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 319,
+ "total": 320,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 301
+  "unit": 302
  },
  "onde_ficam": [
   {
@@ -23,7 +23,7 @@
   },
   {
    "padrao": "co-localizado (*.test)",
-   "arquivos": 42
+   "arquivos": 43
   },
   {
    "padrao": "tests-e2e/",
@@ -2687,6 +2687,13 @@
     "supabase/functions/process-invoice-idp/extraction.ts"
    ],
    "casos": 6
+  },
+  {
+   "arquivo": "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
+   "tipo": "unit",
+   "linhas": 53,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "supabase/functions/punchout-receive/idempotencia-antes-da-autorizacao.test.ts",
