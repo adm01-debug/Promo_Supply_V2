@@ -9463,6 +9463,31 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_outbox_batch: {
+        Args: { p_batch_size?: number }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          delivered_at: string | null
+          endpoint: string
+          headers: Json | null
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          retries: number
+          status: string
+          target: string
+          tenant_id: string | null
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "integration_outbox"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       cleanup_expired_password_resets: {
