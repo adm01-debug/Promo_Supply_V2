@@ -28,7 +28,8 @@ name: Contexto para agentes de IA (1h)
 # Secret do banco: SUPABASE_DB_URL (session pooler, usuário postgres) — ver scripts/supabase_snapshot/README.md.
 # Enquanto ele não existir, codigo/ e regras/ funcionam e supabase/ sai verde com aviso.
 # Project ref do Supabase: houve divergência entre supabase/config.toml e .env, resolvida em 0bdc3cbf
-# (ambos = lmypcdfsrgfftzhxawao). Este workflow não usa ref: o destino é inteiramente definido pelo secret.
+# (ambos = lmypcdfsrgfftzhxawao). O banco é inteiramente definido pelo secret SUPABASE_DB_URL; o ref
+# VITE_SUPABASE_PROJECT_ID é usado só pela Management API do passo 'Gerar supabase/'.
 
 on:
   push:
@@ -209,6 +210,12 @@ jobs:
       - name: Gerar supabase/
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          # Management API (edge functions + config do projeto): sem os dois o coletor
+          # pulava as seções e publicava edge-functions.md/project-config.md vazios por
+          # cima da versão anterior. O nome oficial do ref neste repo é
+          # VITE_SUPABASE_PROJECT_ID (ver deploy-edge-functions.yml:17-19 e types-sync.yml).
+          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           EVENTO: ${{ github.event_name }}
         run: |
           if [ -z "${SUPABASE_DB_URL:-}" ]; then
