@@ -6,6 +6,7 @@ import {
   estadoVazio,
   aplicarMigration,
   comparar,
+  compararJobs,
 } from './paridade-migrations-banco.mjs';
 
 function declarar(sql) {
@@ -125,4 +126,71 @@ test('trigger de tabela fora do public nao e cobrado do inventario', () => {
     DROP TRIGGER IF EXISTS audita_publico ON auth.users;
   `);
   assert.deepEqual([...e.triggers].sort(), ['audita_publico', 'audita_sem_schema']);
+});
+
+test('job de cron e declarado por cron.schedule literal', () => {
+  const e = declarar(`
+    SELECT cron.schedule('cleanup-health-scan-runs', '0 2 * * *', $cron$delete from x$cron$)
+     WHERE NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'cleanup-health-scan-runs');
+  `);
+  assert.deepEqual([...e.jobs], ['cleanup-health-scan-runs']);
+});
+
+test('job declarado dentro de bloco dollar-quoted continua visivel', () => {
+  // O corpo entre dollar-quotes nao pode ser apagado aqui: o padrao antigo do
+  // repositorio agenda dentro de `DO $do$ ... $do$` e apagar o bloco esconderia
+  // jobs realmente versionados.
+  const e = declarar(`
+    DO $do$
+    BEGIN
+      PERFORM cron.unschedule('spot-api-sync-orders-30min');
+      PERFORM cron.schedule(
+        'spot-api-sync-orders-30min',
+        '*/30 * * * *',
+        'SELECT public._invoke_spot_sync(''getOrders'');'
+      );
+    END;
+    $do$;
+  `);
+  assert.deepEqual([...e.jobs], ['spot-api-sync-orders-30min']);
+});
+
+test('cron.unschedule remove o job declarado antes', () => {
+  const e = estadoVazio();
+  aplicarMigration(e, "SELECT cron.schedule('antigo', '0 1 * * *', 'select 1');");
+  aplicarMigration(e, "SELECT cron.unschedule('antigo');");
+  assert.equal(e.jobs.size, 0);
+});
+
+test('job agendado por laco FOR ... VALUES e reconhecido', () => {
+  // Forma real de 20261112171742_cron_edge_projeto_correto_vault.sql:159-171.
+  const e = declarar(`
+    DO $do$
+    DECLARE r record;
+    BEGIN
+      FOR r IN
+        SELECT * FROM (VALUES ('spot-api-sync-catalog', '10 3 * * *', 'syncCatalog')) AS t(jobname, schedule, action)
+      LOOP
+        PERFORM cron.schedule(r.jobname, r.schedule, format('SELECT public._invoke_spot_sync(%L);', r.action));
+      END LOOP;
+    END;
+    $do$;
+  `);
+  assert.deepEqual([...e.jobs], ['spot-api-sync-catalog']);
+});
+
+test('job apenas comentado nao conta como declarado', () => {
+  const e = declarar("-- SELECT cron.schedule('mentira', '0 1 * * *', 'select 1');");
+  assert.equal(e.jobs.size, 0);
+});
+
+test('compararJobs acusa job ativo sem declaracao e respeita a allowlist', () => {
+  const declarado = declarar("SELECT cron.schedule('versionado', '0 1 * * *', 'select 1');");
+  assert.deepEqual(compararJobs(declarado, ['versionado', 'criado_a_mao']), ['criado_a_mao']);
+  assert.deepEqual(
+    compararJobs(declarado, ['versionado', 'liberado'], [{ tipo: 'jobs', nome: 'liberado', motivo: 'x' }]),
+    [],
+  );
+  assert.deepEqual(compararJobs(declarado, undefined), []);
+  assert.deepEqual(compararJobs(declarado, ['versionado']), []);
 });

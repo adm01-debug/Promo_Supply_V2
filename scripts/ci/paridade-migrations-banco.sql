@@ -14,5 +14,9 @@ select json_build_object(
                   join pg_class c on c.oid = t.tgrelid
                   join pg_namespace n on n.oid = c.relnamespace
                  where n.nspname = 'public' and not t.tgisinternal),
-  'politicas', (select coalesce(json_agg(distinct policyname), '[]'::json) from pg_policies where schemaname = 'public')
+  'politicas', (select coalesce(json_agg(distinct policyname), '[]'::json) from pg_policies where schemaname = 'public'),
+  -- Jobs ATIVOS do pg_cron. Nao da para listar job declarado-ausente (o padrao
+  -- do repositorio desagenda jobs desativados), entao a comparacao de jobs e'
+  -- so' nesta direcao: job vivo que nenhuma migration declara.
+  'cron_jobs', (select coalesce(json_agg(jobname order by jobname), '[]'::json) from cron.job where active)
 );

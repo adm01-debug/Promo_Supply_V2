@@ -12,6 +12,15 @@
 // Saida:   lista de objetos ausentes por tipo; exit 1 se sobrar algum fora da
 //          allowlist. Objeto que a migration cria e depois remove NAO e' cobrado.
 //
+//          Alem do schema public, confere os JOBS de `cron.job` na direcao
+//          inversa: job ATIVO no banco que nenhuma migration declara via
+//          cron.schedule. Motivo (JOB-07): 5 jobs de manutencao e o vigia da
+//          integracao XBZ existiam so em producao porque alguem os criou a mao -
+//          invisiveis ao CI e ausentes de qualquer restore. A direcao declarado
+//          -> banco NAO e' cobrada para jobs: ha dezenas declarados e desligados
+//          de proposito por decisao documentada (retencao, particionamento), e
+//          allowlist de dezenas de nomes deixaria de ser sinal e viraria ruido.
+//
 // Uso: node scripts/ci/paridade-migrations-banco.mjs --banco <arquivo.json> [--json]
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
@@ -32,6 +41,51 @@ export function limparSql(sql) {
   s = s.replace(/\/\*[\s\S]*?\*\//g, ' ');
   s = s.replace(/--[^\n]*/g, ' ');
   return s;
+}
+
+// Para jobs NAO serve o `limparSql`: ele apaga corpos dollar-quoted, e o padrao
+// antigo do repositorio agenda dentro de `DO $do$ ... $do$` com `PERFORM
+// cron.schedule(...)` (ex.: 20261121225000_versiona_job_spot_sync_orders_30min.sql).
+// Apagar o bloco esconderia jobs realmente declarados. Aqui saem so os comentarios.
+export function semComentarios(sql) {
+  return sql.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/--[^\n]*/g, ' ');
+}
+
+// Jobs declarados por uma migration: `cron.schedule('nome', ...)` adiciona e
+// `cron.unschedule('nome')` remove, na ordem textual do arquivo (o padrao
+// idempotente do repositorio e' unschedule + schedule no mesmo bloco).
+// Nome vindo de variavel (`cron.schedule(v_nome, ...)`) NAO casa: nao da para
+// saber o texto em tempo de leitura, e inventar um nome seria pior que ignorar.
+// Comparacao e' case-sensitive de proposito: pg_cron trata 'Job' e 'job' como
+// jobs diferentes, entao diferenca de caixa e' divergencia real.
+// O repositorio tambem agenda jobs por laco, com o nome chegando por variavel:
+//   FOR r IN SELECT * FROM (VALUES ('spot-api-sync-catalog', '10 3 * * *', ...))
+//   LOOP PERFORM cron.schedule(r.jobname, r.schedule, format(...)); END LOOP;   (DO $do$)
+// O regex literal nao ve esses nomes, e sem isto dois jobs VIVOS e corretamente
+// versionados apareceriam como "criados a mao". Resolve so' a forma que existe no
+// repo: primeiro literal de cada tupla do VALUES quando o `cron.schedule` do mesmo
+// arquivo recebe argumento nao-literal.
+function jobsDeLaco(sql) {
+  if (!/cron\s*\.\s*(?:schedule|unschedule)\s*\(\s*[A-Za-z_]/i.test(sql)) return [];
+  const nomes = [];
+  for (const bloco of casar(sql, `VALUES([\\s\\S]*?)LOOP`)) {
+    for (const tupla of casar(bloco[1], `\\(\\s*'([^']+)'`)) nomes.push(tupla[1]);
+  }
+  return nomes;
+}
+
+export function aplicarJobsDeclarados(estado, sqlBruto) {
+  const sql = semComentarios(sqlBruto);
+  const ops = [];
+  for (const m of casar(sql, `cron\\s*\\.\\s*(schedule|unschedule)\\s*\\(\\s*'([^']+)'`)) {
+    ops.push({ pos: m.index, seq: ops.length, nome: m[2], remove: m[1].toLowerCase() === 'unschedule' });
+  }
+  ops.sort((a, b) => a.pos - b.pos || a.seq - b.seq);
+  for (const op of ops) {
+    if (op.remove) estado.jobs.delete(op.nome);
+    else estado.jobs.add(op.nome);
+  }
+  for (const nome of jobsDeLaco(sql)) estado.jobs.add(nome);
 }
 
 const PREFIXO = '(?:"?([a-z0-9_]+)"?\\s*\\.\\s*)?';
@@ -146,6 +200,7 @@ export function aplicarMigration(estado, sqlBruto) {
 
   ops.sort((a, b) => a.pos - b.pos || a.seq - b.seq);
   for (const op of ops) op.aplica();
+  aplicarJobsDeclarados(estado, sqlBruto);
 
   return estado;
 }
@@ -153,6 +208,9 @@ export function aplicarMigration(estado, sqlBruto) {
 export function estadoVazio() {
   const e = {};
   for (const t of TIPOS) e[t] = new Set();
+  // `jobs` fica FORA de TIPOS de proposito: a comparacao direta (declarado mas
+  // ausente no banco) nao vale para cron.job - ver `compararJobs`.
+  e.jobs = new Set();
   return e;
 }
 
@@ -176,6 +234,19 @@ export function comparar(declarado, real, allowlist = []) {
       .sort();
   }
   return ausentes;
+}
+
+// Job ATIVO no banco que nenhuma migration declara: o inverso que o incidente
+// JOB-07 exigia. Job criado e depois retirado por uma migration posterior NAO
+// aparece aqui - `aplicarJobsDeclarados` ja resolveu a sequencia dentro do estado.
+export function compararJobs(declarado, real, allowlist = []) {
+  const liberados = new Set(
+    allowlist.filter((i) => i.tipo === 'jobs').map((i) => String(i.nome)),
+  );
+  const declarados = declarado.jobs ?? new Set();
+  return [...new Set((real ?? []).map(String))]
+    .filter((n) => n && !declarados.has(n) && !liberados.has(n))
+    .sort();
 }
 
 export function lerMigrations(dir = DIR_MIGRATIONS) {
@@ -202,12 +273,20 @@ function principal(argv) {
     return 2;
   }
   const real = JSON.parse(bruto);
+  // Falha fechada: inventario sem `cron_jobs` significa SQL de coleta desatualizado,
+  // e "nao ha jobs" nao pode ser confundido com "nao olhei os jobs".
+  if (!Array.isArray(real.cron_jobs)) {
+    console.error('ERRO: inventario sem a chave cron_jobs. Rode o SQL atualizado de scripts/ci/paridade-migrations-banco.sql.');
+    return 2;
+  }
+  const allowlist = lerAllowlist();
   const declarado = declaradoPorMigrations(lerMigrations());
-  const ausentes = comparar(declarado, real, lerAllowlist());
-  const total = TIPOS.reduce((acc, t) => acc + ausentes[t].length, 0);
+  const ausentes = comparar(declarado, real, allowlist);
+  const jobsSemDeclaracao = compararJobs(declarado, real.cron_jobs, allowlist);
+  const total = TIPOS.reduce((acc, t) => acc + ausentes[t].length, 0) + jobsSemDeclaracao.length;
 
   if (argv.includes('--json')) {
-    console.log(JSON.stringify({ total, ausentes }, null, 2));
+    console.log(JSON.stringify({ total, ausentes, jobsSemDeclaracao }, null, 2));
   } else {
     for (const tipo of TIPOS) {
       const n = declarado[tipo].size;
@@ -215,9 +294,11 @@ function principal(argv) {
       console.log(`${tipo}: ${n} declarados, ${faltam.length} ausentes no banco`);
       for (const nome of faltam) console.log(`  - ${nome}`);
     }
+    console.log(`jobs: ${declarado.jobs.size} declarados nas migrations, ${real.cron_jobs.length} ativos no banco, ${jobsSemDeclaracao.length} ativos sem declaracao`);
+    for (const nome of jobsSemDeclaracao) console.log(`  - ${nome}`);
     console.log(total === 0
-      ? '\nOK: tudo que as migrations declaram existe no banco.'
-      : `\nFALHA: ${total} objeto(s) declarado(s) nas migrations nao existem no banco.`);
+      ? '\nOK: tudo que as migrations declaram existe no banco, e todo job ativo esta declarado em migration.'
+      : `\nFALHA: ${total} divergencia(s) - objeto declarado ausente no banco ou job ativo sem declaracao nas migrations.`);
   }
   return total === 0 ? 0 : 1;
 }
