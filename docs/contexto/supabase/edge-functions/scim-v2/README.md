@@ -4,7 +4,7 @@
 |---|---|
 | nome | scim-v2 |
 | status | ACTIVE |
-| versão | 40 |
+| versão | 41 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts |
 | import_map |  |

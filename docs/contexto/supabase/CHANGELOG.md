@@ -2,6 +2,22 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 23:30 UTC
+
+- **colunas** alterado (1): `public.contracts.supplier_id`
+- **constraints** adicionado (1): `public.contracts.contracts_supplier_id_fkey`
+- **edge functions** alterado (41): `ai-demand-prediction`, `ai-negotiation`, `ai-supplier-risk`, `ai-supplier-suggestion`, `alert-dispatcher`, `check-approval-escalations`, `check-cotacao-followup`, `check-expiry-alerts`, `check-sla-alerts`, `dependency-health`, `erp-credential-encrypt`, `erp-sync`, `escalate-solicitacao`, `external-db-bridge`, `fiscal-orchestrator`, `generate-contract-pdf`, `guided-buying-ai`, `health-dashboard`, `maintain-partitions`, `migrate-storage-paths`, `process-invoice-idp`, `process-outbox`, `process-solicitacao-neural`, `punchout-encrypt`, `punchout-receive`, `punchout-setup`, `receive-os-sync`, `run-audit`, `scim-v2`, `send-push-notification`, `spot-api`, `spot-proxy`, `system-simulation`, `telemetry`, `webauthn-authenticate`, `webauthn-register`, `weekly-report`, `weekly-summary-report`, `workflow-engine`, `xbz-proxy` … (+1)
+- **functions** adicionado (2): `public.aprovador_pode_decidir_etapa(p_workflow_id uuid, p_etapa integer, p_status text, p_aprovador_id uuid, p_aprovador_efetivo_id uuid, p_uid uuid)`, `public.validar_decisao_approval_step()`
+- **functions** alterado (12): `public.apply_penalty_escalation()`, `public.auto_approve_low_value_solicitacao()`, `public.auto_block_low_score_supplier()`, `public.auto_calculate_delivery_penalty()`, `public.check_workflow_sod(p_instance_id uuid, p_approver_id uuid, p_entity_id uuid)`, `public.clear_login_lockout(_email text)`, `public.fill_tenant_id_from_profile()`, `public.has_role(_user_id uuid, _role app_role)`, `public.is_account_locked(_email text)`, `public.is_ip_whitelisted(_ip_address text)`, `public.log_login_attempt(_email text, _ip_address text, _user_agent text, _success boolean, _failure_reason text)`, `public.record_failed_login(_email text)`
+- **grants** adicionado (1): `public.supplier_compliance_summary:anon`
+- **indexes** adicionado (1): `public.idx_contracts_supplier_id`
+- **lints** adicionado (1): `policy_auth_fn_not_wrapped:public.approval_steps.approval_steps_aprovador_decide_etapa`
+- **lints** removido (1): `policy_auth_fn_not_wrapped:public.approval_steps.Approvers can update their steps`
+- **policies (RLS)** adicionado (1): `public.approval_steps.approval_steps_aprovador_decide_etapa`
+- **policies (RLS)** removido (1): `public.approval_steps.Approvers can update their steps`
+- **triggers** adicionado (1): `public.approval_steps.trg_approval_steps_decisao`
+- **views** alterado (1): `public.supplier_compliance_summary`
+
 ## 2026-11-26 20:29 UTC
 
 - **colunas** adicionado (1): `public.system_alerts.dispatch_lease_until`

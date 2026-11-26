@@ -88,6 +88,7 @@
 | public.contract_penalties | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.contracts | currency | public.currencies | code | NO ACTION | NO ACTION |
 | public.contracts | organization_id | public.organizations | id | NO ACTION | NO ACTION |
+| public.contracts | supplier_id | public.fornecedores | id | RESTRICT | NO ACTION |
 | public.contracts | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.cost_centers | manager_id | public.profiles | id | SET NULL | NO ACTION |
 | public.cost_centers | parent_id | public.cost_centers | id | SET NULL | NO ACTION |

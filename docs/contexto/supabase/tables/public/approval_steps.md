@@ -77,16 +77,6 @@
 | USING |  |
 | WITH CHECK | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
 
-### `Approvers can update their steps`
-
-| campo | valor |
-|---|---|
-| comando | UPDATE |
-| tipo | PERMISSIVE |
-| roles | public |
-| USING | `((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role))` |
-| WITH CHECK |  |
-
 ### `Users can view assigned steps or admin`
 
 | campo | valor |
@@ -96,6 +86,16 @@
 | roles | authenticated |
 | USING | `((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))` |
 | WITH CHECK |  |
+
+### `approval_steps_aprovador_decide_etapa`
+
+| campo | valor |
+|---|---|
+| comando | UPDATE |
+| tipo | PERMISSIVE |
+| roles | authenticated |
+| USING | `((status = 'pending'::text) AND ((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))` |
+| WITH CHECK | `((status = ANY (ARRAY['approved'::text, 'rejected'::text])) AND aprovador_pode_decidir_etapa(workflow_id, etapa, status, aprovador_id, aprovador_efetivo_id, auth.uid()))` |
 
 ### `approval_steps_escrita_admin_coord`
 
@@ -153,6 +153,7 @@
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
 | a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
+| trg_approval_steps_decisao | BEFORE | UPDATE | ROW | enabled | public.validar_decisao_approval_step |
 
 
 ## Grants

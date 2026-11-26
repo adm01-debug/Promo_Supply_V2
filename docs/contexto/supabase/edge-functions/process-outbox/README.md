@@ -4,7 +4,7 @@
 |---|---|
 | nome | process-outbox |
 | status | ACTIVE |
-| versão | 24 |
+| versão | 25 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
 | import_map |  |

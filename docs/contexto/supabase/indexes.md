@@ -167,6 +167,7 @@ Uso e tamanho em `stats.md`.
 | public.contracts | idx_contracts_currency | btree | currency | não | sim |  |
 | public.contracts | idx_contracts_organization_id | btree | organization_id | não | sim |  |
 | public.contracts | idx_contracts_supplier_created | btree | supplier_id, created_at | não | sim |  |
+| public.contracts | idx_contracts_supplier_id | btree | supplier_id | não | sim |  |
 | public.contracts | idx_contracts_tenant_id | btree | tenant_id | não | sim |  |
 | public.contracts | uq_contracts_tenant_contract_number | btree | tenant_id, contract_number | sim | sim |  |
 | public.cost_centers | cost_centers_pkey | btree | id | sim | sim |  |

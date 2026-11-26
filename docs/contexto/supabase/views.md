@@ -33,7 +33,7 @@ SELECT tenant_id,
 |---|---|
 | owner | postgres |
 | security_invoker | sim |
-| opções | security_invoker=on |
+| opções | security_invoker=true |
 | depende de | public.contract_penalties, public.contracts, public.fornecedores, public.receiving_checklists, public.supplier_bonifications |
 | populada | n/a |
 | comentário |  |
@@ -54,7 +54,7 @@ SELECT f.id AS fornecedor_id,
             COALESCE(sum(cp.penalty_value), 0::numeric) AS total_penalty_value
            FROM contract_penalties cp
              JOIN contracts c ON c.id = cp.contract_id
-          WHERE c.supplier_id = f.id::text) cp_agg ON true
+          WHERE c.supplier_id = f.id) cp_agg ON true
      LEFT JOIN LATERAL ( SELECT avg(rc.overall_score) AS avg_quality_score
            FROM receiving_checklists rc
           WHERE rc.fornecedor_id = f.id) rc_agg ON true

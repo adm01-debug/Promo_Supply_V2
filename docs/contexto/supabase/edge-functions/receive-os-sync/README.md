@@ -4,7 +4,7 @@
 |---|---|
 | nome | receive-os-sync |
 | status | ACTIVE |
-| versão | 20 |
+| versão | 21 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts |
 | import_map |  |

@@ -4,7 +4,7 @@
 |---|---|
 | nome | run-audit |
 | status | ACTIVE |
-| versão | 28 |
+| versão | 29 |
 | verify_jwt | não |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
 | import_map |  |

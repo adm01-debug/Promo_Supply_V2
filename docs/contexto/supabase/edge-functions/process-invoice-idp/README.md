@@ -4,7 +4,7 @@
 |---|---|
 | nome | process-invoice-idp |
 | status | ACTIVE |
-| versão | 31 |
+| versão | 32 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-invoice-idp/index.ts |
 | import_map |  |

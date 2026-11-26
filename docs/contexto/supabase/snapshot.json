@@ -299,9 +299,9 @@
         "name": "ai-demand-prediction",
         "slug": "ai-demand-prediction",
         "status": "ACTIVE",
-        "updated_at": 1795704514045,
+        "updated_at": 1795733043462,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1785935824160,
@@ -311,9 +311,9 @@
         "name": "ai-negotiation",
         "slug": "ai-negotiation",
         "status": "ACTIVE",
-        "updated_at": 1795704517463,
+        "updated_at": 1795733045990,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1785935827299,
@@ -323,9 +323,9 @@
         "name": "ai-supplier-risk",
         "slug": "ai-supplier-risk",
         "status": "ACTIVE",
-        "updated_at": 1795704520470,
+        "updated_at": 1795733047971,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935830982,
@@ -335,9 +335,9 @@
         "name": "ai-supplier-suggestion",
         "slug": "ai-supplier-suggestion",
         "status": "ACTIVE",
-        "updated_at": 1795704523376,
+        "updated_at": 1795733049967,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1785935866015,
@@ -347,9 +347,9 @@
         "name": "alert-dispatcher",
         "slug": "alert-dispatcher",
         "status": "ACTIVE",
-        "updated_at": 1795724135354,
+        "updated_at": 1795733053563,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935869432,
@@ -359,9 +359,9 @@
         "name": "check-approval-escalations",
         "slug": "check-approval-escalations",
         "status": "ACTIVE",
-        "updated_at": 1795720130412,
+        "updated_at": 1795733055608,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935872814,
@@ -371,9 +371,9 @@
         "name": "check-cotacao-followup",
         "slug": "check-cotacao-followup",
         "status": "ACTIVE",
-        "updated_at": 1795704531699,
+        "updated_at": 1795733057609,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935876556,
@@ -383,9 +383,9 @@
         "name": "check-expiry-alerts",
         "slug": "check-expiry-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795704534664,
+        "updated_at": 1795733059557,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935879464,
@@ -395,9 +395,9 @@
         "name": "check-sla-alerts",
         "slug": "check-sla-alerts",
         "status": "ACTIVE",
-        "updated_at": 1795704537992,
+        "updated_at": 1795733061606,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935910356,
@@ -407,9 +407,9 @@
         "name": "dependency-health",
         "slug": "dependency-health",
         "status": "ACTIVE",
-        "updated_at": 1795704541070,
+        "updated_at": 1795733063679,
         "verify_jwt": false,
-        "version": 40
+        "version": 41
       },
       {
         "created_at": 1795210713630,
@@ -419,9 +419,9 @@
         "name": "erp-credential-encrypt",
         "slug": "erp-credential-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795695324431,
+        "updated_at": 1795733065766,
         "verify_jwt": true,
-        "version": 13
+        "version": 14
       },
       {
         "created_at": 1785935841869,
@@ -431,9 +431,9 @@
         "name": "erp-sync",
         "slug": "erp-sync",
         "status": "ACTIVE",
-        "updated_at": 1795704546671,
+        "updated_at": 1795733067882,
         "verify_jwt": true,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1795374141517,
@@ -443,9 +443,9 @@
         "name": "escalate-solicitacao",
         "slug": "escalate-solicitacao",
         "status": "ACTIVE",
-        "updated_at": 1795704549953,
+        "updated_at": 1795733070045,
         "verify_jwt": true,
-        "version": 13
+        "version": 14
       },
       {
         "created_at": 1785935927495,
@@ -455,9 +455,9 @@
         "name": "external-db-bridge",
         "slug": "external-db-bridge",
         "status": "ACTIVE",
-        "updated_at": 1795704552858,
+        "updated_at": 1795733072157,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935838150,
@@ -467,9 +467,9 @@
         "name": "fiscal-orchestrator",
         "slug": "fiscal-orchestrator",
         "status": "ACTIVE",
-        "updated_at": 1795704556336,
+        "updated_at": 1795733074914,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1785935858385,
@@ -479,9 +479,9 @@
         "name": "generate-contract-pdf",
         "slug": "generate-contract-pdf",
         "status": "ACTIVE",
-        "updated_at": 1795704559306,
+        "updated_at": 1795733076924,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935862710,
@@ -491,9 +491,9 @@
         "name": "guided-buying-ai",
         "slug": "guided-buying-ai",
         "status": "ACTIVE",
-        "updated_at": 1795704562604,
+        "updated_at": 1795733078968,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1794580652434,
@@ -503,9 +503,9 @@
         "name": "health-dashboard",
         "slug": "health-dashboard",
         "status": "ACTIVE",
-        "updated_at": 1795489995771,
+        "updated_at": 1795733081003,
         "verify_jwt": true,
-        "version": 20
+        "version": 21
       },
       {
         "created_at": 1794580655103,
@@ -515,9 +515,9 @@
         "name": "maintain-partitions",
         "slug": "maintain-partitions",
         "status": "ACTIVE",
-        "updated_at": 1795704567938,
+        "updated_at": 1795733083034,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935923731,
@@ -527,9 +527,9 @@
         "name": "migrate-storage-paths",
         "slug": "migrate-storage-paths",
         "status": "ACTIVE",
-        "updated_at": 1795695353792,
+        "updated_at": 1795733085136,
         "verify_jwt": true,
-        "version": 26
+        "version": 27
       },
       {
         "created_at": 1785935855305,
@@ -539,9 +539,9 @@
         "name": "process-invoice-idp",
         "slug": "process-invoice-idp",
         "status": "ACTIVE",
-        "updated_at": 1795704573644,
+        "updated_at": 1795733087150,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935883056,
@@ -551,9 +551,9 @@
         "name": "process-outbox",
         "slug": "process-outbox",
         "status": "ACTIVE",
-        "updated_at": 1795724138629,
+        "updated_at": 1795733089170,
         "verify_jwt": false,
-        "version": 24
+        "version": 25
       },
       {
         "created_at": 1795183975258,
@@ -563,9 +563,9 @@
         "name": "process-solicitacao-neural",
         "slug": "process-solicitacao-neural",
         "status": "ACTIVE",
-        "updated_at": 1795704579493,
+        "updated_at": 1795733091295,
         "verify_jwt": true,
-        "version": 24
+        "version": 25
       },
       {
         "created_at": 1795005314879,
@@ -575,9 +575,9 @@
         "name": "punchout-encrypt",
         "slug": "punchout-encrypt",
         "status": "ACTIVE",
-        "updated_at": 1795695366081,
+        "updated_at": 1795733093321,
         "verify_jwt": true,
-        "version": 21
+        "version": 22
       },
       {
         "created_at": 1785935851193,
@@ -587,9 +587,9 @@
         "name": "punchout-receive",
         "slug": "punchout-receive",
         "status": "ACTIVE",
-        "updated_at": 1795704585217,
+        "updated_at": 1795733095443,
         "verify_jwt": false,
-        "version": 37
+        "version": 38
       },
       {
         "created_at": 1785935848102,
@@ -599,9 +599,9 @@
         "name": "punchout-setup",
         "slug": "punchout-setup",
         "status": "ACTIVE",
-        "updated_at": 1795695372815,
+        "updated_at": 1795733097461,
         "verify_jwt": true,
-        "version": 26
+        "version": 27
       },
       {
         "created_at": 1795462093958,
@@ -611,9 +611,9 @@
         "name": "receive-os-sync",
         "slug": "receive-os-sync",
         "status": "ACTIVE",
-        "updated_at": 1795704591259,
+        "updated_at": 1795733099437,
         "verify_jwt": false,
-        "version": 20
+        "version": 21
       },
       {
         "created_at": 1785935914012,
@@ -623,9 +623,9 @@
         "name": "run-audit",
         "slug": "run-audit",
         "status": "ACTIVE",
-        "updated_at": 1795715129223,
+        "updated_at": 1795733101951,
         "verify_jwt": false,
-        "version": 28
+        "version": 29
       },
       {
         "created_at": 1785935900512,
@@ -635,9 +635,9 @@
         "name": "scim-v2",
         "slug": "scim-v2",
         "status": "ACTIVE",
-        "updated_at": 1795704596790,
+        "updated_at": 1795733103968,
         "verify_jwt": false,
-        "version": 40
+        "version": 41
       },
       {
         "created_at": 1785935903898,
@@ -647,9 +647,9 @@
         "name": "send-push-notification",
         "slug": "send-push-notification",
         "status": "ACTIVE",
-        "updated_at": 1795704600189,
+        "updated_at": 1795733106105,
         "verify_jwt": true,
-        "version": 35
+        "version": 36
       },
       {
         "created_at": 1794580657952,
@@ -659,9 +659,9 @@
         "name": "spot-api",
         "slug": "spot-api",
         "status": "ACTIVE",
-        "updated_at": 1795717998878,
+        "updated_at": 1795733108181,
         "verify_jwt": false,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935930982,
@@ -671,9 +671,9 @@
         "name": "spot-proxy",
         "slug": "spot-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795718000815,
+        "updated_at": 1795733110287,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935919139,
@@ -683,9 +683,9 @@
         "name": "system-simulation",
         "slug": "system-simulation",
         "status": "ACTIVE",
-        "updated_at": 1795704670390,
+        "updated_at": 1795733112383,
         "verify_jwt": false,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935906684,
@@ -695,9 +695,9 @@
         "name": "telemetry",
         "slug": "telemetry",
         "status": "ACTIVE",
-        "updated_at": 1795704674063,
+        "updated_at": 1795733114562,
         "verify_jwt": false,
-        "version": 34
+        "version": 35
       },
       {
         "created_at": 1785935896372,
@@ -707,9 +707,9 @@
         "name": "webauthn-authenticate",
         "slug": "webauthn-authenticate",
         "status": "ACTIVE",
-        "updated_at": 1795704677327,
+        "updated_at": 1795733116601,
         "verify_jwt": false,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1785935893295,
@@ -719,9 +719,9 @@
         "name": "webauthn-register",
         "slug": "webauthn-register",
         "status": "ACTIVE",
-        "updated_at": 1795695402254,
+        "updated_at": 1795733118572,
         "verify_jwt": true,
-        "version": 25
+        "version": 26
       },
       {
         "created_at": 1785935886703,
@@ -731,9 +731,9 @@
         "name": "weekly-report",
         "slug": "weekly-report",
         "status": "ACTIVE",
-        "updated_at": 1795704682715,
+        "updated_at": 1795733120605,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935890032,
@@ -743,9 +743,9 @@
         "name": "weekly-summary-report",
         "slug": "weekly-summary-report",
         "status": "ACTIVE",
-        "updated_at": 1795704686207,
+        "updated_at": 1795733122670,
         "verify_jwt": true,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935834498,
@@ -755,9 +755,9 @@
         "name": "workflow-engine",
         "slug": "workflow-engine",
         "status": "ACTIVE",
-        "updated_at": 1795704689768,
+        "updated_at": 1795733124823,
         "verify_jwt": true,
-        "version": 36
+        "version": 37
       },
       {
         "created_at": 1794580660511,
@@ -767,9 +767,9 @@
         "name": "xbz-proxy",
         "slug": "xbz-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795704693044,
+        "updated_at": 1795733126794,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       },
       {
         "created_at": 1794580663042,
@@ -779,9 +779,9 @@
         "name": "xbz-sync-pedidos",
         "slug": "xbz-sync-pedidos",
         "status": "ACTIVE",
-        "updated_at": 1795704696605,
+        "updated_at": 1795733128800,
         "verify_jwt": true,
-        "version": 32
+        "version": 33
       }
     ],
     "enabled": true,
@@ -5878,7 +5878,7 @@
         "type": "text"
       },
       {
-        "comment": null,
+        "comment": "FK para fornecedores(id). Era text sem FK ate a etapa 127 (DB-02).",
         "default": null,
         "generated": null,
         "identity": null,
@@ -5888,7 +5888,7 @@
         "position": 5,
         "schema": "public",
         "table": "contracts",
-        "type": "text"
+        "type": "uuid"
       },
       {
         "comment": null,
@@ -29243,6 +29243,25 @@
       },
       {
         "columns": [
+          "supplier_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (supplier_id) REFERENCES fornecedores(id) ON DELETE RESTRICT",
+        "name": "contracts_supplier_id_fkey",
+        "on_delete": "RESTRICT",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "fornecedores",
+        "schema": "public",
+        "table": "contracts",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "tenant_id"
         ],
         "deferrable": false,
@@ -38193,9 +38212,13 @@
             {
               "file": "supabase/migrations/20260317204905_c74bbedc-a522-4b3c-9bfd-afb6bba08004.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [
@@ -38208,7 +38231,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "fbb83ee75c0ae972",
+        "definition_sha": "2fe53f8cde34f71b",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": true,
@@ -38222,6 +38245,41 @@
         "security_definer": false,
         "strict": false,
         "volatility": "volatile"
+      },
+      {
+        "args": "p_workflow_id uuid, p_etapa integer, p_status text, p_aprovador_id uuid, p_aprovador_efetivo_id uuid, p_uid uuid",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "11e0641770f01662",
+        "execute_api_roles": "authenticated, service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "aprovador_pode_decidir_etapa",
+        "owner": "postgres",
+        "returns": "boolean",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
       },
       {
         "args": "_months integer",
@@ -38643,12 +38701,12 @@
           ],
           "views": []
         },
-        "comment": null,
+        "comment": "Auto-aprova solicitacao pendente abaixo da alcada configurada: menor valor entre o piso da Matriz de Alcada (approval_rules.valor_min), o approval_threshold do centro de custo e o legado de R$ 1.000 (etapa 114).",
         "config": [
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "d4d4abfaf0bad099",
+        "definition_sha": "81b03ea740091be9",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -38674,9 +38732,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -38715,9 +38777,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128170000_contracts_supplier_id_uuid.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [
@@ -39332,10 +39398,10 @@
         },
         "comment": null,
         "config": [
-          "search_path=public"
+          "search_path=public, pg_temp"
         ],
         "definition": null,
-        "definition_sha": "547b6179ec41a961",
+        "definition_sha": "a2780a6e83c2e13b",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -40117,9 +40183,17 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+              "hits": 6
+            },
+            {
+              "file": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 5,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -40561,9 +40635,13 @@
             {
               "file": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128190000_notificacoes_tenant_por_empresa.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 1,
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [
@@ -42070,9 +42148,10 @@
               "hits": 37
             }
           ],
-          "code_total_files": 82,
+          "code_total_files": 84,
           "cron": [],
           "db": [
+            "public.aprovador_pode_decidir_etapa",
             "public.clear_login_lockout",
             "public.count_legacy_storage_urls",
             "public.get_cron_job_staleness",
@@ -42115,9 +42194,13 @@
             {
               "file": "src/lib/supabaseRpc.ts",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -42189,9 +42272,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [
             "public.log_login_attempt"
@@ -42392,9 +42479,13 @@
             {
               "file": "supabase/migrations/20260711152814_5d801562-46af-4a92-8ffc-e32926159cc0.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -42801,9 +42892,13 @@
             {
               "file": "src/lib/supabaseRpc.ts",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128201000_lockout_rpc_publica.sql",
+              "hits": 4
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -45895,6 +45990,43 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/migrations/20261128150000_neg10_sod_e_policy_approval_steps.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.approval_steps.trg_approval_steps_decisao"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "97639693556406cf",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "validar_decisao_approval_step",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "supabase/migrations/20260317201619_b1fdf364-9772-43d4-a769-7e51c33cc5eb.sql",
               "hits": 1
             }
@@ -48755,6 +48887,12 @@
           "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
           "schema": "public",
           "table": "supplier_bonifications"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "DELETE, INSERT, MAINTAIN, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "supplier_compliance_summary"
         },
         {
           "grantee": "authenticated",
@@ -51932,6 +52070,20 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_contracts_supplier_created",
+        "predicate": null,
+        "schema": "public",
+        "table": "contracts"
+      },
+      {
+        "columns": [
+          "supplier_id"
+        ],
+        "definition": "CREATE INDEX idx_contracts_supplier_id ON public.contracts USING btree (supplier_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_contracts_supplier_id",
         "predicate": null,
         "schema": "public",
         "table": "contracts"
@@ -59659,13 +59811,13 @@
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.approval_steps.Approvers can update their steps",
+        "object": "public.approval_steps.Users can view assigned steps or admin",
         "severity": "BAIXA"
       },
       {
         "code": "policy_auth_fn_not_wrapped",
         "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
-        "object": "public.approval_steps.Users can view assigned steps or admin",
+        "object": "public.approval_steps.approval_steps_aprovador_decide_etapa",
         "severity": "BAIXA"
       },
       {
@@ -63480,18 +63632,6 @@
         "with_check": "(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))"
       },
       {
-        "cmd": "UPDATE",
-        "name": "Approvers can update their steps",
-        "permissive": "PERMISSIVE",
-        "roles": [
-          "public"
-        ],
-        "schema": "public",
-        "table": "approval_steps",
-        "using": "((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role))",
-        "with_check": null
-      },
-      {
         "cmd": "SELECT",
         "name": "Users can view assigned steps or admin",
         "permissive": "PERMISSIVE",
@@ -63502,6 +63642,18 @@
         "table": "approval_steps",
         "using": "((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role))",
         "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "approval_steps_aprovador_decide_etapa",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "approval_steps",
+        "using": "((status = 'pending'::text) AND ((auth.uid() = aprovador_id) OR (auth.uid() = aprovador_efetivo_id) OR has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role)))",
+        "with_check": "((status = ANY (ARRAY['approved'::text, 'rejected'::text])) AND aprovador_pode_decidir_etapa(workflow_id, etapa, status, aprovador_id, aprovador_efetivo_id, auth.uid()))"
       },
       {
         "cmd": "ALL",
@@ -71347,6 +71499,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER trg_approval_steps_decisao BEFORE UPDATE ON approval_steps FOR EACH ROW EXECUTE FUNCTION validar_decisao_approval_step()",
+        "events": "UPDATE",
+        "function": "public.validar_decisao_approval_step",
+        "level": "ROW",
+        "name": "trg_approval_steps_decisao",
+        "schema": "public",
+        "status": "enabled",
+        "table": "approval_steps",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON approval_workflows FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
         "events": "INSERT",
         "function": "public.fill_tenant_id_from_profile",
@@ -73990,7 +74153,7 @@
       },
       {
         "comment": null,
-        "definition": " SELECT f.id AS fornecedor_id,\n    f.razao_social,\n    f.status,\n    f.avaliacao,\n    COALESCE(cp_agg.penalty_count, 0::bigint) AS penalty_count,\n    COALESCE(cp_agg.total_penalty_value, 0::numeric) AS total_penalty_value,\n    COALESCE(rc_agg.avg_quality_score, 0::numeric) AS avg_quality_score,\n    COALESCE(sb_agg.bonus_count, 0::bigint) AS bonus_count,\n    COALESCE(sb_agg.total_bonus_value, 0::numeric) AS total_bonus_value\n   FROM fornecedores f\n     LEFT JOIN LATERAL ( SELECT count(*) AS penalty_count,\n            COALESCE(sum(cp.penalty_value), 0::numeric) AS total_penalty_value\n           FROM contract_penalties cp\n             JOIN contracts c ON c.id = cp.contract_id\n          WHERE c.supplier_id = f.id::text) cp_agg ON true\n     LEFT JOIN LATERAL ( SELECT avg(rc.overall_score) AS avg_quality_score\n           FROM receiving_checklists rc\n          WHERE rc.fornecedor_id = f.id) rc_agg ON true\n     LEFT JOIN LATERAL ( SELECT count(*) AS bonus_count,\n            COALESCE(sum(sb.value_percent), 0::numeric) AS total_bonus_value\n           FROM supplier_bonifications sb\n          WHERE sb.fornecedor_id = f.id) sb_agg ON true;",
+        "definition": " SELECT f.id AS fornecedor_id,\n    f.razao_social,\n    f.status,\n    f.avaliacao,\n    COALESCE(cp_agg.penalty_count, 0::bigint) AS penalty_count,\n    COALESCE(cp_agg.total_penalty_value, 0::numeric) AS total_penalty_value,\n    COALESCE(rc_agg.avg_quality_score, 0::numeric) AS avg_quality_score,\n    COALESCE(sb_agg.bonus_count, 0::bigint) AS bonus_count,\n    COALESCE(sb_agg.total_bonus_value, 0::numeric) AS total_bonus_value\n   FROM fornecedores f\n     LEFT JOIN LATERAL ( SELECT count(*) AS penalty_count,\n            COALESCE(sum(cp.penalty_value), 0::numeric) AS total_penalty_value\n           FROM contract_penalties cp\n             JOIN contracts c ON c.id = cp.contract_id\n          WHERE c.supplier_id = f.id) cp_agg ON true\n     LEFT JOIN LATERAL ( SELECT avg(rc.overall_score) AS avg_quality_score\n           FROM receiving_checklists rc\n          WHERE rc.fornecedor_id = f.id) rc_agg ON true\n     LEFT JOIN LATERAL ( SELECT count(*) AS bonus_count,\n            COALESCE(sum(sb.value_percent), 0::numeric) AS total_bonus_value\n           FROM supplier_bonifications sb\n          WHERE sb.fornecedor_id = f.id) sb_agg ON true;",
         "depends_on": [
           "public.contract_penalties",
           "public.contracts",
@@ -74001,7 +74164,7 @@
         "kind": "view",
         "name": "supplier_compliance_summary",
         "options": [
-          "security_invoker=on"
+          "security_invoker=true"
         ],
         "owner": "postgres",
         "populated": null,

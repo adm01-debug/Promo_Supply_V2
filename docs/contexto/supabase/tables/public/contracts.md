@@ -21,7 +21,7 @@
 | 2 | `contract_number` | `text` | não |  |  |  |
 | 3 | `title` | `text` | não |  |  |  |
 | 4 | `description` | `text` | sim |  |  |  |
-| 5 | `supplier_id` | `text` | não |  |  |  |
+| 5 | `supplier_id` | `uuid` | não |  |  | FK para fornecedores(id). Era text sem FK ate a etapa 127 (DB-02). |
 | 6 | `supplier_name` | `text` | não |  |  |  |
 | 7 | `contract_type` | `text` | não | `'service'::text` |  |  |
 | 8 | `status` | `text` | não | `'draft'::text` |  |  |
@@ -57,6 +57,7 @@
 | contracts_currency_fkey | FOREIGN KEY | `FOREIGN KEY (currency) REFERENCES currencies(code) NOT VALID` | NO ACTION | NO ACTION | não |
 | contracts_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | contracts_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
+| contracts_supplier_id_fkey | FOREIGN KEY | `FOREIGN KEY (supplier_id) REFERENCES fornecedores(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 | contracts_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 
 
@@ -82,6 +83,7 @@
 | idx_contracts_currency | btree | currency | não | sim |  | `CREATE INDEX idx_contracts_currency ON public.contracts USING btree (currency)` |
 | idx_contracts_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_contracts_organization_id ON public.contracts USING btree (organization_id)` |
 | idx_contracts_supplier_created | btree | supplier_id, created_at | não | sim |  | `CREATE INDEX idx_contracts_supplier_created ON public.contracts USING btree (supplier_id, created_at DESC)` |
+| idx_contracts_supplier_id | btree | supplier_id | não | sim |  | `CREATE INDEX idx_contracts_supplier_id ON public.contracts USING btree (supplier_id)` |
 | idx_contracts_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_contracts_tenant_id ON public.contracts USING btree (tenant_id)` |
 | uq_contracts_tenant_contract_number | btree | tenant_id, contract_number | sim | sim |  | `CREATE UNIQUE INDEX uq_contracts_tenant_contract_number ON public.contracts USING btree (tenant_id, contract_number)` |
 

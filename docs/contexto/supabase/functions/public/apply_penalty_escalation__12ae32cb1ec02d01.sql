@@ -6,7 +6,7 @@ AS $function$
 DECLARE
   infraction_count INTEGER;
   escalation_record RECORD;
-  supplier_id_val TEXT;
+  supplier_id_val uuid;
 BEGIN
   SELECT supplier_id INTO supplier_id_val FROM contracts WHERE id = NEW.contract_id;
   SELECT COUNT(*) INTO infraction_count FROM contract_penalties cp JOIN contracts c ON c.id = cp.contract_id WHERE c.supplier_id = supplier_id_val AND cp.id != NEW.id;
@@ -18,7 +18,7 @@ BEGIN
   IF FOUND THEN
     NEW.penalty_value := NEW.penalty_value * escalation_record.penalty_multiplier;
     IF escalation_record.action_type IN ('temp_block', 'permanent_block') THEN
-      UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = supplier_id_val::uuid;
+      UPDATE fornecedores SET status = 'bloqueado', updated_at = now() WHERE id = supplier_id_val;
     END IF;
   END IF;
   RETURN NEW;
