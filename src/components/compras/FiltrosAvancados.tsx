@@ -30,7 +30,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import { useAuth } from "@/features/auth";
 import { montarEmpresas } from "@/features/solicitacoes/pessoasDaEmpresa";
 
@@ -205,8 +205,8 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
               <AccordionContent className="px-4">
                 <div className="pt-2 space-y-6">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                    <span>R$ {localFilters.valorMin.toLocaleString('pt-BR')}</span>
-                    <span>R$ {localFilters.valorMax.toLocaleString('pt-BR')}</span>
+                    <span>{formatCurrency(localFilters.valorMin)}</span>
+                    <span>{formatCurrency(localFilters.valorMax)}</span>
                   </div>
                   <Slider
                     min={0}

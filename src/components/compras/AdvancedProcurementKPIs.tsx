@@ -39,7 +39,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
 import { KPITargetsConfig } from "./KPITargetsConfig";
 
@@ -220,7 +220,7 @@ export const AdvancedProcurementKPIs = () => {
             />
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            Economia: R$ {kpiData.procurementROI.savings.toLocaleString('pt-BR')}
+            Economia: {formatCurrency(kpiData.procurementROI.savings)}
           </p>
         </Card>
 
@@ -240,14 +240,14 @@ export const AdvancedProcurementKPIs = () => {
           </div>
           <p className="text-3xl font-bold text-warning">{kpiData.maverickSpend.percentage}%</p>
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">R$ {kpiData.maverickSpend.maverick.toLocaleString('pt-BR')}</span>
+            <span className="text-xs text-muted-foreground">{formatCurrency(kpiData.maverickSpend.maverick)}</span>
             <Progress 
               value={kpiData.maverickSpend.percentage} 
               className="h-1.5 flex-1 [&>div]:bg-warning"
             />
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            do total de R$ {kpiData.maverickSpend.total.toLocaleString('pt-BR')}
+            do total de {formatCurrency(kpiData.maverickSpend.total)}
           </p>
         </Card>
 
@@ -294,24 +294,24 @@ export const AdvancedProcurementKPIs = () => {
               <span className="text-sm font-medium text-muted-foreground">Cost Avoidance</span>
             </div>
             <Badge variant="outline" className="text-[10px]">
-              Meta: R$ {((targets.find(t => t.id === 'cost_avoidance')?.target || 150000) / 1000).toFixed(0)}k
+              Meta: {formatCurrencyCompact((targets.find(t => t.id === 'cost_avoidance')?.target || 150000))}
             </Badge>
           </div>
           <p className="text-3xl font-bold text-success">
-            R$ {(kpiData.costAvoidance.total / 1000).toFixed(0)}k
+            {formatCurrencyCompact(kpiData.costAvoidance.total)}
           </p>
           <div className="mt-3 space-y-1">
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Negociação</span>
-              <span className="text-foreground">R$ {kpiData.costAvoidance.negotiated.toLocaleString('pt-BR')}</span>
+              <span className="text-foreground">{formatCurrency(kpiData.costAvoidance.negotiated)}</span>
             </div>
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Competitivo</span>
-              <span className="text-foreground">R$ {kpiData.costAvoidance.competitive.toLocaleString('pt-BR')}</span>
+              <span className="text-foreground">{formatCurrency(kpiData.costAvoidance.competitive)}</span>
             </div>
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Padronização</span>
-              <span className="text-foreground">R$ {kpiData.costAvoidance.standardization.toLocaleString('pt-BR')}</span>
+              <span className="text-foreground">{formatCurrency(kpiData.costAvoidance.standardization)}</span>
             </div>
           </div>
         </Card>
@@ -441,10 +441,10 @@ export const AdvancedProcurementKPIs = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={kpiData.maverickSpend.byCategory} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                <XAxis type="number" tickFormatter={(v) => `R$ ${(v/1000).toFixed(0)}k`} />
+                <XAxis type="number" tickFormatter={(v) => formatCurrencyCompact(Number(v))} />
                 <YAxis type="category" dataKey="name" width={80} />
                 <Tooltip 
-                  formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, 'Valor']}
+                  formatter={(value: number) => [formatCurrency(value), 'Valor']}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',
@@ -467,13 +467,13 @@ export const AdvancedProcurementKPIs = () => {
             <div>
               <p className="text-xs text-muted-foreground">Projetado</p>
               <p className="text-lg font-bold text-foreground">
-                R$ {(kpiData.savingsRealization.projected / 1000).toFixed(0)}k
+                {formatCurrencyCompact(kpiData.savingsRealization.projected)}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Realizado</p>
               <p className="text-lg font-bold text-success">
-                R$ {(kpiData.savingsRealization.realized / 1000).toFixed(0)}k
+                {formatCurrencyCompact(kpiData.savingsRealization.realized)}
               </p>
             </div>
             <Badge className={cn(
@@ -492,7 +492,7 @@ export const AdvancedProcurementKPIs = () => {
                 <XAxis dataKey="quarter" />
                 <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
                 <Tooltip 
-                  formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, '']}
+                  formatter={(value: number) => [formatCurrency(value), '']}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',

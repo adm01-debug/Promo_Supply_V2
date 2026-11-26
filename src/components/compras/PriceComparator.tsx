@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency, formatCurrencyCompact } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -304,7 +304,7 @@ export function PriceComparator() {
                           <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
                           <p className="text-xl font-black text-white tracking-tight">
                             {selectedQuotes.length ? (
-                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + (q.totalPrice ?? 0), 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
+                              formatCurrency(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + (q.totalPrice ?? 0), 0) / selectedQuotes.length)
                             ) : '—'}
                           </p>
                         </div>
@@ -338,7 +338,7 @@ export function PriceComparator() {
                       <p className="font-semibold truncate">{comparison.bestPrice ?? '—'}</p>
                       <p className="text-sm text-muted-foreground">
                         {comparison.priceRange
-                          ? `R$ ${comparison.priceRange.min.toLocaleString('pt-BR')}`
+                          ? formatCurrency(comparison.priceRange.min)
                           : 'Sem preco registrado'}
                       </p>
                     </CardContent>
@@ -382,10 +382,10 @@ export function PriceComparator() {
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} layout="vertical">
                           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                          <XAxis type="number" tickFormatter={(v) => `R$ ${v}`} className="text-xs" />
+                          <XAxis type="number" tickFormatter={(v) => formatCurrencyCompact(Number(v))} className="text-xs" />
                           <YAxis dataKey="name" type="category" width={100} className="text-xs" />
                           <Tooltip
-                            formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, 'Total']}
+                            formatter={(value: number) => [formatCurrency(value), 'Total']}
                             contentStyle={{
                               backgroundColor: 'hsl(var(--card))',
                               border: '1px solid hsl(var(--border))',
@@ -484,7 +484,7 @@ export function PriceComparator() {
                               </div>
                             </TableCell>
                             <TableCell className="text-right">
-                              {quote.unitPrice === null ? <span className="text-muted-foreground">—</span> : `R$ ${quote.unitPrice.toFixed(2)}`}
+                              {quote.unitPrice === null ? <span className="text-muted-foreground">—</span> : formatCurrency(quote.unitPrice)}
                             </TableCell>
                             <TableCell className="text-right font-semibold">
                               {quote.totalPrice === null ? (
@@ -493,10 +493,10 @@ export function PriceComparator() {
                                 <>
                                   {quote.savings !== null && quote.savings > 0 ? (
                                     <span className="text-xs text-destructive block">
-                                      +R$ {quote.savings.toLocaleString('pt-BR')}
+                                      +{formatCurrency(quote.savings)}
                                     </span>
                                   ) : null}
-                                  R$ {quote.totalPrice.toLocaleString('pt-BR')}
+                                  {formatCurrency(quote.totalPrice)}
                                 </>
                               )}
                             </TableCell>

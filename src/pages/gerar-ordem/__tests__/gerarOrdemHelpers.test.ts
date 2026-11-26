@@ -81,7 +81,7 @@ describe('buildWhatsAppMessage', () => {
 
   it('shows frete value when frete > 0', () => {
     const msg = buildWhatsAppMessage(makeSupplier(), makeOrder(), 'OC-001', 1400, 150, 0, '');
-    expect(msg).toContain('150.00');
+    expect(msg).toContain('150,00');
   });
 
   it('includes discount line when desconto > 0', () => {
@@ -146,7 +146,7 @@ describe('buildEmailMessage', () => {
 
   it('shows frete value when frete > 0', () => {
     const { corpo } = buildEmailMessage(makeOrder(), 'OC-001', 1250, 1400, 150, 0, '');
-    expect(corpo).toContain('150.00');
+    expect(corpo).toContain('150,00');
   });
 
   it('includes desconto line when desconto > 0', () => {
@@ -181,19 +181,19 @@ describe('buildWhatsAppMessage/buildEmailMessage sem fallback de R$ 12', () => {
   it('nao inventa R$ 12,00 quando o valor unitario e zero', () => {
     const zerado = makeOrder({ valorUnitario: 0 });
 
-    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).not.toContain('12.00');
-    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).toContain('0.00');
+    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).not.toContain('R$ 12,00');
+    expect(buildWhatsAppMessage(makeSupplier(), zerado, 'OC-001', 0, 0, 0, '')).toContain('0,00');
 
     const { corpo } = buildEmailMessage(zerado, 'OC-001', 0, 0, 0, 0, '');
-    expect(corpo).not.toContain('12.00');
+    expect(corpo).not.toContain('R$ 12,00');
   });
 
   it('reproduz o valor unitario da cotacao vencedora', () => {
     const daCotacao = makeOrder({ valorUnitario: 23, quantidadeReal: 200 });
 
-    expect(buildWhatsAppMessage(makeSupplier(), daCotacao, 'OC-001', 4600, 200, 0, '')).toContain('23.00');
+    expect(buildWhatsAppMessage(makeSupplier(), daCotacao, 'OC-001', 4600, 200, 0, '')).toContain('23,00');
     const { corpo } = buildEmailMessage(daCotacao, 'OC-001', 4600, 4800, 200, 0, '');
-    expect(corpo).toContain('23.00');
+    expect(corpo).toContain('23,00');
   });
 });
 
@@ -275,7 +275,7 @@ describe('buildEmailMessage - formato real do dinheiro (sem mock de @/lib/utils)
 
   it('nao inventa valor unitario quando a cotacao veio zerada', () => {
     const { corpo } = buildEmailMessage(makeOrder({ valorUnitario: 0 }), 'OC-001', 0, 0, 0, 0, '');
-    expect(corpo).not.toContain('12.00');
-    expect(corpo).toContain('0.00');
+    expect(corpo).not.toContain('R$ 12,00');
+    expect(corpo).toContain('0,00');
   });
 });

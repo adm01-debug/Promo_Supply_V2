@@ -1,5 +1,5 @@
 import { Check, X, Loader2, Search, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ResultadoBusca {
@@ -122,7 +122,7 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
                   {r.status === 'encontrado' ? (
                     <div className="flex items-center gap-3 mt-1">
                       <span className="text-xs font-black text-emerald-400 tracking-tighter">
-                        R$ {r.valorUnitario?.toFixed(2)}
+                        {formatCurrency(r.valorUnitario)}
                       </span>
                       <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">
                         {r.quantidadeDisponivel} Stock

@@ -551,7 +551,7 @@ const GerarOrdem = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Valor Unitário</span>
-                  <span className="font-medium">R$ {solicitacao.valorUnitario.toFixed(2)}</span>
+                  <span className="font-medium">{formatCurrency(solicitacao.valorUnitario)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Quantidade</span>

@@ -241,7 +241,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         return (
           <div className="flex items-center gap-2">
             <span className={cn("text-lg font-semibold", isBest && "text-success")}>
-              R$ {value.toFixed(2)}
+              {formatCurrency(value)}
             </span>
             {isBest && <Badge variant="outline" className="text-xs">Menor</Badge>}
           </div>
@@ -277,7 +277,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         return (
           <div className="flex items-center gap-2">
             <span className={cn("text-lg font-semibold", isFree && "text-success")}>
-              {isFree ? 'Grátis' : `R$ ${value.toFixed(2)}`}
+              {isFree ? 'Grátis' : formatCurrency(value)}
             </span>
             {cotacao.freteInfo && (
               <span className="text-xs text-muted-foreground">

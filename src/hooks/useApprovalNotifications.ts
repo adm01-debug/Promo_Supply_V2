@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { abrirCanalPostgres } from '@/lib/realtime';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { safeTruncate } from '@/lib/safeTruncate';
+import { formatCurrency } from "@/lib/utils";
 
 export interface ApprovalNotification {
   id: string;
@@ -178,7 +179,7 @@ export const useApprovalNotifications = () => {
     const toastType = type === 'critical' || type === 'escalated' ? 'error' : 'warning';
     toast[toastType](message, {
       duration: type === 'warning' ? 5000 : 10000,
-      description: `Solicitação: ${requestId} • R$ ${value.toLocaleString('pt-BR')}`,
+      description: `Solicitação: ${requestId} • ${formatCurrency(value)}`,
     });
 
     return notification;

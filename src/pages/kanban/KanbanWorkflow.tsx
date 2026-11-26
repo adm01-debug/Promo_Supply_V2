@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from '@/lib/utils';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -150,7 +151,7 @@ const KanbanWorkflow = () => {
                             </Badge>
                             {item.valor_estimado && (
                               <span className="text-[10px] text-muted-foreground">
-                                R$ {Number(item.valor_estimado).toLocaleString("pt-BR")}
+                                {formatCurrency(Number(item.valor_estimado))}
                               </span>
                             )}
                           </div>

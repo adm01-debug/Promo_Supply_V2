@@ -17,6 +17,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Layers, Info } from "lucide-react";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
 
@@ -74,7 +75,7 @@ export const SpendAnalytics = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value: number | string) => `R$ ${Number(value).toLocaleString('pt-BR')}`}
+                  formatter={(value: number | string) => formatCurrency(Number(value))}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -93,8 +94,8 @@ export const SpendAnalytics = () => {
               <BarChart data={spendByUnspsc?.sort((a, b) => b.value - a.value)}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
                 <XAxis dataKey="name" fontSize={10} hide />
-                <YAxis fontSize={10} tickFormatter={(val) => `R$ ${val/1000}k`} />
-                <Tooltip formatter={(value: number | string) => `R$ ${Number(value).toLocaleString('pt-BR')}`} />
+                <YAxis fontSize={10} tickFormatter={(val) => formatCurrencyCompact(Number(val))} />
+                <Tooltip formatter={(value: number | string) => formatCurrency(Number(value))} />
                 <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -112,7 +113,7 @@ export const SpendAnalytics = () => {
                 <span className="text-sm font-medium">{item.name}</span>
               </div>
               <div className="flex items-center gap-8">
-                <span className="text-sm font-bold">R$ {item.value.toLocaleString('pt-BR')}</span>
+                <span className="text-sm font-bold">{formatCurrency(item.value)}</span>
                 <Badge variant="secondary">{((item.value / spendByUnspsc.reduce((a,b) => a + b.value, 0)) * 100).toFixed(1)}%</Badge>
               </div>
             </div>

@@ -3,6 +3,7 @@ import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, CheckCircle2, AlertTriangle, AlertCircle } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 export const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)', 'hsl(262, 83%, 58%)'];
 
@@ -55,8 +56,8 @@ export function exportBuyerCSV(buyer: BuyerData) {
   const rows = [
     ['Métrica', 'Valor'],
     ['Nome', buyer.nome],
-    ['Economia do Mês', `R$ ${buyer.performance.economiaMes.toLocaleString('pt-BR')}`],
-    ['Economia do Ano', `R$ ${buyer.performance.economiaAno.toLocaleString('pt-BR')}`],
+    ['Economia do Mês', formatCurrency(buyer.performance.economiaMes)],
+    ['Economia do Ano', formatCurrency(buyer.performance.economiaAno)],
     ['Desconto Médio', `${buyer.performance.descontoMedio}%`],
     ['Taxa Melhor Preço', `${buyer.performance.melhorPrecoRate}%`],
     ['Cotações Realizadas', String(buyer.performance.cotacoesRealizadas)],
@@ -66,7 +67,7 @@ export function exportBuyerCSV(buyer: BuyerData) {
     [''],
     ['Histórico Mensal'],
     ['Mês', 'Economia', 'Cotações', 'Desconto'],
-    ...buyer.historico.map(h => [h.mes, `R$ ${h.economia}`, String(h.cotacoes), `${h.desconto}%`]),
+    ...buyer.historico.map(h => [h.mes, formatCurrency(Number(h.economia)), String(h.cotacoes), `${h.desconto}%`]),
   ];
   const bom = '\uFEFF';
   const csv = bom + rows.map(r => r.join(';')).join('\n');

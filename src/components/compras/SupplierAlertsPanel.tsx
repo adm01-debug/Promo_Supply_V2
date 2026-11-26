@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSLASettings } from '@/stores/slaSettingsStore';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -80,7 +80,7 @@ export const SupplierAlertsPanel = () => {
           type: exceeded ? 'critical' as const : 'warning' as const,
           category: 'credit',
           message: exceeded ? `CREDIT LIMIT EXCEEDED: ${pct}% Usage` : `CREDIT LIMIT NEAR CAP: ${pct}% Usage`,
-          detail: `Used: R$ ${f.saldo_comprometido?.toLocaleString('pt-BR')} / Cap: R$ ${f.limite_credito?.toLocaleString('pt-BR')}`,
+          detail: `Used: ${formatCurrency(f.saldo_comprometido)} / Cap: ${formatCurrency(f.limite_credito)}`,
           slaCompliance: 100 - pct,
         };
       });

@@ -44,6 +44,7 @@ import type { ValueType, NameType } from "recharts/types/component/DefaultToolti
 import { useRelatorioNegociacoes, type Comprador } from "./useRelatorioNegociacoes";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "@/lib/feedbackToast";
+import { formatCurrency } from "@/lib/utils";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -93,7 +94,7 @@ const RelatorioNegociacoes = () => {
             >
               {entry.name}:{" "}
               {String(entry.name ?? "").includes("R$") || entry.dataKey === "economia"
-                ? `R$ ${Number(entry.value).toLocaleString("pt-BR")}`
+                ? formatCurrency(Number(entry.value))
                 : entry.dataKey === "percentual"
                   ? `${entry.value}%`
                   : entry.value}
@@ -158,7 +159,7 @@ const RelatorioNegociacoes = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Economia Total</p>
                 <p className="text-2xl font-bold mt-1">
-                  R$ {totalEconomia.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}
+                  {formatCurrency(totalEconomia)}
                 </p>
                 <div className="flex items-center gap-1 mt-2 text-xs text-emerald-600">
                   <TrendingUp className="h-3 w-3" />
@@ -302,7 +303,7 @@ const RelatorioNegociacoes = () => {
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">
-                          R$ {c.economia.toLocaleString("pt-BR")}
+                          {formatCurrency(c.economia)}
                         </p>
                         <div className="flex items-center justify-end gap-1 text-xs">
                           {c.tendencia === "up" ? (

@@ -30,6 +30,7 @@ import {
   resumirAprovacoes,
   serieMensal,
 } from './aprovacoesData';
+import { formatCurrency } from "@/lib/utils";
 
 const Aprovacoes = () => {
   const [periodo, setPeriodo] = useState("6m");
@@ -157,7 +158,7 @@ const Aprovacoes = () => {
                       <div>
                         <p className="font-mono text-sm">{item.solicitacao}</p>
                         <p className="text-xs text-muted-foreground">
-                          {item.valor ? `R$ ${item.valor.toLocaleString('pt-BR')}` : item.acao}
+                          {item.valor ? formatCurrency(item.valor) : item.acao}
                         </p>
                       </div>
                     </div>

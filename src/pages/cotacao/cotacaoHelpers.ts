@@ -1,5 +1,6 @@
 import { nullishStr, nullishNum, nullishBool } from "@/lib/dbMapping";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 
 interface FornecedorRow {
   id: string;
@@ -61,8 +62,8 @@ export function buildQuoteAnalysis(quotes: CotacaoAPI[]): QuoteAnalysis | null {
   const lines: string[] = [];
   lines.push(
     best.total === averageTotal
-      ? `Apenas **${best.fornecedor}** com cotacao registrada (R$ ${best.total.toFixed(2)}). Sem base para comparar economia.`
-      : `**${best.fornecedor}** tem o menor total registrado: R$ ${best.total.toFixed(2)} — ${savingsVsAveragePercent ?? 0}% abaixo da media das ${valid.length} cotacoes (R$ ${averageTotal.toFixed(2)}).`
+      ? `Apenas **${best.fornecedor}** com cotacao registrada (${formatCurrency(best.total)}). Sem base para comparar economia.`
+      : `**${best.fornecedor}** tem o menor total registrado: ${formatCurrency(best.total)} — ${savingsVsAveragePercent ?? 0}% abaixo da media das ${valid.length} cotacoes (${formatCurrency(averageTotal)}).`
   );
   if (withoutDeliveryDate > 0) {
     lines.push(`${withoutDeliveryDate} de ${valid.length} cotacoes sem prazo de entrega informado — nao ha como afirmar cumprimento de prazo.`);
@@ -164,7 +165,7 @@ export function adaptCotacoesFromDB(cotacoes: CotacaoRow[]): CotacaoAPI[] {
       quantidadeDisponivel: nullishNum(c.quantidade),
       prazoEntrega: nullishNum(c.prazo_entrega),
       frete: valorFrete,
-      freteInfo: valorFrete > 0 ? `+R$ ${valorFrete}` : 'Incluso',
+      freteInfo: valorFrete > 0 ? `+${formatCurrency(valorFrete)}` : 'Incluso',
       condicaoPagamento: nullishStr(c.condicao_pagamento, 'À vista'),
       total: nullishNum(c.valor_total),
       selecionada: nullishBool(c.selecionada),
@@ -233,7 +234,7 @@ export async function fetchRegisteredQuotes(
       quantidadeDisponivel: nullishNum(c.quantidade) ?? quantidade,
       prazoEntrega: nullishNum(c.prazo_entrega) ?? 0,
       frete,
-      freteInfo: frete > 0 ? `+R$ ${frete}` : 'Incluso',
+      freteInfo: frete > 0 ? `+${formatCurrency(frete)}` : 'Incluso',
       condicaoPagamento: nullishStr(c.condicao_pagamento, ''),
       total: nullishNum(c.valor_total) ?? valorUnitario * quantidade + frete,
       selecionada: nullishBool(c.selecionada) ?? false,

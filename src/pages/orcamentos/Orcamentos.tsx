@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatCurrencyCompact } from '@/lib/utils';
 import { MainLayout } from '@/features/layout/components/MainLayout';
 import { ModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBoundary';
 import { PageTransition } from '@/components/animations/MotionComponents';
@@ -195,7 +195,7 @@ const Orcamentos = () => {
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `R$${value / 1000}k`} />
+                    <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatCurrencyCompact(value)} />
                     <RechartsTooltip 
                       formatter={(value: number) => formatCurrency(value)}
                       contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}

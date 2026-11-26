@@ -24,7 +24,7 @@ import {
   buildEmailAssunto,
   buildEmailCorpo,
 } from "@/lib/negotiationOutreach";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -261,7 +261,7 @@ const NegociacaoIA = () => {
                       <SelectContent>
                         {solicitacoes?.map(s => (
                           <SelectItem key={s.id} value={s.id}>
-                            {s.numero} - {s.titulo} {s.valor_estimado ? `(R$ ${Number(s.valor_estimado).toLocaleString("pt-BR")})` : ""}
+                            {s.numero} - {s.titulo} {s.valor_estimado ? `(${formatCurrency(Number(s.valor_estimado))})` : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -296,7 +296,7 @@ const NegociacaoIA = () => {
                               {(c as { fornecedor?: { nome_fantasia?: string; razao_social?: string } | null }).fornecedor?.nome_fantasia || (c as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || "Fornecedor"}
                             </p>
                             <p className="text-lg font-bold text-foreground">
-                              R$ {Number(c.valor_total).toLocaleString("pt-BR")}
+                              {formatCurrency(Number(c.valor_total))}
                             </p>
                             <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
                               <span className="flex items-center gap-1">
@@ -396,7 +396,7 @@ const NegociacaoIA = () => {
                             <div>
                               <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Potencial de Savings</p>
                               <p className="font-bold text-primary text-xl">
-                                R$ {Number(analysis.economia_estimada).toLocaleString("pt-BR")}
+                                {formatCurrency(Number(analysis.economia_estimada))}
                               </p>
                             </div>
                           </div>
@@ -490,7 +490,7 @@ const NegociacaoIA = () => {
                                       <Target className="h-3 w-3" /> Meta Ideal
                                     </p>
                                     <p className="text-sm font-black text-white">
-                                      R$ {Number(s.valor_contraproposta).toLocaleString("pt-BR")}
+                                      {formatCurrency(Number(s.valor_contraproposta))}
                                     </p>
                                   </div>
                                 )}
@@ -500,7 +500,7 @@ const NegociacaoIA = () => {
                                       <AlertTriangle className="h-3 w-3" /> Recuo Máx.
                                     </p>
                                     <p className="text-sm font-black text-white">
-                                      R$ {Number(s.valor_ponto_recuo).toLocaleString("pt-BR")}
+                                      {formatCurrency(Number(s.valor_ponto_recuo))}
                                     </p>
                                   </div>
                                 )}
@@ -643,7 +643,7 @@ const NegociacaoIA = () => {
                           {(a.economia_estimada || 0) > 0 ? (
                             <div className="flex items-center gap-1 text-[11px] font-bold text-success">
                               <TrendingDown className="h-3 w-3" />
-                              R$ {Number(a.economia_estimada).toLocaleString("pt-BR")}
+                              {formatCurrency(Number(a.economia_estimada))}
                             </div>
                           ) : (
                             <span className="text-[10px] text-muted-foreground">Estratégico</span>

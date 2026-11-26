@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { formatCurrency } from '@/lib/utils';
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +90,7 @@ export const SupplierIntelligenceConsole = ({ suppliers }: Props) => {
                           <p className="font-bold text-foreground mb-1">{data.name}</p>
                           <p className="text-muted-foreground">SLA: <span className="text-foreground font-medium">{data.reliability}%</span></p>
                           <p className="text-muted-foreground">Custo: <span className="text-foreground font-medium">{data.costEfficiency}% (Score)</span></p>
-                          <p className="text-muted-foreground">Gasto: <span className="text-foreground font-medium">R$ {data.volume.toLocaleString('pt-BR')}</span></p>
+                          <p className="text-muted-foreground">Gasto: <span className="text-foreground font-medium">{formatCurrency(data.volume)}</span></p>
                         </div>
                       );
                     }

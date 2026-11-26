@@ -8,6 +8,7 @@ import { type ProductHistory, type PurchaseRecord } from '@/hooks/usePurchaseHis
 import { QualityStars, DeliveryBadge, StatusBadge } from './HistoricoHelpers';
 import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 interface Props {
   filteredProducts: ProductHistory[];
@@ -25,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
       {payload.map((entry, i) => (
         <p key={i} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {typeof entry.value === "number" && (String(entry.name).includes("R$") || String(entry.name).includes("Preço") || String(entry.name).includes("Valor"))
-            ? `R$ ${entry.value.toLocaleString("pt-BR")}`
+            ? formatCurrency(Number(entry.value))
             : entry.value}
         </p>
       ))}
@@ -51,13 +52,13 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
                   <p className="font-medium text-foreground truncate">{product.name}</p>
                   <p className="text-xs text-muted-foreground">{product.sku} • {product.category}</p>
                 </div>
-                <Badge variant="outline" className="shrink-0 text-xs">R$ {product.avgPrice.toFixed(2)}</Badge>
+                <Badge variant="outline" className="shrink-0 text-xs">{formatCurrency(product.avgPrice)}</Badge>
               </div>
               <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                 <div><span className="text-muted-foreground">Compras:</span> <span className="font-medium">{product.totalPurchases}</span></div>
-                <div><span className="text-muted-foreground">Total:</span> <span className="font-medium">R$ {product.totalSpent.toLocaleString("pt-BR")}</span></div>
-                <div><span className="text-muted-foreground">Min:</span> <span className="font-medium text-success">R$ {product.minPrice.toFixed(2)}</span></div>
-                <div><span className="text-muted-foreground">Max:</span> <span className="font-medium text-destructive">R$ {product.maxPrice.toFixed(2)}</span></div>
+                <div><span className="text-muted-foreground">Total:</span> <span className="font-medium">{formatCurrency(product.totalSpent)}</span></div>
+                <div><span className="text-muted-foreground">Min:</span> <span className="font-medium text-success">{formatCurrency(product.minPrice)}</span></div>
+                <div><span className="text-muted-foreground">Max:</span> <span className="font-medium text-destructive">{formatCurrency(product.maxPrice)}</span></div>
               </div>
             </div>
           ))}
@@ -76,14 +77,14 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
             <QualityStars rating={selectedProduct.qualityAvg} />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Preço Médio</p><p className="text-lg font-bold text-foreground">R$ {selectedProduct.avgPrice.toFixed(2)}</p></div>
-            <div className="p-3 rounded-lg bg-success/10"><p className="text-xs text-success">Menor Preço</p><p className="text-lg font-bold text-success">R$ {selectedProduct.minPrice.toFixed(2)}</p></div>
-            <div className="p-3 rounded-lg bg-destructive/10"><p className="text-xs text-destructive">Maior Preço</p><p className="text-lg font-bold text-destructive">R$ {selectedProduct.maxPrice.toFixed(2)}</p></div>
+            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Preço Médio</p><p className="text-lg font-bold text-foreground">{formatCurrency(selectedProduct.avgPrice)}</p></div>
+            <div className="p-3 rounded-lg bg-success/10"><p className="text-xs text-success">Menor Preço</p><p className="text-lg font-bold text-success">{formatCurrency(selectedProduct.minPrice)}</p></div>
+            <div className="p-3 rounded-lg bg-destructive/10"><p className="text-xs text-destructive">Maior Preço</p><p className="text-lg font-bold text-destructive">{formatCurrency(selectedProduct.maxPrice)}</p></div>
             <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Qtd. Total</p><p className="text-lg font-bold text-foreground">{selectedProduct.totalQuantity.toLocaleString("pt-BR")}</p></div>
             <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
               <p className="text-[10px] text-primary font-bold uppercase">Benchmark IA</p>
               <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-primary">R$ {(selectedProduct.avgPrice * 0.95).toFixed(2)}</p>
+                <p className="text-lg font-bold text-primary">{formatCurrency((selectedProduct.avgPrice * 0.95))}</p>
                 <Sparkles className="w-3 h-3 text-primary animate-pulse" />
               </div>
             </div>
@@ -95,7 +96,7 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
                 <LineChart data={selectedProduct.priceHistory}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
-                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} tickFormatter={(v) => `R$ ${v}`} />
+                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} tickFormatter={(v) => formatCurrencyCompact(Number(v))} />
                   <Tooltip content={<CustomTooltip />} />
                   <Line type="monotone" dataKey="price" name="Preço" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4 }} />
                 </LineChart>
@@ -123,7 +124,7 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
                       <TableCell className="text-xs font-medium">#{record.orderNumber}</TableCell>
                       <TableCell className="text-xs">{record.supplierName}</TableCell>
                       <TableCell className="text-xs text-right">{record.quantity}</TableCell>
-                      <TableCell className="text-xs text-right">R$ {record.unitPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-xs text-right">{formatCurrency(record.unitPrice)}</TableCell>
                       <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
                       <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>
                       <TableCell className="text-xs"><StatusBadge status={record.status} /></TableCell>

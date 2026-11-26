@@ -10,7 +10,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { toast } from "@/lib/feedbackToast";
-import { formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { logger } from "@/lib/logger";
 import { conciliarNotaComPedido, resolverFornecedorPorCnpj } from "./conciliacaoFiscal";
 
@@ -361,7 +361,7 @@ const DocumentosFiscais = () => {
                       {doc.data_emissao ? formatDate(doc.data_emissao) : "-"}
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      R$ {Number(doc.valor_total).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                      {formatCurrency(Number(doc.valor_total))}
                     </TableCell>
                     <TableCell>
                       <Badge variant={doc.status === "validada" ? "default" : "secondary"}>{doc.status}</Badge>

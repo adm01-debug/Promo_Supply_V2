@@ -28,6 +28,10 @@ export const formatCurrency = (value: number | null | undefined): string => {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
+/** Forma compacta ("R$ 1,2 mi") para eixos e tooltips de grafico, onde o valor completo nao cabe. */
+export const formatCurrencyCompact = (value: number | null | undefined): string =>
+  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact' }).format(value ?? 0);
+
 /**
  * Converte texto de data para `Date`. Data SEM hora ("2024-06-15", coluna `date`
  * do Postgres ou <input type="date">) é lida como meia-noite LOCAL: `new Date()`

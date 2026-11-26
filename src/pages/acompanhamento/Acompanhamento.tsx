@@ -48,7 +48,7 @@ import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 
 // Erro do PostgREST e objeto simples {message, details, hint}, nao instanceof Error:
 // String(error) renderizaria "[object Object]" na tela.
@@ -499,7 +499,7 @@ const Acompanhamento = () => {
                             {pedido.valorTotal && (
                               <div className="pt-4 border-t border-border/10 flex items-center justify-between">
                                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Equity Value</p>
-                                <p className="text-xl font-black text-primary">R$ {pedido.valorTotal.toLocaleString('pt-BR')}</p>
+                                <p className="text-xl font-black text-primary">{formatCurrency(pedido.valorTotal)}</p>
                               </div>
                             )}
                           </div>

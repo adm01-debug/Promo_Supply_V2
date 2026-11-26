@@ -15,7 +15,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
 import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pagamento } from "@/hooks/usePagamentos";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 interface Props {
   pagamentos: Pagamento[];
@@ -76,7 +76,7 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
     });
   }, [pagamentos]);
 
-  const fmtK = (v: number) => v >= 1000 ? `R$ ${(v / 1000).toFixed(0)}k` : `R$ ${v.toFixed(0)}`;
+  const fmtK = (v: number) => formatCurrencyCompact(v);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

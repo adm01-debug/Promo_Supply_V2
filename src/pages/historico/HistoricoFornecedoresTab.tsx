@@ -8,6 +8,7 @@ import { type SupplierHistory, type PurchaseRecord } from '@/hooks/usePurchaseHi
 import { QualityStars, DeliveryBadge, StatusBadge } from './HistoricoHelpers';
 import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   filteredSuppliers: SupplierHistory[];
@@ -25,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
       {payload.map((entry, i) => (
         <p key={i} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {typeof entry.value === "number" && (String(entry.name).includes("R$") || String(entry.name).includes("Preço") || String(entry.name).includes("Valor"))
-            ? `R$ ${entry.value.toLocaleString("pt-BR")}`
+            ? formatCurrency(Number(entry.value))
             : entry.value}
         </p>
       ))}
@@ -57,7 +58,7 @@ export const HistoricoFornecedoresTab = ({ filteredSuppliers, selectedSupplierId
               </div>
               <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                 <div><span className="text-muted-foreground">Pedidos:</span> <span className="ml-1 font-medium">{supplier.totalOrders}</span></div>
-                <div><span className="text-muted-foreground">Total:</span> <span className="ml-1 font-medium">R$ {supplier.totalSpent.toLocaleString("pt-BR")}</span></div>
+                <div><span className="text-muted-foreground">Total:</span> <span className="ml-1 font-medium">{formatCurrency(supplier.totalSpent)}</span></div>
                 <div><span className="text-muted-foreground">Desconto médio:</span> <span className="ml-1 font-medium text-success">{supplier.averageDiscount.toFixed(1)}%</span></div>
                 <div><QualityStars rating={supplier.qualityScore} /></div>
               </div>
@@ -78,8 +79,8 @@ export const HistoricoFornecedoresTab = ({ filteredSuppliers, selectedSupplierId
             <QualityStars rating={selectedSupplier.qualityScore} />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Total Gasto</p><p className="text-lg font-bold text-foreground">R$ {selectedSupplier.totalSpent.toLocaleString("pt-BR")}</p></div>
-            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Valor Médio</p><p className="text-lg font-bold text-foreground">R$ {selectedSupplier.averageOrderValue.toLocaleString("pt-BR")}</p></div>
+            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Total Gasto</p><p className="text-lg font-bold text-foreground">{formatCurrency(selectedSupplier.totalSpent)}</p></div>
+            <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Valor Médio</p><p className="text-lg font-bold text-foreground">{formatCurrency(selectedSupplier.averageOrderValue)}</p></div>
             <div className={`p-3 rounded-lg ${selectedSupplier.onTimeRate >= 80 ? "bg-success/10" : "bg-warning/10"}`}>
               <p className={`text-xs ${selectedSupplier.onTimeRate >= 80 ? "text-success" : "text-warning"}`}>Taxa SLA</p>
               <p className={`text-lg font-bold ${selectedSupplier.onTimeRate >= 80 ? "text-success" : "text-warning"}`}>{selectedSupplier.onTimeRate}%</p>
@@ -116,7 +117,7 @@ export const HistoricoFornecedoresTab = ({ filteredSuppliers, selectedSupplierId
                       <TableCell className="text-xs font-medium">#{record.orderNumber}</TableCell>
                       <TableCell className="text-xs max-w-[150px] truncate">{record.productName}</TableCell>
                       <TableCell className="text-xs text-right">{record.quantity}</TableCell>
-                      <TableCell className="text-xs text-right">R$ {record.totalPrice.toLocaleString("pt-BR")}</TableCell>
+                      <TableCell className="text-xs text-right">{formatCurrency(record.totalPrice)}</TableCell>
                       <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
                       <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>
                       <TableCell className="text-xs">{(record.qualityRating || 0) > 0 && <QualityStars rating={record.qualityRating!} />}</TableCell>
