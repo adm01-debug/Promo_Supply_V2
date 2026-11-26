@@ -135,7 +135,10 @@ export async function fetchSolicitacoesData(userId: string | undefined, organiza
   if (filters?.solicitanteId) query = query.eq('solicitante_id', filters.solicitanteId);
   if (filters?.search) {
     const s = escapeIlike(filters.search);
-    query = query.or(`titulo.ilike.%${s}%,numero.ilike.%${s}%,descricao.ilike.%${s}%`);
+      // `departamento` e' o "empresa" do formato legado exibido na tela: sem ele
+      // aqui, a busca por empresa passava a ser feita em JS sobre a pagina e
+      // escondia os registros das demais paginas.
+      query = query.or(`titulo.ilike.%${s}%,numero.ilike.%${s}%,descricao.ilike.%${s}%,departamento.ilike.%${s}%`);
   }
   if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);

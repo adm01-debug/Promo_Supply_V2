@@ -140,13 +140,15 @@ const Solicitacoes = () => {
     [solicitacoes, nomesDeGestor],
   );
 
-  const filteredSolicitacoes = useMemo(() => {
+  // A busca ja' foi resolvida no servidor (titulo/numero/descricao/departamento):
+    // refiltra-la aqui por `id`/`empresa`/`produto` descartava linhas legitimas —
+    // procurar por numero de solicitacao devolvia zero, porque o numero nao casa
+    // com id, e `produto` e' o titulo. Os demais recortes (status, tipo, prazo,
+    // valor) seguem locais de proposito: `data_necessidade` e `valor_estimado`
+    // estao nulos em 283 e 284 das 292 solicitacoes de producao, entao manda-los
+    // ao SQL com `gte/lte` apagaria 97% da lista.
+    const filteredSolicitacoes = useMemo(() => {
     return adaptedSolicitacoes.filter(s => {
-      const matchesSearch = !searchTerm || 
-        s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.produto.toLowerCase().includes(searchTerm.toLowerCase());
-      
       const matchesStatus = apenasMeus
         ? solicitantePorId.get(s.id) === user?.id
         : statusFilter === "todas" || s.status === statusFilter;
@@ -160,9 +162,9 @@ const Solicitacoes = () => {
       const matchesValorMin = solicitacaoValor >= advancedFilters.valorMin;
       const matchesValorMax = solicitacaoValor <= advancedFilters.valorMax || advancedFilters.valorMax === 100000;
 
-      return matchesSearch && matchesStatus && matchesTipo && matchesDateFrom && matchesDateTo && matchesValorMin && matchesValorMax;
+        return matchesStatus && matchesTipo && matchesDateFrom && matchesDateTo && matchesValorMin && matchesValorMax;
     });
-  }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters, apenasMeus, solicitantePorId, user?.id]);
+    }, [adaptedSolicitacoes, statusFilter, tipoFilter, advancedFilters, apenasMeus, solicitantePorId, user?.id]);
 
   const pontosMatriz = useMemo(
     () => posicoesDaMatriz(filteredSolicitacoes.slice(0, 15)),
