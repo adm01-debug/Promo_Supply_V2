@@ -21,6 +21,11 @@ import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
 import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
+import {
+  classifyDispatch,
+  previousAttempts,
+  type DispatchStatus,
+} from "./dispatchStatus.ts";
 
 const GLOBAL_SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
@@ -258,7 +263,7 @@ serve(async (req) => {
     });
   }
 
-  const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack_delivered?: number; slack_failed?: number }> = [];
+  const results: Array<{ id: string; ok: boolean; status: DispatchStatus | "suppressed_dedup"; error?: string; in_app?: number; slack_delivered?: number; slack_failed?: number }> = [];
   const seenWindow = new Map<string, string>();
 
   // #209/#210: a severidade e canonica no banco a partir da migration 20261127170000;
@@ -268,11 +273,14 @@ serve(async (req) => {
   for (const alert of pendentes) {
     const dedupeKey = `${alert.tenant_id ?? "global"}::${alert.alert_type}`;
     if (seenWindow.has(dedupeKey)) {
+      // 182: supressao por janela de silencio ADIA o alerta, nao o apaga. Sem
+      // `dispatched_at` ele volta na proxima rodada (1 min) e, sendo o primeiro da
+      // janela, e entregue.
       await admin
         .from("system_alerts")
-        .update({ dispatched_at: new Date().toISOString(), dispatch_status: "suppressed_dedup" })
+        .update({ dispatch_status: "suppressed_dedup" })
         .eq("id", alert.id);
-      results.push({ id: alert.id, ok: true, error: "deduped" });
+      results.push({ id: alert.id, ok: true, status: "suppressed_dedup", error: "deduped" });
       continue;
     }
     seenWindow.set(dedupeKey, alert.id);
@@ -287,6 +295,8 @@ serve(async (req) => {
     let webhookDelivered = 0;
     let webhookFailed = 0;
     const webhookErrors: string[] = [];
+    let subscriberRows = 0;
+    let fanoutError = false;
 
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
@@ -294,6 +304,7 @@ serve(async (req) => {
         _severity: alert.severity.toUpperCase(),
       });
       const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null; webhook_url: string | null; webhook_secret: string | null }>;
+      subscriberRows = rows.length;
 
       // In-app fan-out
       const inApp = rows.filter((s) => s.channel === "in_app" || s.channel === "inapp");
@@ -354,21 +365,49 @@ serve(async (req) => {
         }
       }
     } catch (e) {
+      fanoutError = true;
       slackErrors.push(`fanout_error:${(e as Error).message}`);
     }
 
-    const overallOk = slackFailed === 0 && emailFailed === 0 && webhookFailed === 0;
-    const anyDelivered = inAppFanout + slackDelivered + emailDelivered + webhookDelivered > 0;
+    const nowIso = new Date().toISOString();
     const allErrors = [...slackErrors, ...emailErrors, ...webhookErrors];
+
+        // 182/188: ver `dispatchStatus.ts` — `dispatched_at` volta a significar
+        // "entregue", e nao "tentei"; sem canal nenhum o alerta fica em
+        // `no_subscribers` sem carimbo para ser entregue quando houver assinatura.
+        const outcome = classifyDispatch(
+          {
+            inAppFanout,
+            slackDelivered,
+            slackFailed,
+            emailDelivered,
+            emailFailed,
+            webhookDelivered,
+            webhookFailed,
+            fanoutError,
+            subscriberRows,
+            hasGlobalSlack: Boolean(GLOBAL_SLACK_WEBHOOK_URL),
+            previousAttempts: previousAttempts(alert.metadata),
+          },
+          nowIso,
+        );
+        const { status: dispatchStatus, attempts, overallOk } = outcome;
+        const noChannel = dispatchStatus === "no_subscribers";
+
     await admin
       .from("system_alerts")
       .update({
-        dispatched_at: new Date().toISOString(),
-        dispatch_status: overallOk ? "delivered" : anyDelivered ? "partial" : "failed",
-        dispatch_error: allErrors.length > 0 ? allErrors.join(" | ").slice(0, 500) : null,
+            dispatched_at: outcome.dispatchedAt,
+        dispatch_status: dispatchStatus,
+        dispatch_error: allErrors.length > 0
+          ? allErrors.join(" | ").slice(0, 500)
+          : noChannel
+            ? "sem assinaturas em alert_subscriptions e sem SLACK_WEBHOOK_URL global"
+            : null,
         metadata: {
           ...(alert.metadata ?? {}),
           fanout: {
+            attempts,
             in_app: inAppFanout,
             slack_delivered: slackDelivered,
             slack_failed: slackFailed,
@@ -384,6 +423,7 @@ serve(async (req) => {
     results.push({
       id: alert.id,
       ok: overallOk,
+      status: dispatchStatus,
       error: allErrors[0],
       in_app: inAppFanout,
       slack_delivered: slackDelivered,

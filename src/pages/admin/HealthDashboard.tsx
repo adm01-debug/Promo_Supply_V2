@@ -80,7 +80,7 @@ interface NoisyRow {
 
 type OpenAlertRow = Pick<
   Tables<"system_alerts">,
-  "id" | "alert_type" | "severity" | "message" | "created_at" | "metadata"
+  "id" | "alert_type" | "severity" | "message" | "created_at" | "metadata" | "dispatch_status"
 >;
 
 interface DashboardResponse {
@@ -115,6 +115,31 @@ const severityStyles: Record<string, string> = {
 function SeverityBadge({ severity }: { severity: string }) {
   const cls = severityStyles[severity] ?? "bg-muted text-muted-foreground";
   return <Badge className={cls}>{severity}</Badge>;
+}
+
+// 188: o alerta pode estar aberto sem que ninguem tenha recebido nada; o dono
+// precisa ver isso na lista, nao so o `dispatched_at` no banco.
+const dispatchLabels: Record<string, string> = {
+  delivered: "entregue",
+  partial: "entrega parcial",
+  failed: "falhou (reprocessa)",
+  exhausted: "desistiu apos tentativas",
+  no_subscribers: "sem assinante",
+  suppressed_dedup: "adiado (janela)",
+  auto_resolved: "auto-resolvido",
+};
+
+function DispatchBadge({ status }: { status: string | null }) {
+  if (!status) return <span className="text-muted-foreground">—</span>;
+  const cls =
+    status === "delivered"
+      ? "bg-green-600 text-white"
+      : status === "partial" || status === "suppressed_dedup"
+        ? "bg-yellow-500 text-black"
+        : status === "auto_resolved"
+          ? "bg-muted text-muted-foreground"
+          : "bg-destructive text-destructive-foreground";
+  return <Badge className={cls}>{dispatchLabels[status] ?? status}</Badge>;
 }
 
 // Pivots timeseries rows into the format the chart expects
@@ -215,7 +240,7 @@ async function fetchHealth(): Promise<DashboardResponse> {
     // Open alerts list (system-wide — no tenant filter)
     supabase
       .from("system_alerts")
-      .select("id, alert_type, severity, message, created_at, metadata")
+      .select("id, alert_type, severity, message, created_at, metadata, dispatch_status")
       .is("resolved_at", null)
       .order("created_at", { ascending: false })
       .limit(50)
@@ -744,6 +769,7 @@ export default function HealthDashboard() {
                       <th className="py-2 pr-3">Quando</th>
                       <th className="py-2 pr-3">Tipo</th>
                       <th className="py-2 pr-3">Sev</th>
+                      <th className="py-2 pr-3">Entrega</th>
                       <th className="py-2 pr-3">Mensagem</th>
                       <th className="py-2 pr-3 text-right">Ação</th>
                     </tr>
@@ -756,6 +782,7 @@ export default function HealthDashboard() {
                         </td>
                         <td className="py-2 pr-3 font-mono text-xs">{row.alert_type}</td>
                         <td className="py-2 pr-3"><SeverityBadge severity={row.severity} /></td>
+                        <td className="py-2 pr-3"><DispatchBadge status={row.dispatch_status} /></td>
                         <td className="py-2 pr-3 max-w-md truncate" title={row.message ?? ""}>
                           {row.message ?? "—"}
                         </td>
