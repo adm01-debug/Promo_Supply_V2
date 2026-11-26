@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 356,
+ "migrations": 357,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -245,6 +245,7 @@
   "get_user_grupo_id",
   "get_user_role",
   "grant_tenant_access_on_insert",
+  "guard_pedido_exige_solicitacao_aprovada",
   "guard_profile_org_change",
   "guard_solicitacao_escrita",
   "handle_new_user",
@@ -727,6 +728,13 @@
    "evento": "insert or update of email",
    "tabela": "password_reset_requests",
    "funcao": "normalize_email_lowercase"
+  },
+  {
+   "nome": "a1_guard_pedido_exige_solicitacao_aprovada",
+   "quando": "before",
+   "evento": "insert",
+   "tabela": "pedidos",
+   "funcao": "guard_pedido_exige_solicitacao_aprovada"
   },
   {
    "nome": "trg_auto_create_pagamento_on_delivery",
@@ -12652,6 +12660,7 @@
     "weekly-summary-report"
    ],
    "triggers": [
+    "a1_guard_pedido_exige_solicitacao_aprovada",
     "trg_auto_create_pagamento_on_delivery",
     "trg_auto_penalty_on_late_delivery",
     "trg_auto_update_supplier_score",
