@@ -268,11 +268,19 @@ export const useApprovalWorkflow = () => {
         requiresUnanimity = rule?.requer_unanimidade || false;
       }
 
-      const { error: updateError } = await supabase.from('approval_steps').update({
+      // O RLS filtra a linha em silencio: update de 0 linhas volta sem erro. Sem
+      // conferir as linhas afetadas o hook anunciava "aprovacao registrada" e a
+      // solicitacao ficava parada na etapa (mesmo padrao de useSolicitacoes).
+      const { data: stepAtualizado, error: updateError } = await supabase.from('approval_steps').update({
         status: 'approved', aprovador_efetivo_id: user?.id, comentario,
         decidido_em: new Date().toISOString(),
-      }).eq('id', stepId);
+      }).eq('id', stepId).select('id');
       if (updateError) throw updateError;
+      if (!stepAtualizado?.length) {
+        logger.error('Aprovacao nao gravada: 0 linhas afetadas (RLS)', { stepId });
+        toast.error('Aprovação não gravada: você não tem permissão para aprovar esta etapa.');
+        return false;
+      }
 
       const { data: allSteps } = await supabase.from('approval_steps').select('*').eq('workflow_id', step.workflow_id);
       const allOtherSteps = allSteps?.filter(s => s.id !== stepId) || [];
@@ -319,10 +327,16 @@ export const useApprovalWorkflow = () => {
         .select('*').eq('id', stepId).single();
       if (stepError) throw stepError;
 
-      await supabase.from('approval_steps').update({
+      const { data: stepRejeitado, error: rejectUpdateError } = await supabase.from('approval_steps').update({
         status: 'rejected', aprovador_efetivo_id: user?.id, comentario,
         decidido_em: new Date().toISOString(),
-      }).eq('id', stepId);
+      }).eq('id', stepId).select('id');
+      if (rejectUpdateError) throw rejectUpdateError;
+      if (!stepRejeitado?.length) {
+        logger.error('Rejeicao nao gravada: 0 linhas afetadas (RLS)', { stepId });
+        toast.error('Rejeição não gravada: você não tem permissão para rejeitar esta etapa.');
+        return false;
+      }
       await supabase.from('approval_workflows').update({ status: 'rejected', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
       await supabase.from('approval_steps').update({ status: 'skipped', comentario: 'Workflow rejected at previous step' })
         .eq('workflow_id', step.workflow_id).eq('status', 'pending');
@@ -331,10 +345,30 @@ export const useApprovalWorkflow = () => {
       const { data: workflow } = await supabase.from('approval_workflows')
         .select('solicitacao_id').eq('id', step.workflow_id).single();
       if (workflow?.solicitacao_id) {
-        await supabase.from('solicitacoes')
+        // Mesma armadilha da etapa: a solicitacao tem RLS propria, entao o update
+        // pode casar 0 linhas e voltar sem erro — a etapa ficava 'rejected' e a
+        // solicitacao seguia 'pendente' para sempre, sem ninguem saber.
+        const { data: solicitacaoRejeitada, error: erroRejeicao } = await supabase.from('solicitacoes')
           .update({ status: 'rejeitada', updated_at: new Date().toISOString() })
           .eq('id', workflow.solicitacao_id)
-          .in('status', ['pendente', 'em_cotacao']);
+          .in('status', ['pendente', 'em_cotacao'])
+          .select('id');
+        if (erroRejeicao) throw erroRejeicao;
+        if (!solicitacaoRejeitada?.length) {
+          // 0 linhas tambem e o resultado normal quando a solicitacao ja nao esta
+          // pendente (ex.: rejeitada antes). So alarmar se o estado final estiver errado.
+          const { data: atual } = await supabase.from('solicitacoes')
+            .select('status').eq('id', workflow.solicitacao_id).single();
+          if (atual?.status !== 'rejeitada') {
+            logger.error('Solicitacao nao marcada como rejeitada (RLS)', {
+              solicitacaoId: workflow.solicitacao_id, statusAtual: atual?.status,
+            });
+            toast.error('Etapa rejeitada, mas a solicitação não foi marcada como rejeitada: você não tem permissão para alterar esta solicitação.');
+            await fetchPendingSteps();
+            await fetchPendingWorkflows();
+            return false;
+          }
+        }
       }
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',

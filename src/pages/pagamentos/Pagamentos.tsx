@@ -18,7 +18,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  CreditCard, QrCode, FileText, Clock, CheckCircle2, AlertTriangle,
+  CreditCard, QrCode, FileText, Clock, CheckCircle2, AlertTriangle, XCircle,
   Building2, Calendar, RefreshCw, Eye, MoreHorizontal,
   CalendarClock, BarChart3, Filter, Download
 } from "lucide-react";
@@ -35,7 +35,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,12 +66,22 @@ const Pagamentos = () => {
     pagamentos.filter(p => p.status === 'pago'),
     [pagamentos]
   );
+  // 'cancelado' e' um dos 7 status do CHECK de pagamentos e nao cabia em nenhuma
+  // das duas listas: o registro existia no banco e desaparecia da tela.
+  const pagamentosCancelados = useMemo(() =>
+    pagamentos.filter(p => p.status === 'cancelado'),
+    [pagamentos]
+  );
   const selectedForSchedule = useMemo(() =>
       pagamentos.filter(p => selectedIds.includes(p.id) && p.status === 'aprovado'),
     [pagamentos, selectedIds]
   );
 
-  const currentList = activeTab === 'pendentes' ? pagamentosPendentes : pagamentosPagos;
+  const currentList = activeTab === 'pendentes'
+    ? pagamentosPendentes
+    : activeTab === 'pago'
+      ? pagamentosPagos
+      : pagamentosCancelados;
   const filteredPagamentos = useMemo(() => applyAdvancedFilters(currentList, filters), [currentList, filters]);
 
   const handleSelectAll = useCallback(() => {
@@ -91,6 +101,9 @@ const Pagamentos = () => {
 
   const getVencimentoInfo = (venc: string, status: string) => {
     if (status === 'pago') return { label: "PAGO", color: "text-success", bg: "bg-success/10", icon: CheckCircle2 };
+    // Um pagamento cancelado nao esta vencido: mostrar "Xd VENCIDO" na mesma linha
+    // do badge CANCELADO afirmava duas coisas diferentes sobre o mesmo registro.
+    if (status === 'cancelado') return { label: "CANCELADO", color: "text-muted-foreground", bg: "bg-muted", icon: XCircle };
     const dias = differenceInDays(new Date(venc), new Date());
     if (dias < 0) return { label: `${Math.abs(dias)}d VENCIDO`, color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle };
     if (dias === 0) return { label: "HOJE", color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle };
@@ -105,6 +118,8 @@ const Pagamentos = () => {
       agendado: { label: 'AGENDADO', className: 'bg-purple-500/10 text-purple-600 border-none' },
       pago: { label: 'PAGO', className: 'bg-success/10 text-success border-none' },
       parcial: { label: 'PARCIAL', className: 'bg-cyan-500/10 text-cyan-600 border-none' },
+      atrasado: { label: 'ATRASADO', className: 'bg-destructive/10 text-destructive border-none' },
+      cancelado: { label: 'CANCELADO', className: 'bg-muted text-muted-foreground border-none' },
     };
     return map[status] || map["pendente"];
   };
@@ -183,6 +198,9 @@ const Pagamentos = () => {
                 <TabsTrigger value="pago" className="rounded-xl px-8 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-background data-[state=active]:shadow-lg">
                   CONCLUÍDOS ({pagamentosPagos.length})
                 </TabsTrigger>
+                <TabsTrigger value="cancelados" className="rounded-xl px-8 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-background data-[state=active]:shadow-lg">
+                  CANCELADOS ({pagamentosCancelados.length})
+                </TabsTrigger>
               </TabsList>
               
               {selectedIds.length > 0 && (
@@ -240,6 +258,9 @@ const Pagamentos = () => {
                                {vencInfo.label}
                              </div>
                              <p className="text-[10px] text-muted-foreground font-medium mt-1">{format(new Date(p.data_vencimento), 'dd MMM yyyy')}</p>
+                             {p.status === 'agendado' && p.data_agendamento && (
+                                                            <p className="text-[10px] font-bold text-purple-600 mt-1">AGENDADO: {formatDate(p.data_agendamento)}</p>
+                             )}
                           </TableCell>
                           <TableCell className="text-right">
                             <span className="font-black text-foreground">
@@ -289,7 +310,7 @@ const Pagamentos = () => {
         onOpenChange={setScheduleModalOpen} 
         pagamentos={selectedForSchedule} 
         onSchedule={async (ids, date) => {
-          const ok = await bulkUpdateStatus(ids, 'agendado');
+                  const ok = await bulkUpdateStatus(ids, 'agendado', date);
           if (ok) {
             setSelectedIds([]);
             setScheduleModalOpen(false);

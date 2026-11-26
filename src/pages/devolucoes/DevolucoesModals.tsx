@@ -288,7 +288,10 @@ export function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: 
                   key={action.status}
                   variant={action.variant}
                   size="sm"
-                  onClick={async () => { await updateStatus(devolucao.id, action.status); onClose(); }}
+                  onClick={async () => {
+                    const aplicado = await updateStatus(devolucao.id, action.status);
+                    if (aplicado) onClose();
+                  }}
                   className="flex-1"
                 >
                   {action.label}

@@ -7,7 +7,7 @@
     "Medido em 2026-11-08 a partir dos proprios workflows e do package.json:",
     "bun = types-sync.yml (bun-version); node = contexto/types-sync/inventario (node-version);",
     "playwright = package.json devDependencies.",
-    "NAO declarados de proposito: deno (main.yml usa a faixa flutuante 'v1.x', nao uma versao fixa)",
+    "NAO declarados de proposito: deno (main.yml usa a faixa flutuante 'v2.x', nao uma versao fixa)",
     "e supabase-cli (o repo pina a ACTION supabase/setup-cli v3.1.0, que instala a CLI 'latest' —",
     "a versao da CLI nao esta fixada em lugar nenhum deste repo)."
   ],

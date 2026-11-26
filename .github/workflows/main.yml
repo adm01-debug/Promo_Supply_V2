@@ -23,11 +23,11 @@ jobs:
     name: Quality Gate (Lint, Typecheck, RLS Audit)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # depth 2: o guard de fatos compara AGENTS.md com HEAD~1 quando o gatilho e push
           fetch-depth: 2
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Install dependencies
         run: bun install
@@ -62,6 +62,25 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
         run: |
+          # Run disparado pelo Dependabot nao recebe secret do repositorio (o GitHub trata o
+          # PR do bot como PR de fork). Sem o secret o --strict reprovava TODO PR do Dependabot
+          # por um motivo que o bot nao pode corrigir: o Quality Gate ficava vermelho para
+          # sempre e nenhuma atualizacao de dependencia podia ser avaliada. A isencao e so
+          # deste caso e so quando o diff nao toca banco -- se o PR do Dependabot mexer em
+          # supabase/ ou em qualquer .sql, a auditoria continua obrigatoria.
+          # O gate segue intacto no push da main, onde o secret existe.
+          if [ -z "$SUPABASE_DB_URL" ] && [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+            base="${{ github.base_ref }}"
+            if [ -n "$base" ]; then
+              git fetch --no-tags --depth=1 origin "$base"
+              if git diff --name-only FETCH_HEAD | grep -qE '(^|/)supabase/|\.sql$'; then
+                echo "::error::PR do Dependabot toca banco/DDL, mas SUPABASE_DB_URL nao esta disponivel neste run -- auditoria de RLS nao pode ser pulada"
+                exit 1
+              fi
+            fi
+            echo "::warning::RLS Audit nao executada: run do Dependabot nao recebe SUPABASE_DB_URL e o diff nao toca banco/DDL. O gate roda no push da main."
+            exit 0
+          fi
           # Run the audit script if it exists
           if [ -f "scripts/rls-audit.ts" ]; then
             bun run scripts/rls-audit.ts --strict
@@ -71,9 +90,9 @@ jobs:
     name: Unit & Integration Tests (Frontend + Edge)
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
         with:
           deno-version: v2.x
 
@@ -177,8 +196,8 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key' }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Install dependencies
         run: bun install
@@ -194,7 +213,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
           path: playwright-report/

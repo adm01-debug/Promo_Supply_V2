@@ -21,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface PagamentoMobileCardProps {
@@ -204,7 +204,9 @@ export const PagamentoMobileCard = ({
                 <p className="text-xs text-muted-foreground">
                   {isPago && pagamento.data_pagamento
                     ? format(new Date(pagamento.data_pagamento), 'dd/MM/yyyy')
-                    : format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')
+                                      : pagamento.status === 'agendado' && pagamento.data_agendamento
+                                        ? `Agendado: ${formatDate(pagamento.data_agendamento)}`
+                                        : format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')
                   }
                 </p>
               </div>
