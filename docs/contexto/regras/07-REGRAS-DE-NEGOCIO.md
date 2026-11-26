@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a55e816363` · branch `main` · 2026-11-26 07:28 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c30880dd8d` · branch `main` · 2026-11-26 07:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1395,7 +1395,7 @@ _nenhum item encontrado_
   ```
 - **PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps)** — `src/components/compras/PriceHistoryModal.tsx`
   ```
-  const [selectedFornecedor, setSelectedFornecedor] = useState<string>("all"); const [selectedSolicitacao, setSelectedSolicitacao] = useState<string>("all"); const { data: cotacoes = [] } = useQuery({ queryKey: ["price-history-cotacoes"], queryFn: () => fetchAllRows<CotacaoRecord>( "cotacoes", "id, numero, valor_unitario, valor_total, quantidade, fornecedor_id, solicitacao_id, created_at, status" ), enabled: open, }); const { data: fornecedores = [] } = useQuery({ queryKey: ["price-history-fornece …
+  const { organizationId } = useAuth(); const [selectedFornecedor, setSelectedFornecedor] = useState<string>("all"); const [selectedSolicitacao, setSelectedSolicitacao] = useState<string>("all"); const { data: cotacoes = [] } = useQuery({ queryKey: ["price-history-cotacoes", organizationId], queryFn: () => fetchAllRows<CotacaoRecord>( "cotacoes", "id, numero, valor_unitario, valor_total, quantidade, fornecedor_id, solicitacao_id, created_at, status" ), enabled: open, }); const { data: fornecedores …
   ```
 - **formatCurrency(v: number | null)** — `src/components/compras/ProductSupplierManager.tsx`
   ```
@@ -1863,6 +1863,7 @@ _nenhum item encontrado_
 | `(new Date(sol.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)` | `src/components/compras/CriticalAlertsBar.tsx` |
 | `<Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>` | `src/components/compras/DeliveryCalendar.tsx` |
 | `<Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>` | `src/components/compras/DeliveryCalendar.tsx` |
+| `() => startOfMonth(subMonths(new Date(), 6)).toISOString(),` | `src/components/compras/DemandPredictionPanel.tsx` |
 | `const date = subMonths(now, 6 - i);` | `src/components/compras/DemandPredictionPanel.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 1000));` | `src/components/compras/DigitalSignature.tsx` |
 | `await new Promise(resolve => setTimeout(resolve, 1500));` | `src/components/compras/DigitalSignature.tsx` |
@@ -2464,7 +2465,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3511 testes em 264 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3512 testes em 264 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2684,6 +2685,7 @@ _nenhum item encontrado_
 | `src/pages/pedidos/__tests__/exclusaoBloqueada.test.tsx` | 4 | acao de excluir na lista de pedidos · some quando o pedido selecionado ja entrou no ciclo de recebimento · continua disponivel para pedido pendente · some na selecao mista de pendente com entregue |
 | `src/pages/pedidos/__tests__/pedidosA11y.test.tsx` | 4 | Pedidos - a\u00e7\u00e3o de linha acess\u00edvel por teclado · nomeia o bot\u00e3o s\u00f3-\u00edcone da linha com o pedido que ele abre · abre o detalhe do pedido ao clicar no bot\u00e3o da linha · preserva o clique na linha inteira para quem usa mouse |
 | `src/pages/pedidos/__tests__/pedidosExportacao.test.ts` | 4 | exportacao de pedidos · usa o conjunto canonico de colunas em vez de lista vazia · o objeto exportado declara todas as chaves de pedidoColumns · nao anuncia sucesso quando nao ha pedido para exportar |
+| `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 4 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe · refaz a consulta quando a organizacao muda |
 | `src/tests/contracts.test.ts` | 4 | NegotiationContract should validate correct payloads · NegotiationContract should reject invalid UUIDs · NegotiationContract should reject empty cotacoes · NegotiationContract should reject payload without solicitacao |
 | `supabase/functions/_shared/cors-allowlist.test.ts` | 4 | sem ALLOWED_ORIGINS (dev/preview) libera qualquer origem · ALLOWED_ORIGINS exata: origem da lista passa, outra e bloqueada · curinga *.dominio casa subdominio e NAO casa sufixo sem o ponto · curinga nao casa o dominio raiz nem origem invalida |
 | `supabase/functions/_shared/notifications.test.ts` | 4 | insertNotification resolve tenant por user_id, nao pela PK · insertNotification nao consulta profiles quando tenant_id vem na origem · insertNotification devolve sem_tenant quando o perfil nao tem tenant · insertNotificationsBatch resolve tenants por user_id |
@@ -2713,7 +2715,6 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzPagamento.test.ts` | 3 | pagamentoStatusPedido · usa o boolean  · cai no idLoteDebitoStatus (0 pendente, 2/3 pago) quando  |
 | `src/pages/historico/__tests__/HistoricoCompras.limparFiltros.test.tsx` | 3 | HistoricoCompras - Limpar filtros · descreve o filtro de busca ativo (o botao deixa de responder  · nao inventa filtro ativo quando tudo esta no padrao |
 | `src/pages/pagamentos/__tests__/pagamentosAgendamentoData.test.tsx` | 3 | Pagamentos - agendamento grava a data escolhida (UI-12) · a data do calendario chega ao bulkUpdateStatus junto com o status agendado · a linha do pagamento agendado mostra a data gravada, nao so o rotulo |
-| `src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx` | 3 | contratos do relatorio de negociacoes · consulta somente colunas existentes de profiles e inclui score_total na media · usa email quando full_name e nulo e Usuario quando perfil nao existe |
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
@@ -2776,6 +2777,7 @@ _nenhum item encontrado_
 | ficavam invisíveis: "2024-06-15" exibido como 14/06 e "hoje" recusado no prazo | `vitest.config.ts` |
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
+| O historico usado abaixo cobre no maximo 6 meses; recortar no SQL evita | `src/components/compras/DemandPredictionPanel.tsx` |
 | checagem a regra nascia com aprovador em branco e o insert em | `src/components/compras/DynamicApprovalMatrix.tsx` |
 | * Status (de UI) cujas colunas apenas exibem cards: arrastar para elas não grava nada. | `src/components/compras/KanbanBoard.tsx` |
 | * A solicitacao ja foi gravada e isso continua verdade: o aviso fala apenas dos | `src/components/compras/NovaSolicitacaoModal.tsx` |

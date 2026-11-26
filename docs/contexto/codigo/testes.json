@@ -2270,11 +2270,11 @@
   {
    "arquivo": "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
    "tipo": "unit",
-   "linhas": 73,
+   "linhas": 92,
    "testa": [
     "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
    ],
-   "casos": 2
+   "casos": 3
   },
   {
    "arquivo": "src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx",

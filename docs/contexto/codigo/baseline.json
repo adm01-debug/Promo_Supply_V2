@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a55e816363a5547632024d28cd64ac78404e0975",
+  "commit": "c30880dd8d8b99d6bd63ead090bd652479468c89",
   "branch": "main",
-  "data_commit": "2026-11-26T04:28:00-03:00",
+  "data_commit": "2026-11-26T04:45:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "c30880d",
+    "data": "2026-11-26",
+    "assunto": "fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)"
+   },
    {
     "sha": "a55e816",
     "data": "2026-11-26",
@@ -126,22 +131,17 @@
     "sha": "7bc5670",
     "data": "2026-11-26",
     "assunto": "ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)"
-   },
-   {
-    "sha": "0856406",
-    "data": "2026-11-26",
-    "assunto": "ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)"
    }
   ],
   "arquivos_mudados_7d": 1514,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 191
+    "mudancas": 194
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 156
+    "mudancas": 157
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 156
+    "mudancas": 157
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1493,
   "arquivos_codigo": 956,
-  "linhas_codigo": 190679,
+  "linhas_codigo": 190721,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 285,
-   "linhas": 52396
+   "linhas": 52417
   },
   "src/features": {
    "arquivos": 96,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 157,
-   "linhas": 35304
+   "linhas": 35325
   },
   "src/routes": {
    "arquivos": 1,

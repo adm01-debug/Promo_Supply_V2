@@ -329,18 +329,21 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 74,
+   "usado_por": 78,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
     "src/components/compras/BuyerPerformancePanel.tsx",
     "src/components/compras/ContractDetailsModal.tsx",
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
+    "src/components/compras/DemandPredictionPanel.tsx",
     "src/components/compras/FiltrosAvancados.tsx",
     "src/components/compras/NovaSolicitacaoModal.tsx",
     "src/components/compras/PenaltyEscalationConfigPanel.tsx",
+    "src/components/compras/PriceHistoryModal.tsx",
     "src/components/compras/ProductSupplierManager.tsx",
     "src/components/compras/PurchaseClimateWidget.tsx",
+    "src/components/compras/RiskHeatMap.tsx",
     "src/components/compras/SourcingIntelligenceWidget.tsx",
     "src/components/compras/SupplierBonificationsPanel.tsx",
     "src/components/compras/scorecard/supplierScorecardData.ts",
@@ -357,10 +360,7 @@
     "src/features/cotacoes/hooks/useCotacoes.ts",
     "src/features/layout/components/AppSidebar.tsx",
     "src/features/layout/components/CommandPalette.tsx",
-    "src/features/layout/components/SLASettingsPanel.tsx",
-    "src/features/layout/components/SupplierChat.tsx",
-    "src/features/layout/components/UserMenu.tsx",
-    "src/features/pedidos/hooks/usePedidos.ts"
+    "src/features/layout/components/SLASettingsPanel.tsx"
    ],
    "coberto_por_testes": 3
   },
@@ -2365,7 +2365,7 @@
    "hooks_exportados": [
     "useRelatorioNegociacoes"
    ],
-   "linhas": 274,
+   "linhas": 276,
    "dominio": "pages/relatorio-negociacoes",
    "tabelas": [
     "categorias",
@@ -2378,6 +2378,7 @@
    "rpcs": [],
    "edges": [],
    "hooks_internos": [
+    "useAuth",
     "useMemo",
     "useQuery"
    ],

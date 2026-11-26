@@ -748,9 +748,10 @@
     "DemandPredictionPanel"
    ],
    "export_default": null,
-   "linhas": 409,
+   "linhas": 423,
    "dominio": "components/compras",
    "hooks_locais": [
+    "useAuth",
     "useToast"
    ],
    "tabelas": [],
@@ -1286,9 +1287,10 @@
     "PriceHistoryModal"
    ],
    "export_default": null,
-   "linhas": 439,
+   "linhas": 441,
    "dominio": "components/compras",
    "hooks_locais": [
+    "useAuth",
     "usePriceHistoryAnalysis"
    ],
    "tabelas": [],
@@ -1388,9 +1390,11 @@
     "RiskHeatMap"
    ],
    "export_default": null,
-   "linhas": 269,
+   "linhas": 274,
    "dominio": "components/compras",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth"
+   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 2,

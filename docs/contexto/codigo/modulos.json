@@ -423,7 +423,7 @@
    "modulo": "components/compras",
    "arquivos": 105,
    "testes": 34,
-   "linhas": 26169,
+   "linhas": 26190,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -1842,6 +1842,7 @@
     "pages/portal-fornecedor",
     "pages/recebimento",
     "pages/recompra",
+    "pages/relatorio-negociacoes",
     "pages/seguranca",
     "pages/solicitacoes",
     "routes"
@@ -6979,7 +6980,7 @@
    "modulo": "pages/relatorio-negociacoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 761,
+   "linhas": 763,
    "itens_menu": [
     "Negociações"
    ],
@@ -7045,6 +7046,7 @@
     "components/compras",
     "components/organisms",
     "components/ui",
+    "features/auth",
     "integrations/supabase",
     "lib"
    ],
