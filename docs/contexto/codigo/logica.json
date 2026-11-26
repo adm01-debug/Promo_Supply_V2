@@ -719,10 +719,12 @@
    "arquivo": "src/lib/logger.ts",
    "camada": "lib",
    "exports": [
-    "logger"
+    "hashIdentifier",
+    "logger",
+    "sanitizeContextDeep"
    ],
    "export_default": null,
-   "linhas": 176,
+   "linhas": 213,
    "tabelas": [],
    "rpcs": [],
    "edges": [

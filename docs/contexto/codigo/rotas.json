@@ -646,7 +646,9 @@
    "definida_em": "src/routes/AppRoutes.tsx",
    "redireciona": null,
    "hooks": [
+    "useAuth",
     "useCallback",
+    "useContext",
     "useEffect",
     "useFeedback",
     "useFeedbackPreferences",
@@ -654,6 +656,7 @@
     "useState"
    ],
    "hooks_locais": [
+    "useAuth",
     "useFeedback",
     "useFeedbackPreferences"
    ],
@@ -672,7 +675,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 18
+   "arquivos_puxados": 22
   },
   {
    "protegida": true,

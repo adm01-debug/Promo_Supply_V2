@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "72c54084a7185177f6364e4936836f36db4b5508",
+  "commit": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
   "branch": "main",
-  "data_commit": "2026-11-26T11:19:38-03:00",
+  "data_commit": "2026-11-26T11:46:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "85e9897",
+    "data": "2026-11-26",
+    "assunto": "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)"
+   },
    {
     "sha": "72c5408",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "6114624",
     "data": "2026-11-26",
     "assunto": "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)"
-   },
-   {
-    "sha": "86bc33f",
-    "data": "2026-11-26",
-    "assunto": "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)"
    }
   ],
   "arquivos_mudados_7d": 1541,
@@ -141,14 +141,14 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 182
-   },
-   {
-    "pasta": "src/components/ui",
-    "mudancas": 65
+    "mudancas": 183
    },
    {
     "pasta": "supabase/functions/_shared",
+    "mudancas": 67
+   },
+   {
+    "pasta": "src/components/ui",
     "mudancas": 65
    },
    {
@@ -161,19 +161,19 @@
    },
    {
     "pasta": "src/lib/__tests__",
-    "mudancas": 36
+    "mudancas": 37
    },
    {
     "pasta": "src/pages/admin",
     "mudancas": 28
    },
    {
-    "pasta": "src/features/solicitacoes",
+    "pasta": "src/features/auth",
     "mudancas": 26
    },
    {
-    "pasta": "src/features/auth",
-    "mudancas": 25
+    "pasta": "src/features/solicitacoes",
+    "mudancas": 26
    },
    {
     "pasta": "src/features/pedidos",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 182
+    "mudancas": 183
    },
    {
     "arquivo": "AGENTS.md",
@@ -224,6 +224,10 @@
    {
     "arquivo": "src/pages/pedidos/Pedidos.tsx",
     "mudancas": 9
+   },
+   {
+    "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "mudancas": 8
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -262,7 +266,7 @@
     "mudancas": 7
    },
    {
-    "arquivo": "src/features/auth/hooks/useAuth.tsx",
+    "arquivo": "src/hooks/useFornecedores.ts",
     "mudancas": 7
    },
    {
@@ -283,10 +287,6 @@
    },
    {
     "arquivo": "scripts/ci/paridade-migrations-banco.allowlist.json",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/hooks/useFornecedores.ts",
     "mudancas": 6
    },
    {
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1520,
   "arquivos_codigo": 968,
-  "linhas_codigo": 192578,
+  "linhas_codigo": 192765,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 287,
-   "linhas": 52530
+   "linhas": 52536
   },
   "src/features": {
    "arquivos": 97,
@@ -436,7 +436,7 @@
   },
   "src/hooks": {
    "arquivos": 103,
-   "linhas": 17410
+   "linhas": 17418
   },
   "src/i18n": {
    "arquivos": 3,
@@ -448,7 +448,7 @@
   },
   "src/lib": {
    "arquivos": 63,
-   "linhas": 7436
+   "linhas": 7529
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20698
+   "linhas": 20778
   },
   "tailwind.config.ts": {
    "arquivos": 1,

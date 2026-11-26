@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `72c54084a7` · branch `main` · 2026-11-26 14:26 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `85e9897b9a` · branch `main` · 2026-11-26 14:49 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1777,6 +1777,7 @@ _nenhum item encontrado_
 | `TELEMETRY_MAX_BATCH` | `20` | `src/lib/logger.ts` |
 | `TELEMETRY_RATE_WINDOW_MS` | `60_000` | `src/lib/logger.ts` |
 | `TELEMETRY_RATE_LIMIT` | `60` | `src/lib/logger.ts` |
+| `MAX_SANITIZE_DEPTH` | `5` | `src/lib/logger.ts` |
 | `DEFAULT_MAX_ROWS` | `50_000` | `src/lib/paginatedFetch.ts` |
 | `DEFAULT_STALE_TIME` | `30_000` | `src/lib/query-client.ts` |
 | `REFERENCE_STALE_TIME` | `5 * 60_000` | `src/lib/query-client.ts` |
@@ -1812,6 +1813,7 @@ _nenhum item encontrado_
 | `MAX_MESSAGE_LENGTH` | `4000` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_CONTEXT_BYTES` | `8 * 1024` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_USER_AGENT_LENGTH` | `512` | `supabase/functions/_shared/logLevel.ts` |
+| `MAX_REDACT_DEPTH` | `5` | `supabase/functions/_shared/logLevel.ts` |
 | `MAX_LOG_MESSAGE_LEN` | `45000` | `supabase/functions/_shared/logger.ts` |
 | `MAX_ERR_MESSAGE_LEN` | `500` | `supabase/functions/_shared/logger.ts` |
 | `MAX_SANITIZE_DEPTH` | `8` | `supabase/functions/_shared/logger.ts` |
@@ -2489,7 +2491,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3578 testes em 272 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3585 testes em 272 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2517,6 +2519,7 @@ _nenhum item encontrado_
 | `src/features/auth/schemas/__tests__/auth.schemas.test.ts` | 32 | RegimeTributarioSchema · accepts simples_nacional · accepts lucro_presumido · accepts lucro_real … |
 | `src/features/layout/transitions/__tests__/config.test.ts` | 32 | DEFAULT_TRANSITION · is  · is a string · ROUTE_OVERRIDES … |
 | `src/lib/__tests__/filterClearReporter.test.ts` | 32 | buildClearReport · returns empty report when no fields provided · excludes field with null value · excludes field with undefined value … |
+| `src/lib/__tests__/logger.test.ts` | 32 | logger · is a singleton (same instance on re-import) · getRequestId() returns a non-empty string · getRequestId() returns the same value on repeated calls … |
 | `src/stores/__tests__/slaSettingsStore.test.ts` | 32 | initial state · has default warningThresholdDays of 3 · has default criticalThresholdDays of 1 · has default checkIntervalMinutes of 1 … |
 | `src/schemas/__tests__/solicitacao.schema.test.ts` | 31 | solicitacaoSchema · accepts fully valid input · applies default observacoes as empty string · applies default centroCusto as empty string … |
 | `src/stores/__tests__/dashboardLayoutStore.test.ts` | 31 | dashboardLayoutStore · initial state · has default widgets · all default widgets are visible … |
@@ -2532,7 +2535,6 @@ _nenhum item encontrado_
 | `src/services/__tests__/auditServiceConstants.test.ts` | 27 | actionTypeLabels · has exactly 10 action types · covers all 10 expected action types · every label is a non-empty string … |
 | `src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts` | 26 | getScoreColor · returns  · returns  · returns  … |
 | `src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts` | 26 | SUPPLIER_COLORS · has 6 supplier entries · all values are non-empty strings · SUPPLIER_PALETTE … |
-| `src/lib/__tests__/logger.test.ts` | 26 | logger · is a singleton (same instance on re-import) · getRequestId() returns a non-empty string · getRequestId() returns the same value on repeated calls … |
 | `src/lib/__tests__/secureStorage.test.ts` | 25 | secureStorage · setItem + getItem round-trip · stores and retrieves a plain string · stores an empty string and retrieves it … |
 | `src/pages/catalogo-spot/__tests__/spotHelpers.test.ts` | 25 | STATUS_CONFIG · has 10 entries · has key  · each entry has a variant and label … |
 | `src/types/__tests__/legacyTypes.test.ts` | 25 | getTipoLabel · returns  · returns  · returns  … |
@@ -2571,12 +2573,12 @@ _nenhum item encontrado_
 | `src/components/compras/enhanced-kpi/__tests__/colorClasses.test.ts` | 18 | colorClasses · has 11 color entries · covers all KpiColor values · every entry has bg, text, border, gradient strings … |
 | `src/lib/__tests__/safeTruncate.test.ts` | 18 | safeTruncate (frontend) · retorna a string original quando cabe no limite · respeita o limite em ASCII · nunca deixa lone high surrogate ao cortar entre surrogate pair … |
 | `src/features/solicitacoes/__tests__/fluxoAprovacao.test.ts` | 17 | statusDaEtapa · traduz os status que o banco grava · a etapa pendente na etapa_atual do workflow e a atual · etapa com decidido_em conta como concluida mesmo sem status explicito … |
+| `supabase/functions/_shared/logLevel.test.ts` | 17 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `supabase/functions/receive-os-sync/mapping.test.ts` | 17 | tipo material e status pendente: unicos valores aceitos pelo schema vivo · external_ref = os_id: chave de idempotencia da origem · numero e tenant vem do chamador, nao do payload · titulo cita a OS e o produto … |
 | `src/components/compras/__tests__/followUpReal.test.tsx` | 16 | descreverFollowUp · sem registro nao afirma envio · com registro usa o status e o atraso reais · sem atraso nao inventa  … |
 | `src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts` | 16 | KNOWN_SUPPLIERS · is an array · has 6 supplier entries · every entry has id and name strings … |
 | `src/features/layout/transitions/__tests__/presets.test.ts` | 16 | PRESETS · has exactly 12 entries · covers all TransitionName values · every preset has initial, animate, exit, and transition … |
 | `src/lib/__tests__/safeDisplay.test.ts` | 16 | safeDisplay · retorna string original quando cabe no limite · trunca com ellipsis padrão respeitando o limite total · aceita ellipsis customizado … |
-| `supabase/functions/_shared/logLevel.test.ts` | 16 | normalizeLevel: matriz de entradas inválidas mapeia para DEFAULT_LEVEL · normalizeLevel: níveis canônicos aceitam variações case/whitespace · normalizeLevel: alias  · property: normalizeLevel é total e idempotente sobre 500 inputs aleatórios … |
 | `scripts/lib/seguranca-processo.test.mjs` | 15 | resolverExecutavel devolve caminho absoluto existente igual ao do shell · resolverExecutavel lanca para comando inexistente · resolverExecutavel pula diretorio homonimo e arquivo sem permissao de execucao, como o shell · resolverExecutavel devolve caminho absoluto mesmo com entrada relativa no PATH … |
 | `src/hooks/__tests__/useFuseSearch.test.ts` | 15 | normalizeText · lowercases and removes accents · strips special characters · collapses whitespace … |
 | `src/lib/__tests__/creditoFornecedor.test.ts` | 15 | calcularAbatimentoCredito · acumula o valor utilizado em vez de substituir · marca o credito como utilizado quando o saldo zera · nunca deixa o saldo negativo … |

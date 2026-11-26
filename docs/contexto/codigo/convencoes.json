@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)",
    "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)",
    "chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)",
    "perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)",
-   "chore: ajusta a contagem de migrations do AGENTS.md para 352 (etapa 209) (#533)",
-   "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)"
+   "chore: ajusta a contagem de migrations do AGENTS.md para 352 (etapa 209) (#533)"
   ]
  },
  "pr_template": null,

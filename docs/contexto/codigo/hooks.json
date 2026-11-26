@@ -306,8 +306,9 @@
     "useContext"
    ],
    "canais_realtime": [],
-   "usado_por": 6,
+   "usado_por": 7,
    "usado_por_arquivos": [
+    "src/components/admin/telemetry/AppLogsView.tsx",
     "src/features/auth/index.ts",
     "src/features/empresas/components/EmpresaSelector.tsx",
     "src/features/empresas/hooks/useEmpresaFilter.ts",
@@ -1333,7 +1334,7 @@
     "useFornecedores",
     "useFornecedoresKPIs"
    ],
-   "linhas": 346,
+   "linhas": 354,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",

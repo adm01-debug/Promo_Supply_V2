@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "72c54084a7185177f6364e4936836f36db4b5508",
+  "sha": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 14:26 UTC",
+  "generated_at": "2026-11-26 14:49 UTC",
   "files_total": 1521,
   "code_files": 1346,
-  "code_lines": 224735,
+  "code_lines": 224922,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "dcb4174165350437",
+ "facts_hash": "1beade21c3f66d00",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -35149,7 +35149,7 @@
   {
    "module": "src/components",
    "files": 287,
-   "lines": 52530,
+   "lines": 52536,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35723,7 +35723,7 @@
   {
    "module": "src/hooks",
    "files": 103,
-   "lines": 17410,
+   "lines": 17418,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35996,7 +35996,7 @@
   {
    "module": "src/lib",
    "files": 64,
-   "lines": 7456,
+   "lines": 7549,
    "tables": [
     "profiles"
    ],
@@ -36012,7 +36012,7 @@
     "hubEvents.ts: HubEvent, emitHubEvent, onHubEvent",
     "imageCompression.ts: CompressionOptions, CompressedImage, supportsWebP, compressImage, compressImages, getCompressedPreviewUrl",
     "invokeEdge.ts: MENSAGEM_EDGE_PADRAO, mensagemDeErroDaEdge",
-    "logger.ts: logger",
+    "logger.ts: hashIdentifier, sanitizeContextDeep, logger",
     "negotiationOutreach.ts: SugestaoNegociacao, ContextoNegociacao, normalizarTelefone, buildWhatsAppText, buildEmailAssunto, buildEmailCorpo",
     "paginatedFetch.ts: fetchAllRows",
     "pdfGenerator.ts: OrderPDFCompany, OrderPDFData, generateOrderPDF",
@@ -36528,7 +36528,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20698,
+   "lines": 20778,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -39073,6 +39073,9 @@
    ],
    "tabela_de_fixture": [
     "x"
+   ],
+   "telemetry_logs": [
+    "tenant_id"
    ],
    "tenants": [
     "endereco_fiscal",
@@ -51257,6 +51260,11 @@
     "value": "60"
    },
    {
+    "file": "src/lib/logger.ts",
+    "name": "MAX_SANITIZE_DEPTH",
+    "value": "5"
+   },
+   {
     "file": "src/lib/paginatedFetch.ts",
     "name": "DEFAULT_MAX_ROWS",
     "value": "50_000"
@@ -51430,6 +51438,11 @@
     "file": "supabase/functions/_shared/logLevel.ts",
     "name": "MAX_USER_AGENT_LENGTH",
     "value": "512"
+   },
+   {
+    "file": "supabase/functions/_shared/logLevel.ts",
+    "name": "MAX_REDACT_DEPTH",
+    "value": "5"
    },
    {
     "file": "supabase/functions/_shared/logger.ts",
@@ -66785,6 +66798,30 @@
     "name": "redacts multiple sensitive keys in one call"
    },
    {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "redacts personal data keys"
+   },
+   {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "redacts sensitive keys nested one level deep"
+   },
+   {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "redacts sensitive keys nested inside arrays"
+   },
+   {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "stops recursing at the depth limit"
+   },
+   {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "does not mutate nested originals"
+   },
+   {
+    "file": "src/lib/__tests__/logger.test.ts",
+    "name": "keeps non plain values (Date, Error) intact"
+   },
+   {
     "file": "src/lib/__tests__/negotiationOutreach.test.ts",
     "name": "normalizarTelefone"
    },
@@ -72975,6 +73012,10 @@
    {
     "file": "supabase/functions/_shared/logLevel.test.ts",
     "name": "context circular nao quebra a construcao da linha"
+   },
+   {
+    "file": "supabase/functions/_shared/logLevel.test.ts",
+    "name": "buildTelemetryRow: redige PII no context, inclusive aninhada (SEC-07)"
    },
    {
     "file": "supabase/functions/_shared/logger-escopo.test.ts",
@@ -96543,7 +96584,7 @@
   },
   "src/components/admin/telemetry/AppLogsView.tsx": {
    "path": "src/components/admin/telemetry/AppLogsView.tsx",
-   "lines": 136,
+   "lines": 142,
    "exports": [
     "interface AppLog",
     "function AppLogsView"
@@ -96554,6 +96595,11 @@
      "op": "select"
     }
    ],
+   "table_cols": {
+    "telemetry_logs": [
+     "tenant_id"
+    ]
+   },
    "pagination": [
     "100"
    ]
@@ -106310,7 +106356,7 @@
   },
   "src/hooks/useFornecedores.ts": {
    "path": "src/hooks/useFornecedores.ts",
-   "lines": 346,
+   "lines": 354,
    "exports": [
     "type Fornecedor",
     "interface CreateFornecedorInput",
@@ -109082,8 +109128,10 @@
   },
   "src/lib/logger.ts": {
    "path": "src/lib/logger.ts",
-   "lines": 176,
+   "lines": 213,
    "exports": [
+    "const hashIdentifier",
+    "const sanitizeContextDeep",
     "const logger"
    ],
    "invokes": [
@@ -109108,6 +109156,10 @@
     {
      "name": "TELEMETRY_RATE_LIMIT",
      "value": "60"
+    },
+    {
+     "name": "MAX_SANITIZE_DEPTH",
+     "value": "5"
     }
    ],
    "doc": "Centralized logging utility for the frontend. Enforces structured logging and prevents sensitive data leak.",
@@ -109941,7 +109993,7 @@
   },
   "src/lib/__tests__/logger.test.ts": {
    "path": "src/lib/__tests__/logger.test.ts",
-   "lines": 156,
+   "lines": 212,
    "is_test": true,
    "tests": [
     "logger",
@@ -109969,7 +110021,13 @@
     "is case-insensitive: ",
     "does not mutate the original context object",
     "handles empty context object",
-    "redacts multiple sensitive keys in one call"
+    "redacts multiple sensitive keys in one call",
+    "redacts personal data keys",
+    "redacts sensitive keys nested one level deep",
+    "redacts sensitive keys nested inside arrays",
+    "stops recursing at the depth limit",
+    "does not mutate nested originals",
+    "keeps non plain values (Date, Error) intact"
    ]
   },
   "src/lib/__tests__/negotiationOutreach.test.ts": {
@@ -117637,7 +117695,7 @@
   },
   "supabase/functions/_shared/logLevel.test.ts": {
    "path": "supabase/functions/_shared/logLevel.test.ts",
-   "lines": 517,
+   "lines": 547,
    "is_test": true,
    "params": [
     {
@@ -117678,12 +117736,13 @@
     "property: buildTelemetryRow mantém message idempotente sob JSON round-trip para inputs multibyte",
     "tenant_id do corpo nao sobrepoe o tenant do usuario autenticado",
     "context, url e user_agent respeitam os tetos de tamanho",
-    "context circular nao quebra a construcao da linha"
+    "context circular nao quebra a construcao da linha",
+    "buildTelemetryRow: redige PII no context, inclusive aninhada (SEC-07)"
    ]
   },
   "supabase/functions/_shared/logLevel.ts": {
    "path": "supabase/functions/_shared/logLevel.ts",
-   "lines": 153,
+   "lines": 203,
    "exports": [
     "type CanonicalLogLevel",
     "const CANONICAL_LEVELS",
@@ -117695,6 +117754,7 @@
     "const MAX_USER_AGENT_LENGTH",
     "function safeTruncate",
     "function clampContext",
+    "function redactSensitiveContext",
     "interface TelemetryRowInput",
     "interface TelemetryRow",
     "function buildTelemetryRow"
@@ -117721,6 +117781,10 @@
     {
      "name": "MAX_USER_AGENT_LENGTH",
      "value": "512"
+    },
+    {
+     "name": "MAX_REDACT_DEPTH",
+     "value": "5"
     }
    ],
    "rule_comments": [
@@ -124600,10 +124664,26 @@
   }
  },
  "git": {
-  "sha": "72c54084a7185177f6364e4936836f36db4b5508",
+  "sha": "85e9897b9a699e569e987c4b4d341ae581eb8ed7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "85e9897",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/admin/telemetry/AppLogsView.tsx",
+     "src/features/auth/hooks/useAuth.tsx",
+     "src/hooks/useFornecedores.ts",
+     "src/lib/__tests__/logger.test.ts",
+     "src/lib/logger.ts",
+     "supabase/functions/_shared/logLevel.test.ts",
+     "supabase/functions/_shared/logLevel.ts"
+    ]
+   },
    {
     "sha": "72c5408",
     "date": "2026-11-26",
@@ -125017,20 +125097,6 @@
      "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
      "src/hooks/useExecutiveDashboardData.ts"
     ]
-   },
-   {
-    "sha": "a49b400",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
-     "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.buscaServidor.test.ts",
-     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-     "src/pages/pedidos/Pedidos.tsx",
-     "src/pages/solicitacoes/Solicitacoes.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -125095,23 +125161,23 @@
     2
    ],
    [
-    "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
+    "src/components/admin/telemetry/AppLogsView.tsx",
     1
    ],
    [
-    "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+    "src/features/auth/hooks/useAuth.tsx",
     1
    ],
    [
-    "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
+    "src/hooks/useFornecedores.ts",
     1
    ],
    [
-    "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
+    "src/lib/__tests__/logger.test.ts",
     1
    ],
    [
-    "DOCS/qa/reversao/20261127193000_perf08_mv_dashboard_kpis_refresh_diario_revert.sql",
+    "src/lib/logger.ts",
     1
    ]
   ]

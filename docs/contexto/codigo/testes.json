@@ -1633,11 +1633,11 @@
   {
    "arquivo": "src/lib/__tests__/logger.test.ts",
    "tipo": "unit",
-   "linhas": 156,
+   "linhas": 212,
    "testa": [
     "src/lib/logger.ts"
    ],
-   "casos": 24
+   "casos": 30
   },
   {
    "arquivo": "src/lib/__tests__/negotiationOutreach.test.ts",
@@ -2551,12 +2551,12 @@
   {
    "arquivo": "supabase/functions/_shared/logLevel.test.ts",
    "tipo": "unit",
-   "linhas": 517,
+   "linhas": 547,
    "testa": [
     "supabase/functions/_shared/fuzzSeed.ts",
     "supabase/functions/_shared/logLevel.ts"
    ],
-   "casos": 16
+   "casos": 17
   },
   {
    "arquivo": "supabase/functions/_shared/notifications.test.ts",

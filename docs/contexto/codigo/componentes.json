@@ -201,9 +201,11 @@
     "AppLogsView"
    ],
    "export_default": null,
-   "linhas": 136,
+   "linhas": 142,
    "dominio": "components/admin",
-   "hooks_locais": [],
+   "hooks_locais": [
+    "useAuth"
+   ],
    "tabelas": [
     "telemetry_logs"
    ],

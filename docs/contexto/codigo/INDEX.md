@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `72c54084a7185177f6364e4936836f36db4b5508` (2026-11-26T11:19:38-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `85e9897b9a699e569e987c4b4d341ae581eb8ed7` (2026-11-26T11:46:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1520 |
 | arquivos_codigo | 968 |
-| linhas_codigo | 192578 |
+| linhas_codigo | 192765 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -84,7 +84,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages | 0 | 1 | 1 | 0 | 1 | 0 |
 | pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 6 |
 | pages/admin | 10 | 11 | 14 | 7 | 11 | 23 |
-| pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
+| pages/admin-telemetria | 1 | 1 | 2 | 3 | 2 | 3 |
 | pages/aprovacoes | 1 | 1 | 2 | 11 | 1 | 15 |
 | pages/auditoria | 1 | 1 | 1 | 3 | 2 | 5 |
 | pages/auth | 0 | 2 | 2 | 5 | 3 | 5 |
@@ -344,13 +344,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (182)
+- docs/qa/05-PROGRESSO.md (183)
 - AGENTS.md (20)
 - docs/pendencias/_indice.md (20)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/hooks/usePagamentos.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
+- src/features/auth/hooks/useAuth.tsx (8)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
@@ -358,7 +359,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - supabase/functions/send-push-notification/index.ts (8)
 - bun.lock (7)
-- docs/ci/README.md (7)
 
 ## Workflows
 - `aplicar-migration-prod.yml` — Aplicar migration no banco de producao (workflow_dispatch)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `85e9897` fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)
 - 2026-11-26 `72c5408` fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)
 - 2026-11-26 `29e79cf` chore(db): concede EXECUTE da RPC de KPIs do dashboard ao usuario autenticado (#539)
 - 2026-11-26 `d9059a1` perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `5d9ba6d` fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)
 - 2026-11-26 `ef532a2` fix: bloqueia a OC quando o catalogo PIM esta indisponivel (etapa 169) (#561)
 - 2026-11-26 `e8b0d67` feat(edge): liga a edge de push ao fluxo de notificacao HIGH/CRITICAL (EDG-07) (#560)
-- 2026-11-26 `e94d3a2` fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
