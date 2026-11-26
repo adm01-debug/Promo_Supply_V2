@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `0943a883e29bee488079ffb370771dee48aeb231` (2026-11-26T17:47:09-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `9185b53528f20899cb72536792909a86bb0ef16f` (2026-11-26T19:39:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (895), SQL (405), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (896), SQL (407), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1551 |
-| arquivos_codigo | 970 |
-| linhas_codigo | 193456 |
+| arquivos_total | 1554 |
+| arquivos_codigo | 971 |
+| linhas_codigo | 193608 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,9 +46,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 370 |
+| migrations | 371 |
 | cron_jobs | 80 |
-| testes | 325 |
+| testes | 326 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (62), src/features (14), src/components (11)
 - servicos_logica: src/lib (30), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (227), co-localizado (*.test) (44), outro (44)
+- testes: co-localizado (__tests__) (228), co-localizado (*.test) (44), outro (44)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -344,8 +344,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (204)
-- AGENTS.md (35)
+- docs/qa/05-PROGRESSO.md (205)
+- AGENTS.md (36)
 - docs/pendencias/_indice.md (15)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (11)
 - src/integrations/supabase/types.ts (10)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `9185b53` fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588
 - 2026-11-26 `0943a88` fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)
 - 2026-11-26 `bf32408` fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)
 - 2026-11-26 `4a068aa` fix(ci): regenera a matriz edge-tabela apos a #592 (#595)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `1de9078` fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)
 - 2026-11-26 `eeff86e` fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)
 - 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
-- 2026-11-26 `63f3816` fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

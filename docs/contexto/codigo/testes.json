@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 325,
+ "total": 326,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 307
+  "unit": 308
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 227
+   "arquivos": 228
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -1163,6 +1163,15 @@
     "src/hooks/usePermissions.ts"
    ],
    "casos": 21
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useAccountLockout.test.tsx",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "src/hooks/useAccountLockout.ts"
+   ],
+   "casos": 7
   },
   {
    "arquivo": "src/hooks/__tests__/useApprovalHistory.test.ts",
@@ -3047,6 +3056,7 @@
   "src/features/solicitacoes/pessoasDaEmpresa.ts": 1,
   "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
   "src/hooks/use-toast.ts": 1,
+  "src/hooks/useAccountLockout.ts": 1,
   "src/hooks/useApprovalHistory.ts": 1,
   "src/hooks/useApprovalWorkflow.ts": 5,
   "src/hooks/useBulkOperations.ts": 1,
@@ -3248,7 +3258,6 @@
    "src/features/solicitacoes/hooks/usePessoasDaEmpresa.ts",
    "src/hooks/use-mobile.tsx",
    "src/hooks/useAccountFilters.ts",
-   "src/hooks/useAccountLockout.ts",
    "src/hooks/useApprovalNotifications.ts",
    "src/hooks/useApprovalRules.ts",
    "src/hooks/useBudgetManagement.ts",

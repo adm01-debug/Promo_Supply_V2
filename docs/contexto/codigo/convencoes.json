@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (227)",
+   "co-localizado (__tests__) (228)",
    "co-localizado (*.test) (44)",
    "outro (44)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588)",
    "fix(ci): inventario cobre tests-rls e tests-e2e e a suite de RLS reprova em vez de pular (etapas 040 e 041) (#598)",
    "fix(observabilidade): edges do cron registram erro em telemetry_logs e abrem SYSTEM_ERROR (#594)",
    "fix(ci): regenera a matriz edge-tabela apos a #592 (#595)",
-   "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)",
-   "fix(edge): spot-api e spot-proxy passam a resolver a empresa do chamador (etapa 051) (#586)"
+   "fix(aprovacoes): historico de escalonamento grava o tenant e nao se perde (#144) (#592)"
   ]
  },
  "pr_template": null,

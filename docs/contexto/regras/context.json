@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "0943a883e29bee488079ffb370771dee48aeb231",
+  "sha": "9185b53528f20899cb72536792909a86bb0ef16f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 21:15 UTC",
-  "files_total": 1552,
-  "code_files": 1377,
-  "code_lines": 227638,
+  "generated_at": "2026-11-26 22:56 UTC",
+  "files_total": 1555,
+  "code_files": 1380,
+  "code_lines": 227932,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5eddedc1523bc1d4",
+ "facts_hash": "3f147cb73606a8b3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,8 +278,8 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 455,
-   ".tsx": 440,
-   ".sql": 405,
+   ".tsx": 441,
+   ".sql": 407,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20169,7 +20169,7 @@
     "args": "_email text",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN UPDATE public.account_lockouts SET failed_attempts = 0, locked_until = NULL, updated_at = now() WHERE email = _email; END;",
@@ -27452,6 +27452,7 @@
    "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
    "supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql",
    "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
+   "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126121047_revert_guard_pedido_exige_solicitacao_aprovada.sql",
    "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql",
@@ -27475,6 +27476,7 @@
    "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
    "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql",
    "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
+   "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -31655,6 +31657,22 @@
     "src": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "maintain_monthly_partitions",
@@ -31717,6 +31735,14 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
    }
   ],
   "raises": [
@@ -36085,8 +36111,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 103,
-   "lines": 17464,
+   "files": 104,
+   "lines": 17616,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -36290,6 +36316,7 @@
     "src/hooks/__tests__/hookConstants.test.ts",
     "src/hooks/__tests__/keyboardShortcutsData.test.ts",
     "src/hooks/__tests__/permissionsConstants.test.ts",
+    "src/hooks/__tests__/useAccountLockout.test.tsx",
     "src/hooks/__tests__/useApprovalHistory.test.ts",
     "src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx",
     "src/hooks/__tests__/useApprovalWorkflow.escalation.test.tsx",
@@ -36302,8 +36329,7 @@
     "src/hooks/__tests__/useDevolucoes.test.tsx",
     "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
-    "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx",
-    "src/hooks/__tests__/useFornecedores.organization.test.tsx"
+    "src/hooks/__tests__/useFornecedores.kpisInvalidados.test.tsx"
    ]
   },
   {
@@ -37086,8 +37112,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 370,
-   "lines": 31451,
+   "files": 371,
+   "lines": 31571,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37178,8 +37204,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 23,
-   "lines": 1408,
+   "files": 24,
+   "lines": 1430,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37208,7 +37234,8 @@
     "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
     "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
     "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql",
-    "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql"
+    "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
+    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
    ]
   },
   {
@@ -43684,6 +43711,10 @@
    {
     "file": "supabase/functions/guided-buying-ai/index.ts",
     "value": "user"
+   },
+   {
+    "file": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+    "value": "admin"
    }
   ],
   "comments": [
@@ -43850,6 +43881,18 @@
    {
     "file": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
     "text": "RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la."
+   },
+   {
+    "file": "src/hooks/useAccountLockout.ts",
+    "text": "Mesmo limite de `record_failed_login`: cinco falhas seguidas bloqueiam a"
+   },
+   {
+    "file": "src/hooks/useAccountLockout.ts",
+    "text": "Consulta que falha (rede, permissao, RPC fora do ar) nao e' bloqueio:"
+   },
+   {
+    "file": "src/hooks/useAccountLockout.ts",
+    "text": "o limite cheio -- sem isso a UI imprimia \"undefined tentativa(s)\"."
    },
    {
     "file": "src/hooks/useApprovalNotifications.ts",
@@ -51572,6 +51615,11 @@
     "file": "src/hooks/useAccountFilters.ts",
     "name": "DEBOUNCE_MS",
     "value": "800"
+   },
+   {
+    "file": "src/hooks/useAccountLockout.ts",
+    "name": "MAX_TENTATIVAS",
+    "value": "5"
    },
    {
     "file": "src/hooks/useClearFiltersFlow.tsx",
@@ -65112,6 +65160,38 @@
    {
     "file": "src/hooks/__tests__/permissionsConstants.test.ts",
     "name": "manage_roles label is "
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "useAccountLockout — normalizacao do e-mail e limpeza pela sessao"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "manda o e-mail normalizado para as RPCs de checagem e de tentativa falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "limpa o bloqueio do e-mail da sessao autenticada, e nao o do formulario"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "mantem o estado bloqueado quando o servidor recusa a limpeza"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "nao declara a conta bloqueada quando a consulta ao servidor falha"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "nao declara a conta bloqueada quando a consulta lanca excecao"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "deriva as tentativas restantes quando o servidor devolve so o contador"
+   },
+   {
+    "file": "src/hooks/__tests__/useAccountLockout.test.tsx",
+    "name": "usa o limite cheio quando o registro da falha nao chega ao servidor"
    },
    {
     "file": "src/hooks/__tests__/useApprovalHistory.test.ts",
@@ -79247,7 +79327,7 @@
     "args": "_email text",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20251231132431_1b93121d-151b-4729-a7b4-31449aa836e9.sql",
+    "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
     "security_definer": true,
     "search_path": true,
     "body": "BEGIN UPDATE public.account_lockouts SET failed_attempts = 0, locked_until = NULL, updated_at = now() WHERE email = _email; END;",
@@ -91027,6 +91107,22 @@
     "src": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql"
    },
    {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "PUBLIC, anon",
+    "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "authenticated, service_role",
+    "src": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql"
+   },
+   {
     "kind": "grant",
     "privs": "execute",
     "object": "maintain_monthly_partitions",
@@ -91089,6 +91185,14 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "clear_login_lockout",
+    "objkind": "function",
+    "roles": "authenticated",
+    "src": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
    }
   ],
   "guards": [
@@ -106074,7 +106178,7 @@
   },
   "src/hooks/useAccountLockout.ts": {
    "path": "src/hooks/useAccountLockout.ts",
-   "lines": 144,
+   "lines": 175,
    "exports": [
     "const useAccountLockout"
    ],
@@ -106082,6 +106186,17 @@
     "clear_login_lockout",
     "is_account_locked",
     "record_failed_login"
+   ],
+   "params": [
+    {
+     "name": "MAX_TENTATIVAS",
+     "value": "5"
+    }
+   ],
+   "rule_comments": [
+    "Mesmo limite de `record_failed_login`: cinco falhas seguidas bloqueiam a",
+    "Consulta que falha (rede, permissao, RPC fora do ar) nao e' bloqueio:",
+    "o limite cheio -- sem isso a UI imprimia \"undefined tentativa(s)\"."
    ],
    "hooks": [
     "useAccountLockout"
@@ -109236,6 +109351,24 @@
     "edit label is ",
     "export label is ",
     "manage_roles label is "
+   ]
+  },
+  "src/hooks/__tests__/useAccountLockout.test.tsx": {
+   "path": "src/hooks/__tests__/useAccountLockout.test.tsx",
+   "lines": 121,
+   "is_test": true,
+   "rule_comments": [
+    "A primeira falha responde apenas `attempts` -- e a UI imprime esse numero."
+   ],
+   "tests": [
+    "useAccountLockout — normalizacao do e-mail e limpeza pela sessao",
+    "manda o e-mail normalizado para as RPCs de checagem e de tentativa falha",
+    "limpa o bloqueio do e-mail da sessao autenticada, e nao o do formulario",
+    "mantem o estado bloqueado quando o servidor recusa a limpeza",
+    "nao declara a conta bloqueada quando a consulta ao servidor falha",
+    "nao declara a conta bloqueada quando a consulta lanca excecao",
+    "deriva as tentativas restantes quando o servidor devolve so o contador",
+    "usa o limite cheio quando o registro da falha nao chega ao servidor"
    ]
   },
   "src/hooks/__tests__/useApprovalHistory.test.ts": {
@@ -125582,6 +125715,13 @@
    "path": "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
    "lines": 127
   },
+  "supabase/migrations/20261128160000_lockout_servidor_guarda.sql": {
+   "path": "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+   "lines": 120,
+   "role_checks": [
+    "admin"
+   ]
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -125687,6 +125827,10 @@
   "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql": {
    "path": "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
    "lines": 56
+  },
+  "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql": {
+   "path": "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
+   "lines": 22
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -125924,10 +126068,24 @@
   }
  },
  "git": {
-  "sha": "0943a883e29bee488079ffb370771dee48aeb231",
+  "sha": "9185b53528f20899cb72536792909a86bb0ef16f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9185b53",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): lockout de conta passa a valer no servidor e o front segue o novo contrato (etapas 057, 058 e 141) (#588)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useAccountLockout.test.tsx",
+     "src/hooks/useAccountLockout.ts",
+     "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+     "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql"
+    ]
+   },
    {
     "sha": "0943a88",
     "date": "2026-11-26",
@@ -126270,18 +126428,6 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/migrations/20261127200000_severity_canonica_system_alerts.sql"
     ]
-   },
-   {
-    "sha": "e2041a1",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
-     "supabase/migrations/20261126150000_revert_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -126300,6 +126446,22 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
+   ],
+   [
+    "src/hooks/__tests__/useAccountLockout.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useAccountLockout.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261128160000_lockout_servidor_guarda.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128160000_revert_lockout_servidor_guarda.sql",
+    1
    ],
    [
     "scripts/ci/check-test-inventory.mjs",
@@ -126347,22 +126509,6 @@
    ],
    [
     "supabase/rollbacks/20261128140000_revert_spot_pedidos_tenant.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261128130000_on_delete_restrict_historico_financeiro.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261128130000_revert_on_delete_restrict_historico_financeiro.sql",
-    1
-   ],
-   [
-    "src/components/pagamentos/ThreeWayMatchPanel.tsx",
-    1
-   ],
-   [
-    "src/pages/documentos/DocumentosFiscais.tsx",
     1
    ]
   ]

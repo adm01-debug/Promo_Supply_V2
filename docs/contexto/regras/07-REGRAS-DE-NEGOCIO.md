@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `0943a883e2` · branch `main` · 2026-11-26 21:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `9185b53528` · branch `main` · 2026-11-26 22:56 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1764,6 +1764,7 @@ _nenhum item encontrado_
 | `TOAST_LIMIT` | `1` | `src/hooks/use-toast.ts` |
 | `TOAST_REMOVE_DELAY` | `1000000` | `src/hooks/use-toast.ts` |
 | `DEBOUNCE_MS` | `800` | `src/hooks/useAccountFilters.ts` |
+| `MAX_TENTATIVAS` | `5` | `src/hooks/useAccountLockout.ts` |
 | `UNDO_TIMEOUT_MS` | `6000` | `src/hooks/useClearFiltersFlow.tsx` |
 | `MAX_RETRIES` | `5` | `src/hooks/useOfflineSync.ts` |
 | `PREFETCH_STALE_TIME` | `30 * 1000` | `src/hooks/usePrefetch.ts` |
@@ -2529,8 +2530,9 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useApprovalNotifications.ts` |
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
+| `admin` | `supabase/migrations/20261128160000_lockout_servidor_guarda.sql` |
 
-## K. Testes como especificação (3594 testes em 273 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3602 testes em 274 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2664,6 +2666,7 @@ _nenhum item encontrado_
 | `src/features/layout/__tests__/AppSidebar.ativo.test.ts` | 8 | AppSidebar / isItemActive (AUT-10) · marca o Dashboard em /compras · marca o Dashboard tambem na raiz, antes do redirect · sobrevive ao href antigo  … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.exclusao.test.tsx` | 8 | useSolicitacoes - exclusao guardada por historico · recusa excluir solicitacao que tem cotacao de fornecedor · recusa excluir solicitacao que so tem historico de aprovacao · erro na contagem cancela a exclusao em vez de apagar … |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.solicitante.test.ts` | 8 | filtro  · a consulta filtra por solicitante_id e nao por status · sem o recorte a consulta nao filtra solicitante_id · status e solicitante coexistem quando os dois vem preenchidos … |
+| `src/hooks/__tests__/useAccountLockout.test.tsx` | 8 | useAccountLockout — normalizacao do e-mail e limpeza pela sessao · manda o e-mail normalizado para as RPCs de checagem e de tentativa falha · limpa o bloqueio do e-mail da sessao autenticada, e nao o do formulario · mantem o estado bloqueado quando o servidor recusa a limpeza … |
 | `src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx` | 8 | useExecutiveDashboardData - recorte de periodo no SQL (etapa 215) · empurra o corte de data de solicitacoes, fiscal_documents e savings_tracker para o SQL · nao filtra pedidos por created_at (o recorte local usa data_emissao com fallback) · sem periodo definido nenhuma tabela recebe corte de data … |
 | `src/lib/__tests__/invokeEdge.test.ts` | 8 | mensagemDeErroDaEdge · devolve o campo error do corpo da edge, nao a mensagem fixa em ingles · aceita corpo com a chave message quando nao ha error · cai na mensagem do proprio erro quando o corpo nao tem frase util … |
 | `src/lib/__tests__/unicidadeCadastro.test.ts` | 8 | unicidadeCadastro (VAL-09) · normaliza CNPJ mascarado para digitos · cita o fornecedor dono do CNPJ quando o nome e conhecido · explica o codigo de centro de custo com e sem o nome do dono … |
@@ -2888,6 +2891,9 @@ _nenhum item encontrado_
 | Validação de orçamento | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | 'aprovada' (hoje por um limite fixo no banco); criar o workflow nesse caso deixa uma | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
 | RLS filtra a linha em silêncio (0 linhas, sem erro) quando o usuário não pode alterá-la. | `src/features/solicitacoes/hooks/useSolicitacoes.ts` |
+| Mesmo limite de `record_failed_login`: cinco falhas seguidas bloqueiam a | `src/hooks/useAccountLockout.ts` |
+| Consulta que falha (rede, permissao, RPC fora do ar) nao e' bloqueio: | `src/hooks/useAccountLockout.ts` |
+| o limite cheio -- sem isso a UI imprimia "undefined tentativa(s)". | `src/hooks/useAccountLockout.ts` |
 | * F-023 fix: replaced setInterval deadline-polling with Realtime subscription | `src/hooks/useApprovalNotifications.ts` |
 | Business logic lives in focused sub-hooks: | `src/hooks/useApprovalWorkflow.ts` |
 | Falha de leitura nao pode virar "nada pendente" (QA 251): os fetches abaixo | `src/hooks/useApprovalWorkflow.ts` |

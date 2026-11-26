@@ -747,7 +747,7 @@
    "hooks_exportados": [
     "useAccountLockout"
    ],
-   "linhas": 144,
+   "linhas": 175,
    "dominio": "hooks",
    "tabelas": [],
    "rpcs": [
@@ -766,7 +766,7 @@
    "usado_por_arquivos": [
     "src/pages/auth/Auth.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useApprovalHistory.ts",
