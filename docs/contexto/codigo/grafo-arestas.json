@@ -97,12 +97,6 @@
    "src/components/ui/card.tsx",
    "src/lib/utils.ts"
   ],
-  "src/components/admin/TenantSwitcher.tsx": [
-   "src/components/ui/button.tsx",
-   "src/components/ui/dropdown-menu.tsx",
-   "src/features/auth/index.ts",
-   "src/lib/utils.ts"
-  ],
   "src/components/admin/telemetry/AppLogsView.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
@@ -1739,7 +1733,6 @@
   "src/features/layout/components/HeaderActions.tsx": [
    "src/components/accessibility/AdvancedAccessibility.tsx",
    "src/components/admin/DependencyHealthBadge.tsx",
-   "src/components/admin/TenantSwitcher.tsx",
    "src/components/settings/FeedbackSettingsPanel.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/popover.tsx",

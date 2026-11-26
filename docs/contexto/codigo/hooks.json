@@ -329,11 +329,10 @@
    "edges": [],
    "hooks_internos": [],
    "canais_realtime": [],
-   "usado_por": 74,
+   "usado_por": 73,
    "usado_por_arquivos": [
     "src/App.tsx",
     "src/components/admin/DependencyHealthBadge.tsx",
-    "src/components/admin/TenantSwitcher.tsx",
     "src/components/compras/BuyerPerformancePanel.tsx",
     "src/components/compras/ContractDetailsModal.tsx",
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
@@ -360,7 +359,8 @@
     "src/features/layout/components/SLASettingsPanel.tsx",
     "src/features/layout/components/SupplierChat.tsx",
     "src/features/layout/components/UserMenu.tsx",
-    "src/features/pedidos/hooks/usePedidos.ts"
+    "src/features/pedidos/hooks/usePedidos.ts",
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
    ],
    "coberto_por_testes": 3
   },

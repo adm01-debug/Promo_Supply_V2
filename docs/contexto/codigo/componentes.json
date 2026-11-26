@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 330,
+ "total": 329,
  "orfaos": 11,
  "nomes_duplicados": {
   "AnimatedCounter": [
@@ -237,22 +237,6 @@
    "linhas": 152,
    "dominio": "components/admin",
    "hooks_locais": [],
-   "tabelas": [],
-   "edges": [],
-   "usado_por": 1,
-   "orfao": false
-  },
-  {
-   "arquivo": "src/components/admin/TenantSwitcher.tsx",
-   "exports": [
-    "TenantSwitcher"
-   ],
-   "export_default": null,
-   "linhas": 65,
-   "dominio": "components/admin",
-   "hooks_locais": [
-    "useAuth"
-   ],
    "tabelas": [],
    "edges": [],
    "usado_por": 1,
@@ -2710,7 +2694,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 172,
+   "usado_por": 171,
    "orfao": false
   },
   {
@@ -2913,7 +2897,7 @@
    "hooks_locais": [],
    "tabelas": [],
    "edges": [],
-   "usado_por": 15,
+   "usado_por": 14,
    "orfao": false
   },
   {
@@ -3845,7 +3829,7 @@
     "HeaderActions"
    ],
    "export_default": null,
-   "linhas": 150,
+   "linhas": 148,
    "dominio": "features/layout",
    "hooks_locais": [],
    "tabelas": [],

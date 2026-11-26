@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2398b93ee2a13a66efa0a029834984e724601f8a",
+  "sha": "650e384ec61e08151622e4afd6c86c866c22f953",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 02:39 UTC",
-  "files_total": 1468,
-  "code_files": 1294,
-  "code_lines": 219087,
+  "generated_at": "2026-11-26 02:54 UTC",
+  "files_total": 1467,
+  "code_files": 1293,
+  "code_lines": 219020,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "848c259c3aef2e2b",
+ "facts_hash": "32cf6245d01c0b5f",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 423,
+   ".tsx": 422,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -33839,7 +33839,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 321,
+  "components_count": 320,
   "hooks": [
    {
     "name": "useContacts",
@@ -34911,8 +34911,8 @@
   },
   {
    "module": "src/components",
-   "files": 285,
-   "lines": 52378,
+   "files": 284,
+   "lines": 52313,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -34957,7 +34957,6 @@
     "InstallReportHelp.tsx: InstallReportHelp",
     "InstallReportPanel.tsx: InstallReportPanel",
     "RefreshNowHelp.tsx: RefreshNowHelp",
-    "TenantSwitcher.tsx: TenantSwitcher",
     "AppLogsView.tsx: AppLog, AppLogsView",
     "SystemAlertsView.tsx: SystemAlert, SystemAlertsView",
     "TelemetryCharts.tsx: TelemetryCharts",
@@ -34985,7 +34984,8 @@
     "CriticalAlertsBar.tsx: CriticalAlertsBar",
     "DashboardInsights.tsx: DashboardInsights",
     "DeliveryCalendar.tsx: DeliveryCalendar",
-    "DemandPredictionPanel.tsx: DemandPredictionPanel"
+    "DemandPredictionPanel.tsx: DemandPredictionPanel",
+    "DigitalSignature.tsx: DigitalSignature"
    ],
    "docs": [
     "PrefetchLink.tsx: Componente Link com prefetch automático de DADOS (React Query) e do CHUNK JS da rota destino, no hover/focus do usuário.",
@@ -35052,7 +35052,6 @@
     "src/components/admin/InstallReportHelp.tsx",
     "src/components/admin/InstallReportPanel.tsx",
     "src/components/admin/RefreshNowHelp.tsx",
-    "src/components/admin/TenantSwitcher.tsx",
     "src/components/admin/telemetry/AppLogsView.tsx",
     "src/components/admin/telemetry/SystemAlertsView.tsx",
     "src/components/admin/telemetry/TelemetryCharts.tsx",
@@ -35116,7 +35115,8 @@
     "src/components/compras/SLADistributionChart.tsx",
     "src/components/compras/SavingsGoalPanel.tsx",
     "src/components/compras/SolicitacaoCard.tsx",
-    "src/components/compras/SolicitacaoKanban.tsx"
+    "src/components/compras/SolicitacaoKanban.tsx",
+    "src/components/compras/SourcingHistoryConsole.tsx"
    ]
   },
   {
@@ -35259,7 +35259,7 @@
   {
    "module": "src/features/layout",
    "files": 41,
-   "lines": 6243,
+   "lines": 6241,
    "tables": [],
    "exports": [
     "AdvancedSearch.tsx: AdvancedSearch",
@@ -95320,13 +95320,6 @@
     "default RefreshNowHelp"
    ]
   },
-  "src/components/admin/TenantSwitcher.tsx": {
-   "path": "src/components/admin/TenantSwitcher.tsx",
-   "lines": 65,
-   "exports": [
-    "function TenantSwitcher"
-   ]
-  },
   "src/components/admin/telemetry/AppLogsView.tsx": {
    "path": "src/components/admin/telemetry/AppLogsView.tsx",
    "lines": 136,
@@ -102193,7 +102186,7 @@
   },
   "src/features/layout/components/HeaderActions.tsx": {
    "path": "src/features/layout/components/HeaderActions.tsx",
-   "lines": 150,
+   "lines": 148,
    "exports": [
     "const HeaderActions"
    ]
@@ -122713,10 +122706,21 @@
   }
  },
  "git": {
-  "sha": "2398b93ee2a13a66efa0a029834984e724601f8a",
+  "sha": "650e384ec61e08151622e4afd6c86c866c22f953",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "650e384",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/admin/TenantSwitcher.tsx",
+     "src/features/layout/components/HeaderActions.tsx"
+    ]
+   },
    {
     "sha": "2398b93",
     "date": "2026-11-25",
@@ -123048,22 +123052,6 @@
      ".github/workflows/main.yml",
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "f751a0e",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): reprova componente de src sem importador no guards (#465)",
-    "files": [
-     ".github/workflows/guards.yml",
-     "docs/ci/README.md",
-     "docs/pendencias/_indice.md",
-     "docs/qa/05-PROGRESSO.md",
-     "docs/qa/baseline-orfaos-componentes.json",
-     "scripts/automation.config.json",
-     "scripts/ci/check-orfaos-componentes.mjs",
-     "scripts/ci/check-orfaos-componentes.unit.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -123100,10 +123088,6 @@
     2
    ],
    [
-    "docs/pendencias/_indice.md",
-    2
-   ],
-   [
     "scripts/ci/agents-docs-baseline.unit.mjs",
     2
    ],
@@ -123128,12 +123112,12 @@
     2
    ],
    [
-    ".github/workflows/guards.yml",
-    2
+    "src/components/admin/TenantSwitcher.tsx",
+    1
    ],
    [
-    "docs/ci/README.md",
-    2
+    "src/features/layout/components/HeaderActions.tsx",
+    1
    ],
    [
     "supabase/functions/_shared/idempotency.test.ts",
@@ -123145,6 +123129,10 @@
    ],
    [
     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/erp-sync/index.ts",
     1
    ]
   ]
