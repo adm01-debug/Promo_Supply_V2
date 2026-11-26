@@ -99,7 +99,7 @@ const etapaPendente = {
   workflow_id: 'wf-1',
   etapa: 1,
   status: 'pending',
-  approval_workflows: { id: 'wf-1', status: 'pending', rule_id: null, total_etapas: 1 },
+  approval_workflows: { id: 'wf-1', status: 'pending', rule_id: null, total_etapas: 1, etapa_atual: 1, solicitacao_id: 'sol-1' },
 };
 
 describe('useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso', () => {
@@ -136,6 +136,71 @@ describe('useApprovalWorkflow - escrita negada pelo RLS nao vira sucesso', () =>
     expect(ok).toBe(true);
     expect(h.toast.success).toHaveBeenCalledWith('Aprovação registrada com sucesso');
     expect(h.toast.error).not.toHaveBeenCalled();
+  });
+
+  it('aprovar etapa fora de ordem e recusado e nao fecha o workflow', async () => {
+    h.estado.single['approval_steps'] = {
+      data: {
+        ...etapaPendente, etapa: 2,
+        approval_workflows: { id: 'wf-1', status: 'pending', rule_id: null, total_etapas: 2, etapa_atual: 1, solicitacao_id: 'sol-1' },
+      },
+      error: null,
+    };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = true;
+    await act(async () => { ok = await result.current.approveStep('step-1'); });
+
+    expect(ok).toBe(false);
+    expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('fora de ordem'));
+    expect(h.toast.success).not.toHaveBeenCalled();
+  });
+
+  it('etapa ja decidida nao e aprovada duas vezes', async () => {
+    h.estado.single['approval_steps'] = { data: { ...etapaPendente, status: 'approved' }, error: null };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = true;
+    await act(async () => { ok = await result.current.approveStep('step-1'); });
+
+    expect(ok).toBe(false);
+    expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('já foi decidida'));
+    expect(h.toast.success).not.toHaveBeenCalled();
+  });
+
+  it('quem criou a solicitacao nao aprova a propria solicitacao', async () => {
+    h.estado.single['solicitacoes'] = { data: { solicitante_id: 'u1' }, error: null };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = true;
+    await act(async () => { ok = await result.current.approveStep('step-1'); });
+
+    expect(ok).toBe(false);
+    expect(h.toast.error).toHaveBeenCalledWith(expect.stringContaining('Segregação de funções'));
+    expect(h.toast.success).not.toHaveBeenCalled();
+  });
+
+  it('a ultima etapa nao fecha o workflow enquanto houver etapa anterior pendente', async () => {
+    h.estado.single['approval_steps'] = {
+      data: {
+        ...etapaPendente, id: 'step-2', etapa: 2,
+        approval_workflows: { id: 'wf-1', status: 'pending', rule_id: null, total_etapas: 2, etapa_atual: 2, solicitacao_id: 'sol-1' },
+      },
+      error: null,
+    };
+    h.estado.atualizado['approval_steps'] = { data: [{ id: 'step-2' }], error: null };
+    h.estado.lista['approval_steps'] = {
+      data: [{ id: 'step-1', status: 'pending', etapa: 1 }, { id: 'step-2', status: 'approved', etapa: 2 }],
+      error: null,
+    };
+    const { result } = renderHook(() => useApprovalWorkflow(), { wrapper: criarWrapper() });
+
+    let ok = false;
+    await act(async () => { ok = await result.current.approveStep('step-2'); });
+
+    expect(ok).toBe(true);
+    expect(h.toast.success).toHaveBeenCalledWith('Aprovação registrada com sucesso');
+    expect(h.toast.success).not.toHaveBeenCalledWith('Aprovação finalizada! Solicitação liberada.');
   });
 
   it('rejectStep com 0 linhas afetadas retorna false e nao comemora', async () => {
