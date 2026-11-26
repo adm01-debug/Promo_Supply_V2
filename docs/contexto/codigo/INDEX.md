@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7633b9bb0f0cbf77e29d42e568aec4d013c52768` (2026-11-26T10:54:49-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d9059a1b45a4840836be66197c2bd3fe98bd0706` (2026-11-26T11:03:25-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (370), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (372), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,7 +34,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1514 |
+| arquivos_total | 1516 |
 | arquivos_codigo | 968 |
 | linhas_codigo | 192578 |
 | rotas | 56 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 164 |
-| migrations | 352 |
+| migrations | 353 |
 | cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
@@ -344,9 +344,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (179)
+- docs/qa/05-PROGRESSO.md (180)
 - docs/pendencias/_indice.md (20)
-- AGENTS.md (17)
+- AGENTS.md (18)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (10)
 - src/hooks/usePagamentos.ts (9)
@@ -417,7 +417,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (164 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (162 linhas)
 - `CLAUDE.md` (2 linhas)
 - `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (270 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `d9059a1` perf: etapa 222 reduz o refresh da MV de KPIs de 96x/dia para 1x/dia (#547)
 - 2026-11-26 `7633b9b` chore: ajusta a contagem de migrations do AGENTS.md para 352 (etapa 209) (#533)
 - 2026-11-26 `e2041a1` chore(banco): remove os dois gatilhos duplicados que sobraram (etapa 149) (#564)
 - 2026-11-26 `c3cb7d7` fix(banco): catalogo real de SLA dos scanners (etapa 148) (#565)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `e94d3a2` fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)
 - 2026-11-26 `5540d3e` fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)
 - 2026-11-26 `7804bb2` fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)
-- 2026-11-26 `10f9737` fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
