@@ -246,7 +246,7 @@
    "nome": "check-approval-escalations",
    "entrada": "supabase/functions/check-approval-escalations/index.ts",
    "arquivos": 1,
-   "linhas": 249,
+   "linhas": 266,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -280,7 +280,7 @@
    "nome": "check-cotacao-followup",
    "entrada": "supabase/functions/check-cotacao-followup/index.ts",
    "arquivos": 2,
-   "linhas": 295,
+   "linhas": 301,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
@@ -1142,7 +1142,7 @@
    "nome": "send-push-notification",
    "entrada": "supabase/functions/send-push-notification/index.ts",
    "arquivos": 2,
-   "linhas": 588,
+   "linhas": 592,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
