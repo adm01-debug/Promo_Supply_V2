@@ -13,6 +13,7 @@ import { toast } from "@/lib/feedbackToast";
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { logger } from "@/lib/logger";
 import { conciliarNotaComPedido, resolverFornecedorPorCnpj } from "./conciliacaoFiscal";
+import { salvarDocumentoFiscal } from "./persistenciaFiscal";
 
 type FiscalDocumentInsert = Database["public"]["Tables"]["fiscal_documents"]["Insert"];
 
@@ -118,11 +119,14 @@ const DocumentosFiscais = () => {
         uploaded_by: user?.id ?? null,
         tenant_id: LEGACY_TENANT_ID,
       };
-      const { error } = await supabase.from("fiscal_documents").insert(payload);
+      const { situacao } = await salvarDocumentoFiscal(payload, "atualizar");
 
-      if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
-      toast.success(`NF-e ${nNF} importada com sucesso!`);
+      toast.success(
+        situacao === "atualizado"
+          ? `NF-e ${nNF} já estava cadastrada: os dados foram atualizados.`
+          : `NF-e ${nNF} importada com sucesso!`,
+      );
     } catch (err) {
       logger.error("fiscal_documents.xml_upload_failed", { error: err });
       toast.error("Erro ao processar XML. Verifique o formato do arquivo.");
@@ -185,15 +189,20 @@ const DocumentosFiscais = () => {
         uploaded_by: user?.id ?? null,
         tenant_id: LEGACY_TENANT_ID,
       };
-      const { error: dbError } = await supabase.from("fiscal_documents").insert(payload);
+      // Reimportar o mesmo PDF nao pode duplicar a nota nem rebaixar um documento
+      // que alguem ja revisou: quando a nota existe, nada e gravado.
+      const { situacao } = await salvarDocumentoFiscal(payload, "ignorar");
 
-      if (dbError) throw dbError;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
-      toast.success(
-        camposAusentes.length > 0
-          ? `Nota ${extractedData.numero_nf} importada como pendente. Campos não lidos: ${camposAusentes.join(", ")}.`
-          : `Nota ${extractedData.numero_nf} importada como pendente de revisão.`,
-      );
+      if (situacao === "ignorado") {
+        toast.info(`A nota ${extractedData.numero_nf} já está cadastrada: nada foi duplicado.`);
+      } else {
+        toast.success(
+          camposAusentes.length > 0
+            ? `Nota ${extractedData.numero_nf} importada como pendente. Campos não lidos: ${camposAusentes.join(", ")}.`
+            : `Nota ${extractedData.numero_nf} importada como pendente de revisão.`,
+        );
+      }
     } catch (err: unknown) {
       logger.error("fiscal_documents.pdf_upload_failed", { error: err });
       const message = err instanceof Error ? err.message : "Erro desconhecido";
