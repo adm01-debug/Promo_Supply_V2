@@ -16,7 +16,7 @@
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { insertNotificationsBatch } from "../_shared/notifications.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { verifyCronSecret, buildCorsHeaders } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
@@ -24,6 +24,8 @@ import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 import {
   classifyDispatch,
   previousAttempts,
+  shouldRecordDeadLetter,
+  DEAD_LETTER_ALERT_TYPE,
   type DispatchStatus,
 } from "./dispatchStatus.ts";
 
@@ -237,6 +239,65 @@ async function sendWebhookWithRetry(
   }
 }
 
+// deno-lint-ignore no-explicit-any
+type AdminClient = SupabaseClient<any, "public", any>;
+
+/**
+ * 171/EDG-05: `exhausted` carimba `dispatched_at`, entao o alerta nunca mais
+ * volta para a fila (`dispatched_at IS NULL`) e a falha morre invisivel -- nada
+ * no produto le `dispatch_status`. Aqui ela vira um alerta de segundo nivel,
+ * que o proprio dispatcher entrega pelos canais normais.
+ *
+ * Dedupe por `alert_type` + tenant + `resolved_at IS NULL`: uma rodada com 50
+ * alertas mortos abre um alerta, nao cinquenta. O `alert_type` proprio garante
+ * que o dead letter nunca gere outro dead letter (nada de realimentar a fila).
+ */
+async function recordDeadLetter(
+  admin: AdminClient,
+  alert: Alert,
+  attempts: number,
+  errors: string[],
+): Promise<void> {
+  try {
+    let aberto = admin
+      .from("system_alerts")
+      .select("id")
+      .eq("alert_type", DEAD_LETTER_ALERT_TYPE)
+      .is("resolved_at", null)
+      .limit(1);
+    aberto = alert.tenant_id ? aberto.eq("tenant_id", alert.tenant_id) : aberto.is("tenant_id", null);
+    const { data: existentes, error: dedupeError } = await aberto;
+    if (dedupeError) throw new Error(dedupeError.message);
+    if ((existentes ?? []).length > 0) return;
+
+    const { error } = await admin.from("system_alerts").insert({
+      tenant_id: alert.tenant_id,
+      alert_type: DEAD_LETTER_ALERT_TYPE,
+      severity: "HIGH",
+      message:
+        `Alerta ${alert.alert_type} nao foi entregue por nenhum canal apos ${attempts} tentativas`,
+      metadata: {
+        source_alert_id: alert.id,
+        source_alert_type: alert.alert_type,
+        source_severity: alert.severity,
+        source_message: alert.message.slice(0, 500),
+        attempts,
+        errors: errors.slice(0, 5),
+      },
+    });
+    if (error) throw new Error(error.message);
+  } catch (e) {
+    // Nao derruba a rodada: o alerta original ja foi persistido.
+    console.error(JSON.stringify({
+      level: "ERROR",
+      event: "alert_dispatch_dead_letter_failed",
+      alert_id: alert.id,
+      error: (e as Error).message,
+      ts: new Date().toISOString(),
+    }));
+  }
+}
+
 serve(async (req) => {
   const cors = buildCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
@@ -419,6 +480,12 @@ serve(async (req) => {
         },
       })
       .eq("id", alert.id);
+
+          // 171/EDG-05: `exhausted` e a falha definitiva (carimbou `dispatched_at`).
+          // Sem isso a falha fica so na coluna que ninguem le.
+          if (shouldRecordDeadLetter(dispatchStatus, alert.alert_type)) {
+            await recordDeadLetter(admin, alert, attempts, allErrors);
+          }
 
     results.push({
       id: alert.id,
