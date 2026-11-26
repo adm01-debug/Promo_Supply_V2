@@ -95,7 +95,14 @@ export function useRealtimeSubscription({
     pendingTablesRef.current.clear();
   }, [queryClient]);
 
-  const { tenantId } = useAuth();
+  const { tenantId, organizationId } = useAuth();
+
+  // HK-11: `tenantId` depende do claim `tenant_id` do JWT, que nada no repositório cria;
+  // quando ele falta, este gate abandonava a inscrição de todas as tabelas com `tenant_id`
+  // e o tempo real nunca ligava. `organizationId` é o mesmo fallback que o resto do app já
+  // usa para filtrar por empresa. Sem nenhum dos dois o gate continua bloqueando, que é o
+  // que impede o CDC de entregar linhas de outras empresas (a RLS não filtra o payload).
+  const effectiveTenantId = tenantId ?? organizationId;
 
   const tablesKey = tables.join(',');
 
@@ -114,13 +121,13 @@ export function useRealtimeSubscription({
     // Without it, Postgres CDC would broadcast every tenant's rows to this client
     // (RLS does NOT filter Realtime payloads on its own).
       const needsTenant = tableNames.some((t) => TENANT_SCOPED_TABLES.has(t));
-    if (needsTenant && !tenantId) {
+      if (needsTenant && !effectiveTenantId) {
         logger.debug('Realtime: skipping subscription, awaiting tenantId', { tables: tableNames });
       return;
     }
 
     // Scope channel name by tenant so each tenant has an isolated channel.
-      const channelName = `realtime-${tenantId ?? 'global'}-${tablesKey.replace(/,/g, '-')}`;
+        const channelName = `realtime-${effectiveTenantId ?? 'global'}-${tablesKey.replace(/,/g, '-')}`;
     let channel = abrirCanalPostgres(channelName);
 
       tableNames.forEach((table) => {
@@ -130,8 +137,8 @@ export function useRealtimeSubscription({
         schema: 'public',
         table,
       };
-      if (isTenantScoped && tenantId) {
-        config.filter = `tenant_id=eq.${tenantId}`;
+      if (isTenantScoped && effectiveTenantId) {
+        config.filter = `tenant_id=eq.${effectiveTenantId}`;
       }
 
       channel = channel.on(
@@ -140,8 +147,8 @@ export function useRealtimeSubscription({
         (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           // Defense-in-depth: drop any payload that slips through with a foreign tenant.
           const row = (payload.new ?? payload.old) as { tenant_id?: string } | null;
-          if (isTenantScoped && tenantId && row?.tenant_id && row.tenant_id !== tenantId) {
-            logger.warn('Realtime: dropped cross-tenant payload', { table, expected: tenantId });
+          if (isTenantScoped && effectiveTenantId && row?.tenant_id && row.tenant_id !== effectiveTenantId) {
+            logger.warn('Realtime: dropped cross-tenant payload', { table, expected: effectiveTenantId });
             return;
           }
 
@@ -167,5 +174,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tableNames]);
+  }, [enabled, tablesKey, debounceMs, flushInvalidations, effectiveTenantId, tableNames]);
 }
