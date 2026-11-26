@@ -113,30 +113,41 @@ export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ item
 
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { fetchAllRows } from '@/lib/paginatedFetch';
 
 export const SourcingIntelligenceBanner: React.FC<{ items: RoutingItem[] }> = ({ items }) => {
   const navigate = useNavigate();
-  const produtoIds = useMemo(() => items.map(i => i.produto_id), [items]);
+  const produtoIds = useMemo(() => items.map(i => i.produto_id).filter(Boolean) as string[], [items]);
   // Fetch real supplier ecosystems for the first few items
   const { data: backups = [], isLoading: carregandoBackups } = useQuery({
     queryKey: ['sourcing-alternatives', produtoIds],
     queryFn: async () => {
-      const results = [];
-      for (const item of items) {
-        if (!item.produto_id) continue;
-        const { data, count } = await supabase
-          .from('produto_fornecedores')
-          .select('id', { count: 'exact' })
-          .eq('produto_id', item.produto_id);
-        
-        results.push({
+      if (produtoIds.length === 0) return [];
+      // Uma consulta para todos os itens: antes era um COUNT por produto (N+1).
+      const vinculos = await fetchAllRows<{ produto_id: string }>(
+        'produto_fornecedores',
+        'produto_id',
+        {
+          filters: [{
+            column: 'produto_id',
+            operator: 'in',
+            value: `(${produtoIds.map(id => `"${id}"`).join(',')})`,
+          }],
+        },
+      );
+
+      const porProduto = new Map<string, number>();
+      for (const vinculo of vinculos) {
+        porProduto.set(vinculo.produto_id, (porProduto.get(vinculo.produto_id) ?? 0) + 1);
+      }
+
+      return items
+        .filter(item => item.produto_id)
+        .map(item => ({
           produto_id: item.produto_id,
           descricao: item.descricao,
-          count: count || 0
-        });
-      }
-      return results;
+          count: porProduto.get(item.produto_id as string) ?? 0,
+        }));
     },
     enabled: items.length > 0
   });

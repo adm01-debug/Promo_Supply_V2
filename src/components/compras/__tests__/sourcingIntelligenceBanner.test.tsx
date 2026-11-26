@@ -8,23 +8,8 @@ const estado = vi.hoisted(() => ({
   paresPorProduto: {} as Record<string, number>,
 }));
 
-vi.mock("@/integrations/supabase/client", () => {
-  const criarBuilder = () => {
-    let produtoId = "";
-    const builder = {
-      select: () => builder,
-      eq: (_coluna: string, valor: string) => {
-        produtoId = valor;
-        return builder;
-      },
-      then: (resolve: (valor: unknown) => unknown) =>
-        resolve({ data: [], count: estado.paresPorProduto[produtoId] ?? 0, error: null }),
-    };
-    return builder;
-  };
-
-  return { supabase: { from: () => criarBuilder() } };
-});
+const fetchAllRows = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/paginatedFetch", () => ({ fetchAllRows }));
 
 const rota = { atual: "/pedidos" };
 
@@ -58,6 +43,14 @@ const renderBanner = (items: Array<Record<string, unknown>>) => {
 beforeEach(() => {
   estado.paresPorProduto = {};
   rota.atual = "/pedidos";
+  fetchAllRows.mockReset();
+  fetchAllRows.mockImplementation(async () => {
+    const linhas: Array<{ produto_id: string }> = [];
+    for (const [produtoId, pares] of Object.entries(estado.paresPorProduto)) {
+      for (let i = 0; i < pares; i++) linhas.push({ produto_id: produtoId });
+    }
+    return linhas;
+  });
 });
 
 describe("SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253)", () => {
@@ -93,5 +86,24 @@ describe("SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto 
       await screen.findByText(/Nenhum item deste pedido tem produto vinculado para leitura de ecossistema/i),
     ).toBeInTheDocument();
     await waitFor(() => expect(screen.queryByRole("button", { name: /Vincular fornecedores/i })).not.toBeInTheDocument());
+  });
+
+  it("busca os fornecedores de todos os itens numa unica consulta", async () => {
+    estado.paresPorProduto = { p1: 2, p2: 1 };
+    renderBanner([
+      { produto_id: "p1", descricao: "Camiseta Polo" },
+      { produto_id: "p2", descricao: "Caneca" },
+    ]);
+
+    expect(await screen.findByText("2 PARCEIROS")).toBeInTheDocument();
+    expect(screen.getByText("1 PARCEIROS")).toBeInTheDocument();
+
+    expect(fetchAllRows).toHaveBeenCalledTimes(1);
+    const [tabela, coluna, options] = fetchAllRows.mock.calls[0];
+    expect(tabela).toBe("produto_fornecedores");
+    expect(coluna).toBe("produto_id");
+    expect(options.filters).toEqual([
+      { column: "produto_id", operator: "in", value: '("p1","p2")' },
+    ]);
   });
 });
