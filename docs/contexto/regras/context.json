@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "650e384ec61e08151622e4afd6c86c866c22f953",
+  "sha": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 02:54 UTC",
+  "generated_at": "2026-11-26 02:59 UTC",
   "files_total": 1467,
   "code_files": 1293,
-  "code_lines": 219020,
+  "code_lines": 219026,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "32cf6245d01c0b5f",
+ "facts_hash": "daa405438546fee8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34912,7 +34912,7 @@
   {
    "module": "src/components",
    "files": 284,
-   "lines": 52313,
+   "lines": 52319,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -41036,6 +41036,10 @@
    {
     "file": "src/components/admin/InstallReportPanel.tsx",
     "msg": "HTTP ${res.status}"
+   },
+   {
+    "file": "src/components/admin/telemetry/SystemAlertsView.tsx",
+    "msg": "Alerta não alterado: sem permissão para este alerta"
    },
    {
     "file": "src/components/admin/telemetry/SystemAlertsView.tsx",
@@ -95339,7 +95343,7 @@
   },
   "src/components/admin/telemetry/SystemAlertsView.tsx": {
    "path": "src/components/admin/telemetry/SystemAlertsView.tsx",
-   "lines": 149,
+   "lines": 155,
    "exports": [
     "interface SystemAlert",
     "function SystemAlertsView"
@@ -95355,6 +95359,7 @@
     }
    ],
    "errors": [
+    "Alerta não alterado: sem permissão para este alerta",
     "Erro ao resolver alerta"
    ],
    "pagination": [
@@ -122706,10 +122711,30 @@
   }
  },
  "git": {
-  "sha": "650e384ec61e08151622e4afd6c86c866c22f953",
+  "sha": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "a4b5fd2",
+    "date": "2026-11-25",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps): bump dompurify (#477)",
+    "files": [
+     "bun.lock",
+     "package.json"
+    ]
+   },
+   {
+    "sha": "a44ac6f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/admin/telemetry/SystemAlertsView.tsx"
+    ]
+   },
    {
     "sha": "650e384",
     "date": "2026-11-25",
@@ -123029,58 +123054,31 @@
      "scripts/ci/agents-docs-baseline.unit.mjs",
      "scripts/ci/check-agents-md-integrity.mjs"
     ]
-   },
-   {
-    "sha": "66f6b9d",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/paridade-migrations-banco.allowlist.json",
-     "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
-     "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
-     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
-    ]
-   },
-   {
-    "sha": "0d68cdf",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): o teste de edge pulado deixa de ser invisivel no CI (#457)",
-    "files": [
-     ".github/workflows/main.yml",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    18
+    17
    ],
    [
-    ".github/workflows/main.yml",
-    4
+    "bun.lock",
+    3
+   ],
+   [
+    "package.json",
+    3
    ],
    [
     "AGENTS.md",
     3
    ],
    [
-    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    ".github/workflows/main.yml",
     3
    ],
    [
     "tests-e2e/production-ready.spec.ts",
-    2
-   ],
-   [
-    "bun.lock",
-    2
-   ],
-   [
-    "package.json",
     2
    ],
    [
@@ -123112,6 +123110,14 @@
     2
    ],
    [
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
+    2
+   ],
+   [
+    "src/components/admin/telemetry/SystemAlertsView.tsx",
+    1
+   ],
+   [
     "src/components/admin/TenantSwitcher.tsx",
     1
    ],
@@ -123129,10 +123135,6 @@
    ],
    [
     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
-    1
-   ],
-   [
-    "supabase/functions/erp-sync/index.ts",
     1
    ]
   ]

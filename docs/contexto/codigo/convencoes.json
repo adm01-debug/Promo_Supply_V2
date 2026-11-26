@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(deps): bump dompurify (#477)",
+   "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)",
    "fix(auth): remove o trocador de organizacao que nao trocava nada (etapa 011) (#506)",
    "fix(edge): escopa a idempotencia por chamador e nao memoriza falha (etapas 179 e 180) (#505)",
-   "docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)",
-   "chore(testes): remove testes-placebo e asserts que nao verificavam nada (etapas 296-299, PR #501) (#501)",
-   "chore(ci): bump actions/dependency-review-action (#482)"
+   "docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)"
   ]
  },
  "pr_template": null,

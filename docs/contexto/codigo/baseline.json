@@ -2,11 +2,21 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "650e384ec61e08151622e4afd6c86c866c22f953",
+  "commit": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
   "branch": "main",
-  "data_commit": "2026-11-25T23:47:54-03:00",
+  "data_commit": "2026-11-25T23:53:04-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "a4b5fd2",
+    "data": "2026-11-25",
+    "assunto": "chore(deps): bump dompurify (#477)"
+   },
+   {
+    "sha": "a44ac6f",
+    "data": "2026-11-25",
+    "assunto": "fix(admin): nao anuncia alerta resolvido quando o banco nao alterou nada (etapa 030) (#508)"
+   },
    {
     "sha": "650e384",
     "data": "2026-11-25",
@@ -121,16 +131,6 @@
     "sha": "949c3d5",
     "data": "2026-11-25",
     "assunto": "docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)"
-   },
-   {
-    "sha": "df2f22e",
-    "data": "2026-11-25",
-    "assunto": "fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)"
-   },
-   {
-    "sha": "5d7b9a1",
-    "data": "2026-11-25",
-    "assunto": "chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)"
    }
   ],
   "arquivos_mudados_7d": 1487,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 130
+    "mudancas": 131
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 130
+    "mudancas": 131
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -223,10 +223,6 @@
    },
    {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 8
    },
    {
@@ -258,11 +254,23 @@
     "mudancas": 7
    },
    {
+    "arquivo": "bun.lock",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "package.json",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 6
    },
    {
@@ -288,35 +296,27 @@
    {
     "arquivo": ".github/workflows/aplicar-migration-prod.yml",
     "mudancas": 5
-   },
-   {
-    "arquivo": "bun.lock",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "docs/agentes/github-ci.md",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 293
+    "commits": 292
+   },
+   {
+    "autor": "dependabot[bot]",
+    "commits": 4
    },
    {
     "autor": "github-actions[bot]",
     "commits": 4
-   },
-   {
-    "autor": "dependabot[bot]",
-    "commits": 3
    }
   ]
  },
  "contagens": {
   "arquivos_total": 1466,
   "arquivos_codigo": 938,
-  "linhas_codigo": 188919,
+  "linhas_codigo": 188925,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -428,7 +428,7 @@
   },
   "src/components": {
    "arquivos": 284,
-   "linhas": 52313
+   "linhas": 52319
   },
   "src/features": {
    "arquivos": 91,

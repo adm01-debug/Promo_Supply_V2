@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `650e384ec6` · branch `main` · 2026-11-26 02:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a4b5fd2ccc` · branch `main` · 2026-11-26 02:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2239,6 +2239,7 @@ _nenhum item encontrado_
 | Drift de instalação detectado | `src/components/admin/InstallReportPanel.tsx` |
 | Falha ao atualizar relatório | `src/components/admin/InstallReportPanel.tsx` |
 | HTTP ${res.status} | `src/components/admin/InstallReportPanel.tsx` |
+| Alerta não alterado: sem permissão para este alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
 | Erro ao resolver alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
 | ; import { ShieldCheck, ShieldAlert, RefreshCw, Lock, Search } from  | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | Falha ao gerar sugestao de fornecedores:  | `src/components/compras/AISupplierSuggestion.tsx` |
@@ -2437,8 +2438,7 @@ _nenhum item encontrado_
 | ${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO} | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
-| Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| … +291 linhas — lista completa em `context.json` | |
+| … +292 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
