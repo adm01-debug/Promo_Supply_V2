@@ -41527,6 +41527,10 @@
         "callers": {
           "code": [
             {
+              "file": "src/components/admin/telemetry/SystemAlertsView.tsx",
+              "hits": 1
+            },
+            {
               "file": "src/lib/supabaseRpc.ts",
               "hits": 1
             },
@@ -41539,7 +41543,7 @@
               "hits": 1
             }
           ],
-          "code_total_files": 3,
+          "code_total_files": 4,
           "cron": [],
           "db": [],
           "triggers": [],
