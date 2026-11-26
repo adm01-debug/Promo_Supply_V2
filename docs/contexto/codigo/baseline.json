@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0",
+  "commit": "3f77fc788d80d5a722384f61b2da480b12a1ff4e",
   "branch": "main",
-  "data_commit": "2026-11-26T14:14:36-03:00",
+  "data_commit": "2026-11-26T14:44:55-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "3f77fc7",
+    "data": "2026-11-26",
+    "assunto": "fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)"
+   },
    {
     "sha": "1de9078",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "9ceca5c",
     "data": "2026-11-26",
     "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#544)"
-   },
-   {
-    "sha": "2e5f087",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): alerta esgotado vira alerta de segundo nivel (etapa 171) (#563)"
    }
   ],
-  "arquivos_mudados_7d": 1564,
+  "arquivos_mudados_7d": 1566,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 196
+    "mudancas": 197
    },
    {
     "pasta": "src/components/ui",
@@ -165,7 +165,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "pasta": "src/pages/admin",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 196
+    "mudancas": 197
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 32
+    "mudancas": 33
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -219,6 +219,10 @@
    },
    {
     "arquivo": "src/hooks/usePagamentos.ts",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 9
    },
    {
@@ -239,10 +243,6 @@
    },
    {
     "arquivo": "src/hooks/useDevolucoes.ts",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 8
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1543,
+  "arquivos_total": 1545,
   "arquivos_codigo": 968,
-  "linhas_codigo": 192806,
+  "linhas_codigo": 192835,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 166,
-  "migrations": 367,
+  "migrations": 368,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10491
+   "linhas": 10500
   },
   "src/lib": {
    "arquivos": 63,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 126,
-   "linhas": 20778
+   "linhas": 20798
   },
   "tailwind.config.ts": {
    "arquivos": 1,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10432
+   "linhas": 10441
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",
@@ -650,7 +650,7 @@
   }
  ],
  "qualidade": {
-  "any": 170,
+  "any": 167,
   "console_log": 99,
   "ts_ignore": 0,
   "eslint_disable": 1,

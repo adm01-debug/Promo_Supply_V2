@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0",
+  "sha": "3f77fc788d80d5a722384f61b2da480b12a1ff4e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 17:15 UTC",
-  "files_total": 1544,
-  "code_files": 1369,
-  "code_lines": 226465,
+  "generated_at": "2026-11-26 17:45 UTC",
+  "files_total": 1546,
+  "code_files": 1371,
+  "code_lines": 226602,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "00afe052783e04c3",
+ "facts_hash": "eef748116df64661",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 399,
+   ".sql": 401,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20865,19 +20865,6 @@
      "solicitacoes"
     ]
    },
-   "exec_sql": {
-    "args": "sql_query text",
-    "returns": "jsonb",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260523172611_af1bdfd9-5517-42da-a418-341ebd3cc94e.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE result jsonb; BEGIN EXECUTE 'SELECT jsonb_agg(t) FROM (' || sql_query || ') t' INTO result; RETURN result; END;",
-    "raises": [],
-    "tables": [
-     "result"
-    ]
-   },
    "check_telemetry_alerts": {
     "args": "",
     "returns": "trigger",
@@ -22378,22 +22365,6 @@
      "xbz_pedidos"
     ]
    },
-   "execute_read_query": {
-    "args": "p_sql text",
-    "returns": "jsonb",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN é permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
-    "raises": [
-     "Somente EXPLAIN é permitido",
-     "EXPLAIN somente para SELECT/WITH (leitura)"
-    ],
-    "tables": [
-     "v_plan"
-    ]
-   },
    "_invoke_spot_sync": {
     "args": "_action text",
     "returns": "bigint",
@@ -22674,6 +22645,35 @@
     "raises": [],
     "tables": []
    },
+   "execute_read_query": {
+    "args": "p_sql text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN e permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
+    "raises": [
+     "Somente EXPLAIN e permitido",
+     "EXPLAIN somente para SELECT/WITH (leitura)"
+    ],
+    "tables": [
+     "v_plan"
+    ]
+   },
+   "exec_sql": {
+    "args": "sql_query text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE result jsonb; BEGIN EXECUTE 'SELECT jsonb_agg(t) FROM (' || sql_query || ') t' INTO result; RETURN coalesce(result, '[]'::jsonb); END;",
+    "raises": [],
+    "tables": [
+     "result"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -22719,6 +22719,17 @@
     "tables": []
    },
    "SetofOptions": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "audit_rls_policies": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -27379,6 +27390,7 @@
    "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
    "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
    "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
+   "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27406,6 +27418,7 @@
    "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
    "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
+   "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -31530,6 +31543,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "audit_rls_policies",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "audit_rls_policies",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -31606,6 +31635,38 @@
     "objkind": "table",
     "roles": "anon, authenticated",
     "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
    }
   ],
   "raises": [
@@ -31648,16 +31709,6 @@
     "function": "get_db_health_snapshot",
     "msg": "access denied: admin role required",
     "src": "supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql"
-   },
-   {
-    "function": "execute_read_query",
-    "msg": "Somente EXPLAIN é permitido",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
-   },
-   {
-    "function": "execute_read_query",
-    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
    },
    {
     "function": "get_fornecedores_kpis",
@@ -31763,6 +31814,16 @@
     "function": "verificar_integridade_audit_logs",
     "msg": "Apenas administradores podem verificar a integridade da auditoria",
     "src": "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "Somente EXPLAIN e permitido",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
    }
   ],
   "seed": [
@@ -36200,7 +36261,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10491,
+   "lines": 10500,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -36756,7 +36817,7 @@
   {
    "module": "supabase/functions",
    "files": 126,
-   "lines": 20778,
+   "lines": 20798,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36951,8 +37012,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 367,
-   "lines": 31099,
+   "files": 368,
+   "lines": 31157,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37043,8 +37104,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 20,
-   "lines": 1237,
+   "files": 21,
+   "lines": 1287,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37065,6 +37126,7 @@
     "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
     "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
+    "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -39963,6 +40025,10 @@
     "src/pages/admin/HealthDashboard.tsx",
     "supabase/functions/health-dashboard/index.ts"
    ],
+   "audit_rls_policies": [
+    "supabase/functions/run-audit/index.ts",
+    "supabase/functions/run-audit/rls_test.ts"
+   ],
    "check_budget_availability": [
     "src/components/compras/NovaSolicitacaoModal.tsx",
     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
@@ -39997,10 +40063,6 @@
    ],
    "demo": [
     "scripts/supabase_snapshot/test_snapshot.py"
-   ],
-   "exec_sql": [
-    "supabase/functions/run-audit/index.ts",
-    "supabase/functions/run-audit/rls_test.ts"
    ],
    "find_approval_rule": [
     "src/hooks/useApprovalRules.ts",
@@ -43170,6 +43232,10 @@
     "msg": "quantidade"
    },
    {
+    "file": "supabase/functions/run-audit/rls_test.ts",
+    "msg": "audit_rls_policies devolveu zero policies: public deve ter RLS"
+   },
+   {
     "file": "supabase/functions/send-push-notification/index.ts",
     "msg": "Não autorizado: token ausente"
    },
@@ -44323,7 +44389,7 @@
    },
    {
     "file": "supabase/functions/run-audit/rls_test.ts",
-    "text": "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo"
+    "text": "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: a leitura abaixo"
    },
    {
     "file": "supabase/functions/scim-v2/active.ts",
@@ -79717,19 +79783,6 @@
      "solicitacoes"
     ]
    },
-   "exec_sql": {
-    "args": "sql_query text",
-    "returns": "jsonb",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20260523172611_af1bdfd9-5517-42da-a418-341ebd3cc94e.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE result jsonb; BEGIN EXECUTE 'SELECT jsonb_agg(t) FROM (' || sql_query || ') t' INTO result; RETURN result; END;",
-    "raises": [],
-    "tables": [
-     "result"
-    ]
-   },
    "check_telemetry_alerts": {
     "args": "",
     "returns": "trigger",
@@ -81230,22 +81283,6 @@
      "xbz_pedidos"
     ]
    },
-   "execute_read_query": {
-    "args": "p_sql text",
-    "returns": "jsonb",
-    "lang": "plpgsql",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql",
-    "security_definer": true,
-    "search_path": true,
-    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN é permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
-    "raises": [
-     "Somente EXPLAIN é permitido",
-     "EXPLAIN somente para SELECT/WITH (leitura)"
-    ],
-    "tables": [
-     "v_plan"
-    ]
-   },
    "_invoke_spot_sync": {
     "args": "_action text",
     "returns": "bigint",
@@ -81526,6 +81563,35 @@
     "raises": [],
     "tables": []
    },
+   "execute_read_query": {
+    "args": "p_sql text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE v_plan jsonb; v_body text; BEGIN v_body := upper(btrim(p_sql)); IF v_body !~ '^EXPLAIN' THEN RAISE EXCEPTION 'Somente EXPLAIN e permitido'; END IF; v_body := regexp_replace(v_body, '^EXPLAIN(\\s*\\([^)]*\\)|\\s+(ANALYZE|VERBOSE|BUFFERS|COSTS|SETTINGS|WAL|TIMING|SUMMARY))*\\s*', ''); v_body := regexp_replace(v_body, '^\\s*\\([^)]*\\)', ''); v_body := btrim(v_body); IF v_body !~ '^(SELECT|WITH)(\\s|$)' THEN RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)'; END IF; EXECUTE p_sql INTO v_plan; RETURN v_plan; END;",
+    "raises": [
+     "Somente EXPLAIN e permitido",
+     "EXPLAIN somente para SELECT/WITH (leitura)"
+    ],
+    "tables": [
+     "v_plan"
+    ]
+   },
+   "exec_sql": {
+    "args": "sql_query text",
+    "returns": "jsonb",
+    "lang": "plpgsql",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    "security_definer": true,
+    "search_path": true,
+    "body": "DECLARE result jsonb; BEGIN EXECUTE 'SELECT jsonb_agg(t) FROM (' || sql_query || ') t' INTO result; RETURN coalesce(result, '[]'::jsonb); END;",
+    "raises": [],
+    "tables": [
+     "result"
+    ]
+   },
    "Returns": {
     "args": "",
     "returns": "?",
@@ -81571,6 +81637,17 @@
     "tables": []
    },
    "SetofOptions": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
+   "audit_rls_policies": {
     "args": "",
     "returns": "?",
     "lang": "",
@@ -81794,16 +81871,6 @@
     "src": "supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql"
    },
    {
-    "function": "execute_read_query",
-    "msg": "Somente EXPLAIN é permitido",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
-   },
-   {
-    "function": "execute_read_query",
-    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
-    "src": "supabase/migrations/20261107150000_execute_read_query.sql"
-   },
-   {
     "function": "get_fornecedores_kpis",
     "msg": "forbidden",
     "src": "supabase/migrations/20261112223649_security_papel_empresa_kpis.sql"
@@ -81907,6 +81974,16 @@
     "function": "verificar_integridade_audit_logs",
     "msg": "Apenas administradores podem verificar a integridade da auditoria",
     "src": "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "Somente EXPLAIN e permitido",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "function": "execute_read_query",
+    "msg": "EXPLAIN somente para SELECT/WITH (leitura)",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
    }
   ],
   "db_generated": [
@@ -90654,6 +90731,22 @@
    {
     "kind": "revoke",
     "privs": "all",
+    "object": "audit_rls_policies",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "audit_rls_policies",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
     "object": "claim_outbox_batch",
     "objkind": "function",
     "roles": "PUBLIC",
@@ -90730,6 +90823,38 @@
     "objkind": "table",
     "roles": "anon, authenticated",
     "src": "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "all",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "exec_sql",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
    }
   ],
   "guards": [
@@ -109455,7 +109580,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10432,
+   "lines": 10441,
    "exports": [
     "type Json",
     "type Database",
@@ -121852,9 +121977,9 @@
   },
   "supabase/functions/run-audit/index.ts": {
    "path": "supabase/functions/run-audit/index.ts",
-   "lines": 103,
+   "lines": 93,
    "rpc": [
-    "exec_sql"
+    "audit_rls_policies"
    ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -121864,17 +121989,20 @@
   },
   "supabase/functions/run-audit/rls_test.ts": {
    "path": "supabase/functions/run-audit/rls_test.ts",
-   "lines": 74,
+   "lines": 104,
    "rpc": [
-    "exec_sql"
+    "audit_rls_policies"
    ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
     "SUPABASE_URL"
    ],
+   "errors": [
+    "audit_rls_policies devolveu zero policies: public deve ter RLS"
+   ],
    "rule_comments": [
     "without those secrets it would crash with \"supabaseUrl is required\" or",
-    "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo"
+    "NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: a leitura abaixo"
    ],
    "uses_service_role": true
   },
@@ -124946,6 +125074,10 @@
    "path": "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
    "lines": 56
   },
+  "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql": {
+   "path": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
+   "lines": 58
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -125086,6 +125218,10 @@
   "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql": {
    "path": "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
    "lines": 5
+  },
+  "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql": {
+   "path": "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+   "lines": 50
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -125346,10 +125482,25 @@
   }
  },
  "git": {
-  "sha": "1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0",
+  "sha": "3f77fc788d80d5a722384f61b2da480b12a1ff4e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "3f77fc7",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "src/integrations/supabase/types.ts",
+     "supabase/functions/run-audit/index.ts",
+     "supabase/functions/run-audit/rls_test.ts",
+     "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
+     "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql"
+    ]
+   },
    {
     "sha": "1de9078",
     "date": "2026-11-26",
@@ -125700,19 +125851,6 @@
      "src/i18n/__tests__/locales.test.ts",
      "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
     ]
-   },
-   {
-    "sha": "5540d3e",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/admin/HealthDashboard.tsx",
-     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
-     "supabase/functions/alert-dispatcher/dispatchStatus.ts",
-     "supabase/functions/alert-dispatcher/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125722,19 +125860,27 @@
    ],
    [
     "AGENTS.md",
-    20
+    21
    ],
    [
-    "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
+    "src/integrations/supabase/types.ts",
     2
    ],
    [
-    "supabase/functions/alert-dispatcher/dispatchStatus.ts",
-    2
+    "supabase/functions/run-audit/index.ts",
+    1
    ],
    [
-    "supabase/functions/alert-dispatcher/index.ts",
-    2
+    "supabase/functions/run-audit/rls_test.ts",
+    1
+   ],
+   [
+    "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql",
+    1
    ],
    [
     "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
@@ -125786,14 +125932,6 @@
    ],
    [
     "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
     1
    ]
   ]

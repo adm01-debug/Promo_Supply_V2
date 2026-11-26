@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0` (2026-11-26T14:14:36-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3f77fc788d80d5a722384f61b2da480b12a1ff4e` (2026-11-26T14:44:55-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (893), SQL (399), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (893), SQL (401), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1543 |
+| arquivos_total | 1545 |
 | arquivos_codigo | 968 |
-| linhas_codigo | 192806 |
+| linhas_codigo | 192835 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 95 |
 | edge_functions | 41 |
 | tabelas | 166 |
-| migrations | 367 |
+| migrations | 368 |
 | cron_jobs | 80 |
 | testes | 324 |
 | workflows | 15 |
@@ -344,18 +344,18 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (196)
-- AGENTS.md (32)
+- docs/qa/05-PROGRESSO.md (197)
+- AGENTS.md (33)
 - docs/pendencias/_indice.md (20)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/hooks/usePagamentos.ts (9)
+- src/integrations/supabase/types.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/hooks/useDevolucoes.ts (8)
-- src/integrations/supabase/types.ts (8)
 - src/pages/solicitacoes/Solicitacoes.tsx (8)
 - bun.lock (7)
 - docs/ci/README.md (7)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `3f77fc7` fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)
 - 2026-11-26 `1de9078` fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)
 - 2026-11-26 `eeff86e` fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)
 - 2026-11-26 `53abd53` fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `a0dc878` fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)
 - 2026-11-26 `b26661a` chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)
 - 2026-11-26 `85e9897` fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)
-- 2026-11-26 `72c5408` fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

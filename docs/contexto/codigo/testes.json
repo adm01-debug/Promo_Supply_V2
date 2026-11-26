@@ -2785,7 +2785,7 @@
   {
    "arquivo": "supabase/functions/run-audit/rls_test.ts",
    "tipo": "unit",
-   "linhas": 74,
+   "linhas": 104,
    "testa": [],
    "casos": 1
   },

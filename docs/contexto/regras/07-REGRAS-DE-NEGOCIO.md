@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `1de90788dd` · branch `main` · 2026-11-26 17:15 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3f77fc788d` · branch `main` · 2026-11-26 17:45 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -794,8 +794,6 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `resolve_alert` | admin role required | `supabase/migrations/20260712202749_bb709bc6-558f-4e7d-97d1-2e978797b632.sql` |
 | `resolve_alert` | alert not found or already resolved | `supabase/migrations/20260712202749_bb709bc6-558f-4e7d-97d1-2e978797b632.sql` |
 | `get_db_health_snapshot` | access denied: admin role required | `supabase/migrations/20260713110420_3e5900b4-7895-405f-8107-826f60c20a6a.sql` |
-| `execute_read_query` | Somente EXPLAIN é permitido | `supabase/migrations/20261107150000_execute_read_query.sql` |
-| `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/migrations/20261107150000_execute_read_query.sql` |
 | `get_fornecedores_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 | `get_pagamentos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
 | `get_pedidos_kpis` | forbidden | `supabase/migrations/20261112223649_security_papel_empresa_kpis.sql` |
@@ -817,6 +815,8 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `validate_pagamento_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
 | `validate_pedido_status_transition` | Transição de status inválida: % → % | `supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql` |
 | `verificar_integridade_audit_logs` | Apenas administradores podem verificar a integridade da auditoria | `supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql` |
+| `execute_read_query` | Somente EXPLAIN e permitido | `supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql` |
+| `execute_read_query` | EXPLAIN somente para SELECT/WITH (leitura) | `supabase/rollbacks/20261126183000_revert_dropa_sql_arbitrario.sql` |
 
 ## E. Estados, máquinas de estado e transições
 
@@ -2503,7 +2503,7 @@ _nenhum item encontrado_
 | User not authenticated | `src/hooks/useMFA.ts` |
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
-| … +291 linhas — lista completa em `context.json` | |
+| … +292 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -3034,7 +3034,7 @@ _nenhum item encontrado_
 | * Regras de negocio que este arquivo garante: | `supabase/functions/receive-os-sync/mapping.ts` |
 | - `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega | `supabase/functions/receive-os-sync/mapping.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
-| NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo | `supabase/functions/run-audit/rls_test.ts` |
+| NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: a leitura abaixo | `supabase/functions/run-audit/rls_test.ts` |
 | Data ilegivel nao pode virar "desativado": isso trancaria o usuario fora | `supabase/functions/scim-v2/active.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)",
    "fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)",
    "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)",
    "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)",
-   "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)",
-   "fix(banco): ancora da cadeia de auditoria sobrevive ao expurgo da retencao LGPD (#575)"
+   "fix(banco): numero de devolucao passa a ser unico como nas outras seis numeracoes (#576)"
   ]
  },
  "pr_template": null,

@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 367,
+ "migrations": 368,
  "seeds": [],
  "avisos": [
   "52 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -178,6 +178,7 @@
   "audit_logs_bloquear_truncate",
   "audit_logs_encadear_hash",
   "audit_pagamento_changes",
+  "audit_rls_policies",
   "audit_user_roles_changes",
   "auth",
   "auto_approve_low_value_solicitacao",
@@ -222,8 +223,6 @@
   "ensure_audit_logs_partition",
   "ensure_single_default_filter",
   "ensure_telemetry_logs_partition",
-  "exec_sql",
-  "execute_read_query",
   "fill_tenant_id_from_profile",
   "find_approval_rule",
   "fx_convert",
@@ -23895,6 +23894,11 @@
    "usada_em": 2
   },
   {
+   "nome": "audit_rls_policies",
+   "definida": true,
+   "usada_em": 1
+  },
+  {
    "nome": "check_budget_availability",
    "definida": true,
    "usada_em": 4
@@ -23928,11 +23932,6 @@
    "nome": "current_tenant_id",
    "definida": true,
    "usada_em": 3
-  },
-  {
-   "nome": "exec_sql",
-   "definida": true,
-   "usada_em": 1
   },
   {
    "nome": "find_approval_rule",

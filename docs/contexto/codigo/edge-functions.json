@@ -1072,14 +1072,14 @@
    "nome": "run-audit",
    "entrada": "supabase/functions/run-audit/index.ts",
    "arquivos": 1,
-   "linhas": 103,
+   "linhas": 93,
    "verify_jwt": true,
    "metodos": [
     "OPTIONS"
    ],
    "tabelas": [],
    "rpcs": [
-    "exec_sql"
+    "audit_rls_policies"
    ],
    "env": [
     "SUPABASE_SERVICE_ROLE_KEY",
