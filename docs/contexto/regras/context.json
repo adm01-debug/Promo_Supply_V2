@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "ef532a21ef111e02edde895e95ebb2652b7f138e",
+  "sha": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 12:25 UTC",
-  "files_total": 1505,
-  "code_files": 1330,
-  "code_lines": 222955,
+  "generated_at": "2026-11-26 12:26 UTC",
+  "files_total": 1506,
+  "code_files": 1331,
+  "code_lines": 223124,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b21d0096b8297d62",
+ "facts_hash": "b764313ec463e3e8",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 453,
-   ".tsx": 439,
+   ".tsx": 440,
    ".sql": 361,
    ".mjs": 69,
    ".py": 5,
@@ -35444,8 +35444,8 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 12,
-   "lines": 1206,
+   "files": 13,
+   "lines": 1375,
    "tables": [
     "pedido_itens",
     "pedidos",
@@ -35488,6 +35488,7 @@
     "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
+    "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
@@ -41595,6 +41596,10 @@
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
     "msg": "Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada."
+   },
+   {
+    "file": "src/features/pedidos/hooks/usePedidos.ts",
+    "msg": "Pedido ${data.numero} foi gravado, mas os ${itensToInsert.length} item(ns) NAO foram: ${itensError.message}. "
    },
    {
     "file": "src/features/pedidos/hooks/usePedidos.ts",
@@ -63439,6 +63444,22 @@
    {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
     "name": "passa status e fornecedor na chamada de usePedidos"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+    "name": "usePedidos - pedido nao pode ficar sem itens (etapa 170)"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+    "name": "avisa que os itens NAO foram gravados quando o banco recusa o insert"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+    "name": "segue com sucesso quando os itens foram gravados"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+    "name": "registra em log o pedido criado sem lista de itens"
    },
    {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
@@ -103704,7 +103725,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 448,
+   "lines": 472,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -103796,6 +103817,7 @@
     "Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos.",
     "Não foi possível conferir o recebimento do pedido. Exclusão cancelada.",
     "Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada.",
+    "Pedido ${data.numero} foi gravado, mas os ${itensToInsert.length} item(ns) NAO foram: ${itensError.message}. ",
     "Pedido não encontrado",
     "Pedido não foi atualizado: você não tem permissão para alterar este pedido.",
     "Só é possível gerar ordem de compra de uma solicitação aprovada",
@@ -103885,6 +103907,17 @@
     "sem filtro nao acrescenta eq de status nem de fornecedor",
     "a tela de pedidos manda os filtros para o hook",
     "passa status e fornecedor na chamada de usePedidos"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+   "lines": 145,
+   "is_test": true,
+   "tests": [
+    "usePedidos - pedido nao pode ficar sem itens (etapa 170)",
+    "avisa que os itens NAO foram gravados quando o banco recusa o insert",
+    "segue com sucesso quando os itens foram gravados",
+    "registra em log o pedido criado sem lista de itens"
    ]
   },
   "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx": {
@@ -124121,10 +124154,21 @@
   }
  },
  "git": {
-  "sha": "ef532a21ef111e02edde895e95ebb2652b7f138e",
+  "sha": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5d9ba6d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts"
+    ]
+   },
    {
     "sha": "ef532a2",
     "date": "2026-11-26",
@@ -124535,18 +124579,6 @@
      "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
      "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql"
     ]
-   },
-   {
-    "sha": "88efac2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)",
-    "files": [
-     "AGENTS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
-     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -124564,7 +124596,7 @@
    ],
    [
     "AGENTS.md",
-    4
+    3
    ],
    [
     "src/hooks/useCatalogoPim.ts",
@@ -124611,6 +124643,14 @@
     2
    ],
    [
+    "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+    1
+   ],
+   [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
     "src/hooks/__tests__/useCatalogoPim.erro.test.ts",
     1
    ],
@@ -124620,14 +124660,6 @@
    ],
    [
     "supabase/functions/_shared/notifications.ts",
-    1
-   ],
-   [
-    "src/hooks/useProdutos.ts",
-    1
-   ],
-   [
-    "src/i18n/__tests__/locales.test.ts",
     1
    ]
   ]

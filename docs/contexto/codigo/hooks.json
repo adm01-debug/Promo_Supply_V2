@@ -512,7 +512,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 448,
+   "linhas": 472,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
@@ -538,7 +538,7 @@
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
    ],
-   "coberto_por_testes": 6
+   "coberto_por_testes": 7
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",

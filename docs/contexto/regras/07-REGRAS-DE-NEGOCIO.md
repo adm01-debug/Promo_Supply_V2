@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `ef532a21ef` · branch `main` · 2026-11-26 12:25 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5d9ba6d524` · branch `main` · 2026-11-26 12:26 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2381,6 +2381,7 @@ _nenhum item encontrado_
 | Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Não foi possível conferir o recebimento do pedido. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Não foi possível conferir o recebimento dos pedidos. Exclusão cancelada. | `src/features/pedidos/hooks/usePedidos.ts` |
+| Pedido ${data.numero} foi gravado, mas os ${itensToInsert.length} item(ns) NAO foram: ${itensError.message}.  | `src/features/pedidos/hooks/usePedidos.ts` |
 | Pedido não encontrado | `src/features/pedidos/hooks/usePedidos.ts` |
 | Pedido não foi atualizado: você não tem permissão para alterar este pedido. | `src/features/pedidos/hooks/usePedidos.ts` |
 | Só é possível gerar ordem de compra de uma solicitação aprovada | `src/features/pedidos/hooks/usePedidos.ts` |
@@ -2459,8 +2460,7 @@ _nenhum item encontrado_
 | User not authenticated | `src/hooks/useMFA.ts` |
 | ${apagadosCount} de ${ids.length} pagamento(s) excluído(s). Os demais estão sem permissão. | `src/hooks/usePagamentos.ts` |
 | ${atualizadosCount} de ${validIds.length} pagamento(s) atualizado(s). | `src/hooks/usePagamentos.ts` |
-| ${blocked.length} pagamento(s) ficaram de fora (transição inválida): ${blocked.join( | `src/hooks/usePagamentos.ts` |
-| … +290 linhas — lista completa em `context.json` | |
+| … +291 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2478,7 +2478,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3571 testes em 271 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3575 testes em 272 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2691,6 +2691,7 @@ _nenhum item encontrado_
 | `src/components/security/__tests__/permissionChanges.test.ts` | 4 | summarizePermissionChanges · agrupa inclusoes num unico upsert e remocoes por role · nao gera remocoes quando so ha inclusoes · devolve grupos vazios quando nao ha alteracoes |
 | `src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx` | 4 | ChatArea - nome acess\u00edvel dos controles s\u00f3-\u00edcone · nomeia as a\u00e7\u00f5es do cabe\u00e7alho do contato · nomeia as a\u00e7\u00f5es do compositor de mensagem · n\u00e3o deixa nenhum bot\u00e3o do chat sem nome acess\u00edvel |
 | `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |
+| `src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx` | 4 | usePedidos - pedido nao pode ficar sem itens (etapa 170) · avisa que os itens NAO foram gravados quando o banco recusa o insert · segue com sucesso quando os itens foram gravados · registra em log o pedido criado sem lista de itens |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
 | `src/hooks/__tests__/useApprovalWorkflow.alcadaFonteUnica.test.tsx` | 4 | useApprovalWorkflow · escolha de alcada (NEG-15) · usa a regra devolvida pela RPC quando ela e da empresa do usuario · ignora id devolvido pela RPC que nao esta na lista da empresa do usuario · nao escolhe regra por conta propria quando a RPC nao devolve nada |
 | `src/hooks/__tests__/useDevolucoes.exclusao.test.tsx` | 4 | guarda de exclusao de devolucao · recusa excluir devolucao que ja gerou credito · recusa excluir devolucao marcada como credito_emitido mesmo sem contagem · exclui devolucao sem credito |

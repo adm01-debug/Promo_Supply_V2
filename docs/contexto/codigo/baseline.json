@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ef532a21ef111e02edde895e95ebb2652b7f138e",
+  "commit": "5d9ba6d524920916fe3dbfde1cc477e38df94bf3",
   "branch": "main",
-  "data_commit": "2026-11-26T09:24:40-03:00",
+  "data_commit": "2026-11-26T09:25:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5d9ba6d",
+    "data": "2026-11-26",
+    "assunto": "fix: erro do insert de pedido_itens deixa de ser descartado (etapa 170) (#562)"
+   },
    {
     "sha": "ef532a2",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "24512f4",
     "data": "2026-11-26",
     "assunto": "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)"
-   },
-   {
-    "sha": "f2f21c8",
-    "data": "2026-11-26",
-    "assunto": "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)"
    }
   ],
-  "arquivos_mudados_7d": 1525,
+  "arquivos_mudados_7d": 1526,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 172
+    "mudancas": 173
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -176,11 +176,11 @@
     "mudancas": 25
    },
    {
-    "pasta": "src/components/security",
-    "mudancas": 23
+    "pasta": "src/features/pedidos",
+    "mudancas": 25
    },
    {
-    "pasta": "src/features/pedidos",
+    "pasta": "src/components/security",
     "mudancas": 23
    },
    {
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 172
+    "mudancas": 173
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -207,18 +207,18 @@
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 13
+    "mudancas": 12
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
     "mudancas": 10
    },
    {
-    "arquivo": "docs/ci/README.md",
-    "mudancas": 9
+    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "mudancas": 10
    },
    {
-    "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
+    "arquivo": "docs/ci/README.md",
     "mudancas": 9
    },
    {
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1504,
-  "arquivos_codigo": 967,
-  "linhas_codigo": 192146,
+  "arquivos_total": 1505,
+  "arquivos_codigo": 968,
+  "linhas_codigo": 192315,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 344,
   "cron_jobs": 79,
-  "testes": 323,
+  "testes": 324,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 101
@@ -431,8 +431,8 @@
    "linhas": 52530
   },
   "src/features": {
-   "arquivos": 96,
-   "linhas": 11817
+   "arquivos": 97,
+   "linhas": 11986
   },
   "src/hooks": {
    "arquivos": 103,

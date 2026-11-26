@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 323,
+ "total": 324,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 305
+  "unit": 306
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 225
+   "arquivos": 226
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -1003,6 +1003,15 @@
    "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
    "tipo": "unit",
    "linhas": 84,
+   "testa": [
+    "src/features/pedidos/hooks/usePedidos.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/features/pedidos/hooks/__tests__/usePedidos.itensFalha.test.tsx",
+   "tipo": "unit",
+   "linhas": 145,
    "testa": [
     "src/features/pedidos/hooks/usePedidos.ts"
    ],
@@ -3019,7 +3028,7 @@
   "src/features/layout/transitions/config.ts": 1,
   "src/features/layout/transitions/presets.ts": 1,
   "src/features/pedidos/exclusaoPedido.ts": 1,
-  "src/features/pedidos/hooks/usePedidos.ts": 6,
+  "src/features/pedidos/hooks/usePedidos.ts": 7,
   "src/features/pedidos/index.ts": 1,
   "src/features/pedidos/statusTransitions.ts": 2,
   "src/features/solicitacoes/fluxoAprovacao.ts": 1,
