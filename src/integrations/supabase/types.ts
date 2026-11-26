@@ -7084,6 +7084,7 @@ export type Database = {
           status: string
           status_color: string | null
           status_synced_at: string | null
+          tenant_id: string | null
           transportadora: string | null
           updated_at: string
           valor_total: number | null
@@ -7103,6 +7104,7 @@ export type Database = {
           status?: string
           status_color?: string | null
           status_synced_at?: string | null
+          tenant_id?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
@@ -7122,11 +7124,20 @@ export type Database = {
           status?: string
           status_color?: string | null
           status_synced_at?: string | null
+          tenant_id?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "spot_pedidos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       spot_produtos: {
         Row: {
