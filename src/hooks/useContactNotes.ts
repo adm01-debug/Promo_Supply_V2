@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
@@ -22,7 +23,7 @@ export interface CreateContactNoteInput {
 }
 
 export function useContactNotes(contactId?: string, fornecedorId?: string) {
-  const { user } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const [notes, setNotes] = useState<ContactNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +77,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       const { data, error } = await supabase
         .from('contact_notes')
         .insert({
+          tenant_id: resolverTenantId(tenantId, organizationId),
           contact_id: input.contact_id,
           fornecedor_id: input.fornecedor_id,
           author_id: user.id,
@@ -95,7 +97,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       toast.error('Erro ao adicionar nota: ' + errorMessage);
       return null;
     }
-  }, [user, fetchNotes]);
+  }, [user, fetchNotes, tenantId, organizationId]);
 
   // Update note
   const updateNote = useCallback(async (id: string, content: string) => {

@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { escapeIlike } from '@/lib/supabaseQuery';
@@ -151,6 +152,7 @@ export function useDevolucoes(filters?: DevolucaoFilters) {
       if (input.itens.length > 0) {
         const itens = input.itens.map(i => ({
           devolucao_id: data.id,
+          tenant_id: resolverTenantId(tenantId, organizationId),
           pedido_item_id: i.pedido_item_id,
           descricao: i.descricao,
           quantidade: i.quantidade,

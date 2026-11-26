@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -37,7 +38,7 @@ const ACTION_LABELS: Record<string, { label: string; color: string }> = {
 };
 
 export const PenaltyEscalationConfigPanel = () => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({
@@ -62,6 +63,7 @@ export const PenaltyEscalationConfigPanel = () => {
   const createConfig = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from('penalty_escalation_config').insert({
+              tenant_id: resolverTenantId(tenantId, organizationId),
         level: form.level,
         min_infractions: form.min_infractions,
         max_infractions: form.max_infractions ? parseInt(form.max_infractions, 10) : null,

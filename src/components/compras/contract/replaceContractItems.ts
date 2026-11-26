@@ -10,6 +10,7 @@ export async function replaceContractItems(
   db: typeof supabase,
   contractId: string,
   items: ContractItem[],
+  tenantId: string,
 ): Promise<void> {
   let keepIds: string[] = [];
 
@@ -19,6 +20,7 @@ export async function replaceContractItems(
       .insert(
         items.map((item) => ({
           contract_id: contractId,
+                  tenant_id: tenantId,
           item_name: item.item_name,
           description: item.description,
           unit: item.unit,

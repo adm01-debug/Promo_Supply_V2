@@ -56,7 +56,7 @@ const item: ContractItem = {
 describe("replaceContractItems", () => {
   it("insere os novos antes de apagar e preserva os recém-inseridos", async () => {
     const { db, calls } = fakeDb({ insertedIds: ["n1", "n2"] });
-    await replaceContractItems(db, "c1", [item, item]);
+    await replaceContractItems(db, "c1", [item, item], "t1");
     const ops = calls.map((c) => c.op);
     expect(ops.indexOf("insert")).toBeLessThan(ops.indexOf("delete"));
     expect(calls.find((c) => c.op === "eq")?.args).toEqual(["contract_id", "c1"]);
@@ -65,13 +65,13 @@ describe("replaceContractItems", () => {
 
   it("não apaga os itens antigos quando o insert falha", async () => {
     const { db, calls } = fakeDb({ insertError: new Error("FK tenant") });
-    await expect(replaceContractItems(db, "c1", [item])).rejects.toThrow("FK tenant");
+    await expect(replaceContractItems(db, "c1", [item], "t1")).rejects.toThrow("FK tenant");
     expect(calls.some((c) => c.op === "delete")).toBe(false);
   });
 
   it("sem itens novos apaga todos os itens do contrato", async () => {
     const { db, calls } = fakeDb();
-    await replaceContractItems(db, "c1", []);
+    await replaceContractItems(db, "c1", [], "t1");
     expect(calls.some((c) => c.op === "insert")).toBe(false);
     expect(calls.some((c) => c.op === "not")).toBe(false);
     expect(calls.find((c) => c.op === "eq")?.args).toEqual(["contract_id", "c1"]);

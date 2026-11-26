@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { useSolicitacoes, type CostCenter } from '@/features/solicitacoes';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/features/auth';
+import { resolverTenantId } from '@/lib/tenant';
 import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import { formatCurrency } from '@/lib/utils';
@@ -42,6 +44,7 @@ const NON_PARENT = "__none__";
 
 const ConfiguracoesCentroCusto = () => {
   const { costCenters, loadingCostCenters } = useSolicitacoes();
+  const { tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -146,7 +149,7 @@ const ConfiguracoesCentroCusto = () => {
       } else {
         const { error } = await supabase
           .from('cost_centers')
-          .insert(payload);
+          .insert({ ...payload, tenant_id: resolverTenantId(tenantId, organizationId) });
         if (error) throw error;
         toast.success('Centro de custo criado');
       }

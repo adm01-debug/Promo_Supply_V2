@@ -129,6 +129,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       // Bucket privado: grava o caminho; a leitura gera URL assinada (resolveStoredFileUrl).
       await supabase.from('contract_documents').insert({
         contract_id: contract.id,
+              tenant_id: storageTenantId,
         file_name: file.name,
         file_url: filePath,
         file_type: file.type,
