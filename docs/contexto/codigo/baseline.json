@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "087f827eb794fd27b1bb37a78261dca1f614d4de",
+  "commit": "021a29aa85bcbd9e5fb3fa11a41f5dddc02dea2f",
   "branch": "main",
-  "data_commit": "2026-11-26T13:26:22-03:00",
+  "data_commit": "2026-11-26T13:35:36-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "021a29a",
+    "data": "2026-11-26",
+    "assunto": "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)"
+   },
    {
     "sha": "087f827",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "5540d3e",
     "data": "2026-11-26",
     "assunto": "fix(alertas): separa tentativa de entrega e expoe o status no painel (#557)"
-   },
-   {
-    "sha": "7804bb2",
-    "data": "2026-11-26",
-    "assunto": "fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)"
    }
   ],
-  "arquivos_mudados_7d": 1552,
+  "arquivos_mudados_7d": 1554,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 190
+    "mudancas": 191
    },
    {
     "pasta": "src/components/ui",
@@ -169,7 +169,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "pasta": "src/features/auth",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 190
+    "mudancas": 191
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 26
+    "mudancas": 27
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1531,
+  "arquivos_total": 1533,
   "arquivos_codigo": 968,
   "linhas_codigo": 192806,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 361,
+  "migrations": 362,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,

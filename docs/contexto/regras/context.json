@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "087f827eb794fd27b1bb37a78261dca1f614d4de",
+  "sha": "021a29aa85bcbd9e5fb3fa11a41f5dddc02dea2f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 16:30 UTC",
-  "files_total": 1532,
-  "code_files": 1357,
-  "code_lines": 225542,
+  "generated_at": "2026-11-26 16:36 UTC",
+  "files_total": 1534,
+  "code_files": 1359,
+  "code_lines": 225700,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6203a6e1b56ddc18",
+ "facts_hash": "78121229486ec0cf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 387,
+   ".sql": 389,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -27317,6 +27317,7 @@
    "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
    "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
+   "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27338,6 +27339,7 @@
    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
    "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
+   "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -31904,6 +31906,18 @@
    {
     "src": "supabase/migrations/20261112223246_fill_tenant_id_from_profile.sql",
     "stmt": "execute format( 'create trigger a_fill_tenant_id before insert on public.%I ' 'for each row execute function public.fill_tenant_id_from_profile()', t);"
+   },
+   {
+    "src": "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
+    "stmt": "EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES auth.users(id) ON DELETE %s NOT VALID', r.tabela, v_nome, r.coluna, r.acao );"
+   },
+   {
+    "src": "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
+    "stmt": "EXECUTE format('ALTER TABLE public.%I VALIDATE CONSTRAINT %I', r.tabela, v_nome);"
+   },
+   {
+    "src": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
+    "stmt": "EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);"
    }
   ]
  },
@@ -36785,8 +36799,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 361,
-   "lines": 30458,
+   "files": 362,
+   "lines": 30576,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36877,8 +36891,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 14,
-   "lines": 955,
+   "files": 15,
+   "lines": 995,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36893,6 +36907,7 @@
     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
     "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
+    "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -93320,6 +93335,20 @@
     ]
    },
    {
+    "kind": "ddl dinâmico",
+    "msg": "2 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format( 'ALTER TABLE public.%I ADD CONSTRAINT %I FOREIGN KEY (%I) REFERENCES auth.users(id) ON DELETE %s NOT VALID', r.tabela, v_nome, r.coluna, r.acao );` · `EXECUTE format('ALTER TABLE public.%I VALIDATE CONSTRAINT %I', r.tabela, v_nome);`",
+    "where": [
+     "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql"
+    ]
+   },
+   {
+    "kind": "ddl dinâmico",
+    "msg": "1 comando(s) de schema cujo efeito depende do banco em runtime (EXECUTE montado a partir do catálogo, ou IF que só o banco responde) — políticas/RLS/tabelas tocadas por eles podem estar diferentes do que este contexto mostra. Ex.: `EXECUTE format('ALTER TABLE public.%I DROP CONSTRAINT %I', r.tabela, v_nome);`",
+    "where": [
+     "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
+    ]
+   },
+   {
     "kind": "segurança",
     "msg": "função `update_licitacao_best_bid` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
     "where": [
@@ -124484,6 +124513,10 @@
    "path": "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
    "lines": 53
   },
+  "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql": {
+   "path": "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
+   "lines": 118
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124586,6 +124619,10 @@
   "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql": {
    "path": "supabase/rollbacks/20261126161500_revert_secdef_revoga_authenticated_manutencao.sql",
    "lines": 11
+  },
+  "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql": {
+   "path": "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
+   "lines": 40
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -124846,10 +124883,22 @@
   }
  },
  "git": {
-  "sha": "087f827eb794fd27b1bb37a78261dca1f614d4de",
+  "sha": "021a29aa85bcbd9e5fb3fa11a41f5dddc02dea2f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "021a29a",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
+     "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql"
+    ]
+   },
    {
     "sha": "087f827",
     "date": "2026-11-26",
@@ -125201,18 +125250,6 @@
      "supabase/functions/punchout-receive/fail-closed-catalogo.test.ts",
      "supabase/functions/punchout-receive/index.ts"
     ]
-   },
-   {
-    "sha": "c018639",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): trata notificacao descartada como descarte, nao como envio (#550)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/check-approval-escalations/index.ts",
-     "supabase/functions/check-cotacao-followup/index.ts",
-     "supabase/functions/send-push-notification/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125222,11 +125259,7 @@
    ],
    [
     "AGENTS.md",
-    14
-   ],
-   [
-    "supabase/functions/send-push-notification/index.ts",
-    3
+    15
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -125245,12 +125278,24 @@
     2
    ],
    [
+    "supabase/functions/send-push-notification/index.ts",
+    2
+   ],
+   [
     "src/tests/spot/spotApi.test.ts",
     2
    ],
    [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
+    1
    ],
    [
     "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
@@ -125286,14 +125331,6 @@
    ],
    [
     "supabase/migrations/20261126121047_guard_pedido_exige_solicitacao_aprovada.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126121047_revert_guard_pedido_exige_solicitacao_aprovada.sql",
-    1
-   ],
-   [
-    "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
     1
    ]
   ]

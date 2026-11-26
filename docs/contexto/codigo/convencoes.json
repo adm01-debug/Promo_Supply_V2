@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(banco): colunas de aprovador, delegacao e inspecao ganham FK para auth.users (#574)",
    "fix(seguranca): manutencao de particoes e heartbeat de cron deixam de aceitar usuario comum (#573)",
    "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)",
    "fix(estoque): movimentacao passa a exigir papel e item da propria organizacao (#571)",
-   "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)",
-   "fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)"
+   "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)"
   ]
  },
  "pr_template": null,
