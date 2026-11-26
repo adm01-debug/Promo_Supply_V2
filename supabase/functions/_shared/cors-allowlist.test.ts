@@ -4,7 +4,8 @@
  * Rodar: deno test supabase/functions/_shared/cors-allowlist.test.ts
  */
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { buildCorsHeaders } from './security.ts';
+import { buildCorsHeaders, responses } from './security.ts';
+import * as security from './security.ts';
 
 const ORIGEM = 'https://app.exemplo.com';
 
@@ -46,5 +47,34 @@ Deno.test('curinga nao casa o dominio raiz nem origem invalida', () => {
     assertEquals(originDe('https://lovable.app'), undefined);
     assertEquals(originDe('not-a-url'), undefined);
   });
+});
+
+// QA-INT12: `responses` deixou de usar a constante estatica e deriva o CORS da
+// requisicao, igual as edges. Sem `req` continua devolvendo curao (dev/preview).
+Deno.test('responses deriva o CORS da requisicao', () => {
+  comEnv('https://app.exemplo.com', () => {
+    const permitido = new Request('https://x/f', { headers: { Origin: 'https://app.exemplo.com' } });
+    assertEquals(
+      responses.success({ ok: true }, 'r1', permitido).headers.get('Access-Control-Allow-Origin'),
+      'https://app.exemplo.com',
+    );
+    assertEquals(
+      responses.error('falhou', 400, 'r1', null, permitido).headers.get('Access-Control-Allow-Origin'),
+      'https://app.exemplo.com',
+    );
+    const estranho = new Request('https://x/f', { headers: { Origin: 'https://outro.com' } });
+    assertEquals(
+      responses.error('falhou', 400, 'r1', null, estranho).headers.get('Access-Control-Allow-Origin'),
+      null,
+    );
+  });
+  comEnv(undefined, () => {
+    assertEquals(responses.success({ ok: true }).headers.get('Access-Control-Allow-Origin'), '*');
+    assertEquals(responses.error('falhou').headers.get('Access-Control-Allow-Origin'), '*');
+  });
+});
+
+Deno.test('security.ts nao exporta mais a constante corsHeaders', () => {
+  assertEquals(Object.keys(security).includes('corsHeaders'), false);
 });
 

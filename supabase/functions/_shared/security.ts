@@ -102,21 +102,6 @@ export const buildCorsHeaders = (req?: Request): Record<string, string> => {
 };
 
 /**
- * Compat: mantém `corsHeaders` para handlers legados.
- * Em produção com ALLOWED_ORIGINS configurado, emite wildcard apenas se a
- * allowlist estiver vazia (dev/preview). Handlers devem preferir buildCorsHeaders(req).
- */
-export const corsHeaders = (() => {
-  const allowlist = parseAllowedOrigins();
-  if (allowlist.length > 0) {
-    // Production: omit wildcard. callers that need origin-echo must use buildCorsHeaders(req).
-    return BASE_CORS_HEADERS as Record<string, string>;
-  }
-  // Dev/preview: allow all origins.
-  return { ...BASE_CORS_HEADERS, "Access-Control-Allow-Origin": "*" } as Record<string, string>;
-})();
-
-/**
  * Validates if the request has a valid authorization header.
  */
 export const validateAuth = (req: Request) => {
@@ -131,16 +116,16 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: unknown, requestId?: string) => new Response(
+  success: (data: unknown, requestId?: string, req?: Request) => new Response(
     JSON.stringify({
       data,
       requestId,
       status: "success",
       timestamp: new Date().toISOString()
     }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+    { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400, requestId?: string, details?: unknown) => new Response(
+  error: (message: string, status = 400, requestId?: string, details?: unknown, req?: Request) => new Response(
     JSON.stringify({
       error: message,
       requestId,
@@ -148,7 +133,7 @@ export const responses = {
       status: "error",
       timestamp: new Date().toISOString()
     }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status }
+    { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' }, status }
   ),
 };
 
