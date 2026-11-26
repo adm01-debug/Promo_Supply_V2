@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "df27f1765e349d95a8bdcdbd7b107b141dcbf33a",
+  "commit": "22852aa3ed1917987c9cd4f9651ef09df0ff61e5",
   "branch": "main",
-  "data_commit": "2026-11-26T12:30:41-03:00",
+  "data_commit": "2026-11-26T12:48:52-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "22852aa",
+    "data": "2026-11-26",
+    "assunto": "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)"
+   },
    {
     "sha": "df27f17",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "02f5c0e",
     "data": "2026-11-26",
     "assunto": "fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)"
-   },
-   {
-    "sha": "be8eb67",
-    "data": "2026-11-26",
-    "assunto": "fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)"
    }
   ],
-  "arquivos_mudados_7d": 1544,
+  "arquivos_mudados_7d": 1546,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 186
+    "mudancas": 187
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -180,12 +180,12 @@
     "mudancas": 24
    },
    {
-    "pasta": "src/components/security",
+    "pasta": "AGENTS.md",
     "mudancas": 23
    },
    {
-    "pasta": "AGENTS.md",
-    "mudancas": 22
+    "pasta": "src/components/security",
+    "mudancas": 23
    },
    {
     "pasta": "src/pages/catalogo-spot",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 186
+    "mudancas": 187
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 22
+    "mudancas": 23
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1523,
+  "arquivos_total": 1525,
   "arquivos_codigo": 968,
   "linhas_codigo": 192806,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 357,
+  "migrations": 358,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,

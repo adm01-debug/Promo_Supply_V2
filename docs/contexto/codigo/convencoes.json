@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(auth): autocadastro deixa de nascer com papel de comprador (#570)",
    "fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)",
    "fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)",
    "chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)",
-   "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)",
-   "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)"
+   "fix(privacidade): redige dados pessoais na telemetria e filtra log por empresa (#566)"
   ]
  },
  "pr_template": null,
