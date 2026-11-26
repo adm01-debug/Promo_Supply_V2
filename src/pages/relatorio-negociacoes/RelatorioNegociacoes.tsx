@@ -44,6 +44,7 @@ import type { ValueType, NameType } from "recharts/types/component/DefaultToolti
 import { useRelatorioNegociacoes, type Comprador } from "./useRelatorioNegociacoes";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "@/lib/feedbackToast";
+import { formatCurrency } from "@/lib/utils";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -93,7 +94,7 @@ const RelatorioNegociacoes = () => {
             >
               {entry.name}:{" "}
               {String(entry.name ?? "").includes("R$") || entry.dataKey === "economia"
-                ? `R$ ${Number(entry.value).toLocaleString("pt-BR")}`
+                ? formatCurrency(Number(entry.value))
                 : entry.dataKey === "percentual"
                   ? `${entry.value}%`
                   : entry.value}

@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/utils";
 export interface PriceQuote {
   supplierId: string;
   supplierName: string;
@@ -167,7 +168,7 @@ export function generateQuotesFromSuppliers(
   const insights: string[] = [];
   if (priced.length > 1) {
     const gap = Number(((priced[priced.length - 1].totalPrice ?? 0) - (priced[0].totalPrice ?? 0)).toFixed(2));
-    insights.push(`Diferenca de ate R$ ${gap.toFixed(2)} entre a maior e a menor cotacao com preco registrado`);
+    insights.push(`Diferenca de ate ${formatCurrency(gap)} entre a maior e a menor cotacao com preco registrado`);
   } else if (priced.length === 1) {
     insights.push('Apenas um fornecedor tem preco registrado: registre cotacoes para comparar de verdade');
   } else {

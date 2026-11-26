@@ -31,7 +31,7 @@ import {
 } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 import { motion } from "framer-motion";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 import { EliteButton } from "@/components/atoms/EliteButton";
 
 const PIE_COLORS = ["hsl(var(--primary))", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899"];
@@ -79,9 +79,9 @@ export const KPICards = ({ stats, isLoading }: { stats: Stats; isLoading: boolea
   }
 
   const items = [
-    { label: 'Volume Total', value: `R$ ${(stats.totalVolume / 1000).toFixed(0)}K`, sub: `${stats.totalPedidos} pedidos`, icon: DollarSign, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Volume Total', value: formatCurrencyCompact(stats.totalVolume), sub: `${stats.totalPedidos} pedidos`, icon: DollarSign, color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'Eficiência', value: stats.totalPedidos, sub: 'no período', icon: Package, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { label: 'Economia', value: `R$ ${(stats.economiaTotal / 1000).toFixed(0)}K`, sub: `${stats.economiaPct.toFixed(1)}% Saving`, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: 'Economia', value: formatCurrencyCompact(stats.economiaTotal), sub: `${stats.economiaPct.toFixed(1)}% Saving`, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
     { label: 'Network', value: stats.fornAtivos, sub: `${stats.fornBemAvaliados} top-tier`, icon: Building2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
   ];
 

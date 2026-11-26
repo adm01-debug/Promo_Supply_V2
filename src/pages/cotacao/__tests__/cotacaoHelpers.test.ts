@@ -199,7 +199,8 @@ describe('adaptCotacoesFromDB', () => {
 
   it('sets freteInfo to "+R$ N" when frete > 0', () => {
     const [result] = adaptCotacoesFromDB([makeCotacaoRow({ valor_frete: 200 })]);
-    expect(result.freteInfo).toBe('+R$ 200');
+    // Intl usa espaco nao separavel (U+00A0) entre o simbolo e o numero
+    expect(result.freteInfo.replace(/\u00a0/g, ' ')).toBe('+R$ 200,00');
   });
 
   it('sets freteInfo to "Incluso" when frete is 0', () => {

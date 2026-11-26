@@ -24,7 +24,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { isWithinInterval } from "date-fns/isWithinInterval";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "@/lib/feedbackToast";
@@ -206,8 +206,8 @@ const HistoricoCompras = () => {
     }));
     exportToCSV(exportData, [
       { key: "numero", label: "Pedido" }, { key: "produto", label: "Produto" }, { key: "fornecedor", label: "Fornecedor" }, { key: "cliente", label: "Cliente/Origem" }, { key: "quantidade", label: "Qtd" },
-      { key: "preco_unitario", label: "Preço Unit.", formatter: (v) => `R$ ${Number(v).toFixed(2)}` },
-      { key: "total", label: "Total", formatter: (v) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` },
+      { key: "preco_unitario", label: "Preço Unit.", formatter: (v) => formatCurrency(Number(v)) },
+      { key: "total", label: "Total", formatter: (v) => formatCurrency(Number(v)) },
       { key: "desconto", label: "Desconto %", formatter: (v) => `${v}%` }, { key: "status", label: "Status" }, { key: "data", label: "Data" },
     ], "historico_compras_sourcing");
     toast.success("Relatório de Sourcing exportado!");

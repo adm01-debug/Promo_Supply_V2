@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 import { Card } from "@/components/ui/card";
 import { TrendingUp, PieChart as PieChartIcon, BarChart3 } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatCurrencyCompact } from '@/lib/utils';
 
 interface TrendAnalysisChartsProps {
   monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
@@ -188,7 +188,7 @@ export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategorie
                 axisLine={false} 
                 tickLine={false} 
                 tick={{ fill: '#888', fontSize: 10 }}
-                tickFormatter={(value) => `R$ ${value >= 1000 ? (value/1000).toFixed(0) + 'k' : value}`}
+                tickFormatter={(value) => formatCurrencyCompact(Number(value))}
               />
               <Tooltip 
                 formatter={(value: number) => [

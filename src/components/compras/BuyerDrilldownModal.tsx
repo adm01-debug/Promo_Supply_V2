@@ -17,6 +17,7 @@ import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 import { formatDateBR } from "@/lib/dateUtils";
+import { formatCurrency } from "@/lib/utils";
 
 interface LegacyComprador {
   nome: string;
@@ -55,7 +56,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
           {payload.map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.dataKey === 'economia' 
-                ? `R$ ${Number(entry.value).toLocaleString('pt-BR')}` 
+                ? formatCurrency(Number(entry.value)) 
                 : entry.value}
             </p>
           ))}

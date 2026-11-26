@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Target, TrendingUp, Briefcase, CheckCircle2, AlertCircle, Clock, Filter } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 const SourcingPipeline = () => {
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -175,7 +176,7 @@ const SourcingPipeline = () => {
                       <TableCell>{project.categorias?.nome || "Geral"}</TableCell>
                       <TableCell>{getStatusBadge(project.status)}</TableCell>
                       <TableCell className="text-right font-mono text-xs">
-                        {project.estimated_spend ? `R$ ${project.estimated_spend.toLocaleString()}` : "—"}
+                        {project.estimated_spend ? formatCurrency(Number(project.estimated_spend)) : "—"}
                       </TableCell>
                     </TableRow>
                   ))

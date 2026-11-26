@@ -25,6 +25,7 @@ import { subMonths } from 'date-fns/subMonths';
 import { startOfMonth } from 'date-fns/startOfMonth';
 import { endOfMonth } from 'date-fns/endOfMonth';
 import { isWithinInterval } from 'date-fns/isWithinInterval';
+import { formatCurrency } from "@/lib/utils";
 
 interface Prediction {
   month: string;
@@ -273,7 +274,7 @@ export function DemandPredictionPanel() {
                           <XAxis dataKey="name" className="text-xs" />
                           <YAxis className="text-xs" />
                           <Tooltip 
-                            formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, 'Valor']}
+                            formatter={(value: number) => [formatCurrency(value), 'Valor']}
                             contentStyle={{ 
                               backgroundColor: 'hsl(var(--card))',
                               border: '1px solid hsl(var(--border))',

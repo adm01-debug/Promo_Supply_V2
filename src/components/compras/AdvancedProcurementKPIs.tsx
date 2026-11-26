@@ -39,7 +39,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
 import { KPITargetsConfig } from "./KPITargetsConfig";
 
@@ -441,10 +441,10 @@ export const AdvancedProcurementKPIs = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={kpiData.maverickSpend.byCategory} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                <XAxis type="number" tickFormatter={(v) => `R$ ${(v/1000).toFixed(0)}k`} />
+                <XAxis type="number" tickFormatter={(v) => formatCurrencyCompact(Number(v))} />
                 <YAxis type="category" dataKey="name" width={80} />
                 <Tooltip 
-                  formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, 'Valor']}
+                  formatter={(value: number) => [formatCurrency(value), 'Valor']}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',
@@ -492,7 +492,7 @@ export const AdvancedProcurementKPIs = () => {
                 <XAxis dataKey="quarter" />
                 <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
                 <Tooltip 
-                  formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, '']}
+                  formatter={(value: number) => [formatCurrency(value), '']}
                   contentStyle={{ 
                     backgroundColor: 'hsl(var(--card))', 
                     border: '1px solid hsl(var(--border))',

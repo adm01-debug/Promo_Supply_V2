@@ -24,7 +24,7 @@ import {
   buildEmailAssunto,
   buildEmailCorpo,
 } from "@/lib/negotiationOutreach";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -261,7 +261,7 @@ const NegociacaoIA = () => {
                       <SelectContent>
                         {solicitacoes?.map(s => (
                           <SelectItem key={s.id} value={s.id}>
-                            {s.numero} - {s.titulo} {s.valor_estimado ? `(R$ ${Number(s.valor_estimado).toLocaleString("pt-BR")})` : ""}
+                            {s.numero} - {s.titulo} {s.valor_estimado ? `(${formatCurrency(Number(s.valor_estimado))})` : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>

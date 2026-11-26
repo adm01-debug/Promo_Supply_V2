@@ -41,6 +41,7 @@ import {
   COLORS, PERIOD_MAP, getMetricStatus, MetricStatusIcon,
   DashboardSkeleton, EmptyState, exportBuyerCSV,
 } from "./buyerDashboardHelpers";
+import { formatCurrency } from "@/lib/utils";
 
 const BuyerPerformanceDashboard = () => {
   const [periodo, setPeriodo] = useState("6m");
@@ -132,7 +133,7 @@ const BuyerPerformanceDashboard = () => {
           {payload.map((entry, index) => (
             <p key={`${entry.name ?? 'series'}-${index}`} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.name?.includes('Economia')
-                ? `R$ ${(entry.value || 0).toLocaleString('pt-BR')}`
+                ? formatCurrency(entry.value || 0)
                 : entry.name?.includes('Desconto')
                   ? `${entry.value}%`
                   : entry.value}

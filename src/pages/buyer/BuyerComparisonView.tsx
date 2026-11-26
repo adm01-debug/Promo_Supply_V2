@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 import React from "react";
+import { formatCurrency } from "@/lib/utils";
 
 const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)', 'hsl(262, 83%, 58%)'];
 
@@ -20,7 +21,7 @@ const ComparisonMetricCard = ({
   format?: "number" | "currency" | "percent"; color: string;
 }) => {
   const formatValue = (val: number) => {
-    if (format === "currency") return `R$ ${val.toLocaleString('pt-BR')}`;
+    if (format === "currency") return formatCurrency(val);
     if (format === "percent") return `${val}%`;
     return val.toString();
   };

@@ -8,6 +8,7 @@ import { type ProductHistory, type PurchaseRecord } from '@/hooks/usePurchaseHis
 import { QualityStars, DeliveryBadge, StatusBadge } from './HistoricoHelpers';
 import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 interface Props {
   filteredProducts: ProductHistory[];
@@ -25,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
       {payload.map((entry, i) => (
         <p key={i} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {typeof entry.value === "number" && (String(entry.name).includes("R$") || String(entry.name).includes("Preço") || String(entry.name).includes("Valor"))
-            ? `R$ ${entry.value.toLocaleString("pt-BR")}`
+            ? formatCurrency(Number(entry.value))
             : entry.value}
         </p>
       ))}
@@ -95,7 +96,7 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
                 <LineChart data={selectedProduct.priceHistory}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
-                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} tickFormatter={(v) => `R$ ${v}`} />
+                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} tickFormatter={(v) => formatCurrencyCompact(Number(v))} />
                   <Tooltip content={<CustomTooltip />} />
                   <Line type="monotone" dataKey="price" name="Preço" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4 }} />
                 </LineChart>

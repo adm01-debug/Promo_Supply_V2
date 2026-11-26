@@ -14,7 +14,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { useDashboardKPIs, type DashboardKPIsExtended } from '@/hooks/useDashboardKPIs';
 
 interface Insight {
@@ -45,7 +45,7 @@ export const DashboardInsights = () => {
         type: 'opportunity',
         title: 'Otimização de Negociação',
         description: `Seu saving atual de ${kpis.economiaPercentual.toFixed(1)}% está abaixo do benchmark de 18% para sua categoria principal.`,
-        impact: `Potencial de +R$ ${potentialExtraSaving.toLocaleString('pt-BR')} em economia mensal adicional.`,
+        impact: `Potencial de +${formatCurrency(potentialExtraSaving)} em economia mensal adicional.`,
         action: 'Revisar cotações em aberto',
         icon: Target,
         color: 'blue'

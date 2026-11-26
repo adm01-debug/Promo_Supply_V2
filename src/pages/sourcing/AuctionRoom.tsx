@@ -26,7 +26,7 @@ import {
   Area
 } from "recharts";
 import { format } from "date-fns";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 const AuctionRoom = () => {
   const { id } = useParams();
@@ -168,7 +168,7 @@ const AuctionRoom = () => {
                       fontSize={10} 
                       tickLine={false} 
                       axisLine={false} 
-                      tickFormatter={(value) => `R$ ${value/1000}k`}
+                      tickFormatter={(value) => formatCurrencyCompact(Number(value))}
                     />
                     <ChartTooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}

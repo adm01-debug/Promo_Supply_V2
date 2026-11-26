@@ -175,7 +175,7 @@ const CatalogoSpot = () => {
                     Carrinho SPOT
                   </CardTitle>
                   <CardDescription>
-                    {cart ? `${cart.itemCount} item(s) — Total: R$ ${cart.total.toFixed(2)}` : 'Carregando...'}
+                    {cart ? `${cart.itemCount} item(s) — Total: ${formatCurrency(cart.total)}` : 'Carregando...'}
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" onClick={loadCart} disabled={loading}>

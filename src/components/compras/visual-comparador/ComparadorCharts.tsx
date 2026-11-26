@@ -12,7 +12,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   Cell, PieChart as RechartsPieChart, Pie,
 } from "recharts";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 const tooltipStyle = {
   backgroundColor: 'hsl(var(--card))',
@@ -112,7 +112,7 @@ export function BarsTab({ barChartData }: Pick<ChartProps, 'barChartData'>) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barChartData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} tickFormatter={(v) => `R$ ${(v/1000).toFixed(1)}k`} />
+              <XAxis type="number" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} tickFormatter={(v) => formatCurrencyCompact(Number(v))} />
               <YAxis type="category" dataKey="name" width={100} tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} />
               <RechartsTooltip formatter={(value: number) => formatCurrency(value)} contentStyle={tooltipStyle} />
               <Legend />
@@ -276,7 +276,7 @@ export function TableTab({ selectedCotacoes, COLORS, getScore, analysis, quantid
                   <td className="p-3 flex items-center gap-2"><Truck className="w-4 h-4 text-warning" />Frete</td>
                   {selectedCotacoes.map(c => (
                     <td key={c.id} className={cn("p-3 text-center", c.frete === 0 && "text-success")}>
-                      {c.frete === 0 ? 'Grátis' : `R$ ${c.frete.toFixed(2)}`}
+                      {c.frete === 0 ? 'Grátis' : formatCurrency(c.frete)}
                     </td>
                   ))}
                 </tr>

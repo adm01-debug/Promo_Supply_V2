@@ -8,6 +8,7 @@ import { type SupplierHistory, type PurchaseRecord } from '@/hooks/usePurchaseHi
 import { QualityStars, DeliveryBadge, StatusBadge } from './HistoricoHelpers';
 import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   filteredSuppliers: SupplierHistory[];
@@ -25,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
       {payload.map((entry, i) => (
         <p key={i} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {typeof entry.value === "number" && (String(entry.name).includes("R$") || String(entry.name).includes("Preço") || String(entry.name).includes("Valor"))
-            ? `R$ ${entry.value.toLocaleString("pt-BR")}`
+            ? formatCurrency(Number(entry.value))
             : entry.value}
         </p>
       ))}

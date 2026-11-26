@@ -39,9 +39,9 @@ Gostaríamos de confirmar o pedido abaixo:
 
 📦 *Produto:* ${solicitacao.produto}
 📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
-💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario).toFixed(2)}
-${frete > 0 ? `🚚 *Frete:* R$ ${frete.toFixed(2)}` : '🚚 *Frete:* Grátis'}
-${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
+💰 *Valor Unitário:* ${formatCurrency(solicitacao.valorUnitario)}
+${frete > 0 ? `🚚 *Frete:* ${formatCurrency(frete)}` : '🚚 *Frete:* Grátis'}
+${desconto > 0 ? `🎁 *Desconto:* ${formatCurrency(desconto)}` : ''}
 💵 *TOTAL:* ${formatCurrency(total)}
 
 📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
@@ -131,10 +131,10 @@ DADOS DO PEDIDO:
 • Tipo: ${getTipoLabel(solicitacao.tipo)}
 
 VALORES:
-• Valor Unitário: R$ ${(solicitacao.valorUnitario).toFixed(2)}
+• Valor Unitário: ${formatCurrency(solicitacao.valorUnitario)}
 • Subtotal: ${formatCurrency(subtotal)}
-• Frete: ${frete > 0 ? `R$ ${frete.toFixed(2)}` : 'Grátis'}
-${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
+• Frete: ${frete > 0 ? formatCurrency(frete) : 'Grátis'}
+${desconto > 0 ? `• Desconto: ${formatCurrency(desconto)}` : ''}
 • Total: ${formatCurrency(total)}
 
 CONDIÇÕES:

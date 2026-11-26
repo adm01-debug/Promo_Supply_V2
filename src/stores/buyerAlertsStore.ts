@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
+import { formatCurrency } from "@/lib/utils";
 
 export interface BuyerTarget {
   buyerId: string;
@@ -194,7 +195,7 @@ export const getMetricLabel = (metric: 'economia' | 'desconto' | 'cotacoes'): st
 
 export const formatMetricValue = (metric: 'economia' | 'desconto' | 'cotacoes', value: number): string => {
   switch (metric) {
-    case 'economia': return `R$ ${value.toLocaleString('pt-BR')}`;
+    case 'economia': return formatCurrency(value);
     case 'desconto': return `${value.toFixed(1)}%`;
     case 'cotacoes': return value.toString();
   }

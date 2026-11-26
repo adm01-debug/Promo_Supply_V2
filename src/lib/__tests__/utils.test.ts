@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cn, formatCurrency, formatDate, formatDateTime } from '../utils';
+import { cn, formatCurrency, formatCurrencyCompact, formatDate, formatDateTime } from '../utils';
 
 describe('cn', () => {
   it('returns empty string for no arguments', () => {
@@ -73,6 +73,21 @@ describe('formatCurrency', () => {
     const result = formatCurrency(1000000);
     expect(result).toContain('R$');
     expect(result).toContain('1');
+  });
+});
+
+describe('formatCurrencyCompact', () => {
+  it('abrevia milhares', () => {
+    expect(formatCurrencyCompact(1500)).toMatch(/1,5/);
+  });
+
+  it('abrevia milhoes', () => {
+    expect(formatCurrencyCompact(1200000)).toMatch(/1,2\s*mi/);
+  });
+
+  it('trata null/undefined como zero, sem NaN', () => {
+    expect(formatCurrencyCompact(null)).toBe(formatCurrencyCompact(0));
+    expect(formatCurrencyCompact(undefined)).not.toContain('NaN');
   });
 });
 
