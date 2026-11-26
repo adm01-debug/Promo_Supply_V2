@@ -44,11 +44,9 @@ Uso e tamanho em `stats.md`.
 | public.approval_steps | idx_approval_steps_delegacao_id | btree | delegacao_id | não | sim |  |
 | public.approval_steps | idx_approval_steps_organization_id | btree | organization_id | não | sim |  |
 | public.approval_steps | idx_approval_steps_tenant_id | btree | tenant_id | não | sim |  |
-| public.approval_steps | idx_approval_steps_workflow_id | btree | workflow_id | não | sim |  |
 | public.approval_steps | idx_approval_steps_workflow_status_prazo | btree | workflow_id, status, prazo_limite | não | sim |  |
 | public.approval_workflows | approval_workflows_pkey | btree | id | sim | sim |  |
 | public.approval_workflows | idx_approval_workflows_categoria_id | btree | categoria_id | não | sim |  |
-| public.approval_workflows | idx_approval_workflows_org | btree | organization_id | não | sim |  |
 | public.approval_workflows | idx_approval_workflows_org_status | btree | organization_id, status | não | sim |  |
 | public.approval_workflows | idx_approval_workflows_rule_id | btree | rule_id | não | sim |  |
 | public.approval_workflows | idx_approval_workflows_solicitacao_id | btree | solicitacao_id | não | sim |  |
@@ -64,7 +62,6 @@ Uso e tamanho em `stats.md`.
 | public.audit_logs | idx_audit_logs_action_type | btree | action_type | não | sim |  |
 | public.audit_logs | idx_audit_logs_created_at | btree | created_at | não | sim |  |
 | public.audit_logs | idx_audit_logs_entity_id | btree | entity_id | não | sim |  |
-| public.audit_logs | idx_audit_logs_entity_type | btree | entity_type | não | sim |  |
 | public.audit_logs | idx_audit_logs_entity_type_id | btree | entity_type, entity_id | não | sim |  |
 | public.audit_logs | idx_audit_logs_org_created | btree | organization_id, created_at | não | sim |  |
 | public.audit_logs | idx_audit_logs_tenant | btree | tenant_id | não | sim |  |
@@ -138,7 +135,6 @@ Uso e tamanho em `stats.md`.
 | public.budget_transactions | idx_budget_transactions_tenant_id | btree | tenant_id | não | sim |  |
 | public.categorias | categorias_pkey | btree | id | sim | sim |  |
 | public.categorias | idx_categorias_codigo_unspsc | btree | codigo_unspsc | não | sim |  |
-| public.categorias | idx_categorias_org | btree | organization_id | não | sim |  |
 | public.categorias | idx_categorias_org_ativo_nome | btree | organization_id, ativo, nome | não | sim |  |
 | public.categorias | idx_categorias_tenant | btree | tenant_id | não | sim |  |
 | public.category_strategies | category_strategies_pkey | btree | id | sim | sim |  |
@@ -183,12 +179,9 @@ Uso e tamanho em `stats.md`.
 | public.cotacoes | idx_cotacoes_currency | btree | currency | não | sim |  |
 | public.cotacoes | idx_cotacoes_dashboard | btree | status, created_at | não | sim |  |
 | public.cotacoes | idx_cotacoes_follow_up_status | btree | follow_up_status | não | sim |  |
-| public.cotacoes | idx_cotacoes_fornecedor | btree | fornecedor_id | não | sim |  |
 | public.cotacoes | idx_cotacoes_fornecedor_created | btree | fornecedor_id, created_at | não | sim |  |
 | public.cotacoes | idx_cotacoes_org_status | btree | organization_id, status | não | sim |  |
-| public.cotacoes | idx_cotacoes_solicitacao | btree | solicitacao_id | não | sim |  |
 | public.cotacoes | idx_cotacoes_solicitacao_fornecedor | btree | solicitacao_id, fornecedor_id | não | sim |  |
-| public.cotacoes | idx_cotacoes_status | btree | status | não | sim |  |
 | public.cotacoes | idx_cotacoes_tenant | btree | tenant_id | não | sim |  |
 | public.creditos_fornecedor | creditos_fornecedor_pkey | btree | id | sim | sim |  |
 | public.creditos_fornecedor | idx_creditos_fornecedor | btree | fornecedor_id | não | sim |  |
@@ -267,7 +260,6 @@ Uso e tamanho em `stats.md`.
 | public.fornecedores | fornecedores_pkey | btree | id | sim | sim |  |
 | public.fornecedores | idx_fornecedores_created_by | btree | created_by | não | sim |  |
 | public.fornecedores | idx_fornecedores_email_lower | btree |  | não | sim | `(email IS NOT NULL)` |
-| public.fornecedores | idx_fornecedores_org | btree | organization_id | não | sim |  |
 | public.fornecedores | idx_fornecedores_org_status_razao | btree | organization_id, status, razao_social | não | sim |  |
 | public.fornecedores | idx_fornecedores_razao_lower | btree |  | não | sim | `(status = 'ativo'::text)` |
 | public.fornecedores | idx_fornecedores_razao_social | btree | razao_social | não | sim |  |
@@ -339,12 +331,9 @@ Uso e tamanho em `stats.md`.
 | public.pagamentos | idx_pagamentos_created_by | btree | created_by | não | sim |  |
 | public.pagamentos | idx_pagamentos_dashboard | btree | status, created_at | não | sim |  |
 | public.pagamentos | idx_pagamentos_fornecedor | btree | fornecedor_id | não | sim |  |
-| public.pagamentos | idx_pagamentos_org | btree | organization_id | não | sim |  |
 | public.pagamentos | idx_pagamentos_org_status_due | btree | organization_id, status, data_vencimento | não | sim |  |
 | public.pagamentos | idx_pagamentos_pedido_id | btree | pedido_id | não | sim |  |
-| public.pagamentos | idx_pagamentos_status | btree | status | não | sim |  |
 | public.pagamentos | idx_pagamentos_tenant | btree | tenant_id | não | sim |  |
-| public.pagamentos | idx_pagamentos_vencimento | btree | data_vencimento | não | sim |  |
 | public.pagamentos | idx_pagamentos_vencimento_status | btree | data_vencimento, status | não | sim |  |
 | public.pagamentos | pagamentos_numero_key | btree | numero | sim | sim |  |
 | public.pagamentos | pagamentos_pkey | btree | id | sim | sim |  |
@@ -371,12 +360,9 @@ Uso e tamanho em `stats.md`.
 | public.pedidos | idx_pedidos_currency | btree | currency | não | sim |  |
 | public.pedidos | idx_pedidos_dashboard | btree | status, data_emissao | não | sim |  |
 | public.pedidos | idx_pedidos_data | btree | data_emissao | não | sim |  |
-| public.pedidos | idx_pedidos_fornecedor | btree | fornecedor_id | não | sim |  |
 | public.pedidos | idx_pedidos_fornecedor_created | btree | fornecedor_id, created_at | não | sim |  |
 | public.pedidos | idx_pedidos_org_status_created | btree | organization_id, status, created_at | não | sim |  |
-| public.pedidos | idx_pedidos_organization_id | btree | organization_id | não | sim |  |
 | public.pedidos | idx_pedidos_solicitacao_id | btree | solicitacao_id | não | sim |  |
-| public.pedidos | idx_pedidos_status | btree | status | não | sim |  |
 | public.pedidos | idx_pedidos_tenant | btree | tenant_id | não | sim |  |
 | public.pedidos | idx_pedidos_tenant_status | btree | tenant_id, status | não | sim |  |
 | public.pedidos | pedidos_numero_key | btree | numero | sim | sim |  |
@@ -393,7 +379,6 @@ Uso e tamanho em `stats.md`.
 | public.produtos | idx_produtos_categoria | btree | categoria_id | não | sim |  |
 | public.produtos | idx_produtos_cnae | btree | codigo_cnae | não | sim |  |
 | public.produtos | idx_produtos_fornecedor_preferencial_id | btree | fornecedor_preferencial_id | não | sim |  |
-| public.produtos | idx_produtos_org | btree | organization_id | não | sim |  |
 | public.produtos | idx_produtos_org_ativo_nome | btree | organization_id, ativo, nome | não | sim |  |
 | public.produtos | idx_produtos_tenant | btree | tenant_id | não | sim |  |
 | public.produtos | idx_produtos_unspsc | btree | codigo_unspsc | não | sim |  |
@@ -428,7 +413,6 @@ Uso e tamanho em `stats.md`.
 | public.rate_limit_logs | brin_rate_limit_logs_created | brin | created_at | não | sim |  |
 | public.rate_limit_logs | idx_rate_limit_logs_created | btree | created_at | não | sim |  |
 | public.rate_limit_logs | idx_rate_limit_logs_ident_endpoint_window | btree | ip_address, endpoint, window_start | não | sim |  |
-| public.rate_limit_logs | idx_rate_limit_logs_ip | btree | ip_address | não | sim |  |
 | public.rate_limit_logs | idx_rate_limit_logs_user_id | btree | user_id | não | sim |  |
 | public.rate_limit_logs | rate_limit_logs_pkey | btree | id | sim | sim |  |
 | public.receiving_checklists | idx_receiving_checklists_contract_id | btree | contract_id | não | sim |  |
@@ -448,7 +432,6 @@ Uso e tamanho em `stats.md`.
 | public.saved_filters | idx_saved_filters_default | btree | user_id, entity_type, is_default | não | sim | `(is_default = true)` |
 | public.saved_filters | idx_saved_filters_entity_type | btree | entity_type | não | sim |  |
 | public.saved_filters | idx_saved_filters_user_entity | btree | user_id, entity_type | não | sim |  |
-| public.saved_filters | idx_saved_filters_user_id | btree | user_id | não | sim |  |
 | public.saved_filters | saved_filters_pkey | btree | id | sim | sim |  |
 | public.saved_filters | unique_filter_name_per_user_entity | btree | user_id, entity_type, name | sim | sim |  |
 | public.savings_tracker | idx_savings_tracker_project_id | btree | project_id | não | sim |  |
@@ -474,11 +457,9 @@ Uso e tamanho em `stats.md`.
 | public.solicitacoes | idx_solicitacoes_external_ref | btree | external_ref | sim | sim | `(external_ref IS NOT NULL)` |
 | public.solicitacoes | idx_solicitacoes_fornecedor_id | btree | fornecedor_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_org_status_created | btree | organization_id, status, created_at | não | sim |  |
-| public.solicitacoes | idx_solicitacoes_organization_id | btree | organization_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_pim_product_id | btree | pim_product_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_produto_id | btree | produto_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_solicitante | btree | solicitante_id | não | sim |  |
-| public.solicitacoes | idx_solicitacoes_status | btree | status | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_tenant | btree | tenant_id | não | sim |  |
 | public.solicitacoes | idx_solicitacoes_tenant_priority | btree | tenant_id, prioridade | não | sim |  |
 | public.solicitacoes | solicitacoes_numero_key | btree | numero | sim | sim |  |
@@ -539,6 +520,7 @@ Uso e tamanho em `stats.md`.
 | public.spend_forecasts | idx_spend_forecasts_organization_id | btree | organization_id | não | sim |  |
 | public.spend_forecasts | idx_spend_forecasts_tenant_id | btree | tenant_id | não | sim |  |
 | public.spend_forecasts | spend_forecasts_pkey | btree | id | sim | sim |  |
+| public.spot_api_sync_log | idx_spot_sync_log_created | btree | created_at | não | sim |  |
 | public.spot_api_sync_log | idx_spot_sync_log_endpoint_day | btree | endpoint, called_at | não | sim |  |
 | public.spot_api_sync_log | spot_api_sync_log_pkey | btree | id | sim | sim |  |
 | public.spot_customization_options | idx_spot_custom_default | btree | product_reference | não | sim | `is_default` |
@@ -575,7 +557,8 @@ Uso e tamanho em `stats.md`.
 | public.supplier_qualification_scores | idx_supplier_qualification_scores_tenant_id | btree | tenant_id | não | sim |  |
 | public.supplier_qualification_scores | supplier_qualification_scores_fornecedor_id_key | btree | fornecedor_id | sim | sim |  |
 | public.supplier_qualification_scores | supplier_qualification_scores_pkey | btree | id | sim | sim |  |
-| public.system_alerts | idx_system_alerts_pending_dispatch | btree | severity, dispatched_at | não | sim | `((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text])))` |
+| public.system_alerts | idx_system_alerts_created_desc | btree | created_at | não | sim |  |
+| public.system_alerts | idx_system_alerts_pending_dispatch | btree | created_at | não | sim | `((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))` |
 | public.system_alerts | idx_system_alerts_type_created | btree | alert_type, created_at | não | sim |  |
 | public.system_alerts | system_alerts_pkey | btree | id | sim | sim |  |
 | public.system_alerts | uq_system_alerts_open_scan_sla | btree | alert_type | sim | sim | `((resolved_at IS NULL) AND (alert_type = ANY (ARRAY['scan_sla_late'::text, 'scan_sla_critical'::text])) AND (metadata ? 'scan_name'::text))` |
@@ -653,7 +636,6 @@ Uso e tamanho em `stats.md`.
 | public.webhook_events | webhook_events_pkey | btree | id | sim | sim |  |
 | public.webhook_events | webhook_events_source_idempotency_key_key | btree | source, idempotency_key | sim | sim |  |
 | public.workflow_approvals | idx_workflow_approvals_approver_id | btree | approver_id | não | sim |  |
-| public.workflow_approvals | idx_workflow_approvals_instance_id | btree | instance_id | não | sim |  |
 | public.workflow_approvals | idx_workflow_approvals_instance_node_approver | btree | instance_id, node_id, approver_id | não | sim |  |
 | public.workflow_approvals | idx_workflow_approvals_node_id | btree | node_id | não | sim |  |
 | public.workflow_approvals | idx_workflow_approvals_tenant_id | btree | tenant_id | não | sim |  |
@@ -663,7 +645,6 @@ Uso e tamanho em `stats.md`.
 | public.workflow_audit_log | idx_workflow_audit_log_task_id | btree | task_id | não | sim |  |
 | public.workflow_audit_log | idx_workflow_audit_log_tenant_id | btree | tenant_id | não | sim |  |
 | public.workflow_audit_log | workflow_audit_log_pkey | btree | id | sim | sim |  |
-| public.workflow_edges | idx_workflow_edges_source_node_id | btree | source_node_id | não | sim |  |
 | public.workflow_edges | idx_workflow_edges_source_target | btree | source_node_id, target_node_id | não | sim |  |
 | public.workflow_edges | idx_workflow_edges_target_node_id | btree | target_node_id | não | sim |  |
 | public.workflow_edges | idx_workflow_edges_template_id | btree | template_id | não | sim |  |
@@ -674,7 +655,6 @@ Uso e tamanho em `stats.md`.
 | public.workflow_instances | idx_workflow_instances_template_id | btree | template_id | não | sim |  |
 | public.workflow_instances | idx_workflow_instances_tenant_id | btree | tenant_id | não | sim |  |
 | public.workflow_instances | workflow_instances_pkey | btree | id | sim | sim |  |
-| public.workflow_logs | idx_workflow_logs_instance_id | btree | instance_id | não | sim |  |
 | public.workflow_logs | idx_workflow_logs_instance_node | btree | instance_id, node_id | não | sim |  |
 | public.workflow_logs | idx_workflow_logs_node_id | btree | node_id | não | sim |  |
 | public.workflow_logs | idx_workflow_logs_tenant_id | btree | tenant_id | não | sim |  |

@@ -37309,7 +37309,7 @@
           "database": "postgres",
           "jobid": 19,
           "jobname": "refresh-mv-dashboard-kpis",
-          "schedule": "*/15 * * * *",
+          "schedule": "20 4 * * *",
           "username": "postgres"
         },
         {
@@ -37463,6 +37463,15 @@
           "jobid": 123,
           "jobname": "cron-watchdog-15min",
           "schedule": "*/15 * * * *",
+          "username": "postgres"
+        },
+        {
+          "active": true,
+          "command": "SELECT public.cleanup_old_spot_sync_log()",
+          "database": "postgres",
+          "jobid": 124,
+          "jobname": "cleanup-spot-api-sync-log",
+          "schedule": "40 3 * * *",
           "username": "postgres"
         }
       ]
@@ -39567,6 +39576,38 @@
         "language": "plpgsql",
         "leakproof": false,
         "name": "cleanup_old_security_logs",
+        "owner": "postgres",
+        "returns": "integer",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [
+            "124:cleanup-spot-api-sync-log"
+          ],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "dbeeb366a28b861b",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "cleanup_old_spot_sync_log",
         "owner": "postgres",
         "returns": "integer",
         "schema": "public",
@@ -49745,20 +49786,6 @@
       },
       {
         "columns": [
-          "workflow_id"
-        ],
-        "definition": "CREATE INDEX idx_approval_steps_workflow_id ON public.approval_steps USING btree (workflow_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_approval_steps_workflow_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "approval_steps"
-      },
-      {
-        "columns": [
           "workflow_id",
           "status",
           "prazo_limite"
@@ -49797,20 +49824,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_approval_workflows_categoria_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "approval_workflows"
-      },
-      {
-        "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_approval_workflows_org ON public.approval_workflows USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_approval_workflows_org",
         "predicate": null,
         "schema": "public",
         "table": "approval_workflows"
@@ -50023,20 +50036,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_audit_logs_entity_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "audit_logs"
-      },
-      {
-        "columns": [
-          "entity_type"
-        ],
-        "definition": "CREATE INDEX idx_audit_logs_entity_type ON public.audit_logs USING btree (entity_type)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_audit_logs_entity_type",
         "predicate": null,
         "schema": "public",
         "table": "audit_logs"
@@ -51084,20 +51083,6 @@
       },
       {
         "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_categorias_org ON public.categorias USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_categorias_org",
-        "predicate": null,
-        "schema": "public",
-        "table": "categorias"
-      },
-      {
-        "columns": [
           "organization_id",
           "ativo",
           "nome"
@@ -51718,20 +51703,6 @@
       },
       {
         "columns": [
-          "fornecedor_id"
-        ],
-        "definition": "CREATE INDEX idx_cotacoes_fornecedor ON public.cotacoes USING btree (fornecedor_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_cotacoes_fornecedor",
-        "predicate": null,
-        "schema": "public",
-        "table": "cotacoes"
-      },
-      {
-        "columns": [
           "fornecedor_id",
           "created_at"
         ],
@@ -51762,20 +51733,6 @@
       },
       {
         "columns": [
-          "solicitacao_id"
-        ],
-        "definition": "CREATE INDEX idx_cotacoes_solicitacao ON public.cotacoes USING btree (solicitacao_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_cotacoes_solicitacao",
-        "predicate": null,
-        "schema": "public",
-        "table": "cotacoes"
-      },
-      {
-        "columns": [
           "solicitacao_id",
           "fornecedor_id"
         ],
@@ -51785,20 +51742,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_cotacoes_solicitacao_fornecedor",
-        "predicate": null,
-        "schema": "public",
-        "table": "cotacoes"
-      },
-      {
-        "columns": [
-          "status"
-        ],
-        "definition": "CREATE INDEX idx_cotacoes_status ON public.cotacoes USING btree (status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_cotacoes_status",
         "predicate": null,
         "schema": "public",
         "table": "cotacoes"
@@ -52912,20 +52855,6 @@
       },
       {
         "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_fornecedores_org ON public.fornecedores USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_fornecedores_org",
-        "predicate": null,
-        "schema": "public",
-        "table": "fornecedores"
-      },
-      {
-        "columns": [
           "organization_id",
           "status",
           "razao_social"
@@ -53929,20 +53858,6 @@
       },
       {
         "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_pagamentos_org ON public.pagamentos USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pagamentos_org",
-        "predicate": null,
-        "schema": "public",
-        "table": "pagamentos"
-      },
-      {
-        "columns": [
           "organization_id",
           "status",
           "data_vencimento"
@@ -53973,20 +53888,6 @@
       },
       {
         "columns": [
-          "status"
-        ],
-        "definition": "CREATE INDEX idx_pagamentos_status ON public.pagamentos USING btree (status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pagamentos_status",
-        "predicate": null,
-        "schema": "public",
-        "table": "pagamentos"
-      },
-      {
-        "columns": [
           "tenant_id"
         ],
         "definition": "CREATE INDEX idx_pagamentos_tenant ON public.pagamentos USING btree (tenant_id)",
@@ -53995,20 +53896,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_pagamentos_tenant",
-        "predicate": null,
-        "schema": "public",
-        "table": "pagamentos"
-      },
-      {
-        "columns": [
-          "data_vencimento"
-        ],
-        "definition": "CREATE INDEX idx_pagamentos_vencimento ON public.pagamentos USING btree (data_vencimento)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pagamentos_vencimento",
         "predicate": null,
         "schema": "public",
         "table": "pagamentos"
@@ -54379,20 +54266,6 @@
       },
       {
         "columns": [
-          "fornecedor_id"
-        ],
-        "definition": "CREATE INDEX idx_pedidos_fornecedor ON public.pedidos USING btree (fornecedor_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pedidos_fornecedor",
-        "predicate": null,
-        "schema": "public",
-        "table": "pedidos"
-      },
-      {
-        "columns": [
           "fornecedor_id",
           "created_at"
         ],
@@ -54424,20 +54297,6 @@
       },
       {
         "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_pedidos_organization_id ON public.pedidos USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pedidos_organization_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "pedidos"
-      },
-      {
-        "columns": [
           "solicitacao_id"
         ],
         "definition": "CREATE INDEX idx_pedidos_solicitacao_id ON public.pedidos USING btree (solicitacao_id)",
@@ -54446,20 +54305,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_pedidos_solicitacao_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "pedidos"
-      },
-      {
-        "columns": [
-          "status"
-        ],
-        "definition": "CREATE INDEX idx_pedidos_status ON public.pedidos USING btree (status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_pedidos_status",
         "predicate": null,
         "schema": "public",
         "table": "pedidos"
@@ -54687,20 +54532,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_produtos_fornecedor_preferencial_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "produtos"
-      },
-      {
-        "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_produtos_org ON public.produtos USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_produtos_org",
         "predicate": null,
         "schema": "public",
         "table": "produtos"
@@ -55186,20 +55017,6 @@
       },
       {
         "columns": [
-          "ip_address"
-        ],
-        "definition": "CREATE INDEX idx_rate_limit_logs_ip ON public.rate_limit_logs USING btree (ip_address)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_rate_limit_logs_ip",
-        "predicate": null,
-        "schema": "public",
-        "table": "rate_limit_logs"
-      },
-      {
-        "columns": [
           "user_id"
         ],
         "definition": "CREATE INDEX idx_rate_limit_logs_user_id ON public.rate_limit_logs USING btree (user_id)",
@@ -55466,20 +55283,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_saved_filters_user_entity",
-        "predicate": null,
-        "schema": "public",
-        "table": "saved_filters"
-      },
-      {
-        "columns": [
-          "user_id"
-        ],
-        "definition": "CREATE INDEX idx_saved_filters_user_id ON public.saved_filters USING btree (user_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_saved_filters_user_id",
         "predicate": null,
         "schema": "public",
         "table": "saved_filters"
@@ -55841,20 +55644,6 @@
       },
       {
         "columns": [
-          "organization_id"
-        ],
-        "definition": "CREATE INDEX idx_solicitacoes_organization_id ON public.solicitacoes USING btree (organization_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_solicitacoes_organization_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "solicitacoes"
-      },
-      {
-        "columns": [
           "pim_product_id"
         ],
         "definition": "CREATE INDEX idx_solicitacoes_pim_product_id ON public.solicitacoes USING btree (pim_product_id)",
@@ -55891,20 +55680,6 @@
         "is_valid": true,
         "method": "btree",
         "name": "idx_solicitacoes_solicitante",
-        "predicate": null,
-        "schema": "public",
-        "table": "solicitacoes"
-      },
-      {
-        "columns": [
-          "status"
-        ],
-        "definition": "CREATE INDEX idx_solicitacoes_status ON public.solicitacoes USING btree (status)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_solicitacoes_status",
         "predicate": null,
         "schema": "public",
         "table": "solicitacoes"
@@ -56756,6 +56531,20 @@
       },
       {
         "columns": [
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_spot_sync_log_created ON public.spot_api_sync_log USING btree (created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_spot_sync_log_created",
+        "predicate": null,
+        "schema": "public",
+        "table": "spot_api_sync_log"
+      },
+      {
+        "columns": [
           "endpoint",
           "called_at"
         ],
@@ -57261,16 +57050,29 @@
       },
       {
         "columns": [
-          "severity",
-          "dispatched_at"
+          "created_at"
         ],
-        "definition": "CREATE INDEX idx_system_alerts_pending_dispatch ON public.system_alerts USING btree (severity, dispatched_at) WHERE ((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text])))",
+        "definition": "CREATE INDEX idx_system_alerts_created_desc ON public.system_alerts USING btree (created_at DESC)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_system_alerts_created_desc",
+        "predicate": null,
+        "schema": "public",
+        "table": "system_alerts"
+      },
+      {
+        "columns": [
+          "created_at"
+        ],
+        "definition": "CREATE INDEX idx_system_alerts_pending_dispatch ON public.system_alerts USING btree (created_at) WHERE ((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))",
         "is_primary": false,
         "is_unique": false,
         "is_valid": true,
         "method": "btree",
         "name": "idx_system_alerts_pending_dispatch",
-        "predicate": "((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text])))",
+        "predicate": "((dispatched_at IS NULL) AND (severity = ANY (ARRAY['HIGH'::text, 'CRITICAL'::text, 'EMERGENCY'::text, 'high'::text, 'critical'::text, 'emergency'::text])))",
         "schema": "public",
         "table": "system_alerts"
       },
@@ -58370,20 +58172,6 @@
       },
       {
         "columns": [
-          "instance_id"
-        ],
-        "definition": "CREATE INDEX idx_workflow_approvals_instance_id ON public.workflow_approvals USING btree (instance_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_workflow_approvals_instance_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "workflow_approvals"
-      },
-      {
-        "columns": [
           "instance_id",
           "node_id",
           "approver_id"
@@ -58509,20 +58297,6 @@
         "predicate": null,
         "schema": "public",
         "table": "workflow_audit_log"
-      },
-      {
-        "columns": [
-          "source_node_id"
-        ],
-        "definition": "CREATE INDEX idx_workflow_edges_source_node_id ON public.workflow_edges USING btree (source_node_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_workflow_edges_source_node_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "workflow_edges"
       },
       {
         "columns": [
@@ -58665,20 +58439,6 @@
         "predicate": null,
         "schema": "public",
         "table": "workflow_instances"
-      },
-      {
-        "columns": [
-          "instance_id"
-        ],
-        "definition": "CREATE INDEX idx_workflow_logs_instance_id ON public.workflow_logs USING btree (instance_id)",
-        "is_primary": false,
-        "is_unique": false,
-        "is_valid": true,
-        "method": "btree",
-        "name": "idx_workflow_logs_instance_id",
-        "predicate": null,
-        "schema": "public",
-        "table": "workflow_logs"
       },
       {
         "columns": [

@@ -44,7 +44,6 @@
 | idx_saved_filters_default | btree | user_id, entity_type, is_default | não | sim | `(is_default = true)` | `CREATE INDEX idx_saved_filters_default ON public.saved_filters USING btree (user_id, entity_type, is_default) WHERE (is_default = true)` |
 | idx_saved_filters_entity_type | btree | entity_type | não | sim |  | `CREATE INDEX idx_saved_filters_entity_type ON public.saved_filters USING btree (entity_type)` |
 | idx_saved_filters_user_entity | btree | user_id, entity_type | não | sim |  | `CREATE INDEX idx_saved_filters_user_entity ON public.saved_filters USING btree (user_id, entity_type)` |
-| idx_saved_filters_user_id | btree | user_id | não | sim |  | `CREATE INDEX idx_saved_filters_user_id ON public.saved_filters USING btree (user_id)` |
 | saved_filters_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX saved_filters_pkey ON public.saved_filters USING btree (id)` |
 | unique_filter_name_per_user_entity | btree | user_id, entity_type, name | sim | sim |  | `CREATE UNIQUE INDEX unique_filter_name_per_user_entity ON public.saved_filters USING btree (user_id, entity_type, name)` |
 

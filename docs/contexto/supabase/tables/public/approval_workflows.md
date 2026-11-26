@@ -60,7 +60,6 @@
 |---|---|---|---|---|---|---|
 | approval_workflows_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX approval_workflows_pkey ON public.approval_workflows USING btree (id)` |
 | idx_approval_workflows_categoria_id | btree | categoria_id | não | sim |  | `CREATE INDEX idx_approval_workflows_categoria_id ON public.approval_workflows USING btree (categoria_id)` |
-| idx_approval_workflows_org | btree | organization_id | não | sim |  | `CREATE INDEX idx_approval_workflows_org ON public.approval_workflows USING btree (organization_id)` |
 | idx_approval_workflows_org_status | btree | organization_id, status | não | sim |  | `CREATE INDEX idx_approval_workflows_org_status ON public.approval_workflows USING btree (organization_id, status)` |
 | idx_approval_workflows_rule_id | btree | rule_id | não | sim |  | `CREATE INDEX idx_approval_workflows_rule_id ON public.approval_workflows USING btree (rule_id)` |
 | idx_approval_workflows_solicitacao_id | btree | solicitacao_id | não | sim |  | `CREATE INDEX idx_approval_workflows_solicitacao_id ON public.approval_workflows USING btree (solicitacao_id)` |

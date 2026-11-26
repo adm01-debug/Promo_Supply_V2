@@ -60,7 +60,6 @@
 | idx_approval_steps_delegacao_id | btree | delegacao_id | não | sim |  | `CREATE INDEX idx_approval_steps_delegacao_id ON public.approval_steps USING btree (delegacao_id)` |
 | idx_approval_steps_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_approval_steps_organization_id ON public.approval_steps USING btree (organization_id)` |
 | idx_approval_steps_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_approval_steps_tenant_id ON public.approval_steps USING btree (tenant_id)` |
-| idx_approval_steps_workflow_id | btree | workflow_id | não | sim |  | `CREATE INDEX idx_approval_steps_workflow_id ON public.approval_steps USING btree (workflow_id)` |
 | idx_approval_steps_workflow_status_prazo | btree | workflow_id, status, prazo_limite | não | sim |  | `CREATE INDEX idx_approval_steps_workflow_status_prazo ON public.approval_steps USING btree (workflow_id, status, prazo_limite)` |
 
 

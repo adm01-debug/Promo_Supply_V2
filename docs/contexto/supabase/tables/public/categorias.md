@@ -60,7 +60,6 @@
 |---|---|---|---|---|---|---|
 | categorias_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX categorias_pkey ON public.categorias USING btree (id)` |
 | idx_categorias_codigo_unspsc | btree | codigo_unspsc | não | sim |  | `CREATE INDEX idx_categorias_codigo_unspsc ON public.categorias USING btree (codigo_unspsc)` |
-| idx_categorias_org | btree | organization_id | não | sim |  | `CREATE INDEX idx_categorias_org ON public.categorias USING btree (organization_id)` |
 | idx_categorias_org_ativo_nome | btree | organization_id, ativo, nome | não | sim |  | `CREATE INDEX idx_categorias_org_ativo_nome ON public.categorias USING btree (organization_id, ativo, nome)` |
 | idx_categorias_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_categorias_tenant ON public.categorias USING btree (tenant_id)` |
 

@@ -43,7 +43,6 @@
 | brin_rate_limit_logs_created | brin | created_at | não | sim |  | `CREATE INDEX brin_rate_limit_logs_created ON public.rate_limit_logs USING brin (created_at)` |
 | idx_rate_limit_logs_created | btree | created_at | não | sim |  | `CREATE INDEX idx_rate_limit_logs_created ON public.rate_limit_logs USING btree (created_at DESC)` |
 | idx_rate_limit_logs_ident_endpoint_window | btree | ip_address, endpoint, window_start | não | sim |  | `CREATE INDEX idx_rate_limit_logs_ident_endpoint_window ON public.rate_limit_logs USING btree (ip_address, endpoint, window_start DESC)` |
-| idx_rate_limit_logs_ip | btree | ip_address | não | sim |  | `CREATE INDEX idx_rate_limit_logs_ip ON public.rate_limit_logs USING btree (ip_address)` |
 | idx_rate_limit_logs_user_id | btree | user_id | não | sim |  | `CREATE INDEX idx_rate_limit_logs_user_id ON public.rate_limit_logs USING btree (user_id)` |
 | rate_limit_logs_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX rate_limit_logs_pkey ON public.rate_limit_logs USING btree (id)` |
 

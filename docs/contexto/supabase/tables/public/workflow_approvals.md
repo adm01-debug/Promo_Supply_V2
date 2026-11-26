@@ -44,7 +44,6 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_workflow_approvals_approver_id | btree | approver_id | não | sim |  | `CREATE INDEX idx_workflow_approvals_approver_id ON public.workflow_approvals USING btree (approver_id)` |
-| idx_workflow_approvals_instance_id | btree | instance_id | não | sim |  | `CREATE INDEX idx_workflow_approvals_instance_id ON public.workflow_approvals USING btree (instance_id)` |
 | idx_workflow_approvals_instance_node_approver | btree | instance_id, node_id, approver_id | não | sim |  | `CREATE INDEX idx_workflow_approvals_instance_node_approver ON public.workflow_approvals USING btree (instance_id, node_id, approver_id)` |
 | idx_workflow_approvals_node_id | btree | node_id | não | sim |  | `CREATE INDEX idx_workflow_approvals_node_id ON public.workflow_approvals USING btree (node_id)` |
 | idx_workflow_approvals_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_workflow_approvals_tenant_id ON public.workflow_approvals USING btree (tenant_id)` |

@@ -103,7 +103,6 @@
 | fornecedores_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX fornecedores_pkey ON public.fornecedores USING btree (id)` |
 | idx_fornecedores_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_fornecedores_created_by ON public.fornecedores USING btree (created_by)` |
 | idx_fornecedores_email_lower | btree |  | não | sim | `(email IS NOT NULL)` | `CREATE INDEX idx_fornecedores_email_lower ON public.fornecedores USING btree (lower(email)) WHERE (email IS NOT NULL)` |
-| idx_fornecedores_org | btree | organization_id | não | sim |  | `CREATE INDEX idx_fornecedores_org ON public.fornecedores USING btree (organization_id)` |
 | idx_fornecedores_org_status_razao | btree | organization_id, status, razao_social | não | sim |  | `CREATE INDEX idx_fornecedores_org_status_razao ON public.fornecedores USING btree (organization_id, status, razao_social)` |
 | idx_fornecedores_razao_lower | btree |  | não | sim | `(status = 'ativo'::text)` | `CREATE INDEX idx_fornecedores_razao_lower ON public.fornecedores USING btree (lower(razao_social)) WHERE (status = 'ativo'::text)` |
 | idx_fornecedores_razao_social | btree | razao_social | não | sim |  | `CREATE INDEX idx_fornecedores_razao_social ON public.fornecedores USING btree (razao_social)` |

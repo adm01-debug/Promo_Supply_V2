@@ -40,7 +40,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_workflow_logs_instance_id | btree | instance_id | não | sim |  | `CREATE INDEX idx_workflow_logs_instance_id ON public.workflow_logs USING btree (instance_id)` |
 | idx_workflow_logs_instance_node | btree | instance_id, node_id | não | sim |  | `CREATE INDEX idx_workflow_logs_instance_node ON public.workflow_logs USING btree (instance_id, node_id)` |
 | idx_workflow_logs_node_id | btree | node_id | não | sim |  | `CREATE INDEX idx_workflow_logs_node_id ON public.workflow_logs USING btree (node_id)` |
 | idx_workflow_logs_tenant_id | btree | tenant_id | não | sim |  | `CREATE INDEX idx_workflow_logs_tenant_id ON public.workflow_logs USING btree (tenant_id)` |

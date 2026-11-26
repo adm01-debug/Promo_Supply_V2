@@ -13,7 +13,7 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 16 | cleanup-integration-outbox-daily | `30 3 * * *` | sim | postgres | postgres | `SELECT public.cleanup_old_integration_outbox();` |
 | 17 | lgpd_retention_daily | `15 3 * * *` | sim | postgres | postgres | ` SELECT public.apply_lgpd_retention(); ` |
 | 18 | outbox-worker-1min | `*/15 * * * *` | sim | postgres | postgres | `SELECT public._invoke_edge_function('process-outbox');` |
-| 19 | refresh-mv-dashboard-kpis | `*/15 * * * *` | sim | postgres | postgres | `SELECT public.refresh_mv_dashboard_kpis();` |
+| 19 | refresh-mv-dashboard-kpis | `20 4 * * *` | sim | postgres | postgres | `SELECT public.refresh_mv_dashboard_kpis();` |
 | 24 | xbz-sync-watchdog-hourly | `15 * * * *` | sim | postgres | postgres | `select public.xbz_sync_watchdog()` |
 | 31 | spot-api-sync-catalog | `10 3 * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncCatalog');` |
 | 32 | spot-api-sync-customization | `40 3 * * 1` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncCustomization');` |
@@ -31,3 +31,4 @@ Horários em UTC. Execuções recentes em `cron-runs.md`.
 | 121 | spot-api-sync-orders-30min | `*/30 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('getOrders');` |
 | 122 | spot-api-sync-stock | `*/20 * * * *` | sim | postgres | postgres | `SELECT public._invoke_spot_sync('syncStock');` |
 | 123 | cron-watchdog-15min | `*/15 * * * *` | sim | postgres | postgres | `SELECT public.cron_watchdog();` |
+| 124 | cleanup-spot-api-sync-log | `40 3 * * *` | sim | postgres | postgres | `SELECT public.cleanup_old_spot_sync_log()` |

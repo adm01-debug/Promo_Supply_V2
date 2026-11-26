@@ -77,12 +77,9 @@
 | idx_pagamentos_created_by | btree | created_by | não | sim |  | `CREATE INDEX idx_pagamentos_created_by ON public.pagamentos USING btree (created_by)` |
 | idx_pagamentos_dashboard | btree | status, created_at | não | sim |  | `CREATE INDEX idx_pagamentos_dashboard ON public.pagamentos USING btree (status, created_at)` |
 | idx_pagamentos_fornecedor | btree | fornecedor_id | não | sim |  | `CREATE INDEX idx_pagamentos_fornecedor ON public.pagamentos USING btree (fornecedor_id)` |
-| idx_pagamentos_org | btree | organization_id | não | sim |  | `CREATE INDEX idx_pagamentos_org ON public.pagamentos USING btree (organization_id)` |
 | idx_pagamentos_org_status_due | btree | organization_id, status, data_vencimento | não | sim |  | `CREATE INDEX idx_pagamentos_org_status_due ON public.pagamentos USING btree (organization_id, status, data_vencimento)` |
 | idx_pagamentos_pedido_id | btree | pedido_id | não | sim |  | `CREATE INDEX idx_pagamentos_pedido_id ON public.pagamentos USING btree (pedido_id)` |
-| idx_pagamentos_status | btree | status | não | sim |  | `CREATE INDEX idx_pagamentos_status ON public.pagamentos USING btree (status)` |
 | idx_pagamentos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_pagamentos_tenant ON public.pagamentos USING btree (tenant_id)` |
-| idx_pagamentos_vencimento | btree | data_vencimento | não | sim |  | `CREATE INDEX idx_pagamentos_vencimento ON public.pagamentos USING btree (data_vencimento)` |
 | idx_pagamentos_vencimento_status | btree | data_vencimento, status | não | sim |  | `CREATE INDEX idx_pagamentos_vencimento_status ON public.pagamentos USING btree (data_vencimento, status)` |
 | pagamentos_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX pagamentos_numero_key ON public.pagamentos USING btree (numero)` |
 | pagamentos_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX pagamentos_pkey ON public.pagamentos USING btree (id)` |

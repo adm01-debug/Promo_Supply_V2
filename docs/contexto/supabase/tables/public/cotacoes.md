@@ -83,12 +83,9 @@
 | idx_cotacoes_currency | btree | currency | não | sim |  | `CREATE INDEX idx_cotacoes_currency ON public.cotacoes USING btree (currency)` |
 | idx_cotacoes_dashboard | btree | status, created_at | não | sim |  | `CREATE INDEX idx_cotacoes_dashboard ON public.cotacoes USING btree (status, created_at)` |
 | idx_cotacoes_follow_up_status | btree | follow_up_status | não | sim |  | `CREATE INDEX idx_cotacoes_follow_up_status ON public.cotacoes USING btree (follow_up_status)` |
-| idx_cotacoes_fornecedor | btree | fornecedor_id | não | sim |  | `CREATE INDEX idx_cotacoes_fornecedor ON public.cotacoes USING btree (fornecedor_id)` |
 | idx_cotacoes_fornecedor_created | btree | fornecedor_id, created_at | não | sim |  | `CREATE INDEX idx_cotacoes_fornecedor_created ON public.cotacoes USING btree (fornecedor_id, created_at DESC)` |
 | idx_cotacoes_org_status | btree | organization_id, status | não | sim |  | `CREATE INDEX idx_cotacoes_org_status ON public.cotacoes USING btree (organization_id, status)` |
-| idx_cotacoes_solicitacao | btree | solicitacao_id | não | sim |  | `CREATE INDEX idx_cotacoes_solicitacao ON public.cotacoes USING btree (solicitacao_id)` |
 | idx_cotacoes_solicitacao_fornecedor | btree | solicitacao_id, fornecedor_id | não | sim |  | `CREATE INDEX idx_cotacoes_solicitacao_fornecedor ON public.cotacoes USING btree (solicitacao_id, fornecedor_id)` |
-| idx_cotacoes_status | btree | status | não | sim |  | `CREATE INDEX idx_cotacoes_status ON public.cotacoes USING btree (status)` |
 | idx_cotacoes_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_cotacoes_tenant ON public.cotacoes USING btree (tenant_id)` |
 
 

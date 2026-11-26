@@ -86,12 +86,9 @@
 | idx_pedidos_currency | btree | currency | não | sim |  | `CREATE INDEX idx_pedidos_currency ON public.pedidos USING btree (currency)` |
 | idx_pedidos_dashboard | btree | status, data_emissao | não | sim |  | `CREATE INDEX idx_pedidos_dashboard ON public.pedidos USING btree (status, data_emissao)` |
 | idx_pedidos_data | btree | data_emissao | não | sim |  | `CREATE INDEX idx_pedidos_data ON public.pedidos USING btree (data_emissao DESC)` |
-| idx_pedidos_fornecedor | btree | fornecedor_id | não | sim |  | `CREATE INDEX idx_pedidos_fornecedor ON public.pedidos USING btree (fornecedor_id)` |
 | idx_pedidos_fornecedor_created | btree | fornecedor_id, created_at | não | sim |  | `CREATE INDEX idx_pedidos_fornecedor_created ON public.pedidos USING btree (fornecedor_id, created_at DESC)` |
 | idx_pedidos_org_status_created | btree | organization_id, status, created_at | não | sim |  | `CREATE INDEX idx_pedidos_org_status_created ON public.pedidos USING btree (organization_id, status, created_at DESC)` |
-| idx_pedidos_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_pedidos_organization_id ON public.pedidos USING btree (organization_id)` |
 | idx_pedidos_solicitacao_id | btree | solicitacao_id | não | sim |  | `CREATE INDEX idx_pedidos_solicitacao_id ON public.pedidos USING btree (solicitacao_id)` |
-| idx_pedidos_status | btree | status | não | sim |  | `CREATE INDEX idx_pedidos_status ON public.pedidos USING btree (status)` |
 | idx_pedidos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_pedidos_tenant ON public.pedidos USING btree (tenant_id)` |
 | idx_pedidos_tenant_status | btree | tenant_id, status | não | sim |  | `CREATE INDEX idx_pedidos_tenant_status ON public.pedidos USING btree (tenant_id, status)` |
 | pedidos_numero_key | btree | numero | sim | sim |  | `CREATE UNIQUE INDEX pedidos_numero_key ON public.pedidos USING btree (numero)` |

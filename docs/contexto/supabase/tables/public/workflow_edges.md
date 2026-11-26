@@ -40,7 +40,6 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
-| idx_workflow_edges_source_node_id | btree | source_node_id | não | sim |  | `CREATE INDEX idx_workflow_edges_source_node_id ON public.workflow_edges USING btree (source_node_id)` |
 | idx_workflow_edges_source_target | btree | source_node_id, target_node_id | não | sim |  | `CREATE INDEX idx_workflow_edges_source_target ON public.workflow_edges USING btree (source_node_id, target_node_id)` |
 | idx_workflow_edges_target_node_id | btree | target_node_id | não | sim |  | `CREATE INDEX idx_workflow_edges_target_node_id ON public.workflow_edges USING btree (target_node_id)` |
 | idx_workflow_edges_template_id | btree | template_id | não | sim |  | `CREATE INDEX idx_workflow_edges_template_id ON public.workflow_edges USING btree (template_id)` |

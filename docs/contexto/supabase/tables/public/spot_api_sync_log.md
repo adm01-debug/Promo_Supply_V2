@@ -39,6 +39,7 @@
 
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
+| idx_spot_sync_log_created | btree | created_at | não | sim |  | `CREATE INDEX idx_spot_sync_log_created ON public.spot_api_sync_log USING btree (created_at DESC)` |
 | idx_spot_sync_log_endpoint_day | btree | endpoint, called_at | não | sim |  | `CREATE INDEX idx_spot_sync_log_endpoint_day ON public.spot_api_sync_log USING btree (endpoint, called_at DESC)` |
 | spot_api_sync_log_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX spot_api_sync_log_pkey ON public.spot_api_sync_log USING btree (id)` |
 

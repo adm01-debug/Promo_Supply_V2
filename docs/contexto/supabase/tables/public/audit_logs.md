@@ -56,7 +56,6 @@
 | idx_audit_logs_action_type | btree | action_type | não | sim |  | `CREATE INDEX idx_audit_logs_action_type ON public.audit_logs USING btree (action_type)` |
 | idx_audit_logs_created_at | btree | created_at | não | sim |  | `CREATE INDEX idx_audit_logs_created_at ON public.audit_logs USING btree (created_at DESC)` |
 | idx_audit_logs_entity_id | btree | entity_id | não | sim |  | `CREATE INDEX idx_audit_logs_entity_id ON public.audit_logs USING btree (entity_id)` |
-| idx_audit_logs_entity_type | btree | entity_type | não | sim |  | `CREATE INDEX idx_audit_logs_entity_type ON public.audit_logs USING btree (entity_type)` |
 | idx_audit_logs_entity_type_id | btree | entity_type, entity_id | não | sim |  | `CREATE INDEX idx_audit_logs_entity_type_id ON public.audit_logs USING btree (entity_type, entity_id)` |
 | idx_audit_logs_org_created | btree | organization_id, created_at | não | sim |  | `CREATE INDEX idx_audit_logs_org_created ON public.audit_logs USING btree (organization_id, created_at DESC)` |
 | idx_audit_logs_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_audit_logs_tenant ON public.audit_logs USING btree (tenant_id)` |

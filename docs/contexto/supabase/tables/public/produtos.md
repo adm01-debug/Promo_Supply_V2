@@ -73,7 +73,6 @@
 | idx_produtos_categoria | btree | categoria_id | não | sim |  | `CREATE INDEX idx_produtos_categoria ON public.produtos USING btree (categoria_id)` |
 | idx_produtos_cnae | btree | codigo_cnae | não | sim |  | `CREATE INDEX idx_produtos_cnae ON public.produtos USING btree (codigo_cnae)` |
 | idx_produtos_fornecedor_preferencial_id | btree | fornecedor_preferencial_id | não | sim |  | `CREATE INDEX idx_produtos_fornecedor_preferencial_id ON public.produtos USING btree (fornecedor_preferencial_id)` |
-| idx_produtos_org | btree | organization_id | não | sim |  | `CREATE INDEX idx_produtos_org ON public.produtos USING btree (organization_id)` |
 | idx_produtos_org_ativo_nome | btree | organization_id, ativo, nome | não | sim |  | `CREATE INDEX idx_produtos_org_ativo_nome ON public.produtos USING btree (organization_id, ativo, nome)` |
 | idx_produtos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_produtos_tenant ON public.produtos USING btree (tenant_id)` |
 | idx_produtos_unspsc | btree | codigo_unspsc | não | sim |  | `CREATE INDEX idx_produtos_unspsc ON public.produtos USING btree (codigo_unspsc)` |

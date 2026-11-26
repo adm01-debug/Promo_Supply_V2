@@ -2,6 +2,15 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 09:14 UTC
+
+- **cron jobs** adicionado (1): `124:cleanup-spot-api-sync-log`
+- **cron jobs** alterado (1): `19:refresh-mv-dashboard-kpis`
+- **functions** adicionado (1): `public.cleanup_old_spot_sync_log()`
+- **indexes** adicionado (2): `public.idx_spot_sync_log_created`, `public.idx_system_alerts_created_desc`
+- **indexes** removido (22): `public.idx_approval_steps_workflow_id`, `public.idx_approval_workflows_org`, `public.idx_audit_logs_entity_type`, `public.idx_categorias_org`, `public.idx_cotacoes_fornecedor`, `public.idx_cotacoes_solicitacao`, `public.idx_cotacoes_status`, `public.idx_fornecedores_org`, `public.idx_pagamentos_org`, `public.idx_pagamentos_status`, `public.idx_pagamentos_vencimento`, `public.idx_pedidos_fornecedor`, `public.idx_pedidos_organization_id`, `public.idx_pedidos_status`, `public.idx_produtos_org`, `public.idx_rate_limit_logs_ip`, `public.idx_saved_filters_user_id`, `public.idx_solicitacoes_organization_id`, `public.idx_solicitacoes_status`, `public.idx_workflow_approvals_instance_id`, `public.idx_workflow_edges_source_node_id`, `public.idx_workflow_logs_instance_id`
+- **indexes** alterado (1): `public.idx_system_alerts_pending_dispatch`
+
 ## 2026-11-26 08:17 UTC
 
 - **functions** alterado (1): `public.get_dashboard_kpis(_from date, _to date)`
