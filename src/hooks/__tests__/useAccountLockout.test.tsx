@@ -67,4 +67,55 @@ describe('useAccountLockout — normalizacao do e-mail e limpeza pela sessao', (
     });
     expect(result.current.lockoutStatus.locked).toBe(true);
   });
+
+  it('nao declara a conta bloqueada quando a consulta ao servidor falha', async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: '42501', message: 'sem permissao' } });
+
+    const { result } = renderHook(() => useAccountLockout());
+    let status: { locked: boolean; remainingSeconds: number } | undefined;
+    await act(async () => {
+      status = await result.current.checkLockout('dono@empresa.com');
+    });
+
+    expect(status).toEqual({ locked: false, remainingSeconds: 0 });
+    expect(result.current.lockoutStatus.locked).toBe(false);
+  });
+
+  it('nao declara a conta bloqueada quando a consulta lanca excecao', async () => {
+    rpc.mockRejectedValue(new Error('rede fora'));
+
+    const { result } = renderHook(() => useAccountLockout());
+    let status: { locked: boolean; remainingSeconds: number } | undefined;
+    await act(async () => {
+      status = await result.current.checkLockout('dono@empresa.com');
+    });
+
+    expect(status).toEqual({ locked: false, remainingSeconds: 0 });
+  });
+
+  it('deriva as tentativas restantes quando o servidor devolve so o contador', async () => {
+    // A primeira falha responde apenas `attempts` -- e a UI imprime esse numero.
+    rpc.mockResolvedValue({ data: { locked: false, attempts: 1 }, error: null });
+
+    const { result } = renderHook(() => useAccountLockout());
+    let tentativa: { locked: boolean; remainingAttempts?: number } | undefined;
+    await act(async () => {
+      tentativa = await result.current.recordFailedAttempt('Fulano@Exemplo.COM');
+    });
+
+    expect(tentativa?.remainingAttempts).toBe(4);
+  });
+
+  it('usa o limite cheio quando o registro da falha nao chega ao servidor', async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: '500', message: 'indisponivel' } });
+
+    const { result } = renderHook(() => useAccountLockout());
+    let tentativa: { locked: boolean; remainingAttempts?: number } | undefined;
+    await act(async () => {
+      tentativa = await result.current.recordFailedAttempt('Fulano@Exemplo.COM');
+    });
+
+    expect(tentativa?.locked).toBe(false);
+    expect(tentativa?.remainingAttempts).toBe(5);
+  });
 });

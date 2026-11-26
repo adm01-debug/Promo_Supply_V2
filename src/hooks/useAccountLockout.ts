@@ -22,6 +22,10 @@ interface LockoutResult {
 // com maiuscula ou espaco nao encontra o registro e o bloqueio nao vale nada.
 const normalizarEmail = (email: string) => email.trim().toLowerCase();
 
+// Mesmo limite de `record_failed_login`: cinco falhas seguidas bloqueiam a
+// conta. Vive aqui so' para montar a mensagem de tentativas restantes.
+const MAX_TENTATIVAS = 5;
+
 export const useAccountLockout = () => {
   const [lockoutStatus, setLockoutStatus] = useState<LockoutStatus>({
     locked: false,
@@ -53,8 +57,11 @@ export const useAccountLockout = () => {
       });
 
       if (error) {
+        // Consulta que falha (rede, permissao, RPC fora do ar) nao e' bloqueio:
+        // quem bloqueia e' o servidor, em `record_failed_login`. Declarar a
+        // conta bloqueada aqui trancava o usuario legitimo por erro de rede.
         logger.error('Error checking lockout:', { error: error });
-        return { locked: true, remainingSeconds: 30 };
+        return { locked: false, remainingSeconds: 0 };
       }
 
       const result = data as { locked: boolean; remaining_seconds: number; locked_until?: string };
@@ -72,7 +79,7 @@ export const useAccountLockout = () => {
       return status;
     } catch (error) {
       logger.error('Error checking lockout:', { error: error });
-      return { locked: true, remainingSeconds: 30 };
+      return { locked: false, remainingSeconds: 0 };
     }
   }, []);
 
@@ -83,8 +90,10 @@ export const useAccountLockout = () => {
       });
 
       if (error) {
+        // A chamada nao foi contabilizada pelo servidor, entao a conta segue com
+        // o limite cheio -- sem isso a UI imprimia "undefined tentativa(s)".
         logger.error('Error recording failed attempt:', { error: error });
-        return { locked: false };
+        return { locked: false, remainingAttempts: MAX_TENTATIVAS };
       }
 
       const result = data as {
@@ -112,11 +121,18 @@ export const useAccountLockout = () => {
         lockedUntil: result.locked_until,
         lockoutCount: result.lockout_count,
         attempts: result.attempts,
-        remainingAttempts: result.remaining_attempts,
+        // A primeira falha volta so' com `attempts` (sem `remaining_attempts`) e
+        // a UI imprime o numero direto no toast: sem derivar, o usuario leria
+        // "undefined tentativa(s) restante(s)".
+        remainingAttempts:
+          result.remaining_attempts ??
+          (typeof result.attempts === 'number'
+            ? Math.max(0, MAX_TENTATIVAS - result.attempts)
+            : MAX_TENTATIVAS),
       };
     } catch (error) {
       logger.error('Error recording failed attempt:', { error: error });
-      return { locked: false };
+      return { locked: false, remainingAttempts: MAX_TENTATIVAS };
     }
   }, []);
 
