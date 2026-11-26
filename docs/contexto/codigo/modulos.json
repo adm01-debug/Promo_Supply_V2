@@ -2411,7 +2411,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11933,
+   "linhas": 11974,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2817,7 +2817,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 30,
+   "testes": 31,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -5166,7 +5166,7 @@
    "modulo": "pages/devolucoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 547,
+   "linhas": 550,
    "itens_menu": [
     "Devoluções"
    ],

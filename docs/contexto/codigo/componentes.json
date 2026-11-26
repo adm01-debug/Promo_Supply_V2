@@ -4887,7 +4887,7 @@
     "RESOLUCAO_LABELS"
    ],
    "export_default": null,
-   "linhas": 304,
+   "linhas": 307,
    "dominio": "pages/devolucoes",
    "hooks_locais": [
     "useDevolucoes",

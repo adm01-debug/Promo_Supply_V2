@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `885cd9a8c8` · branch `main` · 2026-11-25 23:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `dd073965d2` · branch `main` · 2026-11-25 23:59 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2398,7 +2398,12 @@ _nenhum item encontrado_
 | Devolução não encontrada | `src/hooks/useDevolucoes.ts` |
 | Erro ao criar devolução:  | `src/hooks/useDevolucoes.ts` |
 | Erro:  | `src/hooks/useDevolucoes.ts` |
+| Nada foi excluido: devolucao inexistente ou sem permissao para excluir. | `src/hooks/useDevolucoes.ts` |
+| Nada foi gravado: credito inexistente ou sem permissao para utiliza-lo. | `src/hooks/useDevolucoes.ts` |
+| Nada foi gravado: devolucao inexistente ou sem permissao para mudar o status. | `src/hooks/useDevolucoes.ts` |
 | Nao foi possivel conferir o credito da devolucao. Exclusao cancelada. | `src/hooks/useDevolucoes.ts` |
+| Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e a devolucao foi desfeita. | `src/hooks/useDevolucoes.ts` |
+| Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e o cabecalho NAO foi removido: ${desfazerError.message} | `src/hooks/useDevolucoes.ts` |
 | Saldo insuficiente | `src/hooks/useDevolucoes.ts` |
 | Transição inválida: ${dev.status} → ${newStatus} | `src/hooks/useDevolucoes.ts` |
 | Você precisa estar logado | `src/hooks/useDevolucoes.ts` |
@@ -2433,12 +2438,7 @@ _nenhum item encontrado_
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir:  | `src/hooks/usePagamentos.ts` |
-| Erro ao registrar pagamento:  | `src/hooks/usePagamentos.ts` |
-| Nada foi excluído: pagamento inexistente ou sem permissão. | `src/hooks/usePagamentos.ts` |
-| Nada foi gravado: nenhum dos pagamentos está acessível para alteração. | `src/hooks/usePagamentos.ts` |
-| Nada foi gravado: pagamento inexistente ou sem permissão. | `src/hooks/usePagamentos.ts` |
-| Nenhum pagamento pode ir para ${newStatus}: ${blocked.join( | `src/hooks/usePagamentos.ts` |
-| … +285 linhas — lista completa em `context.json` | |
+| … +290 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3427 testes em 246 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3446 testes em 247 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2530,6 +2530,7 @@ _nenhum item encontrado_
 | `src/components/compras/executive/__tests__/executiveDashboardData.test.ts` | 19 | calculateChange · returns positive value when current > previous · returns negative value when current < previous · returns 0 when current equals previous … |
 | `src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts` | 19 | resolveApprovalDeadline · prioriza step.prazo_limite quando presente · cai para workflow.prazo_limite quando step é nulo · usa workflow.created_at + 24h quando ambos prazos são nulos … |
 | `src/components/ui/__tests__/celebrationConfigs.test.ts` | 19 | celebrationConfigs · has 9 celebration type entries · covers all expected CelebrationType values · every entry has a defined icon … |
+| `src/hooks/__tests__/useDevolucoes.test.tsx` | 19 | useDevolucoes · regra de transicao de status · recusa transicao fora da maquina de estados e nao grava nada · carimba a data de aprovacao ao aprovar · nao anuncia status atualizado quando o RLS barra o UPDATE … |
 | `src/lib/__tests__/paginatedFetch.test.ts` | 19 | fetchAllRows · returns all rows from a single page · calls from() with the table name · calls select() with the select string … |
 | `src/lib/__tests__/routePrefetch.test.ts` | 19 | prefetchRouteChunk · is a function · does not throw for a known route · does not throw for an unknown route … |
 | `src/lib/__tests__/supabaseQuery.test.ts` | 19 | escapeIlike · returns empty string for empty string input · returns empty string for null-like falsy input · returns plain string unchanged … |

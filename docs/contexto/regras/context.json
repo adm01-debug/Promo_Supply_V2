@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "885cd9a8c8d5c2087d5dda67b9466885cf3c5e80",
+  "sha": "dd073965d2832c7314d6b24e456dba98eb3160df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 23:54 UTC",
-  "files_total": 1466,
-  "code_files": 1292,
-  "code_lines": 218182,
+  "generated_at": "2026-11-25 23:59 UTC",
+  "files_total": 1467,
+  "code_files": 1293,
+  "code_lines": 218641,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "ddee9ed7bf52ab8c",
+ "facts_hash": "5868add8ac4a1535",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 421,
+   ".tsx": 422,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -35476,8 +35476,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 92,
-   "lines": 15802,
+   "files": 93,
+   "lines": 16258,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -35686,14 +35686,14 @@
     "src/hooks/__tests__/useDashboardKPIs.test.tsx",
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    "src/hooks/__tests__/useDevolucoes.test.tsx",
     "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
     "src/hooks/__tests__/useFornecedores.organization.test.tsx",
     "src/hooks/__tests__/useFornecedores.unicidade.test.tsx",
     "src/hooks/__tests__/useFuseSearch.test.ts",
     "src/hooks/__tests__/useImageCompression.test.ts",
     "src/hooks/__tests__/useLicitacoes.createEvent.test.tsx",
-    "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
-    "src/hooks/__tests__/usePagamentos.escrita.test.tsx"
+    "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx"
    ]
   },
   {
@@ -35881,7 +35881,7 @@
   {
    "module": "src/pages",
    "files": 155,
-   "lines": 35102,
+   "lines": 35105,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37068,10 +37068,10 @@
     "insert": [
      "src/hooks/useDevolucoes.ts"
     ],
-    "update": [
+    "delete": [
      "src/hooks/useDevolucoes.ts"
     ],
-    "delete": [
+    "update": [
      "src/hooks/useDevolucoes.ts"
     ]
    },
@@ -41698,7 +41698,27 @@
    },
    {
     "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Nada foi excluido: devolucao inexistente ou sem permissao para excluir."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Nada foi gravado: credito inexistente ou sem permissao para utiliza-lo."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Nada foi gravado: devolucao inexistente ou sem permissao para mudar o status."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
     "msg": "Nao foi possivel conferir o credito da devolucao. Exclusao cancelada."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e a devolucao foi desfeita."
+   },
+   {
+    "file": "src/hooks/useDevolucoes.ts",
+    "msg": "Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e o cabecalho NAO foi removido: ${desfazerError.message}"
    },
    {
     "file": "src/hooks/useDevolucoes.ts",
@@ -64038,6 +64058,82 @@
    {
     "file": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
     "name": "exclui devolucao sem credito"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "useDevolucoes · regra de transicao de status"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "recusa transicao fora da maquina de estados e nao grava nada"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "carimba a data de aprovacao ao aprovar"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "nao anuncia status atualizado quando o RLS barra o UPDATE"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "nao gera credito quando o proprio status nao gravou"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "recusa id que nao esta na lista carregada"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "useDevolucoes · exclusao"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "nao anuncia exclusao quando o RLS barra o DELETE"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "cancela a exclusao quando nao consegue conferir o credito da devolucao"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "useDevolucoes · criar devolucao"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "grava numero sequencial, valor somado dos itens e status solicitada"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "desfaz o cabecalho quando os itens nao gravam"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "useCreditosFornecedor · uso do credito"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "recusa valor acima do saldo sem tocar no banco"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "quita o credito acumulando o valor utilizado e zerando o saldo"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "nao anuncia credito utilizado quando o RLS barra o UPDATE"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "soma no saldo total apenas os creditos ativos"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "useDevolucoesKPIs · indicadores"
+   },
+   {
+    "file": "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "name": "separa abertas, em transito e concluidas e calcula a taxa sobre o total"
    },
    {
     "file": "src/hooks/__tests__/useFornecedores.exclusao.test.tsx",
@@ -104458,7 +104554,7 @@
   },
   "src/hooks/useDevolucoes.ts": {
    "path": "src/hooks/useDevolucoes.ts",
-   "lines": 354,
+   "lines": 395,
    "exports": [
     "type Devolucao",
     "type DevolucaoItem",
@@ -104491,7 +104587,11 @@
     },
     {
      "table": "devolucoes",
-     "op": "update"
+     "op": "delete"
+    },
+    {
+     "table": "devolucoes",
+     "op": "select,update"
     },
     {
      "table": "creditos_fornecedor",
@@ -104499,7 +104599,7 @@
     },
     {
      "table": "devolucoes",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "creditos_fornecedor",
@@ -104507,7 +104607,7 @@
     },
     {
      "table": "devolucoes",
-     "op": "delete"
+     "op": "delete,select"
     },
     {
      "table": "creditos_fornecedor",
@@ -104523,7 +104623,7 @@
     },
     {
      "table": "creditos_fornecedor",
-     "op": "update"
+     "op": "select,update"
     },
     {
      "table": "devolucoes",
@@ -104560,7 +104660,12 @@
     "Devolução não encontrada",
     "Erro ao criar devolução: ",
     "Erro: ",
+    "Nada foi excluido: devolucao inexistente ou sem permissao para excluir.",
+    "Nada foi gravado: credito inexistente ou sem permissao para utiliza-lo.",
+    "Nada foi gravado: devolucao inexistente ou sem permissao para mudar o status.",
     "Nao foi possivel conferir o credito da devolucao. Exclusao cancelada.",
+    "Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e a devolucao foi desfeita.",
+    "Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e o cabecalho NAO foi removido: ${desfazerError.message}",
     "Saldo insuficiente",
     "Transição inválida: ${dev.status} → ${newStatus}",
     "Você precisa estar logado"
@@ -106887,7 +106992,7 @@
   },
   "src/hooks/__tests__/useDevolucoes.credito.test.tsx": {
    "path": "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
-   "lines": 119,
+   "lines": 121,
    "is_test": true,
    "tests": [
     "useDevolucoes · credito do fornecedor (NEG-12)",
@@ -106897,13 +107002,42 @@
   },
   "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx": {
    "path": "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
-   "lines": 133,
+   "lines": 135,
    "is_test": true,
    "tests": [
     "guarda de exclusao de devolucao",
     "recusa excluir devolucao que ja gerou credito",
     "recusa excluir devolucao marcada como credito_emitido mesmo sem contagem",
     "exclui devolucao sem credito"
+   ]
+  },
+  "src/hooks/__tests__/useDevolucoes.test.tsx": {
+   "path": "src/hooks/__tests__/useDevolucoes.test.tsx",
+   "lines": 411,
+   "is_test": true,
+   "rule_comments": [
+    "teste de regra. Cada escrita passa por policy de RLS, e no PostgREST um"
+   ],
+   "tests": [
+    "useDevolucoes · regra de transicao de status",
+    "recusa transicao fora da maquina de estados e nao grava nada",
+    "carimba a data de aprovacao ao aprovar",
+    "nao anuncia status atualizado quando o RLS barra o UPDATE",
+    "nao gera credito quando o proprio status nao gravou",
+    "recusa id que nao esta na lista carregada",
+    "useDevolucoes · exclusao",
+    "nao anuncia exclusao quando o RLS barra o DELETE",
+    "cancela a exclusao quando nao consegue conferir o credito da devolucao",
+    "useDevolucoes · criar devolucao",
+    "grava numero sequencial, valor somado dos itens e status solicitada",
+    "desfaz o cabecalho quando os itens nao gravam",
+    "useCreditosFornecedor · uso do credito",
+    "recusa valor acima do saldo sem tocar no banco",
+    "quita o credito acumulando o valor utilizado e zerando o saldo",
+    "nao anuncia credito utilizado quando o RLS barra o UPDATE",
+    "soma no saldo total apenas os creditos ativos",
+    "useDevolucoesKPIs · indicadores",
+    "separa abertas, em transito e concluidas e calcula a taxa sobre o total"
    ]
   },
   "src/hooks/__tests__/useFornecedores.exclusao.test.tsx": {
@@ -111472,7 +111606,7 @@
   },
   "src/pages/devolucoes/DevolucoesModals.tsx": {
    "path": "src/pages/devolucoes/DevolucoesModals.tsx",
-   "lines": 304,
+   "lines": 307,
    "exports": [
     "const MOTIVO_LABELS",
     "const RESOLUCAO_LABELS",
@@ -122602,10 +122736,24 @@
   }
  },
  "git": {
-  "sha": "885cd9a8c8d5c2087d5dda67b9466885cf3c5e80",
+  "sha": "dd073965d2832c7314d6b24e456dba98eb3160df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "dd07396",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(devolucoes): nao anuncia status, exclusao ou credito usado quando o RLS barra (etapa 283) (#491)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+     "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+     "src/hooks/__tests__/useDevolucoes.test.tsx",
+     "src/hooks/useDevolucoes.ts",
+     "src/pages/devolucoes/DevolucoesModals.tsx"
+    ]
+   },
    {
     "sha": "885cd9a",
     "date": "2026-11-25",
@@ -122936,17 +123084,6 @@
      "supabase/functions/telemetry/index.test.ts",
      "supabase/functions/workflow-engine/fuzz.test.ts"
     ]
-   },
-   {
-    "sha": "f2f3e24",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): paridade cobra os objetos que o DROP antes do CREATE escondia (#453)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/paridade-migrations-banco.mjs",
-     "scripts/ci/paridade-migrations-banco.unit.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -122999,6 +123136,26 @@
     2
    ],
    [
+    "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/__tests__/useDevolucoes.test.tsx",
+    1
+   ],
+   [
+    "src/hooks/useDevolucoes.ts",
+    1
+   ],
+   [
+    "src/pages/devolucoes/DevolucoesModals.tsx",
+    1
+   ],
+   [
     "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
     1
    ],
@@ -123008,26 +123165,6 @@
    ],
    [
     "src/hooks/__tests__/usePagamentos.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/pages/cotacao/Cotacao.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useApprovalWorkflow.ts",
     1
    ]
   ]
