@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa8d817151264a589688085ec424efdb8c96f550` (2026-11-25T21:47:00-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `20e28a7de91e0b3ebd444e22195305c1ccd65607` (2026-11-25T22:01:47-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1467 |
 | arquivos_codigo | 939 |
-| linhas_codigo | 188930 |
+| linhas_codigo | 188932 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,16 +338,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (121)
+- docs/qa/05-PROGRESSO.md (122)
 - docs/pendencias/_indice.md (43)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
-- docs/pendencias/_ordem.md (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/acompanhamento/Acompanhamento.tsx (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - AGENTS.md (7)
+- docs/pendencias/_ordem.md (7)
 - src/hooks/usePagamentos.ts (7)
 - src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `20e28a7` chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)
 - 2026-11-25 `fa8d817` fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)
 - 2026-11-25 `20216fb` fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)
 - 2026-11-25 `b4ba729` ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `949c3d5` docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)
 - 2026-11-25 `df2f22e` fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)
 - 2026-11-25 `5d7b9a1` chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)
-- 2026-11-25 `6463184` infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

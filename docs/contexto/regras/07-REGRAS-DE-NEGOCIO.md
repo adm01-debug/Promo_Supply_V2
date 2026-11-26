@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fa8d817151` · branch `main` · 2026-11-26 00:54 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `20e28a7de9` · branch `main` · 2026-11-26 01:18 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2747,6 +2747,7 @@ _nenhum item encontrado_
 
 | Comentário | Arquivo |
 |---|---|
+| Quality Gate nao pode ficar vermelho em toda PR. `^_` marca descarte intencional. | `eslint.config.js` |
 | Forms & validation | `vite.config.ts` |
 | ficavam invisíveis: "2024-06-15" exibido como 14/06 e "hoje" recusado no prazo | `vitest.config.ts` |
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |

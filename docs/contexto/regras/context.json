@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "fa8d817151264a589688085ec424efdb8c96f550",
+  "sha": "20e28a7de91e0b3ebd444e22195305c1ccd65607",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 00:54 UTC",
+  "generated_at": "2026-11-26 01:18 UTC",
   "files_total": 1468,
   "code_files": 1294,
-  "code_lines": 219031,
+  "code_lines": 219033,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "6e90daf1a47c5080",
+ "facts_hash": "66513bd8bd97993e",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34558,7 +34558,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 873,
+   "lines": 875,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -43068,6 +43068,10 @@
    }
   ],
   "comments": [
+   {
+    "file": "eslint.config.js",
+    "text": "Quality Gate nao pode ficar vermelho em toda PR. `^_` marca descarte intencional."
+   },
    {
     "file": "vite.config.ts",
     "text": "Forms & validation"
@@ -92092,9 +92096,12 @@
  "code_files": {
   "eslint.config.js": {
    "path": "eslint.config.js",
-   "lines": 58,
+   "lines": 60,
    "exports": [
     "default tseslint"
+   ],
+   "rule_comments": [
+    "Quality Gate nao pode ficar vermelho em toda PR. `^_` marca descarte intencional."
    ]
   },
   "playwright.config.ts": {
@@ -122778,10 +122785,21 @@
   }
  },
  "git": {
-  "sha": "fa8d817151264a589688085ec424efdb8c96f550",
+  "sha": "20e28a7de91e0b3ebd444e22195305c1ccd65607",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "20e28a7",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)",
+    "files": [
+     "docs/pendencias/_indice.md",
+     "docs/qa/05-PROGRESSO.md",
+     "eslint.config.js"
+    ]
+   },
    {
     "sha": "fa8d817",
     "date": "2026-11-25",
@@ -123109,17 +123127,6 @@
      "docs/pendencias/integracao-pim-promo-supply.md",
      "docs/pendencias/sql/pim-v_compras_views.sql"
     ]
-   },
-   {
-    "sha": "415c0e6",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "feat(historico): monta o Console de Sourcing na aba de /historico-compras (#463)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/pages/historico/HistoricoCompras.tsx",
-     "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -123142,6 +123149,10 @@
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     3
+   ],
+   [
+    "docs/pendencias/_indice.md",
+    2
    ],
    [
     "scripts/ci/agents-docs-baseline.unit.mjs",
@@ -123180,6 +123191,10 @@
     2
    ],
    [
+    "eslint.config.js",
+    1
+   ],
+   [
     "src/components/compras/ContractDetailsModal.tsx",
     1
    ],
@@ -123193,14 +123208,6 @@
    ],
    [
     "vite.config.ts",
-    1
-   ],
-   [
-    ".github/toolchain.json",
-    1
-   ],
-   [
-    "docs/agentes/github-ci.md",
     1
    ]
   ]
