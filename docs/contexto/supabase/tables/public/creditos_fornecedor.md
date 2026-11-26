@@ -39,7 +39,7 @@
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
 | creditos_fornecedor_devolucao_id_fkey | FOREIGN KEY | `FOREIGN KEY (devolucao_id) REFERENCES devolucoes(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |
-| creditos_fornecedor_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
+| creditos_fornecedor_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 | creditos_fornecedor_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | creditos_fornecedor_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 | creditos_fornecedor_utilizado_em_pagamento_id_fkey | FOREIGN KEY | `FOREIGN KEY (utilizado_em_pagamento_id) REFERENCES pagamentos(id) ON DELETE SET NULL` | SET NULL | NO ACTION | sim |

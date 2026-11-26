@@ -59,7 +59,7 @@
 | cotacoes_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
 | cotacoes_organization_id_fkey | FOREIGN KEY | `FOREIGN KEY (organization_id) REFERENCES organizations(id)` | NO ACTION | NO ACTION | sim |
 | cotacoes_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
-| cotacoes_solicitacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
+| cotacoes_solicitacao_id_fkey | FOREIGN KEY | `FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 | cotacoes_status_check | CHECK | `CHECK (status = ANY (ARRAY['pendente'::text, 'analisando'::text, 'aprovada'::text, 'rejeitada'::text, 'expirada'::text]))` |  |  | sim |
 | cotacoes_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 

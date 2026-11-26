@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 2 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -33,6 +33,7 @@
 | 15 | `internal_reference` | `text` | sim |  |  |  |
 | 16 | `estimated_ship_date` | `date` | sim |  |  |  |
 | 17 | `status_synced_at` | `timestamp with time zone` | sim |  |  |  |
+| 18 | `tenant_id` | `uuid` | sim |  |  |  |
 
 
 ## Constraints
@@ -41,6 +42,7 @@
 |---|---|---|---|---|---|
 | spot_pedidos_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | spot_pedidos_spot_order_id_key | UNIQUE | `UNIQUE (spot_order_id)` |  |  | sim |
+| spot_pedidos_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 
 
 ## Índices
@@ -48,6 +50,7 @@
 | nome | método | colunas | único | válido | predicado | definição |
 |---|---|---|---|---|---|---|
 | idx_spot_pedidos_internal_ref | btree | internal_reference | sim | sim | `(internal_reference IS NOT NULL)` | `CREATE UNIQUE INDEX idx_spot_pedidos_internal_ref ON public.spot_pedidos USING btree (internal_reference) WHERE (internal_reference IS NOT NULL)` |
+| idx_spot_pedidos_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_spot_pedidos_tenant ON public.spot_pedidos USING btree (tenant_id)` |
 | spot_pedidos_pkey | btree | id | sim | sim |  | `CREATE UNIQUE INDEX spot_pedidos_pkey ON public.spot_pedidos USING btree (id)` |
 | spot_pedidos_spot_order_id_key | btree | spot_order_id | sim | sim |  | `CREATE UNIQUE INDEX spot_pedidos_spot_order_id_key ON public.spot_pedidos USING btree (spot_order_id)` |
 
@@ -73,6 +76,16 @@
 | roles | authenticated |
 | USING | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
 | WITH CHECK | `(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))` |
+
+### `tenant_isolation_spot_pedidos`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | authenticated |
+| USING | `tenant_in_my_group(tenant_id)` |
+| WITH CHECK | `tenant_in_my_group(tenant_id)` |
 
 
 ## Triggers

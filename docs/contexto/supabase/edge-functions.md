@@ -31,7 +31,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | punchout-receive | punchout-receive | ACTIVE | 37 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-receive/index.ts |
 | punchout-setup | punchout-setup | ACTIVE | 26 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-setup/index.ts |
 | receive-os-sync | receive-os-sync | ACTIVE | 20 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/receive-os-sync/index.ts |
-| run-audit | run-audit | ACTIVE | 27 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
+| run-audit | run-audit | ACTIVE | 28 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
 | scim-v2 | scim-v2 | ACTIVE | 40 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts |
 | send-push-notification | send-push-notification | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/send-push-notification/index.ts |
 | spot-api | spot-api | ACTIVE | 31 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |

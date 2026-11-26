@@ -2,6 +2,17 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 18:15 UTC
+
+- **colunas** adicionado (1): `public.spot_pedidos.tenant_id`
+- **constraints** adicionado (1): `public.spot_pedidos.spot_pedidos_tenant_id_fkey`
+- **constraints** alterado (4): `public.cotacoes.cotacoes_solicitacao_id_fkey`, `public.creditos_fornecedor.creditos_fornecedor_fornecedor_id_fkey`, `public.payment_history.payment_history_pagamento_id_fkey`, `public.receiving_checklists.receiving_checklists_pedido_id_fkey`
+- **edge functions** alterado (1): `run-audit`
+- **functions** adicionado (1): `public.audit_rls_policies()`
+- **functions** removido (2): `public.exec_sql(sql_query text)`, `public.execute_read_query(p_sql text)`
+- **indexes** adicionado (3): `public.idx_spot_pedidos_tenant`, `public.uq_fiscal_documents_chave`, `public.uq_fiscal_documents_nf`
+- **policies (RLS)** adicionado (1): `public.spot_pedidos.tenant_isolation_spot_pedidos`
+
 ## 2026-11-26 17:11 UTC
 
 - **colunas** adicionado (4): `public.audit_logs_ancora.atualizado_em`, `public.audit_logs_ancora.id`, `public.audit_logs_ancora.registro_hash`, `public.audit_logs_ancora.sequencia`

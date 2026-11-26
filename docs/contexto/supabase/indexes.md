@@ -250,6 +250,8 @@ Uso e tamanho em `stats.md`.
 | public.fiscal_documents | idx_fiscal_documents_organization_id | btree | organization_id | não | sim |  |
 | public.fiscal_documents | idx_fiscal_documents_pedido_id | btree | pedido_id | não | sim |  |
 | public.fiscal_documents | idx_fiscal_documents_tenant | btree | tenant_id | não | sim |  |
+| public.fiscal_documents | uq_fiscal_documents_chave | btree | chave_acesso | sim | sim | `((chave_acesso IS NOT NULL) AND (chave_acesso <> ''::text))` |
+| public.fiscal_documents | uq_fiscal_documents_nf | btree | tenant_id, fornecedor_id, serie, numero_nf | sim | sim | `(fornecedor_id IS NOT NULL)` |
 | public.fiscal_events | fiscal_events_pkey | btree | id | sim | sim |  |
 | public.fiscal_events | idx_fiscal_events_document | btree | document_id | não | sim |  |
 | public.fiscal_events | idx_fiscal_events_status | btree | status | não | sim |  |
@@ -532,6 +534,7 @@ Uso e tamanho em `stats.md`.
 | public.spot_estoque | spot_estoque_pkey | btree | id | sim | sim |  |
 | public.spot_estoque | spot_estoque_sku_key | btree | sku | sim | sim |  |
 | public.spot_pedidos | idx_spot_pedidos_internal_ref | btree | internal_reference | sim | sim | `(internal_reference IS NOT NULL)` |
+| public.spot_pedidos | idx_spot_pedidos_tenant | btree | tenant_id | não | sim |  |
 | public.spot_pedidos | spot_pedidos_pkey | btree | id | sim | sim |  |
 | public.spot_pedidos | spot_pedidos_spot_order_id_key | btree | spot_order_id | sim | sim |  |
 | public.spot_produtos | idx_spot_produtos_catalogs | gin | catalogs | não | sim |  |

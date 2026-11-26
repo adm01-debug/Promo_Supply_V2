@@ -623,9 +623,9 @@
         "name": "run-audit",
         "slug": "run-audit",
         "status": "ACTIVE",
-        "updated_at": 1795695379231,
+        "updated_at": 1795715129223,
         "verify_jwt": false,
-        "version": 27
+        "version": 28
       },
       {
         "created_at": 1785935900512,
@@ -20023,6 +20023,19 @@
       },
       {
         "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "tenant_id",
+        "nullable": true,
+        "position": 18,
+        "schema": "public",
+        "table": "spot_pedidos",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
         "default": "gen_random_uuid()",
         "generated": null,
         "identity": null,
@@ -29406,9 +29419,9 @@
           "solicitacao_id"
         ],
         "deferrable": false,
-        "definition": "FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE CASCADE",
+        "definition": "FOREIGN KEY (solicitacao_id) REFERENCES solicitacoes(id) ON DELETE RESTRICT",
         "name": "cotacoes_solicitacao_id_fkey",
-        "on_delete": "CASCADE",
+        "on_delete": "RESTRICT",
         "on_update": "NO ACTION",
         "ref_columns": [
           "id"
@@ -29480,9 +29493,9 @@
           "fornecedor_id"
         ],
         "deferrable": false,
-        "definition": "FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE CASCADE",
+        "definition": "FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id) ON DELETE RESTRICT",
         "name": "creditos_fornecedor_fornecedor_id_fkey",
-        "on_delete": "CASCADE",
+        "on_delete": "RESTRICT",
         "on_update": "NO ACTION",
         "ref_columns": [
           "id"
@@ -31954,9 +31967,9 @@
           "pagamento_id"
         ],
         "deferrable": false,
-        "definition": "FOREIGN KEY (pagamento_id) REFERENCES pagamentos(id) ON DELETE CASCADE",
+        "definition": "FOREIGN KEY (pagamento_id) REFERENCES pagamentos(id) ON DELETE RESTRICT",
         "name": "payment_history_pagamento_id_fkey",
-        "on_delete": "CASCADE",
+        "on_delete": "RESTRICT",
         "on_update": "NO ACTION",
         "ref_columns": [
           "id"
@@ -33085,9 +33098,9 @@
           "pedido_id"
         ],
         "deferrable": false,
-        "definition": "FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE",
+        "definition": "FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE RESTRICT",
         "name": "receiving_checklists_pedido_id_fkey",
-        "on_delete": "CASCADE",
+        "on_delete": "RESTRICT",
         "on_update": "NO ACTION",
         "ref_columns": [
           "id"
@@ -35252,6 +35265,25 @@
         "schema": "public",
         "table": "spot_pedidos",
         "type": "UNIQUE",
+        "validated": true
+      },
+      {
+        "columns": [
+          "tenant_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE RESTRICT",
+        "name": "spot_pedidos_tenant_id_fkey",
+        "on_delete": "RESTRICT",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "tenants",
+        "schema": "public",
+        "table": "spot_pedidos",
+        "type": "FOREIGN KEY",
         "validated": true
       },
       {
@@ -38490,6 +38522,45 @@
         "callers": {
           "code": [
             {
+              "file": "supabase/functions/run-audit/index.ts",
+              "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261126183000_dropa_sql_arbitrario_e_audit_rls.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 2,
+          "cron": [],
+          "db": [],
+          "triggers": [],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "definition": null,
+        "definition_sha": "db04d406bb672d87",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": false,
+        "kind": "function",
+        "language": "sql",
+        "leakproof": false,
+        "name": "audit_rls_policies",
+        "owner": "postgres",
+        "returns": "TABLE(tablename text, policyname text, roles text[], cmd text, using_expression text, check_expression text)",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "stable"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [
+            {
               "file": "supabase/migrations/20260711194627_205a170b-bb7f-4917-bdf9-338d1894770d.sql",
               "hits": 1
             },
@@ -40435,75 +40506,6 @@
         "name": "ensure_telemetry_logs_partition",
         "owner": "postgres",
         "returns": "void",
-        "schema": "public",
-        "security_definer": true,
-        "strict": false,
-        "volatility": "volatile"
-      },
-      {
-        "args": "sql_query text",
-        "callers": {
-          "code": [
-            {
-              "file": "supabase/functions/run-audit/index.ts",
-              "hits": 1
-            },
-            {
-              "file": "supabase/migrations/20261112165500_revoga_exec_sql_e_chaves_xbz.sql",
-              "hits": 2
-            }
-          ],
-          "code_total_files": 2,
-          "cron": [],
-          "db": [],
-          "triggers": [],
-          "views": []
-        },
-        "comment": null,
-        "config": [
-          "search_path=public"
-        ],
-        "definition": null,
-        "definition_sha": "35574b9aee45e618",
-        "execute_api_roles": "service_role",
-        "execute_public": false,
-        "is_trigger_fn": false,
-        "kind": "function",
-        "language": "plpgsql",
-        "leakproof": false,
-        "name": "exec_sql",
-        "owner": "postgres",
-        "returns": "jsonb",
-        "schema": "public",
-        "security_definer": true,
-        "strict": false,
-        "volatility": "volatile"
-      },
-      {
-        "args": "p_sql text",
-        "callers": {
-          "code": [],
-          "code_total_files": 0,
-          "cron": [],
-          "db": [],
-          "triggers": [],
-          "views": []
-        },
-        "comment": "Executa EXPLAIN (ANALYZE, BUFFERS) em queries de leitura para o benchmark B-03. Restrito a service_role.",
-        "config": [
-          "search_path=pg_catalog, public"
-        ],
-        "definition": null,
-        "definition_sha": "fe15eb0e48bab2ab",
-        "execute_api_roles": "service_role",
-        "execute_public": false,
-        "is_trigger_fn": false,
-        "kind": "function",
-        "language": "plpgsql",
-        "leakproof": false,
-        "name": "execute_read_query",
-        "owner": "postgres",
-        "returns": "jsonb",
         "schema": "public",
         "security_definer": true,
         "strict": false,
@@ -52980,6 +52982,37 @@
       },
       {
         "columns": [
+          "chave_acesso"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_fiscal_documents_chave ON public.fiscal_documents USING btree (chave_acesso) WHERE ((chave_acesso IS NOT NULL) AND (chave_acesso <> ''::text))",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_fiscal_documents_chave",
+        "predicate": "((chave_acesso IS NOT NULL) AND (chave_acesso <> ''::text))",
+        "schema": "public",
+        "table": "fiscal_documents"
+      },
+      {
+        "columns": [
+          "tenant_id",
+          "fornecedor_id",
+          "serie",
+          "numero_nf"
+        ],
+        "definition": "CREATE UNIQUE INDEX uq_fiscal_documents_nf ON public.fiscal_documents USING btree (tenant_id, fornecedor_id, serie, numero_nf) WHERE (fornecedor_id IS NOT NULL)",
+        "is_primary": false,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "uq_fiscal_documents_nf",
+        "predicate": "(fornecedor_id IS NOT NULL)",
+        "schema": "public",
+        "table": "fiscal_documents"
+      },
+      {
+        "columns": [
           "id"
         ],
         "definition": "CREATE UNIQUE INDEX fiscal_events_pkey ON public.fiscal_events USING btree (id)",
@@ -56965,6 +56998,20 @@
         "method": "btree",
         "name": "idx_spot_pedidos_internal_ref",
         "predicate": "(internal_reference IS NOT NULL)",
+        "schema": "public",
+        "table": "spot_pedidos"
+      },
+      {
+        "columns": [
+          "tenant_id"
+        ],
+        "definition": "CREATE INDEX idx_spot_pedidos_tenant ON public.spot_pedidos USING btree (tenant_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "idx_spot_pedidos_tenant",
+        "predicate": null,
         "schema": "public",
         "table": "spot_pedidos"
       },
@@ -66671,6 +66718,18 @@
         "table": "spot_pedidos",
         "using": "(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))",
         "with_check": "(has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) OR has_role(auth.uid(), 'buyer'::app_role))"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_spot_pedidos",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "spot_pedidos",
+        "using": "tenant_in_my_group(tenant_id)",
+        "with_check": "tenant_in_my_group(tenant_id)"
       },
       {
         "cmd": "SELECT",

@@ -96,10 +96,10 @@
 | public.cotacoes | currency | public.currencies | code | NO ACTION | NO ACTION |
 | public.cotacoes | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |
 | public.cotacoes | organization_id | public.organizations | id | NO ACTION | NO ACTION |
-| public.cotacoes | solicitacao_id | public.solicitacoes | id | CASCADE | NO ACTION |
+| public.cotacoes | solicitacao_id | public.solicitacoes | id | RESTRICT | NO ACTION |
 | public.cotacoes | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.creditos_fornecedor | devolucao_id | public.devolucoes | id | SET NULL | NO ACTION |
-| public.creditos_fornecedor | fornecedor_id | public.fornecedores | id | CASCADE | NO ACTION |
+| public.creditos_fornecedor | fornecedor_id | public.fornecedores | id | RESTRICT | NO ACTION |
 | public.creditos_fornecedor | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.creditos_fornecedor | utilizado_em_pagamento_id | public.pagamentos | id | SET NULL | NO ACTION |
 | public.dashboard_filter_favorites | organization_id | public.organizations | id | NO ACTION | NO ACTION |
@@ -165,7 +165,7 @@
 | public.pagamentos | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.password_reset_requests | reviewed_by | auth.users | id | NO ACTION | NO ACTION |
 | public.password_reset_requests | user_id | auth.users | id | CASCADE | NO ACTION |
-| public.payment_history | pagamento_id | public.pagamentos | id | CASCADE | NO ACTION |
+| public.payment_history | pagamento_id | public.pagamentos | id | RESTRICT | NO ACTION |
 | public.payment_history | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.pedido_itens | pedido_id | public.pedidos | id | CASCADE | NO ACTION |
 | public.pedido_itens | produto_id | public.produtos | id | NO ACTION | NO ACTION |
@@ -202,7 +202,7 @@
 | public.receiving_checklists | contract_id | public.contracts | id | NO ACTION | NO ACTION |
 | public.receiving_checklists | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |
 | public.receiving_checklists | inspector_id | auth.users | id | NO ACTION | NO ACTION |
-| public.receiving_checklists | pedido_id | public.pedidos | id | CASCADE | NO ACTION |
+| public.receiving_checklists | pedido_id | public.pedidos | id | RESTRICT | NO ACTION |
 | public.receiving_checklists | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
 | public.repurchase_suggestions | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |
 | public.repurchase_suggestions | produto_id | public.produtos | id | NO ACTION | NO ACTION |
@@ -264,6 +264,7 @@
 | public.spend_forecasts | categoria_id | public.categorias | id | NO ACTION | NO ACTION |
 | public.spend_forecasts | organization_id | public.organizations | id | NO ACTION | NO ACTION |
 | public.spend_forecasts | tenant_id | public.tenants | id | NO ACTION | NO ACTION |
+| public.spot_pedidos | tenant_id | public.tenants | id | RESTRICT | NO ACTION |
 | public.sso_configurations | tenant_id | public.tenants | id | CASCADE | NO ACTION |
 | public.supplier_bonifications | contract_id | public.contracts | id | NO ACTION | NO ACTION |
 | public.supplier_bonifications | fornecedor_id | public.fornecedores | id | NO ACTION | NO ACTION |

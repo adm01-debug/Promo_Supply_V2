@@ -74,7 +74,7 @@
 |---|---|---|---|
 | public.approval_history | approval_history_solicitacao_id_fkey | solicitacao_id | SET NULL |
 | public.approval_workflows | approval_workflows_solicitacao_id_fkey | solicitacao_id | CASCADE |
-| public.cotacoes | cotacoes_solicitacao_id_fkey | solicitacao_id | CASCADE |
+| public.cotacoes | cotacoes_solicitacao_id_fkey | solicitacao_id | RESTRICT |
 | public.negotiation_analyses | negotiation_analyses_solicitacao_id_fkey | solicitacao_id | NO ACTION |
 | public.pedidos | pedidos_solicitacao_id_fkey | solicitacao_id | NO ACTION |
 | public.punchout_sessions | punchout_sessions_created_solicitacao_id_fkey | created_solicitacao_id | NO ACTION |

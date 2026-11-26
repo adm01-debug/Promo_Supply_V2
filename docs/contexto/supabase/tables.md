@@ -120,7 +120,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.spot_api_sync_log](tables/public/spot_api_sync_log.md) | table | sim | 1 | 10 | não |  |
 | [public.spot_customization_options](tables/public/spot_customization_options.md) | table | sim | 1 | 18 | não |  |
 | [public.spot_estoque](tables/public/spot_estoque.md) | table | sim | 1 | 9 | não |  |
-| [public.spot_pedidos](tables/public/spot_pedidos.md) | table | sim | 2 | 17 | não |  |
+| [public.spot_pedidos](tables/public/spot_pedidos.md) | table | sim | 3 | 18 | não |  |
 | [public.spot_produtos](tables/public/spot_produtos.md) | table | sim | 1 | 16 | não |  |
 | [public.spot_sessions](tables/public/spot_sessions.md) | table | sim | 1 | 6 | não |  |
 | [public.spot_skus](tables/public/spot_skus.md) | table | sim | 1 | 19 | não |  |

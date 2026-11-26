@@ -120,6 +120,7 @@
 | public.sourcing_response_items | sourcing_response_items_tenant_id_fkey | tenant_id | NO ACTION |
 | public.sourcing_responses | sourcing_responses_tenant_id_fkey | tenant_id | NO ACTION |
 | public.spend_forecasts | spend_forecasts_tenant_id_fkey | tenant_id | NO ACTION |
+| public.spot_pedidos | spot_pedidos_tenant_id_fkey | tenant_id | RESTRICT |
 | public.sso_configurations | sso_configurations_tenant_id_fkey | tenant_id | CASCADE |
 | public.supplier_bonifications | supplier_bonifications_tenant_id_fkey | tenant_id | NO ACTION |
 | public.supplier_documents | supplier_documents_tenant_id_fkey | tenant_id | NO ACTION |

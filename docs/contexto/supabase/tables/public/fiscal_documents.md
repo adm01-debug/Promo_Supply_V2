@@ -66,6 +66,8 @@
 | idx_fiscal_documents_organization_id | btree | organization_id | não | sim |  | `CREATE INDEX idx_fiscal_documents_organization_id ON public.fiscal_documents USING btree (organization_id)` |
 | idx_fiscal_documents_pedido_id | btree | pedido_id | não | sim |  | `CREATE INDEX idx_fiscal_documents_pedido_id ON public.fiscal_documents USING btree (pedido_id)` |
 | idx_fiscal_documents_tenant | btree | tenant_id | não | sim |  | `CREATE INDEX idx_fiscal_documents_tenant ON public.fiscal_documents USING btree (tenant_id)` |
+| uq_fiscal_documents_chave | btree | chave_acesso | sim | sim | `((chave_acesso IS NOT NULL) AND (chave_acesso <> ''::text))` | `CREATE UNIQUE INDEX uq_fiscal_documents_chave ON public.fiscal_documents USING btree (chave_acesso) WHERE ((chave_acesso IS NOT NULL) AND (chave_acesso <> ''::text))` |
+| uq_fiscal_documents_nf | btree | tenant_id, fornecedor_id, serie, numero_nf | sim | sim | `(fornecedor_id IS NOT NULL)` | `CREATE UNIQUE INDEX uq_fiscal_documents_nf ON public.fiscal_documents USING btree (tenant_id, fornecedor_id, serie, numero_nf) WHERE (fornecedor_id IS NOT NULL)` |
 
 
 ## Policies (RLS)

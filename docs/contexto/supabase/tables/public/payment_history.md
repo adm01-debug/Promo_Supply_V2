@@ -31,7 +31,7 @@
 
 | nome | tipo | definição | on delete | on update | validada |
 |---|---|---|---|---|---|
-| payment_history_pagamento_id_fkey | FOREIGN KEY | `FOREIGN KEY (pagamento_id) REFERENCES pagamentos(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
+| payment_history_pagamento_id_fkey | FOREIGN KEY | `FOREIGN KEY (pagamento_id) REFERENCES pagamentos(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 | payment_history_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | payment_history_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 

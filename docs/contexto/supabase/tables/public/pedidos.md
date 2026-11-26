@@ -70,7 +70,7 @@
 | public.fiscal_documents | fiscal_documents_pedido_id_fkey | pedido_id | NO ACTION |
 | public.pagamentos | pagamentos_pedido_id_fkey | pedido_id | NO ACTION |
 | public.pedido_itens | pedido_itens_pedido_id_fkey | pedido_id | CASCADE |
-| public.receiving_checklists | receiving_checklists_pedido_id_fkey | pedido_id | CASCADE |
+| public.receiving_checklists | receiving_checklists_pedido_id_fkey | pedido_id | RESTRICT |
 | public.repurchase_suggestions | repurchase_suggestions_ultimo_pedido_id_fkey | ultimo_pedido_id | NO ACTION |
 | public.sourcing_awards | sourcing_awards_pedido_id_fkey | pedido_id | NO ACTION |
 

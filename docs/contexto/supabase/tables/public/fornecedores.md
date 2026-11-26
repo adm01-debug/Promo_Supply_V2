@@ -68,7 +68,7 @@
 | public.auction_bids | auction_bids_fornecedor_id_fkey | fornecedor_id | NO ACTION |
 | public.contact_notes | contact_notes_fornecedor_id_fkey | fornecedor_id | CASCADE |
 | public.cotacoes | cotacoes_fornecedor_id_fkey | fornecedor_id | NO ACTION |
-| public.creditos_fornecedor | creditos_fornecedor_fornecedor_id_fkey | fornecedor_id | CASCADE |
+| public.creditos_fornecedor | creditos_fornecedor_fornecedor_id_fkey | fornecedor_id | RESTRICT |
 | public.devolucoes | devolucoes_fornecedor_id_fkey | fornecedor_id | SET NULL |
 | public.fiscal_documents | fiscal_documents_fornecedor_id_fkey | fornecedor_id | NO ACTION |
 | public.fornecedor_categorias | fornecedor_categorias_fornecedor_id_fkey | fornecedor_id | CASCADE |

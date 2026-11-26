@@ -45,7 +45,7 @@
 | receiving_checklists_contract_id_fkey | FOREIGN KEY | `FOREIGN KEY (contract_id) REFERENCES contracts(id)` | NO ACTION | NO ACTION | sim |
 | receiving_checklists_fornecedor_id_fkey | FOREIGN KEY | `FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)` | NO ACTION | NO ACTION | sim |
 | receiving_checklists_inspector_id_fkey | FOREIGN KEY | `FOREIGN KEY (inspector_id) REFERENCES auth.users(id)` | NO ACTION | NO ACTION | sim |
-| receiving_checklists_pedido_id_fkey | FOREIGN KEY | `FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE` | CASCADE | NO ACTION | sim |
+| receiving_checklists_pedido_id_fkey | FOREIGN KEY | `FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE RESTRICT` | RESTRICT | NO ACTION | sim |
 | receiving_checklists_pkey | PRIMARY KEY | `PRIMARY KEY (id)` |  |  | sim |
 | receiving_checklists_tenant_id_fkey | FOREIGN KEY | `FOREIGN KEY (tenant_id) REFERENCES tenants(id)` | NO ACTION | NO ACTION | sim |
 

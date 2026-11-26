@@ -64,7 +64,7 @@
 |---|---|---|---|
 | public.contract_penalties | contract_penalties_pagamento_id_fkey | pagamento_id | NO ACTION |
 | public.creditos_fornecedor | creditos_fornecedor_utilizado_em_pagamento_id_fkey | utilizado_em_pagamento_id | SET NULL |
-| public.payment_history | payment_history_pagamento_id_fkey | pagamento_id | CASCADE |
+| public.payment_history | payment_history_pagamento_id_fkey | pagamento_id | RESTRICT |
 
 
 ## Índices
