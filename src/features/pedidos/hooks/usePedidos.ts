@@ -237,10 +237,17 @@ export function usePedidos(filters?: PedidoFilters) {
   const updatePedido = useCallback(async (id: string, updates: Database['public']['Tables']['pedidos']['Update']) => {
     try {
       logger.info('Atualizando pedido', { id, updates });
-      const { error } = await supabase.from('pedidos').update(updates).eq('id', id);
+      // O PostgREST devolve 0 linhas e nenhum erro quando o RLS barra o update:
+      // sem `select('id')` a tela comemorava "Pedido atualizado!" sem gravar nada.
+      const { data, error } = await supabase.from('pedidos').update(updates).eq('id', id).select('id');
       if (error) {
         logger.error('Erro ao atualizar pedido no banco', { error, id, updates });
         throw error;
+      }
+      if (!data?.length) {
+        logger.error('Pedido nao atualizado: 0 linhas afetadas (RLS)', { id, updates });
+        toast.error('Pedido não foi atualizado: você não tem permissão para alterar este pedido.');
+        return false;
       }
       toast.success('Pedido atualizado!');
       queryClient.invalidateQueries({ queryKey: ['pedidos'] });
@@ -276,10 +283,22 @@ export function usePedidos(filters?: PedidoFilters) {
     try {
       const updates: Database['public']['Tables']['pedidos']['Update'] = { status: newStatus };
       if (newStatus === 'entregue') updates.data_entrega = new Date().toISOString().split('T')[0];
-      const { error } = await supabase.from('pedidos').update(updates).in('id', ids);
+      // 0 linhas afetadas = RLS barrou: nunca comemorar sem gravar (mesmo criterio
+      // de bulkDelete). O parcial tambem precisa ser contado, nao presumido.
+      const { data, error } = await supabase.from('pedidos').update(updates).in('id', ids).select('id');
       if (error) throw error;
-      toast.success(`${ids.length} pedido(s) atualizado(s)!`);
-      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+      const atualizados = data?.length ?? 0;
+      if (atualizados > 0) queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+      if (atualizados === 0) {
+        logger.error('Nenhum pedido atualizado: 0 linhas afetadas (RLS)', { ids, newStatus });
+        toast.error('Nenhum pedido foi atualizado: você não tem permissão para alterar estes pedidos.');
+        return false;
+      }
+      if (atualizados < ids.length) {
+        toast.warning(`${atualizados} de ${ids.length} pedido(s) atualizado(s). Os demais não foram alterados: sem permissão.`);
+        return false;
+      }
+      toast.success(`${atualizados} pedido(s) atualizado(s)!`);
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';

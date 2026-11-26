@@ -130,8 +130,19 @@ export function useCotacoes(filters?: CotacaoFilters) {
 
   const updateCotacao = useCallback(async (id: string, updates: Database['public']['Tables']['cotacoes']['Update']) => {
     try {
-      const { error } = await supabase.from('cotacoes').update(updates).eq('id', id);
+      const { data: afetadas, error } = await supabase
+        .from('cotacoes')
+        .update(updates)
+        .eq('id', id)
+        .select('id');
       if (error) throw error;
+      // O RLS filtra a linha em silencio: 0 linhas e nenhum erro. Sem esta
+      // conferencia o toast de sucesso aparecia com o banco intacto.
+      if (!afetadas || afetadas.length === 0) {
+        logger.error('Cotacao nao gravada: 0 linhas afetadas', { cotacaoId: id });
+        toast.error('Nada foi gravado: cotação inexistente ou sem permissão.');
+        return false;
+      }
       toast.success('Cotação atualizada!');
       invalidate();
       return true;
@@ -147,16 +158,26 @@ export function useCotacoes(filters?: CotacaoFilters) {
       const cotacao = cotacoes.find(c => c.id === id);
       logger.info('Selecionando cotação vencedora', { cotacaoId: id, solicitacaoId: cotacao?.solicitacao_id });
       if (cotacao?.solicitacao_id) {
-        await supabase.from('cotacoes').update({ selecionada: false }).eq('solicitacao_id', cotacao.solicitacao_id);
+        const { error: erroLimpeza } = await supabase.from('cotacoes').update({ selecionada: false }).eq('solicitacao_id', cotacao.solicitacao_id);
+        // Sem isso uma falha aqui deixaria a solicitacao com a vencedora antiga
+        // e a nova marcadas ao mesmo tempo, sem nenhum sinal.
+        if (erroLimpeza) {
+          logger.warn('Nao foi possivel desmarcar as outras cotacoes da solicitacao', { error: erroLimpeza, solicitacaoId: cotacao.solicitacao_id });
+        }
       }
-      const { error } = await supabase.from('cotacoes').update({ 
+      const { data: marcadas, error } = await supabase.from('cotacoes').update({ 
         selecionada: true, 
         status: 'aprovada',
         justificativa_selecao: justificativa || null
-      }).eq('id', id);
+      }).eq('id', id).select('id');
       if (error) {
         logger.error('Erro ao atualizar status da cotação selecionada', { error, cotacaoId: id });
         throw error;
+      }
+      if (!marcadas || marcadas.length === 0) {
+        logger.error('Cotacao vencedora nao gravada: 0 linhas afetadas', { cotacaoId: id });
+        toast.error('Nada foi gravado: cotação inexistente ou sem permissão.');
+        return false;
       }
 
       // Audit Log
@@ -181,10 +202,15 @@ export function useCotacoes(filters?: CotacaoFilters) {
 
   const deleteCotacao = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase.from('cotacoes').delete().eq('id', id);
+      const { data: excluidas, error } = await supabase.from('cotacoes').delete().eq('id', id).select('id');
       if (error) {
         logger.error('Erro ao excluir cotação', { error, cotacaoId: id });
         throw error;
+      }
+      if (!excluidas || excluidas.length === 0) {
+        logger.error('Cotacao nao excluida: 0 linhas afetadas', { cotacaoId: id });
+        toast.error('Nada foi excluído: cotação inexistente ou sem permissão.');
+        return false;
       }
       logger.info('Cotação excluída com sucesso', { cotacaoId: id });
       toast.success('Cotação excluída!');

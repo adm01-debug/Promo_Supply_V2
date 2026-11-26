@@ -139,7 +139,17 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           motivo: i.motivo || input.motivo,
         }));
         const { error: itensError } = await supabase.from('devolucao_itens').insert(itens);
-        if (itensError) throw itensError;
+        if (itensError) {
+          // Cabecalho e itens sao um par: sem os itens a devolucao fica com
+          // valor_total e nenhum item. Desfaz o cabecalho em vez de deixar a
+          // linha orfa (o operador veria "erro ao criar" e criaria outra).
+          const { error: desfazerError } = await supabase.from('devolucoes').delete().eq('id', data.id);
+          queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
+          if (desfazerError) {
+            throw new Error(`Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e o cabecalho NAO foi removido: ${desfazerError.message}`);
+          }
+          throw new Error(`Os itens da devolucao ${numero} nao foram gravados (${itensError.message}) e a devolucao foi desfeita.`);
+        }
       }
 
       toast.success('Devolução criada com sucesso!');
@@ -166,8 +176,19 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       if (newStatus === 'em_transito') updates["data_envio"] = new Date().toISOString();
       if (newStatus === 'recebida_fornecedor') updates["data_recebimento_fornecedor"] = new Date().toISOString();
 
-      const { error } = await supabase.from('devolucoes').update(updates).eq('id', id);
+      const { data: gravadas, error } = await supabase
+        .from('devolucoes')
+        .update(updates)
+        .eq('id', id)
+        .select('id');
       if (error) throw error;
+
+      // UPDATE barrado por policy de RLS devolve 0 linhas e nenhum erro: sem esta
+      // conferencia o hook anunciava o novo status com o banco intacto.
+      if (!gravadas || gravadas.length === 0) {
+        toast.error('Nada foi gravado: devolucao inexistente ou sem permissao para mudar o status.');
+        return false;
+      }
 
       // Auto-generate credit when status is credito_emitido
       if (newStatus === 'credito_emitido' && dev.fornecedor_id) {
@@ -184,12 +205,17 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         if (creditoError) {
           // Credito e status sao um par: se o credito nao gravou, o status volta para o anterior
           // em vez de deixar a devolucao presa em credito_emitido sem nenhum credito.
-          const { error: rollbackError } = await supabase.from('devolucoes').update({ status: dev.status }).eq('id', id);
+          const { data: revertidas, error: rollbackError } = await supabase
+            .from('devolucoes')
+            .update({ status: dev.status })
+            .eq('id', id)
+            .select('id');
           queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
+          const revertido = !rollbackError && (revertidas?.length ?? 0) > 0;
           toast.error(
-            rollbackError
-              ? `Credito nao gerado: ${creditoError.message}. Status NAO revertido: ${rollbackError.message}`
-              : `Credito nao gerado: ${creditoError.message}. Status mantido em "${dev.status}".`
+            revertido
+              ? `Credito nao gerado: ${creditoError.message}. Status mantido em "${dev.status}".`
+              : `Credito nao gerado: ${creditoError.message}. Status NAO revertido: a devolucao segue em "credito_emitido".`
           );
           return false;
         }
@@ -229,8 +255,15 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         return false;
       }
 
-      const { error } = await supabase.from('devolucoes').delete().eq('id', id);
+      const { data: excluidas, error } = await supabase.from('devolucoes').delete().eq('id', id).select('id');
       if (error) throw error;
+
+      // DELETE barrado por policy de RLS devolve 0 linhas e nenhum erro.
+      if (!excluidas || excluidas.length === 0) {
+        toast.error('Nada foi excluido: devolucao inexistente ou sem permissao para excluir.');
+        return false;
+      }
+
       toast.success('Devolução excluída!');
       queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
       return true;
@@ -303,11 +336,19 @@ export function useCreditosFornecedor(fornecedorId?: string) {
         { saldo: credito.saldo, valor_utilizado: credito.valor_utilizado },
         valor,
       );
-      const { error } = await supabase.from('creditos_fornecedor').update({
+      const { data: gravados, error } = await supabase.from('creditos_fornecedor').update({
         ...abatimento,
         utilizado_em_pagamento_id: pagamentoId,
-      }).eq('id', creditoId);
+      }).eq('id', creditoId).select('id');
       if (error) throw error;
+
+      // UPDATE barrado por RLS nao devolve erro, so 0 linhas: sem isso o app
+      // anunciava o credito usado com o saldo do fornecedor intacto.
+      if (!gravados || gravados.length === 0) {
+        toast.error('Nada foi gravado: credito inexistente ou sem permissao para utiliza-lo.');
+        return false;
+      }
+
       toast.success(`Crédito de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} utilizado!`);
       queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
       return true;
