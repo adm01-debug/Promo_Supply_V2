@@ -7,6 +7,7 @@ import { insertNotification } from "../_shared/notifications.ts";
 import {
   cutoffIso,
   dedupePattern,
+  dedupeSinceIso,
   shouldSendFollowUp,
 } from "./cotacaoFollowUp.ts";
 Deno.serve(async (req) => {
@@ -73,6 +74,7 @@ Deno.serve(async (req) => {
         .select("id")
         .eq("type", "cotacao_followup")
         .ilike("message", dedupePattern(cotacao.numero, cotacao.id))
+                .gte("created_at", dedupeSinceIso(now))
         .limit(1);
 
       if (existingNotif && existingNotif.length > 0) {
