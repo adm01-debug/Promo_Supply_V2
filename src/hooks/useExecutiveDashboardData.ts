@@ -122,11 +122,14 @@ export function useExecutiveDashboardData(options?: { periodDays?: number }) {
   });
 
   const { data: solicitacoes, isLoading: l2 } = useQuery({
-    queryKey: ['exec-solicitacoes', organizationId],
+    queryKey: ['exec-solicitacoes', organizationId, cutoffDate],
     queryFn: () => {
       if (!organizationId) return [];
       return fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_conclusao: string | null; categoria_id: string | null; solicitante_id: string | null; fornecedor_id: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id, solicitante_id, fornecedor_id', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [
+          { column: 'organization_id', operator: 'eq', value: organizationId },
+          ...(cutoffDate ? [{ column: 'created_at', operator: 'gte', value: cutoffDate }] : []),
+        ]
       });
     },
     select: (rows) => scopeByDate(rows, (r) => r.created_at),
@@ -189,11 +192,14 @@ export function useExecutiveDashboardData(options?: { periodDays?: number }) {
   });
 
   const { data: fiscalDocs, isLoading: l8 } = useQuery({
-    queryKey: ['exec-fiscal-documents', organizationId],
+    queryKey: ['exec-fiscal-documents', organizationId, cutoffDate],
     queryFn: () => {
       if (!organizationId) return [];
       return fetchAllRows<{ id: string; status: string; reconciliation_status: string | null; valor_total: number | null; data_emissao: string | null }>('fiscal_documents', 'id, status, reconciliation_status, valor_total, data_emissao', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [
+          { column: 'organization_id', operator: 'eq', value: organizationId },
+          ...(cutoffDate ? [{ column: 'data_emissao', operator: 'gte', value: cutoffDate }] : []),
+        ]
       });
     },
     select: (rows) => scopeByDate(rows, (r) => r.data_emissao),
@@ -201,11 +207,14 @@ export function useExecutiveDashboardData(options?: { periodDays?: number }) {
   });
 
   const { data: savingsRows, isLoading: l9 } = useQuery({
-    queryKey: ['exec-savings-tracker', organizationId],
+    queryKey: ['exec-savings-tracker', organizationId, cutoffDate],
     queryFn: () => {
       if (!organizationId) return [];
       return fetchAllRows<{ id: string; type: string; baseline_value: number | null; negotiated_value: number | null; actual_saving: number | null; realized_date: string | null }>('savings_tracker', 'id, type, baseline_value, negotiated_value, actual_saving, realized_date', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: organizationId }]
+        filters: [
+          { column: 'tenant_id', operator: 'eq', value: organizationId },
+          ...(cutoffDate ? [{ column: 'realized_date', operator: 'gte', value: cutoffDate }] : []),
+        ]
       });
     },
     select: (rows) => scopeByDate(rows, (r) => r.realized_date),
