@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bb8724edcb` · branch `main` · 2026-11-26 08:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cf9c067d8e` · branch `main` · 2026-11-26 08:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -190,6 +190,7 @@
 | `SortOption` (TS) | prazo \| valor \| data |  | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `FilterStatus` (TS) | all \| urgente \| escalado \| normal |  | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | `SlaPeriod` (TS) | 3m \| 6m \| 12m |  | `src/components/compras/sla-analysis/useSupplierSlaData.ts` |
+| `RolePermissionRole` (TS) | admin \| buyer \| coordinator \| finance \| viewer |  | `src/components/security/permissionChanges.ts` |
 | `CelebrationType` (TS) | success \| achievement \| milestone \| streak \| level-up \| purchase \| savings \| record \| first-time |  | `src/components/ui/celebration-particles.tsx` |
 | `StatusType` (TS) | pending \| processing \| approved \| completed \| cancelled \| error \| warning \| info \| draft \| active \| inactive \| success \| neutral |  | `src/components/ui/indicators/StatusIndicator.tsx` |
 | `AppRole` (TS) | admin \| coordinator \| buyer \| finance \| viewer \| supplier |  | `src/features/auth/types/authRoles.ts` |

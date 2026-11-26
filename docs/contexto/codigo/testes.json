@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 317,
+ "total": 318,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 299
+  "unit": 300
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 221
+   "arquivos": 222
   },
   {
    "padrao": "outro",
@@ -567,11 +567,11 @@
   {
    "arquivo": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
    "tipo": "unit",
-   "linhas": 98,
+   "linhas": 110,
    "testa": [
     "src/components/compras/ProductionRoutingEngine.tsx"
    ],
-   "casos": 3
+   "casos": 4
   },
   {
    "arquivo": "src/components/compras/__tests__/TrendAnalysisCharts.test.tsx",
@@ -759,6 +759,15 @@
     "src/components/security/PasskeyManager.tsx"
    ],
    "casos": 2
+  },
+  {
+   "arquivo": "src/components/security/__tests__/permissionChanges.test.ts",
+   "tipo": "unit",
+   "linhas": 38,
+   "testa": [
+    "src/components/security/permissionChanges.ts"
+   ],
+   "casos": 3
   },
   {
    "arquivo": "src/components/ui/__tests__/celebrationConfigs.test.ts",
@@ -2947,6 +2956,7 @@
   "src/components/pagamentos/PagamentoAdvancedFilters.tsx": 1,
   "src/components/pedidos/PedidoMobileCard.tsx": 1,
   "src/components/security/PasskeyManager.tsx": 1,
+  "src/components/security/permissionChanges.ts": 1,
   "src/components/ui/celebration-particles.tsx": 1,
   "src/components/ui/chart.tsx": 1,
   "src/components/ui/enhanced-search-helpers.ts": 1,

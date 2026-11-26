@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (221)",
+   "co-localizado (__tests__) (222)",
    "outro (44)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)",
    "fix: espera o usuario parar de digitar antes de buscar no catalogo SPOT (#542)",
    "fix(perf): isola o cache dos paineis por organizacao e recorta pedidos no SQL (#540)",
    "fix(perf): recorta o periodo no servidor no painel executivo e isola o cache do widget (#538)",
-   "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)",
-   "fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)"
+   "fix(perf): filtra pedidos e busca de solicitacoes no servidor (#537)"
   ]
  },
  "pr_template": null,

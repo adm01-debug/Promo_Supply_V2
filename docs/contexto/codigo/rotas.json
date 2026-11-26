@@ -3854,7 +3854,6 @@
     "pagamentos",
     "pedido_itens",
     "pedidos",
-    "produto_fornecedores",
     "profiles",
     "receiving_checklists",
     "solicitacoes",
@@ -3875,7 +3874,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 80
+   "arquivos_puxados": 81
   },
   {
    "protegida": true,
@@ -5059,7 +5058,7 @@
     "assistant",
     "user"
    ],
-   "arquivos_puxados": 371
+   "arquivos_puxados": 372
   },
   {
    "protegida": true,

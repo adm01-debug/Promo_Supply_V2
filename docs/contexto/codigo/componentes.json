@@ -1305,12 +1305,10 @@
     "SourcingIntelligenceBanner"
    ],
    "export_default": null,
-   "linhas": 203,
+   "linhas": 214,
    "dominio": "components/compras",
    "hooks_locais": [],
-   "tabelas": [
-    "produto_fornecedores"
-   ],
+   "tabelas": [],
    "edges": [],
    "usado_por": 1,
    "orfao": false
@@ -2502,7 +2500,7 @@
     "PermissionMatrix"
    ],
    "export_default": null,
-   "linhas": 216,
+   "linhas": 214,
    "dominio": "components/security",
    "hooks_locais": [
     "useAuth",

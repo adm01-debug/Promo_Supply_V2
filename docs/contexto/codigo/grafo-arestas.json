@@ -621,7 +621,7 @@
   "src/components/compras/ProductionRoutingEngine.tsx": [
    "src/components/ui/badge.tsx",
    "src/components/ui/card.tsx",
-   "src/integrations/supabase/client.ts",
+   "src/lib/paginatedFetch.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/PurchaseClimateWidget.tsx": [
@@ -1354,6 +1354,7 @@
    "src/hooks/usePermissions.ts"
   ],
   "src/components/security/PermissionMatrix.tsx": [
+   "src/components/security/permissionChanges.ts",
    "src/components/ui/badge.tsx",
    "src/components/ui/button.tsx",
    "src/components/ui/card.tsx",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `bb8724edcb` · branch `main` · 2026-11-26 08:04 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `cf9c067d8e` · branch `main` · 2026-11-26 08:09 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1189,6 +1189,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | SortOption | prazo \| valor \| data | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | FilterStatus | all \| urgente \| escalado \| normal | `src/components/compras/pending-approvals/pendingApprovalsData.ts` |
 | SlaPeriod | 3m \| 6m \| 12m | `src/components/compras/sla-analysis/useSupplierSlaData.ts` |
+| RolePermissionRole | admin \| buyer \| coordinator \| finance \| viewer | `src/components/security/permissionChanges.ts` |
 | CelebrationType | success \| achievement \| milestone \| streak \| level-up \| purchase \| savings \| record \| first-time | `src/components/ui/celebration-particles.tsx` |
 | StatusType | pending \| processing \| approved \| completed \| cancelled \| error \| warning \| info \| draft \| active \| inactive \| success \| neutral | `src/components/ui/indicators/StatusIndicator.tsx` |
 | AppRole | admin \| coordinator \| buyer \| finance \| viewer \| supplier | `src/features/auth/types/authRoles.ts` |
@@ -2465,7 +2466,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3515 testes em 265 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3520 testes em 266 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2639,6 +2640,7 @@ _nenhum item encontrado_
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
 | `src/components/compras/__tests__/contratoAbasItensDocs.test.tsx` | 5 | ContractDetailsModal - abas Itens e Docs (etapa 292) · todo gatilho de aba tem um conteudo correspondente · lista os itens do contrato e as ordens de compra vinculadas · lista os documentos e expoe o input de anexo … |
 | `src/components/compras/__tests__/contratoCamposRotulos.test.tsx` | 5 | ContractModal - nome acessivel dos campos (etapa 239) · associa os 3 rotulos de select ao gatilho certo · associa as duas janelas de data ao botao que as abre · todo label[for] do modal aponta para um elemento existente … |
+| `src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx` | 5 | SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253) · o CONECTAR leva o comprador a tela de catalogo de produtos · o LISTAR tambem navega quando o produto ja tem parceiros · sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho … |
 | `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
@@ -2669,8 +2671,8 @@ _nenhum item encontrado_
 | `src/components/compras/__tests__/enhancedBulkActionsA11y.test.tsx` | 4 | EnhancedBulkActionsBar - nome acess\u00edvel das a\u00e7\u00f5es · nomeia o gatilho s\u00f3-\u00edcone do menu de a\u00e7\u00f5es da sele\u00e7\u00e3o · nomeia o gatilho s\u00f3-\u00edcone que expande e recolhe a pr\u00e9via · n\u00e3o deixa nenhum bot\u00e3o da barra sem nome acess\u00edvel |
 | `src/components/compras/__tests__/pendingApprovalsHistorico.test.tsx` | 4 | PendingApprovalsList -  · mostra os eventos do workflow da aprovacao, nao os de outro workflow · lista os eventos mais recentes primeiro · sem eventos, diz que nao ha historico em vez de abrir um dialogo vazio |
 | `src/components/compras/__tests__/solicitacaoCardA11y.test.tsx` | 4 | SolicitacaoCard - nome acess\u00edvel dos controles · nomeia o gatilho s\u00f3-\u00edcone do fluxo de aprova\u00e7\u00e3o · mant\u00e9m o r\u00f3tulo textual do gatilho de contexto · n\u00e3o deixa nenhum bot\u00e3o do cart\u00e3o sem nome acess\u00edvel |
-| `src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx` | 4 | SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253) · o CONECTAR leva o comprador a tela de catalogo de produtos · o LISTAR tambem navega quando o produto ja tem parceiros · sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho |
 | `src/components/compras/contract/__tests__/replaceContractItems.test.ts` | 4 | replaceContractItems · insere os novos antes de apagar e preserva os recém-inseridos · não apaga os itens antigos quando o insert falha · sem itens novos apaga todos os itens do contrato |
+| `src/components/security/__tests__/permissionChanges.test.ts` | 4 | summarizePermissionChanges · agrupa inclusoes num unico upsert e remocoes por role · nao gera remocoes quando so ha inclusoes · devolve grupos vazios quando nao ha alteracoes |
 | `src/features/layout/components/chat/__tests__/chatAreaA11y.test.tsx` | 4 | ChatArea - nome acess\u00edvel dos controles s\u00f3-\u00edcone · nomeia as a\u00e7\u00f5es do cabe\u00e7alho do contato · nomeia as a\u00e7\u00f5es do compositor de mensagem · n\u00e3o deixa nenhum bot\u00e3o do chat sem nome acess\u00edvel |
 | `src/features/pedidos/__tests__/exclusaoPedido.test.ts` | 4 | regra de exclusao de pedido · libera so o que ainda nao entrou no ciclo de recebimento · bloqueia a selecao inteira quando um pedido em andamento esta junto · a mensagem de exclusao parcial diz quantos sobraram e por que |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.rls.test.tsx` | 4 | useSolicitacoes — escrita negada pelo RLS · updateSolicitacao com 0 linhas afetadas retorna false e mostra erro · bulkUpdateStatus e bulkDelete com 0 linhas afetadas retornam false · updateSolicitacao com linha afetada continua retornando true |
@@ -2805,8 +2807,6 @@ _nenhum item encontrado_
 | Admin bypasses all permission checks | `src/components/security/PermissionGate.tsx` |
 | Check single permission | `src/components/security/PermissionGate.tsx` |
 | HOC for wrapping components with permission check | `src/components/security/PermissionGate.tsx` |
-| Add permission | `src/components/security/PermissionMatrix.tsx` |
-| Remove permission | `src/components/security/PermissionMatrix.tsx` |
 | Subscribe to realtime rate limit alerts | `src/components/security/RateLimitDashboard.tsx` |
 | * Regra de ciclo de vida da exclusao de pedido. | `src/features/pedidos/exclusaoPedido.ts` |
 | * Regra única de transição de status de pedido. | `src/features/pedidos/statusTransitions.ts` |

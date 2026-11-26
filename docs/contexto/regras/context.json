@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "bb8724edcbe45c11b02d8bc8049a0f37a5fe5744",
+  "sha": "cf9c067d8e59f660819ff5b45188385319277b9a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 08:04 UTC",
-  "files_total": 1496,
-  "code_files": 1321,
-  "code_lines": 221613,
+  "generated_at": "2026-11-26 08:09 UTC",
+  "files_total": 1498,
+  "code_files": 1323,
+  "code_lines": 221718,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "2e5db0e23273841e",
+ "facts_hash": "ebada183146a9226",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 445,
+   ".ts": 447,
    ".tsx": 438,
    ".sql": 361,
    ".mjs": 69,
@@ -33893,7 +33893,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 321,
+  "components_count": 323,
   "hooks": [
    {
     "name": "useContacts",
@@ -34969,8 +34969,8 @@
   },
   {
    "module": "src/components",
-   "files": 285,
-   "lines": 52417,
+   "files": 287,
+   "lines": 52522,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -37583,7 +37583,6 @@
    "produto_fornecedores": {
     "select": [
      "src/components/compras/PriceComparator.tsx",
-     "src/components/compras/ProductionRoutingEngine.tsx",
      "src/components/compras/SourcingIntelligenceWidget.tsx",
      "src/components/compras/SupplierEcosystemSection.tsx",
      "src/hooks/useProdutoFornecedores.ts"
@@ -40531,6 +40530,11 @@
     "values": "3m | 6m | 12m"
    },
    {
+    "file": "src/components/security/permissionChanges.ts",
+    "name": "RolePermissionRole",
+    "values": "admin | buyer | coordinator | finance | viewer"
+   },
+   {
     "file": "src/components/ui/celebration-particles.tsx",
     "name": "CelebrationType",
     "values": "success | achievement | milestone | streak | level-up | purchase | savings | record | first-time"
@@ -43231,14 +43235,6 @@
    {
     "file": "src/components/security/PermissionGate.tsx",
     "text": "HOC for wrapping components with permission check"
-   },
-   {
-    "file": "src/components/security/PermissionMatrix.tsx",
-    "text": "Add permission"
-   },
-   {
-    "file": "src/components/security/PermissionMatrix.tsx",
-    "text": "Remove permission"
    },
    {
     "file": "src/components/security/RateLimitDashboard.tsx",
@@ -60301,6 +60297,10 @@
     "name": "sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho"
    },
    {
+    "file": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    "name": "busca os fornecedores de todos os itens numa unica consulta"
+   },
+   {
     "file": "src/components/compras/approval/__tests__/alcadaListasReais.test.tsx",
     "name": "ApprovalRuleModal usa pessoas e categorias reais"
    },
@@ -61811,6 +61811,22 @@
    {
     "file": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
     "name": "botao Adicionar Passkey fica desabilitado"
+   },
+   {
+    "file": "src/components/security/__tests__/permissionChanges.test.ts",
+    "name": "summarizePermissionChanges"
+   },
+   {
+    "file": "src/components/security/__tests__/permissionChanges.test.ts",
+    "name": "agrupa inclusoes num unico upsert e remocoes por role"
+   },
+   {
+    "file": "src/components/security/__tests__/permissionChanges.test.ts",
+    "name": "nao gera remocoes quando so ha inclusoes"
+   },
+   {
+    "file": "src/components/security/__tests__/permissionChanges.test.ts",
+    "name": "devolve grupos vazios quando nao ha alteracoes"
    },
    {
     "file": "src/components/ui/__tests__/celebrationConfigs.test.ts",
@@ -97382,23 +97398,11 @@
   },
   "src/components/compras/ProductionRoutingEngine.tsx": {
    "path": "src/components/compras/ProductionRoutingEngine.tsx",
-   "lines": 203,
+   "lines": 214,
    "exports": [
     "const ProductionRoutingEngine",
     "const SourcingIntelligenceBanner"
    ],
-   "tables": [
-    {
-     "table": "produto_fornecedores",
-     "op": "select"
-    }
-   ],
-   "table_cols": {
-    "produto_fornecedores": [
-     "id",
-     "produto_id"
-    ]
-   },
    "navigates": [
     "/catalogo-produtos"
    ],
@@ -98570,7 +98574,7 @@
   },
   "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx": {
    "path": "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
-   "lines": 98,
+   "lines": 110,
    "is_test": true,
    "routes": [
     {
@@ -98584,7 +98588,8 @@
     "SourcingIntelligenceBanner - LISTAR/CONECTAR deixa de ser botao morto (QA 253)",
     "o CONECTAR leva o comprador a tela de catalogo de produtos",
     "o LISTAR tambem navega quando o produto ja tem parceiros",
-    "sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho"
+    "sem produto vinculado, o bloco explica o vazio em vez de so mostrar o cabecalho",
+    "busca os fornecedores de todos os itens numa unica consulta"
    ]
   },
   "src/components/compras/approval/ApprovalDelegationModal.tsx": {
@@ -100993,7 +100998,7 @@
   },
   "src/components/security/PermissionMatrix.tsx": {
    "path": "src/components/security/PermissionMatrix.tsx",
-   "lines": 216,
+   "lines": 214,
    "exports": [
     "const PermissionMatrix"
    ],
@@ -101035,10 +101040,6 @@
    ],
    "role_checks": [
     "admin"
-   ],
-   "rule_comments": [
-    "Add permission",
-    "Remove permission"
    ]
   },
   "src/components/security/RateLimitDashboard.tsx": {
@@ -101058,6 +101059,23 @@
     "const SecurityLogsPanel"
    ]
   },
+  "src/components/security/permissionChanges.ts": {
+   "path": "src/components/security/permissionChanges.ts",
+   "lines": 46,
+   "exports": [
+    "type RolePermissionChanges",
+    "type RolePermissionRole",
+    "type RolePermissionUpsert",
+    "type RolePermissionRemoval",
+    "function summarizePermissionChanges"
+   ],
+   "enums": [
+    {
+     "name": "RolePermissionRole",
+     "values": "admin | buyer | coordinator | finance | viewer"
+    }
+   ]
+  },
   "src/components/security/__tests__/PasskeyManager.pendente.test.tsx": {
    "path": "src/components/security/__tests__/PasskeyManager.pendente.test.tsx",
    "lines": 37,
@@ -101066,6 +101084,17 @@
     "PasskeyManager / anuncio honesto (SEC-11)",
     "nao promete login por biometria enquanto o servidor recusa",
     "botao Adicionar Passkey fica desabilitado"
+   ]
+  },
+  "src/components/security/__tests__/permissionChanges.test.ts": {
+   "path": "src/components/security/__tests__/permissionChanges.test.ts",
+   "lines": 38,
+   "is_test": true,
+   "tests": [
+    "summarizePermissionChanges",
+    "agrupa inclusoes num unico upsert e remocoes por role",
+    "nao gera remocoes quando so ha inclusoes",
+    "devolve grupos vazios quando nao ha alteracoes"
    ]
   },
   "src/components/settings/FeedbackSettingsPanel.tsx": {
@@ -123433,10 +123462,24 @@
   }
  },
  "git": {
-  "sha": "bb8724edcbe45c11b02d8bc8049a0f37a5fe5744",
+  "sha": "cf9c067d8e59f660819ff5b45188385319277b9a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "cf9c067",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/ProductionRoutingEngine.tsx",
+     "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+     "src/components/security/PermissionMatrix.tsx",
+     "src/components/security/__tests__/permissionChanges.test.ts",
+     "src/components/security/permissionChanges.ts"
+    ]
+   },
    {
     "sha": "bb8724e",
     "date": "2026-11-26",
@@ -123781,17 +123824,6 @@
      "src/features/auth/hooks/AuthContext.ts",
      "src/features/auth/hooks/useAuth.tsx"
     ]
-   },
-   {
-    "sha": "c3e5f96",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/admin/telemetry/SystemAlertsView.tsx",
-     "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -123828,6 +123860,26 @@
     2
    ],
    [
+    "src/components/compras/ProductionRoutingEngine.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/sourcingIntelligenceBanner.test.tsx",
+    1
+   ],
+   [
+    "src/components/security/PermissionMatrix.tsx",
+    1
+   ],
+   [
+    "src/components/security/__tests__/permissionChanges.test.ts",
+    1
+   ],
+   [
+    "src/components/security/permissionChanges.ts",
+    1
+   ],
+   [
     "src/hooks/useDebouncedValue.ts",
     1
    ],
@@ -123853,26 +123905,6 @@
    ],
    [
     "src/pages/relatorio-negociacoes/__tests__/useRelatorioNegociacoes.test.tsx",
-    1
-   ],
-   [
-    "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
-    1
-   ],
-   [
-    "src/components/compras/PurchaseClimateWidget.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useExecutiveDashboardData.periodo.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useExecutiveDashboardData.ts",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/__tests__/usePedidos.filtrosServidor.test.tsx",
     1
    ]
   ]

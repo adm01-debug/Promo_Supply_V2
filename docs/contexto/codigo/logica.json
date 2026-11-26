@@ -275,7 +275,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 135,
+   "usado_por": 134,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -782,7 +782,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 5,
+   "usado_por": 6,
    "usado_por_modulos": [
     "components/compras",
     "features/solicitacoes",
