@@ -15,11 +15,9 @@ test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
     await expect(page.getByText(/Bem-vindo de volta|Acesse sua conta/i).first()).toBeVisible();
   });
 
-  test('Fluxo de Login e Logout', async ({ page }) => {
+  test('Fluxo de Login: formulário e submissão', async ({ page }) => {
     await page.goto('/auth');
     
-    // Como estamos em ambiente de teste, podemos ter um usuário mock ou depender do comportamento real do Supabase
-    // Para propósitos de E2E estável, focamos na existência dos elementos e transições
     const emailInput = page.locator('input[type="email"]');
     const passwordInput = page.locator('input[type="password"]');
     const submitButton = page.locator('button[type="submit"]');
@@ -27,15 +25,23 @@ test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
     await expect(emailInput).toBeVisible();
     await expect(passwordInput).toBeVisible();
     
-    // Simulação de preenchimento (usuário não necessariamente real se o backend estiver mockado)
     await emailInput.fill(E2E_EMAIL);
     await passwordInput.fill(E2E_PASSWORD);
     
     // Se houver um botão de login/signup, clicamos no de login
     await submitButton.click();
 
-    // Nota: Em ambientes Lovable, o login real pode ser complexo sem segredos configurados.
-    // Validamos que o sistema tenta processar o login.
+    // O submit precisa terminar em algo observável: sai de /auth (login aceito) ou a
+    // tela continua utilizável (credenciais placeholder, sem segredos no ambiente).
+    const saiuDoAuth = await page
+      .waitForURL(url => !url.pathname.startsWith('/auth'), { timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false);
+
+    if (!saiuDoAuth) {
+      await expect(emailInput).toBeVisible();
+      await expect(submitButton).toBeEnabled();
+    }
   });
 
   test('Navegação entre páginas principais (Protegidas)', async ({ page }) => {
@@ -50,24 +56,27 @@ test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
     await expect(page.locator('text=404').or(page.locator('text=encontrada'))).toBeVisible();
   });
 
-  test('Integridade dos Payloads (Mock API Interception)', async ({ page }) => {
-    // Monitora requests para garantir que o bridge está enviando o formato correto
-    page.on('request', request => {
-      if (request.url().includes('external-db-bridge')) {
-        const postData = request.postData();
-        if (postData) {
-          try {
-            const json = JSON.parse(postData);
-            // Verifica campos obrigatórios do contrato documentado
-            expect(json).toHaveProperty('table');
-            expect(json).toHaveProperty('action');
-          } catch (e) {
-            // Ignorar erros de parse se não for JSON
-          }
-        }
-      }
-    });
+  test('Integridade dos Payloads (Bridge contratual)', async ({ page }) => {
+    // Monitora a primeira chamada ao bridge e valida o contrato do payload.
+    const bridgeRequest = page
+      .waitForRequest(
+        request => request.url().includes('external-db-bridge') && Boolean(request.postData()),
+        { timeout: 15_000 },
+      )
+      .catch(() => null);
 
     await page.goto('/compras');
+    await expect(page).toHaveURL(/.*\/auth/);
+
+    const request = await bridgeRequest;
+    if (!request) {
+      test.skip(true, 'sem sessão o bridge não é chamado: não há payload para validar');
+      return;
+    }
+
+    const json = JSON.parse(request.postData()!);
+    // Verifica campos obrigatórios do contrato documentado
+    expect(json).toHaveProperty('table');
+    expect(json).toHaveProperty('action');
   });
 });

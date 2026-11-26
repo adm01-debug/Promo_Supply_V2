@@ -5,15 +5,17 @@ test.describe('Dashboard & Compras Interface', () => {
     await page.goto('/');
   });
 
-  test('Dashboard Widgets Accessibility', async ({ page }) => {
-    // Check main navigation
+  test('Dashboard e widgets renderizam na rota raiz', async ({ page }) => {
+    // Sem sessão (nenhum spec E2E usa storageState) a rota raiz serve a vitrine pública;
+    // com sessão serve o dashboard. Nos dois casos ela não pode vir em branco.
     const dashboardTitle = page.getByText(/Dashboard/i).first();
     await expect(dashboardTitle).toBeVisible();
 
-    // Validate presence of KPI cards
-    const kpiCards = page.locator('.card'); // Assuming cards have a 'card' class or role
-    const count = await kpiCards.count();
-    // We expect at least some dashboard cards
+    // O landmark principal tem que estar montado e com conteúdo (título/seções),
+    // não apenas um esqueleto vazio com o texto do menu.
+    const main = page.locator('main:visible');
+    await expect(main).toBeVisible();
+    expect(await main.getByRole('heading').count()).toBeGreaterThan(0);
   });
 
   test('System Theme Toggle', async ({ page }) => {

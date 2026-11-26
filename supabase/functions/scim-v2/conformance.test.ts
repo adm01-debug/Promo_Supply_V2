@@ -15,9 +15,9 @@
  * How to run locally:
  *   deno test --allow-env supabase/functions/scim-v2/conformance.test.ts
  *
- * In CI these tests are skipped when SCIM_TEST_BASE_URL is not set, so they
- * never block the build against a live endpoint in environments that haven't
- * deployed the function.
+ * In CI these tests are marked as ignored when SCIM_TEST_BASE_URL is not set, so
+ * they never block the build against a live endpoint in environments that haven't
+ * deployed the function - and they can no longer pass without running.
  */
 
 import { assertEquals, assertExists, assertMatch } from "https://deno.land/std@0.190.0/testing/asserts.ts";
@@ -25,13 +25,18 @@ import { assertEquals, assertExists, assertMatch } from "https://deno.land/std@0
 const BASE_URL = Deno.env.get("SCIM_TEST_BASE_URL") ?? "";
 const SCIM_TOKEN = Deno.env.get("SCIM_TEST_TOKEN") ?? "";
 
-// Helper: skip all tests when integration env vars are not configured.
-function requireIntegrationEnv(): boolean {
-  if (!BASE_URL || !SCIM_TOKEN) {
-    console.warn("[SCIM conformance] SCIM_TEST_BASE_URL / SCIM_TEST_TOKEN not set — skipping integration tests.");
-    return false;
-  }
-  return true;
+const SKIP_INTEGRATION = !BASE_URL || !SCIM_TOKEN;
+if (SKIP_INTEGRATION) {
+  console.warn(
+    "[SCIM conformance] SCIM_TEST_BASE_URL / SCIM_TEST_TOKEN ausentes: os 8 testes de integracao aparecem como ignored (nao como aprovados).",
+  );
+}
+
+// Pre-requisito ausente vira teste ignorado nativo do Deno. Antes era um return na
+// primeira linha do corpo: o relatorio mostrava 8 aprovados sem ter executado nada
+// (etapa 297 do plano).
+function it(name: string, fn: () => Promise<void>): void {
+  Deno.test({ name, ignore: SKIP_INTEGRATION, fn });
 }
 
 async function scimRequest(
@@ -52,9 +57,7 @@ async function scimRequest(
 
 // ─── RFC 7644 §3.3 — Create User ─────────────────────────────────────────────
 
-Deno.test("SCIM POST /Users — 201 with SCIM schema and Location header", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM POST /Users — 201 with SCIM schema and Location header", async () => {
   const unique = `scim-conformance-${Date.now()}@example.com`;
   const res = await scimRequest("POST", "/scim/v1/Users", {
     schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
@@ -82,9 +85,7 @@ Deno.test("SCIM POST /Users — 201 with SCIM schema and Location header", async
 
 // ─── RFC 7644 §3.4 — Read User ───────────────────────────────────────────────
 
-Deno.test("SCIM GET /Users/:id — 200 with full User representation", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM GET /Users/:id — 200 with full User representation", async () => {
   // Create a user first
   const email = `scim-get-${Date.now()}@example.com`;
   const createRes = await scimRequest("POST", "/scim/v1/Users", {
@@ -95,7 +96,7 @@ Deno.test("SCIM GET /Users/:id — 200 with full User representation", async () 
   });
   const created = await createRes.json();
   const userId = created.id;
-  if (!userId) return; // skip if create failed
+  assertExists(userId, "create must return an id to continue");
 
   const res = await scimRequest("GET", `/scim/v1/Users/${userId}`);
   assertEquals(res.status, 200, "GET /Users/:id must return 200");
@@ -108,9 +109,7 @@ Deno.test("SCIM GET /Users/:id — 200 with full User representation", async () 
 
 // ─── RFC 7644 §3.4.2 — List Response ─────────────────────────────────────────
 
-Deno.test("SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.2", async () => {
   const res = await scimRequest("GET", "/scim/v1/Users");
   assertEquals(res.status, 200, "GET /Users must return 200");
   const body = await res.json();
@@ -127,9 +126,7 @@ Deno.test("SCIM GET /Users — ListResponse envelope conforms to RFC 7644 §3.4.
 
 // ─── RFC 7644 §3.5.1 — PATCH (attribute update) ──────────────────────────────
 
-Deno.test("SCIM PATCH /Users/:id — updates displayName via Operations array", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM PATCH /Users/:id — updates displayName via Operations array", async () => {
   const email = `scim-patch-${Date.now()}@example.com`;
   const createRes = await scimRequest("POST", "/scim/v1/Users", {
     schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
@@ -139,7 +136,7 @@ Deno.test("SCIM PATCH /Users/:id — updates displayName via Operations array", 
   });
   const created = await createRes.json();
   const userId = created.id;
-  if (!userId) return;
+  assertExists(userId, "create must return an id to continue");
 
   const patchRes = await scimRequest("PATCH", `/scim/v1/Users/${userId}`, {
     schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
@@ -157,9 +154,7 @@ Deno.test("SCIM PATCH /Users/:id — updates displayName via Operations array", 
 
 // ─── RFC 7644 §3.6 — Delete User ─────────────────────────────────────────────
 
-Deno.test("SCIM DELETE /Users/:id — returns 204 No Content", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM DELETE /Users/:id — returns 204 No Content", async () => {
   const email = `scim-del-${Date.now()}@example.com`;
   const createRes = await scimRequest("POST", "/scim/v1/Users", {
     schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
@@ -169,7 +164,7 @@ Deno.test("SCIM DELETE /Users/:id — returns 204 No Content", async () => {
   });
   const created = await createRes.json();
   const userId = created.id;
-  if (!userId) return;
+  assertExists(userId, "create must return an id to continue");
 
   const delRes = await scimRequest("DELETE", `/scim/v1/Users/${userId}`);
   assertEquals(delRes.status, 204, "DELETE must return 204 No Content");
@@ -178,9 +173,7 @@ Deno.test("SCIM DELETE /Users/:id — returns 204 No Content", async () => {
 
 // ─── RFC 7644 §3.12 — Error response ─────────────────────────────────────────
 
-Deno.test("SCIM POST /Users with invalid body — error conforms to RFC 7644 §3.12", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM POST /Users with invalid body — error conforms to RFC 7644 §3.12", async () => {
   const res = await scimRequest("POST", "/scim/v1/Users", {
     // Missing required emails field
     displayName: "No Email",
@@ -199,9 +192,7 @@ Deno.test("SCIM POST /Users with invalid body — error conforms to RFC 7644 §3
 
 // ─── RFC 7644 — Unauthorized request ─────────────────────────────────────────
 
-Deno.test("SCIM request without token — returns 401", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM request without token — returns 401", async () => {
   const res = await fetch(`${BASE_URL}/scim/v1/Users`, {
     headers: { "Accept": "application/scim+json" },
   });
@@ -210,9 +201,7 @@ Deno.test("SCIM request without token — returns 401", async () => {
 
 // ─── Unsupported method ───────────────────────────────────────────────────────
 
-Deno.test("SCIM unsupported method — returns 405", async () => {
-  if (!requireIntegrationEnv()) return;
-
+it("SCIM unsupported method — returns 405", async () => {
   const res = await scimRequest("PUT", "/scim/v1/Groups");
   assertEquals(res.status, 405, "Unsupported method must return 405");
 });

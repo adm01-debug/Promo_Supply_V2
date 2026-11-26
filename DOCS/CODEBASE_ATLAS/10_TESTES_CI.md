@@ -20,8 +20,8 @@
 
 ## Integração / contratos
 - `src/tests/contracts.test.ts`, `contracts-elite.test.ts` — validam `FunctionContracts` Zod × payloads reais.
-- `src/tests/integration/contract-testing.test.ts`, `contract-validation.test.ts`, `core-integrity.test.ts`.
-- `src/tests/fuzzing/edge-functions.test.ts`, `payload-integrity.test.ts` — payloads mutados via `PayloadFuzzer`.
+- `src/tests/integration/contract-testing.test.ts`, `contract-validation.test.ts`, `supabase-db.test.ts`.
+- Fuzzing real: `supabase/functions/workflow-engine/fuzz.test.ts` e `supabase/functions/tests/fuzzing_suite.ts` — payloads mutados via `PayloadFuzzer` (`supabase/functions/_shared/fuzzer.ts`).
 - `src/tests/load/backend-stress.yml` — perfil de stress (artillery-style).
 
 ## RLS
