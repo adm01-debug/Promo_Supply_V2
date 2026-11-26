@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth";
 
 type ClimateLevel = 'excellent' | 'good' | 'moderate' | 'warning' | 'critical';
 
@@ -54,15 +55,18 @@ const getStatusLevel = (value: number): ClimateLevel => {
 
 export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) => {
   const [showDetails, setShowDetails] = useState(false);
+  const { organizationId } = useAuth();
 
   // Fetch real stats from Supabase
   const { data: stats } = useQuery({
-    queryKey: ['purchase-climate-stats'],
+    // organizationId na chave: sem ele o cache vaza entre tenants (RLS filtra o
+    // servidor, mas o resultado do tenant anterior ficava visivel ate o staleTime).
+    queryKey: ['purchase-climate-stats', organizationId],
     queryFn: async () => {
       const [solRes, pedRes, pagRes] = await Promise.all([
-        supabase.from('solicitacoes').select('status, valor_estimado', { count: 'exact' }),
-        supabase.from('pedidos').select('status, data_previsao, data_entrega', { count: 'exact' }),
-        supabase.from('pagamentos').select('status, valor, valor_pago', { count: 'exact' }),
+        supabase.from('solicitacoes').select('status'),
+        supabase.from('pedidos').select('status, data_previsao'),
+        supabase.from('pagamentos').select('valor, valor_pago'),
       ]);
 
       const sols = solRes.data || [];
