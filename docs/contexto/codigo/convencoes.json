@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)",
    "chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)",
    "fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)",
    "fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)",
-   "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)",
-   "chore(db): sincronizar types.ts com o banco [auto] (#488)"
+   "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)"
   ]
  },
  "pr_template": null,

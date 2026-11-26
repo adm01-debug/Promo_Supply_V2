@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "20e28a7de91e0b3ebd444e22195305c1ccd65607",
+  "sha": "63ca16ffae05dad2d14bc8e9c6b236df52c01988",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 01:18 UTC",
+  "generated_at": "2026-11-26 01:46 UTC",
   "files_total": 1468,
   "code_files": 1294,
   "code_lines": 219033,
@@ -122785,10 +122785,23 @@
   }
  },
  "git": {
-  "sha": "20e28a7de91e0b3ebd444e22195305c1ccd65607",
+  "sha": "63ca16ffae05dad2d14bc8e9c6b236df52c01988",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "63ca16f",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)",
+    "files": [
+     ".github/workflows/aplicar-migration-prod.yml",
+     ".github/workflows/main.yml",
+     ".github/workflows/paridade-banco.yml",
+     "docs/agentes/github-ci.md",
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "20e28a7",
     "date": "2026-11-25",
@@ -123117,26 +123130,16 @@
      "src/tests/contracts.test.ts",
      "vitest.config.ts"
     ]
-   },
-   {
-    "sha": "52746df",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(pendencias): registra o estado real das views de compra no PIM (#464)",
-    "files": [
-     "docs/pendencias/integracao-pim-promo-supply.md",
-     "docs/pendencias/sql/pim-v_compras_views.sql"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    15
+    16
    ],
    [
     ".github/workflows/main.yml",
-    3
+    4
    ],
    [
     "scripts/ci/paridade-migrations-banco.allowlist.json",
@@ -123149,6 +123152,10 @@
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     3
+   ],
+   [
+    "docs/agentes/github-ci.md",
+    2
    ],
    [
     "docs/pendencias/_indice.md",
@@ -123191,23 +123198,19 @@
     2
    ],
    [
+    ".github/workflows/aplicar-migration-prod.yml",
+    1
+   ],
+   [
+    ".github/workflows/paridade-banco.yml",
+    1
+   ],
+   [
     "eslint.config.js",
     1
    ],
    [
     "src/components/compras/ContractDetailsModal.tsx",
-    1
-   ],
-   [
-    "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
-    1
-   ],
-   [
-    "src/pages/fornecedores/Fornecedores.tsx",
-    1
-   ],
-   [
-    "vite.config.ts",
     1
    ]
   ]

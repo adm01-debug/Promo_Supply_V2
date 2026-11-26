@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "20e28a7de91e0b3ebd444e22195305c1ccd65607",
+  "commit": "63ca16ffae05dad2d14bc8e9c6b236df52c01988",
   "branch": "main",
-  "data_commit": "2026-11-25T22:01:47-03:00",
+  "data_commit": "2026-11-25T22:23:10-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "63ca16f",
+    "data": "2026-11-25",
+    "assunto": "chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)"
+   },
    {
     "sha": "20e28a7",
     "data": "2026-11-25",
@@ -126,11 +131,6 @@
     "sha": "81bd8c5",
     "data": "2026-11-25",
     "assunto": "fix(dashboard): liga o card de Taxa SLA que nunca era renderizado (#471)"
-   },
-   {
-    "sha": "a250541",
-    "data": "2026-11-25",
-    "assunto": "fix(push): so anuncia \"Notificacoes ativadas\" depois de registrar a inscricao (#470)"
    }
   ],
   "arquivos_mudados_7d": 1484,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 122
+    "mudancas": 123
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 122
+    "mudancas": 123
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 43
+    "mudancas": 42
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -230,11 +230,11 @@
     "mudancas": 8
    },
    {
-    "arquivo": "AGENTS.md",
+    "arquivo": ".github/workflows/main.yml",
     "mudancas": 7
    },
    {
-    "arquivo": "docs/pendencias/_ordem.md",
+    "arquivo": "AGENTS.md",
     "mudancas": 7
    },
    {
@@ -258,7 +258,7 @@
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/main.yml",
+    "arquivo": "docs/pendencias/_ordem.md",
     "mudancas": 6
    },
    {
@@ -294,7 +294,7 @@
     "mudancas": 6
    },
    {
-    "arquivo": "eslint.config.js",
+    "arquivo": ".github/workflows/aplicar-migration-prod.yml",
     "mudancas": 5
    }
   ],
