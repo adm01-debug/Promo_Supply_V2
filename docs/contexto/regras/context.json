@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "dac477d4d1d482ee49cd308971702072df6bcf6c",
+  "sha": "8c87ad1563aa206b94dee26532a0826e77d66afe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 04:24 UTC",
-  "files_total": 1478,
-  "code_files": 1304,
-  "code_lines": 219943,
+  "generated_at": "2026-11-26 04:32 UTC",
+  "files_total": 1480,
+  "code_files": 1306,
+  "code_lines": 220041,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7c9cb945057a5341",
+ "facts_hash": "462d9ee35ca0ebbe",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 441,
    ".tsx": 433,
-   ".sql": 353,
+   ".sql": 355,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -26858,6 +26858,18 @@
     "schedule": "*/15 * * * *",
     "body": "SELECT public.cron_watchdog();",
     "src": "supabase/migrations/20261122130000_corrige_cron_watchdog_nomes_mortos.sql"
+   },
+   {
+    "job": "cleanup-system-alerts",
+    "schedule": "10 2 * * *",
+    "body": "SELECT public.cleanup_old_system_alerts();",
+    "src": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql"
+   },
+   {
+    "job": "cleanup-system-alerts",
+    "schedule": "10 2 * * *",
+    "body": "DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'",
+    "src": "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql"
    }
   ],
   "views": {
@@ -27217,10 +27229,12 @@
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
+   "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
+   "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -36475,8 +36489,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 340,
-   "lines": 28604,
+   "files": 341,
+   "lines": 28668,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36567,8 +36581,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 4,
-   "lines": 373,
+   "files": 5,
+   "lines": 407,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36578,7 +36592,8 @@
     "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
     "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
-    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql"
+    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
+    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql"
    ]
   },
   {
@@ -58784,6 +58799,14 @@
    {
     "file": "supabase/migrations/20261122140000_dedupe_system_error_alerts.sql",
     "line": "AND COALESCE((metadata->>'last_seen')::timestamptz, created_at) < now() - interval '24 hours'"
+   },
+   {
+    "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+    "line": "-- (resolved_at IS NOT NULL AND resolved_at < now() - interval '60 days')"
+   },
+   {
+    "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+    "line": "-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')"
    },
    {
     "file": "tests-e2e/global-setup.ts",
@@ -122695,6 +122718,14 @@
    "path": "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "lines": 25
   },
+  "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql": {
+   "path": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+   "lines": 64,
+   "temporal": [
+    "-- (resolved_at IS NOT NULL AND resolved_at < now() - interval '60 days')",
+    "-- OR (resolved_at IS NULL AND created_at < now() - interval '180 days')"
+   ]
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -122710,6 +122741,10 @@
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "lines": 7
+  },
+  "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql": {
+   "path": "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
+   "lines": 34
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -122946,10 +122981,23 @@
   }
  },
  "git": {
-  "sha": "dac477d4d1d482ee49cd308971702072df6bcf6c",
+  "sha": "8c87ad1563aa206b94dee26532a0826e77d66afe",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "8c87ad1",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(retencao): cron de system_alerts passa a chamar a funcao oficial (etapa 201) (#522)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
+     "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql"
+    ]
+   },
    {
     "sha": "dac477d",
     "date": "2026-11-26",
@@ -123281,19 +123329,16 @@
     "author": "adm01-debug",
     "subject": "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)",
     "files": []
-   },
-   {
-    "sha": "0c38190",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#488)",
-    "files": []
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    25
+    26
+   ],
+   [
+    "AGENTS.md",
+    2
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
@@ -123318,6 +123363,18 @@
    [
     "tests-e2e/production-ready.spec.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
+    1
    ],
    [
     "src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx",
@@ -123353,22 +123410,6 @@
    ],
    [
     "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
-    1
-   ],
-   [
-    "src/features/pedidos/hooks/usePedidos.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/usePagamentos.ts",
-    1
-   ],
-   [
-    "src/features/layout/__tests__/AppSidebar.badgeErro.test.tsx",
     1
    ]
   ]
