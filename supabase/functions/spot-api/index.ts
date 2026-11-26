@@ -508,7 +508,26 @@ async function syncStock(db: SupabaseClient, logger: EdgeLogger) {
   }
 
   const saved = await upsertBatched(db, "spot_estoque", rows, "sku", logger);
-  return { stocks: saved };
+
+    // INT-11 (etapa 183): o upsert só grava o que veio, então o SKU que o fornecedor
+    // parou de enviar ficava com a última quantidade para sempre. Quem não foi tocado
+    // nesta rodada (synced_at anterior ao carimbo dela) teve o estoque zerado. Payload
+    // vazio não zera nada: resposta anômala não pode apagar o cache inteiro.
+    let cleared = 0;
+    if (saved > 0) {
+      const { data: zerados, error: clearError } = await db
+        .from("spot_estoque")
+        .update({ quantity: 0, incoming_quantity: null, incoming_date: null })
+        .lt("synced_at", now)
+        .select("sku");
+      if (clearError) {
+        logger.error("Falha ao reconciliar spot_estoque", { error: clearError.message });
+        throw new HttpError(500, `Falha ao reconciliar spot_estoque: ${clearError.message}`);
+      }
+      cleared = zerados?.length ?? 0;
+    }
+
+    return { stocks: saved, cleared };
 }
 
 interface CreateOrderInput {
