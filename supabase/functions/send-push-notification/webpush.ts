@@ -14,7 +14,17 @@
  * - ECDSA do WebCrypto devolve r||s (64 bytes); o JWT ES256 exige DER.
  */
 
+import { retry } from "../_shared/retry.ts";
+
 type Bytes = Uint8Array<ArrayBuffer>;
+
+export interface PushMessagePayload {
+  title: string;
+  body: string;
+  icon?: string;
+  tag?: string;
+  data?: Record<string, unknown>;
+}
 
 export interface PushSubscriptionKeys {
   endpoint: string;
@@ -245,15 +255,33 @@ export async function encryptPayload(
 }
 
 /**
+ * Resultado de um envio: `status` é o HTTP do serviço de push e vale 0 quando
+ * não houve resposta (timeout/erro de rede). O booleano anterior colapsava
+ * "endpoint morto" com "provedor instável" e o chamador tratava os dois como
+ * morte da inscrição.
+ */
+export interface WebPushResult {
+  ok: boolean;
+  status: number;
+}
+
+/**
+ * RFC 8030 §5: 404 e 410 significam que a inscrição não existe mais no serviço
+ * de push — só esses casos autorizam apagar a linha de `push_subscriptions`.
+ */
+export function isSubscriptionGone(status: number): boolean {
+  return status === 404 || status === 410;
+}
+
+/**
  * Envia uma notificação Web Push padrão (VAPID + aes128gcm).
- * Retorna false em qualquer falha de rede/HTTP — o chamador decide o cleanup.
  */
 export async function sendWebPush(
   subscription: PushSubscriptionKeys,
   payloadString: string,
   vapid: VapidKeys,
   urgency: "normal" | "high" = "normal",
-): Promise<boolean> {
+): Promise<WebPushResult> {
   const { authorization } = await generateVapidAuth(
     subscription.endpoint,
     vapid.publicKey,
@@ -279,14 +307,58 @@ export async function sendWebPush(
       });
       if (!response.ok) {
         console.error(`Push failed para ${subscription.endpoint}: ${response.status}`);
-        return false;
+        return { ok: false, status: response.status };
       }
-      return true;
+      return { ok: true, status: response.status };
     } finally {
       clearTimeout(timer);
     }
   } catch (error) {
     console.error(`Erro ao enviar push para ${subscription.endpoint}:`, error);
-    return false;
+    // Sem resposta HTTP: timeout, DNS, reset. Não é prova de endpoint morto.
+    return { ok: false, status: 0 };
+  }
+}
+
+/**
+ * Envia para uma inscrição com retry backoff exponencial + jitter (mesmo padrão
+ * de `alert-dispatcher/index.ts:71-104`): instabilidade do provedor (429/5xx ou
+ * falta de resposta) é repetida; endpoint morto (404/410) é terminal e não
+ * gera retry. Devolve o status da última tentativa para o chamador decidir a
+ * purga — nunca apaga nada por conta própria.
+ */
+export async function sendPushToSubscription(
+  subscription: PushSubscriptionKeys,
+  payload: PushMessagePayload,
+  vapid: VapidKeys,
+): Promise<WebPushResult> {
+  let ultimo: WebPushResult = { ok: false, status: 0 };
+  try {
+    const payloadString = JSON.stringify(payload);
+
+    return await retry(
+      async () => {
+        const res = await sendWebPush(subscription, payloadString, vapid);
+        ultimo = res;
+
+        if (!res.ok) {
+          const err = new Error(`push_status_${res.status}`) as Error & { __noRetry?: boolean };
+          if (isSubscriptionGone(res.status)) err.__noRetry = true;
+          throw err;
+        }
+
+        console.log(`Push sent successfully to ${subscription.endpoint}`);
+        return res;
+      },
+      {
+        retries: 2,
+        baseDelayMs: 300,
+        maxDelayMs: 3_000,
+        shouldRetry: (err) => !(err as { __noRetry?: boolean })?.__noRetry,
+      },
+    );
+  } catch (error) {
+    console.error(`Error sending push to ${subscription.endpoint}:`, error);
+    return ultimo;
   }
 }

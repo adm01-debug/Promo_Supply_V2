@@ -8,6 +8,9 @@ import {
   b64UrlEncode,
   encryptPayload,
   generateVapidAuth,
+  isSubscriptionGone,
+  sendPushToSubscription,
+  sendWebPush,
 } from "./webpush.ts";
 
 type Bytes = Uint8Array<ArrayBuffer>;
@@ -150,4 +153,128 @@ Deno.test({
   },
   sanitizeOps: false,
   sanitizeResources: false,
+});
+
+/**
+ * Sobe um servidor local que responde `status` em toda requisição e conta as
+ * tentativas. Usado para reproduzir a indisponibilidade do provedor de push.
+ */
+function servidorDePush(status: number): { url: string; tentativas: () => number; parar: () => Promise<void> } {
+  let tentativas = 0;
+  const server = Deno.serve({ port: 0, onListen: () => {} }, () => {
+    tentativas += 1;
+    return new Response(null, { status });
+  });
+  return {
+    url: `http://127.0.0.1:${server.addr.port}/push`,
+    tentativas: () => tentativas,
+    parar: () => server.shutdown(),
+  };
+}
+
+const SUBSCRIPTION = { endpoint: "", p256dh: RECEIVER_P256DH, auth: RECEIVER_AUTH };
+const VAPID = { publicKey: VAPID_PUBLIC, privateKey: VAPID_PRIVATE };
+const PAYLOAD = { title: "titulo", body: "corpo" };
+
+Deno.test({
+  name: "INT-04: 503 do provedor preserva a inscricao (nao e endpoint morto)",
+  fn: async () => {
+    const srv = servidorDePush(503);
+    try {
+      const res = await sendPushToSubscription({ ...SUBSCRIPTION, endpoint: srv.url }, PAYLOAD, VAPID);
+      assertEquals(res.ok, false);
+      assertEquals(res.status, 503, "o status HTTP precisa subir para o chamador");
+      assertEquals(srv.tentativas(), 3, "429/5xx reenta com backoff (1 + 2 retries)");
+      assertEquals(
+        isSubscriptionGone(res.status),
+        false,
+        "503 nao pode autorizar a purga da inscricao",
+      );
+    } finally {
+      await srv.parar();
+    }
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "INT-04: 404 do provedor e terminal e nao gera retry",
+  fn: async () => {
+    const srv = servidorDePush(404);
+    try {
+      const res = await sendPushToSubscription({ ...SUBSCRIPTION, endpoint: srv.url }, PAYLOAD, VAPID);
+      assertEquals(res.ok, false);
+      assertEquals(res.status, 404);
+      assertEquals(srv.tentativas(), 1, "endpoint morto nao melhora com retry");
+      assertEquals(isSubscriptionGone(res.status), true, "404 autoriza a purga da inscricao");
+    } finally {
+      await srv.parar();
+    }
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "INT-04: 200 devolve ok e nao reenta",
+  fn: async () => {
+    const srv = servidorDePush(200);
+    try {
+      const res = await sendPushToSubscription({ ...SUBSCRIPTION, endpoint: srv.url }, PAYLOAD, VAPID);
+      assertEquals(res.ok, true);
+      assertEquals(res.status, 200);
+      assertEquals(srv.tentativas(), 1);
+    } finally {
+      await srv.parar();
+    }
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "INT-04: sem resposta HTTP o envio nao e tratado como endpoint morto",
+  fn: async () => {
+    // Porta fechada: o fetch falha e sendWebPush devolve status 0.
+    const res = await sendWebPush(
+      { ...SUBSCRIPTION, endpoint: "http://127.0.0.1:1/push" },
+      JSON.stringify(PAYLOAD),
+      VAPID,
+    );
+    assertEquals(res.ok, false);
+    assertEquals(res.status, 0, "timeout/erro de rede nao traz status HTTP");
+    assertEquals(isSubscriptionGone(res.status), false, "falha de rede nao autoriza a purga");
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "INT-04: o index so purga a inscricao sob isSubscriptionGone (RFC 8030 §5)",
+  fn: () => {
+    const fonte = Deno.readTextFileSync(new URL("./index.ts", import.meta.url));
+
+    const guarda = fonte.indexOf("if (!isSubscriptionGone(resultado.status))");
+    assert(guarda >= 0, "o index precisa decidir a purga pelo status, nao por um booleano");
+
+    const del = fonte.indexOf(".delete()");
+    assert(del > guarda, "o delete de push_subscriptions precisa estar depois do guard de status");
+
+    assert(
+      !fonte.includes("if (!success)"),
+      "o envio nao pode mais ser consumido como booleano sem status",
+    );
+  },
+});
+
+Deno.test({
+  name: "INT-04: so 404/410 contam como inscricao morta (RFC 8030 §5)",
+  fn: () => {
+    assertEquals(isSubscriptionGone(404), true);
+    assertEquals(isSubscriptionGone(410), true);
+    for (const status of [200, 201, 400, 401, 403, 408, 429, 500, 502, 503, 0]) {
+      assertEquals(isSubscriptionGone(status), false, `status ${status} nao pode purgar a inscricao`);
+    }
+  },
 });
