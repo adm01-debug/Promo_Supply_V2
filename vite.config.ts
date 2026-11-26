@@ -166,7 +166,10 @@ export default defineConfig(({ mode }) => ({
     // em nenhum workflow), entao o certo e nao gerar.
     sourcemap: false,
     cssCodeSplit: true,
-    chunkSizeWarningLimit: 600,
+    // Teto real do bundle hoje: vendor-charts (~469 kB). Subir acima disso e
+    // regressao; o vendor-canvas e o vendor-pdf nao devem voltar ao preload da
+    // primeira tela (verificar com grep em dist/index.html).
+    chunkSizeWarningLimit: 480,
     reportCompressedSize: false,
     rollupOptions: {
       onwarn: handleRollupWarning,
@@ -175,6 +178,23 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
         manualChunks: (id) => {
+          // Runtime compartilhado: helpers de transpilacao (Babel e o runtime virtual do
+          // oxc, que o rolldown materializa fora de node_modules), polyfills, o auxiliar
+          // __vitePreload e as libs de compressao. Sem regra propria esses modulos caem
+          // em vendor-canvas / vendor-pdf, e um unico simbolo importado pelo chunk de
+          // logger arrasta os pacotes inteiros para o preload da primeira tela
+          // (PERF-07). Precisa vir antes do filtro de node_modules: os helpers do oxc e
+          // o __vitePreload tem id virtual e nao passam por ele.
+          if (
+            id.includes("@babel/runtime") ||
+            id.includes("@oxc-project") ||
+            id.includes("core-js") ||
+            id.includes("regenerator-runtime") ||
+            id.includes("fflate") ||
+            id.includes("/pako/") ||
+            id.includes("preload-helper")
+          ) return "vendor";
+
           if (!id.includes("node_modules")) return undefined;
 
           // Animation — framer-motion + its private deps (motion-dom, motion-utils)
@@ -221,8 +241,6 @@ export default defineConfig(({ mode }) => ({
           if (
             id.includes("html2canvas") ||
             id.includes("/canvg/") ||
-            id.includes("fflate") ||
-            id.includes("/pako/") ||
             id.includes("fast-png") ||
             id.includes("iobuffer") ||
             id.includes("stackblur") ||
