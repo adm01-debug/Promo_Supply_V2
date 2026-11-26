@@ -23,8 +23,6 @@ export interface AuthContextType {
   /** @deprecated Autocadastro desabilitado — contas são criadas pelo administrador. */
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
-  /** @deprecated use setSelectedEmpresa */
-  switchTenant: (tenantId: string) => Promise<void>;
   /** Troca a empresa em foco (null = visão consolidada de todas). */
   setSelectedEmpresa: (empresaId: string | null) => void;
   hasRole: (requiredRole: AppRole | AppRole[]) => boolean;
