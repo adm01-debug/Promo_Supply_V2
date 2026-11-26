@@ -10,16 +10,26 @@ import { useRealtimeSubscription } from '../useRealtimeSubscription';
 // e os eventos que chegassem nesse intervalo eram perdidos.
 
 vi.mock('@/features/auth/hooks/useAuthContext', () => ({
-  useAuth: () => ({ tenantId: 'tenant-1' }),
+  useAuth: () => ({ tenantId: authState.tenantId, organizationId: authState.organizationId }),
+}));
+
+const authState = vi.hoisted(() => ({
+  tenantId: 'tenant-1' as string | null,
+  organizationId: undefined as string | undefined,
 }));
 
 vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
+const canalOn = vi.hoisted(() => ({ calls: [] as unknown[][] }));
+
 const abrirCanalPostgres = vi.fn((_nome: string) => {
   const canal: Record<string, unknown> = {};
-  canal.on = () => canal;
+  canal.on = (...args: unknown[]) => {
+    canalOn.calls.push(args);
+    return canal;
+  };
   canal.subscribe = () => canal;
   return canal;
 });
@@ -45,6 +55,9 @@ describe('useRealtimeSubscription (HK-02)', () => {
   beforeEach(() => {
     abrirCanalPostgres.mockClear();
     removeChannel.mockClear();
+    canalOn.calls.length = 0;
+    authState.tenantId = 'tenant-1';
+    authState.organizationId = undefined;
   });
 
   it('nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo', () => {
@@ -75,5 +88,50 @@ describe('useRealtimeSubscription (HK-02)', () => {
     rerender({ tabelas: ['fornecedores', 'pedidos'] });
 
     expect(abrirCanalPostgres).toHaveBeenCalledTimes(2);
+  });
+});
+
+// HK-11 (etapa 200): `tenantId` vem do claim `tenant_id` do JWT, que nada no repositorio
+// cria -- em producao `current_tenant_id()` so devolve valor com esse claim. Sem ele, este
+// gate abandonava a inscricao de TODA tabela com `tenant_id` e o tempo real nunca ligava.
+describe('useRealtimeSubscription - fallback de empresa (HK-11)', () => {
+  beforeEach(() => {
+    abrirCanalPostgres.mockClear();
+    removeChannel.mockClear();
+    canalOn.calls.length = 0;
+    authState.tenantId = 'tenant-1';
+    authState.organizationId = undefined;
+  });
+
+  it('assina filtrando pela empresa quando o claim tenant_id nao vem no JWT', () => {
+    authState.tenantId = null;
+    authState.organizationId = 'org-1';
+
+    renderHook(() => useRealtimeSubscription({ tables: ['pedidos'] }), { wrapper });
+
+    expect(abrirCanalPostgres).toHaveBeenCalledTimes(1);
+    expect(abrirCanalPostgres.mock.calls[0][0]).toContain('realtime-org-1');
+
+    const filtros = canalOn.calls.map((args) => (args[1] as { filter?: string })?.filter);
+    expect(filtros).toContain('tenant_id=eq.org-1');
+  });
+
+  it('continua sem assinar quando nao ha claim nem empresa (isolamento preservado)', () => {
+    authState.tenantId = null;
+    authState.organizationId = undefined;
+
+    renderHook(() => useRealtimeSubscription({ tables: ['pedidos'] }), { wrapper });
+
+    expect(abrirCanalPostgres).not.toHaveBeenCalled();
+  });
+
+  it('prefere o tenant do claim quando ele existe, mesmo com empresa definida', () => {
+    authState.tenantId = 'tenant-1';
+    authState.organizationId = 'org-1';
+
+    renderHook(() => useRealtimeSubscription({ tables: ['pedidos'] }), { wrapper });
+
+    const filtros = canalOn.calls.map((args) => (args[1] as { filter?: string })?.filter);
+    expect(filtros).toContain('tenant_id=eq.tenant-1');
   });
 });

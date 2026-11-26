@@ -19,19 +19,27 @@ export function useLicitacoes() {
   const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
+  // HK-11: `tenantId` vem do RPC `current_tenant_id()`, que em produção só devolve
+  // alguma coisa quando o JWT traz o claim `tenant_id` — e nada no repositório cria
+  // esse claim. Com ele ausente a consulta ficava muda (`return []` + `enabled: false`):
+  // lista vazia para sempre, sem loading e sem erro. O resto do app já cai para
+  // `organizationId` (`useDevolucoes.ts:66`, `RecompraInteligente.tsx:17`,
+  // `ERPConnections.tsx:77`); aqui alinhamos ao mesmo fallback.
+  const effectiveTenantId = tenantId ?? organizationId;
+
   const { data: licitacoes = [], isLoading } = useQuery({
     queryKey: ['licitacoes', user?.id, tenantId, organizationId],
     queryFn: async () => {
-      if (!tenantId) return [];
+      if (!effectiveTenantId) return [];
       const { data, error } = await supabase
         .from('licitacoes')
         .select('id, numero, objeto, modalidade, status, tipo, data_abertura, data_encerramento, valor_estimado, valor_vencedor, fornecedor_vencedor_id, responsavel_id, created_by, created_at, updated_at, tenant_id, organization_id, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
-        .eq('tenant_id', tenantId)
+        .eq('tenant_id', effectiveTenantId)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data || []) as Licitacao[];
     },
-    enabled: !!user && !!tenantId,
+    enabled: !!user && !!effectiveTenantId,
     staleTime: 60_000,
   });
 
@@ -40,7 +48,7 @@ export function useLicitacoes() {
   }, [queryClient]);
 
   const createLicitacao = useCallback(async (input: Partial<Licitacao>) => {
-    if (!user || !tenantId) { toast.error('Login necessário'); return null; }
+    if (!user || !effectiveTenantId) { toast.error('Sua sessão não está vinculada a nenhuma empresa'); return null; }
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'LIC', table_name: 'licitacoes' });
       const numero = numData || `LIC-${Date.now()}`;
@@ -54,8 +62,8 @@ export function useLicitacoes() {
           numero,
           created_by: user.id,
           responsavel_id: user.id,
-          tenant_id: tenantId,
-          organization_id: organizationId || tenantId
+          tenant_id: effectiveTenantId,
+          organization_id: organizationId || effectiveTenantId
         } as never)
         .select()
         .single();
@@ -68,7 +76,7 @@ export function useLicitacoes() {
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'desconhecido'));
       return null;
     }
-  }, [user, tenantId, invalidate, organizationId]);
+  }, [user, effectiveTenantId, invalidate, organizationId]);
 
   const updateLicitacao = useCallback(async (id: string, updates: Database['public']['Tables']['licitacoes']['Update']) => {
     try {
