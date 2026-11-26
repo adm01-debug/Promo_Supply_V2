@@ -662,7 +662,9 @@
     "system_alerts",
     "telemetry_logs"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "resolve_alert"
+   ],
    "edges": [
     "system-simulation",
     "telemetry"

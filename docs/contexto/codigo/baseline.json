@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
+  "commit": "c3e5f960915e57b6d47ec85b997cbdebf48d208c",
   "branch": "main",
-  "data_commit": "2026-11-25T23:53:04-03:00",
+  "data_commit": "2026-11-26T00:05:53-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "c3e5f96",
+    "data": "2026-11-26",
+    "assunto": "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)"
+   },
    {
     "sha": "a4b5fd2",
     "data": "2026-11-25",
@@ -126,14 +131,9 @@
     "sha": "81d308c",
     "data": "2026-11-25",
     "assunto": "fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)"
-   },
-   {
-    "sha": "949c3d5",
-    "data": "2026-11-25",
-    "assunto": "docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)"
    }
   ],
-  "arquivos_mudados_7d": 1487,
+  "arquivos_mudados_7d": 1488,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 131
+    "mudancas": 132
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -156,12 +156,12 @@
     "mudancas": 60
    },
    {
-    "pasta": "docs/pendencias/_indice.md",
+    "pasta": "src/hooks/__tests__",
     "mudancas": 39
    },
    {
-    "pasta": "src/hooks/__tests__",
-    "mudancas": 39
+    "pasta": "docs/pendencias/_indice.md",
+    "mudancas": 38
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 131
+    "mudancas": 132
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 39
+    "mudancas": 38
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1466,
-  "arquivos_codigo": 938,
-  "linhas_codigo": 188925,
+  "arquivos_total": 1467,
+  "arquivos_codigo": 939,
+  "linhas_codigo": 188998,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 340,
   "cron_jobs": 74,
-  "testes": 299,
+  "testes": 300,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 100
@@ -427,8 +427,8 @@
    "linhas": 90
   },
   "src/components": {
-   "arquivos": 284,
-   "linhas": 52319
+   "arquivos": 285,
+   "linhas": 52392
   },
   "src/features": {
    "arquivos": 91,

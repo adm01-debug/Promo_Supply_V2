@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 299,
+ "total": 300,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 281
+  "unit": 282
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 204
+   "arquivos": 205
   },
   {
    "padrao": "outro",
@@ -382,6 +382,15 @@
     "src/components/accessibility/SkipLinks.tsx"
    ],
    "casos": 7
+  },
+  {
+   "arquivo": "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
+   "tipo": "unit",
+   "linhas": 79,
+   "testa": [
+    "src/components/admin/telemetry/SystemAlertsView.tsx"
+   ],
+   "casos": 2
   },
   {
    "arquivo": "src/components/animations/__tests__/motionVariants.test.ts",
@@ -2743,6 +2752,7 @@
   "src/components/accessibility/AdvancedAccessibility.tsx": 2,
   "src/components/accessibility/SkipLinks.tsx": 1,
   "src/components/accessibility/accessibilityHelpers.ts": 2,
+  "src/components/admin/telemetry/SystemAlertsView.tsx": 1,
   "src/components/animations/motionVariants.ts": 1,
   "src/components/compras/BulkOperationsPreview.tsx": 1,
   "src/components/compras/ContractDetailsModal.tsx": 1,

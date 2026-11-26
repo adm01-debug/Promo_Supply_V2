@@ -227,8 +227,8 @@
   {
    "modulo": "components/admin",
    "arquivos": 8,
-   "testes": 0,
-   "linhas": 1391,
+   "testes": 1,
+   "linhas": 1385,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -252,7 +252,8 @@
     "user_tenants"
    ],
    "rpcs": [
-    "current_tenant_id"
+    "current_tenant_id",
+    "resolve_alert"
    ],
    "buckets": [],
    "canais_realtime": [],
@@ -270,7 +271,9 @@
      "system_alerts",
      "telemetry_logs"
     ],
-    "rpcs": []
+    "rpcs": [
+     "resolve_alert"
+    ]
    },
    "importado_por_outros_modulos": [
     "features/layout",
@@ -3659,7 +3662,9 @@
     "system_alerts",
     "telemetry_logs"
    ],
-   "rpcs": [],
+   "rpcs": [
+    "resolve_alert"
+   ],
    "buckets": [],
    "canais_realtime": [],
    "env": [

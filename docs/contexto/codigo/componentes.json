@@ -218,7 +218,7 @@
     "SystemAlertsView"
    ],
    "export_default": null,
-   "linhas": 155,
+   "linhas": 149,
    "dominio": "components/admin",
    "hooks_locais": [],
    "tabelas": [

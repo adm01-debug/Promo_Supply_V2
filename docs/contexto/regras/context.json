@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
+  "sha": "c3e5f960915e57b6d47ec85b997cbdebf48d208c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 02:59 UTC",
-  "files_total": 1467,
-  "code_files": 1293,
-  "code_lines": 219026,
+  "generated_at": "2026-11-26 03:08 UTC",
+  "files_total": 1468,
+  "code_files": 1294,
+  "code_lines": 219099,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "daa405438546fee8",
+ "facts_hash": "d0ca7df4333367c9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 422,
+   ".tsx": 423,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -33839,7 +33839,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 320,
+  "components_count": 321,
   "hooks": [
    {
     "name": "useContacts",
@@ -34911,8 +34911,8 @@
   },
   {
    "module": "src/components",
-   "files": 284,
-   "lines": 52319,
+   "files": 285,
+   "lines": 52392,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35055,6 +35055,7 @@
     "src/components/admin/telemetry/AppLogsView.tsx",
     "src/components/admin/telemetry/SystemAlertsView.tsx",
     "src/components/admin/telemetry/TelemetryCharts.tsx",
+    "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
     "src/components/animations/MotionComponents.tsx",
     "src/components/animations/motionVariants.ts",
     "src/components/animations/__tests__/motionVariants.test.ts",
@@ -35115,8 +35116,7 @@
     "src/components/compras/SLADistributionChart.tsx",
     "src/components/compras/SavingsGoalPanel.tsx",
     "src/components/compras/SolicitacaoCard.tsx",
-    "src/components/compras/SolicitacaoKanban.tsx",
-    "src/components/compras/SourcingHistoryConsole.tsx"
+    "src/components/compras/SolicitacaoKanban.tsx"
    ]
   },
   {
@@ -37904,9 +37904,6 @@
      "supabase/functions/alert-dispatcher/index.ts",
      "supabase/functions/health-dashboard/index.ts"
     ],
-    "ref": [
-     "src/components/admin/telemetry/SystemAlertsView.tsx"
-    ],
     "update": [
      "supabase/functions/alert-dispatcher/index.ts"
     ],
@@ -39615,6 +39612,7 @@
     "src/lib/supabaseRpc.ts"
    ],
    "resolve_alert": [
+    "src/components/admin/telemetry/SystemAlertsView.tsx",
     "src/lib/supabaseRpc.ts",
     "src/pages/admin/HealthDashboard.tsx"
    ],
@@ -41039,11 +41037,7 @@
    },
    {
     "file": "src/components/admin/telemetry/SystemAlertsView.tsx",
-    "msg": "Alerta não alterado: sem permissão para este alerta"
-   },
-   {
-    "file": "src/components/admin/telemetry/SystemAlertsView.tsx",
-    "msg": "Erro ao resolver alerta"
+    "msg": ", { _alert_id: id });\n\n    if (error) {\n      toast.error("
    },
    {
     "file": "src/components/auditoria/RlsCompliancePanel.tsx",
@@ -59481,6 +59475,18 @@
    {
     "file": "src/components/accessibility/__tests__/skipLinks.test.tsx",
     "name": "o id main-content segue so nos landmarks de rota"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
+    "name": "resolver alerta de telemetria"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
+    "name": "resolve pelo RPC resolve_alert e nao por UPDATE direto na tabela"
+   },
+   {
+    "file": "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
+    "name": "mostra o motivo real quando o RPC recusa (alerta ja resolvido)"
    },
    {
     "file": "src/components/animations/__tests__/motionVariants.test.ts",
@@ -95343,7 +95349,7 @@
   },
   "src/components/admin/telemetry/SystemAlertsView.tsx": {
    "path": "src/components/admin/telemetry/SystemAlertsView.tsx",
-   "lines": 155,
+   "lines": 149,
    "exports": [
     "interface SystemAlert",
     "function SystemAlertsView"
@@ -95352,15 +95358,13 @@
     {
      "table": "system_alerts",
      "op": "select"
-    },
-    {
-     "table": "system_alerts",
-     "op": "ref"
     }
    ],
+   "rpc": [
+    "resolve_alert"
+   ],
    "errors": [
-    "Alerta não alterado: sem permissão para este alerta",
-    "Erro ao resolver alerta"
+    ", { _alert_id: id });\n\n    if (error) {\n      toast.error("
    ],
    "pagination": [
     "50"
@@ -95377,6 +95381,19 @@
     "timeFilter === \"1h\" ? 5 * 60 * 1000 : // 5 min",
     "timeFilter === \"24h\" ? 60 * 60 * 1000 : // 1 hour",
     "timeFilter === \"6h\" ? 30 * 60 * 1000 : // 30 min"
+   ]
+  },
+  "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx": {
+   "path": "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
+   "lines": 79,
+   "is_test": true,
+   "errors": [
+    ", { _alert_id: "
+   ],
+   "tests": [
+    "resolver alerta de telemetria",
+    "resolve pelo RPC resolve_alert e nao por UPDATE direto na tabela",
+    "mostra o motivo real quando o RPC recusa (alerta ja resolvido)"
    ]
   },
   "src/components/animations/MotionComponents.tsx": {
@@ -122711,10 +122728,21 @@
   }
  },
  "git": {
-  "sha": "a4b5fd2ccc56bff06e926fd0bf986957c7738e35",
+  "sha": "c3e5f960915e57b6d47ec85b997cbdebf48d208c",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "c3e5f96",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/admin/telemetry/SystemAlertsView.tsx",
+     "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx"
+    ]
+   },
    {
     "sha": "a4b5fd2",
     "date": "2026-11-25",
@@ -123039,21 +123067,6 @@
     "files": [
      "scripts/ci/paridade-migrations-banco.allowlist.json"
     ]
-   },
-   {
-    "sha": "47a8cb5",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "ci: guard de fatos no AGENTS.md (partes 3/4 e 4/4) roda tambem em push na main (#461)",
-    "files": [
-     ".github/workflows/guards.yml",
-     ".github/workflows/main.yml",
-     "AGENTS.md",
-     "docs/ci/README.md",
-     "docs/qa/05-PROGRESSO.md",
-     "scripts/ci/agents-docs-baseline.unit.mjs",
-     "scripts/ci/check-agents-md-integrity.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -123070,27 +123083,23 @@
     3
    ],
    [
-    "AGENTS.md",
-    3
-   ],
-   [
-    ".github/workflows/main.yml",
-    3
+    "src/components/admin/telemetry/SystemAlertsView.tsx",
+    2
    ],
    [
     "tests-e2e/production-ready.spec.ts",
     2
    ],
    [
+    "AGENTS.md",
+    2
+   ],
+   [
+    ".github/workflows/main.yml",
+    2
+   ],
+   [
     "docs/agentes/github-ci.md",
-    2
-   ],
-   [
-    "scripts/ci/agents-docs-baseline.unit.mjs",
-    2
-   ],
-   [
-    "scripts/ci/check-agents-md-integrity.mjs",
     2
    ],
    [
@@ -123114,7 +123123,7 @@
     2
    ],
    [
-    "src/components/admin/telemetry/SystemAlertsView.tsx",
+    "src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx",
     1
    ],
    [
@@ -123135,6 +123144,10 @@
    ],
    [
     "supabase/functions/erp-sync/idempotencia-escopo.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/erp-sync/index.ts",
     1
    ]
   ]

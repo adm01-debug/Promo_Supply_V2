@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `a4b5fd2ccc` · branch `main` · 2026-11-26 02:59 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `c3e5f96091` · branch `main` · 2026-11-26 03:08 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2239,8 +2239,7 @@ _nenhum item encontrado_
 | Drift de instalação detectado | `src/components/admin/InstallReportPanel.tsx` |
 | Falha ao atualizar relatório | `src/components/admin/InstallReportPanel.tsx` |
 | HTTP ${res.status} | `src/components/admin/InstallReportPanel.tsx` |
-| Alerta não alterado: sem permissão para este alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
-| Erro ao resolver alerta | `src/components/admin/telemetry/SystemAlertsView.tsx` |
+| , { _alert_id: id });      if (error) {       toast.error( | `src/components/admin/telemetry/SystemAlertsView.tsx` |
 | ; import { ShieldCheck, ShieldAlert, RefreshCw, Lock, Search } from  | `src/components/auditoria/RlsCompliancePanel.tsx` |
 | Falha ao gerar sugestao de fornecedores:  | `src/components/compras/AISupplierSuggestion.tsx` |
 | Resposta invalida da edge de sugestao | `src/components/compras/AISupplierSuggestion.tsx` |
@@ -2438,7 +2437,8 @@ _nenhum item encontrado_
 | ${liberados.length} de ${ids.length} pagamento(s) excluído(s). ${MOTIVO_HISTORICO_PAGAMENTO} | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
-| … +292 linhas — lista completa em `context.json` | |
+| Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
+| … +291 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3445 testes em 248 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3448 testes em 249 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2676,6 +2676,7 @@ _nenhum item encontrado_
 | `tests-e2e/critical-flows.spec.ts` | 4 | Freight Quest - Fluxos de Negócio · Processo de Compras e Dashboard · Validação de Contratos e Compliance · Resiliência da UI em Erros de Rede |
 | `tests-e2e/dashboard-ui.spec.ts` | 4 | Dashboard & Compras Interface · Dashboard e widgets renderizam na rota raiz · System Theme Toggle · Mobile Responsiveness Check |
 | `tests-e2e/workflow-advanced.spec.ts` | 4 | Advanced Workflow & Security Tests · Multi-step Solicitation Flow (abre o formulario, sem gravar) · Responsiveness & Mobile Viewport · Performance Gate: Dashboard Loading |
+| `src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx` | 3 | resolver alerta de telemetria · resolve pelo RPC resolve_alert e nao por UPDATE direto na tabela · mostra o motivo real quando o RPC recusa (alerta ja resolvido) |
 | `src/components/compras/__tests__/pendingApprovalsA11y.test.tsx` | 3 | PendingApprovalsList acessibilidade (UX-04 1/4) · o menu de acoes de cada aprovacao tem nome acessivel · nao sobra botao so-icone sem nome no cartao da aprovacao |
 | `src/components/security/__tests__/PasskeyManager.pendente.test.tsx` | 3 | PasskeyManager / anuncio honesto (SEC-11) · nao promete login por biometria enquanto o servidor recusa · botao Adicionar Passkey fica desabilitado |
 | `src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx` | 3 | usePedidos · ordem de compra so com solicitacao aprovada (NEG-06) · nao cria a ordem quando a solicitacao nao esta aprovada · cria a ordem quando a solicitacao esta aprovada |

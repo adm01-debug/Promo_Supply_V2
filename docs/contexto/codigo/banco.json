@@ -24004,7 +24004,7 @@
   {
    "nome": "resolve_alert",
    "definida": true,
-   "usada_em": 2
+   "usada_em": 3
   },
   {
    "nome": "upsert_cron_heartbeat",
