@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 2 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -69,11 +69,22 @@
 | USING | `true` |
 | WITH CHECK | `true` |
 
+### `tenant_isolation_telemetry_logs_202608`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | authenticated |
+| USING | `(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))` |
+| WITH CHECK | `(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))` |
+
 
 ## Triggers
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trigger_check_telemetry_alerts | AFTER | INSERT | ROW | enabled | public.check_telemetry_alerts |
 
 

@@ -35,7 +35,7 @@
 | 17 | `created_by` | `uuid` | sim |  |  |  |
 | 18 | `cost_center_id` | `uuid` | sim |  |  |  |
 | 19 | `organization_id` | `uuid` | sim |  |  |  |
-| 20 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 20 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

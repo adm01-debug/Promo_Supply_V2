@@ -46,7 +46,7 @@
 | 27 | `auto_block_below_score` | `boolean` | sim | `true` |  |  |
 | 28 | `penalty_clauses` | `jsonb` | sim | `'[]'::jsonb` |  |  |
 | 29 | `organization_id` | `uuid` | sim |  |  |  |
-| 30 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 30 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 | 31 | `currency` | `character(3)` | não | `'BRL'::bpchar` |  |  |
 
 

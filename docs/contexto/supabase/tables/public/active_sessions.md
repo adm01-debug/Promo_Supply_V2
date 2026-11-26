@@ -125,6 +125,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_sanitize_session_token | BEFORE | INSERT | ROW | enabled | public.sanitize_session_token |
 
 

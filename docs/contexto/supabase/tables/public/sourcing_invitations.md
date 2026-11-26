@@ -29,7 +29,7 @@
 | 11 | `declined_reason` | `text` | sim |  |  |  |
 | 12 | `reminder_count` | `integer` | não | `0` |  |  |
 | 13 | `last_reminder_at` | `timestamp with time zone` | sim |  |  |  |
-| 14 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 14 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

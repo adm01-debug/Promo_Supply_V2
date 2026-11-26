@@ -29,7 +29,7 @@
 | 11 | `committed_amount` | `numeric(15,2)` | sim | `0` |  |  |
 | 12 | `used_amount` | `numeric(15,2)` | sim | `0` |  |  |
 | 13 | `approval_threshold` | `numeric(15,2)` | sim | `0` |  |  |
-| 14 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 14 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

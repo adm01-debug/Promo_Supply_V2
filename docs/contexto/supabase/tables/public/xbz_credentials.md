@@ -69,6 +69,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_xbz_credentials_updated | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
 
 

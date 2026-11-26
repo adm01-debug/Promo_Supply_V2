@@ -21,7 +21,7 @@
 | 3 | `fornecedor_id` | `uuid` | sim |  |  |  |
 | 4 | `valor_lance` | `numeric(15,2)` | não |  |  |  |
 | 5 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 6 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 6 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

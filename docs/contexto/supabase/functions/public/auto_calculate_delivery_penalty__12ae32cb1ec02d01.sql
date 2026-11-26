@@ -9,12 +9,12 @@ DECLARE
   v_days_late integer;
   v_penalty_pct numeric;
   v_penalty_val numeric;
+  v_tem_vinculo boolean;
 BEGIN
   IF NEW.status = 'entregue' AND OLD.status != 'entregue'
      AND NEW.data_entrega IS NOT NULL AND NEW.data_previsao IS NOT NULL
      AND NEW.data_entrega > NEW.data_previsao THEN
 
-    -- Find active contract for this supplier
     FOR v_contract IN
       SELECT c.* FROM contracts c
       WHERE c.supplier_id = NEW.fornecedor_id::text
@@ -40,13 +40,29 @@ BEGIN
           v_days_late, v_penalty_pct, v_penalty_val, 'pending', NEW.tenant_id
         );
 
-        -- Notify admins
+        SELECT (EXISTS (SELECT 1 FROM public.user_tenants)
+             OR EXISTS (SELECT 1 FROM public.profiles pf WHERE pf.tenant_id IS NOT NULL))
+          INTO v_tem_vinculo;
+
         INSERT INTO notifications (user_id, title, message, type, priority, tenant_id)
         SELECT ur.user_id,
           'Multa aplicada: ' || NEW.numero,
           'Pedido ' || NEW.numero || ' entregue com ' || v_days_late || ' dia(s) de atraso. Multa de R$ ' || v_penalty_val || ' (' || v_penalty_pct || '%) aplicada automaticamente.',
           'contract_penalty', 'high', NEW.tenant_id
-        FROM user_roles ur WHERE ur.role IN ('admin', 'coordinator', 'finance');
+        FROM user_roles ur
+        WHERE ur.role IN ('admin', 'coordinator', 'finance')
+          AND (
+            v_tem_vinculo = false
+            OR EXISTS (
+              SELECT 1 FROM public.user_tenants ut
+              WHERE ut.user_id = ur.user_id AND ut.tenant_id = NEW.tenant_id
+            )
+            OR EXISTS (
+              SELECT 1 FROM public.profiles pf
+              WHERE (pf.user_id = ur.user_id OR pf.id = ur.user_id)
+                AND pf.tenant_id = NEW.tenant_id
+            )
+          );
       END IF;
     END LOOP;
   END IF;

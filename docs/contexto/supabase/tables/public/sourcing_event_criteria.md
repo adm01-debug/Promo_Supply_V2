@@ -23,7 +23,7 @@
 | 5 | `formula` | `text` | não | `'inverse_min'::text` |  |  |
 | 6 | `config` | `jsonb` | sim | `'{}'::jsonb` |  |  |
 | 7 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 8 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 8 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

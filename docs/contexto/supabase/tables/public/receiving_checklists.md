@@ -35,7 +35,7 @@
 | 16 | `rejection_reason` | `text` | sim |  |  |  |
 | 17 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 18 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 19 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 19 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -98,6 +98,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_calc_checklist_score | BEFORE | INSERT OR UPDATE | ROW | enabled | public.calc_checklist_overall_score |
 
 

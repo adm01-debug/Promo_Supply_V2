@@ -72,6 +72,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | update_erp_connections_updated_at | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
 
 

@@ -28,7 +28,7 @@
 | 10 | `is_active` | `boolean` | não | `true` |  |  |
 | 11 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 12 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 13 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 13 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

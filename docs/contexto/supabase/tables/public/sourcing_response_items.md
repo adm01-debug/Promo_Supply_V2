@@ -26,7 +26,7 @@
 | 8 | `marca` | `text` | sim |  |  |  |
 | 9 | `modelo` | `text` | sim |  |  |  |
 | 10 | `metadata` | `jsonb` | sim | `'{}'::jsonb` |  |  |
-| 11 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 11 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -89,7 +89,9 @@
 
 ## Triggers
 
-_nenhum_
+| nome | timing | eventos | nível | status | função |
+|---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 
 
 ## Grants

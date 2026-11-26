@@ -9,7 +9,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | ai-supplier-risk | ai-supplier-risk | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-risk/index.ts |
 | ai-supplier-suggestion | ai-supplier-suggestion | ACTIVE | 36 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
 | alert-dispatcher | alert-dispatcher | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
-| check-approval-escalations | check-approval-escalations | ACTIVE | 33 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
+| check-approval-escalations | check-approval-escalations | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
 | check-cotacao-followup | check-cotacao-followup | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | check-expiry-alerts | check-expiry-alerts | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-expiry-alerts/index.ts |
 | check-sla-alerts | check-sla-alerts | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-sla-alerts/index.ts |
@@ -34,8 +34,8 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | run-audit | run-audit | ACTIVE | 28 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
 | scim-v2 | scim-v2 | ACTIVE | 40 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/scim-v2/index.ts |
 | send-push-notification | send-push-notification | ACTIVE | 35 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/send-push-notification/index.ts |
-| spot-api | spot-api | ACTIVE | 31 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |
-| spot-proxy | spot-proxy | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-proxy/index.ts |
+| spot-api | spot-api | ACTIVE | 32 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |
+| spot-proxy | spot-proxy | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-proxy/index.ts |
 | system-simulation | system-simulation | ACTIVE | 33 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/system-simulation/index.ts |
 | telemetry | telemetry | ACTIVE | 34 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/telemetry/index.ts |
 | webauthn-authenticate | webauthn-authenticate | ACTIVE | 32 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/webauthn-authenticate/index.ts |

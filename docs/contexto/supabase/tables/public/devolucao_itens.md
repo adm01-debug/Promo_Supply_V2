@@ -28,7 +28,7 @@
 | 10 | `estado_item` | `text` | sim | `'pendente'::text` |  |  |
 | 11 | `fotos` | `jsonb` | sim | `'[]'::jsonb` |  |  |
 | 12 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 13 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 13 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

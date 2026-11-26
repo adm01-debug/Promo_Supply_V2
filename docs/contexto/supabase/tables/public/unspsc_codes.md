@@ -22,7 +22,7 @@
 | 4 | `nome` | `text` | não |  |  |  |
 | 5 | `nome_en` | `text` | sim |  |  |  |
 | 6 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 7 | `tenant_id` | `uuid` | sim | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 7 | `tenant_id` | `uuid` | sim |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -68,7 +68,9 @@
 
 ## Triggers
 
-_nenhum_
+| nome | timing | eventos | nível | status | função |
+|---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 
 
 ## Grants

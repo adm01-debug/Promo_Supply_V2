@@ -18,27 +18,27 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.spot_produtos | ~1.3k | 8.0 MB | 1.0 MB | 736.0 KB | 0 | ~30 | ~14.1k | 2026-11-26 |
 | public.telemetry_logs | ~2k | 1.8 MB | 680.0 KB | 1.1 MB | 0 | ~220 | ~880 | 2026-11-24 |
 | public.spot_estoque | ~3.8k | 1.4 MB | 760.0 KB | 616.0 KB | 0 | ~40 | ~2.7M | 2026-11-26 |
-| public.system_alerts | ~470 | 936.0 KB | 312.0 KB | 584.0 KB | ~40 | ~13.8k | ~29.4k | 2026-11-25 |
+| public.system_alerts | ~470 | 936.0 KB | 312.0 KB | 584.0 KB | ~40 | ~13.9k | ~29.9k | 2026-11-25 |
 | public.login_attempts | ~1.8k | 808.0 KB | 408.0 KB | 360.0 KB | 0 | ~120 | ~110 | 2026-11-23 |
-| public.solicitacoes | ~290 | 752.0 KB | 376.0 KB | 336.0 KB | ~70 | ~10.8k | ~19.9k | 2026-11-13 |
+| public.solicitacoes | ~290 | 752.0 KB | 376.0 KB | 336.0 KB | ~70 | ~10.8k | ~20k | 2026-11-13 |
 | public.health_scan_runs | ~680 | 656.0 KB | 152.0 KB | 464.0 KB | ~100 | ~200 | ~3.5k | 2026-11-25 |
 | public.telemetry_logs_202605 | ~560 | 520.0 KB | 320.0 KB | 168.0 KB | 0 | ~20 | ~560 |  |
 | public.telemetry_logs_legacy_20260712 | ~570 | 496.0 KB | 312.0 KB | 152.0 KB | 0 | ~20 | ~570 |  |
 | public.webhook_events | ~280 | 336.0 KB | 200.0 KB | 104.0 KB | 3 | ~40 | ~620 |  |
-| public.spot_api_sync_log | ~950 | 320.0 KB | 112.0 KB | 176.0 KB | ~20 | ~1.2k | ~1.5k |  |
+| public.spot_api_sync_log | ~950 | 328.0 KB | 112.0 KB | 184.0 KB | ~20 | ~1.2k | ~1.5k |  |
 | public.pedidos | ~30 | 264.0 KB | 16.0 KB | 208.0 KB | ~40 | ~6k | ~11.8k | 2026-11-13 |
 | public.fornecedores | ~10 | 248.0 KB | 16.0 KB | 192.0 KB | ~20 | ~14.5k | ~1.4k | 2026-11-13 |
-| public.cotacoes | ~60 | 240.0 KB | 40.0 KB | 160.0 KB | ~60 | ~4.1k | ~7.7k | 2026-11-21 |
+| public.cotacoes | ~60 | 240.0 KB | 40.0 KB | 160.0 KB | ~60 | ~4.1k | ~7.8k | 2026-11-21 |
 | public.audit_logs | ~30 | 232.0 KB | 48.0 KB | 144.0 KB | ~30 | ~120 | ~530 | 2026-11-17 |
-| public.notifications | ~60 | 224.0 KB | 80.0 KB | 112.0 KB | ~60 | ~290 | ~4.4k |  |
-| public.pagamentos | 3 | 224.0 KB | 8.0 KB | 176.0 KB | ~50 | ~3.1k | ~6.5k | 2026-11-13 |
+| public.notifications | ~60 | 224.0 KB | 80.0 KB | 112.0 KB | ~60 | ~290 | ~4.5k |  |
+| public.pagamentos | 3 | 224.0 KB | 8.0 KB | 176.0 KB | ~50 | ~3.1k | ~6.6k | 2026-11-13 |
 | public.produtos | ~10 | 184.0 KB | 16.0 KB | 128.0 KB | ~20 | ~170 | ~380 | 2026-11-12 |
 | public.telemetry_logs_202607 | ~50 | 184.0 KB | 40.0 KB | 112.0 KB | 0 | ~20 | ~50 |  |
 | public.fiscal_documents | ~20 | 168.0 KB | 16.0 KB | 112.0 KB | 0 | ~170 | 8 | 2026-11-12 |
 | public.licitacoes | 7 | 168.0 KB | 16.0 KB | 112.0 KB | 0 | ~140 | ~290 | 2026-11-13 |
 | public.contracts | 5 | 152.0 KB | 24.0 KB | 96.0 KB | ~50 | ~230 | ~320 |  |
-| public.profiles | ~10 | 152.0 KB | 8.0 KB | 104.0 KB | ~30 | ~319.2k | ~73.4k | 2026-11-13 |
-| public.tenants | 1 | 152.0 KB | 8.0 KB | 104.0 KB | ~20 | ~278.8k | ~88.2k | 2026-11-13 |
+| public.profiles | ~10 | 152.0 KB | 8.0 KB | 104.0 KB | ~30 | ~335.4k | ~73.5k | 2026-11-13 |
+| public.tenants | 1 | 152.0 KB | 8.0 KB | 104.0 KB | ~20 | ~294.7k | ~88.2k | 2026-11-13 |
 | public.pedido_itens | 7 | 144.0 KB | 8.0 KB | 96.0 KB | ~10 | ~110 | ~180 | 2026-11-13 |
 | public.department_budgets | ~30 | 136.0 KB | 16.0 KB | 80.0 KB | ~20 | ~790 | ~2k | 2026-11-13 |
 | public.licitacao_propostas | ~10 | 136.0 KB | 16.0 KB | 80.0 KB | ~20 | ~100 | 7 | 2026-11-12 |
@@ -48,10 +48,10 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.rate_limit_logs | 0 | 128.0 KB | 8.0 KB | 112.0 KB | ~20 | ~2.7k | ~250 |  |
 | public.sourcing_invitations | 0 | 128.0 KB | 16.0 KB | 80.0 KB | ~20 | ~20 | 2 |  |
 | public.supplier_documents | ~110 | 128.0 KB | 24.0 KB | 64.0 KB | 5 | ~220 | ~6.7k | 2026-11-12 |
-| public.active_sessions | ~10 | 120.0 KB | 16.0 KB | 64.0 KB | ~10 | ~430 | ~120 | 2026-11-26 |
+| public.active_sessions | ~10 | 120.0 KB | 16.0 KB | 64.0 KB | ~20 | ~440 | ~120 | 2026-11-26 |
 | public.deadlock_snapshots | 0 | 120.0 KB | 8.0 KB | 88.0 KB | 6 | ~180 | ~880 | 2026-08-02 |
 | public.estoque | ~20 | 120.0 KB | 16.0 KB | 64.0 KB | ~30 | ~100 | ~200 | 2026-11-12 |
-| public.account_lockouts | 4 | 112.0 KB | 8.0 KB | 64.0 KB | ~30 | ~4.4k | 1 | 2026-11-12 |
+| public.account_lockouts | 4 | 112.0 KB | 8.0 KB | 64.0 KB | ~30 | ~4.5k | 1 | 2026-11-12 |
 | public.approval_steps | 0 | 112.0 KB | 8.0 KB | 80.0 KB | ~40 | ~1.2k | ~13.6k | 2026-11-13 |
 | public.budget_audit_logs | ~30 | 112.0 KB | 24.0 KB | 48.0 KB | 0 | ~40 | ~140 | 2026-11-13 |
 | public.categorias | 9 | 112.0 KB | 8.0 KB | 64.0 KB | ~10 | ~8.8k | ~220 | 2026-11-12 |
@@ -88,7 +88,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.organizations | 1 | 80.0 KB | 8.0 KB | 32.0 KB | 6 | ~6.4k | 1 | 2026-11-13 |
 | public.security_logs | 0 | 80.0 KB | 8.0 KB | 64.0 KB | 3 | ~40 | ~110 |  |
 | public.sourcing_projects | 0 | 80.0 KB | 8.0 KB | 64.0 KB | 0 | ~20 | ~10 |  |
-| public.spot_sessions | ~180 | 80.0 KB | 32.0 KB | 16.0 KB | 9 | ~1.6k | 1 |  |
+| public.spot_sessions | ~180 | 80.0 KB | 32.0 KB | 16.0 KB | ~10 | ~1.6k | 1 |  |
 | public.supplier_bonifications | 0 | 80.0 KB | 8.0 KB | 64.0 KB | 3 | ~40 | ~80 |  |
 | public.temp_file_snapshots | ~140 | 80.0 KB | 16.0 KB | 32.0 KB | 0 | ~10 | ~150 |  |
 | public.workflow_logs | 0 | 80.0 KB | 8.0 KB | 64.0 KB | 1 | ~20 | 8 |  |
@@ -104,7 +104,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.contract_documents | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 7 | ~80 | ~20 |  |
 | public.contract_history | 0 | 64.0 KB | 8.0 KB | 48.0 KB | ~20 | ~40 | ~30 |  |
 | public.contract_items | 0 | 64.0 KB | 8.0 KB | 48.0 KB | ~30 | ~60 | ~40 |  |
-| public.cron_heartbeats | 9 | 64.0 KB | 8.0 KB | 16.0 KB | ~30 | ~20 | ~15.9k | 2026-11-26 |
+| public.cron_heartbeats | 9 | 64.0 KB | 8.0 KB | 16.0 KB | 5 | ~20 | ~16k | 2026-11-26 |
 | public.payment_history | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 5 | ~50 | ~40 |  |
 | public.penalty_escalation_config | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 7 | ~40 | ~30 |  |
 | public.permissions | 0 | 64.0 KB | 8.0 KB | 48.0 KB | 0 | ~30 | ~630 |  |
@@ -144,11 +144,11 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.secret_rotation_schedule | 0 | 40.0 KB | 0 B | 32.0 KB | 0 | ~20 | 8 |  |
 | public.sourcing_response_answers | 0 | 40.0 KB | 0 B | 32.0 KB | 0 | ~20 | 0 |  |
 | public.sourcing_response_items | 0 | 40.0 KB | 0 B | 32.0 KB | 0 | ~20 | 0 |  |
-| public.user_roles | 0 | 40.0 KB | 8.0 KB | 32.0 KB | ~40 | ~90 | ~118.2k |  |
+| public.user_roles | 0 | 40.0 KB | 8.0 KB | 32.0 KB | ~40 | ~90 | ~118.6k |  |
 | public.xbz_pedidos | 0 | 40.0 KB | 0 B | 32.0 KB | 0 | ~140 | 0 |  |
 | public.allowed_countries | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~20 | 8 |  |
 | public.blocked_countries | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~20 | 7 |  |
-| public.cron_watchdog_seen | 0 | 32.0 KB | 8.0 KB | 16.0 KB | 3 | 7 | ~22.8k |  |
+| public.cron_watchdog_seen | 0 | 32.0 KB | 8.0 KB | 16.0 KB | 3 | 7 | ~23.1k |  |
 | public.currencies | 0 | 32.0 KB | 8.0 KB | 16.0 KB | 0 | ~20 | ~3.3k |  |
 | public.dependency_health_history | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~10 | ~40 |  |
 | public.integration_outbox | 0 | 32.0 KB | 0 B | 24.0 KB | 0 | ~100 | ~13.7k |  |
@@ -170,7 +170,7 @@ Valores aproximados de propósito, para não gerar commits a cada coleta. Fora d
 | public.scim_provisioning_log | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
 | public.webauthn_challenges | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 7 |  |
 | public.xbz_carrinho_log | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
-| public.xbz_credentials | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~760 | 1 |  |
+| public.xbz_credentials | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~770 | 1 |  |
 | public.xbz_pedido_status_history | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~10 | 0 |  |
 | public.xbz_produto_fiscal | 0 | 24.0 KB | 0 B | 16.0 KB | 0 | ~20 | 0 |  |
 | public.audit_logs_ancora | 0 | 16.0 KB | 0 B | 8.0 KB | 0 | 1 | 0 |  |
@@ -207,32 +207,33 @@ _nenhum_
 ## Consultas mais custosas (pg_stat_statements, desde o último reset)
 | role | chamadas (~) | total ms (~) | média ms | query |
 |---|---|---|---|---|
-| authenticator | ~230 | ~204.1k | 876.05 | `SELECT name FROM pg_timezone_names` |
-| postgres | ~340 | ~171.7k | 503.40 | `SELECT public.cron_watchdog()` |
-| ci_snapshot | ~5.6k | ~127.4k | 22.59 | `SELECT public._invoke_edge_function('?')` |
-| postgres | ~4.4k | ~93k | 21.31 | `SELECT public._invoke_edge_function($1)` |
-| ci_snapshot | ~690 | ~69.9k | 101.37 | `SELECT json_build_object( $1, ( SELECT coalesce(json_agg(p ORDER BY p.tablename, p.policyname), $2::json) FROM ( SELECT tablename, policyname, permissive, roles::text[] AS roles, cmd, qual, with_check FROM pg_catalog.pg_` |
-| service_role | ~2k | ~67.5k | 33.75 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
-| authenticator | ~230 | ~61.9k | 265.79 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $2), oid) AS base_type FROM pg_type UNIO` |
+| authenticator | ~240 | ~210.2k | 875.83 | `SELECT name FROM pg_timezone_names` |
+| postgres | ~350 | ~174.5k | 504.20 | `SELECT public.cron_watchdog()` |
+| ci_snapshot | ~5.7k | ~129k | 22.59 | `SELECT public._invoke_edge_function('?')` |
+| postgres | ~4.4k | ~93.1k | 21.31 | `SELECT public._invoke_edge_function($1)` |
+| ci_snapshot | ~700 | ~71.5k | 101.66 | `SELECT json_build_object( $1, ( SELECT coalesce(json_agg(p ORDER BY p.tablename, p.policyname), $2::json) FROM ( SELECT tablename, policyname, permissive, roles::text[] AS roles, cmd, qual, with_check FROM pg_catalog.pg_` |
+| service_role | ~2k | ~68.1k | 33.76 | `WITH pgrst_source AS (INSERT INTO "public"."spot_estoque"("incoming_date", "incoming_quantity", "product_reference", "quantity", "sku", "synced_at") SELECT "pgrst_body"."incoming_date", "pgrst_body"."incoming_quantity", ` |
+| authenticator | ~240 | ~63.7k | 265.59 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $2), oid) AS base_type FROM pg_type UNIO` |
 | postgres | ~300 | ~57.7k | 190.44 | `SELECT public.refresh_mv_dashboard_kpis()` |
-| authenticated | ~220 | ~52k | 238.57 | `WITH pgrst_source AS ( SELECT "public"."solicitacoes"."id" FROM "public"."solicitacoes" WHERE "public"."solicitacoes"."status" = $1 LIMIT $2 OFFSET $3 ) , pgrst_source_count AS (SELECT $5 FROM "public"."solicitacoes" WHE` |
-| authenticator | ~230 | ~28.5k | 122.49 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $3), oid) AS base_type FROM pg_type UNIO` |
-| ci_snapshot | ~90 | ~26.1k | 303.35 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
-| service_role | ~10k | ~24.8k | 2.48 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_job_name", "p_status", "p_error" FROM json_to_record(pgrst_payload.json_data) AS _("p_job_name" text, "` |
-| ci_snapshot | ~90 | ~22.3k | 259.61 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
-| authenticated | ~1k | ~20k | 19.43 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "_email", "_ip_address", "_user_agent", "_success" FROM json_to_record(pgrst_payload.json_data) AS _("_ema` |
-| pgbouncer | ~290 | ~16.7k | 57.73 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
+| authenticated | ~230 | ~55.2k | 240.92 | `WITH pgrst_source AS ( SELECT "public"."solicitacoes"."id" FROM "public"."solicitacoes" WHERE "public"."solicitacoes"."status" = $1 LIMIT $2 OFFSET $3 ) , pgrst_source_count AS (SELECT $5 FROM "public"."solicitacoes" WHE` |
+| authenticator | ~240 | ~29.6k | 123.16 | `WITH -- Recursively get the base types of domains base_types AS ( WITH RECURSIVE recurse AS ( SELECT oid, typbasetype, typnamespace AS base_namespace, COALESCE(NULLIF(typbasetype, $3), oid) AS base_type FROM pg_type UNIO` |
+| ci_snapshot | ~90 | ~26.4k | 303.36 | `SELECT e.extname AS name, e.extversion AS version, n.nspname AS schema, (SELECT default_version FROM pg_available_extensions a WHERE a.name = e.extname) AS available_version FROM pg_extension e JOIN pg_namespace n ON n.o` |
+| service_role | ~10.1k | ~25k | 2.48 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "p_job_name", "p_status", "p_error" FROM json_to_record(pgrst_payload.json_data) AS _("p_job_name" text, "` |
+| ci_snapshot | ~90 | ~22.4k | 257.62 | `SELECT jobid, runid, status, start_time, end_time, EXTRACT($2 FROM (end_time - start_time))::numeric(10,2) AS seconds, left(return_message, $3) AS return_message FROM (SELECT *, row_number() OVER (PARTITION BY jobid ORDE` |
+| authenticated | ~1k | ~20.5k | 19.71 | `WITH pgrst_source AS (SELECT pgrst_call.pgrst_scalar FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "_email", "_ip_address", "_user_agent", "_success" FROM json_to_record(pgrst_payload.json_data) AS _("_ema` |
+| pgbouncer | ~300 | ~16.9k | 57.42 | `SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput, coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY ( SELECT a.atttypid FROM pg_attribute AS a WHERE a.attrelid = t.typrelid AND a.` |
 
 
 ## Conexões
 | usuário | estado | n |
 |---|---|---|
-| authenticator | idle | 8 |
+| authenticator | idle | 9 |
 | ci_snapshot | active | 1 |
-| pgbouncer | idle | 1 |
+| pgbouncer | idle | 2 |
 | supabase_admin | active | 1 |
 | supabase_admin | idle | 9 |
 | supabase_admin |  | 1 |
+| supabase_storage_admin | idle | 1 |
 
 
 ## Saúde dos serviços
@@ -264,8 +265,8 @@ _nenhum_
       "connected_cluster": 0,
       "db_connected": true,
       "healthy": true,
-      "node": "realtime@2600:1f18:67fc:ac02:787e:9aa4:5647:c91c",
-      "region": "us-east-1",
+      "node": "realtime@2600:1f1c:c90:ad00:2c34:137a:5d52:5f72",
+      "region": "us-west-1",
       "replication_connected": true
     },
     "name": "realtime",

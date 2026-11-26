@@ -24,7 +24,7 @@
 | 6 | `observacoes` | `text` | sim |  |  |  |
 | 7 | `registrado_por` | `uuid` | sim |  |  |  |
 | 8 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 9 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 9 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

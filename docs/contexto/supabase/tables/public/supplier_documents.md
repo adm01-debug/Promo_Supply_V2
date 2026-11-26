@@ -32,7 +32,7 @@
 | 14 | `uploaded_by` | `uuid` | sim |  |  |  |
 | 15 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 16 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 17 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 17 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -93,6 +93,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | recalculate_qualification_on_document_change | AFTER | INSERT OR DELETE OR UPDATE | ROW | enabled | public.trigger_recalculate_qualification_score |
 
 

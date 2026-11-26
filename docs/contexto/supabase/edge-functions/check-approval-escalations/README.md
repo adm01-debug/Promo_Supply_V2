@@ -4,7 +4,7 @@
 |---|---|
 | nome | check-approval-escalations |
 | status | ACTIVE |
-| versão | 33 |
+| versão | 34 |
 | verify_jwt | sim |
 | entrypoint | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
 | import_map |  |

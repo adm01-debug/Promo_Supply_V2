@@ -359,9 +359,9 @@
         "name": "check-approval-escalations",
         "slug": "check-approval-escalations",
         "status": "ACTIVE",
-        "updated_at": 1795704528612,
+        "updated_at": 1795720130412,
         "verify_jwt": true,
-        "version": 33
+        "version": 34
       },
       {
         "created_at": 1785935872814,
@@ -659,9 +659,9 @@
         "name": "spot-api",
         "slug": "spot-api",
         "status": "ACTIVE",
-        "updated_at": 1795704603715,
+        "updated_at": 1795717998878,
         "verify_jwt": false,
-        "version": 31
+        "version": 32
       },
       {
         "created_at": 1785935930982,
@@ -671,9 +671,9 @@
         "name": "spot-proxy",
         "slug": "spot-proxy",
         "status": "ACTIVE",
-        "updated_at": 1795704607000,
+        "updated_at": 1795718000815,
         "verify_jwt": true,
-        "version": 30
+        "version": 31
       },
       {
         "created_at": 1785935919139,
@@ -1744,8 +1744,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -1835,8 +1835,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -1965,8 +1965,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -2225,8 +2225,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -2420,8 +2420,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -2615,8 +2615,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -2758,8 +2758,8 @@
         "type": "boolean"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -4721,8 +4721,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5007,8 +5007,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5267,8 +5267,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5384,8 +5384,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5501,8 +5501,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5631,8 +5631,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -5813,8 +5813,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -6203,8 +6203,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -6398,8 +6398,8 @@
         "type": "numeric(15,2)"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -7022,8 +7022,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -7737,8 +7737,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -8049,8 +8049,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -8348,8 +8348,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -9999,8 +9999,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -11039,8 +11039,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -11286,8 +11286,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -11637,8 +11637,8 @@
         "type": "uuid"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -12482,8 +12482,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -13210,8 +13210,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -13964,8 +13964,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -15914,8 +15914,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -17526,8 +17526,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -17630,8 +17630,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -17786,8 +17786,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -17942,8 +17942,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -18215,8 +18215,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -18397,8 +18397,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -18592,8 +18592,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -18878,8 +18878,8 @@
         "type": "numeric(5,2)"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -19021,8 +19021,8 @@
         "type": "jsonb"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -19190,8 +19190,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -19307,8 +19307,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -20906,8 +20906,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -21244,8 +21244,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -21491,8 +21491,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -23246,8 +23246,8 @@
         "type": "timestamp with time zone"
       },
       {
-        "comment": null,
-        "default": "'00000000-0000-0000-0000-000000000000'::uuid",
+        "comment": "rollback:default_tenant_zero:20261128195000",
+        "default": null,
         "generated": null,
         "identity": null,
         "is_enum": false,
@@ -38676,7 +38676,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "b544b01515ccf522",
+        "definition_sha": "1165e1c4de4b717f",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -38717,7 +38717,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "b231bdc2044d3675",
+        "definition_sha": "c98bf36d2635e15a",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": true,
@@ -40087,7 +40087,7 @@
           "search_path=public"
         ],
         "definition": null,
-        "definition_sha": "0fa9e7bec8dac028",
+        "definition_sha": "c8a6b5cdb5c81f92",
         "execute_api_roles": "authenticated, service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -40524,16 +40524,29 @@
           "cron": [],
           "db": [],
           "triggers": [
+            "public.active_sessions.a_fill_tenant_id",
             "public.approval_delegations.a_fill_tenant_id",
+            "public.approval_hierarchy.a_fill_tenant_id",
             "public.approval_history.a_fill_tenant_id",
             "public.approval_rules.a_fill_tenant_id",
             "public.approval_steps.a_fill_tenant_id",
             "public.approval_workflows.a_fill_tenant_id",
+            "public.auction_bids.a_fill_tenant_id",
             "public.audit_logs.a_fill_tenant_id",
+            "public.audit_logs_202605.a_fill_tenant_id",
+            "public.audit_logs_202606.a_fill_tenant_id",
+            "public.audit_logs_202607.a_fill_tenant_id",
+            "public.audit_logs_202608.a_fill_tenant_id",
+            "public.audit_logs_202609.a_fill_tenant_id",
+            "public.audit_logs_legacy_20260712.a_fill_tenant_id",
+            "public.budget_transactions.a_fill_tenant_id",
+            "public.categorias.a_fill_tenant_id",
+            "public.category_strategies.a_fill_tenant_id",
             "public.contact_notes.a_fill_tenant_id",
             "public.contract_documents.a_fill_tenant_id",
             "public.contract_history.a_fill_tenant_id",
             "public.contract_items.a_fill_tenant_id",
+            "public.contract_penalties.a_fill_tenant_id",
             "public.contracts.a_fill_tenant_id",
             "public.cost_centers.a_fill_tenant_id",
             "public.cotacoes.a_fill_tenant_id",
@@ -40541,11 +40554,18 @@
             "public.department_budgets.a_fill_tenant_id",
             "public.devolucao_itens.a_fill_tenant_id",
             "public.devolucoes.a_fill_tenant_id",
+            "public.erp_connections.a_fill_tenant_id",
+            "public.erp_sync_log.a_fill_tenant_id",
             "public.fiscal_documents.a_fill_tenant_id",
+            "public.fiscal_events.a_fill_tenant_id",
+            "public.fornecedor_categorias.a_fill_tenant_id",
             "public.fornecedores.a_fill_tenant_id",
+            "public.integration_outbox.a_fill_tenant_id",
             "public.licitacao_lances.a_fill_tenant_id",
             "public.licitacao_propostas.a_fill_tenant_id",
             "public.licitacoes.a_fill_tenant_id",
+            "public.notifications.a_fill_tenant_id",
+            "public.order_contracts.a_fill_tenant_id",
             "public.pagamentos.a_fill_tenant_id",
             "public.payment_history.a_fill_tenant_id",
             "public.pedido_itens.a_fill_tenant_id",
@@ -40553,14 +40573,56 @@
             "public.penalty_escalation_config.a_fill_tenant_id",
             "public.produto_fornecedores.a_fill_tenant_id",
             "public.produtos.a_fill_tenant_id",
+            "public.profiles.a_fill_tenant_id",
+            "public.punchout_catalogs.a_fill_tenant_id",
+            "public.punchout_sessions.a_fill_tenant_id",
+            "public.receiving_checklists.a_fill_tenant_id",
             "public.repurchase_suggestions.a_fill_tenant_id",
+            "public.savings_tracker.a_fill_tenant_id",
+            "public.scim_provisioning_log.a_fill_tenant_id",
             "public.solicitacoes.a_fill_tenant_id",
+            "public.sourcing_awards.a_fill_tenant_id",
             "public.sourcing_event_criteria.a_fill_tenant_id",
             "public.sourcing_event_lots.a_fill_tenant_id",
+            "public.sourcing_event_questions.a_fill_tenant_id",
             "public.sourcing_events.a_fill_tenant_id",
             "public.sourcing_invitations.a_fill_tenant_id",
+            "public.sourcing_pipeline.a_fill_tenant_id",
+            "public.sourcing_projects.a_fill_tenant_id",
+            "public.sourcing_response_answers.a_fill_tenant_id",
+            "public.sourcing_response_items.a_fill_tenant_id",
+            "public.sourcing_responses.a_fill_tenant_id",
+            "public.spend_forecasts.a_fill_tenant_id",
+            "public.spot_pedidos.a_fill_tenant_id",
             "public.sso_configurations.a_fill_tenant_id",
-            "public.supplier_bonifications.a_fill_tenant_id"
+            "public.supplier_bonifications.a_fill_tenant_id",
+            "public.supplier_documents.a_fill_tenant_id",
+            "public.supplier_qualification_scores.a_fill_tenant_id",
+            "public.system_alerts.a_fill_tenant_id",
+            "public.telemetry_logs.a_fill_tenant_id",
+            "public.telemetry_logs_202605.a_fill_tenant_id",
+            "public.telemetry_logs_202606.a_fill_tenant_id",
+            "public.telemetry_logs_202607.a_fill_tenant_id",
+            "public.telemetry_logs_202608.a_fill_tenant_id",
+            "public.telemetry_logs_202609.a_fill_tenant_id",
+            "public.telemetry_logs_legacy_20260712.a_fill_tenant_id",
+            "public.unspsc_codes.a_fill_tenant_id",
+            "public.user_tenants.a_fill_tenant_id",
+            "public.workflow_approvals.a_fill_tenant_id",
+            "public.workflow_audit_log.a_fill_tenant_id",
+            "public.workflow_edges.a_fill_tenant_id",
+            "public.workflow_instances.a_fill_tenant_id",
+            "public.workflow_logs.a_fill_tenant_id",
+            "public.workflow_nodes.a_fill_tenant_id",
+            "public.workflow_sod_rules.a_fill_tenant_id",
+            "public.workflow_tasks.a_fill_tenant_id",
+            "public.workflow_templates.a_fill_tenant_id",
+            "public.xbz_carrinho_log.a_fill_tenant_id",
+            "public.xbz_credentials.a_fill_tenant_id",
+            "public.xbz_pedido_status_history.a_fill_tenant_id",
+            "public.xbz_pedidos.a_fill_tenant_id",
+            "public.xbz_produto_fiscal.a_fill_tenant_id",
+            "public.xbz_produtos.a_fill_tenant_id"
           ],
           "views": []
         },
@@ -40577,6 +40639,38 @@
         "language": "plpgsql",
         "leakproof": false,
         "name": "fill_tenant_id_from_profile",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": true,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
+        "args": "",
+        "callers": {
+          "code": [],
+          "code_total_files": 0,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.supplier_qualification_scores.a_fill_tenant_id_supplier"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": [
+          "search_path=public"
+        ],
+        "definition": null,
+        "definition_sha": "ec00ddcea24779d1",
+        "execute_api_roles": "service_role",
+        "execute_public": false,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "fill_tenant_id_from_supplier",
         "owner": "postgres",
         "returns": "trigger",
         "schema": "public",
@@ -41936,6 +42030,7 @@
           "code_total_files": 82,
           "cron": [],
           "db": [
+            "public.clear_login_lockout",
             "public.count_legacy_storage_urls",
             "public.get_cron_job_staleness",
             "public.get_db_health_snapshot",
@@ -44716,9 +44811,13 @@
             {
               "file": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261128140000_spot_pedidos_tenant.sql",
+              "hits": 3
             }
           ],
-          "code_total_files": 18,
+          "code_total_files": 19,
           "cron": [],
           "db": [
             "public.find_approval_rule",
@@ -63576,6 +63675,18 @@
         "with_check": "true"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_202605",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_202605",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -63598,6 +63709,18 @@
         "table": "audit_logs_202606",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_202606",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_202606",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -63624,6 +63747,18 @@
         "with_check": "true"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_202607",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_202607",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -63648,6 +63783,18 @@
         "with_check": "true"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_202608",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_202608",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -63670,6 +63817,18 @@
         "table": "audit_logs_202609",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_202609",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_202609",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -63706,6 +63865,18 @@
         "table": "audit_logs_legacy_20260712",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_audit_logs_legacy_20260712",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "audit_logs_legacy_20260712",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "ALL",
@@ -65336,7 +65507,7 @@
         ],
         "schema": "public",
         "table": "organizations",
-        "using": "(id IN ( SELECT user_organizations.organization_id\n   FROM user_organizations\n  WHERE (user_organizations.user_id = auth.uid())))",
+        "using": "((id = get_user_grupo_id()) OR (id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE (uo.user_id = auth.uid()))))",
         "with_check": null
       },
       {
@@ -66644,7 +66815,7 @@
         ],
         "schema": "public",
         "table": "spend_forecasts",
-        "using": "(organization_id IN ( SELECT user_organizations.organization_id\n   FROM user_organizations\n  WHERE (user_organizations.user_id = auth.uid())))",
+        "using": "((organization_id = get_user_grupo_id()) OR (organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE (uo.user_id = auth.uid()))) OR tenant_in_my_group(tenant_id))",
         "with_check": null
       },
       {
@@ -66960,6 +67131,18 @@
         "with_check": "(auth.uid() = user_id)"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -66982,6 +67165,18 @@
         "table": "telemetry_logs_202605",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_202605",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_202605",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -67008,6 +67203,18 @@
         "with_check": "true"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_202606",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_202606",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -67030,6 +67237,18 @@
         "table": "telemetry_logs_202607",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_202607",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_202607",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -67056,6 +67275,18 @@
         "with_check": "true"
       },
       {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_202608",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_202608",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
+      },
+      {
         "cmd": "SELECT",
         "name": "admin_read_partition",
         "permissive": "PERMISSIVE",
@@ -67078,6 +67309,18 @@
         "table": "telemetry_logs_202609",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_202609",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_202609",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -67138,6 +67381,18 @@
         "table": "telemetry_logs_legacy_20260712",
         "using": "true",
         "with_check": "true"
+      },
+      {
+        "cmd": "ALL",
+        "name": "tenant_isolation_telemetry_logs_legacy_20260712",
+        "permissive": "RESTRICTIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "telemetry_logs_legacy_20260712",
+        "using": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))",
+        "with_check": "(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))"
       },
       {
         "cmd": "SELECT",
@@ -67917,7 +68172,7 @@
         ],
         "schema": "storage",
         "table": "objects",
-        "using": "(bucket_id = 'product-images'::text)",
+        "using": "((bucket_id = 'product-images'::text) AND (name ~~ 'products/%'::text))",
         "with_check": null
       },
       {
@@ -68461,9 +68716,13 @@
         "public": false
       },
       {
-        "allowed_mime_types": null,
+        "allowed_mime_types": [
+          "image/png",
+          "image/jpeg",
+          "image/webp"
+        ],
         "created_at": "2026-09-11T13:53:00.632595+00:00",
-        "file_size_limit": null,
+        "file_size_limit": 5242880,
         "id": "product-images",
         "name": "product-images",
         "public": true
@@ -70910,6 +71169,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON active_sessions FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "active_sessions",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_sanitize_session_token BEFORE INSERT ON active_sessions FOR EACH ROW EXECUTE FUNCTION sanitize_session_token()",
         "events": "INSERT",
         "function": "public.sanitize_session_token",
@@ -70962,6 +71232,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "approval_delegations",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON approval_hierarchy FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "approval_hierarchy",
         "timing": "BEFORE"
       },
       {
@@ -71042,6 +71323,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON auction_bids FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "auction_bids",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
         "events": "INSERT",
         "function": "public.fill_tenant_id_from_profile",
@@ -71108,6 +71400,83 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_202605 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_202605",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_202606 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_202606",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_202607 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_202607",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_202608 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_202608",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_202609 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_202609",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON audit_logs_legacy_20260712 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "audit_logs_legacy_20260712",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON budget_transactions FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "budget_transactions",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER tr_budget_transaction_update AFTER INSERT ON budget_transactions FOR EACH ROW EXECUTE FUNCTION update_cost_center_budget_totals()",
         "events": "INSERT",
         "function": "public.update_cost_center_budget_totals",
@@ -71119,6 +71488,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON categorias FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "categorias",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_categorias_updated_at BEFORE UPDATE ON categorias FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -71127,6 +71507,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "categorias",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON category_strategies FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "category_strategies",
         "timing": "BEFORE"
       },
       {
@@ -71182,6 +71573,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "contract_items",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON contract_penalties FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "contract_penalties",
         "timing": "BEFORE"
       },
       {
@@ -71449,6 +71851,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON erp_connections FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "erp_connections",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_erp_connections_updated_at BEFORE UPDATE ON erp_connections FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -71457,6 +71870,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "erp_connections",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON erp_sync_log FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "erp_sync_log",
         "timing": "BEFORE"
       },
       {
@@ -71504,6 +71928,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON fiscal_events FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "fiscal_events",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_fiscal_events_updated_at BEFORE UPDATE ON fiscal_events FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -71512,6 +71947,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "fiscal_events",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON fornecedor_categorias FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "fornecedor_categorias",
         "timing": "BEFORE"
       },
       {
@@ -71589,6 +72035,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "fornecedores",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON integration_outbox FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "integration_outbox",
         "timing": "BEFORE"
       },
       {
@@ -71710,6 +72167,28 @@
         "schema": "public",
         "status": "enabled",
         "table": "notification_preferences",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON notifications FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "notifications",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON order_contracts FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "order_contracts",
         "timing": "BEFORE"
       },
       {
@@ -71999,6 +72478,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON profiles FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "profiles",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_normalize_email BEFORE INSERT OR UPDATE OF email, phone ON profiles FOR EACH ROW EXECUTE FUNCTION normalize_email_lowercase()",
         "events": "INSERT OR UPDATE",
         "function": "public.normalize_email_lowercase",
@@ -72032,6 +72522,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON punchout_catalogs FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "punchout_catalogs",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_punchout_catalogs_updated_at BEFORE UPDATE ON punchout_catalogs FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72040,6 +72541,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "punchout_catalogs",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON punchout_sessions FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "punchout_sessions",
         "timing": "BEFORE"
       },
       {
@@ -72063,6 +72575,17 @@
         "status": "enabled",
         "table": "query_telemetry",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON receiving_checklists FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "receiving_checklists",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER trg_calc_checklist_score BEFORE INSERT OR UPDATE ON receiving_checklists FOR EACH ROW EXECUTE FUNCTION calc_checklist_overall_score()",
@@ -72120,6 +72643,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON savings_tracker FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "savings_tracker",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_savings_tracker_updated_at BEFORE UPDATE ON savings_tracker FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72128,6 +72662,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "savings_tracker",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON scim_provisioning_log FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "scim_provisioning_log",
         "timing": "BEFORE"
       },
       {
@@ -72219,6 +72764,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_awards FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_awards",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_event_criteria FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
         "events": "INSERT",
         "function": "public.fill_tenant_id_from_profile",
@@ -72238,6 +72794,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "sourcing_event_lots",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_event_questions FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_event_questions",
         "timing": "BEFORE"
       },
       {
@@ -72263,6 +72830,28 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_pipeline FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_pipeline",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_projects FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_projects",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER update_sourcing_projects_updated_at BEFORE UPDATE ON sourcing_projects FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72271,6 +72860,50 @@
         "schema": "public",
         "status": "enabled",
         "table": "sourcing_projects",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_response_answers FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_response_answers",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_response_items FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_response_items",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON sourcing_responses FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "sourcing_responses",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON spend_forecasts FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "spend_forecasts",
         "timing": "BEFORE"
       },
       {
@@ -72293,6 +72926,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "spot_estoque",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON spot_pedidos FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "spot_pedidos",
         "timing": "BEFORE"
       },
       {
@@ -72351,6 +72995,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON supplier_documents FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "supplier_documents",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER recalculate_qualification_on_document_change AFTER INSERT OR DELETE OR UPDATE ON supplier_documents FOR EACH ROW EXECUTE FUNCTION trigger_recalculate_qualification_score()",
         "events": "INSERT OR DELETE OR UPDATE",
         "function": "public.trigger_recalculate_qualification_score",
@@ -72360,6 +73015,50 @@
         "status": "enabled",
         "table": "supplier_documents",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON supplier_qualification_scores FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "supplier_qualification_scores",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id_supplier BEFORE INSERT ON supplier_qualification_scores FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_supplier()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_supplier",
+        "level": "ROW",
+        "name": "a_fill_tenant_id_supplier",
+        "schema": "public",
+        "status": "enabled",
+        "table": "supplier_qualification_scores",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON system_alerts FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "system_alerts",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
@@ -72373,6 +73072,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_202605 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_202605",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs_202605 FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
         "events": "INSERT",
         "function": "public.check_telemetry_alerts",
@@ -72382,6 +73092,17 @@
         "status": "enabled",
         "table": "telemetry_logs_202605",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_202606 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_202606",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs_202606 FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
@@ -72395,6 +73116,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_202607 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_202607",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs_202607 FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
         "events": "INSERT",
         "function": "public.check_telemetry_alerts",
@@ -72404,6 +73136,17 @@
         "status": "enabled",
         "table": "telemetry_logs_202607",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_202608 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_202608",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs_202608 FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
@@ -72417,6 +73160,17 @@
         "timing": "AFTER"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_202609 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_202609",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trigger_check_telemetry_alerts AFTER INSERT ON telemetry_logs_202609 FOR EACH ROW EXECUTE FUNCTION check_telemetry_alerts()",
         "events": "INSERT",
         "function": "public.check_telemetry_alerts",
@@ -72426,6 +73180,17 @@
         "status": "enabled",
         "table": "telemetry_logs_202609",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON telemetry_logs_legacy_20260712 FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "telemetry_logs_legacy_20260712",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER trg_grant_tenant_access AFTER INSERT OR UPDATE OF organization_id ON tenants FOR EACH ROW EXECUTE FUNCTION grant_tenant_access_on_insert()",
@@ -72461,6 +73226,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON unspsc_codes FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "unspsc_codes",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_ufp_updated_at BEFORE UPDATE ON user_filter_preferences FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72481,6 +73257,17 @@
         "status": "enabled",
         "table": "user_roles",
         "timing": "AFTER"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON user_tenants FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "user_tenants",
+        "timing": "BEFORE"
       },
       {
         "definition": "CREATE TRIGGER update_user_tour_preferences_updated_at BEFORE UPDATE ON user_tour_preferences FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
@@ -72527,6 +73314,116 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_approvals FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_approvals",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_audit_log FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_audit_log",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_edges FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_edges",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_instances FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_instances",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_logs FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_logs",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_nodes FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_nodes",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_sod_rules FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_sod_rules",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_tasks FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_tasks",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON workflow_templates FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "workflow_templates",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_carrinho_log FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_carrinho_log",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_xbz_cores_updated BEFORE UPDATE ON xbz_cores FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72535,6 +73432,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "xbz_cores",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_credentials FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_credentials",
         "timing": "BEFORE"
       },
       {
@@ -72549,6 +73457,28 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_pedido_status_history FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_pedido_status_history",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_pedidos FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_pedidos",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_xbz_pedidos_updated BEFORE UPDATE ON xbz_pedidos FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72560,6 +73490,17 @@
         "timing": "BEFORE"
       },
       {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_produto_fiscal FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_produto_fiscal",
+        "timing": "BEFORE"
+      },
+      {
         "definition": "CREATE TRIGGER trg_xbz_produto_fiscal_updated BEFORE UPDATE ON xbz_produto_fiscal FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()",
         "events": "UPDATE",
         "function": "public.update_updated_at_column",
@@ -72568,6 +73509,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "xbz_produto_fiscal",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER a_fill_tenant_id BEFORE INSERT ON xbz_produtos FOR EACH ROW EXECUTE FUNCTION fill_tenant_id_from_profile()",
+        "events": "INSERT",
+        "function": "public.fill_tenant_id_from_profile",
+        "level": "ROW",
+        "name": "a_fill_tenant_id",
+        "schema": "public",
+        "status": "enabled",
+        "table": "xbz_produtos",
         "timing": "BEFORE"
       },
       {

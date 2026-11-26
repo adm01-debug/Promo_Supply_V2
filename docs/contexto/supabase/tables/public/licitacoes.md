@@ -42,7 +42,7 @@
 | 24 | `is_live` | `boolean` | sim | `false` |  |  |
 | 25 | `current_best_bid` | `numeric(15,2)` | sim |  |  |  |
 | 26 | `organization_id` | `uuid` | sim |  |  |  |
-| 27 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 27 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints

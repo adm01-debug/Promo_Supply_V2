@@ -24,7 +24,7 @@
 | 6 | `metadata` | `jsonb` | sim | `'{}'::jsonb` |  |  |
 | 7 | `organization_id` | `uuid` | sim |  |  |  |
 | 8 | `created_at` | `timestamp with time zone` | sim | `now()` |  |  |
-| 9 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 9 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -57,7 +57,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(organization_id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |
+| USING | `((organization_id = get_user_grupo_id()) OR (organization_id IN ( SELECT uo.organization_id    FROM user_organizations uo   WHERE (uo.user_id = auth.uid()))) OR tenant_in_my_group(tenant_id))` |
 | WITH CHECK |  |
 
 ### `tenant_isolation_spend_forecasts`
@@ -73,7 +73,9 @@
 
 ## Triggers
 
-_nenhum_
+| nome | timing | eventos | nível | status | função |
+|---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 
 
 ## Grants

@@ -6,7 +6,7 @@
 | owner | postgres |
 | RLS habilitado | sim |
 | RLS forçado (owner) | não |
-| policies | 2 |
+| policies | 3 |
 | realtime (publication) | não |
 | replica identity | default |
 | vem de extensão | não |
@@ -81,10 +81,22 @@
 | USING | `true` |
 | WITH CHECK | `true` |
 
+### `tenant_isolation_audit_logs_202605`
+
+| campo | valor |
+|---|---|
+| comando | ALL |
+| tipo | RESTRICTIVE |
+| roles | authenticated |
+| USING | `(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))` |
+| WITH CHECK | `(tenant_in_my_group(tenant_id) OR (tenant_id = get_user_grupo_id()))` |
+
 
 ## Triggers
 
-_nenhum_
+| nome | timing | eventos | nível | status | função |
+|---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 
 
 ## Grants

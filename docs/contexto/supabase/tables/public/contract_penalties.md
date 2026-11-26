@@ -30,7 +30,7 @@
 | 11 | `status` | `text` | não | `'pending'::text` |  |  |
 | 12 | `created_at` | `timestamp with time zone` | não | `now()` |  |  |
 | 13 | `updated_at` | `timestamp with time zone` | não | `now()` |  |  |
-| 14 | `tenant_id` | `uuid` | não | `'00000000-0000-0000-0000-000000000000'::uuid` |  |  |
+| 14 | `tenant_id` | `uuid` | não |  |  | rollback:default_tenant_zero:20261128195000 |
 
 
 ## Constraints
@@ -92,6 +92,7 @@
 
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_apply_penalty_escalation | BEFORE | INSERT | ROW | enabled | public.apply_penalty_escalation |
 | trg_update_contract_penalties_updated_at | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
 

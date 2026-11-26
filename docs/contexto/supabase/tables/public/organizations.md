@@ -88,7 +88,7 @@
 | comando | SELECT |
 | tipo | PERMISSIVE |
 | roles | public |
-| USING | `(id IN ( SELECT user_organizations.organization_id    FROM user_organizations   WHERE (user_organizations.user_id = auth.uid())))` |
+| USING | `((id = get_user_grupo_id()) OR (id IN ( SELECT uo.organization_id    FROM user_organizations uo   WHERE (uo.user_id = auth.uid()))))` |
 | WITH CHECK |  |
 
 

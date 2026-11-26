@@ -133,6 +133,7 @@
 | nome | timing | eventos | nível | status | função |
 |---|---|---|---|---|---|
 | a0_guard_profile_org_change | BEFORE | INSERT OR UPDATE | ROW | enabled | public.guard_profile_org_change |
+| a_fill_tenant_id | BEFORE | INSERT | ROW | enabled | public.fill_tenant_id_from_profile |
 | trg_normalize_email | BEFORE | INSERT OR UPDATE | ROW | enabled | public.normalize_email_lowercase |
 | trg_normalize_phone_profiles | BEFORE | INSERT OR UPDATE | ROW | enabled | public.tg_normalize_phone |
 | update_profiles_updated_at | BEFORE | UPDATE | ROW | enabled | public.update_updated_at_column |
