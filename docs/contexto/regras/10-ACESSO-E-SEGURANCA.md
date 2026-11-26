@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d9059a1b45` · branch `main` · 2026-11-26 14:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `29e79cfffe` · branch `main` · 2026-11-26 14:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -472,7 +472,7 @@ Middleware matcher (Next.js): nenhum
 | Ação | Para/De | Privilégios | Objetos |
 |---|---|---|---|
 | grant | anon, authenticated | execute | `has_role`, `has_permission`, `get_user_role`, `is_ip_blocked`, `log_login_attempt` |
-| grant | authenticated | execute | `generate_sequential_number`, `find_approval_rule`, `get_effective_approver`, `is_account_locked`, `record_failed_login`, `clear_login_lockout`, `check_budget_availability`, `log_login_attempt`, `has_role`, `has_permission`, `get_user_role`, `update_estoque_saldo`, `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics` … +50 |
+| grant | authenticated | execute | `generate_sequential_number`, `find_approval_rule`, `get_effective_approver`, `is_account_locked`, `record_failed_login`, `clear_login_lockout`, `check_budget_availability`, `log_login_attempt`, `has_role`, `has_permission`, `get_user_role`, `update_estoque_saldo`, `get_pagamentos_kpis`, `get_fornecedores_kpis`, `get_compras_dashboard_metrics` … +51 |
 | grant | authenticated | insert | `telemetry_logs` |
 | grant | authenticated | select | `system_alerts`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `deadlock_snapshots`, `v_system_health_overview`, `health_scan_runs`, `security_definer_baseline`, `mv_dashboard_kpis`, `audit_logs_legacy_20260712`, `table_size_snapshots`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal` … +8 |
 | grant | authenticated | select, insert | `audit_logs`, `audit_logs`, `telemetry_logs`, `audit_logs` |
