@@ -3860,6 +3860,16 @@
    "indices": [],
    "fks": [],
    "criada_em": "20261126170000_ancora_cadeia_audit_logs.sql",
+   "colunas_types": {
+    "atualizado_em": "string",
+    "id": "boolean",
+    "registro_hash": "string",
+    "sequencia": "number"
+   },
+   "drift": {
+    "so_na_migration": [],
+    "so_no_types": []
+   },
    "usada_no_front": 0,
    "usada_em_edges": [],
    "triggers": [],

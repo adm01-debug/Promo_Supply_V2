@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2a8af5d0e69e3a9d8f8dffc8b697540d230953e2` (2026-11-26T14:45:02-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d15d49f4d849e18c9d61f582bb056e0093978a36` (2026-11-26T14:46:14-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1547 |
 | arquivos_codigo | 970 |
-| linhas_codigo | 193048 |
+| linhas_codigo | 193069 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -346,11 +346,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Hotspots (arquivos mais alterados, 90 dias)
 - docs/qa/05-PROGRESSO.md (198)
 - AGENTS.md (33)
-- docs/pendencias/_indice.md (19)
+- docs/pendencias/_indice.md (18)
+- src/integrations/supabase/types.ts (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - src/hooks/usePagamentos.ts (9)
-- src/integrations/supabase/types.ts (9)
 - src/pages/pedidos/Pedidos.tsx (9)
 - src/features/auth/hooks/useAuth.tsx (8)
 - src/features/solicitacoes/hooks/useSolicitacoes.ts (8)
@@ -428,6 +428,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `d15d49f` chore(db): sincronizar types.ts com o banco [auto] (#577)
 - 2026-11-26 `2a8af5d` fix(documentos): importacao de NF-e idempotente e conferencia com fornecedor (#582)
 - 2026-11-26 `3f77fc7` fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)
 - 2026-11-26 `1de9078` fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)
@@ -442,7 +443,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `22852aa` fix(auth): autocadastro deixa de nascer com papel de comprador (#570)
 - 2026-11-26 `df27f17` fix(pedidos): banco recusa ordem de compra para solicitacao nao aprovada (#569)
 - 2026-11-26 `a0dc878` fix(cotacoes): selecionar a cotacao vencedora nao aprova mais a solicitacao (#568)
-- 2026-11-26 `b26661a` chore(qa): resolve conflito de merge no ledger e restaura 4 etapas invisiveis (#567)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

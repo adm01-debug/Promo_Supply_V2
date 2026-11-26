@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2a8af5d0e69e3a9d8f8dffc8b697540d230953e2",
+  "commit": "d15d49f4d849e18c9d61f582bb056e0093978a36",
   "branch": "main",
-  "data_commit": "2026-11-26T14:45:02-03:00",
+  "data_commit": "2026-11-26T14:46:14-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "d15d49f",
+    "data": "2026-11-26",
+    "assunto": "chore(db): sincronizar types.ts com o banco [auto] (#577)"
+   },
    {
     "sha": "2a8af5d",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "7e2123a",
     "data": "2026-11-26",
     "assunto": "perf: etapa 221 derruba 24 indices redundantes comprovados por prefixo (#546)"
-   },
-   {
-    "sha": "3e0edc9",
-    "data": "2026-11-26",
-    "assunto": "chore(cron): reduz o sync de estoque da SPOT para cada 30 minutos (#554)"
    }
   ],
   "arquivos_mudados_7d": 1568,
@@ -207,7 +207,11 @@
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 19
+    "mudancas": 18
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
+    "mudancas": 10
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -219,10 +223,6 @@
    },
    {
     "arquivo": "src/hooks/usePagamentos.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 9
    },
    {
@@ -301,11 +301,11 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 290
+    "commits": 289
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 6
+    "commits": 7
    },
    {
     "autor": "dependabot[bot]",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1547,
   "arquivos_codigo": 970,
-  "linhas_codigo": 193048,
+  "linhas_codigo": 193069,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -444,7 +444,7 @@
   },
   "src/integrations": {
    "arquivos": 3,
-   "linhas": 10500
+   "linhas": 10521
   },
   "src/lib": {
    "arquivos": 63,
@@ -550,7 +550,7 @@
  "maiores_arquivos": [
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "linhas": 10441
+   "linhas": 10462
   },
   {
    "arquivo": "scripts/regras_negocio/generate.py",

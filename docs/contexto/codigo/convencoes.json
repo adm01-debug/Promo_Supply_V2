@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "chore(db): sincronizar types.ts com o banco [auto] (#577)",
    "fix(documentos): importacao de NF-e idempotente e conferencia com fornecedor (#582)",
    "fix(seguranca): dropa exec_sql e execute_read_query (etapas 150/151) (#581)",
    "fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)",
-   "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)",
-   "fix(banco): tabelas de log orfas perdem DELETE/UPDATE/TRUNCATE e leitura ampla (#578)"
+   "fix(banco): chave de negocio passa a ser unica por empresa, nao no banco inteiro (#579)"
   ]
  },
  "pr_template": null,

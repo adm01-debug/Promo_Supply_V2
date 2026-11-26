@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a8af5d0e6` · branch `main` · 2026-11-26 17:46 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d15d49f4d8` · branch `main` · 2026-11-26 17:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -37,6 +37,7 @@
 | `audit_logs_202607` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_202608` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_202609` | não encontrado | ? | ? | ? | ? |
+| `audit_logs_ancora` | não encontrado | ? | ? | ? | ? |
 | `audit_logs_legacy_20260712` | enabled | authenticated: has_role(auth.uid(), 'admin'::app_role)<br>service_role: true<br>authenticated: public.has_role(auth.uid(), 'admin'::app_role) | service_role: true | service_role: true | service_role: true |
 | `blocked_countries` | não encontrado | authenticated: public.has_role(auth.uid(), 'admin'::app_role) | ? | ? | ? |
 | `blocked_ips` | enabled | public: has_role(auth.uid(), 'admin')<br>authenticated: has_role(auth.uid(), 'admin'::app_role) | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') | public: has_role(auth.uid(), 'admin') |
@@ -529,7 +530,7 @@ Middleware matcher (Next.js): nenhum
 ## Multi-tenancy
 
 - Chave de tenant: **`tenant_id`** presente em 98 tabela(s): `solicitacoes`, `cotacoes`, `fornecedores`, `profiles`, `contracts`, `contract_items`, `contract_documents`, `contract_history`, `order_contracts`, `notifications`, `categorias`, `produtos`, `pedidos`, `pedido_itens`, `pagamentos`, `active_sessions`, `contact_notes`, `approval_rules`, `approval_delegations`, `approval_workflows`, `approval_steps`, `approval_history`, `department_budgets`, `fiscal_documents`, `repurchase_suggestions`, `contract_penalties`, `receiving_checklists`, `penalty_escalation_config`, `supplier_bonifications`, `devolucoes`, `devolucao_itens`, `creditos_fornecedor`, `payment_history`, `licitacoes`, `licitacao_propostas`, `licitacao_lances`, `category_strategies`, `sourcing_pipeline`, `spend_forecasts`, `sourcing_events`, `sourcing_event_lots`, `sourcing_event_questions`, `sourcing_event_criteria`, `sourcing_invitations`, `sourcing_responses`, `sourcing_response_items`, `sourcing_response_answers`, `auction_bids`, `sourcing_awards`, `cost_centers`, `budget_transactions`, `approval_hierarchy`, `user_tenants`, `unspsc_codes`, `sso_configurations`, `scim_provisioning_log`, `punchout_catalogs`, `punchout_sessions`, `erp_connections`, `erp_sync_log`, `fiscal_events`, `sourcing_projects`, `savings_tracker`, `workflow_templates`, `workflow_nodes`, `workflow_edges`, `workflow_instances`, `workflow_approvals`, `workflow_logs`, `workflow_sod_rules`, `workflow_tasks`, `workflow_audit_log`, `fornecedor_categorias`, `produto_fornecedores`, `system_alerts`, `integration_outbox`, `telemetry_logs_legacy_20260712`, `telemetry_logs`, `audit_logs_legacy_20260712`, `audit_logs`, `xbz_credentials`, `xbz_pedidos`, `xbz_pedido_status_history`, `xbz_produtos`, `xbz_produto_fiscal`, `xbz_carrinho_log`, `audit_logs_202605`, `audit_logs_202606`, `audit_logs_202607`, `audit_logs_202608`, `audit_logs_202609`, `supplier_documents`, `supplier_qualification_scores`, `telemetry_logs_202605`, `telemetry_logs_202606`, `telemetry_logs_202607`, `telemetry_logs_202608`, `telemetry_logs_202609`
-- Cobertura: 61% das tabelas. Tabelas SEM a chave (verificar isolamento): `saved_filters`, `entity_versions`, `historico_compras`, `dashboard_filter_favorites`, `push_subscriptions`, `notification_preferences`, `permissions`, `blocked_ips`, `ip_whitelist`, `webauthn_credentials`, `webauthn_challenges`, `allowed_countries`, `password_reset_requests`, `account_lockouts`, `user_tour_preferences`, `spot_sessions`, `spot_pedidos`, `negotiation_analyses`, `query_telemetry`, `dependency_health`, `dependency_health_history`, `user_filter_preferences`, `dashboard_layouts`, `erp_field_mappings`, `currencies`, `exchange_rates`, `estoque`, `estoque_movimentacoes`, `aliquotas_tributarias`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `temp_file_snapshots`, `deadlock_snapshots`, `health_scan_runs`, `alert_subscriptions`, `security_definer_baseline`, `secret_rotation_schedule`, `table_size_snapshots`, `cron_heartbeats`, `xbz_cores`, `spot_produtos`, `spot_skus`, `spot_customization_options`, `spot_estoque`, `cron_watchdog_seen`, `blocked_countries`, `qualification_history`, `qualification_requirements`
+- Cobertura: 60% das tabelas. Tabelas SEM a chave (verificar isolamento): `saved_filters`, `entity_versions`, `historico_compras`, `dashboard_filter_favorites`, `push_subscriptions`, `notification_preferences`, `permissions`, `blocked_ips`, `ip_whitelist`, `webauthn_credentials`, `webauthn_challenges`, `allowed_countries`, `password_reset_requests`, `account_lockouts`, `user_tour_preferences`, `spot_sessions`, `spot_pedidos`, `negotiation_analyses`, `query_telemetry`, `dependency_health`, `dependency_health_history`, `user_filter_preferences`, `dashboard_layouts`, `erp_field_mappings`, `currencies`, `exchange_rates`, `estoque`, `estoque_movimentacoes`, `aliquotas_tributarias`, `webhook_events`, `wal_rate_snapshots`, `checkpoint_snapshots`, `temp_file_snapshots`, `deadlock_snapshots`, `health_scan_runs`, `alert_subscriptions`, `security_definer_baseline`, `secret_rotation_schedule`, `table_size_snapshots`, `cron_heartbeats`, `xbz_cores`, `spot_produtos`, `spot_skus`, `spot_customization_options`, `spot_estoque`, `cron_watchdog_seen`, `blocked_countries`, `qualification_history`, `qualification_requirements`
 
 ## Soft delete (registros 'apagados' continuam na tabela — filtre!)
 
@@ -691,6 +692,7 @@ Middleware matcher (Next.js): nenhum
 | `audit_logs_202607` | `created_at` |
 | `audit_logs_202608` | `created_at` |
 | `audit_logs_202609` | `created_at` |
+| `audit_logs_ancora` | `atualizado_em` |
 | `geo_access_logs` | `created_at` |
 | `qualification_history` | `created_at` |
 | `qualification_requirements` | `created_at`, `updated_at` |

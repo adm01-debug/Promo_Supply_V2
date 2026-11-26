@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a8af5d0e6` · branch `main` · 2026-11-26 17:46 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `d15d49f4d8` · branch `main` · 2026-11-26 17:47 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -25,6 +25,7 @@
 | `audit_logs_202607` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
 | `audit_logs_202608` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
 | `audit_logs_202609` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | types.ts |
+| `audit_logs_ancora` | _(sem COMMENT ON TABLE — significado não documentado)_ | 4 colunas | types.ts |
 | `audit_logs_legacy_20260712` | _(sem COMMENT ON TABLE — significado não documentado)_ | 16 colunas | migration |
 | `blocked_countries` | _(sem COMMENT ON TABLE — significado não documentado)_ | 7 colunas | types.ts |
 | `blocked_ips` | _(sem COMMENT ON TABLE — significado não documentado)_ | 8 colunas | migration |
@@ -464,7 +465,7 @@
 - `spot_api_sync_log.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_documents.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `supplier_qualification_scores.qualification_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
-- 157/161 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
+- 158/162 tabelas sem `COMMENT ON TABLE` — o significado de negócio não está no schema: `entity_versions`, `solicitacoes`, `cotacoes`, `fornecedores`, `historico_compras`, `user_roles`, `profiles`, `dashboard_filter_favorites`, `contracts`, `contract_items`, `contract_documents`, `contract_history` …
 
 ## Regras manuais presentes
 
