@@ -1976,8 +1976,8 @@
   {
    "modulo": "features/layout",
    "arquivos": 32,
-   "testes": 9,
-   "linhas": 5124,
+   "testes": 10,
+   "linhas": 5151,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2416,7 +2416,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11974,
+   "linhas": 11987,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2822,7 +2822,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 31,
+   "testes": 33,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],
@@ -4066,7 +4066,7 @@
   {
    "modulo": "pages/catalogo-spot",
    "arquivos": 6,
-   "testes": 2,
+   "testes": 3,
    "linhas": 1156,
    "itens_menu": [
     "SPOT / Stricker"

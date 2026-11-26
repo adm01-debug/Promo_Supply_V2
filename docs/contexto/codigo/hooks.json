@@ -1875,7 +1875,7 @@
    "hooks_exportados": [
     "usePurchaseHistory"
    ],
-   "linhas": 350,
+   "linhas": 357,
    "dominio": "hooks",
    "tabelas": [
     "cost_centers",
@@ -1904,7 +1904,7 @@
     "src/pages/historico/HistoricoRegistrosTab.tsx",
     "src/pages/historico/HistoricoSourcingTab.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useRealPushNotifications.ts",
@@ -2098,7 +2098,7 @@
    "hooks_exportados": [
     "useSidebarBadges"
    ],
-   "linhas": 49,
+   "linhas": 55,
    "dominio": "hooks",
    "tabelas": [
     "approval_workflows",
@@ -2118,7 +2118,7 @@
     "src/features/layout/components/AppSidebar.tsx",
     "src/features/layout/components/CommandPalette.tsx"
    ],
-   "coberto_por_testes": 0
+   "coberto_por_testes": 1
   },
   {
    "arquivo": "src/hooks/useSpotIntegration.ts",
@@ -2331,7 +2331,7 @@
     "src/pages/catalogo-spot/SpotCatalogTab.tsx",
     "src/pages/catalogo-spot/SpotSyncPanel.tsx"
    ],
-   "coberto_por_testes": 1
+   "coberto_por_testes": 2
   },
   {
    "arquivo": "src/pages/portal-fornecedor/portalFornecedorData.ts",

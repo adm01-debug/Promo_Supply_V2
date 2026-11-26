@@ -3719,7 +3719,7 @@
     "MobileSidebarTrigger"
    ],
    "export_default": null,
-   "linhas": 497,
+   "linhas": 524,
    "dominio": "features/layout",
    "hooks_locais": [
     "useAuth",

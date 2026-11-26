@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `e18b65d5b5c49bb802ddfc97c370a6932d78262d` (2026-11-26T00:23:54-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `36e96de5d9d46c886942d105b799c034c285dd1f` (2026-11-26T00:31:50-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (865), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (869), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1468 |
-| arquivos_codigo | 940 |
-| linhas_codigo | 189052 |
+| arquivos_total | 1472 |
+| arquivos_codigo | 944 |
+| linhas_codigo | 189378 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 340 |
 | cron_jobs | 74 |
-| testes | 301 |
+| testes | 305 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (206), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (210), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -330,7 +330,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes_com_nome_duplicado: 9 — ex.: AnimatedCounter, COLORS, Confetti
 - scripts_orfaos: 1 — ex.: scripts/ci/sonda-edges-negocio.sql
 - arquivos_nao_lidos_por_tamanho: 0
-- env_usadas_nao_declaradas: 1 — ex.: VITE_VAPID_PUBLIC_KEY
+- env_usadas_nao_declaradas: 0
 - ciclos_de_import: 2
 - possiveis_segredos_no_codigo: 4 — ex.: scripts/ci/inventario-types/banco.unit.mjs:18, scripts/ci/inventario-types/banco.unit.mjs:227, scripts/ci/inventario-types/identidade.unit.mjs:285
 
@@ -338,8 +338,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (134)
-- docs/pendencias/_indice.md (37)
+- docs/qa/05-PROGRESSO.md (139)
+- docs/pendencias/_indice.md (36)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - AGENTS.md (8)
@@ -422,6 +422,11 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `36e96de` fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)
+- 2026-11-26 `2ecea30` fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)
+- 2026-11-26 `b7a644c` fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)
+- 2026-11-26 `7bc5670` ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)
+- 2026-11-26 `0856406` ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)
 - 2026-11-26 `e18b65d` fix(historico): botao Limpar filtros passa a descrever os filtros ativos (etapa 197) (#512)
 - 2026-11-26 `fed20c2` fix(auth): remove switchTenant do contexto de auth (etapa 012) (#511)
 - 2026-11-26 `c3e5f96` fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)
@@ -432,11 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `49dbb82` docs(ledger): fecha a etapa 006 com a prova do estado real do banco (#504)
 - 2026-11-25 `a70dc33` chore(testes): remove testes-placebo e asserts que nao verificavam nada (etapas 296-299, PR #501) (#501)
 - 2026-11-25 `5656edb` chore(ci): bump actions/dependency-review-action (#482)
-- 2026-11-25 `6eb3b7a` fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)
-- 2026-11-25 `9ba061e` chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)
-- 2026-11-25 `7736405` docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)
-- 2026-11-25 `802cbb7` chore(deps-dev): bump autoprefixer (#478)
-- 2026-11-25 `63ca16f` chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `e18b65d5b5` · branch `main` · 2026-11-26 03:30 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `36e96de5d9` · branch `main` · 2026-11-26 03:35 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3451 testes em 250 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3462 testes em 254 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2524,13 +2524,13 @@ _nenhum item encontrado_
 | `src/pages/devolucoes/__tests__/devolucoesModals.test.ts` | 21 | MOTIVO_LABELS · has 7 motivo entries · covers all expected motivo keys · every label is a non-empty string … |
 | `src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts` | 20 | CHART_COLORS · has 6 color entries · all entries are non-empty strings · first color uses CSS variable syntax … |
 | `src/components/ui/indicators/__tests__/statusConfigs.test.ts` | 20 | statusConfigs · has 13 status entries · covers all expected StatusType values · every entry has a non-empty label string … |
+| `src/hooks/__tests__/useDevolucoes.test.tsx` | 20 | useDevolucoes · regra de transicao de status · recusa transicao fora da maquina de estados e nao grava nada · carimba a data de aprovacao ao aprovar · nao anuncia status atualizado quando o RLS barra o UPDATE … |
 | `src/lib/__tests__/security.test.ts` | 20 | security.isDangerous · detects <script tag · detects javascript: protocol · detects onerror= attribute … |
 | `supabase/functions/_shared/external-bridge-allowlist.test.ts` | 20 | assertBridgeRequest: select em view do PIM na allowlist é permitido · assertBridgeRequest: tabela fora da allowlist retorna 403 · assertBridgeRequest: insert em view do PIM retorna 403 (operação não permitida) · assertBridgeRequest: limit acima de MAX_SELECT_LIMIT retorna 400 … |
 | `src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts` | 19 | entityConfig · has exactly 4 entity types · covers all required entity types · each entity has a non-empty label … |
 | `src/components/compras/executive/__tests__/executiveDashboardData.test.ts` | 19 | calculateChange · returns positive value when current > previous · returns negative value when current < previous · returns 0 when current equals previous … |
 | `src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts` | 19 | resolveApprovalDeadline · prioriza step.prazo_limite quando presente · cai para workflow.prazo_limite quando step é nulo · usa workflow.created_at + 24h quando ambos prazos são nulos … |
 | `src/components/ui/__tests__/celebrationConfigs.test.ts` | 19 | celebrationConfigs · has 9 celebration type entries · covers all expected CelebrationType values · every entry has a defined icon … |
-| `src/hooks/__tests__/useDevolucoes.test.tsx` | 19 | useDevolucoes · regra de transicao de status · recusa transicao fora da maquina de estados e nao grava nada · carimba a data de aprovacao ao aprovar · nao anuncia status atualizado quando o RLS barra o UPDATE … |
 | `src/lib/__tests__/paginatedFetch.test.ts` | 19 | fetchAllRows · returns all rows from a single page · calls from() with the table name · calls select() with the select string … |
 | `src/lib/__tests__/routePrefetch.test.ts` | 19 | prefetchRouteChunk · is a function · does not throw for a known route · does not throw for an unknown route … |
 | `src/lib/__tests__/supabaseQuery.test.ts` | 19 | escapeIlike · returns empty string for empty string input · returns empty string for null-like falsy input · returns plain string unchanged … |
@@ -2679,6 +2679,7 @@ _nenhum item encontrado_
 | `src/components/admin/telemetry/__tests__/SystemAlertsView.resolve.test.tsx` | 3 | resolver alerta de telemetria · resolve pelo RPC resolve_alert e nao por UPDATE direto na tabela · mostra o motivo real quando o RPC recusa (alerta ja resolvido) |
 | `src/components/compras/__tests__/pendingApprovalsA11y.test.tsx` | 3 | PendingApprovalsList acessibilidade (UX-04 1/4) · o menu de acoes de cada aprovacao tem nome acessivel · nao sobra botao so-icone sem nome no cartao da aprovacao |
 | `src/components/security/__tests__/PasskeyManager.pendente.test.tsx` | 3 | PasskeyManager / anuncio honesto (SEC-11) · nao promete login por biometria enquanto o servidor recusa · botao Adicionar Passkey fica desabilitado |
+| `src/features/layout/__tests__/AppSidebar.badgeErro.test.tsx` | 3 | AppSidebar - contagem de pendencias indisponivel (HK-09) · mostra marcador de indisponivel em vez de esconder o badge · com contagem zero nao mostra marcador nem numero |
 | `src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx` | 3 | usePedidos · ordem de compra so com solicitacao aprovada (NEG-06) · nao cria a ordem quando a solicitacao nao esta aprovada · cria a ordem quando a solicitacao esta aprovada |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.autoAprovacao.test.tsx` | 3 | createSolicitacao com auto aprovacao do banco · nao cria workflow quando o banco devolve a solicitacao ja aprovada · cria o workflow quando o banco devolve a solicitacao pendente |
 | `src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx` | 3 | useSolicitacoes Hook · should initialize with default states · should handle creation workflow |
@@ -2690,6 +2691,7 @@ _nenhum item encontrado_
 | `src/hooks/__tests__/useRealPushNotifications.test.tsx` | 3 | useRealPushNotifications — aviso honesto de push (etapa 288) · sem VITE_VAPID_PUBLIC_KEY nao anuncia sucesso · com a chave publica e inscricao existente anuncia sucesso |
 | `src/hooks/__tests__/useRealtimeSubscription.channel.test.tsx` | 3 | useRealtimeSubscription (HK-02) · nao reinscreve o canal quando o consumidor repassa um array novo com o mesmo conteudo · reinscreve quando a lista de tabelas muda de verdade |
 | `src/hooks/__tests__/useSecurityLogs.terminateOthers.test.tsx` | 3 | terminateOtherSessions (QA 037) · revoga as outras sessoes no GoTrue e preserva a linha deste dispositivo · apaga todas as linhas do usuario quando este navegador nao tem registro |
+| `src/hooks/__tests__/useSidebarBadges.erro.test.tsx` | 3 | useSidebarBadges - falha de contagem (HK-09) · propaga o erro em vez de anunciar zero pendencia · sem erro continua devolvendo as contagens |
 | `src/hooks/__tests__/useSpotIntegration.checkout.test.tsx` | 3 | useSpotIntegration — checkout · chama spot-proxy com action=checkout e devolve o contrato tipado · propaga o erro da edge e não devolve info de checkout |
 | `src/pages/admin/__tests__/FiscalDashboard.kpis.test.tsx` | 3 | KPIs do painel fiscal derivados de fiscal_events · mostra ausencia de dados sem inventar SEFAZ online nem latencia fixa · calcula autorizadas, pendentes, erros e latencia media real |
 | `src/pages/admin/__tests__/HealthDashboard.test.tsx` | 3 | contratos do dashboard de saude · preserva dias no pivot e trata campos nullable/JSON sem conversoes ocultas · mostra alerta sem data no periodo completo e o exclui de periodo recente |
@@ -2702,6 +2704,8 @@ _nenhum item encontrado_
 | `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
+| `src/hooks/__tests__/usePurchaseHistory.chaveItens.test.tsx` | 2 | usePurchaseHistory - chave dos itens (HK-10) · rebusca os itens quando o conjunto de pedidos muda sem mudar de tamanho |
+| `src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx` | 2 | useTriggerSpotSync - invalidacao das chaves reais (HK-06) · invalida produtos e estoque com as mesmas chaves que as queries usam |
 | `src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx` | 2 | HistoricoCompras - aba Console de Sourcing · monta o SourcingHistoryConsole quando a aba e selecionada |
 | `src/tests/security/rls-tenant-isolation-restrictive.test.ts` | 2 | RLS · tenant_isolation_* é RESTRICTIVE (papel não pode ser furado por OR) · tenant_isolation_%s: última definição é AS RESTRICTIVE |
 | `supabase/functions/_shared/idempotency.test.ts` | 2 | getIdempotentResponse so faz replay de operacao processada · withIdempotency continua registrando a falha para analise |

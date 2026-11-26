@@ -515,7 +515,7 @@
   {
    "arquivo": "scripts/supabase_snapshot/snapshot.py",
    "descricao": "Somente leitura no banco: cada consulta roda em transação READ ONLY com Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
-   "linhas": 1893,
+   "linhas": 1900,
    "env": [],
    "npm_scripts": [
     "contexto:banco"
