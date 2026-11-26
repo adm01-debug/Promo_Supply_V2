@@ -39,7 +39,9 @@ export default tseslint.config(
               },
             ],
       "react-refresh/only-export-components": "off",
-      "@typescript-eslint/no-unused-vars": "off",
+      // "warn" e nao "error": ha ~450 declaracoes herdadas nao usadas (HIG-05) e o
+      // Quality Gate nao pode ficar vermelho em toda PR. `^_` marca descarte intencional.
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",
       "no-unused-vars": "off",
       "no-console": "off",

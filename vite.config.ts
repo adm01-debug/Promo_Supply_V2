@@ -159,7 +159,12 @@ export default defineConfig(({ mode }) => ({
     target: "es2020",
     cssMinify: true,
     minify: "esbuild",
-    sourcemap: 'hidden',
+    // `'hidden'` so omitia o comentario sourceMappingURL: os `.map` eram
+    // emitidos em `dist/assets/` de qualquer forma, e a Vercel publica `dist/`
+    // inteiro, com o TypeScript original dentro de `sourcesContent`. Nada no
+    // repo consome os mapas (nao ha Sentry nem upload de artefato de sourcemap
+    // em nenhum workflow), entao o certo e nao gerar.
+    sourcemap: false,
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
     reportCompressedSize: false,
