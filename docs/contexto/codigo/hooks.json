@@ -512,7 +512,7 @@
     "usePedidos",
     "usePedidosKPIs"
    ],
-   "linhas": 446,
+   "linhas": 448,
    "dominio": "features/pedidos",
    "tabelas": [
     "pedido_itens",
@@ -538,7 +538,7 @@
    "usado_por_arquivos": [
     "src/features/pedidos/index.ts"
    ],
-   "coberto_por_testes": 4
+   "coberto_por_testes": 5
   },
   {
    "arquivo": "src/features/solicitacoes/hooks/useFluxosAprovacao.ts",
@@ -1678,7 +1678,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 401,
+   "linhas": 404,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos",
@@ -1711,7 +1711,7 @@
     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
     "src/pages/pagamentos/Pagamentos.tsx"
    ],
-   "coberto_por_testes": 3
+   "coberto_por_testes": 4
   },
   {
    "arquivo": "src/hooks/usePasswordResetRequests.ts",

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `36e96de5d9` · branch `main` · 2026-11-26 03:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `236e96db05` · branch `main` · 2026-11-26 03:43 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3462 testes em 254 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3466 testes em 256 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2703,7 +2703,9 @@ _nenhum item encontrado_
 | `supabase/functions/_shared/cors-sem-constante.test.ts` | 3 | nenhuma edge importa a constante corsHeaders · as edges que respondem OPTIONS derivam o cors da requisicao · o teste cobre o diretorio de functions de verdade |
 | `supabase/functions/erp-sync/idempotencia-escopo.test.ts` | 3 | erp-sync escopa a chave de idempotencia por usuario · erp-sync le e grava o cache sempre com o source escopado · erp-sync autentica antes de consultar o cache |
 | `tests-e2e/elite-validation.spec.ts` | 3 | Freight Quest E2E Excellence · Fluxo Crítico: Login e Navegação Segura · Consistência de Dados: Painel Administrativo de Telemetria |
+| `src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx` | 2 | usePedidosKPIs - alcance do invalidate (etapa 190) · invalidar o prefixo [pedidos] refaz a consulta dos cartoes |
 | `src/hooks/__tests__/useFornecedores.organization.test.tsx` | 2 | useFornecedores · createFornecedor (VAL-12) · grava organization_id com o id da ORGANIZACAO, nao o do tenant |
+| `src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx` | 2 | usePagamentosKPIs - alcance do invalidate (etapa 190) · invalidar o prefixo [pagamentos] refaz a consulta dos cartoes |
 | `src/hooks/__tests__/usePurchaseHistory.chaveItens.test.tsx` | 2 | usePurchaseHistory - chave dos itens (HK-10) · rebusca os itens quando o conjunto de pedidos muda sem mudar de tamanho |
 | `src/pages/catalogo-spot/__tests__/useSpotCatalog.invalidacao.test.tsx` | 2 | useTriggerSpotSync - invalidacao das chaves reais (HK-06) · invalida produtos e estoque com as mesmas chaves que as queries usam |
 | `src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx` | 2 | HistoricoCompras - aba Console de Sourcing · monta o SourcingHistoryConsole quando a aba e selecionada |

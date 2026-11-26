@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (210)",
+   "co-localizado (__tests__) (212)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(kpis): cartoes de indicadores passam a invalidar junto com a entidade (etapa 190) (#517)",
+   "chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)",
    "fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)",
    "fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)",
-   "fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)",
-   "ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)",
-   "ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)"
+   "fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)"
   ]
  },
  "pr_template": null,

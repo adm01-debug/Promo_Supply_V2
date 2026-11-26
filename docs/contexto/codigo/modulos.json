@@ -2231,8 +2231,8 @@
   {
    "modulo": "features/pedidos",
    "arquivos": 4,
-   "testes": 6,
-   "linhas": 516,
+   "testes": 7,
+   "linhas": 518,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2416,7 +2416,7 @@
    "modulo": "hooks",
    "arquivos": 62,
    "testes": 0,
-   "linhas": 11987,
+   "linhas": 11990,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2822,7 +2822,7 @@
   {
    "modulo": "hooks/__tests__",
    "arquivos": 0,
-   "testes": 33,
+   "testes": 34,
    "linhas": 0,
    "itens_menu": [],
    "telas": [],

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "36e96de5d9d46c886942d105b799c034c285dd1f",
+  "sha": "236e96db05c3a06f3411817a18634a38fd35b5b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 03:35 UTC",
-  "files_total": 1473,
-  "code_files": 1299,
-  "code_lines": 219479,
+  "generated_at": "2026-11-26 03:43 UTC",
+  "files_total": 1475,
+  "code_files": 1301,
+  "code_lines": 219591,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a3b3a522113bfa34",
+ "facts_hash": "a71126c44411691c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 428,
+   ".tsx": 430,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -35370,8 +35370,8 @@
   },
   {
    "module": "src/features/pedidos",
-   "files": 10,
-   "lines": 1069,
+   "files": 11,
+   "lines": 1122,
    "tables": [
     "pedido_itens",
     "pedidos",
@@ -35385,7 +35385,8 @@
    ],
    "docs": [
     "exclusaoPedido.ts: Regra de ciclo de vida da exclusao de pedido. Excluir um pedido em andamento perde dado em silencio: pedido_itens e receiving_checklists caem em CASCADE e devolucoes.pedido_id vira NULL (a devolucao continua existindo sem vinculo). Por isso a exclusao so vale para pedido que ainda nao entrou no cicl …",
-    "usePedidos.escrita.test.tsx: TST-06 (etapa 281): o caminho de ESCRITA de usePedidos nunca era exercitado. O RLS filtra a linha em silencio (0 linhas, sem erro), entao updatePedido e bulkUpdateStatus comemoravam \"atualizado\" sem gravar nada."
+    "usePedidos.escrita.test.tsx: TST-06 (etapa 281): o caminho de ESCRITA de usePedidos nunca era exercitado. O RLS filtra a linha em silencio (0 linhas, sem erro), entao updatePedido e bulkUpdateStatus comemoravam \"atualizado\" sem gravar nada.",
+    "usePedidos.kpisInvalidados.test.tsx: HK-05 (etapa 190): mesma causa de `usePagamentosKPIs`. Os cartoes de pedido viviam em `['pedidos-kpis', ...]` enquanto as mutacoes e o realtime invalidam o prefixo `['pedidos']` (`usePedidos.ts`, `queryKeysToInvalidate: [['pedidos']]`). Chave irma, match posicional: o invalidate nao chegava nos cart …"
    ],
    "deps": [
     "@tanstack/react-query",
@@ -35410,6 +35411,7 @@
     "src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.escrita.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.exclusao.test.tsx",
+    "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
     "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx"
    ]
   },
@@ -35477,8 +35479,8 @@
   },
   {
    "module": "src/hooks",
-   "files": 95,
-   "lines": 16435,
+   "files": 96,
+   "lines": 16494,
    "tables": [
     "active_sessions",
     "allowed_countries",
@@ -63131,6 +63133,14 @@
     "name": "deletePedido de pedido descartavel continua funcionando"
    },
    {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
+    "name": "usePedidosKPIs - alcance do invalidate (etapa 190)"
+   },
+   {
+    "file": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
+    "name": "invalidar o prefixo [pedidos] refaz a consulta dos cartoes"
+   },
+   {
     "file": "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx",
     "name": "usePedidos · ordem de compra so com solicitacao aprovada (NEG-06)"
    },
@@ -64381,6 +64391,14 @@
    {
     "file": "src/hooks/__tests__/usePagamentos.exclusao.test.tsx",
     "name": "exclui pagamento sem historico"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
+    "name": "usePagamentosKPIs - alcance do invalidate (etapa 190)"
+   },
+   {
+    "file": "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
+    "name": "invalidar o prefixo [pagamentos] refaz a consulta dos cartoes"
    },
    {
     "file": "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx",
@@ -102895,7 +102913,7 @@
   },
   "src/features/pedidos/hooks/usePedidos.ts": {
    "path": "src/features/pedidos/hooks/usePedidos.ts",
-   "lines": 446,
+   "lines": 448,
    "exports": [
     "type Pedido",
     "type PedidoItem",
@@ -103064,6 +103082,16 @@
     "bulkDelete parcial avisa quantos ficaram de fora e nao comemora",
     "deletePedido bloqueado pelo status nao comemora",
     "deletePedido de pedido descartavel continua funcionando"
+   ]
+  },
+  "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx": {
+   "path": "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
+   "lines": 51,
+   "is_test": true,
+   "doc": "HK-05 (etapa 190): mesma causa de `usePagamentosKPIs`. Os cartoes de pedido viviam em `['pedidos-kpis', ...]` enquanto as mutacoes e o realtime invalidam o prefixo `['pedidos']` (`usePedidos.ts`, `queryKeysToInvalidate: [['pedidos']]`). Chave irma, match posicional: o invalidate nao chegava nos cart …",
+   "tests": [
+    "usePedidosKPIs - alcance do invalidate (etapa 190)",
+    "invalidar o prefixo [pedidos] refaz a consulta dos cartoes"
    ]
   },
   "src/features/pedidos/hooks/__tests__/usePedidos.ordemDeAprovada.test.tsx": {
@@ -105637,7 +105665,7 @@
   },
   "src/hooks/usePagamentos.ts": {
    "path": "src/hooks/usePagamentos.ts",
-   "lines": 401,
+   "lines": 404,
    "exports": [
     "type Pagamento",
     "interface CreatePagamentoInput",
@@ -107230,6 +107258,15 @@
     "bulkDelete com todo o lote com historico nao apaga nada",
     "erro na contagem de historico cancela a exclusao",
     "exclui pagamento sem historico"
+   ]
+  },
+  "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx": {
+   "path": "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
+   "lines": 56,
+   "is_test": true,
+   "tests": [
+    "usePagamentosKPIs - alcance do invalidate (etapa 190)",
+    "invalidar o prefixo [pagamentos] refaz a consulta dos cartoes"
    ]
   },
   "src/hooks/__tests__/usePasswordResetRequests.sendLink.test.tsx": {
@@ -122810,10 +122847,32 @@
   }
  },
  "git": {
-  "sha": "36e96de5d9d46c886942d105b799c034c285dd1f",
+  "sha": "236e96db05c3a06f3411817a18634a38fd35b5b5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "236e96d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(kpis): cartoes de indicadores passam a invalidar junto com a entidade (etapa 190) (#517)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
+     "src/features/pedidos/hooks/usePedidos.ts",
+     "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
+     "src/hooks/usePagamentos.ts"
+    ]
+   },
+   {
+    "sha": "13a252c",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(qa): encerra 194-196 sem mudanca de codigo (HK-07 ja resolvido na 013/014) (#516)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md"
+    ]
+   },
    {
     "sha": "36e96de",
     "date": "2026-11-26",
@@ -123134,30 +123193,16 @@
      "src/hooks/usePagamentos.ts",
      "src/pages/cotacao/Cotacao.tsx"
     ]
-   },
-   {
-    "sha": "2dbada9",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(qa): marca as etapas 247 e 281 como entregues (#489)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md"
-    ]
-   },
-   {
-    "sha": "8b2cfee",
-    "date": "2026-11-25",
-    "author": "github-actions[bot]",
-    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#487)",
-    "files": [
-     "src/integrations/supabase/types.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    23
+    24
+   ],
+   [
+    "src/hooks/usePagamentos.ts",
+    2
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
@@ -123186,6 +123231,18 @@
    [
     "docs/agentes/github-ci.md",
     2
+   ],
+   [
+    "src/features/pedidos/hooks/__tests__/usePedidos.kpisInvalidados.test.tsx",
+    1
+   ],
+   [
+    "src/features/pedidos/hooks/usePedidos.ts",
+    1
+   ],
+   [
+    "src/hooks/__tests__/usePagamentos.kpisInvalidados.test.tsx",
+    1
    ],
    [
     "src/features/layout/__tests__/AppSidebar.badgeErro.test.tsx",
@@ -123217,22 +123274,6 @@
    ],
    [
     "src/hooks/usePurchaseHistory.ts",
-    1
-   ],
-   [
-    ".github/workflows/contexto.yml",
-    1
-   ],
-   [
-    "scripts/supabase_snapshot/README.md",
-    1
-   ],
-   [
-    "scripts/supabase_snapshot/snapshot.py",
-    1
-   ],
-   [
-    "scripts/supabase_snapshot/test_snapshot.py",
     1
    ]
   ]
