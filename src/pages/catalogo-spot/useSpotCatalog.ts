@@ -159,9 +159,9 @@ export function useTriggerSpotSync() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['spot-sync-status'] });
-      void queryClient.invalidateQueries({ queryKey: ['spot-products'] });
+      void queryClient.invalidateQueries({ queryKey: ['spot-produtos'] });
       void queryClient.invalidateQueries({ queryKey: ['spot-skus'] });
-      void queryClient.invalidateQueries({ queryKey: ['spot-stock'] });
+            void queryClient.invalidateQueries({ queryKey: ['spot-estoque'] });
     },
   });
 }
