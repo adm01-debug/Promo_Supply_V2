@@ -104,12 +104,14 @@ const Cotacao = () => {
   const followUp = useMemo(() => resumoFollowUpDaCotacao(cotacoes[0]), [cotacoes]);
 
   const handleSelecionar = useCallback(async (id: string, justificativa?: string) => {
-    setFornecedorSelecionado(id);
     // Persist only real DB cotacoes (uuid); simulated api-/manual- ids stay UI-only.
     const isReal = cotacoes.some(c => c.id === id);
     if (isReal && selectCotacao) {
-      await selectCotacao(id, justificativa);
+      // Se o RLS barrou a gravacao, nao marca na tela o que o banco recusou.
+      const gravou = await selectCotacao(id, justificativa);
+      if (!gravou) return;
     }
+    setFornecedorSelecionado(id);
   }, [cotacoes, selectCotacao]);
 
   const handleAiAnalyze = useCallback(async () => {
@@ -381,8 +383,8 @@ const Cotacao = () => {
         open={showManualModal} 
         onOpenChange={setShowManualModal} 
         fornecedores={adaptFornecedoresToLegacy(fornecedores)}
-        onSave={(data) => {
-          createCotacao({
+        onSave={async (data) => {
+          const criada = await createCotacao({
             solicitacao_id: solicitacao.id,
             fornecedor_id: data.fornecedor_id,
             valor_unitario: data.valorUnitario,
@@ -393,7 +395,9 @@ const Cotacao = () => {
             validade_proposta: data.validadeProposta,
             observacoes: data.observacoes,
           });
-          setShowManualModal(false);
+          // Sem isso o modal fechava como se tivesse salvo mesmo quando o
+          // insert voltou erro/permissao negada (createCotacao -> null).
+          if (criada) setShowManualModal(false);
         }} 
       />
       <PriceHistoryModal open={showHistoryModal} onOpenChange={setShowHistoryModal} />

@@ -237,6 +237,63 @@ test('guard: workflow novo, contagem errada e "nao ha protecao" viram fato cobra
   }
 });
 
+test('guard: contagem de workflows no doc de CI e faixa do deno no toolchain viram fato', () => {
+  // Etapa 285. Com a contagem do AGENTS.md ja checada, sobraram duas linhas de prosa velhas:
+  // "um dos SETE workflows" (com 15 no diretorio) em docs/agentes/github-ci.md e a nota do
+  // .github/toolchain.json citando o deno 'v1.x' quando o main.yml ja usava 'v2.x'.
+  const agents =
+    SECOES.map((s) => `${s}\n${'x'.repeat(300)}\n`).join('') +
+    '- Repo `adm01-debug/Promo_Supply_V2`, `main`, **público**.\n' +
+    '- A proteção de `main` exige **um** check obrigatório (`Contratos da automação local`).\n' +
+    '- São **3**\n  workflows (`ls .github/workflows/*.yml`).\n' +
+    '- O `deploy-edge-functions.yml` publica as edges no push da `main`.\n' +
+    '- O canal de DDL é o `aplicar-migration-prod.yml` (dispatch manual).\n' +
+    '- São 0 migrations hoje.\n';
+  const docCi = [
+    '| `.github/` | `workflows/` (3 arquivos) |',
+    '- `main.yml` roda lint, typecheck e testes.',
+    '- `deploy-edge-functions` publica as edges.',
+    '- `aplicar-migration-prod` aplica DDL.',
+    '',
+  ].join('\n');
+  const mainYml = '      - uses: denoland/setup-deno@v2\n        with:\n          deno-version: v2.x\n';
+  const toolchain =
+    '{"_comentario":["NAO declarados de proposito: deno (main.yml usa a faixa flutuante \'v2.x\', nao uma versao fixa)"]}\n';
+  const repo = repoSintetico({
+    'AGENTS.md': agents,
+    'docs/agentes/github-ci.md': docCi,
+    '.gitignore': '.env\n.env.*\n!.env.example\n',
+    '.github/toolchain.json': toolchain,
+    '.github/workflows/main.yml': mainYml,
+    '.github/workflows/deploy-edge-functions.yml': 'run: supabase functions deploy "$FUNCAO"\n',
+    '.github/workflows/aplicar-migration-prod.yml': 'run: psql --single-transaction -f "$ARQUIVO"\n',
+  });
+  try {
+    const limpo = repo.guard();
+    assert.equal(limpo.status, 0, limpo.stderr);
+
+    repo.escrever('docs/agentes/github-ci.md', docCi.replace('(3 arquivos)', '(7 arquivos)'));
+    const contagem = repo.guard();
+    assert.equal(contagem.status, 1);
+    assert.match(contagem.stderr, /afirma 7 arquivos em \.github\/workflows, mas \.github\/workflows tem 3/);
+
+    repo.escrever('docs/agentes/github-ci.md', docCi);
+    repo.escrever('.github/toolchain.json', toolchain.replace("'v2.x'", "'v1.x'"));
+    const faixaVelha = repo.guard();
+    assert.equal(faixaVelha.status, 1);
+    assert.match(faixaVelha.stderr, /toolchain\.json: a nota sobre o deno nao cita a faixa .*'v2\.x'/);
+
+    // A nota tambem fica velha se a faixa dos workflows subir e o comentario ficar para tras.
+    repo.escrever('.github/toolchain.json', toolchain);
+    repo.escrever('.github/workflows/main.yml', mainYml.replace('v2.x', 'v3.x'));
+    const subiu = repo.guard();
+    assert.equal(subiu.status, 1);
+    assert.match(subiu.stderr, /nao cita a faixa .*'v3\.x'/);
+  } finally {
+    repo.limpar();
+  }
+});
+
 test('guard: sem `.github/workflows` no checkout as asseracoes de fato nao rodam', () => {
   // Os repositorios sinteticos das outras provas nao tem workflows; cobrar o fato ali reprovaria
   // um guard bem calibrado por um diretorio que nao existe.

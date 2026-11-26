@@ -48,7 +48,11 @@ vi.mock('@/integrations/supabase/client', () => ({
       update: (updates: Record<string, unknown>) => ({
         in: (_col: string, ids: string[]) => {
           updatesAplicados.push({ updates, ids });
-          return Promise.resolve({ error: null });
+          // O hook confere as linhas realmente gravadas (RLS pode devolver 0
+          // linhas sem erro), entao o mock devolve uma linha por id enviado.
+          const gravadas = Promise.resolve({ data: ids.map((id) => ({ id })), error: null }) as unknown as Record<string, unknown>;
+          gravadas.select = () => gravadas;
+          return gravadas;
         },
       }),
     }),
@@ -96,4 +100,32 @@ describe('usePagamentos · bulkUpdateStatus (UI-01)', () => {
     expect(updatesAplicados[0].updates.status).toBe('agendado');
     expect(toastError).toHaveBeenCalledWith(expect.stringContaining('PAG-1'));
   });
+
+      // Etapa 247 (UI-12): a data escolhida no calendario era descartada.
+      it('grava a data escolhida quando o agendamento tem data', async () => {
+        const { result } = renderHook(() => usePagamentos(), { wrapper });
+        await waitFor(() => expect(result.current.pagamentos).toHaveLength(2));
+
+        await act(async () => {
+          await result.current.bulkUpdateStatus(['p2'], 'agendado', '2026-12-15');
+        });
+
+        expect(updatesAplicados).toHaveLength(1);
+        expect(updatesAplicados[0].updates).toMatchObject({
+          status: 'agendado',
+          data_agendamento: '2026-12-15',
+        });
+      });
+
+      it('nao inventa data de agendamento quando nenhuma foi escolhida', async () => {
+        const { result } = renderHook(() => usePagamentos(), { wrapper });
+        await waitFor(() => expect(result.current.pagamentos).toHaveLength(2));
+
+        await act(async () => {
+          await result.current.bulkUpdateStatus(['p2'], 'agendado');
+        });
+
+        expect(updatesAplicados).toHaveLength(1);
+        expect(updatesAplicados[0].updates).not.toHaveProperty('data_agendamento');
+      });
 });
