@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (203)",
+   "co-localizado (__tests__) (204)",
    "outro (43)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)",
    "fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)",
    "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)",
    "chore(db): sincronizar types.ts com o banco [auto] (#488)",
-   "fix(docs): corrige contagem de workflows e faixa do deno, e passa a checar as duas (#492)",
-   "fix(devolucoes): nao anuncia status, exclusao ou credito usado quando o RLS barra (etapa 283) (#491)"
+   "fix(docs): corrige contagem de workflows e faixa do deno, e passa a checar as duas (#492)"
   ]
  },
  "pr_template": null,

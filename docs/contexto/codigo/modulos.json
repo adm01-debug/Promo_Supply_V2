@@ -419,8 +419,8 @@
   {
    "modulo": "components/compras",
    "arquivos": 105,
-   "testes": 33,
-   "linhas": 26029,
+   "testes": 34,
+   "linhas": 26165,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -815,7 +815,9 @@
     "tabelas": [],
     "rpcs": []
    },
-   "importado_por_outros_modulos": [],
+   "importado_por_outros_modulos": [
+    "pages/fornecedores"
+   ],
    "depende_de_modulos": [
     "components/mobile",
     "components/ui",
@@ -5372,7 +5374,7 @@
    "modulo": "pages/fornecedores",
    "arquivos": 3,
    "testes": 1,
-   "linhas": 452,
+   "linhas": 467,
    "itens_menu": [
     "Fornec.",
     "Cadastros",
@@ -5390,10 +5392,14 @@
     "useFeedbackPreferences",
     "useFornecedores",
     "useFornecedoresKPIs",
+    "useHapticFeedback",
     "useIsMobile",
+    "useLongPress",
+    "usePullToRefresh",
     "useRealtimeSubscription",
     "useSLASettings",
     "useSupplierScorecardData",
+    "useSwipeGesture",
     "useToast"
    ],
    "hooks_definidos": [],
@@ -5446,6 +5452,7 @@
    "depende_de_modulos": [
     "components/atoms",
     "components/compras",
+    "components/fornecedores",
     "components/organisms",
     "components/ui",
     "features/layout",

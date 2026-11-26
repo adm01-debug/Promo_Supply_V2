@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `20216fb7f2` · branch `main` · 2026-11-26 00:32 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `fa8d817151` · branch `main` · 2026-11-26 00:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2246,6 +2246,7 @@ _nenhum item encontrado_
 | Erro ao desfazer a operacao | `src/components/compras/BulkOperationsPreview.tsx` |
 | Erro ao executar ação em massa | `src/components/compras/BulkOperationsPreview.tsx` |
 | Falha ao desfazer parte da operacao | `src/components/compras/BulkOperationsPreview.tsx` |
+| Erro ao abrir o documento | `src/components/compras/ContractDetailsModal.tsx` |
 | Erro ao enviar documento | `src/components/compras/ContractDetailsModal.tsx` |
 | Erro ao gerar PDF do contrato | `src/components/compras/ContractDetailsModal.tsx` |
 | Organização não identificada. Faça login novamente. | `src/components/compras/ContractDetailsModal.tsx` |
@@ -2437,8 +2438,7 @@ _nenhum item encontrado_
 | Erro ao atualizar pagamentos:  | `src/hooks/usePagamentos.ts` |
 | Erro ao atualizar:  | `src/hooks/usePagamentos.ts` |
 | Erro ao excluir pagamentos:  | `src/hooks/usePagamentos.ts` |
-| Erro ao excluir:  | `src/hooks/usePagamentos.ts` |
-| … +290 linhas — lista completa em `context.json` | |
+| … +291 linhas — lista completa em `context.json` | |
 
 ## J. Controle de acesso no código (checagens de perfil/permissão)
 
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3446 testes em 247 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3451 testes em 248 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2624,6 +2624,7 @@ _nenhum item encontrado_
 | `supabase/functions/punchout-receive/session.test.ts` | 6 | sessao recem-criada nao expira · sessao dentro do TTL nao expira · sessao mais velha que o TTL expira · limite exato do TTL ainda e valido … |
 | `tests-e2e/production-ready.spec.ts` | 6 | Freight Quest Production Readiness · Public Access - Auth Redirection · Main Layout Components · Navigation to Support/Documentation if available … |
 | `scripts/lib/psql-leitura.test.mjs` | 5 | montarAmbientePsql: loopback vira PG* com a senha decodificada e sem TLS forçado · montarAmbientePsql: projeto oficial (host direto e pooler) exige verify-full com a CA pinada · montarAmbientePsql: recusa outro projeto, host desconhecido e URL inválida — sem credencial na mensagem · criarMascara: tira a senha crua e a url-encoded; senha vazia não mascara nada … |
+| `src/components/compras/__tests__/contratoAbasItensDocs.test.tsx` | 5 | ContractDetailsModal - abas Itens e Docs (etapa 292) · todo gatilho de aba tem um conteudo correspondente · lista os itens do contrato e as ordens de compra vinculadas · lista os documentos e expoe o input de anexo … |
 | `src/components/compras/__tests__/contratoCamposRotulos.test.tsx` | 5 | ContractModal - nome acessivel dos campos (etapa 239) · associa os 3 rotulos de select ao gatilho certo · associa as duas janelas de data ao botao que as abre · todo label[for] do modal aponta para um elemento existente … |
 | `src/features/layout/__tests__/AppSidebar.a11y.test.tsx` | 5 | AppSidebar acessibilidade (UX-04 1/4) · sidebar recolhida: os links de modulo continuam com nome acessivel · sidebar recolhida: os dois controles do rodape tem nome · sidebar expandida: o nome visivel continua sendo o nome acessivel, sem aria-label … |
 | `src/features/layout/components/__tests__/CommandPalette.atalhos.test.tsx` | 5 | CommandPalette: atalhos e badges (etapa 044) · nao anuncia nenhum atalho ausente do registry de teclado · exibe a combinacao real do registry em cada item · le os badges do hook de contagens vivas, nao de literais … |

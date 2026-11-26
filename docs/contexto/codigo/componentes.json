@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "total": 330,
- "orfaos": 12,
+ "orfaos": 11,
  "nomes_duplicados": {
   "AnimatedCounter": [
    "src/components/animations/MotionComponents.tsx",
@@ -617,7 +617,7 @@
     "ContractDetailsModal"
    ],
    "export_default": null,
-   "linhas": 371,
+   "linhas": 507,
    "dominio": "components/compras",
    "hooks_locais": [
     "useAuth"
@@ -1839,8 +1839,8 @@
    ],
    "tabelas": [],
    "edges": [],
-   "usado_por": 0,
-   "orfao": true
+   "usado_por": 1,
+   "orfao": false
   },
   {
    "arquivo": "src/components/layout/EliteBackground.tsx",
@@ -4941,7 +4941,7 @@
     "Fornecedores"
    ],
    "export_default": "Fornecedores",
-   "linhas": 288,
+   "linhas": 303,
    "dominio": "pages/fornecedores",
    "hooks_locais": [
     "useFornecedores",

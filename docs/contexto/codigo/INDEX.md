@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `20216fb7f29d1639af93245b32ba26f23f6b0620` (2026-11-25T21:24:21-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa8d817151264a589688085ec424efdb8c96f550` (2026-11-25T21:47:00-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (863), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (864), SQL (353), Markdown (100), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1466 |
-| arquivos_codigo | 938 |
-| linhas_codigo | 188621 |
+| arquivos_total | 1467 |
+| arquivos_codigo | 939 |
+| linhas_codigo | 188930 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 340 |
 | cron_jobs | 74 |
-| testes | 298 |
+| testes | 299 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 100 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (215), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (203), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (204), outro (43), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -101,7 +101,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 11 |
 | pages/documentos | 1 | 1 | 2 | 2 | 2 | 3 |
 | pages/estoque | 1 | 1 | 1 | 5 | 1 | 8 |
-| pages/fornecedores | 3 | 2 | 3 | 10 | 3 | 15 |
+| pages/fornecedores | 3 | 2 | 3 | 14 | 3 | 15 |
 | pages/gerar-ordem | 0 | 1 | 2 | 9 | 2 | 12 |
 | pages/historico | 1 | 1 | 7 | 13 | 1 | 10 |
 | pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
@@ -326,7 +326,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - tabelas_usadas_sem_definicao: 0
 - tabelas_com_drift_migration_vs_types: 50 — ex.: active_sessions, approval_delegations, approval_hierarchy
 - rpcs_sem_definicao: 0
-- componentes_orfaos: 12 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
+- componentes_orfaos: 11 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
 - componentes_com_nome_duplicado: 9 — ex.: AnimatedCounter, COLORS, Confetti
 - scripts_orfaos: 1 — ex.: scripts/ci/sonda-edges-negocio.sql
 - arquivos_nao_lidos_por_tamanho: 0
@@ -338,10 +338,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (120)
+- docs/qa/05-PROGRESSO.md (121)
 - docs/pendencias/_indice.md (43)
 - docs/ci/README.md (10)
-- docs/mapa/MATRIZ_EDGE_TABELA.md (10)
+- docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
 - docs/pendencias/_ordem.md (8)
 - src/hooks/useApprovalWorkflow.ts (8)
@@ -422,6 +422,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `fa8d817` fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)
 - 2026-11-25 `20216fb` fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)
 - 2026-11-25 `b4ba729` ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)
 - 2026-11-25 `0c38190` chore(db): sincronizar types.ts com o banco [auto] (#488)
@@ -436,7 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `df2f22e` fix(pagamentos): mostra os status atrasado e cancelado na lista (#483)
 - 2026-11-25 `5d7b9a1` chore(deps): atualiza supabase-js, tanstack query, lucide e react-router (#475)
 - 2026-11-25 `6463184` infra(rls): allowlist sem as 72 policies da fase 2 ja aplicadas (#474)
-- 2026-11-25 `0964197` chore(ci): tira do allowlist as 3 policies ja aplicadas em producao (#452)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

@@ -2,7 +2,7 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "nos": 640,
- "arestas": 2840,
+ "arestas": 2842,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -191,7 +191,6 @@
   "src/components/compras/HistoricoComprasModal.tsx",
   "src/components/compras/MainLayout.tsx",
   "src/components/compras/OrderPreviewModal.tsx",
-  "src/components/fornecedores/FornecedorMobileCard.tsx",
   "src/components/molecules/EliteFormField.tsx",
   "src/components/organisms/Organism.tsx",
   "src/components/security/PasswordStrengthIndicator.tsx",
@@ -300,12 +299,12 @@
    "importado_por": 2
   },
   {
-   "modulo": "pages/gerar-ordem",
+   "modulo": "pages/fornecedores",
    "depende_de": 8,
    "importado_por": 2
   },
   {
-   "modulo": "pages/pagamentos",
+   "modulo": "pages/gerar-ordem",
    "depende_de": 8,
    "importado_por": 2
   }

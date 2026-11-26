@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "20216fb7f29d1639af93245b32ba26f23f6b0620",
+  "sha": "fa8d817151264a589688085ec424efdb8c96f550",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 00:32 UTC",
-  "files_total": 1467,
-  "code_files": 1293,
-  "code_lines": 218722,
+  "generated_at": "2026-11-26 00:54 UTC",
+  "files_total": 1468,
+  "code_files": 1294,
+  "code_lines": 219031,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "4080d6239d495b3d",
+ "facts_hash": "6e90daf1a47c5080",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -278,7 +278,7 @@
   "package_manager": "bun",
   "languages": {
    ".ts": 441,
-   ".tsx": 422,
+   ".tsx": 423,
    ".sql": 353,
    ".mjs": 69,
    ".py": 5,
@@ -33839,7 +33839,7 @@
     "file": ".github/workflows/types-sync.yml"
    }
   ],
-  "components_count": 320,
+  "components_count": 321,
   "hooks": [
    {
     "name": "useContacts",
@@ -34911,8 +34911,8 @@
   },
   {
    "module": "src/components",
-   "files": 284,
-   "lines": 52084,
+   "files": 285,
+   "lines": 52378,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -35881,7 +35881,7 @@
   {
    "module": "src/pages",
    "files": 155,
-   "lines": 35105,
+   "lines": 35120,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -41087,6 +41087,10 @@
    {
     "file": "src/components/compras/BulkOperationsPreview.tsx",
     "msg": "Falha ao desfazer parte da operacao"
+   },
+   {
+    "file": "src/components/compras/ContractDetailsModal.tsx",
+    "msg": "Erro ao abrir o documento"
    },
    {
     "file": "src/components/compras/ContractDetailsModal.tsx",
@@ -59726,6 +59730,26 @@
    {
     "file": "src/components/compras/__tests__/contractFornecedorId.test.tsx",
     "name": "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    "name": "ContractDetailsModal - abas Itens e Docs (etapa 292)"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    "name": "todo gatilho de aba tem um conteudo correspondente"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    "name": "lista os itens do contrato e as ordens de compra vinculadas"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    "name": "lista os documentos e expoe o input de anexo"
+   },
+   {
+    "file": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    "name": "envia o arquivo escolhido para contract_documents"
    },
    {
     "file": "src/components/compras/__tests__/contratoCamposRotulos.test.tsx",
@@ -95788,7 +95812,7 @@
   },
   "src/components/compras/ContractDetailsModal.tsx": {
    "path": "src/components/compras/ContractDetailsModal.tsx",
-   "lines": 371,
+   "lines": 507,
    "exports": [
     "function ContractDetailsModal"
    ],
@@ -95842,6 +95866,7 @@
     "documentos"
    ],
    "errors": [
+    "Erro ao abrir o documento",
     "Erro ao enviar documento",
     "Erro ao gerar PDF do contrato",
     "Organização não identificada. Faça login novamente."
@@ -97911,6 +97936,18 @@
     "salva supplier_id com o id do cadastro e supplier_name como copia congelada",
     "mantem contrato legado com supplier_id em slug, sem perder o vinculo",
     "contrato legado com supplier_id vazio nao e salvo de volta com id vazio"
+   ]
+  },
+  "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx": {
+   "path": "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+   "lines": 158,
+   "is_test": true,
+   "tests": [
+    "ContractDetailsModal - abas Itens e Docs (etapa 292)",
+    "todo gatilho de aba tem um conteudo correspondente",
+    "lista os itens do contrato e as ordens de compra vinculadas",
+    "lista os documentos e expoe o input de anexo",
+    "envia o arquivo escolhido para contract_documents"
    ]
   },
   "src/components/compras/__tests__/contratoCamposRotulos.test.tsx": {
@@ -112068,7 +112105,7 @@
   },
   "src/pages/fornecedores/Fornecedores.tsx": {
    "path": "src/pages/fornecedores/Fornecedores.tsx",
-   "lines": 288,
+   "lines": 303,
    "exports": [
     "default Fornecedores"
    ],
@@ -122741,10 +122778,22 @@
   }
  },
  "git": {
-  "sha": "20216fb7f29d1639af93245b32ba26f23f6b0620",
+  "sha": "fa8d817151264a589688085ec424efdb8c96f550",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "fa8d817",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/compras/ContractDetailsModal.tsx",
+     "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+     "src/pages/fornecedores/Fornecedores.tsx"
+    ]
+   },
    {
     "sha": "20216fb",
     "date": "2026-11-25",
@@ -123071,17 +123120,6 @@
      "src/pages/historico/HistoricoCompras.tsx",
      "src/pages/historico/__tests__/HistoricoCompras.consoleTab.test.tsx"
     ]
-   },
-   {
-    "sha": "c770dfc",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(agentes): corrige as afirmacoes falsas sobre banco, CI e workflows (#460)",
-    "files": [
-     "docs/agentes/banco.md",
-     "docs/agentes/github-ci.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -123104,10 +123142,6 @@
    [
     "src/pages/dashboard/__tests__/ComprasDashboard.vencimento.test.tsx",
     3
-   ],
-   [
-    "docs/agentes/github-ci.md",
-    2
    ],
    [
     "scripts/ci/agents-docs-baseline.unit.mjs",
@@ -123146,6 +123180,18 @@
     2
    ],
    [
+    "src/components/compras/ContractDetailsModal.tsx",
+    1
+   ],
+   [
+    "src/components/compras/__tests__/contratoAbasItensDocs.test.tsx",
+    1
+   ],
+   [
+    "src/pages/fornecedores/Fornecedores.tsx",
+    1
+   ],
+   [
     "vite.config.ts",
     1
    ],
@@ -123154,15 +123200,7 @@
     1
    ],
    [
-    "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useDevolucoes.exclusao.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/__tests__/useDevolucoes.test.tsx",
+    "docs/agentes/github-ci.md",
     1
    ]
   ]
