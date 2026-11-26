@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth";
 
 export type HistoricoMensal = {
   mes: string;
@@ -36,6 +37,7 @@ export type EconomiaFornecedor = {
 const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
 export function useRelatorioNegociacoes(periodo: string) {
+  const { organizationId } = useAuth();
   const months = useMemo(() => {
     if (periodo === "1m") return 1;
     if (periodo === "3m") return 3;
@@ -50,7 +52,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   }, [months]);
 
   const cotacoesQuery = useQuery({
-    queryKey: ["rel-neg-cotacoes", dateFrom],
+    queryKey: ["rel-neg-cotacoes", organizationId, dateFrom],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cotacoes")
@@ -65,7 +67,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   });
 
   const fornecedoresQuery = useQuery({
-    queryKey: ["rel-neg-fornecedores"],
+    queryKey: ["rel-neg-fornecedores", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("fornecedores")
@@ -76,7 +78,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   });
 
   const avaliadoresQuery = useQuery({
-    queryKey: ["rel-neg-avaliadores"],
+    queryKey: ["rel-neg-avaliadores", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
@@ -87,7 +89,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   });
 
   const solicitacoesQuery = useQuery({
-    queryKey: ["rel-neg-solicitacoes", dateFrom],
+    queryKey: ["rel-neg-solicitacoes", organizationId, dateFrom],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("solicitacoes")
@@ -99,7 +101,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   });
 
   const produtosQuery = useQuery({
-    queryKey: ["rel-neg-produtos"],
+    queryKey: ["rel-neg-produtos", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("produtos")
@@ -110,7 +112,7 @@ export function useRelatorioNegociacoes(periodo: string) {
   });
 
   const categoriasQuery = useQuery({
-    queryKey: ["rel-neg-categorias"],
+    queryKey: ["rel-neg-categorias", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categorias")

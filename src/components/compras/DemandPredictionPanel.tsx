@@ -19,6 +19,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllRows } from '@/lib/paginatedFetch';
+import { useAuth } from '@/features/auth';
 import { format } from 'date-fns/format';
 import { subMonths } from 'date-fns/subMonths';
 import { startOfMonth } from 'date-fns/startOfMonth';
@@ -73,6 +74,7 @@ const impactColors = {
 
 export function DemandPredictionPanel() {
   const { toast } = useToast();
+  const { organizationId } = useAuth();
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState('all');
   const [timeframe, setTimeframe] = useState('6');
@@ -92,9 +94,21 @@ export function DemandPredictionPanel() {
     { value: '12', label: 'Próximo ano' },
   ];
 
-  const { data: pedidos } = useQuery({
-    queryKey: ['demand-prediction-pedidos'],
-    queryFn: () => fetchAllRows<{ valor_total: number; data_emissao: string }>('pedidos', 'valor_total, data_emissao'),
+  // O historico usado abaixo cobre no maximo 6 meses; recortar no SQL evita
+    // baixar a tabela inteira. Congelado na montagem para a queryKey ser estavel.
+    const historicoDesde = useMemo(
+      () => startOfMonth(subMonths(new Date(), 6)).toISOString(),
+      [],
+    );
+
+    const { data: pedidos } = useQuery({
+      queryKey: ['demand-prediction-pedidos', organizationId, historicoDesde],
+      queryFn: () =>
+        fetchAllRows<{ valor_total: number; data_emissao: string }>(
+          'pedidos',
+          'valor_total, data_emissao',
+          { filters: [{ column: 'data_emissao', operator: 'gte', value: historicoDesde }] },
+        ),
     staleTime: 60_000,
   });
 

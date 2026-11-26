@@ -7,6 +7,11 @@ import { useRelatorioNegociacoes } from "../useRelatorioNegociacoes";
 const mocks = vi.hoisted(() => ({ from: vi.fn() }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: mocks }));
 
+// O hook le organizationId so' para compor a queryKey (cache por tenant); o
+// teste nao monta AuthProvider, entao o valor vem do mock.
+const auth = vi.hoisted(() => ({ organizationId: "org-teste" }));
+vi.mock("@/features/auth", () => ({ useAuth: () => auth }));
+
 type Response = { data: unknown[]; error: null };
 type Query = {
   select: (columns: string) => Query; gte: () => Query; order: () => Query;
@@ -26,7 +31,7 @@ function fixture() {
 }
 
 beforeEach(() => {
-  vi.clearAllMocks(); selects.clear(); profiles.splice(0);
+  vi.clearAllMocks(); selects.clear(); profiles.splice(0); auth.organizationId = "org-teste";
   vi.stubGlobal("fetch", vi.fn(() => { throw new Error("Rede bloqueada no teste"); }));
   vi.stubGlobal("WebSocket", vi.fn(() => { throw new Error("WebSocket bloqueado no teste"); }));
   mocks.from.mockImplementation((table: string) => {
@@ -69,4 +74,18 @@ describe("contratos do relatorio de negociacoes", () => {
     await waitFor(() => expect(second.result.current.data?.comparativoCompradores[0]).toMatchObject({ nome: "Usuário", avatar: "U", melhorPreco: 90 }));
     expect(globalThis.fetch).not.toHaveBeenCalled();
   });
+
+      // Sem organizationId na queryKey o react-query devolveria o resultado da
+      // organizacao anterior ate' o staleTime vencer: cache cruzado entre tenants.
+      it("refaz a consulta quando a organizacao muda", async () => {
+        profiles.push({ id: "buyer", full_name: "Ana Souza", email: "ana@example.invalid" });
+        const { result, rerender } = fixture();
+        await waitFor(() => expect(result.current.data).not.toBeNull());
+        const chamadasAntes = mocks.from.mock.calls.length;
+
+        auth.organizationId = "org-outra";
+        rerender();
+
+        await waitFor(() => expect(mocks.from.mock.calls.length).toBeGreaterThan(chamadasAntes));
+      });
 });
