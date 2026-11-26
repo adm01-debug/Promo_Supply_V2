@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "eeff86ea4dcffc4095edf5480ebc393cefc5cad9",
+  "sha": "1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 17:07 UTC",
-  "files_total": 1542,
-  "code_files": 1367,
-  "code_lines": 226404,
+  "generated_at": "2026-11-26 17:15 UTC",
+  "files_total": 1544,
+  "code_files": 1369,
+  "code_lines": 226465,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "0028789614b9b8bf",
+ "facts_hash": "00afe052783e04c3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 397,
+   ".sql": 399,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -26606,6 +26606,22 @@
     "src": "supabase/migrations/20261125140000_integracao_promo_design.sql"
    },
    {
+    "name": "uq_fiscal_documents_chave",
+    "table": "fiscal_documents",
+    "columns": "chave_acesso",
+    "unique": true,
+    "where": "WHERE chave_acesso IS NOT NULL AND chave_acesso <> ''",
+    "src": "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql"
+   },
+   {
+    "name": "uq_fiscal_documents_nf",
+    "table": "fiscal_documents",
+    "columns": "tenant_id, fornecedor_id, serie, numero_nf",
+    "unique": true,
+    "where": "WHERE fornecedor_id IS NOT NULL",
+    "src": "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql"
+   },
+   {
     "name": "idx_system_alerts_pending_dispatch",
     "table": "system_alerts",
     "columns": "created_at",
@@ -27362,6 +27378,7 @@
    "supabase/migrations/20261126173000_devolucoes_numero_unique.sql",
    "supabase/migrations/20261126174500_log_orfas_grants_e_escopo.sql",
    "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
+   "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27388,6 +27405,7 @@
    "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
    "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
    "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
+   "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -36933,8 +36951,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 366,
-   "lines": 31043,
+   "files": 367,
+   "lines": 31099,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37025,8 +37043,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 19,
-   "lines": 1232,
+   "files": 20,
+   "lines": 1237,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37046,6 +37064,7 @@
     "supabase/rollbacks/20261126173000_revert_devolucoes_numero_unique.sql",
     "supabase/rollbacks/20261126174500_revert_log_orfas_grants.sql",
     "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
+    "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -124923,6 +124942,10 @@
    "path": "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
    "lines": 101
   },
+  "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql": {
+   "path": "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
+   "lines": 56
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -125059,6 +125082,10 @@
   "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql": {
    "path": "supabase/rollbacks/20261126180000_revert_unicidade_por_tenant.sql",
    "lines": 36
+  },
+  "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql": {
+   "path": "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
+   "lines": 5
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -125319,10 +125346,22 @@
   }
  },
  "git": {
-  "sha": "eeff86ea4dcffc4095edf5480ebc393cefc5cad9",
+  "sha": "1de90788dd3e3641fd6d00c76ea5e6cd5a83dbe0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1de9078",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(banco): nota fiscal ganha unicidade por chave de acesso e por fornecedor/serie/numero (#580)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
+     "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql"
+    ]
+   },
    {
     "sha": "eeff86e",
     "date": "2026-11-26",
@@ -125674,17 +125713,6 @@
      "supabase/functions/alert-dispatcher/dispatchStatus.ts",
      "supabase/functions/alert-dispatcher/index.ts"
     ]
-   },
-   {
-    "sha": "7804bb2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(aprovacoes): exige a ordem das etapas e recusa auto-aprovacao (#556)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/__tests__/useApprovalWorkflow.escrita.test.tsx",
-     "src/hooks/useApprovalWorkflow.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125694,7 +125722,7 @@
    ],
    [
     "AGENTS.md",
-    19
+    20
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -125707,6 +125735,14 @@
    [
     "supabase/functions/alert-dispatcher/index.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261126181500_fiscal_documents_unicidade_nf.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126181500_revert_fiscal_documents_unicidade_nf.sql",
+    1
    ],
    [
     "supabase/migrations/20261126180000_unicidade_por_tenant.sql",
@@ -125758,14 +125794,6 @@
    ],
    [
     "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     1
    ]
   ]

@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 366,
+ "migrations": 367,
  "seeds": [],
  "avisos": [
   "52 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -8900,6 +8900,16 @@
      "nome": "idx_fiscal_documents_pedido_id",
      "colunas": "pedido_id",
      "unico": false
+    },
+    {
+     "nome": "uq_fiscal_documents_chave",
+     "colunas": "chave_acesso",
+     "unico": true
+    },
+    {
+     "nome": "uq_fiscal_documents_nf",
+     "colunas": "tenant_id, fornecedor_id, serie, numero_nf",
+     "unico": true
     }
    ],
    "fks": [
