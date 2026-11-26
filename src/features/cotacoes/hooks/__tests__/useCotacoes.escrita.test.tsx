@@ -21,6 +21,8 @@ const h = vi.hoisted(() => {
     // O invalidate() dispara um refetch, que zera `ultima`; o historico fica
     // num array proprio para a assercao nao depender do timing do refetch.
     operacoes: [] as { op: string; valores?: unknown }[],
+        // Status devolvido pela releitura de solicitacoes feita apos a selecao.
+        statusSolicitacao: 'aprovada' as string,
   };
   return {
     estado,
@@ -71,6 +73,7 @@ vi.mock('@/integrations/supabase/client', () => {
     c.then = (ok: (v: unknown) => unknown, falha: (e: unknown) => unknown) =>
       Promise.resolve(resolver()).then(ok, falha);
     c.single = () => Promise.resolve({ data: estado.inserido, error: estado.erro });
+        c.maybeSingle = () => Promise.resolve({ data: { status: estado.statusSolicitacao }, error: null });
     return c;
   };
 
@@ -109,6 +112,7 @@ describe('useCotacoes - escrita negada pelo RLS nao vira sucesso', () => {
     h.estado.inserido = { id: 'cot-nova', numero: 'COT-0007' };
     h.estado.ultima = null;
     h.estado.operacoes = [];
+        h.estado.statusSolicitacao = 'aprovada';
   });
 
   it('updateCotacao com 0 linhas afetadas retorna false e nao anuncia sucesso', async () => {
@@ -174,6 +178,23 @@ describe('useCotacoes - escrita negada pelo RLS nao vira sucesso', () => {
     expect(h.audit.logApprove).toHaveBeenCalled();
     expect(h.toast.success).toHaveBeenCalledWith('Fornecedor selecionado!');
   });
+
+      it('selectCotacao com workflow de alcada pendente nao anuncia aprovacao da solicitacao', async () => {
+        // A migration _fix_cotacao_nao_aprova_solicitacao impede o trigger de
+        // promover a solicitacao quando existe workflow nao aprovado; a tela tem
+        // que dizer isso em vez de comemorar a aprovacao.
+        h.estado.afetadas = [{ id: 'cot-1' }];
+        h.estado.statusSolicitacao = 'pendente';
+        const { result } = renderHook(() => useCotacoes(), { wrapper });
+        await waitFor(() => expect(result.current.cotacoes).toHaveLength(1));
+
+        let ok: boolean | undefined;
+        await act(async () => { ok = await result.current.selectCotacao('cot-1', 'melhor preco'); });
+
+        expect(ok).toBe(true);
+        expect(h.toast.success).toHaveBeenCalledWith(expect.stringContaining('aguarda aprova'));
+        expect(h.toast.success).not.toHaveBeenCalledWith('Fornecedor selecionado!');
+      });
 
   it('createCotacao grava o total calculado e o escopo da organizacao', async () => {
     const { result } = renderHook(() => useCotacoes(), { wrapper });

@@ -10,7 +10,7 @@ import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
-  solicitacao?: { id: string; numero: string; titulo: string; produto_id?: string | null; } | null;
+  solicitacao?: { id: string; numero: string; titulo: string; status?: string; produto_id?: string | null; } | null;
   last_follow_up_at?: string | null;
   follow_up_status?: string | null;
 };
@@ -58,7 +58,7 @@ async function fetchCotacoesData(userId: string | undefined, organizationId: str
       organization_id, tenant_id, created_at, updated_at,
       last_follow_up_at, follow_up_status,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
-      solicitacao:solicitacoes(id, numero, titulo, produto_id)
+      solicitacao:solicitacoes(id, numero, titulo, status, produto_id)
     `, paginar ? { count: 'exact' } : {})
     .order('score_total', { ascending: false })
     .eq('organization_id', organizationId);
@@ -205,8 +205,28 @@ export function useCotacoes(filters?: CotacaoFilters) {
         { cotacao_id: id, justificativa }
       );
 
-      logger.info('Fornecedor selecionado com sucesso', { cotacaoId: id });
-      toast.success('Fornecedor selecionado!');
+      // O banco so promove a solicitacao a 'aprovada' quando nao existe workflow
+      // de alcada pendente (migration _fix_cotacao_nao_aprova_solicitacao). Rele
+      // o status para nao anunciar uma aprovacao que o workflow ainda nao deu.
+      let solicitacaoAprovada = true;
+      if (cotacao?.solicitacao_id) {
+        try {
+          const { data: sol } = await supabase
+            .from('solicitacoes')
+            .select('status')
+            .eq('id', cotacao.solicitacao_id)
+            .maybeSingle();
+          solicitacaoAprovada = !sol || ['aprovada', 'em_andamento', 'concluida'].includes(sol.status);
+        } catch {
+          // Releitura e informativa: sem ela a mensagem volta a ser a antiga.
+        }
+      }
+
+      logger.info('Fornecedor selecionado com sucesso', { cotacaoId: id, solicitacaoAprovada });
+      // Cotacao com workflow de alcada pendente nao aprova a solicitacao.
+      toast.success(solicitacaoAprovada
+        ? 'Fornecedor selecionado!'
+        : 'Fornecedor selecionado. A solicitação aguarda aprovação.');
       invalidate();
       return true;
     } catch (err: unknown) {
