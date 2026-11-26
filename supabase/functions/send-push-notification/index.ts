@@ -1,4 +1,4 @@
-import { buildCorsHeaders, getTenantId } from "../_shared/security.ts";
+import { buildCorsHeaders, getTenantId, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -14,6 +14,8 @@ interface PushPayload {
   action_url?: string;
   action_label?: string;
   user_ids?: string[];
+    /** EDG-07: chamada interna -- a notificacao in-app ja existe, nao gravar de novo. */
+    skip_in_app?: boolean;
 }
 
 async function verifyAuthUser(req: Request): Promise<string> {
@@ -44,10 +46,25 @@ Deno.serve(async (req) => {
   const logger = new EdgeLogger('send-push-notification', requestId);
 
   try {
-    // SECURITY: Validate user authentication
-    const pushUserId = await verifyAuthUser(req);
-    const rlPush = await checkRateLimit({ identifier: pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
-    if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, cors);
+    // EDG-07: a edge tambem e chamada pelo caminho interno (`_shared/notifications.ts`
+        // depois de gravar uma notificacao HIGH/CRITICAL). Nesse caminho nao existe JWT de
+        // usuario -- o token e o CRON_SECRET/service role -- e a autorizacao e o `user_ids`
+        // explicito: chamada interna sem destinatario e recusada, para nunca virar broadcast.
+        const body: PushPayload = await req.json();
+        const chamadaInterna = verifyCronSecret(req) === null;
+        if (chamadaInterna && (!body.user_ids || body.user_ids.length === 0)) {
+          return new Response(
+            JSON.stringify({ error: 'Bad Request: internal calls must name user_ids' }),
+            { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // SECURITY: Validate user authentication
+        const pushUserId = chamadaInterna ? null : await verifyAuthUser(req);
+        if (pushUserId) {
+          const rlPush = await checkRateLimit({ identifier: pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
+          if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, cors);
+        }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -64,14 +81,23 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // EDG-07: na chamada interna o escopo ja veio do destinatario da notificacao; nao
+    // ha papel nem tenant de chamador para conferir (`pushUserId` e null). O bloco
+    // abaixo so roda na chamada do front, com JWT de usuario.
+    let membrosDoTenant: Set<string>;
+    if (chamadaInterna) {
+      membrosDoTenant = new Set<string>(body.user_ids ?? []);
+    } else {
+    const callerId = pushUserId as string;
+
     // QA-021 + INT-03: exige papel administrativo, mas tolerando mais de um papel.
         // `maybeSingle()` falhava com PGRST116 quando o usuario tinha 2+ papeis e
         // negava acesso legitimo de um admin que tambem e, por exemplo, comprador.
         const { data: roleRows, error: roleErr } = await supabase
       .from('user_roles')
       .select('role')
-      .eq('user_id', pushUserId)
-          .in('role', ['admin', 'coordinator']);
+      .eq('user_id', callerId)
+                .in('role', ['admin', 'coordinator']);
         if (roleErr) {
           logger.error('Role check failed', { error: roleErr });
           return new Response(
@@ -92,7 +118,7 @@ Deno.serve(async (req) => {
     const { data: profileRow } = await supabase
       .from('profiles')
       .select('current_organization_id')
-      .eq('user_id', pushUserId)
+      .eq('user_id', callerId)
       .maybeSingle();
         let callerOrgId = profileRow?.current_organization_id ?? null;
         if (!callerOrgId) {
@@ -101,7 +127,7 @@ Deno.serve(async (req) => {
           try {
             callerOrgId = await getTenantId(
               supabase as unknown as Parameters<typeof getTenantId>[0],
-              { id: pushUserId } as unknown as Parameters<typeof getTenantId>[1],
+              { id: callerId } as unknown as Parameters<typeof getTenantId>[1],
             );
           } catch {
             callerOrgId = null;
@@ -122,16 +148,15 @@ Deno.serve(async (req) => {
         ]);
         if (porProfile.error) throw porProfile.error;
         if (porMembership.error) throw porMembership.error;
-        const membrosDoTenant = new Set<string>([
+        membrosDoTenant = new Set<string>([
           ...(porProfile.data ?? []).map((p) => p.user_id as string),
           ...(porMembership.data ?? []).map((m) => m.user_id as string),
         ]);
-
-    const body: PushPayload = await req.json();
+            }
 
     logger.info('Received push notification request');
 
-    const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
+    const { title, message, type, priority, data, action_url, action_label, user_ids, skip_in_app } = body;
 
         // QA-021: se o chamador escolheu destinatarios, todos tem de ser do seu tenant.
         if (user_ids && user_ids.length > 0) {
@@ -147,7 +172,7 @@ Deno.serve(async (req) => {
         if (membrosDoTenant.size === 0) {
           // Tenant sem membro: nao ha destinatario. Sem este curto-circuito a
           // consulta sairia sem filtro e voltaria a ser global.
-          logger.info('Tenant has no members to notify', { tenantId: callerOrgId });
+          logger.info('Tenant has no members to notify', { tenantId: chamadaInterna ? null : pushUserId });
           return new Response(
             JSON.stringify({ success: true, sent: 0, failed: 0, notifications_created: 0 }),
             { headers: { ...cors, 'Content-Type': 'application/json' } }
@@ -174,6 +199,9 @@ Deno.serve(async (req) => {
 
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
+    // EDG-07: na chamada interna a notificacao in-app ja existe -- foi ela que
+    // disparou o push --, entao gravar de novo duplicaria a linha na tela.
+    if (!skip_in_app) {
     for (const userId of uniqueUserIds) {
       const notifRes = await insertNotification(supabase, {
         user_id: userId,
@@ -195,6 +223,7 @@ Deno.serve(async (req) => {
         });
       }
     }
+              }
 
     const pushPayload = {
       title,
@@ -259,7 +288,7 @@ Deno.serve(async (req) => {
         success: true,
         sent: sentCount,
         failed: failedCount,
-        notifications_created: uniqueUserIds.length,
+        notifications_created: skip_in_app ? 0 : uniqueUserIds.length,
       }),
       { headers: { ...cors, 'Content-Type': 'application/json' } }
     );
