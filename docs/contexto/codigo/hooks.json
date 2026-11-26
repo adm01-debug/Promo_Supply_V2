@@ -1314,7 +1314,7 @@
     "useFornecedores",
     "useFornecedoresKPIs"
    ],
-   "linhas": 324,
+   "linhas": 346,
    "dominio": "hooks",
    "tabelas": [
     "creditos_fornecedor",
@@ -1347,7 +1347,7 @@
     "src/pages/licitacoes/Licitacoes.tsx",
     "src/pages/pedidos/Pedidos.tsx"
    ],
-   "coberto_por_testes": 5
+   "coberto_por_testes": 6
   },
   {
    "arquivo": "src/hooks/useFuseSearch.ts",
@@ -1678,7 +1678,7 @@
     "usePagamentos",
     "usePagamentosKPIs"
    ],
-   "linhas": 404,
+   "linhas": 409,
    "dominio": "hooks",
    "tabelas": [
     "pagamentos",

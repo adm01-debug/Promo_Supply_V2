@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "50f98111fdc55aaeb338116f440f144aa2163ad3",
+  "commit": "647ddb42f65ab7edcb3832c57e978160cfa245e2",
   "branch": "main",
-  "data_commit": "2026-11-26T03:34:54-03:00",
+  "data_commit": "2026-11-26T03:51:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "647ddb4",
+    "data": "2026-11-26",
+    "assunto": "fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)"
+   },
    {
     "sha": "50f9811",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "c3e5f96",
     "data": "2026-11-26",
     "assunto": "fix(admin): resolve alerta pelo RPC resolve_alert (etapas 030, 189 e 029) (#510)"
-   },
-   {
-    "sha": "a4b5fd2",
-    "data": "2026-11-25",
-    "assunto": "chore(deps): bump dompurify (#477)"
    }
   ],
-  "arquivos_mudados_7d": 1509,
+  "arquivos_mudados_7d": 1510,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 152
+    "mudancas": 153
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "src/hooks/__tests__",
-    "mudancas": 47
+    "mudancas": 48
    },
    {
     "pasta": "src/lib/__tests__",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 152
+    "mudancas": 153
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -222,11 +222,11 @@
     "mudancas": 9
    },
    {
-    "arquivo": "src/hooks/useApprovalWorkflow.ts",
-    "mudancas": 8
+    "arquivo": "src/hooks/usePagamentos.ts",
+    "mudancas": 9
    },
    {
-    "arquivo": "src/hooks/usePagamentos.ts",
+    "arquivo": "src/hooks/useApprovalWorkflow.ts",
     "mudancas": 8
    },
    {
@@ -274,6 +274,10 @@
     "mudancas": 7
    },
    {
+    "arquivo": "src/hooks/useFornecedores.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
     "mudancas": 6
    },
@@ -292,10 +296,6 @@
    {
     "arquivo": "supabase/functions/_shared/xbz_client.ts",
     "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/aplicar-migration-prod.yml",
-    "mudancas": 5
    }
   ],
   "autores_30d": [
@@ -314,9 +314,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1488,
-  "arquivos_codigo": 951,
-  "linhas_codigo": 190010,
+  "arquivos_total": 1489,
+  "arquivos_codigo": 952,
+  "linhas_codigo": 190182,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -328,7 +328,7 @@
   "tabelas": 164,
   "migrations": 344,
   "cron_jobs": 79,
-  "testes": 311,
+  "testes": 312,
   "workflows": 15,
   "scripts": 52,
   "docs_md": 101
@@ -435,8 +435,8 @@
    "linhas": 11633
   },
   "src/hooks": {
-   "arquivos": 98,
-   "linhas": 16789
+   "arquivos": 99,
+   "linhas": 16925
   },
   "src/i18n": {
    "arquivos": 3,
@@ -456,7 +456,7 @@
   },
   "src/pages": {
    "arquivos": 157,
-   "linhas": 35259
+   "linhas": 35295
   },
   "src/routes": {
    "arquivos": 1,

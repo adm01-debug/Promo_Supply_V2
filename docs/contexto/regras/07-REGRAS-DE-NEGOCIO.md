@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `50f98111fd` · branch `main` · 2026-11-26 06:35 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `647ddb42f6` · branch `main` · 2026-11-26 06:51 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1126,6 +1126,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tipo` | `local` | compara | `src/pages/cotacao/cotacaoHelpers.ts`<br>`src/pages/fornecedores/fornecedorHelpers.ts` |
 | `tipo` | `material` | compara, escreve | `src/pages/solicitacoes/solicitacoesHelpers.ts`<br>`supabase/functions/punchout-receive/solicitation.ts`<br>`supabase/functions/receive-os-sync/mapping.ts` |
 | `tipo` | `menor_preco` | escreve | `src/pages/licitacoes/Licitacoes.tsx` |
+| `tipo` | `nacional` | compara | `src/hooks/useFornecedores.ts` |
 | `tipo` | `produto` | escreve | `src/pages/acompanhamento/Acompanhamento.tsx`<br>`src/pages/gerar-ordem/GerarOrdem.tsx` |
 | `tipo` | `saida` | compara, escreve | `src/pages/estoque/GestaoEstoque.tsx` |
 | `tipo` | `servico` | compara | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
@@ -2462,7 +2463,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3480 testes em 259 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3485 testes em 260 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2638,6 +2639,7 @@ _nenhum item encontrado_
 | `src/features/pedidos/hooks/__tests__/usePedidos.checklist.test.tsx` | 5 | usePedidos - exclusao guardada por checklist de recebimento · recusa excluir pedido com checklist de recebimento · bulkDelete recusa o lote inteiro quando algum pedido tem checklist · erro na contagem de checklist cancela a exclusao … |
 | `src/features/solicitacoes/hooks/__tests__/useNomesDeGestor.test.tsx` | 5 | useNomesDeGestor · resolve o nome do perfil por profiles.user_id · cai no e-mail quando o perfil nao tem nome nem display_name · deduplica ids, descarta vazio e nao consulta sem id … |
 | `src/hooks/__tests__/useApprovalHistory.test.ts` | 5 | useApprovalHistory · fetchHistory returns sorted history for a workflow · fetchHistory returns [] on error · fetchAllHistory populates allHistory state … |
+| `src/hooks/__tests__/useFornecedores.paginacao.test.tsx` | 5 | useFornecedores · paginacao (PERF-01 / etapa 211) · sem  · com  · tipo  … |
 | `src/hooks/__tests__/useLicitacoes.tenantFallback.test.tsx` | 5 | useLicitacoes - fallback de empresa (etapa 200 / HK-11) · carrega a lista pela empresa quando o claim tenant_id nao vem no JWT · cria licitacao sem acusar login ausente quando so a empresa esta disponivel · prefere o tenant do claim quando ele existe, mesmo com empresa definida … |
 | `src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx` | 5 | usePagamentos · bulkUpdateStatus (UI-01) · nao agenda pagamento pendente: recusa o lote e nao grava nada · agenda apenas os aprovados e reporta os bloqueados · grava a data escolhida quando o agendamento tem data … |
 | `src/hooks/__tests__/useWebAuthn.sessao.test.tsx` | 5 | useWebAuthn / authenticateWithPasskey (SEC-11) · nao anuncia sucesso quando o servidor nao devolve actionLink · nao anuncia sucesso quando o OTP falha · nao anuncia sucesso quando o OTP passa mas nao ha sessao … |

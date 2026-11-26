@@ -121,15 +121,15 @@
    "importado_por": 15
   },
   {
+   "arquivo": "src/hooks/useFornecedores.ts",
+   "importado_por": 15
+  },
+  {
    "arquivo": "supabase/functions/_shared/contracts.ts",
    "importado_por": 15
   },
   {
    "arquivo": "src/components/ui/dropdown-menu.tsx",
-   "importado_por": 14
-  },
-  {
-   "arquivo": "src/hooks/useFornecedores.ts",
    "importado_por": 14
   },
   {

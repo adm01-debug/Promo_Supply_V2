@@ -4925,7 +4925,7 @@
     "Fornecedores"
    ],
    "export_default": "Fornecedores",
-   "linhas": 303,
+   "linhas": 339,
    "dominio": "pages/fornecedores",
    "hooks_locais": [
     "useFornecedores",

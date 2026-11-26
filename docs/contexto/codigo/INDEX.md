@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `50f98111fdc55aaeb338116f440f144aa2163ad3` (2026-11-26T03:34:54-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `647ddb42f65ab7edcb3832c57e978160cfa245e2` (2026-11-26T03:51:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (876), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (877), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1488 |
-| arquivos_codigo | 951 |
-| linhas_codigo | 190010 |
+| arquivos_total | 1489 |
+| arquivos_codigo | 952 |
+| linhas_codigo | 190182 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 311 |
+| testes | 312 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (215), outro (44), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (216), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -343,14 +343,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (152)
+- docs/qa/05-PROGRESSO.md (153)
 - docs/pendencias/_indice.md (28)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
+- src/hooks/usePagamentos.ts (9)
 - src/hooks/useApprovalWorkflow.ts (8)
-- src/hooks/usePagamentos.ts (8)
 - src/integrations/supabase/types.ts (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - .github/workflows/main.yml (7)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `647ddb4` fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)
 - 2026-11-26 `50f9811` chore(db): sincronizar types.ts com o banco [auto] (#525)
 - 2026-11-26 `10ab760` fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)
 - 2026-11-26 `c7e6d1c` fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `dac477d` fix(licitacoes): lista e tempo real deixam de depender do claim tenant_id ausente (etapa 200) (#521)
 - 2026-11-26 `1237e87` fix(kpis): cartoes de devolucoes invalidam junto com a entidade (etapa 192) (#519)
 - 2026-11-26 `7cc4d94` fix(kpis): cartoes de solicitacoes e fornecedores invalidam junto com a entidade (etapa 191) (#518)
-- 2026-11-26 `236e96d` fix(kpis): cartoes de indicadores passam a invalidar junto com a entidade (etapa 190) (#517)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

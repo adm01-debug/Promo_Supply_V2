@@ -21,7 +21,7 @@
    "src/integrations (3)"
   ],
   "testes": [
-   "co-localizado (__tests__) (215)",
+   "co-localizado (__tests__) (216)",
    "outro (44)",
    "co-localizado (*.test) (42)"
   ],
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)",
    "chore(db): sincronizar types.ts com o banco [auto] (#525)",
    "fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)",
    "fix(edge): fecha o broadcast global da send-push-notification por falta de tenant (#530)",
-   "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)",
-   "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)"
+   "fix(edge): alert-dispatcher normaliza severity antes do fan-out (#210) (#534)"
   ]
  },
  "pr_template": null,
