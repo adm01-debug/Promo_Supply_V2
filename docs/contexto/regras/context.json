@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "7e2123acbc3f71c7220d2017dc4e8bc433b0eb2d",
+  "sha": "1aeb89ba839397fd990795985dde11d4e8483131",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 13:27 UTC",
+  "generated_at": "2026-11-26 13:29 UTC",
   "files_total": 1510,
   "code_files": 1335,
-  "code_lines": 223525,
+  "code_lines": 223678,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a5473a8a37dfa23d",
+ "facts_hash": "7ad9b4219cc752ce",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -33944,6 +33944,31 @@
    },
    {
     "kind": "cron (código)",
+    "detail": "cleanup-health-scan-runs 0 2 * * *",
+    "file": "scripts/ci/paridade-migrations-banco.unit.mjs"
+   },
+   {
+    "kind": "cron (código)",
+    "detail": "spot-api-sync-orders-30min */30 * * * *",
+    "file": "scripts/ci/paridade-migrations-banco.unit.mjs"
+   },
+   {
+    "kind": "cron (código)",
+    "detail": "antigo 0 1 * * *",
+    "file": "scripts/ci/paridade-migrations-banco.unit.mjs"
+   },
+   {
+    "kind": "cron (código)",
+    "detail": "mentira 0 1 * * *",
+    "file": "scripts/ci/paridade-migrations-banco.unit.mjs"
+   },
+   {
+    "kind": "cron (código)",
+    "detail": "versionado 0 1 * * *",
+    "file": "scripts/ci/paridade-migrations-banco.unit.mjs"
+   },
+   {
+    "kind": "cron (código)",
     "detail": "daily_orders 0 0 * * *",
     "file": "scripts/regras_negocio/test_generate.py"
    },
@@ -34786,7 +34811,7 @@
   {
    "module": "scripts",
    "files": 82,
-   "lines": 30012,
+   "lines": 30165,
    "tables": [
     "a",
     "a_tabela",
@@ -34860,7 +34885,7 @@
     "commit-msg-lint.mjs: TIPOS, SUBJECT_MIN_LENGTH, cabecalhoDaMensagem, validarMensagem, main",
     "edge-tenant-guard.unit.mjs: listarFontesEdge, chamadasGetTenantId",
     "gerar-matriz-edge-tabela.mjs: extrairTabelas, tabelasDeShared, montarMatriz, renderizar, main",
-    "paridade-migrations-banco.mjs: TIPOS, limparSql, truncarIdentificador, aplicarMigration, estadoVazio, declaradoPorMigrations",
+    "paridade-migrations-banco.mjs: TIPOS, limparSql, semComentarios, aplicarJobsDeclarados, truncarIdentificador, aplicarMigration",
     "sla-code-scanning.mjs: SLA_DIAS, nivel, avaliarSla, relatorio",
     "workflow-test-support.mjs: jobsOf, jobOf, stepsOf, valueOf, nestedValue, permission",
     "workflow-yaml-guard.mjs: problemasDeEstrutura",
@@ -94493,15 +94518,18 @@
   },
   "scripts/ci/paridade-migrations-banco.mjs": {
    "path": "scripts/ci/paridade-migrations-banco.mjs",
-   "lines": 230,
+   "lines": 311,
    "exports": [
     "const TIPOS",
     "function limparSql",
+    "function semComentarios",
+    "function aplicarJobsDeclarados",
     "function truncarIdentificador",
     "function aplicarMigration",
     "function estadoVazio",
     "function declaradoPorMigrations",
     "function comparar",
+    "function compararJobs",
     "function lerMigrations"
    ],
    "params": [
@@ -94510,8 +94538,16 @@
      "value": "63"
     }
    ],
+   "rule_comments": [
+    "e \"nao ha jobs\" nao pode ser confundido com \"nao olhei os jobs\"."
+   ],
    "doc": "!/usr/bin/env node Paridade entre o que as migrations DECLARAM e o que o banco de producao TEM. Motivo: em 17/11/2026 uma varredura manual comparando `supabase/migrations/` com o banco real achou 91 objetos declarados que nunca chegaram a producao (indices, triggers de compliance, funcoes de cron). …",
    "calc_fns": [
+    {
+     "name": "aplicarJobsDeclarados",
+     "params": "estado, sqlBruto",
+     "body": "const sql = semComentarios(sqlBruto); const ops = []; for (const m of casar(sql, `cron\\\\s*\\\\.\\\\s*(schedule|unschedule)\\\\s*\\\\(\\\\s*'([^']+)'`)) { ops.push({ pos: m.index, seq: ops.length, nome: m[2], remove: m[1].toLowerCase() === 'unschedule' }); } ops.sort((a, b) => a.pos - b.pos || a.seq - b.seq); for (const op of ops) { if (op.remove) estado.jobs.delete(op.nome); else estado.jobs.add(op.nome); } for (const nome of jobsDeLaco(sql)) estado.jobs.add(nome);"
+    },
     {
      "name": "aplicarMigration",
      "params": "estado, sqlBruto",
@@ -94521,13 +94557,21 @@
   },
   "scripts/ci/paridade-migrations-banco.sql": {
    "path": "scripts/ci/paridade-migrations-banco.sql",
-   "lines": 18
+   "lines": 22
   },
   "scripts/ci/paridade-migrations-banco.unit.mjs": {
    "path": "scripts/ci/paridade-migrations-banco.unit.mjs",
-   "lines": 129,
+   "lines": 197,
    "rule_comments": [
-    "paridade so lista public, entao olhar apenas o nome do trigger acusava"
+    "paridade so lista public, entao olhar apenas o nome do trigger acusava",
+    "O corpo entre dollar-quotes nao pode ser apagado aqui: o padrao antigo do"
+   ],
+   "cron": [
+    "cleanup-health-scan-runs 0 2 * * *",
+    "spot-api-sync-orders-30min */30 * * * *",
+    "antigo 0 1 * * *",
+    "mentira 0 1 * * *",
+    "versionado 0 1 * * *"
    ]
   },
   "scripts/ci/regras-negocio.unit.mjs": {
@@ -124345,10 +124389,25 @@
   }
  },
  "git": {
-  "sha": "7e2123acbc3f71c7220d2017dc4e8bc433b0eb2d",
+  "sha": "1aeb89ba839397fd990795985dde11d4e8483131",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "1aeb89b",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "chore(ci): confere jobs vivos de cron.job contra as migrations (#528)",
+    "files": [
+     ".github/workflows/paridade-banco.yml",
+     "docs/ci/README.md",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/paridade-migrations-banco.allowlist.json",
+     "scripts/ci/paridade-migrations-banco.mjs",
+     "scripts/ci/paridade-migrations-banco.sql",
+     "scripts/ci/paridade-migrations-banco.unit.mjs"
+    ]
+   },
    {
     "sha": "7e2123a",
     "date": "2026-11-26",
@@ -124754,18 +124813,6 @@
      "docs/qa/05-PROGRESSO.md",
      "supabase/functions/alert-dispatcher/index.ts"
     ]
-   },
-   {
-    "sha": "f2f21c8",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/scim-v2/active.ts",
-     "supabase/functions/scim-v2/active_test.ts",
-     "supabase/functions/scim-v2/index.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124834,19 +124881,19 @@
     2
    ],
    [
-    ".github/workflows/aplicar-migration-prod.yml",
+    ".github/workflows/paridade-banco.yml",
     1
    ],
    [
-    "DOCS/qa/reversao/20261127190000_perf08_dropa_indices_redundantes_revert.sql",
+    "docs/ci/README.md",
     1
    ],
    [
-    "supabase/functions/xbz-sync-pedidos/index.ts",
+    "scripts/ci/paridade-migrations-banco.allowlist.json",
     1
    ],
    [
-    "supabase/migrations/20261127180000_perf05_indices_system_alerts_e_spot_sync_log.sql",
+    "scripts/ci/paridade-migrations-banco.mjs",
     1
    ]
   ]
