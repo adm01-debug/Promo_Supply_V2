@@ -104,6 +104,49 @@ describe('usePermissions', () => {
     ])).toBe(false);
   });
 
+  it('nao le as tabelas de catalogo para quem nao e admin: usa so a RPC', async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-id' },
+      role: 'buyer',
+      isAdmin: false,
+    } as ReturnType<typeof useAuth>);
+
+    const { supabase } = await import('@/integrations/supabase/client');
+
+    const { result } = renderHook(() => usePermissions(), {
+      wrapper: createQueryClientWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    // RLS devolve vazio para nao-admin: pedir o catalogo seria requisicao inutil.
+    const tabelasLidas = vi.mocked(supabase.from).mock.calls.map(([nome]) => nome);
+    expect(tabelasLidas).not.toContain('permissions');
+    expect(tabelasLidas).not.toContain('role_permissions');
+    expect(supabase.rpc).toHaveBeenCalledWith('get_my_permissions');
+  });
+
+  it('continua lendo o catalogo para admin (matriz de papeis)', async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'admin-id' },
+      role: 'admin',
+      isAdmin: true,
+    } as ReturnType<typeof useAuth>);
+
+    const { supabase } = await import('@/integrations/supabase/client');
+
+    const { result } = renderHook(() => usePermissions(), {
+      wrapper: createQueryClientWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    const tabelasLidas = vi.mocked(supabase.from).mock.calls.map(([nome]) => nome);
+    expect(tabelasLidas).toContain('permissions');
+    expect(tabelasLidas).toContain('role_permissions');
+    expect(supabase.rpc).not.toHaveBeenCalled();
+  });
+
   it('should return false if no role is present', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: null,

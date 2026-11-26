@@ -22,7 +22,10 @@ export interface RolePermission {
 export const usePermissions = () => {
   const { user, role, isAdmin } = useAuth();
 
-  // Fetch all permissions
+  // Fetch all permissions (admin matrix only). Some so a matriz de papeis
+  // (`PermissionMatrix`) usa o catalogo: para quem nao e' admin a leitura volta
+  // vazia pela RLS, entao nao se pede. As permissoes efetivas do usuario vem da
+  // RPC `get_my_permissions` logo abaixo.
   const { data: permissions, isLoading: permissionsLoading } = useQuery({
     queryKey: ['permissions'],
     queryFn: async () => {
@@ -34,7 +37,7 @@ export const usePermissions = () => {
       if (error) throw error;
       return data as Permission[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
   // Fetch user's role permissions via SECURITY DEFINER RPC (bypasses RLS on role_permissions).
@@ -44,13 +47,13 @@ export const usePermissions = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      // A RPC ainda não está em `types.ts` (migration própria, regra 8); o cast
-      // libera o typecheck até `types.ts` ser regenerado.
-      const { data, error } = await supabase.rpc('get_my_permissions' as never);
+      // A RPC ja esta em `types.ts` (gerado do banco): sem cast, o retorno vem
+      // tipado como `{ module, action }[]`.
+      const { data, error } = await supabase.rpc('get_my_permissions');
       if (error) throw error;
 
       // Reshape to the same structure consumers expect
-      return (data as { module: string; action: string }[]).map((row) => ({
+      return (data ?? []).map((row) => ({
         id: `${row.module}:${row.action}`,
         role: role ?? '',
         permission_id: `${row.module}:${row.action}`,
