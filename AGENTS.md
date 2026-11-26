@@ -142,6 +142,11 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   (`tests-e2e/`), Vitest (`src/**/__tests__/`, `tests-rls/`), i18next (pt/en/es), Zustand, TanStack Query.
 - CI instala com **bun** (`bun install`); o repo tem `bun.lock`, `bun.lockb` **e** `package-lock.json` e não
   declara `engines`/`packageManager`/`.nvmrc` (a Vercel lê `.nvmrc`; criar o arquivo mudaria o build).
+  A Vercel instala com **npm** (`npm ci`) — não com bun — então os **dois** lockfiles precisam ficar em
+  sincronia a cada bump de dependência: `bun.lock` sozinho não publica. Antes de subir bump, rode
+  `npm install --package-lock-only` e `npm ci` numa cópia limpa; `overrides.dompurify`/`lodash`/`ws` no
+  `package.json` precisam ser >= a dependência direta de mesmo nome, senão o npm sai `EOVERRIDE` e o
+  deploy falha em todo commit seguinte.
 - `npm run typecheck` (`tsc --noEmit`) · `npx eslint <arquivos>` · `npx vitest run <caminho>` ·
   `npm run test:rls` (produção!) · `npm run test:e2e` · `deno test --allow-net --allow-env --allow-read supabase/functions/` ·
   guards: `npm run guards` (suítes de `scripts/` + inventário de testes + `--check` das docs geradas) e
