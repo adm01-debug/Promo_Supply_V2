@@ -42,7 +42,7 @@ describe('chaves que a tela do catalogo usa existem de verdade', () => {
   it('CatalogoProdutos.tsx chama exatamente essas chaves (senao elas ficam mortas)', () => {
     const arquivo = path.resolve(process.cwd(), 'src/pages/catalogo-produtos/CatalogoProdutos.tsx');
     const fonte = fs.readFileSync(arquivo, 'utf-8');
-    for (const chave of ['catalog.title', 'catalog.subtitle', 'common.new']) {
+    for (const chave of ['catalog.title', 'catalog.subtitle']) {
       expect(fonte).toContain(`t("${chave}"`);
     }
   });

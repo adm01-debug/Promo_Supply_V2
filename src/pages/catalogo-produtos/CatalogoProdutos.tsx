@@ -1,15 +1,12 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import {
-  Package, Search, Plus, Edit2, Tag, Building2, DollarSign,
-  TrendingUp, TrendingDown, Filter, X, Grid3X3, List, ImageIcon,
-  Upload, Loader2
+  Package, Search, Tag, Building2, DollarSign,
+  TrendingUp, TrendingDown, Grid3X3, List, ImageIcon, Eye
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -27,69 +24,18 @@ import { useProdutos, type Produto } from "@/hooks/useProdutos";
 import { ProductSupplierManager } from "@/components/compras/ProductSupplierManager";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
-import { useAutoImageCompression } from "@/hooks/useImageCompression";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/lib/feedbackToast";
 
 const formatCurrency = (v: number | null) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
 
-const emptyProduct: Partial<Produto> = {
-  codigo: "",
-  nome: "",
-  descricao: "",
-  unidade: "un",
-  preco_referencia: 0,
-  estoque_minimo: 0,
-  ativo: true,
-  tags: [],
-};
-
 const CatalogoProdutos = () => {
-  const { produtos, isLoading, categorias, createProduto, updateProduto } = useProdutos();
+  const { produtos, isLoading, categorias } = useProdutos();
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Partial<Produto> | null>(null);
-  const [formData, setFormData] = useState<Partial<Produto>>(emptyProduct);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const { handleFileChange: handleImageUpload } = useAutoImageCompression({
-    maxWidth: 800,
-    maxHeight: 800,
-    quality: 0.8
-  });
-
-  const onImageSelect = useCallback(async (files: File[]) => {
-    if (files.length === 0) return;
-    
-    setIsUploading(true);
-    const file = files[0];
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `products/${fileName}`;
-
-    try {
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-
-      setFormData(prev => ({ ...prev, imagem_url: publicUrl }));
-      toast.success("Imagem enviada com sucesso!");
-    } catch (error: unknown) {
-      toast.error("Erro ao enviar imagem: " + (error as Error).message);
-    } finally {
-      setIsUploading(false);
-    }
-  }, []);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selected, setSelected] = useState<Produto | null>(null);
 
   const filtered = useMemo(() => {
     return produtos.filter((p) => {
@@ -111,30 +57,9 @@ const CatalogoProdutos = () => {
       : 0,
   }), [produtos]);
 
-  const openCreate = () => {
-    setEditing(null);
-    setFormData(emptyProduct);
-    setModalOpen(true);
-  };
-
-  const openEdit = (p: Produto) => {
-    setEditing(p);
-    setFormData({ ...p });
-    setModalOpen(true);
-  };
-
-  const handleSave = () => {
-    if (!formData.nome || !formData.codigo) return;
-    if (editing?.id) {
-      updateProduto.mutate({ id: editing.id, ...formData });
-    } else {
-      createProduto.mutate(formData);
-    }
-    setModalOpen(false);
-  };
-
-  const updateField = (field: string, value: unknown) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const openDetails = (p: Produto) => {
+    setSelected(p);
+    setDetailsOpen(true);
   };
 
   const priceVariation = (p: Produto) => {
@@ -148,14 +73,12 @@ const CatalogoProdutos = () => {
         icon={Package}
         title={t("catalog.title")}
         description={t("catalog.subtitle")}
-        actions={[
-          {
-            label: t("common.new"),
-            icon: Plus,
-            onClick: openCreate,
-          },
-        ]}
       />
+
+      <Card className="p-3 text-sm text-muted-foreground">
+        Cadastro e edição de produtos são feitos no PIM (Promo Gifts V4). Esta tela é
+        somente leitura; o vínculo com fornecedores segue editável em "Detalhes".
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
@@ -274,10 +197,10 @@ const CatalogoProdutos = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => openEdit(p)}
-                    aria-label={`Editar ${p.nome}`}
+                    onClick={() => openDetails(p)}
+                    aria-label={`Detalhes de ${p.nome}`}
                   >
-                    <Edit2 className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </div>
                 {p.descricao && (
@@ -337,10 +260,10 @@ const CatalogoProdutos = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => openEdit(p)}
-                        aria-label={`Editar ${p.nome}`}
+                        onClick={() => openDetails(p)}
+                        aria-label={`Detalhes de ${p.nome}`}
                       >
-                        <Edit2 className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -351,132 +274,47 @@ const CatalogoProdutos = () => {
         </Card>
       )}
 
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editing ? "Editar Produto" : "Novo Produto"}</DialogTitle>
+            <DialogTitle>{selected?.nome ?? "Detalhes do produto"}</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-            {editing?.id && (
-              <div className="md:col-span-2 mb-4">
-                <ProductSupplierManager 
-                  produtoId={editing.id} 
-                  produtoNome={editing.nome || ""} 
-                />
+          {selected && (
+            <div className="space-y-4 py-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Código</p>
+                  <p className="font-mono">{selected.codigo}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Unidade</p>
+                  <p>{selected.unidade}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Preço referência</p>
+                  <p>{formatCurrency(selected.preco_referencia)}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Status</p>
+                  <Badge variant={selected.ativo ? "default" : "secondary"}>
+                    {selected.ativo ? "Ativo" : "Inativo"}
+                  </Badge>
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <p className="text-muted-foreground">Descrição</p>
+                  <p>{selected.descricao || "—"}</p>
+                </div>
               </div>
-            )}
-            <div className="md:col-span-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors relative group">
-              {formData.imagem_url ? (
-                <div className="relative w-full aspect-video max-h-48 rounded-lg overflow-hidden border">
-                  <img src={formData.imagem_url} alt="Preview" className="w-full h-full object-contain" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      onClick={() => setFormData(prev => ({ ...prev, imagem_url: undefined }))}
-                    >
-                      <X className="w-4 h-4 mr-2" /> Remover
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center space-y-2">
-                  <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                    {isUploading ? <Loader2 className="w-6 h-6 text-primary animate-spin" /> : <ImageIcon className="w-6 h-6 text-primary" />}
-                  </div>
-                  <div>
-                    <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline font-medium">
-                      Clique para enviar uma imagem
-                    </Label>
-                    <p className="text-xs text-muted-foreground">PNG, JPG ou WebP até 5MB</p>
-                  </div>
-                  <Input 
-                    id="image-upload" 
-                    type="file" 
-                    className="hidden" 
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, onImageSelect)}
-                    disabled={isUploading}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="codigo">Código</Label>
-              <Input
-                id="codigo"
-                value={formData.codigo || ""}
-                onChange={(e) => updateField("codigo", e.target.value)}
+              <Separator />
+              <ProductSupplierManager
+                produtoId={selected.id}
+                produtoNome={selected.nome || ""}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
-              <Input
-                id="nome"
-                value={formData.nome || ""}
-                onChange={(e) => updateField("nome", e.target.value)}
-              />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="descricao">Descrição</Label>
-              <Textarea
-                id="descricao"
-                value={formData.descricao || ""}
-                onChange={(e) => updateField("descricao", e.target.value)}
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="unidade">Unidade</Label>
-              <Input
-                id="unidade"
-                value={formData.unidade || ""}
-                onChange={(e) => updateField("unidade", e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="preco">Preço Referência</Label>
-              <Input
-                id="preco"
-                type="number"
-                step="0.01"
-                value={formData.preco_referencia ?? 0}
-                onChange={(e) => updateField("preco_referencia", parseFloat(e.target.value) || 0)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="categoria">Categoria</Label>
-              <Select
-                value={formData.categoria_id || ""}
-                onValueChange={(v) => updateField("categoria_id", v)}
-              >
-                <SelectTrigger id="categoria">
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categorias.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="estoque_min">Estoque Mínimo</Label>
-              <Input
-                id="estoque_min"
-                type="number"
-                value={formData.estoque_minimo ?? 0}
-                onChange={(e) => updateField("estoque_minimo", parseInt(e.target.value, 10) || 0)}
-              />
-            </div>
-          </div>
+          )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModalOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave} disabled={!formData.nome || !formData.codigo}>
-              Salvar
+            <Button variant="outline" onClick={() => setDetailsOpen(false)}>
+              Fechar
             </Button>
           </DialogFooter>
         </DialogContent>
