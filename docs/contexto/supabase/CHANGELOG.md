@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 00:37 UTC
+
+- **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_29`
+
 ## 2026-11-25 23:25 UTC
 
 - **colunas** adicionado (1): `public.pagamentos.data_agendamento`

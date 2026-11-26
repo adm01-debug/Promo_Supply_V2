@@ -64,9 +64,9 @@
   {
    "arquivo": "scripts/ci/agents-docs-baseline.unit.mjs",
    "tipo": "unit",
-   "linhas": 327,
+   "linhas": 384,
    "testa": [],
-   "casos": 14
+   "casos": 15
   },
   {
    "arquivo": "scripts/ci/ai-context-generator.unit.mjs",

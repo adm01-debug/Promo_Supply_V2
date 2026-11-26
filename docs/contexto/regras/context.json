@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "dd073965d2832c7314d6b24e456dba98eb3160df",
+  "sha": "20216fb7f29d1639af93245b32ba26f23f6b0620",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-25 23:59 UTC",
+  "generated_at": "2026-11-26 00:32 UTC",
   "files_total": 1467,
   "code_files": 1293,
-  "code_lines": 218641,
+  "code_lines": 218722,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "5868add8ac4a1535",
+ "facts_hash": "4080d6239d495b3d",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -34558,7 +34558,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 868,
+   "lines": 873,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -34647,7 +34647,7 @@
   {
    "module": "scripts",
    "files": 82,
-   "lines": 29917,
+   "lines": 29993,
    "tables": [
     "a",
     "a_tabela",
@@ -92096,7 +92096,7 @@
   },
   "vite.config.ts": {
    "path": "vite.config.ts",
-   "lines": 321,
+   "lines": 326,
    "exports": [
     "default defineConfig"
    ],
@@ -92990,7 +92990,7 @@
   },
   "scripts/ci/agents-docs-baseline.unit.mjs": {
    "path": "scripts/ci/agents-docs-baseline.unit.mjs",
-   "lines": 327,
+   "lines": 384,
    "rule_comments": [
     "Baseline das instrucoes para agentes: frases que outra sessao nao pode apagar sem decidir apagar."
    ],
@@ -93118,7 +93118,7 @@
   },
   "scripts/ci/check-agents-md-integrity.mjs": {
    "path": "scripts/ci/check-agents-md-integrity.mjs",
-   "lines": 335,
+   "lines": 354,
    "exports": [
     "const VISIBILIDADE",
     "const ARQUIVOS_DE_VISIBILIDADE",
@@ -93128,6 +93128,7 @@
     "const WORKFLOWS_DIR",
     "const MIGRATIONS_DIR",
     "const DOC_CI",
+    "const TOOLCHAIN",
     "const WORKFLOWS_CITADOS_NO_AGENTS",
     "function workflowsNoDiretorio",
     "function workflowsAfirmados",
@@ -93171,6 +93172,10 @@
     {
      "name": "DOC_CI",
      "value": "'docs/agentes/github-ci.md'"
+    },
+    {
+     "name": "TOOLCHAIN",
+     "value": "'.github/toolchain.json'"
     }
    ],
    "transition_maps": [
@@ -122736,10 +122741,47 @@
   }
  },
  "git": {
-  "sha": "dd073965d2832c7314d6b24e456dba98eb3160df",
+  "sha": "20216fb7f29d1639af93245b32ba26f23f6b0620",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "20216fb",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "vite.config.ts"
+    ]
+   },
+   {
+    "sha": "b4ba729",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "ci: isenta RLS audit apenas em PR do Dependabot sem diff de banco (#476)",
+    "files": []
+   },
+   {
+    "sha": "0c38190",
+    "date": "2026-11-25",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#488)",
+    "files": []
+   },
+   {
+    "sha": "a2586e2",
+    "date": "2026-11-25",
+    "author": "adm01-debug",
+    "subject": "fix(docs): corrige contagem de workflows e faixa do deno, e passa a checar as duas (#492)",
+    "files": [
+     ".github/toolchain.json",
+     "docs/agentes/github-ci.md",
+     "docs/qa/05-PROGRESSO.md",
+     "scripts/ci/agents-docs-baseline.unit.mjs",
+     "scripts/ci/check-agents-md-integrity.mjs"
+    ]
+   },
    {
     "sha": "dd07396",
     "date": "2026-11-25",
@@ -123040,60 +123082,12 @@
      "docs/agentes/github-ci.md",
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "1cc59fe",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "docs(agentes): corrige as afirmacoes falsas sobre CI, deploy e branch protection (#459)",
-    "files": [
-     "AGENTS.md",
-     "docs/agentes/deploy.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
-   },
-   {
-    "sha": "dc66ebe",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): sonda invertida do dependency-health e skip invisivel da auditoria RLS (#456)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/dependency-health/index.test.ts",
-     "supabase/functions/run-audit/rls_test.ts"
-    ]
-   },
-   {
-    "sha": "5f80e28",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(infra): mede o verify_jwt real das edges e fecha o achado CI-03 (#458)",
-    "files": [
-     "docs/qa/03-ACHADOS.md",
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/config.toml"
-    ]
-   },
-   {
-    "sha": "b22b3ab",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "fix(ci): sonda invertida deixava os testes de autenticacao das edges sempre ignorados (#455)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "supabase/functions/telemetry/index.test.ts",
-     "supabase/functions/workflow-engine/fuzz.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "docs/qa/05-PROGRESSO.md",
-    17
-   ],
-   [
-    "AGENTS.md",
-    3
+    15
    ],
    [
     ".github/workflows/main.yml",
@@ -123112,6 +123106,18 @@
     3
    ],
    [
+    "docs/agentes/github-ci.md",
+    2
+   ],
+   [
+    "scripts/ci/agents-docs-baseline.unit.mjs",
+    2
+   ],
+   [
+    "scripts/ci/check-agents-md-integrity.mjs",
+    2
+   ],
+   [
     "src/hooks/__tests__/usePagamentos.bulkStatus.test.tsx",
     2
    ],
@@ -123121,6 +123127,10 @@
    ],
    [
     "src/integrations/supabase/types.ts",
+    2
+   ],
+   [
+    "AGENTS.md",
     2
    ],
    [
@@ -123136,6 +123146,14 @@
     2
    ],
    [
+    "vite.config.ts",
+    1
+   ],
+   [
+    ".github/toolchain.json",
+    1
+   ],
+   [
     "src/hooks/__tests__/useDevolucoes.credito.test.tsx",
     1
    ],
@@ -123145,26 +123163,6 @@
    ],
    [
     "src/hooks/__tests__/useDevolucoes.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/useDevolucoes.ts",
-    1
-   ],
-   [
-    "src/pages/devolucoes/DevolucoesModals.tsx",
-    1
-   ],
-   [
-    "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/features/cotacoes/hooks/useCotacoes.ts",
-    1
-   ],
-   [
-    "src/hooks/__tests__/usePagamentos.escrita.test.tsx",
     1
    ]
   ]
