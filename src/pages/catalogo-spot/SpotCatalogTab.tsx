@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Package, Search, ShoppingCart } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import {
   useSpotProducts,
   useSpotSkus,
@@ -28,14 +29,18 @@ export const SpotCatalogTab = ({ onAddToCart, disabled = false }: SpotCatalogTab
   const [collection, setCollection] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState<string | null>(null);
 
+  // PERF-06 (etapa 219): o termo ia direto para a chave da consulta, entao cada
+  // tecla disparava uma requisicao nova (e mais duas quando `references` mudava).
+  const debouncedSearch = useDebouncedValue(search, 300);
+
   const filters: SpotCatalogFilters = useMemo(() => {
     const category = SPOT_CATEGORY_FILTERS.find((c) => c.name === categoryName) ?? null;
     return {
-      search,
+      search: debouncedSearch,
       collection,
       typeCodes: category ? { legacy: category.legacy, modern: category.modern } : null,
     };
-  }, [search, collection, categoryName]);
+  }, [debouncedSearch, collection, categoryName]);
 
   const { data: products = [], isLoading } = useSpotProducts(filters);
   const references = useMemo(() => products.map((p) => p.reference), [products]);
