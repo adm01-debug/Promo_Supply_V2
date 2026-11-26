@@ -139,7 +139,25 @@ const HistoricoCompras = () => {
   const { requestClear, ConfirmDialog } = useClearFiltersFlow({
     scope: "historico-compras",
     screenLabel: "Histórico de Compras",
-    describeActiveFilters: () => [],
+    // A lista serve para duas coisas: montar o dialogo de confirmacao E decidir se ha algo a
+    // limpar (`useClearFiltersFlow.requestClear` faz early-return com lista vazia). Devolver []
+    // desligava o proprio botao "Limpar filtros" desta tela.
+    describeActiveFilters: () => [
+      { key: "searchTerm", label: "Busca", value: searchTerm },
+      { key: "categoryFilter", label: "Categoria", value: categoryFilter },
+      { key: "statusFilter", label: "Status", value: statusFilter },
+      { key: "periodPreset", label: "Período", value: periodPreset },
+      {
+        key: "dateRange",
+        label: "Datas",
+        value: dateRange?.from ? dateRange : undefined,
+        format: (value) => {
+          const range = value as DateRange;
+          const from = format(range.from as Date, "P", { locale: ptBR });
+          return range.to ? `${from} - ${format(range.to, "P", { locale: ptBR })}` : from;
+        },
+      },
+    ],
     takeSnapshot: () => ({ searchTerm, categoryFilter, statusFilter, dateRange, periodPreset }),
     applySnapshot: (s) => {
       setSearchTerm(s.searchTerm); setCategoryFilter(s.categoryFilter);
