@@ -1,58 +1,13 @@
 {
-  "carried": [
-    "api.project",
-    "api.edge_functions",
-    "api.secrets",
-    "api.postgres_config",
-    "api.network_restrictions",
-    "api.ssl_enforcement",
-    "api.branches",
-    "api.backups"
-  ],
+  "carried": [],
   "entrada": "README.md",
   "erros": [
     {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao",
-      "section": "api.project"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/functions",
-      "section": "api.edge_functions"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/secrets",
-      "section": "api.secrets"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/config/database/postgres",
-      "section": "api.postgres_config"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/network-restrictions",
-      "section": "api.network_restrictions"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/ssl-enforcement",
-      "section": "api.ssl_enforcement"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/custom-hostname",
+      "error": "HTTP 400 em /projects/lmypcdfsrgfftzhxawao/custom-hostname",
       "section": "api.custom_hostname"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/branches",
-      "section": "api.branches"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/database/backups",
-      "section": "api.backups"
-    },
-    {
-      "error": "HTTP 502 em /projects/lmypcdfsrgfftzhxawao/health?services=auth,db,pooler,realtime,rest,storage",
-      "section": "api.health"
     }
   ],
-  "gerado_em": "2026-11-26T06:21:47Z",
+  "gerado_em": "2026-11-26T07:14:41Z",
   "gerador": "scripts/supabase_snapshot/snapshot.py",
   "produtor": "supabase-snapshot"
 }

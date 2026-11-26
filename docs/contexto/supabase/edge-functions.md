@@ -1,7 +1,5 @@
 # Edge Functions
 
-> ⚠️ Seção `api.edge_functions` não pôde ser atualizada nesta coleta (ver errors.md); mostrando a versão anterior.
-
 URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metadados por função em `edge-functions/<slug>/README.md`. A Management API devolve só o bundle compilado; o fonte canônico é `supabase/functions/<slug>/` no repo.
 
 | slug | nome | status | versão | verify_jwt | entrypoint |
@@ -10,9 +8,9 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | ai-negotiation | ai-negotiation | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-negotiation/index.ts |
 | ai-supplier-risk | ai-supplier-risk | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-risk/index.ts |
 | ai-supplier-suggestion | ai-supplier-suggestion | ACTIVE | 34 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/ai-supplier-suggestion/index.ts |
-| alert-dispatcher | alert-dispatcher | ACTIVE | 25 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
+| alert-dispatcher | alert-dispatcher | ACTIVE | 26 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/alert-dispatcher/index.ts |
 | check-approval-escalations | check-approval-escalations | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-approval-escalations/index.ts |
-| check-cotacao-followup | check-cotacao-followup | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
+| check-cotacao-followup | check-cotacao-followup | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-cotacao-followup/index.ts |
 | check-expiry-alerts | check-expiry-alerts | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-expiry-alerts/index.ts |
 | check-sla-alerts | check-sla-alerts | ACTIVE | 32 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/check-sla-alerts/index.ts |
 | dependency-health | dependency-health | ACTIVE | 37 | não | file:///app/supabase/functions/dependency-health/index.ts |
@@ -34,8 +32,8 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | punchout-setup | punchout-setup | ACTIVE | 25 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-setup/index.ts |
 | receive-os-sync | receive-os-sync | ACTIVE | 17 | não | file:///app/supabase/functions/receive-os-sync/index.ts |
 | run-audit | run-audit | ACTIVE | 26 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/run-audit/index.ts |
-| scim-v2 | scim-v2 | ACTIVE | 34 | não | file:///app/supabase/functions/scim-v2/index.ts |
-| send-push-notification | send-push-notification | ACTIVE | 30 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/send-push-notification/index.ts |
+| scim-v2 | scim-v2 | ACTIVE | 36 | não | file:///app/supabase/functions/scim-v2/index.ts |
+| send-push-notification | send-push-notification | ACTIVE | 31 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/send-push-notification/index.ts |
 | spot-api | spot-api | ACTIVE | 28 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-api/index.ts |
 | spot-proxy | spot-proxy | ACTIVE | 28 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/spot-proxy/index.ts |
 | system-simulation | system-simulation | ACTIVE | 31 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/system-simulation/index.ts |

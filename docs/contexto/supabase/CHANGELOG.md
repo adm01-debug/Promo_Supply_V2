@@ -2,6 +2,10 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 07:14 UTC
+
+- **edge functions** alterado (4): `alert-dispatcher`, `check-cotacao-followup`, `scim-v2`, `send-push-notification`
+
 ## 2026-11-26 06:21 UTC
 
 - **functions** alterado (2): `public.cleanup_health_scan_runs()`, `public.xbz_sync_watchdog()`

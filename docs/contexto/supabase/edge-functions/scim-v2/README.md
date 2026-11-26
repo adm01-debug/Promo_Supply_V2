@@ -4,7 +4,7 @@
 |---|---|
 | nome | scim-v2 |
 | status | ACTIVE |
-| versão | 34 |
+| versão | 36 |
 | verify_jwt | não |
 | entrypoint | file:///app/supabase/functions/scim-v2/index.ts |
 | import_map |  |
