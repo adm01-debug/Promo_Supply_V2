@@ -21,6 +21,14 @@ export interface SpotCatalogTabProps {
 }
 
 /**
+ * Mesmo limiar que o painel de sincronização usa para o endpoint `Stocks`
+ * (`SpotSyncPanel`, maxAgeMinutes 45): passando disso, o estoque já perdeu
+ * mais de uma rodada do cron e a tela precisa avisar em vez de exibir o
+ * número como se fosse corrente.
+ */
+const STOCK_STALE_MINUTES = 45;
+
+/**
  * Catálogo SPOT servido pelo cache local (tabelas spot_produtos/spot_skus/spot_estoque).
  * A busca não dispara chamadas à API oficial — a quota diária é de 22 req/dia.
  */
@@ -65,6 +73,29 @@ export const SpotCatalogTab = ({ onAddToCart, disabled = false }: SpotCatalogTab
     }
     return map;
   }, [stock]);
+
+    // INT-11 (etapa 183): a quantidade vinha do cache sem dizer de quando era.
+    // O carimbo mais recente do lote é a idade real do estoque exibido.
+    const stockSyncedAt = useMemo(() => {
+      let maisRecente: number | null = null;
+      for (const row of stock) {
+        const instante = new Date(row.synced_at).getTime();
+        if (Number.isNaN(instante)) continue;
+        if (maisRecente === null || instante > maisRecente) maisRecente = instante;
+      }
+      return maisRecente;
+    }, [stock]);
+
+    const stockSyncedAtLabel = useMemo(() => {
+      if (stockSyncedAt === null) return null;
+      return new Date(stockSyncedAt).toLocaleString('pt-BR', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+      });
+    }, [stockSyncedAt]);
+
+    const stockStale =
+      stockSyncedAt !== null && Date.now() - stockSyncedAt > STOCK_STALE_MINUTES * 60000;
 
   return (
     <div className="space-y-4">
@@ -131,6 +162,32 @@ export const SpotCatalogTab = ({ onAddToCart, disabled = false }: SpotCatalogTab
           </div>
         </CardContent>
       </Card>
+
+              {stockSyncedAtLabel && (
+                <div
+                  className={
+                    stockStale
+                      ? 'flex flex-wrap items-center gap-2 rounded-md border border-warning/50 bg-warning/10 px-3 py-2 text-xs text-warning'
+                      : 'text-xs text-muted-foreground'
+                  }
+                  role={stockStale ? 'status' : undefined}
+                  data-testid="spot-stock-freshness"
+                >
+                  {stockStale ? (
+                    <>
+                      <Badge variant="outline" className="border-warning/50 text-warning">
+                        Estoque defasado
+                      </Badge>
+                      <span>
+                        Última sincronização de estoque em {stockSyncedAtLabel} — as quantidades
+                        podem estar desatualizadas. Use "Sincronizar" para atualizar.
+                      </span>
+                    </>
+                  ) : (
+                    <span>Estoque sincronizado em {stockSyncedAtLabel}.</span>
+                  )}
+                </div>
+              )}
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

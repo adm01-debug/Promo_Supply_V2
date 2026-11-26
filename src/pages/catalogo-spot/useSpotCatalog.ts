@@ -37,6 +37,7 @@ export interface SpotStockRow {
   product_reference: string | null;
   quantity: number;
   incoming_date: string | null;
+  synced_at: string;
 }
 
 export interface SpotSyncStatus {
@@ -117,7 +118,7 @@ export function useSpotStock(productReferences: string[]) {
     queryFn: async (): Promise<SpotStockRow[]> => {
       const { data, error } = await supabase
         .from('spot_estoque')
-        .select('sku,product_reference,quantity,incoming_date')
+        .select('sku,product_reference,quantity,incoming_date,synced_at')
         .in('product_reference', productReferences);
       if (error) throw new Error(error.message);
       return (data ?? []) as SpotStockRow[];
@@ -179,7 +180,7 @@ export function latestSuccessByEndpoint(rows: SpotSyncStatus[]): Record<string, 
 
 export type CacheFreshness = 'fresh' | 'stale' | 'missing';
 
-/** Catálogo é sincronizado 1×/dia; estoque a cada 15 min. */
+/** Catálogo é sincronizado 1×/dia; estoque em rodadas periódicas agendadas (ver `Checklist de conclusão` do cron em supabase/migrations). */
 export function evaluateFreshness(lastSync: string | undefined, maxAgeMinutes: number): CacheFreshness {
   if (!lastSync) return 'missing';
   const ageMinutes = (Date.now() - new Date(lastSync).getTime()) / 60000;
