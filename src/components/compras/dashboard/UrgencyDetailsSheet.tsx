@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { logger } from '@/lib/logger';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 import { 
   Sheet, 
   SheetContent, 
@@ -64,7 +65,7 @@ export const UrgencyDetailsSheet = ({
       const { data, error } = await supabase.functions.invoke('escalate-solicitacao', {
         body: { solicitacao_id: itemId, target },
       });
-      if (error) throw error;
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao enviar a notificação."));
       if (!data?.success) throw new Error(data?.error || "Nenhum destinatário recebeu a notificação.");
       return data as { destinatarios: number; notificacoes_criadas: number };
     },

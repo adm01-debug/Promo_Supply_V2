@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { mensagemDeErroDaEdge } from "@/lib/invokeEdge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,7 @@ export default function AlertDetail() {
         `health-dashboard?alert_id=${encodeURIComponent(id!)}`,
         { method: "GET" },
       );
-      if (error) throw error;
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao carregar o detalhe do alerta."));
       if (!data) throw new Error("Sem dados");
       return data;
     },

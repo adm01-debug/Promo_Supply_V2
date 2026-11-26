@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 
 /**
  * Leitura do cache local da API oficial SPOT.
@@ -152,7 +153,7 @@ export function useTriggerSpotSync() {
   return useMutation({
     mutationFn: async (action: SpotSyncAction) => {
       const { data, error } = await supabase.functions.invoke('spot-api', { body: { action } });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, 'Sincronização recusada'));
       const resposta = data as { success?: boolean; error?: string; records?: number } | null;
       if (resposta?.success === false) throw new Error(resposta.error ?? 'Sincronização recusada');
       return { action, records: resposta?.records ?? null };

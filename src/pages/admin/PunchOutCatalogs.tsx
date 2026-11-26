@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { openExternalUrl } from '@/lib/security';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
@@ -83,7 +84,7 @@ const PunchOutCatalogs = () => {
     const { data, error } = await supabase.functions.invoke('punchout-encrypt', {
       body: { secret: plain },
     });
-    if (error) throw error;
+    if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao cifrar a credencial."));
     const encrypted = data?.data?.encrypted as string | undefined;
     if (!encrypted) throw new Error("Resposta vazia da edge de cifra");
     return encrypted;
@@ -151,7 +152,7 @@ const PunchOutCatalogs = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao iniciar a sessão PunchOut."));
 
       toast.success("Sessão PunchOut iniciada");
       if (data.mock_redirect) {

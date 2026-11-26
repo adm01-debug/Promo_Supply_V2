@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { logger } from '@/lib/logger';
+import { mensagemDeErroDaEdge } from '@/lib/invokeEdge';
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
@@ -160,7 +161,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
         body: { input: neuralInput }
       });
-      if (error) throw error;
+      if (error) throw new Error(await mensagemDeErroDaEdge(error, "Falha ao processar o texto com a IA."));
       const fields = (data?.fields ?? data) as Partial<NovaSolicitacaoData> | null | undefined;
       if (!fields || typeof fields !== "object" || Array.isArray(fields)) {
         throw new Error("Resposta IA sem campos preenchíveis");
