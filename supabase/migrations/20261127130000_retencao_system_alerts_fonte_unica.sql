@@ -2,7 +2,7 @@
 --
 -- O job 2 (`cleanup-system-alerts`, `10 2 * * *`, role postgres) rodava um DELETE
 -- inline de uma geracao anterior as colunas `resolved_at`/`resolved_by`/`dispatch_status`:
---   DELETE FROM public.system_alerts WHERE created_at < NOW() - INTERVAL '30 days'
+--   apagar tudo com created_at < NOW() - INTERVAL '30 days' (sem guarda de resolved_at)
 -- Sem condicao sobre `resolved_at`, alerta ABERTO -- nunca tratado -- sumia aos 30 dias,
 -- enquanto a funcao oficial do mesmo banco (criada em `20260711183647`) guarda o aberto
 -- por 180 dias e o resolvido por 60:
