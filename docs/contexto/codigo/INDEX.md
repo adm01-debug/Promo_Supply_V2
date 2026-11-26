@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `802cbb70fc0a5bcad10de7498d7c975706a83d46` (2026-11-25T22:49:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5656edb5af01c0cc43f138f3d3ebae88e9049987` (2026-11-25T23:10:39-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1467 |
 | arquivos_codigo | 939 |
-| linhas_codigo | 188932 |
+| linhas_codigo | 188943 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -338,16 +338,16 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (123)
-- docs/pendencias/_indice.md (42)
+- docs/qa/05-PROGRESSO.md (126)
+- docs/pendencias/_indice.md (40)
 - docs/ci/README.md (10)
 - docs/mapa/MATRIZ_EDGE_TABELA.md (9)
 - src/features/pedidos/hooks/usePedidos.ts (9)
+- AGENTS.md (8)
 - src/hooks/useApprovalWorkflow.ts (8)
 - src/pages/acompanhamento/Acompanhamento.tsx (8)
 - src/pages/pedidos/Pedidos.tsx (8)
 - .github/workflows/main.yml (7)
-- AGENTS.md (7)
 - src/hooks/usePagamentos.ts (7)
 - src/integrations/supabase/types.ts (7)
 - src/pages/cotacao/Cotacao.tsx (7)
@@ -411,9 +411,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `automation:uninstall-hooks`: `node scripts/automation.mjs uninstall-hooks`
 
 ## Documentos (raiz e docs/)
-- `AGENTS.md` — AGENTS.md — Promo Supply V2 (159 linhas)
+- `AGENTS.md` — AGENTS.md — Promo Supply V2 (161 linhas)
 - `CLAUDE.md` (2 linhas)
-- `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
+- `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (270 linhas)
 - `README.md` — Welcome to your Lovable project (60 linhas)
 - `docs/AUTOMACAO_LOCAL.md` — Automação local — Promo_Supply_V2 (124 linhas)
 - `docs/auditoria-implementacao-261120.md` — Auditoria: o que foi planejado × o que está implementado — Promo Supply V2 (1286 linhas)
@@ -422,6 +422,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-25 `5656edb` chore(ci): bump actions/dependency-review-action (#482)
+- 2026-11-25 `6eb3b7a` fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)
+- 2026-11-25 `9ba061e` chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)
+- 2026-11-25 `7736405` docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)
 - 2026-11-25 `802cbb7` chore(deps-dev): bump autoprefixer (#478)
 - 2026-11-25 `63ca16f` chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)
 - 2026-11-25 `20e28a7` chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)
@@ -433,10 +437,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-25 `dd07396` fix(devolucoes): nao anuncia status, exclusao ou credito usado quando o RLS barra (etapa 283) (#491)
 - 2026-11-25 `885cd9a` fix(cotacoes): nao anuncia vencedor nem exclusao quando o RLS barra a gravacao (#490)
 - 2026-11-25 `2dbada9` docs(qa): marca as etapas 247 e 281 como entregues (#489)
-- 2026-11-25 `8b2cfee` chore(db): sincronizar types.ts com o banco [auto] (#487)
-- 2026-11-25 `73078a0` fix(escrita): nao anuncia sucesso quando o RLS barra a gravacao (#486)
-- 2026-11-25 `81d308c` fix(pagamentos): grava a data escolhida ao agendar pagamento (#485)
-- 2026-11-25 `949c3d5` docs(qa): corrige as marcacoes do progresso ja entregues na main (#484)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

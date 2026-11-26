@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "802cbb70fc0a5bcad10de7498d7c975706a83d46",
+  "commit": "5656edb5af01c0cc43f138f3d3ebae88e9049987",
   "branch": "main",
-  "data_commit": "2026-11-25T22:49:26-03:00",
+  "data_commit": "2026-11-25T23:10:39-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5656edb",
+    "data": "2026-11-25",
+    "assunto": "chore(ci): bump actions/dependency-review-action (#482)"
+   },
+   {
+    "sha": "6eb3b7a",
+    "data": "2026-11-25",
+    "assunto": "fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)"
+   },
+   {
+    "sha": "9ba061e",
+    "data": "2026-11-25",
+    "assunto": "chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)"
+   },
+   {
+    "sha": "7736405",
+    "data": "2026-11-25",
+    "assunto": "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)"
+   },
    {
     "sha": "802cbb7",
     "data": "2026-11-25",
@@ -111,37 +131,17 @@
     "sha": "66f6b9d",
     "data": "2026-11-25",
     "assunto": "fix(rls): fecha a escrita por papel nas 30 tabelas restantes do RLS-01 (#454)"
-   },
-   {
-    "sha": "0d68cdf",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): o teste de edge pulado deixa de ser invisivel no CI (#457)"
-   },
-   {
-    "sha": "f751a0e",
-    "data": "2026-11-25",
-    "assunto": "fix(ci): reprova componente de src sem importador no guards (#465)"
-   },
-   {
-    "sha": "91c7aac",
-    "data": "2026-11-25",
-    "assunto": "fix(migracoes): desfaz a versao 20261113180000 duplicada em dois arquivos (#472)"
-   },
-   {
-    "sha": "9a655d1",
-    "data": "2026-11-25",
-    "assunto": "feat(dashboard): dashboard passa a renderizar o layout salvo do usuario (#473)"
    }
   ],
   "arquivos_mudados_7d": 1484,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 197
+    "mudancas": 196
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 123
+    "mudancas": 126
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -157,7 +157,7 @@
    },
    {
     "pasta": "docs/pendencias/_indice.md",
-    "mudancas": 42
+    "mudancas": 40
    },
    {
     "pasta": "src/hooks/__tests__",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 123
+    "mudancas": 126
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
-    "mudancas": 42
+    "mudancas": 40
    },
    {
     "arquivo": "docs/ci/README.md",
@@ -216,6 +216,10 @@
    {
     "arquivo": "src/features/pedidos/hooks/usePedidos.ts",
     "mudancas": 9
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 8
    },
    {
     "arquivo": "src/hooks/useApprovalWorkflow.ts",
@@ -231,10 +235,6 @@
    },
    {
     "arquivo": ".github/workflows/main.yml",
-    "mudancas": 7
-   },
-   {
-    "arquivo": "AGENTS.md",
     "mudancas": 7
    },
    {
@@ -258,19 +258,11 @@
     "mudancas": 7
    },
    {
-    "arquivo": "docs/pendencias/_ordem.md",
-    "mudancas": 6
-   },
-   {
     "arquivo": "src/features/auth/hooks/useAuth.tsx",
     "mudancas": 6
    },
    {
     "arquivo": "src/features/solicitacoes/hooks/useSolicitacoes.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "src/pages/auth/Auth.tsx",
     "mudancas": 6
    },
    {
@@ -296,12 +288,20 @@
    {
     "arquivo": ".github/workflows/aplicar-migration-prod.yml",
     "mudancas": 5
+   },
+   {
+    "arquivo": "bun.lock",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "docs/agentes/github-ci.md",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 294
+    "commits": 293
    },
    {
     "autor": "github-actions[bot]",
@@ -309,14 +309,14 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 2
+    "commits": 3
    }
   ]
  },
  "contagens": {
   "arquivos_total": 1467,
   "arquivos_codigo": 939,
-  "linhas_codigo": 188932,
+  "linhas_codigo": 188943,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -340,7 +340,7 @@
   },
   "playwright.config.ts": {
    "arquivos": 1,
-   "linhas": 22
+   "linhas": 27
   },
   "postcss.config.js": {
    "arquivos": 1,
@@ -520,7 +520,7 @@
   },
   "tests-e2e/production-ready.spec.ts": {
    "arquivos": 1,
-   "linhas": 63
+   "linhas": 69
   },
   "tests-e2e/workflow-advanced.spec.ts": {
    "arquivos": 1,

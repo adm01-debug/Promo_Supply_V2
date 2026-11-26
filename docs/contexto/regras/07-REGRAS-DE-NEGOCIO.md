@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `802cbb70fc` · branch `main` · 2026-11-26 02:10 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `5656edb5af` · branch `main` · 2026-11-26 02:15 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2456,7 +2456,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3451 testes em 248 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3448 testes em 248 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2555,7 +2555,6 @@ _nenhum item encontrado_
 | `src/lib/__tests__/negotiationOutreach.test.ts` | 13 | normalizarTelefone · prefixa 55 em celular de 11 digitos · nao duplica o 55 quando ja veio com pais · rejeita telefone curto demais … |
 | `src/lib/__tests__/statusTransitionsBanco.test.ts` | 13 | matriz de pagamentos (src/lib/statusTransitionsBanco.ts) · bate com a ultima migration que define o trigger · cobre os caminhos de pagamento parcial que o banco passou a aceitar · matriz de pedidos (src/lib/statusTransitionsBanco.ts) … |
 | `src/pages/pedidos/__tests__/pedidosHelpers.test.ts` | 13 | prazoConsumido · mede o quanto da janela emissao -> previsao ja passou · devolve o piso de 5% quando o prazo acabou de comecar · nao mede nada sem as duas datas ou com janela invalida … |
-| `src/tests/integration/supabase-db.test.ts` | 13 | nenhuma linha de approval_history carrega marcador de teste · required tables exist · approval_workflows has required columns · approval_steps has required columns … |
 | `src/lib/__tests__/sourcingAnalytics.test.ts` | 12 | sourcingAnalytics · calcula intervalo médio e próxima compra a partir das datas reais · não inventa previsão quando o item tem apenas uma compra · detecta tendência de preço unitário … |
 | `supabase/functions/scim-v2/auth.test.ts` | 12 | timingSafeEqual: iguais e diferentes · sha256Hex e estavel e distingue tokens · token global correto passa quando a tabela de tenants esta vazia · token global correto passa mesmo com hashes de tenant presentes … |
 | `tests-e2e/xbz-network-panel.spec.ts` | 12 | Painel de rede XBZ · amostra insuficiente mantém estado neutro de coleta · economia abaixo do mínimo dispara o alerta automático · economia entre o mínimo e a meta exibe atenção sem alerta … |
@@ -2569,6 +2568,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts` | 10 | pushTrendSample · ignora leituras duplicadas (mesmo total) · reinicia a janela quando os contadores são zerados · respeita o tamanho máximo da janela … |
 | `src/pages/recebimento/__tests__/pedidoComplementar.test.ts` | 10 | buildPendingLines · gera uma linha por item com saldo, com a quantidade restante · ignora itens totalmente recebidos · ignora item recebido acima do pedido, sem gerar saldo negativo … |
 | `src/tests/integration/contract-validation.test.ts` | 10 | Edge Function Contract Tests · Negotiation Workflow · should pass with valid data · should reject payload without cotacoes … |
+| `src/tests/integration/supabase-db.test.ts` | 10 | Supabase: schema versionado nas migrations (sem rede) · as tabelas do fluxo existem em supabase/migrations · approval_workflows declara as colunas esperadas · approval_steps declara as colunas esperadas … |
 | `src/components/accessibility/__tests__/skipLinks.test.tsx` | 9 | os links de pular levam a alvos que existem · so oferece conteudo principal e navegacao, sem link morto de busca · todo href de pular aponta para um id que alguma tela declara · cada breakpoint tem exatamente uma navegacao alcancavel … |
 | `src/components/compras/__tests__/cotacaoManualCampos.test.tsx` | 9 | CotacaoManualModal entrega os campos que coleta · grava a condicao escolhida por extenso, sem achatar 45 e 60 dias em  · leva validade e observacoes no payload, com o fornecedor do cadastro · nao manda string vazia de validade nem de observacoes … |
 | `src/features/auth/__tests__/activeSession.test.ts` | 9 | registerActiveSession (QA 038) · grava o token curto que o trigger sanitize_session_token nao trunca e guarda o id · atualiza a linha existente em vez de criar outra sessao · cria linha nova quando a guardada nao pertence mais ao usuario … |

@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "chore(deps-dev): bump autoprefixer (#478)",
-   "chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)",
-   "chore(lint): liga no-unused-vars como aviso para o lint voltar a ver fiação abandonada (etapa 293) (#495)",
-   "fix: fecha a fiação das abas Itens/Docs do contrato e liga o cartão mobile de fornecedor (etapa 292) (#494)",
-   "fix(build): para de publicar os sourcemaps do bundle (etapa 287) (#493)"
+   "chore(ci): bump actions/dependency-review-action (#482)",
+   "fix(e2e): tira o login em producao do gate e fecha o guard vazio (etapa 280) (#503)",
+   "chore(testes): verifica schema/RPC/RLS por leitura das migrations (etapa 300) (#502)",
+   "docs(higiene): data os documentos de auditoria e corrige fatos ja fechados (etapas 294 e 295) (#499)",
+   "chore(deps-dev): bump autoprefixer (#478)"
   ]
  },
  "pr_template": null,

@@ -2284,7 +2284,7 @@
    "tipo": "unit",
    "linhas": 232,
    "testa": [],
-   "casos": 13
+   "casos": 9
   },
   {
    "arquivo": "src/tests/security/rls-tenant-isolation-restrictive.test.ts",
@@ -2686,7 +2686,7 @@
   {
    "arquivo": "tests-e2e/production-ready.spec.ts",
    "tipo": "e2e",
-   "linhas": 63,
+   "linhas": 69,
    "testa": [],
    "casos": 5
   },
