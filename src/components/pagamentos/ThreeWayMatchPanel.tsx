@@ -7,6 +7,7 @@ import { AlertTriangle, CheckCircle2, Link2, FileText, ShoppingCart, CreditCard 
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 import { formatCurrency } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 
 interface Props {
   pagamento: Pagamento;
@@ -15,15 +16,29 @@ interface Props {
 export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
   // Fetch linked fiscal document
   const { data: nf } = useQuery({
-    queryKey: ['fiscal-match', pagamento.numero_nf],
+      queryKey: ['fiscal-match', pagamento.numero_nf, pagamento.fornecedor_id],
     queryFn: async () => {
       if (!pagamento.numero_nf) return null;
-      const { data } = await supabase
+        // O numero da NF sozinho nao identifica a nota: a mesma numeracao pode existir em
+        // fornecedores diferentes. Com maybeSingle o PostgREST devolvia erro (PGRST116) e o
+        // painel exibia "sem nota". Buscamos as candidatas e escolhemos a do fornecedor do
+        // pagamento, preservando o alerta de fornecedor divergente quando so houver outra.
+        const { data, error } = await supabase
         .from('fiscal_documents')
         .select('*')
         .eq('numero_nf', pagamento.numero_nf)
-        .maybeSingle();
-      return data;
+          .order('data_emissao', { ascending: false })
+          .limit(20);
+        if (error) {
+          logger.error("three_way_match.fiscal_lookup_failed", { error });
+          return null;
+        }
+        const candidatas = data ?? [];
+        if (candidatas.length === 0) return null;
+        const doPagamento = pagamento.fornecedor_id
+          ? candidatas.find((c) => c.fornecedor_id === pagamento.fornecedor_id)
+          : undefined;
+        return doPagamento ?? candidatas[0];
     },
     enabled: !!pagamento.numero_nf,
   });
