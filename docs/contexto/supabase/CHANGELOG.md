@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 04:39 UTC
+
+- **functions** alterado (4): `public.apply_lgpd_retention()`, `public.cleanup_old_integration_outbox()`, `public.cleanup_old_system_alerts()`, `public.cron_watchdog()`
+- **migrations** adicionado (1): `20261127130000_retencao_system_alerts_fonte_unica`
+
 ## 2026-11-26 04:24 UTC
 
 - **cron jobs** alterado (1): `2:cleanup-system-alerts`

@@ -37982,9 +37982,13 @@
             {
               "file": "supabase/migrations/20261117230000_retencao_fonte_unica.sql",
               "hits": 11
+            },
+            {
+              "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 8,
+          "code_total_files": 9,
           "cron": [
             "17:lgpd_retention_daily"
           ],
@@ -39333,9 +39337,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [
             "16:cleanup-integration-outbox-daily"
           ],
@@ -39530,9 +39538,13 @@
             {
               "file": "supabase/migrations/20261112171300_secdef_revoga_anon.sql",
               "hits": 1
+            },
+            {
+              "file": "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
+              "hits": 2
             }
           ],
-          "code_total_files": 2,
+          "code_total_files": 3,
           "cron": [
             "2:cleanup-system-alerts"
           ],
@@ -39881,7 +39893,7 @@
           "search_path=public, cron, extensions"
         ],
         "definition": null,
-        "definition_sha": "97a00765266f3112",
+        "definition_sha": "454e45cbcf022cb7",
         "execute_api_roles": "service_role",
         "execute_public": false,
         "is_trigger_fn": false,
@@ -62624,6 +62636,12 @@
         "statements": 2,
         "statements_sha": "171dca0569a6ad93",
         "version": "20261127120000"
+      },
+      {
+        "name": "retencao_system_alerts_fonte_unica",
+        "statements": 2,
+        "statements_sha": "5e7f37380069f6ac",
+        "version": "20261127130000"
       }
     ],
     "policies": [

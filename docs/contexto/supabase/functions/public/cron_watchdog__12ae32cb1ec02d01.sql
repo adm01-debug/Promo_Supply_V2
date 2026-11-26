@@ -10,7 +10,10 @@ DECLARE
   v_sla_seg INT;
   v_idade_seg INT;
   v_base TIMESTAMPTZ;
-  v_recent_failures INT;
+  v_falhas_janela INT;
+  v_execucoes_janela INT;
+  v_janela_seg INT;
+  v_min_falhas INT;
   v_alert_type TEXT;
 BEGIN
   PERFORM public.resolve_stale_system_error_alerts();
@@ -119,15 +122,28 @@ BEGIN
        WHERE alert_type = v_alert_type AND resolved_at IS NULL;
     END IF;
 
-    SELECT count(*) INTO v_recent_failures
-      FROM (
-        SELECT status FROM cron.job_run_details
-         WHERE jobid = v_job.jobid
-         ORDER BY start_time DESC LIMIT 5
-      ) s
-     WHERE status = 'failed';
+    -- Janela por TEMPO, nao por contagem: o job 110 apaga cron.job_run_details
+    -- com mais de 7 dias, entao um job semanal (periodo 604800s) nunca tem 5
+    -- linhas visiveis e o teste antigo (5 falhas nas ultimas 5 execucoes) era
+    -- inalcancavel para os 8 jobs semanais. A janela e' 3 periodos, limitada
+    -- pela retencao de 7 dias, para sempre haver dado observavel.
+    v_janela_seg := least(v_periodo_seg * 3, 604800);
 
-    IF v_recent_failures = 5 THEN
+    SELECT (count(*) FILTER (WHERE d.status = 'failed'))::int,
+           (count(*) FILTER (WHERE d.status <> 'running'))::int
+      INTO v_falhas_janela, v_execucoes_janela
+      FROM cron.job_run_details d
+     WHERE d.jobid = v_job.jobid
+       AND d.start_time > now() - make_interval(secs => v_janela_seg);
+
+    -- Se a janela observavel nao comporta 2 execucoes (semanal/mensal), a unica
+    -- execucao visivel ja e' sinal suficiente; nos demais casos exige 2 falhas,
+    -- para nao alertar por uma falha isolada de job de alta frequencia.
+    v_min_falhas := CASE WHEN v_periodo_seg * 2 > v_janela_seg THEN 1 ELSE 2 END;
+
+    IF v_execucoes_janela > 0
+       AND v_falhas_janela = v_execucoes_janela
+       AND v_falhas_janela >= v_min_falhas THEN
       v_alert_type := 'cron_watchdog.failing.' || v_job.jobname;
       IF NOT EXISTS (
         SELECT 1 FROM public.system_alerts
@@ -137,8 +153,19 @@ BEGIN
         VALUES (
           v_alert_type,
           'HIGH',
-          format('Cron job %s falhou 5 vezes seguidas', v_job.jobname),
-          jsonb_build_object('job', v_job.jobname, 'schedule', v_job.schedule)
+          format('Cron job %s falhou em todas as %s execucoes dos ultimos %s min (schedule: %s)',
+                 v_job.jobname,
+                 v_falhas_janela,
+                 v_janela_seg / 60,
+                 v_job.schedule),
+          jsonb_build_object(
+            'job', v_job.jobname,
+            'schedule', v_job.schedule,
+            'failures_in_window', v_falhas_janela,
+            'runs_in_window', v_execucoes_janela,
+            'window_seconds', v_janela_seg,
+            'period_seconds', v_periodo_seg
+          )
         );
       END IF;
     ELSE
