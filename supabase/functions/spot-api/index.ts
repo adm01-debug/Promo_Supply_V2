@@ -205,6 +205,8 @@ async function usedToday(db: SupabaseClient, endpoint: string): Promise<number> 
     .from("spot_api_sync_log")
     .select("id", { count: "exact", head: true })
     .eq("endpoint", endpoint)
+    // A recusa nao chega ao fornecedor, logo nao consome a cota dele.
+    .neq("status", "quota_blocked")
     .gte("called_at", since);
   return count ?? 0;
 }
@@ -240,6 +242,39 @@ interface CallOptions {
   skipQuota?: boolean;
 }
 
+/**
+ * A cota do fornecedor conta requisicao HTTP, nao chamada logica: cada retry e
+ * cada reautenticacao consomem cota. Por isso a linha nasce ANTES do fetch
+ * (status "attempt") e e fechada com o resultado daquela tentativa — uma linha
+ * por requisicao enviada.
+ */
+async function openAttempt(db: SupabaseClient, endpoint: string, action: string): Promise<string | null> {
+  const { data, error } = await db
+    .from("spot_api_sync_log")
+    .insert({ endpoint, action, status: "attempt" })
+    .select("id")
+    .maybeSingle();
+  if (error) return null;
+  return (data as { id: string } | null)?.id ?? null;
+}
+
+async function closeAttempt(
+  db: SupabaseClient,
+  id: string | null,
+  result: { status: "success" | "error"; errorCode?: string | null; errorMessage?: string | null; durationMs: number },
+): Promise<void> {
+  if (!id) return;
+  await db
+    .from("spot_api_sync_log")
+    .update({
+      status: result.status,
+      error_code: result.errorCode ?? null,
+      error_message: result.errorMessage ?? null,
+      duration_ms: result.durationMs,
+    })
+    .eq("id", id);
+}
+
 async function callSpot<T = Record<string, unknown>>(
   db: SupabaseClient,
   logger: EdgeLogger,
@@ -255,31 +290,44 @@ async function callSpot<T = Record<string, unknown>>(
     }
   }
 
-  const started = Date.now();
   let token = await getToken(db, logger);
 
   const execute = async (currentToken: string): Promise<T> => {
-    const params = new URLSearchParams({ token: currentToken, lang: LANG, ...(opts.query ?? {}) });
-    const url = `${BASE_URL}/${endpoint}?${params.toString()}`;
-    const res = await fetch(url, {
-      method: opts.method ?? "GET",
-      headers: opts.body ? { "Content-Type": "application/json" } : undefined,
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    });
-    if (!res.ok) throw new Error(`SPOT HTTP ${res.status}`);
-    const json = (await res.json()) as Record<string, unknown>;
-    const err = describeSpotError(json?.ErrorCode, json?.ErrorMessage as string | undefined);
-    if (err) {
-      const tagged = new Error(err.message) as Error & { spot?: ReturnType<typeof describeSpotError> };
-      tagged.spot = err;
-      throw tagged;
+    const attemptStarted = Date.now();
+    const attemptId = await openAttempt(db, endpoint, action);
+    try {
+      const params = new URLSearchParams({ token: currentToken, lang: LANG, ...(opts.query ?? {}) });
+      const url = `${BASE_URL}/${endpoint}?${params.toString()}`;
+      const res = await fetch(url, {
+        method: opts.method ?? "GET",
+        headers: opts.body ? { "Content-Type": "application/json" } : undefined,
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`SPOT HTTP ${res.status}`);
+      const json = (await res.json()) as Record<string, unknown>;
+      const err = describeSpotError(json?.ErrorCode, json?.ErrorMessage as string | undefined);
+      if (err) {
+        const tagged = new Error(err.message) as Error & { spot?: ReturnType<typeof describeSpotError> };
+        tagged.spot = err;
+        throw tagged;
+      }
+      await closeAttempt(db, attemptId, { status: "success", durationMs: Date.now() - attemptStarted });
+      return json as T;
+    } catch (error: unknown) {
+      const spot = (error as { spot?: ReturnType<typeof describeSpotError> }).spot;
+      await closeAttempt(db, attemptId, {
+        status: "error",
+        errorCode: spot?.code ?? null,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        durationMs: Date.now() - attemptStarted,
+      });
+      throw error;
     }
-    return json as T;
   };
 
   try {
-    const result = await retry(
+    return await retry(
       async () => {
         try {
           return await execute(token);
@@ -303,20 +351,10 @@ async function callSpot<T = Record<string, unknown>>(
         },
       },
     );
-    await logCall(db, { endpoint, action, status: "success", durationMs: Date.now() - started });
-    return result;
   } catch (error: unknown) {
-    const spot = (error as { spot?: ReturnType<typeof describeSpotError> }).spot;
-    const message = error instanceof Error ? error.message : String(error);
-    await logCall(db, {
-      endpoint,
-      action,
-      status: "error",
-      errorCode: spot?.code ?? null,
-      errorMessage: message,
-      durationMs: Date.now() - started,
-    });
-    throw new HttpError(502, message);
+    // Sucesso/erro ja foram gravados por tentativa em `execute`; aqui so
+    // traduzimos o desfecho da chamada logica para o cliente HTTP.
+    throw new HttpError(502, error instanceof Error ? error.message : String(error));
   }
 }
 
