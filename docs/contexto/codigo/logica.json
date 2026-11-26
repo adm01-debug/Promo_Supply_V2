@@ -275,7 +275,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 133,
+   "usado_por": 134,
    "usado_por_modulos": [
     "components/admin",
     "components/compras",
@@ -341,7 +341,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 22,
+   "usado_por": 23,
    "usado_por_modulos": [
     "components/admin",
     "features/cotacoes",
@@ -735,11 +735,12 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 61,
+   "usado_por": 62,
    "usado_por_modulos": [
     "components/compras",
     "components/feedback",
     "components/notifications",
+    "components/pagamentos",
     "components/security",
     "components/ui",
     "features/auth",

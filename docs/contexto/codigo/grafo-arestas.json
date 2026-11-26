@@ -1223,6 +1223,7 @@
    "src/components/ui/card.tsx",
    "src/hooks/usePagamentos.ts",
    "src/integrations/supabase/client.ts",
+   "src/lib/logger.ts",
    "src/lib/utils.ts"
   ],
   "src/components/pedidos/PedidoMobileCard.tsx": [
@@ -2918,7 +2919,12 @@
    "src/lib/feedbackToast.ts",
    "src/lib/logger.ts",
    "src/lib/utils.ts",
-   "src/pages/documentos/conciliacaoFiscal.ts"
+   "src/pages/documentos/conciliacaoFiscal.ts",
+   "src/pages/documentos/persistenciaFiscal.ts"
+  ],
+  "src/pages/documentos/persistenciaFiscal.ts": [
+   "src/integrations/supabase/client.ts",
+   "src/integrations/supabase/types.ts"
   ],
   "src/pages/estoque/GestaoEstoque.tsx": [
    "src/components/ui/badge.tsx",

@@ -2241,7 +2241,7 @@
     "ThreeWayMatchPanel"
    ],
    "export_default": null,
-   "linhas": 137,
+   "linhas": 152,
    "dominio": "components/pagamentos",
    "hooks_locais": [],
    "tabelas": [
@@ -4894,7 +4894,7 @@
     "DocumentosFiscais"
    ],
    "export_default": "DocumentosFiscais",
-   "linhas": 429,
+   "linhas": 438,
    "dominio": "pages/documentos",
    "hooks_locais": [],
    "tabelas": [

@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "3f77fc788d80d5a722384f61b2da480b12a1ff4e",
+  "sha": "2a8af5d0e69e3a9d8f8dffc8b697540d230953e2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 17:45 UTC",
-  "files_total": 1546,
-  "code_files": 1371,
-  "code_lines": 226602,
+  "generated_at": "2026-11-26 17:46 UTC",
+  "files_total": 1548,
+  "code_files": 1373,
+  "code_lines": 226815,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "eef748116df64661",
+ "facts_hash": "af92e1f90d839208",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -277,7 +277,7 @@
   ],
   "package_manager": "bun",
   "languages": {
-   ".ts": 453,
+   ".ts": 455,
    ".tsx": 440,
    ".sql": 401,
    ".mjs": 69,
@@ -35437,7 +35437,7 @@
   {
    "module": "src/components",
    "files": 287,
-   "lines": 52536,
+   "lines": 52551,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -36419,8 +36419,8 @@
   },
   {
    "module": "src/pages",
-   "files": 159,
-   "lines": 35446,
+   "files": 161,
+   "lines": 35644,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -37675,13 +37675,15 @@
     "select": [
      "src/components/pagamentos/ThreeWayMatchPanel.tsx",
      "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/documentos/DocumentosFiscais.tsx"
-    ],
-    "insert": [
-     "src/pages/documentos/DocumentosFiscais.tsx"
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/documentos/persistenciaFiscal.ts"
     ],
     "update": [
-     "src/pages/documentos/DocumentosFiscais.tsx"
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/documentos/persistenciaFiscal.ts"
+    ],
+    "insert": [
+     "src/pages/documentos/persistenciaFiscal.ts"
     ]
    },
    "fiscal_events": {
@@ -41117,6 +41119,11 @@
     "values": "vinculo-unico | sem-candidato | valor-em-outro-fornecedor | ambiguo | fornecedor-desconhecido"
    },
    {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "name": "ModoAoExistir",
+    "values": "atualizar | ignorar"
+   },
+   {
     "file": "src/pages/pedidos/pedidosHelpers.ts",
     "name": "SaudeDoPrazoStatus",
     "values": "entregue | atrasado | critico | atencao | no_prazo | sem_prazo"
@@ -43998,6 +44005,10 @@
    {
     "file": "src/pages/cotacao/cotacaoHelpers.ts",
     "text": "risco/prazo: so calcula o que os dados das cotacoes permitem afirmar."
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "text": "Reimportar o mesmo PDF nao pode duplicar a nota nem rebaixar um documento"
    },
    {
     "file": "src/pages/documentos/conciliacaoFiscal.ts",
@@ -51686,6 +51697,11 @@
     "value": "0.01"
    },
    {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "name": "CODIGO_UNIQUE_VIOLATION",
+    "value": "\"23505\""
+   },
+   {
     "file": "src/pages/pedidos/Pedidos.tsx",
     "name": "PEDIDOS_PAGE_SIZE",
     "value": "50"
@@ -55879,6 +55895,18 @@
    },
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "field": "situacao",
+    "value": "atualizado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
+    "field": "situacao",
+    "value": "ignorado",
+    "kind": "compara"
+   },
+   {
+    "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "field": "status",
     "value": "matched",
     "kind": "compara"
@@ -55971,6 +55999,42 @@
     "file": "src/pages/documentos/conciliacaoFiscal.ts",
     "field": "status",
     "value": "unmatched",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "criado",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "ignorado",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "atualizado",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "criado",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "ignorado",
+    "kind": "escreve"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "field": "situacao",
+    "value": "atualizado",
     "kind": "escreve"
    },
    {
@@ -70240,6 +70304,30 @@
     "name": "com a consulta bem sucedida e vazia, o estado vazio legitimo continua igual"
    },
    {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "persistencia de documento fiscal e idempotente (QA 130)"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "nota nova e inserida"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "XML reimportado atualiza a nota existente em vez de duplicar"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "PDF reimportado nao grava nada e nao rebaixa um documento ja revisado"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "corrida entre duas importacoes: o 23505 do indice unico vira atualizacao"
+   },
+   {
+    "file": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    "name": "erro de banco que nao e duplicidade continua sendo propagado"
+   },
+   {
     "file": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
     "name": "GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253)"
    },
@@ -82049,6 +82137,10 @@
     "limit": "200"
    },
    {
+    "file": "src/components/pagamentos/ThreeWayMatchPanel.tsx",
+    "limit": "20"
+   },
+   {
     "file": "src/components/security/GeoAccessLogsPanel.tsx",
     "limit": "200"
    },
@@ -82159,6 +82251,10 @@
    {
     "file": "src/pages/documentos/DocumentosFiscais.tsx",
     "limit": "500"
+   },
+   {
+    "file": "src/pages/documentos/persistenciaFiscal.ts",
+    "limit": "1"
    },
    {
     "file": "src/pages/kanban/KanbanWorkflow.tsx",
@@ -84049,6 +84145,19 @@
     "supplier_status": {
      "bloqueado": [
       "compara:src/pages/compliance/complianceHelpers.ts"
+     ]
+    },
+    "situacao": {
+     "atualizado": [
+      "compara:src/pages/documentos/DocumentosFiscais.tsx",
+      "escreve:src/pages/documentos/persistenciaFiscal.ts"
+     ],
+     "ignorado": [
+      "compara:src/pages/documentos/DocumentosFiscais.tsx",
+      "escreve:src/pages/documentos/persistenciaFiscal.ts"
+     ],
+     "criado": [
+      "escreve:src/pages/documentos/persistenciaFiscal.ts"
      ]
     },
     "dispatch_status": {
@@ -93327,6 +93436,29 @@
    },
    {
     "kind": "status",
+    "msg": "valor `atualizado` para `situacao` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/documentos/DocumentosFiscais.tsx",
+     "escreve:src/pages/documentos/persistenciaFiscal.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `ignorado` para `situacao` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "compara:src/pages/documentos/DocumentosFiscais.tsx",
+     "escreve:src/pages/documentos/persistenciaFiscal.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `criado` para `situacao` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:src/pages/documentos/persistenciaFiscal.ts"
+    ]
+   },
+   {
+    "kind": "status",
     "msg": "valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:supabase/functions/alert-dispatcher/index.ts"
@@ -102127,7 +102259,7 @@
   },
   "src/components/pagamentos/ThreeWayMatchPanel.tsx": {
    "path": "src/components/pagamentos/ThreeWayMatchPanel.tsx",
-   "lines": 137,
+   "lines": 152,
    "exports": [
     "const ThreeWayMatchPanel"
    ],
@@ -102152,7 +102284,10 @@
      "status",
      "valor_total"
     ]
-   }
+   },
+   "pagination": [
+    "20"
+   ]
   },
   "src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts": {
    "path": "src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts",
@@ -114078,7 +114213,7 @@
   },
   "src/pages/documentos/DocumentosFiscais.tsx": {
    "path": "src/pages/documentos/DocumentosFiscais.tsx",
-   "lines": 429,
+   "lines": 438,
    "exports": [
     "default DocumentosFiscais"
    ],
@@ -114094,14 +114229,6 @@
     {
      "table": "fornecedores",
      "op": "select"
-    },
-    {
-     "table": "fiscal_documents",
-     "op": "insert"
-    },
-    {
-     "table": "fiscal_documents",
-     "op": "insert"
     },
     {
      "table": "fiscal_documents",
@@ -114150,6 +114277,16 @@
      "field": "status",
      "value": "pendente",
      "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "atualizado",
+     "kind": "compara"
+    },
+    {
+     "field": "situacao",
+     "value": "ignorado",
+     "kind": "compara"
     },
     {
      "field": "status",
@@ -114206,6 +114343,9 @@
      "value": "aprovado",
      "kind": "filtra"
     }
+   ],
+   "rule_comments": [
+    "Reimportar o mesmo PDF nao pode duplicar a nota nem rebaixar um documento"
    ],
    "pagination": [
     "100",
@@ -114278,6 +114418,85 @@
     }
    ]
   },
+  "src/pages/documentos/persistenciaFiscal.ts": {
+   "path": "src/pages/documentos/persistenciaFiscal.ts",
+   "lines": 83,
+   "exports": [
+    "type ModoAoExistir",
+    "interface ResultadoPersistenciaFiscal",
+    "function salvarDocumentoFiscal"
+   ],
+   "tables": [
+    {
+     "table": "fiscal_documents",
+     "op": "select"
+    },
+    {
+     "table": "fiscal_documents",
+     "op": "update"
+    },
+    {
+     "table": "fiscal_documents",
+     "op": "insert,select"
+    },
+    {
+     "table": "fiscal_documents",
+     "op": "update"
+    }
+   ],
+   "table_cols": {
+    "fiscal_documents": [
+     "id"
+    ]
+   },
+   "enums": [
+    {
+     "name": "ModoAoExistir",
+     "values": "atualizar | ignorar"
+    }
+   ],
+   "params": [
+    {
+     "name": "CODIGO_UNIQUE_VIOLATION",
+     "value": "\"23505\""
+    }
+   ],
+   "status_values": [
+    {
+     "field": "situacao",
+     "value": "criado",
+     "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "ignorado",
+     "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "atualizado",
+     "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "criado",
+     "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "ignorado",
+     "kind": "escreve"
+    },
+    {
+     "field": "situacao",
+     "value": "atualizado",
+     "kind": "escreve"
+    }
+   ],
+   "pagination": [
+    "1"
+   ]
+  },
   "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts": {
    "path": "src/pages/documentos/__tests__/conciliacaoFiscal.test.ts",
    "lines": 98,
@@ -114308,6 +114527,19 @@
     "o botao de nova tentativa refaz a busca da lista",
     "com a consulta em curso, mostra carregando e nao zera os contadores",
     "com a consulta bem sucedida e vazia, o estado vazio legitimo continua igual"
+   ]
+  },
+  "src/pages/documentos/__tests__/persistenciaFiscal.test.ts": {
+   "path": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+   "lines": 106,
+   "is_test": true,
+   "tests": [
+    "persistencia de documento fiscal e idempotente (QA 130)",
+    "nota nova e inserida",
+    "XML reimportado atualiza a nota existente em vez de duplicar",
+    "PDF reimportado nao grava nada e nao rebaixa um documento ja revisado",
+    "corrida entre duas importacoes: o 23505 do indice unico vira atualizacao",
+    "erro de banco que nao e duplicidade continua sendo propagado"
    ]
   },
   "src/pages/estoque/GestaoEstoque.tsx": {
@@ -125482,10 +125714,23 @@
   }
  },
  "git": {
-  "sha": "3f77fc788d80d5a722384f61b2da480b12a1ff4e",
+  "sha": "2a8af5d0e69e3a9d8f8dffc8b697540d230953e2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "2a8af5d",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(documentos): importacao de NF-e idempotente e conferencia com fornecedor (#582)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/components/pagamentos/ThreeWayMatchPanel.tsx",
+     "src/pages/documentos/DocumentosFiscais.tsx",
+     "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+     "src/pages/documentos/persistenciaFiscal.ts"
+    ]
+   },
    {
     "sha": "3f77fc7",
     "date": "2026-11-26",
@@ -125839,18 +126084,6 @@
      "supabase/functions/_shared/notifications.ts",
      "supabase/functions/send-push-notification/index.ts"
     ]
-   },
-   {
-    "sha": "e94d3a2",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(catalogo): tela de produtos vira somente leitura e perde a escrita em `produtos` (#558)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/hooks/useProdutos.ts",
-     "src/i18n/__tests__/locales.test.ts",
-     "src/pages/catalogo-produtos/CatalogoProdutos.tsx"
-    ]
    }
   ],
   "hot_files": [
@@ -125865,6 +126098,22 @@
    [
     "src/integrations/supabase/types.ts",
     2
+   ],
+   [
+    "src/components/pagamentos/ThreeWayMatchPanel.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/DocumentosFiscais.tsx",
+    1
+   ],
+   [
+    "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+    1
+   ],
+   [
+    "src/pages/documentos/persistenciaFiscal.ts",
+    1
    ],
    [
     "supabase/functions/run-audit/index.ts",
@@ -125916,22 +126165,6 @@
    ],
    [
     "supabase/migrations/20261126170000_ancora_cadeia_audit_logs.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126170000_revert_ancora_cadeia_audit_logs.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126164500_fks_aprovador_auth_users.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261126164500_revert_fks_aprovador_auth_users.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126161500_secdef_revoga_authenticated_manutencao.sql",
     1
    ]
   ]

@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3f77fc788d` · branch `main` · 2026-11-26 17:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a8af5d0e6` · branch `main` · 2026-11-26 17:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1166,6 +1166,9 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `bid_status` | `valid` | escreve | `src/integrations/supabase/types.ts` |
 | `tenant_status` | `active` | escreve | `src/integrations/supabase/types.ts` |
 | `supplier_status` | `bloqueado` | compara | `src/pages/compliance/complianceHelpers.ts` |
+| `situacao` | `atualizado` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/documentos/persistenciaFiscal.ts` |
+| `situacao` | `criado` | escreve | `src/pages/documentos/persistenciaFiscal.ts` |
+| `situacao` | `ignorado` | compara, escreve | `src/pages/documentos/DocumentosFiscais.tsx`<br>`src/pages/documentos/persistenciaFiscal.ts` |
 | `dispatch_status` | `suppressed_dedup` | escreve | `supabase/functions/alert-dispatcher/index.ts` |
 | `follow_up_status` | `notificado` | escreve | `supabase/functions/check-cotacao-followup/index.ts` |
 | `sefaz_status` | `dispatch_error` | compara, escreve | `supabase/functions/fiscal-orchestrator/index.ts` |
@@ -1221,6 +1224,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | XbzNetworkLevel | collecting \| below \| warning \| healthy | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | XbzTrendDirection | unknown \| degrading \| stable \| improving | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | MotivoConciliacao | vinculo-unico \| sem-candidato \| valor-em-outro-fornecedor \| ambiguo \| fornecedor-desconhecido | `src/pages/documentos/conciliacaoFiscal.ts` |
+| ModoAoExistir | atualizar \| ignorar | `src/pages/documentos/persistenciaFiscal.ts` |
 | SaudeDoPrazoStatus | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo | `src/pages/pedidos/pedidosHelpers.ts` |
 | AuditActionType | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel | `src/services/auditTypes.ts` |
 | AuditEntityType | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio | `src/services/auditTypes.ts` |
@@ -1805,6 +1809,7 @@ _nenhum item encontrado_
 | `TREND_DELTA` | `0.05` | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `NON_PARENT` | `"__none__"` | `src/pages/configuracoes/ConfiguracoesCentroCusto.tsx` |
 | `TOLERANCIA_VALOR_CONCILIACAO` | `0.01` | `src/pages/documentos/conciliacaoFiscal.ts` |
+| `CODIGO_UNIQUE_VIOLATION` | `"23505"` | `src/pages/documentos/persistenciaFiscal.ts` |
 | `PEDIDOS_PAGE_SIZE` | `50` | `src/pages/pedidos/Pedidos.tsx` |
 | `SOLICITACOES_PAGE_SIZE` | `100` | `src/pages/solicitacoes/Solicitacoes.tsx` |
 | `SEM_GESTOR` | `'Sem gestor'` | `src/pages/solicitacoes/solicitacoesHelpers.ts` |
@@ -2140,6 +2145,7 @@ _nenhum item encontrado_
 | 10 | `src/components/compras/SupplierRiskAnalysis.tsx` |
 | 200 | `src/components/compras/approval/ApprovalDelegationModal.tsx` |
 | 200 | `src/components/compras/approval/ApprovalRuleModal.tsx` |
+| 20 | `src/components/pagamentos/ThreeWayMatchPanel.tsx` |
 | 200 | `src/components/security/GeoAccessLogsPanel.tsx` |
 | 20 | `src/features/layout/components/AdvancedSearch.tsx` |
 | 1000 | `src/features/solicitacoes/hooks/useFluxosAprovacao.ts` |
@@ -2168,6 +2174,7 @@ _nenhum item encontrado_
 | 100 | `src/pages/documentos/DocumentosFiscais.tsx` |
 | 200 | `src/pages/documentos/DocumentosFiscais.tsx` |
 | 500 | `src/pages/documentos/DocumentosFiscais.tsx` |
+| 1 | `src/pages/documentos/persistenciaFiscal.ts` |
 | 200 | `src/pages/kanban/KanbanWorkflow.tsx` |
 | 20 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
 | 50 | `src/pages/negociacao-ia/NegociacaoIA.tsx` |
@@ -2521,7 +2528,7 @@ _nenhum item encontrado_
 | `granted` | `src/hooks/useRealPushNotifications.ts` |
 | `user` | `supabase/functions/guided-buying-ai/index.ts` |
 
-## K. Testes como especificação (3586 testes em 272 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (3592 testes em 273 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -2688,6 +2695,7 @@ _nenhum item encontrado_
 | `src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts` | 6 | evaluateXbzNetworkHealth · permanece neutro sem amostra suficiente · sinaliza crítico abaixo do mínimo · sinaliza atenção entre mínimo e meta … |
 | `src/pages/catalogo-xbz/__tests__/xbzPortador.test.ts` | 6 | portador — CPF · valida pelo dígito verificador e rejeita sequências repetidas · formata e extrai dígitos · portador — placa … |
 | `src/pages/catalogo-xbz/__tests__/xbzProdutoView.test.ts` | 6 | produtoView · lê os campos reais da API (IdProduto, CodigoXbz, PrecoVenda, CorPredominante, ImageLink) · usa QtdDisponivelExibicao ( · item sem IdProduto vira id 0 (botão  … |
+| `src/pages/documentos/__tests__/persistenciaFiscal.test.ts` | 6 | persistencia de documento fiscal e idempotente (QA 130) · nota nova e inserida · XML reimportado atualiza a nota existente em vez de duplicar · PDF reimportado nao grava nada e nao rebaixa um documento ja revisado … |
 | `src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx` | 6 | GestaoEstoque - Filtros Avancados deixam de ser botao morto (QA 253) · o botao abre o dialogo de filtros · as localizacoes do filtro saem dos itens reais do estoque · filtrar por localizacao reduz a tabela ao item daquela localizacao … |
 | `src/pages/historico/__tests__/historicoHelpers.test.ts` | 6 | COLORS · has 5 color values · all values are non-empty strings · first color uses CSS variable primary … |
 | `src/pages/solicitacoes/__tests__/solicitacoesEstadosDeCarga.test.tsx` | 6 | Solicitacoes - falha de carga nao vira lista vazia (QA 250) · mostra o erro da consulta no lugar do  · o botao de nova tentativa chama o refetch do hook · pede a pagina ao hook, em vez de aceitar a fatia padrao … |
@@ -2937,6 +2945,7 @@ _nenhum item encontrado_
 | Mínimo de amostras para classificar tendência (metade cheia de cada lado). */ | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | insert voltou erro/permissao negada (createCotacao -> null). | `src/pages/cotacao/Cotacao.tsx` |
 | risco/prazo: so calcula o que os dados das cotacoes permitem afirmar. | `src/pages/cotacao/cotacaoHelpers.ts` |
+| Reimportar o mesmo PDF nao pode duplicar a nota nem rebaixar um documento | `src/pages/documentos/DocumentosFiscais.tsx` |
 | * Regra de conciliacao de NF-e com pedido. | `src/pages/documentos/conciliacaoFiscal.ts` |
 | Somente os digitos do CNPJ, para comparar o emitente do XML com o cadastro. */ | `src/pages/documentos/conciliacaoFiscal.ts` |
 | do solicitante, nao preco negociado, e servia apenas de fallback. | `src/pages/gerar-ordem/GerarOrdem.tsx` |

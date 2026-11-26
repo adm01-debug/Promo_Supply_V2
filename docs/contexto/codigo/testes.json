@@ -5,17 +5,17 @@
   "vitest",
   "playwright"
  ],
- "total": 324,
+ "total": 325,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 306
+  "unit": 307
  },
  "onde_ficam": [
   {
    "padrao": "co-localizado (__tests__)",
-   "arquivos": 226
+   "arquivos": 227
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -2121,6 +2121,15 @@
    "casos": 4
   },
   {
+   "arquivo": "src/pages/documentos/__tests__/persistenciaFiscal.test.ts",
+   "tipo": "unit",
+   "linhas": 106,
+   "testa": [
+    "src/pages/documentos/persistenciaFiscal.ts"
+   ],
+   "casos": 5
+  },
+  {
    "arquivo": "src/pages/estoque/__tests__/gestaoEstoqueFiltros.test.tsx",
    "tipo": "unit",
    "linhas": 142,
@@ -3124,6 +3133,7 @@
   "src/pages/devolucoes/devolucoesData.ts": 1,
   "src/pages/documentos/DocumentosFiscais.tsx": 1,
   "src/pages/documentos/conciliacaoFiscal.ts": 1,
+  "src/pages/documentos/persistenciaFiscal.ts": 1,
   "src/pages/estoque/GestaoEstoque.tsx": 1,
   "src/pages/fornecedores/fornecedorHelpers.ts": 1,
   "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,

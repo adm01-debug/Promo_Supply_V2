@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `3f77fc788d` · branch `main` · 2026-11-26 17:45 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `2a8af5d0e6` · branch `main` · 2026-11-26 17:46 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -211,6 +211,7 @@
 | `XbzNetworkLevel` (TS) | collecting \| below \| warning \| healthy |  | `src/pages/catalogo-xbz/xbzNetworkHealth.ts` |
 | `XbzTrendDirection` (TS) | unknown \| degrading \| stable \| improving |  | `src/pages/catalogo-xbz/xbzNetworkTrend.ts` |
 | `MotivoConciliacao` (TS) | vinculo-unico \| sem-candidato \| valor-em-outro-fornecedor \| ambiguo \| fornecedor-desconhecido |  | `src/pages/documentos/conciliacaoFiscal.ts` |
+| `ModoAoExistir` (TS) | atualizar \| ignorar |  | `src/pages/documentos/persistenciaFiscal.ts` |
 | `SaudeDoPrazoStatus` (TS) | entregue \| atrasado \| critico \| atencao \| no_prazo \| sem_prazo |  | `src/pages/pedidos/pedidosHelpers.ts` |
 | `AuditActionType` (TS) | create \| update \| delete \| view \| export \| login \| logout \| approve \| reject \| cancel |  | `src/services/auditTypes.ts` |
 | `AuditEntityType` (TS) | solicitacao \| cotacao \| pedido \| pagamento \| fornecedor \| usuario \| configuracao \| relatorio |  | `src/services/auditTypes.ts` |
@@ -327,6 +328,9 @@
 | status | valor `reconciled` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/hooks/useExecutiveDashboardData.ts` |
 | status | valor `matched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
 | status | valor `unmatched` para `reconciliation_status` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx` |
+| status | valor `atualizado` para `situacao` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/persistenciaFiscal.ts` |
+| status | valor `ignorado` para `situacao` usado no código não existe em nenhum enum do banco/TS | `compara:src/pages/documentos/DocumentosFiscais.tsx`<br>`escreve:src/pages/documentos/persistenciaFiscal.ts` |
+| status | valor `criado` para `situacao` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/documentos/persistenciaFiscal.ts` |
 | status | valor `suppressed_dedup` para `dispatch_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/alert-dispatcher/index.ts` |
 | status | valor `notificado` para `follow_up_status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/check-cotacao-followup/index.ts` |
 | status | valor `dispatch_error` para `sefaz_status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/functions/fiscal-orchestrator/index.ts`<br>`escreve:supabase/functions/fiscal-orchestrator/index.ts` |

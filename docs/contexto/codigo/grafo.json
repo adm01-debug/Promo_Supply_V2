@@ -1,8 +1,8 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 644,
- "arestas": 2871,
+ "nos": 645,
+ "arestas": 2875,
  "hubs": [
   {
    "arquivo": "src/lib/utils.ts",
@@ -22,7 +22,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/client.ts",
-   "importado_por": 139
+   "importado_por": 140
   },
   {
    "arquivo": "src/lib/feedbackToast.ts",
@@ -38,7 +38,7 @@
   },
   {
    "arquivo": "src/lib/logger.ts",
-   "importado_por": 65
+   "importado_por": 66
   },
   {
    "arquivo": "src/components/ui/dialog.tsx",
@@ -98,7 +98,7 @@
   },
   {
    "arquivo": "src/integrations/supabase/types.ts",
-   "importado_por": 22
+   "importado_por": 23
   },
   {
    "arquivo": "src/components/ui/switch.tsx",
