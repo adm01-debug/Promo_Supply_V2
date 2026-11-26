@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "2e5f087ccbd44a66acefba52ce7941dc518fee02",
+  "sha": "9ceca5ceb13a3904dff3f0060535bd8372650820",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 12:40 UTC",
+  "generated_at": "2026-11-26 13:05 UTC",
   "files_total": 1506,
   "code_files": 1331,
-  "code_lines": 223235,
+  "code_lines": 223236,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "7c9f82ad022b4b5d",
+ "facts_hash": "d879c59eb0f8e5cc",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -22650,6 +22650,17 @@
     "raises": [],
     "tables": []
    },
+   "cleanup_old_spot_sync_log": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "test_no_defaults": {
     "args": "",
     "returns": "?",
@@ -35809,7 +35820,7 @@
   {
    "module": "src/integrations",
    "files": 3,
-   "lines": 10490,
+   "lines": 10491,
    "tables": [],
    "exports": [
     "index.ts: lovable",
@@ -80938,6 +80949,17 @@
     "raises": [],
     "tables": []
    },
+   "cleanup_old_spot_sync_log": {
+    "args": "",
+    "returns": "?",
+    "lang": "",
+    "src": "src/integrations/supabase/types.ts",
+    "security_definer": false,
+    "search_path": false,
+    "body": "",
+    "raises": [],
+    "tables": []
+   },
    "test_no_defaults": {
     "args": "",
     "returns": "?",
@@ -108525,7 +108547,7 @@
   },
   "src/integrations/supabase/types.ts": {
    "path": "src/integrations/supabase/types.ts",
-   "lines": 10431,
+   "lines": 10432,
    "exports": [
     "type Json",
     "type Database",
@@ -124220,10 +124242,19 @@
   }
  },
  "git": {
-  "sha": "2e5f087ccbd44a66acefba52ce7941dc518fee02",
+  "sha": "9ceca5ceb13a3904dff3f0060535bd8372650820",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "9ceca5c",
+    "date": "2026-11-26",
+    "author": "github-actions[bot]",
+    "subject": "chore(db): sincronizar types.ts com o banco [auto] (#544)",
+    "files": [
+     "src/integrations/supabase/types.ts"
+    ]
+   },
    {
     "sha": "2e5f087",
     "date": "2026-11-26",
@@ -124630,17 +124661,6 @@
      "supabase/migrations/20261127160000_versiona_jobs_manutencao_e_watchdog_xbz.sql",
      "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql"
     ]
-   },
-   {
-    "sha": "0a126b6",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)",
-    "files": [
-     "AGENTS.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -124659,6 +124679,10 @@
    [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     3
+   ],
+   [
+    "src/integrations/supabase/types.ts",
+    2
    ],
    [
     "supabase/functions/alert-dispatcher/dispatchStatus.test.ts",
@@ -124702,10 +124726,6 @@
    ],
    [
     "src/components/compras/PriceHistoryModal.tsx",
-    2
-   ],
-   [
-    "AGENTS.md",
     2
    ],
    [
