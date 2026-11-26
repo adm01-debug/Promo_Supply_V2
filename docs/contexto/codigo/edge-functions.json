@@ -1103,8 +1103,8 @@
   {
    "nome": "scim-v2",
    "entrada": "supabase/functions/scim-v2/index.ts",
-   "arquivos": 2,
-   "linhas": 308,
+   "arquivos": 3,
+   "linhas": 371,
    "verify_jwt": false,
    "metodos": [
     "DELETE",
@@ -1136,7 +1136,7 @@
    "chamada_por_edges": [],
    "chamada_por_sql_ou_cron": false,
    "orfa": false,
-   "testes": 2
+   "testes": 3
   },
   {
    "nome": "send-push-notification",

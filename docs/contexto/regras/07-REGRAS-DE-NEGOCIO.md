@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `6d9dddbda6` · branch `main` · 2026-11-26 06:08 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `f2f21c878f` · branch `main` · 2026-11-26 06:13 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1832,6 +1832,7 @@ _nenhum item encontrado_
 | `MAX_DESCRICAO` | `2000` | `supabase/functions/punchout-receive/solicitation.ts` |
 | `MAX_TENTATIVAS_NUMERO` | `5` | `supabase/functions/receive-os-sync/create-solicitacao.ts` |
 | `SOURCE` | `"receive-os-sync"` | `supabase/functions/receive-os-sync/index.ts` |
+| `BAN_DURATION_DESATIVADO` | `"876000h"` | `supabase/functions/scim-v2/active.ts` |
 | `LANG` | `"PT"` | `supabase/functions/spot-api/index.ts` |
 | `REQUEST_TIMEOUT_MS` | `120_000` | `supabase/functions/spot-api/index.ts` |
 | `UPSERT_BATCH` | `500` | `supabase/functions/spot-api/index.ts` |
@@ -2954,6 +2955,7 @@ _nenhum item encontrado_
 | - `prioridade` = 'alta' para OS ja fechada: o material tem prazo de entrega | `supabase/functions/receive-os-sync/mapping.ts` |
 | without those secrets it would crash with "supabaseUrl is required" or | `supabase/functions/run-audit/rls_test.ts` |
 | NAO habilite esta auditoria apenas cadastrando SUPABASE_SERVICE_ROLE_KEY: os passos abaixo | `supabase/functions/run-audit/rls_test.ts` |
+| Data ilegivel nao pode virar "desativado": isso trancaria o usuario fora | `supabase/functions/scim-v2/active.ts` |
 | M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id). | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.3: 201 response MUST include a Location header | `supabase/functions/scim-v2/index.ts` |
 | RFC 7644 §3.12: all errors must use the SCIM Error schema | `supabase/functions/scim-v2/index.ts` |

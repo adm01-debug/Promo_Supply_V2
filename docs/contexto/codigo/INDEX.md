@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6d9dddbda6e0b844b6450d1da38b1f94d683a177` (2026-11-26T03:07:26-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `f2f21c878fea59471a96f5a5b5421863d9642779` (2026-11-26T03:12:54-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (874), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
+- linguagens: TypeScript (876), SQL (361), Markdown (101), JavaScript (72), JSON (25), YAML (17), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1486 |
-| arquivos_codigo | 949 |
-| linhas_codigo | 189831 |
+| arquivos_total | 1488 |
+| arquivos_codigo | 951 |
+| linhas_codigo | 189939 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -48,7 +48,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | tabelas | 164 |
 | migrations | 344 |
 | cron_jobs | 79 |
-| testes | 310 |
+| testes | 311 |
 | workflows | 15 |
 | scripts | 52 |
 | docs_md | 101 |
@@ -58,7 +58,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - componentes: src/components (214), src/pages (79), src/features (33)
 - hooks: src/hooks (61), src/features (14), src/components (11)
 - servicos_logica: src/lib (29), src/stores (5), src/integrations (3)
-- testes: co-localizado (__tests__) (215), outro (43), co-localizado (*.test) (42)
+- testes: co-localizado (__tests__) (215), outro (44), co-localizado (*.test) (42)
 - edge_functions: supabase/functions
 - migrations: supabase/migrations
 - scripts: scripts/ci (19), scripts/types-sync (7), scripts/inventario (5)
@@ -343,8 +343,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (149)
-- docs/pendencias/_indice.md (30)
+- docs/qa/05-PROGRESSO.md (150)
+- docs/pendencias/_indice.md (29)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
 - src/features/pedidos/hooks/usePedidos.ts (9)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `f2f21c8` fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)
 - 2026-11-26 `6d9dddb` fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)
 - 2026-11-26 `28d02fb` chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)
 - 2026-11-26 `0a126b6` fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `36e96de` fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)
 - 2026-11-26 `2ecea30` fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)
 - 2026-11-26 `b7a644c` fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)
-- 2026-11-26 `7bc5670` ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

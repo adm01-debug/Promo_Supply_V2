@@ -22,7 +22,7 @@
   ],
   "testes": [
    "co-localizado (__tests__) (215)",
-   "outro (43)",
+   "outro (44)",
    "co-localizado (*.test) (42)"
   ],
   "edge_functions": "supabase/functions",
@@ -56,11 +56,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(edge): SCIM passa a desativar usuario de verdade no PATCH active (#531)",
    "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)",
    "chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)",
    "fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)",
-   "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)",
-   "fix(alertas): cron watchdog mede falha por janela de tempo, nao por contagem (etapa 202) (#523)"
+   "fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)"
   ]
  },
  "pr_template": null,

@@ -5,12 +5,12 @@
   "vitest",
   "playwright"
  ],
- "total": 310,
+ "total": 311,
  "por_tipo": {
   "contrato": 7,
   "e2e": 9,
   "pytest": 2,
-  "unit": 292
+  "unit": 293
  },
  "onde_ficam": [
   {
@@ -19,7 +19,7 @@
   },
   {
    "padrao": "outro",
-   "arquivos": 43
+   "arquivos": 44
   },
   {
    "padrao": "co-localizado (*.test)",
@@ -2674,6 +2674,15 @@
    "casos": 1
   },
   {
+   "arquivo": "supabase/functions/scim-v2/active_test.ts",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [
+    "supabase/functions/scim-v2/active.ts"
+   ],
+   "casos": 8
+  },
+  {
    "arquivo": "supabase/functions/scim-v2/auth.test.ts",
    "tipo": "unit",
    "linhas": 85,
@@ -3046,6 +3055,7 @@
   "supabase/functions/punchout-receive/solicitation.ts": 1,
   "supabase/functions/receive-os-sync/create-solicitacao.ts": 1,
   "supabase/functions/receive-os-sync/mapping.ts": 2,
+  "supabase/functions/scim-v2/active.ts": 1,
   "supabase/functions/scim-v2/auth.ts": 1,
   "supabase/functions/send-push-notification/webpush.ts": 1,
   "supabase/functions/spot-proxy/sessions.ts": 1
