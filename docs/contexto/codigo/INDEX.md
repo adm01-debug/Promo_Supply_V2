@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28d02fb04baf9342e4d138a166b9bc0aa1102feb` (2026-11-26T02:43:37-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6d9dddbda6e0b844b6450d1da38b1f94d683a177` (2026-11-26T03:07:26-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1486 |
 | arquivos_codigo | 949 |
-| linhas_codigo | 189829 |
+| linhas_codigo | 189831 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,7 +343,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (148)
+- docs/qa/05-PROGRESSO.md (149)
 - docs/pendencias/_indice.md (30)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `6d9dddb` fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)
 - 2026-11-26 `28d02fb` chore(cron): versiona os 5 jobs de manutencao e o vigia da XBZ (#527)
 - 2026-11-26 `0a126b6` fix(build): destrava o deploy da Vercel sincronizando o package-lock e o override do dompurify (#526)
 - 2026-11-26 `d74d61c` fix(outbox): claim atomico com SKIP LOCKED e job 18 a cada 15 min (#524)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `2ecea30` fix(spot): sincronizacao invalida as chaves que as consultas do catalogo usam (etapa 193) (#515)
 - 2026-11-26 `b7a644c` fix(cache): chaves passam a carregar o input que a consulta usa (etapa 199) (#514)
 - 2026-11-26 `7bc5670` ci(contexto): passa as credenciais da Management API ao coletor e avisa quando faltarem (#500)
-- 2026-11-26 `0856406` ci(push): declara VITE_VAPID_PUBLIC_KEY no exemplo e no .env do CI (etapa 288) (#498)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

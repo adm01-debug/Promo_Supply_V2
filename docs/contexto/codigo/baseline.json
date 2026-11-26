@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "28d02fb04baf9342e4d138a166b9bc0aa1102feb",
+  "commit": "6d9dddbda6e0b844b6450d1da38b1f94d683a177",
   "branch": "main",
-  "data_commit": "2026-11-26T02:43:37-03:00",
+  "data_commit": "2026-11-26T03:07:26-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "6d9dddb",
+    "data": "2026-11-26",
+    "assunto": "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)"
+   },
    {
     "sha": "28d02fb",
     "data": "2026-11-26",
@@ -126,11 +131,6 @@
     "sha": "a70dc33",
     "data": "2026-11-25",
     "assunto": "chore(testes): remove testes-placebo e asserts que nao verificavam nada (etapas 296-299, PR #501) (#501)"
-   },
-   {
-    "sha": "5656edb",
-    "data": "2026-11-25",
-    "assunto": "chore(ci): bump actions/dependency-review-action (#482)"
    }
   ],
   "arquivos_mudados_7d": 1507,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 148
+    "mudancas": 149
    },
    {
     "pasta": "supabase/functions/_shared",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 148
+    "mudancas": 149
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -316,7 +316,7 @@
  "contagens": {
   "arquivos_total": 1486,
   "arquivos_codigo": 949,
-  "linhas_codigo": 189829,
+  "linhas_codigo": 189831,
   "rotas": 56,
   "rotas_http_backend": 0,
   "vistas_por_id": 0,
@@ -488,7 +488,7 @@
   },
   "supabase/functions": {
    "arquivos": 121,
-   "linhas": 19639
+   "linhas": 19641
   },
   "tailwind.config.ts": {
    "arquivos": 1,

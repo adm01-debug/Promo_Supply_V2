@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "28d02fb04baf9342e4d138a166b9bc0aa1102feb",
+  "sha": "6d9dddbda6e0b844b6450d1da38b1f94d683a177",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 05:44 UTC",
+  "generated_at": "2026-11-26 06:08 UTC",
   "files_total": 1487,
   "code_files": 1312,
-  "code_lines": 220638,
+  "code_lines": 220640,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "a06bb1cfc1d167a2",
+ "facts_hash": "0aa0c8ad908eb947",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36325,7 +36325,7 @@
   {
    "module": "supabase/functions",
    "files": 121,
-   "lines": 19639,
+   "lines": 19641,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -117782,7 +117782,7 @@
   },
   "supabase/functions/check-cotacao-followup/index.ts": {
    "path": "supabase/functions/check-cotacao-followup/index.ts",
-   "lines": 201,
+   "lines": 203,
    "tables": [
     {
      "table": "cotacoes",
@@ -117817,6 +117817,7 @@
      "valor_total"
     ],
     "notifications": [
+     "created_at",
      "id",
      "message",
      "type"
@@ -123061,10 +123062,20 @@
   }
  },
  "git": {
-  "sha": "28d02fb04baf9342e4d138a166b9bc0aa1102feb",
+  "sha": "6d9dddbda6e0b844b6450d1da38b1f94d683a177",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "6d9dddb",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(edge): aplica a janela de 24h no dedupe do follow-up de cotacao (#529)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/functions/check-cotacao-followup/index.ts"
+    ]
+   },
    {
     "sha": "28d02fb",
     "date": "2026-11-26",
@@ -123408,19 +123419,6 @@
      "bun.lock",
      "package.json"
     ]
-   },
-   {
-    "sha": "63ca16f",
-    "date": "2026-11-25",
-    "author": "adm01-debug",
-    "subject": "chore(ci): pina por SHA as actions que ainda usavam tag flutuante (#497)",
-    "files": [
-     ".github/workflows/aplicar-migration-prod.yml",
-     ".github/workflows/main.yml",
-     ".github/workflows/paridade-banco.yml",
-     "docs/agentes/github-ci.md",
-     "docs/qa/05-PROGRESSO.md"
-    ]
    }
   ],
   "hot_files": [
@@ -123455,6 +123453,10 @@
    [
     "tests-e2e/production-ready.spec.ts",
     2
+   ],
+   [
+    "supabase/functions/check-cotacao-followup/index.ts",
+    1
    ],
    [
     "supabase/migrations/20261121153000_religa_crons_negocio_vault.sql",
@@ -123498,10 +123500,6 @@
    ],
    [
     "supabase/migrations/20261127140000_cron_watchdog_falha_por_janela_de_tempo.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
     1
    ]
   ]
