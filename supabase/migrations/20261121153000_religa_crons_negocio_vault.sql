@@ -100,5 +100,12 @@ SELECT cron.schedule(
 );
 
 -- Observabilidade: as edges registram recordCronHeartbeat (health_dashboard);
--- cron_watchdog (20260711191946) monitora outbox/alert-dispatcher; a paridade
--- semanal (paridade-banco.yml) confere presenca dos jobs no banco.
+-- cron_watchdog (20260711191946) monitora outbox/alert-dispatcher.
+--
+-- CORRECAO (20261127160000): a afirmacao anterior de que "a paridade semanal
+-- (paridade-banco.yml) confere presenca dos jobs no banco" era FALSA. A paridade
+-- conferia apenas tabelas e funcoes: scripts/ci/paridade-migrations-banco.sql
+-- (linhas 46-50) exclui explicitamente o schema cron da varredura, entao cron.job
+-- nunca foi comparado. Os 5 jobs de manutencao/watchdog que so existiam em
+-- producao passaram desapercebidos por esse motivo. Paridade de cron.job e o
+-- escopo da etapa 206 do plano (docs/qa/04-PLANO.md:4389-4408).
