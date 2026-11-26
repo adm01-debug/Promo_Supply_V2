@@ -25,7 +25,7 @@ URL base: `https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1/<slug>`. Metada
 | maintain-partitions | maintain-partitions | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/maintain-partitions/index.ts |
 | migrate-storage-paths | migrate-storage-paths | ACTIVE | 25 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/migrate-storage-paths/index.ts |
 | process-invoice-idp | process-invoice-idp | ACTIVE | 29 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-invoice-idp/index.ts |
-| process-outbox | process-outbox | ACTIVE | 22 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
+| process-outbox | process-outbox | ACTIVE | 23 | não | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-outbox/index.ts |
 | process-solicitacao-neural | process-solicitacao-neural | ACTIVE | 22 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/process-solicitacao-neural/index.ts |
 | punchout-encrypt | punchout-encrypt | ACTIVE | 20 | sim | file:///home/runner/work/Promo_Supply_V2/Promo_Supply_V2/supabase/functions/punchout-encrypt/index.ts |
 | punchout-receive | punchout-receive | ACTIVE | 32 | não | file:///app/supabase/functions/punchout-receive/index.ts |

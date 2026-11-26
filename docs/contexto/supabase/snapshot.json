@@ -551,9 +551,9 @@
         "name": "process-outbox",
         "slug": "process-outbox",
         "status": "ACTIVE",
-        "updated_at": 1795490004345,
+        "updated_at": 1795669807749,
         "verify_jwt": false,
-        "version": 22
+        "version": 23
       },
       {
         "created_at": 1795183975258,
@@ -37542,9 +37542,13 @@
             {
               "file": "supabase/migrations/20261121180000_fix_owner_crons_negocio.sql",
               "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+              "hits": 1
             }
           ],
-          "code_total_files": 5,
+          "code_total_files": 6,
           "cron": [
             "18:outbox-worker-1min",
             "113:alert-dispatcher-1min",
@@ -39138,8 +39142,17 @@
       {
         "args": "p_batch_size integer",
         "callers": {
-          "code": [],
-          "code_total_files": 0,
+          "code": [
+            {
+              "file": "supabase/functions/process-outbox/index.ts",
+              "hits": 3
+            },
+            {
+              "file": "supabase/migrations/20261127150000_outbox_claim_atomico_e_frequencia.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 2,
           "cron": [],
           "db": [],
           "triggers": [],
@@ -62686,6 +62699,12 @@
         "statements": 1,
         "statements_sha": "148ff141228ffdd6",
         "version": "20261127140000"
+      },
+      {
+        "name": "outbox_claim_atomico_e_frequencia",
+        "statements": 6,
+        "statements_sha": "879a029325e0734c",
+        "version": "20261127150000"
       }
     ],
     "policies": [

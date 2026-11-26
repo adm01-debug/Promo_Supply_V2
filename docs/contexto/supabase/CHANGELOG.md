@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-26 05:13 UTC
+
+- **edge functions** alterado (1): `process-outbox`
+- **functions** alterado (2): `public._invoke_edge_function(_name text)`, `public.claim_outbox_batch(p_batch_size integer)`
+- **migrations** adicionado (1): `20261127150000_outbox_claim_atomico_e_frequencia`
+
 ## 2026-11-26 04:51 UTC
 
 - **cron jobs** alterado (1): `18:outbox-worker-1min`

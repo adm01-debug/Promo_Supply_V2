@@ -30,7 +30,7 @@ Gerado automaticamente a cada hora pelo workflow `contexto` (job `banco`). **Nã
 | extensões | 8 |
 | cron jobs | 27 |
 | filas pgmq | 0 |
-| migrations | 342 |
+| migrations | 343 |
 | buckets | 4 |
 | edge functions | 41 |
 | webhooks | 0 |
