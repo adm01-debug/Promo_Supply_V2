@@ -9,7 +9,6 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { AccessibilityPanelContent } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
-import { TenantSwitcher } from "@/components/admin/TenantSwitcher";
 import { EmpresaSelector } from "@/features/empresas";
 import { Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       <ThemeToggle />
       <LanguageSwitcher />
       <EmpresaSelector className="hidden md:inline-flex" />
-      <TenantSwitcher />
 
       <Suspense fallback={null}>
         <DependencyHealthBadge />
