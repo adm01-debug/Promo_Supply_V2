@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "29e79cfffe64b29db9de269837ea51eaa157c569",
+  "sha": "72c54084a7185177f6364e4936836f36db4b5508",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 14:13 UTC",
-  "files_total": 1518,
-  "code_files": 1343,
-  "code_lines": 224057,
+  "generated_at": "2026-11-26 14:26 UTC",
+  "files_total": 1521,
+  "code_files": 1346,
+  "code_lines": 224735,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "b6b3c8d8b4c548ef",
+ "facts_hash": "dcb4174165350437",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 373,
+   ".sql": 376,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -21010,10 +21010,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+    "src": "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
+    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_falhas_janela INT; v_execucoes_janela INT; v_janela_seg INT; v_min_falhas INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.st …",
     "raises": [],
     "tables": [
      "LATERAL",
@@ -21021,7 +21021,7 @@
      "cron_watchdog_seen",
      "now",
      "system_alerts",
-     "v_recent_failures"
+     "v_falhas_janela"
     ]
    },
    "cleanup_old_system_alerts": {
@@ -27321,6 +27321,7 @@
    "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
    "supabase/migrations/20261127200000_severity_canonica_system_alerts.sql",
    "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
+   "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
    "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
@@ -27329,6 +27330,7 @@
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
    "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
    "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+   "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -34848,8 +34850,8 @@
   },
   {
    "module": "docs",
-   "files": 5,
-   "lines": 516,
+   "files": 6,
+   "lines": 629,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -34860,7 +34862,8 @@
     "docs/qa/reverts/20261125150000_find_approval_rule_escopo_tenant_revert.sql",
     "docs/qa/reverts/20261125160000_remove_trigger_duplicado_pedidos_revert.sql",
     "docs/qa/reverts/20261125162000_rpc_orcamento_por_tenant_revert.sql",
-    "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql"
+    "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
+    "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql"
    ]
   },
   {
@@ -36720,8 +36723,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 354,
-   "lines": 29642,
+   "files": 355,
+   "lines": 30004,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36812,8 +36815,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 8,
-   "lines": 627,
+   "files": 9,
+   "lines": 830,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36827,7 +36830,8 @@
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
     "supabase/rollbacks/20261127150000_revert_outbox_claim_atomico.sql",
-    "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql"
+    "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
+    "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql"
    ]
   },
   {
@@ -59233,6 +59237,14 @@
     "line": "-- id 14 cleanup-checkpoint-snapshots 30 3 * * 0 DELETE ... interval '30 days'"
    },
    {
+    "file": "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+    "line": "AND created_at < now() - interval '2 hours';"
+   },
+   {
+    "file": "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+    "line": "AND v_hb.last_run > v_hb.last_run_at + interval '1 hour' THEN"
+   },
+   {
     "file": "tests-e2e/global-setup.ts",
     "line": "await page.waitForSelector('input[type=\"email\"]', { timeout: 15_000 });"
    },
@@ -79461,10 +79473,10 @@
     "args": "",
     "returns": "void",
     "lang": "plpgsql",
-    "src": "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
+    "src": "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
     "security_definer": true,
     "search_path": true,
-    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_recent_failures INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.start_time) AS last_run FROM cron.job_run_details d WHERE d. …",
+    "body": "DECLARE v_job RECORD; v_periodo_seg INT; v_sla_seg INT; v_idade_seg INT; v_base TIMESTAMPTZ; v_falhas_janela INT; v_execucoes_janela INT; v_janela_seg INT; v_min_falhas INT; v_alert_type TEXT; BEGIN PERFORM public.resolve_stale_system_error_alerts(); INSERT INTO public.cron_watchdog_seen (jobid, jobname) SELECT j.jobid, j.jobname FROM cron.job j WHERE j.active ON CONFLICT (jobid) DO NOTHING; DELETE FROM public.cron_watchdog_seen s WHERE NOT EXISTS (SELECT 1 FROM cron.job j WHERE j.jobid = s.jobid AND j.active); FOR v_job IN SELECT j.jobid, j.jobname, j.schedule, s.first_seen, lr.last_run FROM cron.job j JOIN public.cron_watchdog_seen s ON s.jobid = j.jobid LEFT JOIN LATERAL ( SELECT max(d.st …",
     "raises": [],
     "tables": [
      "LATERAL",
@@ -79472,7 +79484,7 @@
      "cron_watchdog_seen",
      "now",
      "system_alerts",
-     "v_recent_failures"
+     "v_falhas_janela"
     ]
    },
    "cleanup_old_system_alerts": {
@@ -93313,6 +93325,26 @@
   "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql": {
    "path": "docs/qa/reverts/20261125170000_matriz_transicoes_alinhada_revert.sql",
    "lines": 103
+  },
+  "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql": {
+   "path": "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
+   "lines": 113,
+   "temporal": [
+    "('alerta-novo','HIGH','c', now()-interval '10 min','failed'),",
+    "('cron_watchdog.stalled.x','HIGH','a', now()-interval '5 hours','failed'),",
+    "('expiry_alert','HIGH','b', now()-interval '3 hours','exhausted'),",
+    "('ja-entregue','HIGH','d', now()-interval '5 hours','delivered');",
+    "('sem-assinante','HIGH','e', now()-interval '5 hours','no_subscribers'),",
+    "INSERT INTO cron.job_run_details VALUES (10,1, now()-interval '5 min','succeeded');",
+    "INSERT INTO cron.job_run_details VALUES (12,1, now()-interval '10 min','failed'), (12,2, now()-interval '5 min','failed');",
+    "INSERT INTO public.cron_watchdog_seen VALUES (10,'check-cotacao-followup', now()-interval '30 days');",
+    "INSERT INTO public.cron_watchdog_seen VALUES (11,'maintain-partitions', now()-interval '10 days');",
+    "INSERT INTO public.cron_watchdog_seen VALUES (12,'process-outbox', now()-interval '10 days');",
+    "INSERT INTO public.cron_watchdog_seen VALUES (13,'job-apos-revert', now()-interval '10 days');",
+    "VALUES ('check-cotacao-followup', now()-interval '4 hours','success',12);",
+    "VALUES ('check-sla-alerts', now()-interval '20 min','error','boom',7,6,1);",
+    "VALUES ('job-novo-sem-heartbeat', now()-interval '1 hour','error',3);"
+   ]
   },
   "public/push-handler.js": {
    "path": "public/push-handler.js",
@@ -124289,6 +124321,14 @@
    "path": "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
    "lines": 21
   },
+  "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql": {
+   "path": "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+   "lines": 362,
+   "temporal": [
+    "AND created_at < now() - interval '2 hours';",
+    "AND v_hb.last_run > v_hb.last_run_at + interval '1 hour' THEN"
+   ]
+  },
   "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql": {
    "path": "supabase/rollbacks/20261126120000_revert_alinha_transicoes_pagamento_pedido.sql",
    "lines": 67
@@ -124320,6 +124360,10 @@
   "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql": {
    "path": "supabase/rollbacks/20261127160000_revert_versiona_jobs_manutencao_e_watchdog_xbz.sql",
    "lines": 25
+  },
+  "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql": {
+   "path": "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
+   "lines": 203
   },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
@@ -124556,10 +124600,23 @@
   }
  },
  "git": {
-  "sha": "29e79cfffe64b29db9de269837ea51eaa157c569",
+  "sha": "72c54084a7185177f6364e4936836f36db4b5508",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "72c5408",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
+     "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+     "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql"
+    ]
+   },
    {
     "sha": "29e79cf",
     "date": "2026-11-26",
@@ -124974,18 +125031,6 @@
      "src/pages/pedidos/Pedidos.tsx",
      "src/pages/solicitacoes/Solicitacoes.tsx"
     ]
-   },
-   {
-    "sha": "990f6c3",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/cotacoes/hooks/useCotacoes.ts",
-     "src/hooks/__tests__/useCotacoesDevolucoes.paginacao.test.tsx",
-     "src/hooks/useDevolucoes.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124995,7 +125040,7 @@
    ],
    [
     "AGENTS.md",
-    7
+    8
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -125050,23 +125095,23 @@
     2
    ],
    [
+    "docs/qa/verificacoes/20261128120000_cron_watchdog_le_heartbeats_validacao.sql",
+    1
+   ],
+   [
+    "supabase/migrations/20261128120000_cron_watchdog_le_heartbeats.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261128120000_revert_cron_watchdog_le_heartbeats.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261128090000_grant_get_dashboard_kpis_authenticated.sql",
     1
    ],
    [
     "DOCS/qa/reversao/20261127193000_perf08_mv_dashboard_kpis_refresh_diario_revert.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261127193000_perf08_mv_dashboard_kpis_refresh_diario.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261127200000_severity_canonica_system_alerts.sql",
-    1
-   ],
-   [
-    "supabase/migrations/20261126150000_remove_trigger_duplicado_solicitacoes_e_qualificacao.sql",
     1
    ]
   ]

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "29e79cfffe64b29db9de269837ea51eaa157c569",
+  "commit": "72c54084a7185177f6364e4936836f36db4b5508",
   "branch": "main",
-  "data_commit": "2026-11-26T11:11:15-03:00",
+  "data_commit": "2026-11-26T11:19:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "72c5408",
+    "data": "2026-11-26",
+    "assunto": "fix(db): cron_watchdog passa a ler o heartbeat do edge e a alertar entrega travada (#559)"
+   },
    {
     "sha": "29e79cf",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "86bc33f",
     "data": "2026-11-26",
     "assunto": "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)"
-   },
-   {
-    "sha": "cf9c067",
-    "data": "2026-11-26",
-    "assunto": "fix: elimina requisicao por item no dossie e na matriz de permissoes (#541)"
    }
   ],
-  "arquivos_mudados_7d": 1538,
+  "arquivos_mudados_7d": 1541,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 181
+    "mudancas": 182
    },
    {
     "pasta": "src/components/ui",
@@ -199,15 +199,15 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 181
+    "mudancas": 182
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 20
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
     "mudancas": 20
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 19
    },
    {
     "arquivo": "docs/mapa/MATRIZ_EDGE_TABELA.md",
@@ -219,10 +219,6 @@
    },
    {
     "arquivo": "src/hooks/usePagamentos.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 9
    },
    {
@@ -239,6 +235,10 @@
    },
    {
     "arquivo": "src/hooks/useDevolucoes.ts",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "src/integrations/supabase/types.ts",
     "mudancas": 8
    },
    {
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1517,
+  "arquivos_total": 1520,
   "arquivos_codigo": 968,
   "linhas_codigo": 192578,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 354,
+  "migrations": 355,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,
