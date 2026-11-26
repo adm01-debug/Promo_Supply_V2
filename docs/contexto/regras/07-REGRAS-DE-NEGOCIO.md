@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `22852aa3ed` · branch `main` · 2026-11-26 15:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `061c773d50` · branch `main` · 2026-11-26 16:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -180,7 +180,6 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `unspsc_codes` | unspsc_codes_authenticated_read | SELECT | authenticated | permissive | `auth.uid() IS NOT NULL` |  |
 | `estoque` | Estoque: ver da própria organização | SELECT | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
 | `estoque_movimentacoes` | Movimentações: ver da própria organização | SELECT | authenticated | permissive | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |  |
-| `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 | `budget_transactions` | Budget transactions viewable by finance roles | SELECT | authenticated | permissive | `tenant_id = current_tenant_id() AND ( has_role(auth.uid(), 'admin'::app_role) OR has_role(auth.uid(), 'finance'::app_role) OR has_role(auth.uid(), 'coordinator'::app_role) )` |  |
 | `produto_fornecedores` | Users can view product suppliers within tenant | SELECT | authenticated | permissive | `EXISTS ( SELECT 1 FROM public.profiles p WHERE p.user_id = auth.uid() AND p.tenant_id = produto_fornecedores.tenant_id )` |  |
 | `repurchase_suggestions` | Users can view repurchase suggestions within tenant | SELECT | authenticated | permissive | `tenant_id = public.current_tenant_id()` |  |
@@ -354,6 +353,7 @@ _Nenhum arquivo em `manual/`. Copie `manual/TEMPLATE-regras-de-negocio.md` para 
 | `auction_bids` | tenant_isolation_auction_bids | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `punchout_sessions` | tenant isolation punchout_sessions | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
 | `fiscal_events` | fiscal_events tenant isolation | ALL | authenticated | permissive | `public.tenant_in_my_group(tenant_id)` | `public.tenant_in_my_group(tenant_id)` |
+| `estoque_movimentacoes` | Movimentações: inserir na própria organização | INSERT | authenticated | permissive |  | `organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())` |
 
 ## C. Restrições de dados (obrigatório / único / default / CHECK / FK / calculada)
 

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `22852aa3ed` · branch `main` · 2026-11-26 15:53 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `061c773d50` · branch `main` · 2026-11-26 16:03 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -419,6 +419,7 @@
 | segurança | função `audit_pagamento_changes` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143218_6a3c9f90-f3f0-47c5-acb6-3aa5ab4de6cd.sql` |
 | segurança | função `update_cost_center_budget_totals` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
 | segurança | função `check_budget_availability` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função | `supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql` |
+| segurança | função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação) | `supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql` |
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 

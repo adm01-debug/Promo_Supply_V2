@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "22852aa3ed1917987c9cd4f9651ef09df0ff61e5",
+  "sha": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 15:53 UTC",
-  "files_total": 1526,
-  "code_files": 1351,
-  "code_lines": 225223,
+  "generated_at": "2026-11-26 16:03 UTC",
+  "files_total": 1528,
+  "code_files": 1353,
+  "code_lines": 225361,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "65c258f14fa72d2d",
+ "facts_hash": "09c22e899ce781fa",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 381,
+   ".sql": 383,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -17102,16 +17102,6 @@
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
-    "name": "Movimentações: inserir na própria organização",
-    "table": "estoque_movimentacoes",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
     "name": "Budget transactions viewable by finance roles",
     "table": "budget_transactions",
     "cmd": "SELECT",
@@ -18840,6 +18830,16 @@
     "using": "public.tenant_in_my_group(tenant_id)",
     "check": "public.tenant_in_my_group(tenant_id)",
     "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Movimentações: inserir na própria organização",
+    "table": "estoque_movimentacoes",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
+    "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
    }
   ],
   "triggers": [
@@ -20716,9 +20716,9 @@
     "args": "",
     "returns": "TRIGGER",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql",
+    "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     "security_definer": true,
-    "search_path": true,
+    "search_path": false,
     "body": "BEGIN IF (TG_OP = 'INSERT') THEN IF (NEW.tipo IN ('entrada', 'ajuste') AND NEW.quantidade > 0) OR (NEW.tipo = 'saida' AND NEW.quantidade < 0) THEN UPDATE public.estoque SET quantidade_atual = quantidade_atual + NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; ELSIF (NEW.tipo = 'saida' AND NEW.quantidade > 0) THEN UPDATE public.estoque SET quantidade_atual = quantidade_atual - NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; ELSE UPDATE public.estoque SET quantidade_atual = quantidade_atual + NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; END IF; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
@@ -27314,6 +27314,7 @@
    "supabase/migrations/20261126151000_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
+   "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27332,6 +27333,7 @@
    "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql",
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
+   "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -36731,8 +36733,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 358,
-   "lines": 30212,
+   "files": 359,
+   "lines": 30311,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36823,8 +36825,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 11,
-   "lines": 882,
+   "files": 12,
+   "lines": 921,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36836,6 +36838,7 @@
     "supabase/rollbacks/20261126122905_revert_handle_new_user_papel_viewer.sql",
     "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
+    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -75621,16 +75624,6 @@
     "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
    },
    {
-    "name": "Movimentações: inserir na própria organização",
-    "table": "estoque_movimentacoes",
-    "cmd": "INSERT",
-    "roles": "authenticated",
-    "mode": "permissive",
-    "using": "",
-    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
-    "src": "supabase/migrations/20260619145543_83e16148-2ff1-4c86-b6d2-53457b71844f.sql"
-   },
-   {
     "name": "Budget transactions viewable by finance roles",
     "table": "budget_transactions",
     "cmd": "SELECT",
@@ -77359,6 +77352,16 @@
     "using": "public.tenant_in_my_group(tenant_id)",
     "check": "public.tenant_in_my_group(tenant_id)",
     "src": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql"
+   },
+   {
+    "name": "Movimentações: inserir na própria organização",
+    "table": "estoque_movimentacoes",
+    "cmd": "INSERT",
+    "roles": "authenticated",
+    "mode": "permissive",
+    "using": "",
+    "check": "organization_id = (SELECT current_organization_id FROM public.profiles WHERE user_id = auth.uid())",
+    "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
    }
   ],
   "db_triggers": [
@@ -79235,9 +79238,9 @@
     "args": "",
     "returns": "TRIGGER",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260517122216_8f7869f6-4624-45df-9418-cf2cdc965d73.sql",
+    "src": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
     "security_definer": true,
-    "search_path": true,
+    "search_path": false,
     "body": "BEGIN IF (TG_OP = 'INSERT') THEN IF (NEW.tipo IN ('entrada', 'ajuste') AND NEW.quantidade > 0) OR (NEW.tipo = 'saida' AND NEW.quantidade < 0) THEN UPDATE public.estoque SET quantidade_atual = quantidade_atual + NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; ELSIF (NEW.tipo = 'saida' AND NEW.quantidade > 0) THEN UPDATE public.estoque SET quantidade_atual = quantidade_atual - NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; ELSE UPDATE public.estoque SET quantidade_atual = quantidade_atual + NEW.quantidade, updated_at = now() WHERE id = NEW.estoque_id; END IF; END IF; RETURN NEW; END;",
     "raises": [],
     "tables": [
@@ -93247,6 +93250,13 @@
     "msg": "função `check_budget_availability` é SECURITY DEFINER sem `set search_path` na definição; `supabase/migrations/20260531123936_21233c39-85c5-494f-bf4e-599e7756bdc9.sql` aplica `ALTER FUNCTION … SET search_path` em runtime depois dela — NÃO VERIFICADO se cobre esta função",
     "where": [
      "supabase/migrations/20260512143450_5e734e19-0c49-4b8b-ba15-dfc0d412b863.sql"
+    ]
+   },
+   {
+    "kind": "segurança",
+    "msg": "função `update_estoque_saldo` é SECURITY DEFINER sem `set search_path` (risco de escalação)",
+    "where": [
+     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
     ]
    }
   ],
@@ -124360,6 +124370,10 @@
    "path": "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "lines": 662
   },
+  "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql": {
+   "path": "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+   "lines": 99
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124450,6 +124464,10 @@
   "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql": {
    "path": "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "lines": 275
+  },
+  "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql": {
+   "path": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+   "lines": 39
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -124710,10 +124728,22 @@
   }
  },
  "git": {
-  "sha": "22852aa3ed1917987c9cd4f9651ef09df0ff61e5",
+  "sha": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "061c773",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(estoque): movimentacao passa a exigir papel e item da propria organizacao (#571)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql"
+    ]
+   },
    {
     "sha": "22852aa",
     "date": "2026-11-26",
@@ -125127,16 +125157,6 @@
      "src/pages/sourcing/AuctionRoom.tsx",
      "src/stores/buyerAlertsStore.ts"
     ]
-   },
-   {
-    "sha": "86bc33f",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "perf: tira o runtime virtual do bundler e as libs de compressao do preload inicial (#543)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "vite.config.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125146,7 +125166,7 @@
    ],
    [
     "AGENTS.md",
-    11
+    12
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -125189,6 +125209,14 @@
     2
    ],
    [
+    "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+    1
+   ],
+   [
     "supabase/migrations/20261126122905_handle_new_user_papel_viewer.sql",
     1
    ],
@@ -125210,14 +125238,6 @@
    ],
    [
     "src/features/cotacoes/hooks/useCotacoes.ts",
-    1
-   ],
-   [
-    "supabase/migrations/20261126115421_fix_cotacao_nao_aprova_solicitacao.sql",
-    1
-   ],
-   [
-    "src/components/admin/telemetry/AppLogsView.tsx",
     1
    ]
   ]

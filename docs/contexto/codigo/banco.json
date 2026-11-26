@@ -6,7 +6,7 @@
   "src/integrations/supabase/types.ts",
   "supabase/migrations"
  ],
- "migrations": 358,
+ "migrations": 359,
  "seeds": [],
  "avisos": [
   "48 bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo"
@@ -8354,7 +8354,7 @@
    "rls": true,
    "policies": [
     {
-     "nome": "Movimentações: inserir na própria organização",
+     "nome": "estoque_movimentacoes_insert_papeis",
      "comando": "insert",
      "para": "authenticated",
      "tipo": "permissive"

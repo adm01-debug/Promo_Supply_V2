@@ -2,8 +2,8 @@
  "produtor": "ai-context-sync",
  "versao": "1.4.0",
  "perfil": "regras",
- "gerado_em": "2026-11-26 15:53 UTC",
- "commit": "22852aa3ed1917987c9cd4f9651ef09df0ff61e5",
+ "gerado_em": "2026-11-26 16:03 UTC",
+ "commit": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
  "fonte": "código + migrations/types + manual/ (regras de negócio)",
  "entrada": "07-REGRAS-DE-NEGOCIO.md",
  "arquivos": [
@@ -13,6 +13,6 @@
   "context.json"
  ],
  "schema_real_em": "",
- "inconsistencias": 168,
+ "inconsistencias": 169,
  "lacunas": 33
 }
