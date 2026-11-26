@@ -2448,11 +2448,11 @@
   {
    "arquivo": "src/tests/spot/spotApi.test.ts",
    "tipo": "unit",
-   "linhas": 211,
+   "linhas": 245,
    "testa": [
     "supabase/functions/_shared/spot_api.ts"
    ],
-   "casos": 32
+   "casos": 36
   },
   {
    "arquivo": "src/types/__tests__/legacyTypes.test.ts",

@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.4.0 · commit `02f5c0e6c0` · branch `main` · 2026-11-26 09:49 UTC
+> Gerado automaticamente por AI Context Sync v1.4.0 · commit `28715cdbef` · branch `main` · 2026-11-26 10:01 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -308,7 +308,8 @@
 | status | valor `descartado` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/recompra/RecompraInteligente.tsx` |
 | status | valor `aceito` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/pages/recompra/RecompraInteligente.tsx` |
 | status | valor `PENDENTE` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:src/types/legacyTypes.ts` |
-| status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
+| status | valor `attempt` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
+| status | valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts`<br>`filtra:supabase/functions/spot-api/index.ts` |
 | status | valor `PROCESSING` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `ALL` para `status` usado no código não existe em nenhum enum do banco/TS | `escreve:supabase/functions/spot-api/index.ts` |
 | status | valor `finalizada` para `status` usado no código não existe em nenhum enum do banco/TS | `compara:supabase/migrations/20260512142511_3e8db5bf-b32f-40a8-8fd9-7c7ddecc09de.sql`<br>`compara:supabase/migrations/20261113122251_fix_gatilhos_solicitacao_pagamento_orcamento.sql` |

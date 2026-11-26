@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `02f5c0e6c025e2484704b54ceb2c975d9db9b248` (2026-11-26T06:49:17-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada hora pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `28715cdbef5caf24fdccc2ee76ce55b32986fefa` (2026-11-26T07:00:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1500 |
 | arquivos_codigo | 963 |
-| linhas_codigo | 191356 |
+| linhas_codigo | 191428 |
 | rotas | 56 |
 | rotas_http_backend | 0 |
 | vistas_por_id | 0 |
@@ -343,7 +343,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- docs/qa/05-PROGRESSO.md (165)
+- docs/qa/05-PROGRESSO.md (166)
 - docs/pendencias/_indice.md (21)
 - AGENTS.md (13)
 - docs/ci/README.md (10)
@@ -427,6 +427,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-26 `28715cd` fix(spot): conta a cota da SPOT por requisicao HTTP (#553)
 - 2026-11-26 `02f5c0e` fix(push): 429/5xx e timeout nao apagam mais a inscricao do dispositivo (#552)
 - 2026-11-26 `be8eb67` fix(seguranca): exige catalogo ativo e shared secret no punchout-receive (#551)
 - 2026-11-26 `c018639` fix(edge): trata notificacao descartada como descarte, nao como envio (#550)
@@ -441,7 +442,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-26 `990f6c3` fix(perf): pagina cotacoes e devolucoes no servidor quando ha pagina (#536)
 - 2026-11-26 `647ddb4` fix(perf): liga a paginacao das listas e tira o filtro de tipo do cliente (#535)
 - 2026-11-26 `50f9811` chore(db): sincronizar types.ts com o banco [auto] (#525)
-- 2026-11-26 `10ab760` fix(build): ressincroniza o bun.lock com os overrides do package.json (#532)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

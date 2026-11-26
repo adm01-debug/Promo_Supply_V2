@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "02f5c0e6c025e2484704b54ceb2c975d9db9b248",
+  "sha": "28715cdbef5caf24fdccc2ee76ce55b32986fefa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 09:49 UTC",
+  "generated_at": "2026-11-26 10:01 UTC",
   "files_total": 1501,
   "code_files": 1326,
-  "code_lines": 222165,
+  "code_lines": 222237,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "c78906beecd75d82",
+ "facts_hash": "0f5be8e2ab6e08bb",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -36290,7 +36290,7 @@
   {
    "module": "src/tests",
    "files": 7,
-   "lines": 912,
+   "lines": 946,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -36346,7 +36346,7 @@
   {
    "module": "supabase/functions",
    "files": 124,
-   "lines": 20070,
+   "lines": 20108,
    "tables": [
     "approval_history",
     "approval_steps",
@@ -37888,6 +37888,9 @@
      "supabase/functions/spot-api/index.ts"
     ],
     "insert": [
+     "supabase/functions/spot-api/index.ts"
+    ],
+    "update": [
      "supabase/functions/spot-api/index.ts"
     ]
    },
@@ -57199,6 +57202,18 @@
    {
     "file": "supabase/functions/spot-api/index.ts",
     "field": "status",
+    "value": "attempt",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/spot-api/index.ts",
+    "field": "status",
+    "value": "success",
+    "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/spot-api/index.ts",
+    "field": "status",
     "value": "quota_blocked",
     "kind": "escreve"
    },
@@ -57231,6 +57246,12 @@
     "field": "status",
     "value": "error",
     "kind": "escreve"
+   },
+   {
+    "file": "supabase/functions/spot-api/index.ts",
+    "field": "status",
+    "value": "quota_blocked",
+    "kind": "filtra"
    },
    {
     "file": "supabase/functions/spot-proxy/index.ts",
@@ -72261,6 +72282,26 @@
     "name": "toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)"
    },
    {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "spot-api: cota contada por requisicao HTTP"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "usedToday ignora a recusa por quota — ela nao chega ao fornecedor"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "cada tentativa HTTP abre a propria linha de log, antes do fetch"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "a resposta fecha a linha da tentativa com sucesso ou erro"
+   },
+   {
+    "file": "src/tests/spot/spotApi.test.ts",
+    "name": "nao grava linha extra por chamada logica — contaria a cota duas vezes"
+   },
+   {
     "file": "src/types/__tests__/legacyTypes.test.ts",
     "name": "getTipoLabel"
    },
@@ -82771,8 +82812,12 @@
       "escreve:supabase/functions/punchout-setup/index.ts",
       "filtra:supabase/functions/punchout-receive/index.ts"
      ],
-     "quota_blocked": [
+     "attempt": [
       "escreve:supabase/functions/spot-api/index.ts"
+     ],
+     "quota_blocked": [
+      "escreve:supabase/functions/spot-api/index.ts",
+      "filtra:supabase/functions/spot-api/index.ts"
      ],
      "PROCESSING": [
       "escreve:supabase/functions/spot-api/index.ts"
@@ -91890,9 +91935,17 @@
    },
    {
     "kind": "status",
-    "msg": "valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "msg": "valor `attempt` para `status` usado no código não existe em nenhum enum do banco/TS",
     "where": [
      "escreve:supabase/functions/spot-api/index.ts"
+    ]
+   },
+   {
+    "kind": "status",
+    "msg": "valor `quota_blocked` para `status` usado no código não existe em nenhum enum do banco/TS",
+    "where": [
+     "escreve:supabase/functions/spot-api/index.ts",
+     "filtra:supabase/functions/spot-api/index.ts"
     ]
    },
    {
@@ -116339,10 +116392,11 @@
   },
   "src/tests/spot/spotApi.test.ts": {
    "path": "src/tests/spot/spotApi.test.ts",
-   "lines": 211,
+   "lines": 245,
    "is_test": true,
    "errors": [
-    "nao achei "
+    "nao achei ",
+    "nao achei o fim de "
    ],
    "tests": [
     "parseSpotDecimal",
@@ -116385,7 +116439,12 @@
     "readOrdersDetails continua lendo a resposta plana do OrdersV1",
     "readOrdersDetails aceita OrderDetails singular",
     "readOrdersDetails devolve [] para payload sem detalhes",
-    "toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)"
+    "toda acao do cron existe em VALID_ACTIONS (senao 400 antes do 403)",
+    "spot-api: cota contada por requisicao HTTP",
+    "usedToday ignora a recusa por quota — ela nao chega ao fornecedor",
+    "cada tentativa HTTP abre a propria linha de log, antes do fetch",
+    "a resposta fecha a linha da tentativa com sucesso ou erro",
+    "nao grava linha extra por chamada logica — contaria a cota duas vezes"
    ]
   },
   "src/types/contract.ts": {
@@ -120604,7 +120663,7 @@
   },
   "supabase/functions/spot-api/index.ts": {
    "path": "supabase/functions/spot-api/index.ts",
-   "lines": 643,
+   "lines": 681,
    "tables": [
     {
      "table": "user_roles",
@@ -120631,6 +120690,14 @@
      "op": "insert"
     },
     {
+     "table": "spot_api_sync_log",
+     "op": "insert,select"
+    },
+    {
+     "table": "spot_api_sync_log",
+     "op": "update"
+    },
+    {
      "table": "spot_pedidos",
      "op": "upsert"
     }
@@ -120647,7 +120714,6 @@
      "session_cookie"
     ],
     "spot_api_sync_log": [
-     "called_at",
      "endpoint",
      "id"
     ]
@@ -120688,6 +120754,16 @@
    "status_values": [
     {
      "field": "status",
+     "value": "attempt",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "success",
+     "kind": "escreve"
+    },
+    {
+     "field": "status",
      "value": "quota_blocked",
      "kind": "escreve"
     },
@@ -120715,6 +120791,11 @@
      "field": "status",
      "value": "error",
      "kind": "escreve"
+    },
+    {
+     "field": "status",
+     "value": "quota_blocked",
+     "kind": "filtra"
     }
    ],
    "doc": "spot-api — integração com a API oficial SPOT / Stricker. Substitui gradualmente o scraping de `spot-proxy`. Toda leitura do app vem do cache no banco (spot_produtos / spot_skus / spot_customization_options / spot_estoque); esta função é o ÚNICO ponto que fala com ws.spotgifts.com.br. Restrições resp …",
@@ -123606,10 +123687,21 @@
   }
  },
  "git": {
-  "sha": "02f5c0e6c025e2484704b54ceb2c975d9db9b248",
+  "sha": "28715cdbef5caf24fdccc2ee76ce55b32986fefa",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "28715cd",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)",
+    "files": [
+     "docs/qa/05-PROGRESSO.md",
+     "src/tests/spot/spotApi.test.ts",
+     "supabase/functions/spot-api/index.ts"
+    ]
+   },
    {
     "sha": "02f5c0e",
     "date": "2026-11-26",
@@ -124016,19 +124108,6 @@
     "files": [
      "docs/qa/05-PROGRESSO.md"
     ]
-   },
-   {
-    "sha": "36e96de",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(sidebar): contador de pendencias distingue zero de falha na consulta (etapa 198) (#513)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/features/layout/__tests__/AppSidebar.badgeErro.test.tsx",
-     "src/features/layout/components/AppSidebar.tsx",
-     "src/hooks/__tests__/useSidebarBadges.erro.test.tsx",
-     "src/hooks/useSidebarBadges.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -124077,6 +124156,14 @@
     2
    ],
    [
+    "src/tests/spot/spotApi.test.ts",
+    1
+   ],
+   [
+    "supabase/functions/spot-api/index.ts",
+    1
+   ],
+   [
     "supabase/functions/send-push-notification/webpush.test.ts",
     1
    ],
@@ -124102,14 +124189,6 @@
    ],
    [
     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-    1
-   ],
-   [
-    "src/hooks/useCatalogoPim.ts",
-    1
-   ],
-   [
-    "src/lib/__tests__/invokeEdge.test.ts",
     1
    ]
   ]
