@@ -6,7 +6,7 @@
   "overrides": {
     "lodash": "^4.18.1",
     "ws": "^8.21.0",
-    "dompurify": "^3.4.18"
+    "dompurify": "^3.5.0"
   },
   "scripts": {
     "maintenance:doctor": "sh scripts/maintenance/run.sh doctor --root .",
