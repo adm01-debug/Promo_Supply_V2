@@ -94,10 +94,9 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   registra no ledger as 322 versões já aplicadas; **NÃO VERIFICADO** se esse arquivo já rodou no banco oficial.
   O canal oficial de apply é o workflow `aplicar-migration-prod.yml` (dispatch manual, 1 arquivo, transação
   única), que **não grava no ledger**. Enquanto ledger e banco divergirem, `supabase db push` tentaria reexecutar
-  arquivos destrutivos (352 migrations hoje: 94 `CREATE TABLE` sem `IF NOT EXISTS`, 51 `DELETE FROM`, 8 `DROP
+  arquivos destrutivos (353 migrations hoje: 94 `CREATE TABLE` sem `IF NOT EXISTS`, 51 `DELETE FROM`, 8 `DROP
   TABLE`). Ordem obrigatória: arquivo → PR → merge → deploy do código → apply, e **pergunte ao dono qual é o  caminho do apply** antes do primeiro DDL. Destrutivo, segredos e rotação: só com o dono.
-- `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.## Serviços
-- **Deploy** — ler `docs/agentes/deploy.md` ao confirmar deploy ou mexer em env/domínio. Front na **Vercel**
+- `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.## Serviços- **Deploy** — ler `docs/agentes/deploy.md` ao confirmar deploy ou mexer em env/domínio. Front na **Vercel**
   (projeto `promo-supply-v2`, team `juca1`): merge em `main` = produção. **Edge: o workflow
   `deploy-edge-functions.yml` publica** no push da `main` que toque `supabase/functions/**` (e no dispatch manual,
   por função, lista ou todas); o script `deploy_edge_functions_promo_supply.sh` publica à mão as **31** funções
