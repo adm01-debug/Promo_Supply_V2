@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
+  "commit": "fc2bfbb785f2a90e7d8a1425e1d9e2046614dfca",
   "branch": "main",
-  "data_commit": "2026-11-26T13:01:21-03:00",
+  "data_commit": "2026-11-26T13:10:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "fc2bfbb",
+    "data": "2026-11-26",
+    "assunto": "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)"
+   },
    {
     "sha": "061c773",
     "data": "2026-11-26",
@@ -126,14 +131,9 @@
     "sha": "10f9737",
     "data": "2026-11-26",
     "assunto": "fix(spot): estoque exibe a idade que tem e zera SKU que saiu do payload (#555)"
-   },
-   {
-    "sha": "28715cd",
-    "data": "2026-11-26",
-    "assunto": "fix(spot): conta a cota da SPOT por requisicao HTTP (#553)"
    }
   ],
-  "arquivos_mudados_7d": 1548,
+  "arquivos_mudados_7d": 1550,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
@@ -141,14 +141,14 @@
    },
    {
     "pasta": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 188
-   },
-   {
-    "pasta": "supabase/functions/_shared",
-    "mudancas": 66
+    "mudancas": 189
    },
    {
     "pasta": "src/components/ui",
+    "mudancas": 65
+   },
+   {
+    "pasta": "supabase/functions/_shared",
     "mudancas": 65
    },
    {
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "AGENTS.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "pasta": "src/features/pedidos",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "docs/qa/05-PROGRESSO.md",
-    "mudancas": 188
+    "mudancas": 189
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 24
+    "mudancas": 25
    },
    {
     "arquivo": "docs/pendencias/_indice.md",
@@ -314,7 +314,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1527,
+  "arquivos_total": 1529,
   "arquivos_codigo": 968,
   "linhas_codigo": 192806,
   "rotas": 56,
@@ -326,7 +326,7 @@
   "hooks": 95,
   "edge_functions": 41,
   "tabelas": 164,
-  "migrations": 359,
+  "migrations": 360,
   "cron_jobs": 80,
   "testes": 324,
   "workflows": 15,

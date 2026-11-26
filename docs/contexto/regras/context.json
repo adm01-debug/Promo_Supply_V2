@@ -1,16 +1,16 @@
 {
  "meta": {
-  "sha": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
+  "sha": "fc2bfbb785f2a90e7d8a1425e1d9e2046614dfca",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-26 16:03 UTC",
-  "files_total": 1528,
-  "code_files": 1353,
-  "code_lines": 225361,
+  "generated_at": "2026-11-26 16:24 UTC",
+  "files_total": 1530,
+  "code_files": 1355,
+  "code_lines": 225478,
   "schema_ref": "`context.json` → `schema` (derivado das migrations; snapshot do banco real ainda não gerado — NÃO VERIFICADO)"
  },
  "version": "1.4.0",
- "facts_hash": "09c22e899ce781fa",
+ "facts_hash": "220b1ee45b96b2bf",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -279,7 +279,7 @@
   "languages": {
    ".ts": 453,
    ".tsx": 440,
-   ".sql": 383,
+   ".sql": 385,
    ".mjs": 69,
    ".py": 5,
    ".js": 3
@@ -20619,7 +20619,7 @@
     "args": "",
     "returns": "uuid",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260805160000_fix_frontend_comms.sql",
+    "src": "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_tenant UUID; v_claims text; BEGIN BEGIN v_claims := current_setting('request.jwt.claims', true); EXCEPTION WHEN OTHERS THEN v_claims := NULL; END; IF v_claims IS NOT NULL THEN BEGIN v_tenant := nullif(v_claims::jsonb ->> 'tenant_id', '')::uuid; EXCEPTION WHEN OTHERS THEN v_tenant := NULL; END; END IF; IF v_tenant IS NOT NULL THEN RETURN v_tenant; END IF; BEGIN SELECT tenant_id INTO v_tenant FROM public.user_tenants WHERE user_id = auth.uid() AND is_default = true LIMIT 1; EXCEPTION WHEN OTHERS THEN v_tenant := NULL; END; RETURN v_tenant; END;",
@@ -27315,6 +27315,7 @@
    "supabase/migrations/20261126151000_revert_admin_scan_runs_sla_catalogo_real.sql",
    "supabase/migrations/20261126153000_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+   "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
    "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "supabase/migrations/20261127120000_pagamentos_data_agendamento.sql",
    "supabase/migrations/20261127130000_retencao_system_alerts_fonte_unica.sql",
@@ -27334,6 +27335,7 @@
    "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
    "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
    "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+   "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
    "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
    "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
    "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -36733,8 +36735,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 359,
-   "lines": 30311,
+   "files": 360,
+   "lines": 30405,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36825,8 +36827,8 @@
   },
   {
    "module": "supabase/rollbacks",
-   "files": 12,
-   "lines": 921,
+   "files": 13,
+   "lines": 944,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -36839,6 +36841,7 @@
     "supabase/rollbacks/20261126140000_revert_rls_fase2_notifications_e_category_strategies.sql",
     "supabase/rollbacks/20261126153000_revert_rls_fase2_30_tabelas_por_papel.sql",
     "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
+    "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
     "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
     "supabase/rollbacks/20261127130000_revert_retencao_system_alerts_fonte_unica.sql",
     "supabase/rollbacks/20261127140000_revert_cron_watchdog_falha_por_janela_de_tempo.sql",
@@ -79141,7 +79144,7 @@
     "args": "",
     "returns": "uuid",
     "lang": "plpgsql",
-    "src": "supabase/migrations/20260805160000_fix_frontend_comms.sql",
+    "src": "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
     "security_definer": true,
     "search_path": true,
     "body": "DECLARE v_tenant UUID; v_claims text; BEGIN BEGIN v_claims := current_setting('request.jwt.claims', true); EXCEPTION WHEN OTHERS THEN v_claims := NULL; END; IF v_claims IS NOT NULL THEN BEGIN v_tenant := nullif(v_claims::jsonb ->> 'tenant_id', '')::uuid; EXCEPTION WHEN OTHERS THEN v_tenant := NULL; END; END IF; IF v_tenant IS NOT NULL THEN RETURN v_tenant; END IF; BEGIN SELECT tenant_id INTO v_tenant FROM public.user_tenants WHERE user_id = auth.uid() AND is_default = true LIMIT 1; EXCEPTION WHEN OTHERS THEN v_tenant := NULL; END; RETURN v_tenant; END;",
@@ -124374,6 +124377,10 @@
    "path": "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "lines": 99
   },
+  "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql": {
+   "path": "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+   "lines": 94
+  },
   "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql": {
    "path": "supabase/migrations/20261127000000_reconcilia_ledger_migrations.sql",
    "lines": 418
@@ -124468,6 +124475,10 @@
   "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql": {
    "path": "supabase/rollbacks/20261126154500_revert_rls_estoque_movimentacoes_papel_e_organizacao.sql",
    "lines": 39
+  },
+  "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql": {
+   "path": "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
+   "lines": 23
   },
   "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql": {
    "path": "supabase/rollbacks/20261127120000_revert_pagamentos_data_agendamento.sql",
@@ -124728,10 +124739,22 @@
   }
  },
  "git": {
-  "sha": "061c773d503b924b01bd0b23e83e5bda6bbec15e",
+  "sha": "fc2bfbb785f2a90e7d8a1425e1d9e2046614dfca",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "fc2bfbb",
+    "date": "2026-11-26",
+    "author": "adm01-debug",
+    "subject": "fix(rls): current_tenant_id resolve o tenant pelo cadastro quando o token nao traz (#572)",
+    "files": [
+     "AGENTS.md",
+     "docs/qa/05-PROGRESSO.md",
+     "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+     "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql"
+    ]
+   },
    {
     "sha": "061c773",
     "date": "2026-11-26",
@@ -125091,72 +125114,6 @@
      "src/pages/catalogo-spot/useSpotCatalog.ts",
      "src/services/rlsAuditService.ts"
     ]
-   },
-   {
-    "sha": "6114624",
-    "date": "2026-11-26",
-    "author": "adm01-debug",
-    "subject": "fix(moeda): formata todo valor em reais com Intl pt-BR (#548)",
-    "files": [
-     "docs/qa/05-PROGRESSO.md",
-     "src/components/compras/AdvancedProcurementKPIs.tsx",
-     "src/components/compras/BulkOperationsPreview.tsx",
-     "src/components/compras/BulkPlanningConsole.tsx",
-     "src/components/compras/BuscaAutomatica.tsx",
-     "src/components/compras/BuyerDrilldownModal.tsx",
-     "src/components/compras/BuyerPerformancePanel.tsx",
-     "src/components/compras/ComparadorCotacoes.tsx",
-     "src/components/compras/DashboardInsights.tsx",
-     "src/components/compras/DemandPredictionPanel.tsx",
-     "src/components/compras/FiltrosAvancados.tsx",
-     "src/components/compras/PriceComparator.tsx",
-     "src/components/compras/PriceHistoryModal.tsx",
-     "src/components/compras/RankingCotacoes.tsx",
-     "src/components/compras/SavingsGoalPanel.tsx",
-     "src/components/compras/SolicitacaoCard.tsx",
-     "src/components/compras/SpendAnalytics.tsx",
-     "src/components/compras/SupplierAlertsPanel.tsx",
-     "src/components/compras/SupplierIntelligenceConsole.tsx",
-     "src/components/compras/TrendAnalysisCharts.tsx",
-     "src/components/compras/executive/KraljicMatrix.tsx",
-     "src/components/compras/price-comparator/priceComparatorHelpers.ts",
-     "src/components/compras/solicitacao/SolicitacaoFormSteps.tsx",
-     "src/components/compras/visual-comparador/ComparadorCharts.tsx",
-     "src/components/pagamentos/PagamentoFinancialDashboard.tsx",
-     "src/features/layout/components/AdvancedSearch.tsx",
-     "src/hooks/useApprovalNotifications.ts",
-     "src/lib/__tests__/utils.test.ts",
-     "src/lib/utils.ts",
-     "src/pages/acompanhamento/Acompanhamento.tsx",
-     "src/pages/admin/SourcingPipeline.tsx",
-     "src/pages/aprovacoes/Aprovacoes.tsx",
-     "src/pages/buyer/BuyerComparisonView.tsx",
-     "src/pages/buyer/BuyerPerformanceDashboard.tsx",
-     "src/pages/buyer/buyerDashboardHelpers.tsx",
-     "src/pages/catalogo-spot/CatalogoSpot.tsx",
-     "src/pages/contratos/Contratos.tsx",
-     "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
-     "src/pages/cotacao/cotacaoHelpers.ts",
-     "src/pages/documentos/DocumentosFiscais.tsx",
-     "src/pages/gerar-ordem/GerarOrdem.tsx",
-     "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
-     "src/pages/gerar-ordem/gerarOrdemHelpers.ts",
-     "src/pages/historico/HistoricoCompras.tsx",
-     "src/pages/historico/HistoricoDrilldownModal.tsx",
-     "src/pages/historico/HistoricoFornecedoresTab.tsx",
-     "src/pages/historico/HistoricoProdutosTab.tsx",
-     "src/pages/historico/HistoricoRegistrosTab.tsx",
-     "src/pages/historico/HistoricoSourcingTab.tsx",
-     "src/pages/kanban/KanbanWorkflow.tsx",
-     "src/pages/negociacao-ia/NegociacaoIA.tsx",
-     "src/pages/orcamentos/Orcamentos.tsx",
-     "src/pages/recebimento/ReceivingFormView.tsx",
-     "src/pages/recompra/RecompraInteligente.tsx",
-     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-     "src/pages/relatorios/RelatoriosCharts.tsx",
-     "src/pages/sourcing/AuctionRoom.tsx",
-     "src/stores/buyerAlertsStore.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -125166,7 +125123,7 @@
    ],
    [
     "AGENTS.md",
-    12
+    13
    ],
    [
     "supabase/functions/send-push-notification/index.ts",
@@ -125189,10 +125146,6 @@
     2
    ],
    [
-    "src/pages/gerar-ordem/GerarOrdem.tsx",
-    2
-   ],
-   [
     "docs/mapa/MATRIZ_EDGE_TABELA.md",
     2
    ],
@@ -125207,6 +125160,14 @@
    [
     "supabase/functions/spot-api/index.ts",
     2
+   ],
+   [
+    "supabase/migrations/20261126160000_current_tenant_id_resolve_por_cadastro.sql",
+    1
+   ],
+   [
+    "supabase/rollbacks/20261126160000_revert_current_tenant_id_resolve_por_cadastro.sql",
+    1
    ],
    [
     "supabase/migrations/20261126154500_rls_estoque_movimentacoes_papel_e_organizacao.sql",
@@ -125234,10 +125195,6 @@
    ],
    [
     "src/features/cotacoes/hooks/__tests__/useCotacoes.escrita.test.tsx",
-    1
-   ],
-   [
-    "src/features/cotacoes/hooks/useCotacoes.ts",
     1
    ]
   ]
