@@ -25,7 +25,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -130,7 +130,7 @@ export const SavingsGoalPanel = () => {
             <AlertDescription className="flex items-center justify-between">
               <span>
                 Economia atual está abaixo de {config.alertaPercentual}% da meta. 
-                Faltam R$ {economiaFaltante.toLocaleString('pt-BR')} para atingir o objetivo.
+                Faltam {formatCurrency(economiaFaltante)} para atingir o objetivo.
               </span>
               <Button 
                 variant="ghost" 
@@ -158,10 +158,10 @@ export const SavingsGoalPanel = () => {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-3xl font-bold text-foreground">
-                R$ {economiaAtual.toLocaleString('pt-BR')}
+                {formatCurrency(economiaAtual)}
               </p>
               <p className="text-sm text-muted-foreground">
-                de R$ {config.metaMensal.toLocaleString('pt-BR')}
+                de {formatCurrency(config.metaMensal)}
               </p>
             </div>
             <div className={cn(
@@ -194,7 +194,7 @@ export const SavingsGoalPanel = () => {
             <div className="text-center p-2 rounded-lg bg-muted/30">
               <p className="text-xs text-muted-foreground">Faltam</p>
               <p className="text-sm font-semibold text-foreground">
-                R$ {economiaFaltante.toLocaleString('pt-BR')}
+                {formatCurrency(economiaFaltante)}
               </p>
             </div>
             <div className="text-center p-2 rounded-lg bg-muted/30">
@@ -204,7 +204,7 @@ export const SavingsGoalPanel = () => {
             <div className="text-center p-2 rounded-lg bg-muted/30">
               <p className="text-xs text-muted-foreground">Média/Dia</p>
               <p className="text-sm font-semibold text-foreground">
-                R$ {mediaDiariaNecessaria.toFixed(0)}
+                {formatCurrency(mediaDiariaNecessaria)}
               </p>
             </div>
           </div>

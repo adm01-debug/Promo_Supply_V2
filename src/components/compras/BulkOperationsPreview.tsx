@@ -50,7 +50,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { toast } from '@/lib/feedbackToast';
 
 import {
@@ -294,7 +294,7 @@ export function BulkOperationsPreview({
             <div className="flex flex-col items-end justify-center">
               <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Valor Acumulado</p>
               <p className="text-2xl font-black text-white tracking-tighter">
-                R$ {selectedItems.reduce((acc, i) => acc + (i.value || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
+                {formatCurrency(selectedItems.reduce((acc, i) => acc + (i.value || 0), 0))}
               </p>
             </div>
           </div>
@@ -489,7 +489,7 @@ export function BulkOperationsPreview({
                                   </div>
                                   {item.value !== undefined && (
                                     <span className="text-muted-foreground">
-                                      R$ {item.value.toLocaleString('pt-BR')}
+                                      {formatCurrency(item.value)}
                                     </span>
                                   )}
                                 </div>

@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrencyCompact } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -191,7 +191,7 @@ export const KraljicMatrix = () => {
                           <div className="space-y-1.5 py-1">
                             <p className="font-black text-white text-[11px] uppercase tracking-widest">{c.name}</p>
                             <div className="space-y-0.5">
-                               <p className="text-[10px] text-zinc-400 font-bold">Spend: <span className="text-zinc-100">R$ {(c.spend/1000).toFixed(0)}k</span></p>
+                               <p className="text-[10px] text-zinc-400 font-bold">Spend: <span className="text-zinc-100">{formatCurrencyCompact(c.spend)}</span></p>
                                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-tighter">Risk Level: <span className={cn(
                                  c.risk === 'critical' ? 'text-rose-400' : 'text-amber-400'
                                )}>{c.risk}</span></p>

@@ -189,7 +189,7 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
         </Card>
         <Card className="p-4 bg-amber-500/5 border-amber-500/10 flex items-center gap-3">
           <div className="p-2 bg-amber-500/10 rounded-lg"><DollarSign className="w-5 h-5 text-amber-500" /></div>
-          <div><p className="text-[10px] text-muted-foreground uppercase font-bold">Volume Total</p><p className="text-xl font-bold">R$ {stats.totalValue.toLocaleString('pt-BR')}</p></div>
+          <div><p className="text-[10px] text-muted-foreground uppercase font-bold">Volume Total</p><p className="text-xl font-bold">{formatCurrency(stats.totalValue)}</p></div>
         </Card>
         <Card className="p-4 bg-rose-500/5 border-rose-500/10 flex items-center gap-3">
           <div className="p-2 bg-rose-500/10 rounded-lg"><AlertCircle className="w-5 h-5 text-rose-500" /></div>
@@ -258,7 +258,7 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex flex-col items-end">
-                        <span className="font-bold text-xs text-foreground">R$ {record.unitPrice.toLocaleString('pt-BR')}</span>
+                        <span className="font-bold text-xs text-foreground">{formatCurrency(record.unitPrice)}</span>
                         {record.discount > 5 && (
                           <span className={cn(
                             "text-[9px] font-bold flex items-center",

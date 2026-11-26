@@ -113,7 +113,7 @@ export const SpendAnalytics = () => {
                 <span className="text-sm font-medium">{item.name}</span>
               </div>
               <div className="flex items-center gap-8">
-                <span className="text-sm font-bold">R$ {item.value.toLocaleString('pt-BR')}</span>
+                <span className="text-sm font-bold">{formatCurrency(item.value)}</span>
                 <Badge variant="secondary">{((item.value / spendByUnspsc.reduce((a,b) => a + b.value, 0)) * 100).toFixed(1)}%</Badge>
               </div>
             </div>

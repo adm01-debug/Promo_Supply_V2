@@ -493,10 +493,10 @@ export function PriceComparator() {
                                 <>
                                   {quote.savings !== null && quote.savings > 0 ? (
                                     <span className="text-xs text-destructive block">
-                                      +R$ {quote.savings.toLocaleString('pt-BR')}
+                                      +{formatCurrency(quote.savings)}
                                     </span>
                                   ) : null}
-                                  R$ {quote.totalPrice.toLocaleString('pt-BR')}
+                                  {formatCurrency(quote.totalPrice)}
                                 </>
                               )}
                             </TableCell>

@@ -162,7 +162,7 @@ export const BulkPlanningConsole = () => {
                       <div className="flex items-center gap-1.5">
                         <div className="flex flex-col items-end">
                           <span className="text-[8px] font-black text-emerald-400 uppercase">-{freightAnalysis[plan.id]?.optimization}% FRETE</span>
-                          <span className="text-[9px] font-bold text-zinc-500">R$ {freightAnalysis[plan.id]?.cost}</span>
+                          <span className="text-[9px] font-bold text-zinc-500">{formatCurrency(freightAnalysis[plan.id]?.cost)}</span>
                         </div>
                         <ChevronRight className="h-4 w-4 text-zinc-600" />
                       </div>

@@ -215,7 +215,7 @@ const SourcingPipeline = () => {
                       <TableCell className="font-medium">{saving.title}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px]">{saving.type}</Badge></TableCell>
                       <TableCell className="text-green-600 font-bold">
-                        R$ {Number(saving.actual_saving).toLocaleString()}
+                        {formatCurrency(Number(saving.actual_saving))}
                       </TableCell>
                       <TableCell>
                         {saving.validated_by_finance ? 

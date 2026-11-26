@@ -41,7 +41,7 @@ import {
   COLORS, PERIOD_MAP, getMetricStatus, MetricStatusIcon,
   DashboardSkeleton, EmptyState, exportBuyerCSV,
 } from "./buyerDashboardHelpers";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 const BuyerPerformanceDashboard = () => {
   const [periodo, setPeriodo] = useState("6m");
@@ -279,11 +279,11 @@ const BuyerPerformanceDashboard = () => {
                   <MetricStatusIcon percentage={economiaVsMeta} />
                 </div>
                 <p className="text-2xl font-bold text-success">
-                  R$ {buyer.performance.economiaMes.toLocaleString('pt-BR')}
+                  {formatCurrency(buyer.performance.economiaMes)}
                 </p>
                 <div className="mt-2">
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Meta: R$ {meta.economiaMensal.toLocaleString('pt-BR')}</span>
+                    <span className="text-muted-foreground">Meta: {formatCurrency(meta.economiaMensal)}</span>
                     <span className={economiaStatus.color}>{economiaVsMeta.toFixed(0)}%</span>
                   </div>
                   <Progress value={Math.min(economiaVsMeta, 100)} className="h-1.5" />
@@ -356,7 +356,7 @@ const BuyerPerformanceDashboard = () => {
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                      <YAxis yAxisId="left" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}K`} />
+                      <YAxis yAxisId="left" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => formatCurrencyCompact(v)} />
                       <YAxis yAxisId="right" orientation="right" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `${v}%`} />
                       <Tooltip content={<CustomTooltip />} />
                       <Legend />
@@ -398,7 +398,7 @@ const BuyerPerformanceDashboard = () => {
                   <ResponsiveContainer width="100%" height={240}>
                     <BarChart data={buyer.categorias} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}K`} />
+                      <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => formatCurrencyCompact(v)} />
                       <YAxis type="category" dataKey="nome" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} width={80} />
                       <Tooltip content={<CustomTooltip />} />
                       <Bar dataKey="economia" name="Economia (R$)" radius={[0, 4, 4, 0]}>
@@ -476,7 +476,7 @@ const BuyerPerformanceDashboard = () => {
                           <td className="py-3 px-4 text-right">
                             <span className="font-bold text-success flex items-center justify-end gap-1">
                               <ArrowUpRight className="w-4 h-4" />
-                              R$ {neg.economia.toLocaleString('pt-BR')}
+                              {formatCurrency(neg.economia)}
                             </span>
                           </td>
                         </tr>
@@ -496,7 +496,7 @@ const BuyerPerformanceDashboard = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-3xl font-bold text-primary">
-                    R$ {buyer.performance.economiaAno.toLocaleString('pt-BR')}
+                    {formatCurrency(buyer.performance.economiaAno)}
                   </p>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FileText } from 'lucide-react';
 import { format } from "date-fns/format";
@@ -49,8 +50,8 @@ export const HistoricoRegistrosTab = ({ filteredRecords, totalRecords, hasActive
               <TableCell className="text-xs max-w-[150px] truncate">{record.productName}</TableCell>
               <TableCell className="text-xs">{record.supplierName}</TableCell>
               <TableCell className="text-xs text-right">{record.quantity}</TableCell>
-              <TableCell className="text-xs text-right">R$ {record.unitPrice.toFixed(2)}</TableCell>
-              <TableCell className="text-xs text-right font-medium">R$ {record.totalPrice.toLocaleString("pt-BR")}</TableCell>
+              <TableCell className="text-xs text-right">{formatCurrency(record.unitPrice)}</TableCell>
+              <TableCell className="text-xs text-right font-medium">{formatCurrency(record.totalPrice)}</TableCell>
               <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
               <TableCell className="text-xs">{format(parseISO(record.purchaseDate), "dd/MM/yy", { locale: ptBR })}</TableCell>
               <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>

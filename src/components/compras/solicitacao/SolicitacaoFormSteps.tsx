@@ -423,11 +423,11 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
                   <div className="grid grid-cols-2 gap-2">
                     <div className="p-2 bg-white/[0.02] rounded-lg border border-white/5">
                       <p className="text-[8px] text-zinc-500 font-black uppercase">Disponível</p>
-                      <p className="text-[10px] text-white font-bold">R$ {budgetCheck.budget_available?.toLocaleString('pt-BR')}</p>
+                      <p className="text-[10px] text-white font-bold">{formatCurrency(budgetCheck.budget_available)}</p>
                     </div>
                     <div className="p-2 bg-white/[0.02] rounded-lg border border-white/5">
                       <p className="text-[8px] text-zinc-500 font-black uppercase">Comprometido</p>
-                      <p className="text-[10px] text-white font-bold">R$ {budgetCheck.budget_committed?.toLocaleString('pt-BR')}</p>
+                      <p className="text-[10px] text-white font-bold">{formatCurrency(budgetCheck.budget_committed)}</p>
                     </div>
                   </div>
                 </div>

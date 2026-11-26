@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 import React from "react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)', 'hsl(262, 83%, 58%)'];
 
@@ -120,7 +120,7 @@ export const BuyerComparisonView = ({ buyer, compareBuyer, CustomTooltip }: Buye
             <BarChart data={comparisonHistorico}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$${(v/1000).toFixed(0)}K`} />
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => formatCurrencyCompact(v)} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar dataKey={`${buyer.nome} Economia`} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />

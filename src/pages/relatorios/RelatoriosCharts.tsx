@@ -239,7 +239,7 @@ export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerf
               </td>
               <td className="text-center font-bold text-sm">{f.pedidos}</td>
               <td className="text-right font-black text-foreground">
-                R$ {f.volumeTotal.toLocaleString("pt-BR")}
+                {formatCurrency(f.volumeTotal)}
               </td>
               <td className="text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-black">

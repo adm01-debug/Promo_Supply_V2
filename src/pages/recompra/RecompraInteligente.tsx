@@ -7,7 +7,7 @@ import { RefreshCw, ShoppingCart, TrendingUp, Calendar, Sparkles, Loader2, Check
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { useAuth } from "@/features/auth";
 import { useCatalogoPim } from "@/hooks/useCatalogoPim";
 
@@ -248,7 +248,7 @@ const RecompraInteligente = () => {
               <TrendingUp className="h-8 w-8 text-success" />
               <div>
                 <p className="text-2xl font-bold">
-                  R$ {(suggestions?.reduce((a, s) => a + Number(s.preco_estimado || 0), 0) || 0).toLocaleString("pt-BR")}
+                  {formatCurrency((suggestions?.reduce((a, s) => a + Number(s.preco_estimado || 0), 0) || 0))}
                 </p>
                 <p className="text-xs text-muted-foreground">Valor Estimado Total</p>
               </div>
@@ -287,7 +287,7 @@ const RecompraInteligente = () => {
                       <TableCell className="font-medium">{row.produto_nome || "Produto"}</TableCell>
                       <TableCell className="text-sm">{row.fornecedor?.razao_social || "-"}</TableCell>
                       <TableCell className="text-center">{s.quantidade_sugerida}</TableCell>
-                      <TableCell className="text-right">R$ {Number(s.preco_estimado).toLocaleString("pt-BR")}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(Number(s.preco_estimado))}</TableCell>
                       <TableCell className="text-center text-sm">{s.frequencia_dias} dias</TableCell>
                       <TableCell>
                         {s.proxima_compra_estimada ? (

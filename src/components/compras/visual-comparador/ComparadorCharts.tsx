@@ -261,7 +261,7 @@ export function TableTab({ selectedCotacoes, COLORS, getScore, analysis, quantid
                 </tr>
                 <tr className="border-b">
                   <td className="p-3 flex items-center gap-2"><Package className="w-4 h-4 text-info" />Valor Unitário</td>
-                  {selectedCotacoes.map(c => (<td key={c.id} className="p-3 text-center">R$ {c.valorUnitario.toFixed(2)}</td>))}
+                  {selectedCotacoes.map(c => (<td key={c.id} className="p-3 text-center">{formatCurrency(c.valorUnitario)}</td>))}
                 </tr>
                 <tr className="border-b bg-muted/30">
                   <td className="p-3 flex items-center gap-2"><Clock className="w-4 h-4 text-purple-500" />Prazo Entrega</td>

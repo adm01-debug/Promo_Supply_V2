@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
@@ -271,7 +271,7 @@ export const SolicitacaoCard = ({
             <span className="text-[10px] font-black uppercase tracking-widest text-violet-400">
               {solicitacao.cotacoes.length} Proposals Received
             </span>
-            <span className="text-xs font-black text-white">Best: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un</span>
+            <span className="text-xs font-black text-white">Best: {formatCurrency(Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)))}/un</span>
           </div>
         )}
 
@@ -280,7 +280,7 @@ export const SolicitacaoCard = ({
             <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
               Supplier: {solicitacao.fornecedorSelecionado}
             </span>
-            <span className="text-xs font-black text-white">Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}</span>
+            <span className="text-xs font-black text-white">Total: {formatCurrency(solicitacao.valorTotal)}</span>
           </div>
         )}
 

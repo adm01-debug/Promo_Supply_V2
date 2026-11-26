@@ -24,7 +24,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { isWithinInterval } from "date-fns/isWithinInterval";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency , formatCurrencyCompact} from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "@/lib/feedbackToast";
@@ -268,7 +268,7 @@ const HistoricoCompras = () => {
         <Card className="p-4 flex flex-col items-center justify-center border-l-4 border-l-purple-500 shadow-sm hover:shadow-md transition-shadow cursor-default">
           <DollarSign className="w-5 h-5 text-purple-500 mb-1" />
           <p className="text-xs text-muted-foreground uppercase font-semibold">Total Investido</p>
-          <p className="text-xl font-bold">R$ {(summaryStats.totalSpent / 1000).toFixed(1)}k</p>
+          <p className="text-xl font-bold">{formatCurrencyCompact(summaryStats.totalSpent)}</p>
         </Card>
         <Card className="p-4 flex flex-col items-center justify-center border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow cursor-default">
           <Percent className="w-5 h-5 text-blue-500 mb-1" />

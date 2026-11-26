@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { formatCurrency } from '@/lib/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { BarChart3 } from 'lucide-react';
 import { type PurchaseRecord } from '@/hooks/usePurchaseHistory';
@@ -32,7 +33,7 @@ export const HistoricoDrilldownModal = ({ open, onOpenChange, drilldownType, dri
       <div className="space-y-4">
         <div className="grid grid-cols-3 gap-4">
           <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Registros</p><p className="text-lg font-bold">{drilldownRecords.length}</p></div>
-          <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Volume Total</p><p className="text-lg font-bold">R$ {drilldownRecords.reduce((s, r) => s + r.totalPrice, 0).toLocaleString("pt-BR")}</p></div>
+          <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Volume Total</p><p className="text-lg font-bold">{formatCurrency(drilldownRecords.reduce((s, r) => s + r.totalPrice, 0))}</p></div>
           <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Quantidade</p><p className="text-lg font-bold">{drilldownRecords.reduce((s, r) => s + r.quantity, 0).toLocaleString("pt-BR")}</p></div>
         </div>
         <Table aria-label="Tabela de dados">
@@ -53,7 +54,7 @@ export const HistoricoDrilldownModal = ({ open, onOpenChange, drilldownType, dri
                 <TableCell className="text-xs">{r.productName}</TableCell>
                 <TableCell className="text-xs">{r.supplierName}</TableCell>
                 <TableCell className="text-xs text-right">{r.quantity}</TableCell>
-                <TableCell className="text-xs text-right">R$ {r.totalPrice.toLocaleString("pt-BR")}</TableCell>
+                <TableCell className="text-xs text-right">{formatCurrency(r.totalPrice)}</TableCell>
                 <TableCell className="text-xs"><StatusBadge status={r.status} /></TableCell>
               </TableRow>
             ))}

@@ -51,7 +51,7 @@ import type { Contract } from "@/types/contract";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion } from "framer-motion";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency , formatCurrencyCompact} from "@/lib/utils";
 
 const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
@@ -163,7 +163,7 @@ export default function Contratos() {
                 <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-600"><DollarSign className="w-6 h-6" /></div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Equity Value</p>
-                  <p className="text-2xl font-black text-foreground">R$ {(totalValue / 1000).toFixed(0)}K</p>
+                  <p className="text-2xl font-black text-foreground">{formatCurrencyCompact(totalValue)}</p>
                 </div>
               </div>
             </Card>

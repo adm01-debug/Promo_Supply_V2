@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import {
   Popover,
   PopoverContent,
@@ -299,11 +299,11 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
                     <div className="space-y-1">
                       <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Unit Cost</p>
-                      <p className="font-bold text-zinc-200">R$ {cotacao.valorUnitario.toFixed(2)}</p>
+                      <p className="font-bold text-zinc-200">{formatCurrency(cotacao.valorUnitario)}</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Total Volume</p>
-                      <p className="font-black text-white text-base tracking-tighter">R$ {cotacao.total.toLocaleString('pt-BR')}</p>
+                      <p className="font-black text-white text-base tracking-tighter">{formatCurrency(cotacao.total)}</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Lead Time</p>

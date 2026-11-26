@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from '@/lib/utils';
 import type { PendingOrder } from "./recebimentoHelpers";
 
 interface ReceivingFormViewProps {
@@ -85,7 +85,7 @@ export function ReceivingFormView({
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{item.descricao}</p>
                     <p className="text-xs text-muted-foreground">
-                      Pedido: {item.quantidade} {item.unidade || "un"} × R$ {item.valor_unitario.toFixed(2)}
+                      Pedido: {item.quantidade} {item.unidade || "un"} × {formatCurrency(item.valor_unitario)}
                     </p>
                   </div>
                   {itemComplete && <CheckCircle2 className="w-5 h-5 text-success shrink-0" />}

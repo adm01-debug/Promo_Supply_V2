@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { formatCurrency } from '@/lib/utils';
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
@@ -107,7 +108,7 @@ export const BuyerPerformancePanel = () => {
             <span className="text-xs font-medium">Economia Gerada</span>
           </div>
           <p className="text-xl font-bold text-success">
-            R$ {stats.economiaGerada.toLocaleString('pt-BR')}
+            {formatCurrency(stats.economiaGerada)}
           </p>
           <p className="text-xs text-muted-foreground">
             {stats.economiaPercentual}% do volume
@@ -159,7 +160,7 @@ export const BuyerPerformancePanel = () => {
                     {item.percentual}%
                   </span>
                   <span className="text-sm font-semibold text-success">
-                    R$ {item.economia.toLocaleString('pt-BR')}
+                    {formatCurrency(item.economia)}
                   </span>
                 </div>
               </div>

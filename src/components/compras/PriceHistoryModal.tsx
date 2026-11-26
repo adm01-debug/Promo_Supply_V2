@@ -24,7 +24,7 @@ import {
   formatBRL,
   usePriceHistoryAnalysis,
 } from "./price-history/priceHistoryHelpers";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrencyCompact } from "@/lib/utils";
 
 interface PriceHistoryModalProps {
   open: boolean;
@@ -269,7 +269,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
                             axisLine={false}
                             tickLine={false}
                             tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                            tickFormatter={(v) => `R$${v}`}
+                            tickFormatter={(v) => formatCurrencyCompact(v)}
                           />
                           <Tooltip content={<CustomTooltip />} />
                           <Area
@@ -329,7 +329,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={supplierComparison} layout="vertical" margin={{ left: 40, right: 40 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border)/0.5)" />
-                        <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `R$${v}`} />
+                        <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => formatCurrencyCompact(v)} />
                         <YAxis 
                           type="category" 
                           dataKey="fornecedor" 
@@ -405,7 +405,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
                           axisLine={false} 
                           tickLine={false} 
                           tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} 
-                          tickFormatter={(v) => `R$${v}`} 
+                          tickFormatter={(v) => formatCurrencyCompact(v)} 
                         />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />

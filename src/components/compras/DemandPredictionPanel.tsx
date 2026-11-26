@@ -310,7 +310,7 @@ export function DemandPredictionPanel() {
                             <div className="flex items-center gap-4">
                               <div className="text-right">
                                 <p className="font-semibold">
-                                  R$ {p.predictedValue?.toLocaleString('pt-BR') || '0'}
+                                  {formatCurrency(p.predictedValue ?? 0)}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   {p.predictedQuantity || 0} unidades

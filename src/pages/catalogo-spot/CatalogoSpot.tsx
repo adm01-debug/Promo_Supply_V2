@@ -205,7 +205,7 @@ const CatalogoSpot = () => {
                             <Badge variant="outline" className="font-mono">{item.ref}</Badge>
                           </TableCell>
                           <TableCell className="text-right font-medium">
-                            R$ {item.unitPrice.toFixed(2)}
+                            {formatCurrency(item.unitPrice)}
                           </TableCell>
                           <TableCell className="text-right">{item.stockAvailable}</TableCell>
                           <TableCell className="text-right">
@@ -236,7 +236,7 @@ const CatalogoSpot = () => {
                     <Separator className="my-4" />
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold">
-                        Total: R$ {cart.total.toFixed(2)}
+                        Total: {formatCurrency(cart.total)}
                       </span>
                       <Button onClick={handleOpenCheckout} disabled={loading}>
                         {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <CreditCard className="w-4 h-4 mr-2" />}

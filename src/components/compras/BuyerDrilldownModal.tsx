@@ -17,7 +17,7 @@ import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 import { formatDateBR } from "@/lib/dateUtils";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 
 interface LegacyComprador {
   nome: string;
@@ -88,7 +88,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
           <Card className="p-3 border-emerald-500/20">
             <div className="text-xs text-muted-foreground mb-1">Economia Total</div>
             <div className="text-lg font-bold text-success">
-              R$ {buyer.performance.economiaAno.toLocaleString('pt-BR')}
+              {formatCurrency(buyer.performance.economiaAno)}
             </div>
           </Card>
           <Card className="p-3 border-blue-500/20">
@@ -131,7 +131,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                       <div className="text-right">
                         <div className="mt-1">
                           <span className="text-lg font-bold text-success">
-                            R$ {neg.economia.toLocaleString('pt-BR')}
+                            {formatCurrency(neg.economia)}
                           </span>
                           <span className="text-xs text-success ml-2">
                             ({neg.percentual}%)
@@ -164,7 +164,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                     <XAxis dataKey="mes" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                    <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$${v}`} />
+                    <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => formatCurrencyCompact(v)} />
                     <Tooltip content={<CustomTooltip />} />
                     <Area type="monotone" dataKey="economia" stroke="hsl(142, 76%, 36%)" fill="url(#colorEconomiaDrill)" strokeWidth={2} name="Economia" />
                   </AreaChart>
@@ -178,7 +178,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                 <Card key={`hist-${mes.mes}-${index}`} className="p-3">
                   <div className="text-xs text-muted-foreground">{mes.mes}</div>
                   <div className="text-lg font-bold text-success">
-                    R$ {mes.economia.toLocaleString('pt-BR')}
+                    {formatCurrency(mes.economia)}
                   </div>
                   <div className="text-xs text-muted-foreground">{mes.cotacoes} cotações</div>
                 </Card>
