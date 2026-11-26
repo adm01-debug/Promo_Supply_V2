@@ -38,26 +38,20 @@ export function SystemAlertsView() {
   });
 
   const handleResolve = async (id: string) => {
-    // `.select("id")` devolve so as linhas realmente alteradas. Sem policy de UPDATE
-    // a RLS filtra tudo: o UPDATE afeta 0 linhas e o PostgREST responde sem erro,
-    // entao o `if (error)` sozinho mostrava "Alerta resolvido" sem gravar nada.
-    const { data, error } = await supabase
-      .from("system_alerts")
-      .update({ 
-        resolved_at: new Date().toISOString(),
-        // resolved_by: (await supabase.auth.getUser()).data.user?.id 
-      })
-      .eq("id", id)
-      .select("id");
+    // `resolve_alert` e SECURITY DEFINER: confere o papel admin, grava resolved_at e
+    // resolved_by e registra o evento em audit_logs -- e o mesmo caminho do painel de
+    // saude (HealthDashboard). O UPDATE direto nesta tabela nao funciona: a RLS so tem
+    // policy de SELECT, entao o UPDATE casa 0 linhas e o PostgREST responde sem erro;
+    // o `if (error)` sozinho mostrava "Alerta resolvido" sem gravar nada.
+    const { error } = await supabase.rpc("resolve_alert", { _alert_id: id });
 
     if (error) {
-      toast.error("Erro ao resolver alerta");
-    } else if (!data || data.length === 0) {
-      toast.error("Alerta não alterado: sem permissão para este alerta");
-    } else {
-      toast.success("Alerta resolvido");
-      refetch();
+      toast.error("Falha ao resolver alerta", { description: error.message });
+      return;
     }
+
+    toast.success("Alerta resolvido");
+    refetch();
   };
 
   const getSeverityBadge = (severity: string) => {
