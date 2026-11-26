@@ -183,10 +183,10 @@ contrato de banco em shell, Talk X/Evolution/telefonia), `scripts/e2e-isolated/`
 - `github-settings-guard.mjs` + baseline (confere e restaura o perímetro do GitHub): a branch protection
   **existe** hoje com um check obrigatório (`Contratos da automação local`), então o guard passa a ter o
   que vigiar — mudar o perímetro é decisão do dono.
-- `check-workflow-pins.mjs` (exige SHA de 40 caracteres em toda action): o `main.yml` tem **8 actions sem
-  SHA** (`actions/checkout@v7`, `oven-sh/setup-bun@v2`, `denoland/setup-deno@v2`,
-  `actions/upload-artifact@v7`, medido em 25/11/2026). Nenhuma PR aberta toca esse arquivo — é uma PR de uma
-  linha por action, só precisa resolver cada tag para o commit e pinar.
+- `check-workflow-pins.mjs` (exige SHA de 40 caracteres em toda action): as 8 actions de `main.yml` mais
+  as de `aplicar-migration-prod.yml` e `paridade-banco.yml` foram pinadas em 25/11/2026 (`actions/checkout`,
+  `oven-sh/setup-bun`, `denoland/setup-deno`, `actions/upload-artifact`, `actions/setup-node`), então o
+  guard tem o que vigiar — falta só o script e o baseline.
 - `bundle-budget.mjs` + `performance-budget.json`: o orçamento do Zapp não serve aqui, e o teste lê o bloco
   `codeSplitting.groups` do `vite.config.ts` — este repo usa `manualChunks: (id) => …`. Precisa medir o
   bundle e o dono decidir o teto.
