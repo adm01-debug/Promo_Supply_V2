@@ -218,7 +218,31 @@ export function usePedidos(filters?: PedidoFilters) {
           ncm: item.ncm ?? null,
           ipi_rate: item.ipi_rate ?? null,
         }));
-        await supabase.from('pedido_itens').insert(itensToInsert);
+        // Etapa 170 (INT-07 parte 2/2): o insert dos itens nao checava erro. Se o banco
+        // recusasse (policy/RLS/constraint), o pedido ficava gravado sem nenhum item e a
+        // tela ainda exibia "Pedido criado com sucesso!" -- a OC ia ao fornecedor vazia.
+        // Sem `.select('id')`: a policy de SELECT de pedido_itens e restrita por papel
+        // (admin/coordinator/buyer/finance), entao quem insere sem esse papel veria erro
+        // de leitura com os itens gravados. O INSERT recusado pelo banco ja vem como erro.
+        const { error: itensError } = await supabase.from('pedido_itens').insert(itensToInsert);
+
+        if (itensError) {
+          logger.error('Pedido gravado sem itens: falha no insert de pedido_itens', {
+            error: itensError, pedidoId: data.id, numero: data.numero, itens: itensToInsert.length,
+          });
+          // O pedido existe no banco: devolver null faria o operador gerar outro pedido
+          // duplicado. O aviso e explicito e o pedido volta para a lista para correcao.
+          toast.error(
+            `Pedido ${data.numero} foi gravado, mas os ${itensToInsert.length} item(ns) NAO foram: ${itensError.message}. `
+            + 'Corrija os itens antes de enviar ao fornecedor.',
+          );
+          queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+          return data;
+        }
+      } else {
+        logger.warn('Pedido criado sem itens: entrada sem lista de itens', {
+          pedidoId: data.id, numero: data.numero,
+        });
       }
 
       logger.info('Pedido criado com sucesso', { id: data.id, numero: data.numero });
